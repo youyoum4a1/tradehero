@@ -7,6 +7,7 @@ import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTester;
+import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseCache;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
@@ -36,7 +37,6 @@ import javax.inject.Singleton;
                 THBaseIABPurchaser.class,
                 THBaseIABPurchaseReporter.class,
                 THIABLogicHolderFull.class,
-                THBaseIABPurchaseConsumer.class,
                 THBaseIABInventoryFetcherHolder.class,
                 THBaseIABPurchaseReporterHolder.class,
                 THIABPurchaseFetchMilestone.class,
@@ -50,6 +50,78 @@ import javax.inject.Singleton;
 )
 public class GooglePlayBillingModule
 {
+    //<editor-fold desc="Actors and Action Holders">
+    @Provides THIABBillingAvailableTester provideBillingAvailableTest(THBaseIABBillingAvailableTester thBaseIABBillingAvailableTester)
+    {
+        return thBaseIABBillingAvailableTester;
+    }
+
+    @Provides THIABBillingAvailableTesterHolder provideBillingAvailableTesterHolder(THBaseIABBillingAvailableTesterHolder thBaseIABBillingAvailableTesterHolder)
+    {
+        return thBaseIABBillingAvailableTesterHolder;
+    }
+
+    @Provides THIABProductIdentifierFetcher provideProductIdentifierFetcher(THBaseIABProductIdentifierFetcher thBaseIABProductIdentifierFetcher)
+    {
+        return thBaseIABProductIdentifierFetcher;
+    }
+
+    @Provides THIABProductIdentifierFetcherHolder provideProductIdentifierFetcherHolder(THBaseIABProductIdentifierFetcherHolder thBaseIABProductIdentifierFetcherHolder)
+    {
+        return thBaseIABProductIdentifierFetcherHolder;
+    }
+
+    @Provides THIABInventoryFetcher provideInventoryFetcher(THBaseIABInventoryFetcher thBaseIABInventoryFetcher)
+    {
+        return thBaseIABInventoryFetcher;
+    }
+
+    @Provides THIABInventoryFetcherHolder provideInventoryFetcherHolder(THBaseIABInventoryFetcherHolder thBaseIABInventoryFetcherHolder)
+    {
+        return thBaseIABInventoryFetcherHolder;
+    }
+
+    @Provides THIABPurchaseFetcher providePurchaseFetcher(THBaseIABPurchaseFetcher thBaseIABPurchaseFetcher)
+    {
+        return thBaseIABPurchaseFetcher;
+    }
+
+    @Provides THIABPurchaseFetcherHolder providePurchaseFetcherHolder(THBaseIABPurchaseFetcherHolder thBaseIABPurchaseFetcherHolder)
+    {
+        return thBaseIABPurchaseFetcherHolder;
+    }
+
+    @Provides THIABPurchaser providePurchaser(THBaseIABPurchaser thBaseIABPurchaser)
+    {
+        return thBaseIABPurchaser;
+    }
+
+    @Provides THIABPurchaserHolder providePurchaserHolder(THBaseIABPurchaserHolder thBaseIABPurchaserHolder)
+    {
+        return thBaseIABPurchaserHolder;
+    }
+
+    @Provides THIABPurchaseReporter providePurchaseReporter(THBaseIABPurchaseReporter thBaseIABPurchaseReporter)
+    {
+        return thBaseIABPurchaseReporter;
+    }
+
+    @Provides THIABPurchaseReporterHolder providePurchaseReporterHolder(THBaseIABPurchaseReporterHolder thBaseIABPurchaseReporterHolder)
+    {
+        return thBaseIABPurchaseReporterHolder;
+    }
+
+    @Provides THIABPurchaseConsumer providePurchaseConsumer(THBaseIABPurchaseConsumer thBaseIABPurchaseConsumer)
+    {
+        return thBaseIABPurchaseConsumer;
+    }
+
+    @Provides THIABPurchaseConsumerHolder providePurchaseConsumerHolder(THBaseIABPurchaseConsumerHolder thBaseIABPurchaseConsumerHolder)
+    {
+        return thBaseIABPurchaseConsumerHolder;
+    }
+    //</editor-fold>
+
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     {
         return THIABAlertDialogUtil;

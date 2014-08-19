@@ -12,6 +12,7 @@ public interface IABPurchaseFetcher<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType,
-            IABExceptionType>
+            IABExceptionType>,
+        IABServiceListenerHolder
 {
 }

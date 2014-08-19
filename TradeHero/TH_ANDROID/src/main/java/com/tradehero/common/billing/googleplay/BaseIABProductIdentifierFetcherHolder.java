@@ -5,6 +5,7 @@ import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class BaseIABProductIdentifierFetcherHolder<
         IABSKUListKeyType extends IABSKUListKey,
@@ -27,13 +28,15 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
         IABSKUListType,
         IABExceptionType>
 {
-    protected Map<Integer /*requestCode*/, IABProductIdentifierFetcherType> skuFetchers;
+    @NotNull protected final Map<Integer /*requestCode*/, IABProductIdentifierFetcherType> skuFetchers;
 
+    //<editor-fold desc="Constructors">
     public BaseIABProductIdentifierFetcherHolder()
     {
         super();
         skuFetchers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {

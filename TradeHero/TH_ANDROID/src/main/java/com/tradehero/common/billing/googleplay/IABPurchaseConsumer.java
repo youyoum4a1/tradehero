@@ -8,7 +8,7 @@ public interface IABPurchaseConsumer<
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
         IABExceptionType extends IABException>
-        extends RequestCodeActor
+        extends RequestCodeActor, IABServiceListenerHolder
 {
     OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> getConsumptionFinishedListener();
     void setConsumptionFinishedListener(OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> consumptionListener);

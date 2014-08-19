@@ -4,21 +4,29 @@ import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.samsung.SamsungConstants;
+import org.jetbrains.annotations.Nullable;
 
 public class SamsungExceptionFactory
         implements BillingExceptionFactory
 {
-    @Override public SamsungException create(int responseStatus)
+    //<editor-fold desc="Constructors">
+    public SamsungExceptionFactory()
+    {
+        super();
+    }
+    //</editor-fold>
+
+    @Override @Nullable public SamsungException create(int responseStatus)
     {
         return create(responseStatus, null);
     }
 
-    public SamsungException create(ErrorVo errorVo)
+    @Nullable public SamsungException create(ErrorVo errorVo)
     {
         return create(errorVo.getErrorCode(), errorVo.dump());
     }
 
-    @Override public SamsungException create(int responseStatus, String message)
+    @Override @Nullable public SamsungException create(int responseStatus, String message)
     {
         SamsungException exception = null;
         switch (responseStatus)

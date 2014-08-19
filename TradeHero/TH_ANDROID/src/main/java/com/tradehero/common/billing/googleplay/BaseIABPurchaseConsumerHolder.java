@@ -3,35 +3,40 @@ package com.tradehero.common.billing.googleplay;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaseConsumerHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaseConsumerType extends BaseIABPurchaseConsumer<
+        IABPurchaseConsumerType extends IABPurchaseConsumer<
                         IABSKUType,
                         IABOrderIdType,
-                        IABPurchaseType>>
+                        IABPurchaseType,
+                        IABException>>
     implements IABPurchaseConsumerHolder<
         IABSKUType,
         IABOrderIdType,
         IABPurchaseType,
         IABException>
 {
-    protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
-    protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+    @NotNull protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
+    @NotNull protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType,
             IABException>> parentConsumeFinishedHandlers;
 
+    //<editor-fold desc="Constructors">
     public BaseIABPurchaseConsumerHolder()
     {
         super();
         iabPurchaseConsumers = new HashMap<>();
         parentConsumeFinishedHandlers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
@@ -51,7 +56,7 @@ abstract public class BaseIABPurchaseConsumerHolder<
         iabPurchaseConsumers.remove(requestCode);
     }
 
-    @Override public IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+    @Override @Nullable public IABPurchaseConsumer.OnIABConsumptionFinishedListener<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType,
@@ -60,11 +65,13 @@ abstract public class BaseIABPurchaseConsumerHolder<
         return parentConsumeFinishedHandlers.get(requestCode);
     }
 
-    @Override public void registerConsumptionFinishedListener(int requestCode, IABPurchaseConsumer.OnIABConsumptionFinishedListener<
-            IABSKUType,
-            IABOrderIdType,
-            IABPurchaseType,
-            IABException> purchaseConsumeHandler)
+    @Override public void registerConsumptionFinishedListener(
+            int requestCode,
+            @Nullable IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+                    IABSKUType,
+                    IABOrderIdType,
+                    IABPurchaseType,
+                    IABException> purchaseConsumeHandler)
     {
         parentConsumeFinishedHandlers.put(requestCode, purchaseConsumeHandler);
     }
@@ -78,7 +85,7 @@ abstract public class BaseIABPurchaseConsumerHolder<
         iabPurchaseConsumer.consume(requestCode, purchase);
     }
 
-    protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>
+    @NotNull protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>
             createConsumptionFinishedListener()
     {
         return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()

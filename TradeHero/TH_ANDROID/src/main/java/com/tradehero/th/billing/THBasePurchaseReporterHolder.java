@@ -5,18 +5,21 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class THBasePurchaseReporterHolder<
         ProductIdentifierType extends ProductIdentifier,
         THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<ProductIdentifierType, THOrderIdType>,
-        PurchaseReporterType extends THPurchaseReporter<
+        THPurchaseReporterType extends THPurchaseReporter<
                     ProductIdentifierType,
                 THOrderIdType,
                     THProductPurchaseType,
@@ -28,20 +31,34 @@ abstract public class THBasePurchaseReporterHolder<
             THProductPurchaseType,
             BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, PurchaseReporterType> purchaseReporters;
-    protected Map<Integer /*requestCode*/, THPurchaseReporter.OnPurchaseReportedListener<
+    @NotNull protected final Lazy<UserProfileCache> userProfileCache;
+    @NotNull protected final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @NotNull protected final Lazy<PortfolioCache> portfolioCache;
+    @NotNull protected final Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider;
+
+    @NotNull protected final Map<Integer /*requestCode*/, THPurchaseReporterType> purchaseReporters;
+    @NotNull protected final Map<Integer /*requestCode*/, THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType>> parentPurchaseReportedHandlers;
 
-    public THBasePurchaseReporterHolder()
+    //<editor-fold desc="Constructors">
+    public THBasePurchaseReporterHolder(
+            @NotNull Lazy<UserProfileCache> userProfileCache,
+            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
+            @NotNull Lazy<PortfolioCache> portfolioCache,
+            @NotNull Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider)
     {
         super();
-
-        purchaseReporters = new HashMap<>();
-        parentPurchaseReportedHandlers = new HashMap<>();
+        this.userProfileCache = userProfileCache;
+        this.portfolioCompactListCache = portfolioCompactListCache;
+        this.portfolioCache = portfolioCache;
+        this.thPurchaseReporterTypeProvider = thPurchaseReporterTypeProvider;
+        this.purchaseReporters = new HashMap<>();
+        this.parentPurchaseReportedHandlers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
@@ -52,7 +69,7 @@ abstract public class THBasePurchaseReporterHolder<
     @Override public void forgetRequestCode(int requestCode)
     {
         parentPurchaseReportedHandlers.remove(requestCode);
-        PurchaseReporterType purchaseReporter = purchaseReporters.get(requestCode);
+        THPurchaseReporterType purchaseReporter = purchaseReporters.get(requestCode);
         if (purchaseReporter != null)
         {
             purchaseReporter.setPurchaseReporterListener(null);
@@ -60,7 +77,7 @@ abstract public class THBasePurchaseReporterHolder<
         purchaseReporters.remove(requestCode);
     }
 
-    @Override public THPurchaseReporter.OnPurchaseReportedListener<
+    @Override @Nullable public THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             THOrderIdType,
             THProductPurchaseType,
@@ -69,11 +86,13 @@ abstract public class THBasePurchaseReporterHolder<
         return parentPurchaseReportedHandlers.get(requestCode);
     }
 
-    @Override public void registerPurchaseReportedListener(int requestCode, THPurchaseReporter.OnPurchaseReportedListener<
-            ProductIdentifierType,
-            THOrderIdType,
-            THProductPurchaseType,
-            BillingExceptionType> purchaseReportedHandler)
+    @Override public void registerPurchaseReportedListener(
+            int requestCode,
+            @Nullable THPurchaseReporter.OnPurchaseReportedListener<
+                    ProductIdentifierType,
+                    THOrderIdType,
+                    THProductPurchaseType,
+                    BillingExceptionType> purchaseReportedHandler)
     {
         parentPurchaseReportedHandlers.put(requestCode, purchaseReportedHandler);
     }
@@ -81,13 +100,13 @@ abstract public class THBasePurchaseReporterHolder<
     @Override public void launchReportSequence(int requestCode, THProductPurchaseType purchase)
     {
         THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> reportedListener = createPurchaseReportedListener();
-        PurchaseReporterType purchaseReporter = createPurchaseReporter();
+        THPurchaseReporterType purchaseReporter = thPurchaseReporterTypeProvider.get();
         purchaseReporter.setPurchaseReporterListener(reportedListener);
         purchaseReporters.put(requestCode, purchaseReporter);
         purchaseReporter.reportPurchase(requestCode, purchase);
     }
 
-    protected THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
+    @NotNull protected THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
     {
         return new THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>()
         {
@@ -109,16 +128,16 @@ abstract public class THBasePurchaseReporterHolder<
 
         if (updatedUserPortfolio != null)
         {
-            getUserProfileCache().put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
+            userProfileCache.get().put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
         }
 
         OwnedPortfolioId applicablePortfolioId = reportedPurchase.getApplicableOwnedPortfolioId();
         if (applicablePortfolioId != null)
         {
-            getPortfolioCompactListCache().invalidate(applicablePortfolioId.getUserBaseKey());
+            portfolioCompactListCache.get().invalidate(applicablePortfolioId.getUserBaseKey());
             // TODO put back when #68094144 is fixed
             //getPortfolioCompactCache().invalidate(applicablePortfolioId.getPortfolioIdKey());
-            getPortfolioCache().invalidate(applicablePortfolioId);
+            portfolioCache.get().invalidate(applicablePortfolioId);
         }
 
         THPurchaseReporter.OnPurchaseReportedListener<
@@ -136,11 +155,6 @@ abstract public class THBasePurchaseReporterHolder<
             Timber.d("handlePurchaseReported No PurchaseReportedHandler for requestCode %d", requestCode);
         }
     }
-
-    abstract protected UserProfileCache getUserProfileCache();
-    abstract protected PortfolioCompactListCache getPortfolioCompactListCache();
-    abstract protected PortfolioCompactCache getPortfolioCompactCache();
-    abstract protected PortfolioCache getPortfolioCache();
 
     protected void handlePurchaseReportFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
@@ -163,7 +177,7 @@ abstract public class THBasePurchaseReporterHolder<
 
     @Override public void onDestroy()
     {
-        for (PurchaseReporterType purchaseReporter: purchaseReporters.values())
+        for (THPurchaseReporterType purchaseReporter: purchaseReporters.values())
         {
             if (purchaseReporter != null)
             {
@@ -173,6 +187,4 @@ abstract public class THBasePurchaseReporterHolder<
         purchaseReporters.clear();
         parentPurchaseReportedHandlers.clear();
     }
-
-    abstract protected PurchaseReporterType createPurchaseReporter();
 }

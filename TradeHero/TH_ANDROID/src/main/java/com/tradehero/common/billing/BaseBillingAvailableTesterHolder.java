@@ -3,19 +3,22 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseBillingAvailableTesterHolder<BillingExceptionType extends BillingException>
     implements BillingAvailableTesterHolder<BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType>> parentBillingAvailableListener;
+    @NotNull protected final Map<Integer /*requestCode*/, BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType>> parentBillingAvailableListener;
 
+    //<editor-fold desc="Constructors">
     public BaseBillingAvailableTesterHolder()
     {
         super();
         parentBillingAvailableListener = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {

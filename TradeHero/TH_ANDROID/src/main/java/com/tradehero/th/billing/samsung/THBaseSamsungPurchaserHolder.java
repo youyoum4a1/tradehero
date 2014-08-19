@@ -4,8 +4,9 @@ import com.tradehero.common.billing.samsung.BaseSamsungPurchaserHolder;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 
 public class THBaseSamsungPurchaserHolder
     extends BaseSamsungPurchaserHolder<
@@ -13,21 +14,19 @@ public class THBaseSamsungPurchaserHolder
         THSamsungPurchaseOrder,
         THSamsungOrderId,
         THSamsungPurchase,
-        THBaseSamsungPurchaser,
+        THSamsungPurchaser,
         SamsungException>
     implements THSamsungPurchaserHolder
 {
-    @Inject protected CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final CurrentActivityHolder currentActivityHolder;
 
-    // TODO use Provider<>
-    public THBaseSamsungPurchaserHolder()
+    //<editor-fold desc="Constructors">
+    @Inject public THBaseSamsungPurchaserHolder(
+            @NotNull Provider<THSamsungPurchaser> thSamsungPurchaserProvider,
+            @NotNull CurrentActivityHolder currentActivityHolder)
     {
-        super();
-        DaggerUtils.inject(this);
+        super(thSamsungPurchaserProvider);
+        this.currentActivityHolder = currentActivityHolder;
     }
-
-    @Override protected THBaseSamsungPurchaser createPurchaser()
-    {
-        return new THBaseSamsungPurchaser(currentActivityHolder.getCurrentContext(), THSamsungConstants.PURCHASE_MODE);
-    }
+    //</editor-fold>
 }

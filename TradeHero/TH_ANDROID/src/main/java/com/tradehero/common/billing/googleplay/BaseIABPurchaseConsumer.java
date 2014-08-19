@@ -4,8 +4,13 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.RemoteException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
+import com.tradehero.th.activities.CurrentActivityHolder;
+import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaseConsumer<
@@ -22,12 +27,14 @@ abstract public class BaseIABPurchaseConsumer<
     private int requestCode;
     private boolean consuming = false;
     protected IABPurchaseType purchase;
-    private OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumptionFinishedListener;
+    @Nullable private OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumptionFinishedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseIABPurchaseConsumer()
+    public BaseIABPurchaseConsumer(
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super();
+        super(currentActivityHolder, iabExceptionFactory);
     }
     //</editor-fold>
 
@@ -42,12 +49,12 @@ abstract public class BaseIABPurchaseConsumer<
         super.onDestroy();
     }
 
-    protected Activity getActivity()
+    @Nullable protected Activity getActivity()
     {
         return currentActivityHolder.getCurrentActivity();
     }
 
-    abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
+    @NotNull abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
 
     public boolean isConsuming()
     {
@@ -62,12 +69,12 @@ abstract public class BaseIABPurchaseConsumer<
         }
     }
 
-    @Override public OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getConsumptionFinishedListener()
+    @Override @Nullable public OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getConsumptionFinishedListener()
     {
         return consumptionFinishedListener;
     }
 
-    @Override public void setConsumptionFinishedListener(OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumptionFinishedListener)
+    @Override public void setConsumptionFinishedListener(@Nullable OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumptionFinishedListener)
     {
         this.consumptionFinishedListener = consumptionFinishedListener;
     }

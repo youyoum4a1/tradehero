@@ -10,6 +10,7 @@ import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.utils.DaggerUtils;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 import javax.inject.Inject;
@@ -26,14 +27,21 @@ public class THBaseSamsungPurchaser
         SamsungException>
     implements THSamsungPurchaser
 {
-    @Inject protected THSamsungExceptionFactory samsungExceptionFactory;
-    @Inject @ProcessingPurchase StringSetPreference processingPurchaseStringSet;
+    @NotNull protected final THSamsungExceptionFactory samsungExceptionFactory;
+    @NotNull @ProcessingPurchase protected final StringSetPreference processingPurchaseStringSet;
 
-    public THBaseSamsungPurchaser(Context context, int mode)
+    //<editor-fold desc="Constructors">
+    @Inject public THBaseSamsungPurchaser(
+            @NotNull Context context,
+            @ForSamsungBillingMode int mode,
+            @NotNull THSamsungExceptionFactory samsungExceptionFactory,
+            @NotNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
         super(context, mode);
-        DaggerUtils.inject(this);
+        this.samsungExceptionFactory = samsungExceptionFactory;
+        this.processingPurchaseStringSet = processingPurchaseStringSet;
     }
+    //</editor-fold>
 
     @Override protected THSamsungPurchase createSamsungPurchase(PurchaseVo purchaseVo)
     {
@@ -45,8 +53,7 @@ public class THBaseSamsungPurchaser
         return samsungExceptionFactory.create(errorVo.getErrorCode());
     }
 
-    @Override
-    protected void handlePurchaseFinished(THSamsungPurchase purchase)
+    @Override protected void handlePurchaseFinished(THSamsungPurchase purchase)
     {
         savePurchaseInPref(purchase);
         super.handlePurchaseFinished(purchase);

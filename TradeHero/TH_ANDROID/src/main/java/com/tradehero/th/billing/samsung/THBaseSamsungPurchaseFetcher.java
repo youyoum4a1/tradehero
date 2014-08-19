@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class THBaseSamsungPurchaseFetcher
@@ -27,20 +29,21 @@ public class THBaseSamsungPurchaseFetcher
             SamsungException>
     implements THSamsungPurchaseFetcher
 {
-    @Inject protected THSamsungPurchaseCache thSamsungPurchaseCache;
-    @Inject protected THSamsungExceptionFactory samsungExceptionFactory;
-    @Inject @ProcessingPurchase StringSetPreference processingPurchaseStringSet;
+    @NotNull protected final THSamsungExceptionFactory samsungExceptionFactory;
+    @NotNull @ProcessingPurchase protected final StringSetPreference processingPurchaseStringSet;
 
-    public THBaseSamsungPurchaseFetcher(Context context, int mode)
+    //<editor-fold desc="Constructors">
+    @Inject public THBaseSamsungPurchaseFetcher(
+            @NotNull Context context,
+            @ForSamsungBillingMode int mode,
+            @NotNull THSamsungExceptionFactory samsungExceptionFactory,
+            @NotNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
         super(context, mode);
-        DaggerUtils.inject(this);
+        this.samsungExceptionFactory = samsungExceptionFactory;
+        this.processingPurchaseStringSet = processingPurchaseStringSet;
     }
-
-    @Override protected SamsungPurchaseCache<SamsungSKU, THSamsungOrderId, THSamsungPurchase> getPurchaseCache()
-    {
-        return thSamsungPurchaseCache;
-    }
+    //</editor-fold>
 
     @Override protected List<String> getKnownItemGroups()
     {
@@ -49,14 +52,14 @@ public class THBaseSamsungPurchaseFetcher
         return knownGroupIds;
     }
 
-    @Override protected THSamsungPurchase createPurchase(String groupId, InboxVo inboxVo)
+    @Override @NotNull protected THSamsungPurchase createPurchase(String groupId, InboxVo inboxVo)
     {
         THSamsungPurchase purchase = new THSamsungPurchase(groupId, inboxVo, null);
         Timber.d("Created 1 purchase %s", inboxVo.getJsonString());
         return purchase;
     }
 
-    @Override protected SamsungException createException(ErrorVo errorVo)
+    @Override @Nullable protected SamsungException createException(ErrorVo errorVo)
     {
         return samsungExceptionFactory.create(errorVo);
     }

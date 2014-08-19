@@ -4,27 +4,28 @@ import android.content.Context;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Created by xavier on 3/27/14.
- */
 abstract public class BaseSamsungBillingAvailableTester<SamsungExceptionType extends SamsungException>
     extends BaseSamsungActor
     implements SamsungBillingAvailableTester<SamsungExceptionType>
 {
-    private OnBillingAvailableListener<SamsungExceptionType> availableListener;
+    @Nullable private OnBillingAvailableListener<SamsungExceptionType> availableListener;
 
-    public BaseSamsungBillingAvailableTester(Context context, int mode)
+    //<editor-fold desc="Description">
+    public BaseSamsungBillingAvailableTester(@NotNull Context context, int mode)
     {
         super(context, mode);
     }
+    //</editor-fold>
 
-    @Override public OnBillingAvailableListener<SamsungExceptionType> getBillingAvailableListener()
+    @Override @Nullable public OnBillingAvailableListener<SamsungExceptionType> getBillingAvailableListener()
     {
         return availableListener;
     }
 
-    @Override public void setBillingAvailableListener(OnBillingAvailableListener<SamsungExceptionType> billingAvailableListener)
+    @Override public void setBillingAvailableListener(@Nullable OnBillingAvailableListener<SamsungExceptionType> billingAvailableListener)
     {
         this.availableListener = billingAvailableListener;
     }

@@ -6,18 +6,24 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class THBaseSamsungBillingAvailableTester
     extends BaseSamsungBillingAvailableTester<SamsungException>
     implements THSamsungBillingAvailableTester
 {
-    @Inject protected THSamsungExceptionFactory samsungExceptionFactory;
+    @NotNull protected final THSamsungExceptionFactory samsungExceptionFactory;
 
-    public THBaseSamsungBillingAvailableTester(Context context, int mode)
+    //<editor-fold desc="Constructors">
+    @Inject public THBaseSamsungBillingAvailableTester(
+            @NotNull Context context,
+            @ForSamsungBillingMode int mode,
+            @NotNull THSamsungExceptionFactory samsungExceptionFactory)
     {
         super(context, mode);
-        DaggerUtils.inject(this);
+        this.samsungExceptionFactory = samsungExceptionFactory;
     }
+    //</editor-fold>
 
     @Override protected SamsungException createSamsungException(int result)
     {

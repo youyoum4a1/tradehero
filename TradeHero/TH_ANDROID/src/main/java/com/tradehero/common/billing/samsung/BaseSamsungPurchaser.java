@@ -5,6 +5,8 @@ import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseSamsungPurchaser<
@@ -22,19 +24,21 @@ abstract public class BaseSamsungPurchaser<
         SamsungExceptionType>
 {
     protected SamsungPurchaseOrderType purchaseOrder;
-    private OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> purchaseFinishedListener;
+    @Nullable private OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> purchaseFinishedListener;
 
-    public BaseSamsungPurchaser(Context context, int mode)
+    //<editor-fold desc="Constructors">
+    public BaseSamsungPurchaser(@NotNull Context context, int mode)
     {
         super(context, mode);
     }
+    //</editor-fold>
 
-    @Override public OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> getPurchaseFinishedListener()
+    @Override @Nullable public OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> getPurchaseFinishedListener()
     {
         return this.purchaseFinishedListener;
     }
 
-    @Override public void setPurchaseFinishedListener(OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> purchaseFinishedListener)
+    @Override public void setPurchaseFinishedListener(@Nullable OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> purchaseFinishedListener)
     {
         this.purchaseFinishedListener = purchaseFinishedListener;
     }

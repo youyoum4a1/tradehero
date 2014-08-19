@@ -6,11 +6,10 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 2/24/14.
- */
 abstract public class BaseSamsungInventoryFetcherHolder<
         SamsungSKUType extends SamsungSKU,
         SamsungProductDetailType extends SamsungProductDetail<SamsungSKUType>,
@@ -28,19 +27,24 @@ abstract public class BaseSamsungInventoryFetcherHolder<
         SamsungProductDetailType,
         SamsungExceptionType>
 {
-    protected Map<Integer /*requestCode*/, SamsungInventoryFetcherType> inventoryFetchers;
+    @NotNull protected final Provider<SamsungInventoryFetcherType> samsungInventoryFetcherTypeProvider;
+    @NotNull protected final Map<Integer /*requestCode*/, SamsungInventoryFetcherType> inventoryFetchers;
 
-    public BaseSamsungInventoryFetcherHolder()
+    //<editor-fold desc="Constructors">
+    public BaseSamsungInventoryFetcherHolder(
+            @NotNull Provider<SamsungInventoryFetcherType> samsungInventoryFetcherTypeProvider)
     {
         super();
+        this.samsungInventoryFetcherTypeProvider = samsungInventoryFetcherTypeProvider;
         inventoryFetchers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public void launchInventoryFetchSequence(int requestCode, List<SamsungSKUType> allIds)
     {
         Timber.d("Launching fetch sequence");
         BillingInventoryFetcher.OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> skuFetchedListener = createInventoryFetchedListener();
-        SamsungInventoryFetcherType inventoryFetcher = createProductIdentifierFetcher();
+        SamsungInventoryFetcherType inventoryFetcher = samsungInventoryFetcherTypeProvider.get();
         inventoryFetcher.setInventoryFetchedListener(skuFetchedListener);
         inventoryFetchers.put(requestCode, inventoryFetcher);
         inventoryFetcher.fetchInventory(requestCode);
@@ -76,6 +80,4 @@ abstract public class BaseSamsungInventoryFetcherHolder<
 
         super.onDestroy();
     }
-
-    abstract protected SamsungInventoryFetcherType createProductIdentifierFetcher();
 }

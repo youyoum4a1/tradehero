@@ -4,54 +4,30 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.billing.THBasePurchaseReporterHolder;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 
 public class THBaseSamsungPurchaseReporterHolder
     extends THBasePurchaseReporterHolder<
                 SamsungSKU,
                 THSamsungOrderId,
                 THSamsungPurchase,
-                THBaseSamsungPurchaseReporter,
+                THSamsungPurchaseReporter,
                 SamsungException>
     implements THSamsungPurchaseReporterHolder
 {
-    @Inject UserProfileCache userProfileCache;
-    @Inject PortfolioCompactListCache portfolioCompactListCache;
-    @Inject PortfolioCompactCache portfolioCompactCache;
-    @Inject PortfolioCache portfolioCache;
-
-    public THBaseSamsungPurchaseReporterHolder()
+    //<editor-fold desc="Constructors">
+    @Inject public THBaseSamsungPurchaseReporterHolder(
+            @NotNull Lazy<UserProfileCache> userProfileCache,
+            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
+            @NotNull Lazy<PortfolioCache> portfolioCache,
+            @NotNull Provider<THSamsungPurchaseReporter> thSamsungPurchaseReporterProvider)
     {
-        super();
-        DaggerUtils.inject(this);
+        super(userProfileCache, portfolioCompactListCache, portfolioCache, thSamsungPurchaseReporterProvider);
     }
-
-    @Override protected UserProfileCache getUserProfileCache()
-    {
-        return userProfileCache;
-    }
-
-    @Override protected PortfolioCompactListCache getPortfolioCompactListCache()
-    {
-        return portfolioCompactListCache;
-    }
-
-    @Override protected PortfolioCompactCache getPortfolioCompactCache()
-    {
-        return portfolioCompactCache;
-    }
-
-    @Override protected PortfolioCache getPortfolioCache()
-    {
-        return portfolioCache;
-    }
-
-    @Override protected THBaseSamsungPurchaseReporter createPurchaseReporter()
-    {
-        return new THBaseSamsungPurchaseReporter();
-    }
+    //</editor-fold>
 }

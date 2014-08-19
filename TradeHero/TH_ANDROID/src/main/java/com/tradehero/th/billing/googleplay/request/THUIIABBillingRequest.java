@@ -12,6 +12,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 public class THUIIABBillingRequest
     extends THUIBillingRequest<
@@ -30,7 +31,7 @@ public class THUIIABBillingRequest
      * Indicates whether we want the Interactor to pop a dialog when the consume has failed.
      */
     public boolean popIfConsumeFailed;
-    public IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+    @Nullable public IABPurchaseConsumer.OnIABConsumptionFinishedListener<
             IABSKU,
             THIABOrderId,
             THIABPurchase,

@@ -2,7 +2,14 @@ package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BaseBillingLogicHolder;
 import com.tradehero.common.billing.BaseProductIdentifierList;
+import com.tradehero.common.billing.BillingAvailableTesterHolder;
+import com.tradehero.common.billing.BillingInventoryFetcherHolder;
+import com.tradehero.common.billing.BillingPurchaseFetcherHolder;
+import com.tradehero.common.billing.BillingPurchaserHolder;
+import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
+import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -55,24 +62,39 @@ abstract public class THBaseBillingLogicHolder<
                 BillingRequestType,
                 BillingExceptionType>
 {
-    protected THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>
-            purchaseReporterHolder;
-
     @NotNull protected final UserProfileCache userProfileCache;
     @NotNull protected final UserServiceWrapper userServiceWrapper;
     @NotNull protected final HeroListCache heroListCache;
 
+    @NotNull protected final THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>
+            purchaseReporterHolder;
+
     //<editor-fold desc="Constructors">
     public THBaseBillingLogicHolder(
+            @NotNull ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
+            @NotNull ProductDetailCache<ProductIdentifierType, THProductDetailType, THProductTunerType> productDetailCache,
+            @NotNull BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder,
+            @NotNull ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder,
+            @NotNull BillingInventoryFetcherHolder<ProductIdentifierType, THProductDetailType, BillingExceptionType> inventoryFetcherHolder,
+            @NotNull BillingPurchaseFetcherHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaseFetcherHolder,
+            @NotNull BillingPurchaserHolder<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaserHolder,
             @NotNull UserProfileCache userProfileCache,
             @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull HeroListCache heroListCache)
+            @NotNull HeroListCache heroListCache,
+            @NotNull THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaseReporterHolder)
     {
-        super();
+        super(
+                productIdentifierCache,
+                productDetailCache,
+                billingAvailableTesterHolder,
+                productIdentifierFetcherHolder,
+                inventoryFetcherHolder,
+                purchaseFetcherHolder,
+                purchaserHolder);
         this.userProfileCache = userProfileCache;
         this.userServiceWrapper = userServiceWrapper;
         this.heroListCache = heroListCache;
-        purchaseReporterHolder = createPurchaseReporterHolder();
+        this.purchaseReporterHolder = purchaseReporterHolder;
     }
     //</editor-fold>
 
@@ -100,7 +122,7 @@ abstract public class THBaseBillingLogicHolder<
     }
     //</editor-fold>
 
-    @Override public void registerListeners(int requestCode, BillingRequestType billingRequest)
+    @Override public void registerListeners(int requestCode, @NotNull BillingRequestType billingRequest)
     {
         super.registerListeners(requestCode, billingRequest);
         registerPurchaseReportedListener(requestCode, billingRequest.purchaseReportedListener);
@@ -179,10 +201,6 @@ abstract public class THBaseBillingLogicHolder<
             billingRequest.reportPurchase = false;
         }
     }
-    //</editor-fold>
-
-    //<editor-fold desc="Holder Creation">
-    protected abstract THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReporterHolder();
     //</editor-fold>
 
     //<editor-fold desc="Report Purchase">

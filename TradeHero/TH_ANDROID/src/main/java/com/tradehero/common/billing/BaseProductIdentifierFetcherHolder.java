@@ -4,6 +4,8 @@ import com.tradehero.common.billing.exception.BillingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class BaseProductIdentifierFetcherHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -16,17 +18,19 @@ abstract public class BaseProductIdentifierFetcherHolder<
         ProductIdentifierListType,
         BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+    @NotNull protected final Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType,
             BillingExceptionType>> parentProductIdentifierFetchedListeners;
 
+    //<editor-fold desc="Constructors">
     public BaseProductIdentifierFetcherHolder()
     {
         super();
         parentProductIdentifierFetchedListeners = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int randomNumber)
     {
@@ -38,7 +42,7 @@ abstract public class BaseProductIdentifierFetcherHolder<
         parentProductIdentifierFetchedListeners.remove(requestCode);
     }
 
-    @Override public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+    @Override @Nullable public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType,
@@ -47,16 +51,18 @@ abstract public class BaseProductIdentifierFetcherHolder<
         return parentProductIdentifierFetchedListeners.get(requestCode);
     }
 
-    @Override public void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
-            ProductIdentifierListKeyType,
-            ProductIdentifierType,
-            ProductIdentifierListType,
-            BillingExceptionType> productIdentifierFetchedListener)
+    @Override public void registerProductIdentifierFetchedListener(
+            int requestCode,
+            @Nullable ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+                    ProductIdentifierListKeyType,
+                    ProductIdentifierType,
+                    ProductIdentifierListType,
+                    BillingExceptionType> productIdentifierFetchedListener)
     {
         parentProductIdentifierFetchedListeners.put(requestCode, productIdentifierFetchedListener);
     }
 
-    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType,
+    @NotNull protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType, BillingExceptionType> createProductIdentifierFetchedListener()
     {

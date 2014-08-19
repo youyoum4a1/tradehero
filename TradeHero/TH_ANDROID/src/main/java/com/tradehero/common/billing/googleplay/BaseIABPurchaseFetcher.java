@@ -10,11 +10,13 @@ import com.tradehero.common.billing.googleplay.exception.IABBadResponseException
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.base.Application;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -29,17 +31,24 @@ abstract public class BaseIABPurchaseFetcher<
         IABPurchaseType,
         IABException>
 {
+    @NotNull protected final IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache;
+
     protected int requestCode;
     protected boolean fetching;
     protected List<IABPurchaseType> purchases;
-    protected OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> fetchListener;
-    @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
+    @Nullable protected OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> fetchListener;
 
-    public BaseIABPurchaseFetcher()
+    //<editor-fold desc="Constructors">
+    public BaseIABPurchaseFetcher(
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory,
+            @NotNull IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache)
     {
-        super();
+        super(currentActivityHolder, iabExceptionFactory);
+        this.purchaseCache = purchaseCache;
         purchases = new ArrayList<>();
     }
+    //</editor-fold>
 
     @Override public void onDestroy()
     {
@@ -51,8 +60,6 @@ abstract public class BaseIABPurchaseFetcher<
     {
         return requestCode;
     }
-
-    abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
 
     @Override public void fetchPurchases(int requestCode)
     {
@@ -129,7 +136,7 @@ abstract public class BaseIABPurchaseFetcher<
             ArrayList<IABPurchaseType> subscriptionAll = queryPurchases(IABConstants.ITEM_TYPE_SUBS);
             list.addAll(subscriptionAll);
         }
-        getPurchaseCache().put(list);
+        purchaseCache.put(list);
         return list;
     }
 
@@ -218,13 +225,13 @@ abstract public class BaseIABPurchaseFetcher<
 
     abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String signature) throws JSONException;
 
-    @Override public OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getFetchListener()
+    @Override @Nullable public OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getFetchListener()
     {
         return fetchListener;
     }
 
     @Override public void setPurchaseFetchedListener(
-            OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> fetchListener)
+            @Nullable OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> fetchListener)
     {
         this.fetchListener = fetchListener;
     }

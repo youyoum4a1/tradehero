@@ -4,55 +4,30 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.billing.THBasePurchaseReporterHolder;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 
 class THBaseIABPurchaseReporterHolder
     extends THBasePurchaseReporterHolder<
                 IABSKU,
                 THIABOrderId,
                 THIABPurchase,
-            THBaseIABPurchaseReporter,
+                THIABPurchaseReporter,
                 IABException>
     implements THIABPurchaseReporterHolder
 {
-    @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
-    @Inject Lazy<PortfolioCache> portfolioCache;
-
-    public THBaseIABPurchaseReporterHolder()
+    //<editor-fold desc="Constructors">
+    @Inject public THBaseIABPurchaseReporterHolder(
+            @NotNull Lazy<UserProfileCache> userProfileCache,
+            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
+            @NotNull Lazy<PortfolioCache> portfolioCache,
+            @NotNull Provider<THIABPurchaseReporter> thiabPurchaseReporterProvider)
     {
-        super();
-        DaggerUtils.inject(this);
+        super(userProfileCache, portfolioCompactListCache, portfolioCache, thiabPurchaseReporterProvider);
     }
-
-    @Override protected UserProfileCache getUserProfileCache()
-    {
-        return userProfileCache.get();
-    }
-
-    @Override protected PortfolioCompactListCache getPortfolioCompactListCache()
-    {
-        return portfolioCompactListCache.get();
-    }
-
-    @Override protected PortfolioCompactCache getPortfolioCompactCache()
-    {
-        return portfolioCompactCache.get();
-    }
-
-    @Override protected PortfolioCache getPortfolioCache()
-    {
-        return portfolioCache.get();
-    }
-
-    @Override protected THBaseIABPurchaseReporter createPurchaseReporter()
-    {
-        return new THBaseIABPurchaseReporter();
-    }
+    //</editor-fold>
 }

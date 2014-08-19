@@ -6,13 +6,15 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class BaseIABInventoryFetcherHolder<
         IABSKUType extends IABSKU,
         IABProductDetailType extends IABProductDetail<IABSKUType>,
-        IABInventoryFetcherType extends BaseIABInventoryFetcher<
+        IABInventoryFetcherType extends IABInventoryFetcher<
                                 IABSKUType,
-                                IABProductDetailType>>
+                                IABProductDetailType,
+                                IABException>>
     extends BaseBillingInventoryFetcherHolder<
         IABSKUType,
         IABProductDetailType,
@@ -22,14 +24,16 @@ abstract public class BaseIABInventoryFetcherHolder<
         IABProductDetailType,
         IABException>
 {
-    protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
+    @NotNull protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
     protected Exception latestInventoryFetcherException; // TODO here too
 
+    //<editor-fold desc="Constructors">
     public BaseIABInventoryFetcherHolder()
     {
         super();
         iabInventoryFetchers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int randomNumber)
     {

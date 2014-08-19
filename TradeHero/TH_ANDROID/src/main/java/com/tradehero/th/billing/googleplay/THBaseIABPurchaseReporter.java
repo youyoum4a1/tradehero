@@ -25,6 +25,8 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -38,22 +40,41 @@ public class THBaseIABPurchaseReporter
                 IABException>
     implements THIABPurchaseReporter
 {
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
-    @Inject Lazy<AlertPlanService> alertPlanService;
-    @Inject Lazy<AlertPlanServiceAsync> alertPlanServiceAsync;
-    @Inject Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper;
-    @Inject UserServiceWrapper userServiceWrapper;
-    @Inject Lazy<UserService> userService;
-    @Inject Lazy<THIABProductDetailCache> skuDetailCache;
-    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    private MiddleCallback<UserProfileDTO> middleCallbackAddCash;
-    private MiddleCallback<UserProfileDTO> middleCallbackAddCredit;
+    @NotNull protected final CurrentUserId currentUserId;
+    @NotNull protected final Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
+    @NotNull protected final Lazy<AlertPlanService> alertPlanService;
+    @NotNull protected final Lazy<AlertPlanServiceAsync> alertPlanServiceAsync;
+    @NotNull protected final Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper;
+    @NotNull protected final UserServiceWrapper userServiceWrapper;
+    @NotNull protected final Lazy<UserService> userService;
+    @NotNull protected final Lazy<THIABProductDetailCache> skuDetailCache;
+    @NotNull protected final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @Nullable private MiddleCallback<UserProfileDTO> middleCallbackAddCash;
+    @Nullable private MiddleCallback<UserProfileDTO> middleCallbackAddCredit;
 
-    public THBaseIABPurchaseReporter()
+    //<editor-fold desc="Constructors">
+    @Inject public THBaseIABPurchaseReporter(
+            @NotNull CurrentUserId currentUserId,
+            @NotNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
+            @NotNull Lazy<AlertPlanService> alertPlanService,
+            @NotNull Lazy<AlertPlanServiceAsync> alertPlanServiceAsync,
+            @NotNull Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper,
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull Lazy<UserService> userService,
+            @NotNull Lazy<THIABProductDetailCache> skuDetailCache,
+            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache)
     {
-        DaggerUtils.inject(this);
+        this.currentUserId = currentUserId;
+        this.portfolioServiceWrapper = portfolioServiceWrapper;
+        this.alertPlanService = alertPlanService;
+        this.alertPlanServiceAsync = alertPlanServiceAsync;
+        this.alertPlanServiceWrapper = alertPlanServiceWrapper;
+        this.userServiceWrapper = userServiceWrapper;
+        this.userService = userService;
+        this.skuDetailCache = skuDetailCache;
+        this.portfolioCompactListCache = portfolioCompactListCache;
     }
+    //</editor-fold>
 
     private OwnedPortfolioId getApplicableOwnedPortfolioId(THIABPurchase purchase) throws
             IABMissingApplicablePortfolioIdException

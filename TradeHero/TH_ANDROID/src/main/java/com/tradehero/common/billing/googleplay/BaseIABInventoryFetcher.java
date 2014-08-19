@@ -6,13 +6,18 @@ import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.base.Application;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -29,13 +34,17 @@ abstract public class BaseIABInventoryFetcher<
     private List<IABSKUType> iabSKUs;
     private int requestCode;
 
-    private OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> inventoryListener;
+    @Nullable private OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> inventoryListener;
 
-    public BaseIABInventoryFetcher()
+    //<editor-fold desc="Constructors">
+    public BaseIABInventoryFetcher(
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super();
+        super(currentActivityHolder, iabExceptionFactory);
         this.inventory = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public void onDestroy()
     {

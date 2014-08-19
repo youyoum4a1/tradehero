@@ -1,12 +1,13 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 
 public class THIABProductDetail
@@ -21,17 +22,17 @@ public class THIABProductDetail
     ProductIdentifierDomain domain;
 
     //<editor-fold desc="Constructors">
-    public THIABProductDetail(IABSKUListKey itemType, String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(@NotNull IABSKUListKey itemType, @NotNull String jsonSkuDetails) throws JSONException
     {
         super(itemType.key, jsonSkuDetails);
     }
 
-    public THIABProductDetail(String itemType, String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(@NotNull String itemType, @NotNull String jsonSkuDetails) throws JSONException
     {
         super(itemType, jsonSkuDetails);
     }
 
-    public THIABProductDetail(String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(@NotNull String jsonSkuDetails) throws JSONException
     {
         super(jsonSkuDetails);
     }
@@ -72,7 +73,7 @@ public class THIABProductDetail
         return "THIABProductDetail:" + json;
     }
 
-    @Override public Double getPrice()
+    @Override @Nullable public Double getPrice()
     {
         if (priceAmountMicros == null)
         {

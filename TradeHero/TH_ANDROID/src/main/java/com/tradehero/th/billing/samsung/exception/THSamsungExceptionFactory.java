@@ -1,19 +1,21 @@
 package com.tradehero.th.billing.samsung.exception;
 
-import com.sec.android.iap.lib.vo.ErrorVo;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 public class THSamsungExceptionFactory extends SamsungExceptionFactory
 {
+    //<editor-fold desc="Constrcutors">
     @Inject public THSamsungExceptionFactory()
     {
         super();
     }
+    //</editor-fold>
 
-    @Override public SamsungException create(int responseStatus, String message)
+    @Override @Nullable public SamsungException create(int responseStatus, String message)
     {
         SamsungException exception = super.create(responseStatus, message);
         if (exception == null)

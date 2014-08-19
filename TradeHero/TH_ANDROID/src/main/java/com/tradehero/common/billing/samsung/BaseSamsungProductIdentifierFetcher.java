@@ -10,11 +10,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 3/27/14.
- */
 abstract public class BaseSamsungProductIdentifierFetcher<
         SamsungSKUListKeyType extends SamsungSKUListKey,
         SamsungSKUType extends SamsungSKU,
@@ -33,22 +32,24 @@ abstract public class BaseSamsungProductIdentifierFetcher<
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
     protected Map<SamsungSKUListKeyType, SamsungSKUListType> samsungSKUs;
-    private OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> fetchedListener;
+    @Nullable private OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> fetchedListener;
 
-    public BaseSamsungProductIdentifierFetcher(Context context, int mode)
+    //<editor-fold desc="Constructors">
+    public BaseSamsungProductIdentifierFetcher(@NotNull Context context, int mode)
     {
         super(context, mode);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
         samsungSKUs = new HashMap<>();
     }
+    //</editor-fold>
 
-    @Override public OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> getProductIdentifierListener()
+    @Override @Nullable public OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> getProductIdentifierListener()
     {
         return fetchedListener;
     }
 
-    @Override public void setProductIdentifierListener(OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> listener)
+    @Override public void setProductIdentifierListener(@Nullable OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> listener)
     {
         this.fetchedListener = listener;
     }

@@ -15,7 +15,8 @@ public interface IABPurchaser<
         IABPurchaseOrderType,
         IABOrderIdType,
         IABPurchaseType,
-        IABExceptionType>
+        IABExceptionType>,
+        IABServiceListenerHolder
 {
     boolean handleActivityResult(int requestCode, int resultCode, Intent data);
 }

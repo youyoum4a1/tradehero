@@ -3,8 +3,6 @@ package com.tradehero.th.billing.samsung;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Handler;
-import com.tradehero.common.billing.ProductDetailCache;
-import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
@@ -43,58 +41,39 @@ public class THSamsungLogicHolderFull
         SamsungException>
     implements THSamsungLogicHolder
 {
-    @NotNull protected final SamsungSKUListCache samsungSkuListCache;
-    @NotNull protected final THSamsungProductDetailCache thskuDetailCache;
     @NotNull protected final THSamsungGroupItemCache groupItemCache;
     @NotNull protected final Handler uiHandler;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungLogicHolderFull(
+            @NotNull SamsungSKUListCache samsungSKUListCache,
+            @NotNull THSamsungProductDetailCache thskuDetailCache,
+            @NotNull THSamsungBillingAvailableTesterHolder thSamsungBillingAvailableTesterHolder,
+            @NotNull THSamsungProductIdentifierFetcherHolder thSamsungProductIdentifierFetcherHolder,
+            @NotNull THSamsungInventoryFetcherHolder thSamsungInventoryFetcherHolder,
+            @NotNull THSamsungPurchaseFetcherHolder thSamsungPurchaseFetcherHolder,
+            @NotNull THSamsungPurchaserHolder thSamsungPurchaserHolder,
             @NotNull UserProfileCache userProfileCache,
             @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull HeroListCache heroListCache,
-            @NotNull SamsungSKUListCache samsungSkuListCache,
-            @NotNull THSamsungProductDetailCache thskuDetailCache,
+            @NotNull THSamsungPurchaseReporterHolder thSamsungPurchaseReporterHolder,
             @NotNull THSamsungGroupItemCache groupItemCache,
             @NotNull @ForUIThread Handler uiHandler)
     {
-        super(userProfileCache, userServiceWrapper, heroListCache);
-        this.samsungSkuListCache = samsungSkuListCache;
-        this.thskuDetailCache = thskuDetailCache;
+        super(
+                samsungSKUListCache,
+                thskuDetailCache,
+                thSamsungBillingAvailableTesterHolder,
+                thSamsungProductIdentifierFetcherHolder,
+                thSamsungInventoryFetcherHolder,
+                thSamsungPurchaseFetcherHolder,
+                thSamsungPurchaserHolder,
+                userProfileCache,
+                userServiceWrapper,
+                heroListCache,
+                thSamsungPurchaseReporterHolder);
         this.groupItemCache = groupItemCache;
         this.uiHandler = uiHandler;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Life Cycle">
-    @Override protected THSamsungProductIdentifierFetcherHolder createProductIdentifierFetcherHolder()
-    {
-        return new THBaseSamsungProductIdentifierFetcherHolder();
-    }
-
-    @Override protected THSamsungInventoryFetcherHolder createInventoryFetcherHolder()
-    {
-        return new THBaseSamsungInventoryFetcherHolder();
-    }
-
-    @Override protected THSamsungPurchaseFetcherHolder createPurchaseFetcherHolder()
-    {
-        return new THBaseSamsungPurchaseFetcherHolder();
-    }
-
-    @Override protected THSamsungPurchaserHolder createPurchaserHolder()
-    {
-        return new THBaseSamsungPurchaserHolder();
-    }
-
-    @Override protected THSamsungBillingAvailableTesterHolder createBillingAvailableTesterHolder()
-    {
-        return new THBaseSamsungBillingAvailableTesterHolder();
-    }
-
-    @Override protected THSamsungPurchaseReporterHolder createPurchaseReporterHolder()
-    {
-        return new THBaseSamsungPurchaseReporterHolder();
     }
     //</editor-fold>
 
@@ -105,7 +84,7 @@ public class THSamsungLogicHolderFull
 
     @Override public List<THSamsungProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
-        List<THSamsungProductDetail> details = thskuDetailCache.get(getAllSkus());
+        List<THSamsungProductDetail> details = productDetailCache.get(getAllSkus());
         if (details == null)
         {
             return null;
@@ -117,7 +96,7 @@ public class THSamsungLogicHolderFull
 
     protected BaseSamsungSKUList<SamsungSKU> getAllSkus()
     {
-        return samsungSkuListCache.get(SamsungSKUListKey.getAllKey());
+        return productIdentifierCache.get(SamsungSKUListKey.getAllKey());
     }
 
     //<editor-fold desc="Run Logic">
@@ -197,7 +176,7 @@ public class THSamsungLogicHolderFull
             allIn = false;
         }
 
-        Map<SamsungSKU, THSamsungProductDetail> details = thskuDetailCache.getMap(groupValues);
+        Map<SamsungSKU, THSamsungProductDetail> details = productDetailCache.getMap(groupValues);
         if (groupValues != null && details != null)
         {
             for (SamsungSKU id : groupValues)
@@ -297,13 +276,6 @@ public class THSamsungLogicHolderFull
     }
     //</editor-fold>
 
-    //<editor-fold desc="Fetch Product Identifier">
-    @Override protected ProductIdentifierListCache<SamsungSKU, SamsungSKUListKey, SamsungSKUList> getProductIdentifierCache()
-    {
-        return samsungSkuListCache;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Fetch Inventory">
     @Override protected void handleInventoryFetchedSuccess(int requestCode, List<SamsungSKU> productIdentifiers, Map<SamsungSKU, THSamsungProductDetail> inventory)
     {
@@ -313,11 +285,6 @@ public class THSamsungLogicHolderFull
             groupItemCache.add(inventory.keySet());
         }
         super.handleInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
-    }
-
-    @Override protected ProductDetailCache<SamsungSKU, THSamsungProductDetail, THSamsungProductDetailTuner> getProductDetailCache()
-    {
-        return thskuDetailCache;
     }
     //</editor-fold>
 

@@ -4,6 +4,8 @@ import com.tradehero.common.billing.exception.BillingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseBillingInventoryFetcherHolder<
@@ -15,13 +17,15 @@ abstract public class BaseBillingInventoryFetcherHolder<
         ProductDetailType,
         BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>> parentInventoryFetchedListeners;
+    @NotNull protected final Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>> parentInventoryFetchedListeners;
 
+    //<editor-fold desc="Constructors">
     public BaseBillingInventoryFetcherHolder()
     {
         super();
         parentInventoryFetchedListeners = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int randomNumber)
     {
@@ -33,7 +37,7 @@ abstract public class BaseBillingInventoryFetcherHolder<
         parentInventoryFetchedListeners.remove(requestCode);
     }
 
-    @Override public BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode)
+    @Override @Nullable public BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode)
     {
         return parentInventoryFetchedListeners.get(requestCode);
     }
@@ -42,7 +46,7 @@ abstract public class BaseBillingInventoryFetcherHolder<
      * @param requestCode
      * @param inventoryFetchedListener
      */
-    @Override public void registerInventoryFetchedListener(int requestCode, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
+    @Override public void registerInventoryFetchedListener(int requestCode, @Nullable BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
     {
         parentInventoryFetchedListeners.put(requestCode, inventoryFetchedListener);
     }

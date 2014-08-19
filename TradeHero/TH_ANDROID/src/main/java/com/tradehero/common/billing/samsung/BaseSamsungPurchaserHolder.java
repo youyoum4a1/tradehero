@@ -5,16 +5,15 @@ import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by xavier on 2/24/14.
- */
 abstract public class BaseSamsungPurchaserHolder<
         SamsungSKUType extends SamsungSKU,
         SamsungPurchaseOrderType extends SamsungPurchaseOrder<SamsungSKUType>,
         SamsungOrderIdType extends SamsungOrderId,
         SamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>,
-        SamsungPurchaserType extends BaseSamsungPurchaser<
+        SamsungPurchaserType extends SamsungPurchaser<
                         SamsungSKUType,
                         SamsungPurchaseOrderType,
                         SamsungOrderIdType,
@@ -34,13 +33,17 @@ abstract public class BaseSamsungPurchaserHolder<
         SamsungPurchaseType,
         SamsungExceptionType>
 {
-    protected Map<Integer /*requestCode*/, SamsungPurchaserType> purchasers;
+    @NotNull protected final Provider<SamsungPurchaserType> samsungPurchaserTypeProvider;
+    @NotNull protected final Map<Integer /*requestCode*/, SamsungPurchaserType> purchasers;
 
-    public BaseSamsungPurchaserHolder()
+    //<editor-fold desc="Constructors">
+    public BaseSamsungPurchaserHolder(@NotNull Provider<SamsungPurchaserType> samsungPurchaserTypeProvider)
     {
         super();
+        this.samsungPurchaserTypeProvider = samsungPurchaserTypeProvider;
         purchasers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
@@ -62,7 +65,7 @@ abstract public class BaseSamsungPurchaserHolder<
     @Override public void launchPurchaseSequence(int requestCode, SamsungPurchaseOrderType purchaseOrder)
     {
         BillingPurchaser.OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> purchaseListener = createPurchaseFinishedListener();
-        SamsungPurchaserType iabPurchaser = createPurchaser();
+        SamsungPurchaserType iabPurchaser = samsungPurchaserTypeProvider.get();
         iabPurchaser.setPurchaseFinishedListener(purchaseListener);
         purchasers.put(requestCode, iabPurchaser);
         iabPurchaser.purchase(requestCode, purchaseOrder);
@@ -80,6 +83,4 @@ abstract public class BaseSamsungPurchaserHolder<
         purchasers.clear();
         super.onDestroy();
     }
-
-    abstract protected SamsungPurchaserType createPurchaser();
 }

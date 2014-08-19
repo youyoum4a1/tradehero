@@ -5,28 +5,32 @@ import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by xavier on 3/27/14.
- */
 abstract public class BaseSamsungBillingAvailableTesterHolder<
-        SamsungBillingAvailableTesterType extends SamsungBillingAvailableTester,
+        SamsungBillingAvailableTesterType extends SamsungBillingAvailableTester<SamsungExceptionType>,
         SamsungExceptionType extends SamsungException>
     extends BaseBillingAvailableTesterHolder<SamsungExceptionType>
     implements SamsungBillingAvailableTesterHolder<SamsungExceptionType>
 {
-    protected Map<Integer /*requestCode*/, SamsungBillingAvailableTesterType> testers;
+    @NotNull protected final Provider<SamsungBillingAvailableTesterType> samsungBillingAvailableTesterTypeProvider;
+    @NotNull protected final Map<Integer /*requestCode*/, SamsungBillingAvailableTesterType> testers;
 
-    public BaseSamsungBillingAvailableTesterHolder()
+    //<editor-fold desc="Constructors">
+    public BaseSamsungBillingAvailableTesterHolder(
+            @NotNull Provider<SamsungBillingAvailableTesterType> samsungBillingAvailableTesterTypeProvider)
     {
         super();
+        this.samsungBillingAvailableTesterTypeProvider = samsungBillingAvailableTesterTypeProvider;
         testers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public void launchBillingAvailableTestSequence(int requestCode)
     {
         BillingAvailableTester.OnBillingAvailableListener<SamsungExceptionType> skuFetchedListener = createBillingAvailableListener();
-        SamsungBillingAvailableTesterType tester = createProductIdentifierFetcher();
+        SamsungBillingAvailableTesterType tester = samsungBillingAvailableTesterTypeProvider.get();
         tester.setBillingAvailableListener(skuFetchedListener);
         testers.put(requestCode, tester);
         tester.testBillingAvailable(requestCode);
@@ -62,6 +66,4 @@ abstract public class BaseSamsungBillingAvailableTesterHolder<
 
         super.onDestroy();
     }
-
-    abstract protected SamsungBillingAvailableTesterType createProductIdentifierFetcher();
 }

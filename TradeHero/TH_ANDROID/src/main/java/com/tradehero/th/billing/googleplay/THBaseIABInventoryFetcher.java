@@ -3,6 +3,11 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.tradehero.th.activities.CurrentActivityHolder;
+import dagger.Lazy;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 class THBaseIABInventoryFetcher
@@ -12,13 +17,15 @@ class THBaseIABInventoryFetcher
     implements THIABInventoryFetcher
 {
     //<editor-fold desc="Constructors">
-    public THBaseIABInventoryFetcher()
+    @Inject public THBaseIABInventoryFetcher(
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super();
+        super(currentActivityHolder, iabExceptionFactory);
     }
     //</editor-fold>
 
-    @Override protected THIABProductDetail createSKUDetails(IABSKUListKey itemType, String json) throws JSONException
+    @Override @NotNull protected THIABProductDetail createSKUDetails(IABSKUListKey itemType, String json) throws JSONException
     {
         return new THIABProductDetail(itemType, json);
     }

@@ -5,6 +5,8 @@ import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUListKeyType extends SamsungSKUListKey,
@@ -27,18 +29,23 @@ abstract public class BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUListType,
         SamsungExceptionType>
 {
-    protected Map<Integer /*requestCode*/, SamsungProductIdentifierFetcherType> skuFetchers;
+    @NotNull protected final Provider<SamsungProductIdentifierFetcherType> samsungProductIdentifierFetcherTypeProvider;
+    @NotNull protected final Map<Integer /*requestCode*/, SamsungProductIdentifierFetcherType> skuFetchers;
 
-    public BaseSamsungProductIdentifierFetcherHolder()
+    //<editor-fold desc="Constructors">
+    public BaseSamsungProductIdentifierFetcherHolder(
+            @NotNull Provider<SamsungProductIdentifierFetcherType> samsungProductIdentifierFetcherTypeProvider)
     {
         super();
+        this.samsungProductIdentifierFetcherTypeProvider = samsungProductIdentifierFetcherTypeProvider;
         skuFetchers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
-        SamsungProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
+        SamsungProductIdentifierFetcherType skuFetcher = samsungProductIdentifierFetcherTypeProvider.get();
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);
         skuFetcher.fetchProductIdentifiers(requestCode);
@@ -74,6 +81,4 @@ abstract public class BaseSamsungProductIdentifierFetcherHolder<
 
         super.onDestroy();
     }
-
-    abstract protected SamsungProductIdentifierFetcherType createProductIdentifierFetcher();
 }

@@ -8,26 +8,23 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 
 public class THBaseSamsungProductIdentifierFetcherHolder
     extends BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUListKey,
         SamsungSKU,
         SamsungSKUList,
-        THBaseSamsungProductIdentifierFetcher,
+        THSamsungProductIdentifierFetcher,
         SamsungException>
     implements THSamsungProductIdentifierFetcherHolder
 {
-    @Inject CurrentActivityHolder currentActivityHolder;
-
-    public THBaseSamsungProductIdentifierFetcherHolder()
+    //<editor-fold desc="Constructors">
+    @Inject public THBaseSamsungProductIdentifierFetcherHolder(
+            @NotNull Provider<THSamsungProductIdentifierFetcher> thSamsungProductIdentifierFetcherProvider)
     {
-        super();
-        DaggerUtils.inject(this);
+        super(thSamsungProductIdentifierFetcherProvider);
     }
-
-    @Override protected THBaseSamsungProductIdentifierFetcher createProductIdentifierFetcher()
-    {
-        return new THBaseSamsungProductIdentifierFetcher(currentActivityHolder.getCurrentContext(), THSamsungConstants.PURCHASE_MODE);
-    }
+    //</editor-fold>
 }

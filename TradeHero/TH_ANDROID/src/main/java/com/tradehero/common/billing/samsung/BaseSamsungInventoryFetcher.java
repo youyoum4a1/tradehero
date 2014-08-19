@@ -10,11 +10,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 /**
  * Product Identifier Fetcher and Inventory Fetcher are essentially making the same calls.
- * Created by xavier on 3/27/14.
  */
 abstract public class BaseSamsungInventoryFetcher<
         SamsungSKUType extends SamsungSKU,
@@ -32,22 +33,24 @@ abstract public class BaseSamsungInventoryFetcher<
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
     protected Map<SamsungSKUType, SamsungProductDetailType> inventory;
-    private OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> inventoryFetchedListener;
+    @Nullable private OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> inventoryFetchedListener;
 
-    public BaseSamsungInventoryFetcher(Context context, int mode)
+    //<editor-fold desc="Constructors">
+    public BaseSamsungInventoryFetcher(@NotNull Context context, int mode)
     {
         super(context, mode);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
         inventory = new HashMap<>();
     }
+    //</editor-fold>
 
-    @Override public OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> getInventoryFetchedListener()
+    @Override @Nullable public OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> getInventoryFetchedListener()
     {
         return inventoryFetchedListener;
     }
 
-    @Override public void setInventoryFetchedListener(OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> onInventoryFetchedListener)
+    @Override public void setInventoryFetchedListener(@Nullable OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> onInventoryFetchedListener)
     {
         this.inventoryFetchedListener = onInventoryFetchedListener;
     }

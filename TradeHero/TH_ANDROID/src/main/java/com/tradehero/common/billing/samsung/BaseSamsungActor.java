@@ -2,29 +2,31 @@ package com.tradehero.common.billing.samsung;
 
 import android.content.Context;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.tradehero.common.billing.RequestCodeActor;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by xavier on 3/27/14.
- */
-public class BaseSamsungActor
+abstract public class BaseSamsungActor
+    implements RequestCodeActor
 {
     private int activityRequestCode;
-    protected SamsungIapHelper mIapHelper;
+    @NotNull protected SamsungIapHelper mIapHelper;
     protected final int mode;
 
-    public BaseSamsungActor(Context context, int mode)
+    //<editor-fold desc="Constructors">
+    public BaseSamsungActor(@NotNull Context context, int mode)
     {
         super();
         mIapHelper = SamsungIapHelper.getInstance(context, mode);
         this.mode = mode;
     }
+    //</editor-fold>
 
-    public int getRequestCode()
+    @Override public int getRequestCode()
     {
         return activityRequestCode;
     }
 
-    public void setRequestCode(int requestCode)
+    protected void setRequestCode(int requestCode)
     {
         this.activityRequestCode = requestCode;
     }

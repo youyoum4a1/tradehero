@@ -5,14 +5,14 @@ import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
-import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 3:31 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseSamsungPurchaseFetcher<
         SamsungSKUType extends SamsungSKU,
         SamsungOrderIdType extends SamsungOrderId,
@@ -31,18 +31,20 @@ abstract public class BaseSamsungPurchaseFetcher<
     protected boolean fetching;
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
-    protected List<SamsungPurchaseType> purchases;
-    protected OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> fetchListener;
+    @NotNull protected final List<SamsungPurchaseType> purchases;
+    @Nullable protected OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> fetchListener;
 
-    public BaseSamsungPurchaseFetcher(Context context, int mode)
+    //<editor-fold desc="Constructors">
+    public BaseSamsungPurchaseFetcher(
+            @NotNull Context context,
+            int mode)
     {
         super(context, mode);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
         purchases = new ArrayList<>();
     }
-
-    abstract protected SamsungPurchaseCache<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType> getPurchaseCache();
+    //</editor-fold>
 
     @Override public void fetchPurchases(int requestCode)
     {
@@ -117,14 +119,14 @@ abstract public class BaseSamsungPurchaseFetcher<
         }
     }
 
-    abstract protected SamsungPurchaseType createPurchase(String groupId, InboxVo inboxVo);
+    @NotNull abstract protected SamsungPurchaseType createPurchase(String groupId, InboxVo inboxVo);
 
-    @Override public OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> getFetchListener()
+    @Override @Nullable public OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> getFetchListener()
     {
         return fetchListener;
     }
 
-    @Override public void setPurchaseFetchedListener(OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> fetchListener)
+    @Override public void setPurchaseFetchedListener(@Nullable OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> fetchListener)
     {
         this.fetchListener = fetchListener;
     }

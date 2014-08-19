@@ -12,33 +12,39 @@ import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class IABServiceConnector implements ServiceConnection
+public class IABServiceConnector implements ServiceConnection, IABServiceListenerHolder
 {
     public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
     public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
     public final static int TARGET_BILLING_API_VERSION3 = 3;
 
-    @Inject protected CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final Lazy<IABExceptionFactory> iabExceptionFactory;
 
-    protected IInAppBillingService billingService;
+    @Nullable protected IInAppBillingService billingService;
 
     private boolean subscriptionSupported;
     private boolean setupDone = false;
     boolean disposed = false;
 
-    protected ConnectorListener listener;
-    @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
+    @Nullable protected ConnectorListener listener;
 
-    public IABServiceConnector()
+    //<editor-fold desc="Constructors">
+    @Inject public IABServiceConnector(
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        DaggerUtils.inject(this);
+        this.currentActivityHolder = currentActivityHolder;
+        this.iabExceptionFactory = iabExceptionFactory;
     }
+    //</editor-fold>
 
     public void startConnectionSetup()
     {
@@ -91,7 +97,7 @@ public class IABServiceConnector implements ServiceConnection
      * Dispose of object, releasing resources. It's very important to call this method when you are done with this object. It will release any
      * resources used by it such as service connections. Naturally, once the object is disposed of, it can't be used again.
      */
-    public void onDestroy()
+    @Override public void onDestroy()
     {
         Timber.d("Disposing this %s", ((Object) this).getClass().getSimpleName());
         setupDone = false;
@@ -182,7 +188,7 @@ public class IABServiceConnector implements ServiceConnection
      *
      * @param itemType is IABConstants.ITEM_TYPE_INAPP or IABConstants.ITEM_TYPE_SUBS
      * @return
-     * @throws RemoteException
+     * @throws android.os.RemoteException
      */
     protected int purchaseTypeSupportStatus(String itemType) throws RemoteException
     {
@@ -226,12 +232,12 @@ public class IABServiceConnector implements ServiceConnection
         return setupDone;
     }
 
-    public ConnectorListener getListener()
+    @Nullable public ConnectorListener getListener()
     {
         return listener;
     }
 
-    public void setListener(ConnectorListener listener)
+    @Override public void setListener(@Nullable ConnectorListener listener)
     {
         this.listener = listener;
     }

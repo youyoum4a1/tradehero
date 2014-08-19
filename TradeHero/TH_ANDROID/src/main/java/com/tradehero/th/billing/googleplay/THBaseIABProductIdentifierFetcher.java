@@ -8,6 +8,8 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class THBaseIABProductIdentifierFetcher
     extends BaseProductIdentifierFetcher<
@@ -17,10 +19,10 @@ public class THBaseIABProductIdentifierFetcher
         IABException>
     implements THIABProductIdentifierFetcher
 {
-    protected Map<IABSKUListKey, IABSKUList> availableProductIdentifiers;
+    @NotNull protected final Map<IABSKUListKey, IABSKUList> availableProductIdentifiers;
 
     //<editor-fold desc="Constructors">
-    public THBaseIABProductIdentifierFetcher()
+    @Inject public THBaseIABProductIdentifierFetcher()
     {
         super();
         availableProductIdentifiers = new HashMap<>();

@@ -5,18 +5,33 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 
 public class THBaseIABProductIdentifierFetcherHolder
     extends BaseIABProductIdentifierFetcherHolder<
         IABSKUListKey,
         IABSKU,
         IABSKUList,
-        THBaseIABProductIdentifierFetcher,
+        THIABProductIdentifierFetcher,
         IABException>
     implements THIABProductIdentifierFetcherHolder
 {
-    @Override protected THBaseIABProductIdentifierFetcher createProductIdentifierFetcher()
+    @NotNull protected final Provider<THIABProductIdentifierFetcher> thiabProductIdentifierFetcherProvider;
+
+    //<editor-fold desc="Constructors">
+    @Inject public THBaseIABProductIdentifierFetcherHolder(
+            @NotNull Provider<THIABProductIdentifierFetcher> thiabProductIdentifierFetcherProvider
+    )
     {
-        return new THBaseIABProductIdentifierFetcher();
+        super();
+        this.thiabProductIdentifierFetcherProvider = thiabProductIdentifierFetcherProvider;
+    }
+    //</editor-fold>
+
+    @Override protected THIABProductIdentifierFetcher createProductIdentifierFetcher()
+    {
+        return thiabProductIdentifierFetcherProvider.get();
     }
 }

@@ -8,11 +8,16 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.billing.googleplay.exception.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exception.IABSubscriptionUnavailableException;
 import com.tradehero.common.billing.googleplay.exception.IABUnknownErrorException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
+import com.tradehero.th.activities.CurrentActivityHolder;
+import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -34,12 +39,16 @@ abstract public class BaseIABPurchaser<
     private boolean purchasing = false;
     private IABPurchaseOrderType purchaseOrder;
     private int activityRequestCode;
-    private OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener;
+    @Nullable private OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener;
 
-    public BaseIABPurchaser()
+    //<editor-fold desc="Constructors">
+    public BaseIABPurchaser(
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super();
+        super(currentActivityHolder, iabExceptionFactory);
     }
+    //</editor-fold>
 
     @Override public void onDestroy()
     {
@@ -73,12 +82,12 @@ abstract public class BaseIABPurchaser<
         }
     }
 
-    @Override public OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> getPurchaseFinishedListener()
+    @Override @Nullable public OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> getPurchaseFinishedListener()
     {
         return purchaseFinishedListener;
     }
 
-    @Override public void setPurchaseFinishedListener(OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener)
+    @Override public void setPurchaseFinishedListener(@Nullable OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener)
     {
         this.purchaseFinishedListener = purchaseFinishedListener;
     }

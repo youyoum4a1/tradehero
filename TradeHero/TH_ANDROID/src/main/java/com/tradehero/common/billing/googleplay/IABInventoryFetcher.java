@@ -10,6 +10,7 @@ public interface IABInventoryFetcher<
     extends BillingInventoryFetcher<
         IABSKUType,
         IABProductDetailsType,
-        IABExceptionType>
+        IABExceptionType>,
+        IABServiceListenerHolder
 {
 }

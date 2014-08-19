@@ -1,6 +1,12 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.tradehero.th.activities.CurrentActivityHolder;
+import dagger.Lazy;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BaseIABBillingAvailableTester
         extends IABServiceConnector
@@ -8,12 +14,16 @@ public class BaseIABBillingAvailableTester
 {
     protected int requestCode;
     protected boolean testing;
-    protected OnBillingAvailableListener<IABException> billingAvailableListener;
+    @Nullable protected OnBillingAvailableListener<IABException> billingAvailableListener;
 
-    public BaseIABBillingAvailableTester()
+    //<editor-fold desc="Constructors">
+    @Inject public BaseIABBillingAvailableTester(
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super();
+        super(currentActivityHolder, iabExceptionFactory);
     }
+    //</editor-fold>
 
     @Override public void onDestroy()
     {
@@ -26,12 +36,12 @@ public class BaseIABBillingAvailableTester
         return requestCode;
     }
 
-    @Override public OnBillingAvailableListener<IABException> getBillingAvailableListener()
+    @Override @Nullable public OnBillingAvailableListener<IABException> getBillingAvailableListener()
     {
         return billingAvailableListener;
     }
 
-    @Override public void setBillingAvailableListener(OnBillingAvailableListener<IABException> billingAvailableListener)
+    @Override public void setBillingAvailableListener(@Nullable OnBillingAvailableListener<IABException> billingAvailableListener)
     {
         this.billingAvailableListener = billingAvailableListener;
     }
