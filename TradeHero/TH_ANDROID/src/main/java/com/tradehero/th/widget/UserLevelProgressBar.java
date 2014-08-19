@@ -64,8 +64,11 @@ public class UserLevelProgressBar extends RelativeLayout
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
 
-        xpFormat = getContext().getString(R.string.user_level_xp_indicator_format);
-        mMaxLevelDefDTO = levelDefUtil.getMaxLevelDTO();
+        if(!isInEditMode())
+        {
+            xpFormat = getContext().getString(R.string.user_level_xp_indicator_format);
+            mMaxLevelDefDTO = levelDefUtil.getMaxLevelDTO();
+        }
     }
 
     public void startsWith(int current)

@@ -40,7 +40,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.utils.ColorUtils;
+import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -323,7 +323,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                                     new DecimalFormat("##.##").format(gainLoss));
                         }
 
-                        gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceIdForNumber(pl)));
+                        gainLossLabel.setTextColor(getResources().getColor(THColorUtils.getColorResourceIdForNumber(pl)));
                     }
                     else
                     {

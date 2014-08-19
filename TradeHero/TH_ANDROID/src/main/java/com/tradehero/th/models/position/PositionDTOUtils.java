@@ -7,7 +7,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.ColorUtils;
+import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
@@ -83,7 +83,7 @@ public class PositionDTOUtils
         textView.setText(getRealizedPL(textView.getResources(), positionDTO));
         if (positionDTO.realizedPLRefCcy != null)
         {
-            textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceIdForNumber(positionDTO.realizedPLRefCcy)));
+            textView.setTextColor(textView.getResources().getColor(THColorUtils.getColorResourceIdForNumber(positionDTO.realizedPLRefCcy)));
         }
         else
         {
@@ -180,7 +180,7 @@ public class PositionDTOUtils
         textView.setText(getUnrealizedPL(textView.getResources(), positionDTO));
         if (positionDTO.unrealizedPLRefCcy != null)
         {
-            textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceIdForNumber(positionDTO.unrealizedPLRefCcy)));
+            textView.setTextColor(textView.getResources().getColor(THColorUtils.getColorResourceIdForNumber(positionDTO.unrealizedPLRefCcy)));
         }
         else
         {
@@ -247,7 +247,7 @@ public class PositionDTOUtils
                     .build();
             textView.setText(roiNumber.toString());
             textView.setTextColor(
-                    ColorUtils.getProperColorForNumber(roiValue.floatValue() * PERCENT_STRETCHING_FOR_COLOR));
+                    THColorUtils.getProperColorForNumber(roiValue.floatValue() * PERCENT_STRETCHING_FOR_COLOR));
         }
     }
 

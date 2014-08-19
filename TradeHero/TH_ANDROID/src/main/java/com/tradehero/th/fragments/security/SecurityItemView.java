@@ -22,7 +22,7 @@ import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground2;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
-import com.tradehero.th.utils.ColorUtils;
+import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -317,7 +317,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                     {
                         profitIndicator.setText("");
                     }
-                    profitIndicator.setTextColor(ColorUtils.getProperColorForNumber(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
+                    profitIndicator.setTextColor(THColorUtils.getProperColorForNumber(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
                 }
             }
         }

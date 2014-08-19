@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.ColorUtils;
+import com.tradehero.th.utils.THColorUtils;
 
 public class ColorIndicator extends RelativeLayout
 {
@@ -36,7 +36,7 @@ public class ColorIndicator extends RelativeLayout
         else
         {
             setBackgroundColor(
-                    ColorUtils.getProperColorForNumber((float) percentage.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
+                    THColorUtils.getProperColorForNumber((float) percentage.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
         }
     }
 }

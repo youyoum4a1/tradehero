@@ -3,7 +3,7 @@ package com.tradehero.th.utils;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.th.R;
 
-public class ColorUtils
+public class THColorUtils
 {
     public static final int MAX_RED_VALUE = 255;
     public static final int MAX_GREEN_VALUE = 200;

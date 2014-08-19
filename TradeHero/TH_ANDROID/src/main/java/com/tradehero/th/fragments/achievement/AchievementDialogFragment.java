@@ -228,7 +228,7 @@ public class AchievementDialogFragment extends BaseDialogFragment
     @OnClick(R.id.btn_achievement_share)
     public void onShareClicked()
     {
-        userLevelProgressBar.increment(100);
+        userLevelProgressBar.increment(400);
     }
 
     @OnClick(R.id.btn_achievement_dismiss)
