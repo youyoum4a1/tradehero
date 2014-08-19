@@ -24,6 +24,8 @@ import com.tradehero.th.fragments.contestcenter.ContestCenterActiveFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterBaseFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterJoinedFragment;
+import com.tradehero.th.fragments.discovery.DiscoveryFragment;
+import com.tradehero.th.fragments.discovery.FeaturedNewsHeadlineFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
@@ -42,6 +44,7 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItem
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
@@ -55,7 +58,6 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
@@ -230,6 +232,9 @@ import javax.inject.Singleton;
                         PushableTimelineFragment.class,
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
+
+                        DiscoveryFragment.class,
+                        FeaturedNewsHeadlineFragment.class,
 
                         NewsHeadlineFragment.class,
                         ChartFragment.class,

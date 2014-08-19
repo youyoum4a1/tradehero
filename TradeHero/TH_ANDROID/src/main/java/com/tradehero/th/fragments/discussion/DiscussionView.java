@@ -69,6 +69,11 @@ public class DiscussionView extends FrameLayout
     private View topicView;
 
     //<editor-fold desc="Constructors">
+    public DiscussionView(Context context)
+    {
+        super(context);
+    }
+
     public DiscussionView(Context context, AttributeSet attrs)
     {
         this(context, attrs, 0);

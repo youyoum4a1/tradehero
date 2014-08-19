@@ -238,4 +238,9 @@
   <string name="trade_comment">Trade Comment</string>
 
   <string name="mark_as_all_read">Mark as all Read</string>
+
+  <!-- Discovery -->
+  <string name="discovery_whats_hot">What\'s hot</string>
+  <string name="discovery_news">News</string>
+  <string name="discovery_activity">Activity</string>
 </resources>
