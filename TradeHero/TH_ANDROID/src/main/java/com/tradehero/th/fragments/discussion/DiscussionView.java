@@ -16,7 +16,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -33,6 +32,16 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
+/**
+ * DiscussionView is designed to show a discussion, it consists of a topic on the top for discussing about, a list of comments bellow the topic,
+ * and optionally a @{link com.tradehero.th.fragments.discussion.PostCommentView} at the bottom of the view,
+ * which is float above the list of comments. This view will be populated with
+ * data in the @{link com.tradehero.th.persistence.discussion.DiscussionCache}, specified by a  @{link com.tradehero.th.api.discussion.key
+ * .DiscussionKey}.
+ *
+ * The topic layout is identified by @{link topicLayout} which is the resource id of layout resource of the topic view,
+ * in order for the topic view to bind with the same data from DiscussionView, this layout class has to implement @{link com.tradehero.th.api.DTOView}
+*/
 public class DiscussionView extends FrameLayout
     implements DTOView<DiscussionKey>, DiscussionListCacheNew.DiscussionKeyListListener
 {
@@ -60,15 +69,9 @@ public class DiscussionView extends FrameLayout
     private View topicView;
 
     //<editor-fold desc="Constructors">
-    public DiscussionView(Context context)
-    {
-        super(context);
-    }
-
     public DiscussionView(Context context, AttributeSet attrs)
     {
-        super(context, attrs);
-        init(context, attrs);
+        this(context, attrs, 0);
     }
 
     public DiscussionView(Context context, AttributeSet attrs, int defStyle)
