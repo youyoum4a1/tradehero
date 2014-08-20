@@ -6,7 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TabHost;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import java.util.Collection;
 
@@ -14,6 +17,8 @@ public class DashboardTabHost extends TabHost
     implements DashboardNavigator.DashboardFragmentWatcher
 {
     private final Collection<RootFragmentType> bottomBarFragmentTypes = RootFragmentType.forBottomBar();
+    private Animation slideInAnimation;
+    private Animation slideOutAnimation;
 
     public DashboardTabHost(Context context, AttributeSet attrs)
     {
@@ -23,6 +28,8 @@ public class DashboardTabHost extends TabHost
     @Override public void setup()
     {
         super.setup();
+        slideInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in);
+        slideOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out);
 
         for (RootFragmentType tabType: bottomBarFragmentTypes)
         {
@@ -48,8 +55,29 @@ public class DashboardTabHost extends TabHost
             if (rootFragmentType.fragmentClass == fragmentClass)
             {
                 setCurrentTabByTag(rootFragmentType.toString());
+                showTabBar();
                 return;
             }
+        }
+        // none of the bottom bar fragment, hide me
+        hideTabBar();
+    }
+
+    private void hideTabBar()
+    {
+        if (getVisibility() != View.GONE)
+        {
+            startAnimation(slideOutAnimation);
+            setVisibility(View.GONE);
+        }
+    }
+
+    private void showTabBar()
+    {
+        if (getVisibility() != View.VISIBLE)
+        {
+            setVisibility(View.VISIBLE);
+            startAnimation(slideInAnimation);
         }
     }
 
