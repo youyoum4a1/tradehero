@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.TabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -34,6 +35,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.settings.AboutFragment;
@@ -175,6 +177,18 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             navigator.addDashboardFragmentWatcher(watcher);
         }
+
+        DashboardTabHost fragmentTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
+        fragmentTabHost.setup();
+        navigator.addDashboardFragmentWatcher(fragmentTabHost);
+        fragmentTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        {
+            @Override public void onTabChanged(String tabId)
+            {
+                RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
+                navigator.goToTab(selectedFragmentType);
+            }
+        });
 
         if (savedInstanceState == null && navigator.getCurrentFragment() == null)
         {
