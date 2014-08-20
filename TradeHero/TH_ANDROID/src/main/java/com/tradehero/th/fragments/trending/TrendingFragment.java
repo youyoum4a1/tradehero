@@ -34,7 +34,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
@@ -425,7 +424,7 @@ public class TrendingFragment extends SecurityListFragment
         {
             Bundle bundle = new Bundle();
             WebViewFragment.putUrl(bundle, userProfileDTO.activeSurveyURL);
-            getDashboardNavigator().pushFragment(WebViewFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
+            getDashboardNavigator().pushFragment(WebViewFragment.class, bundle, null);
         }
     }
 
