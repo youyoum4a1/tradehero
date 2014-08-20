@@ -196,7 +196,6 @@ import javax.inject.Singleton;
         },
         injects =
                 {
-                        DashboardNavigator.class,
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         ProfileInfoView.class,
