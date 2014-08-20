@@ -14,7 +14,6 @@ import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
@@ -202,7 +201,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                 WatchlistEditFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
             }
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
+        getNavigator().pushFragment(WatchlistEditFragment.class, args, null);
     }
 
     @Override

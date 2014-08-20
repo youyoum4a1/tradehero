@@ -32,7 +32,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
@@ -338,7 +337,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             {
                 WatchlistEditFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
             }
-            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
+            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args, null);
         }
     }
 
