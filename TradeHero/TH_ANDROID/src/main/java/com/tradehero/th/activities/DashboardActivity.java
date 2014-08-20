@@ -63,6 +63,7 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
@@ -77,6 +78,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     private final RootFragmentType INITIAL_TAB = RootFragmentType.HOME;
 
     private DashboardNavigator navigator;
+    @Inject Set<DashboardNavigator.DashboardFragmentWatcher> dashboardFragmentWatchers;
 
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
@@ -169,6 +171,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         showReferralCodeDialog();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        for (DashboardNavigator.DashboardFragmentWatcher watcher: dashboardFragmentWatchers)
+        {
+            navigator.addDashboardFragmentWatcher(watcher);
+        }
+
         if (savedInstanceState == null && navigator.getCurrentFragment() == null)
         {
             navigator.goToTab(INITIAL_TAB);

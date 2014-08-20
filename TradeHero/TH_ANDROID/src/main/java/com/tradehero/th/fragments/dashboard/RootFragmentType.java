@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.utils.Constants;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -80,9 +81,9 @@ public enum RootFragmentType
 
     public static Collection<RootFragmentType> forResideMenu()
     {
-        List<RootFragmentType> forResideMenu = Arrays.asList(
+        List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
                 TIMELINE, HOME, TRENDING, COMMUNITY, UPDATE_CENTER, REFERRAL, CONTEST_CENTER, STORE, SETTING
-        );
+        ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);
     }
