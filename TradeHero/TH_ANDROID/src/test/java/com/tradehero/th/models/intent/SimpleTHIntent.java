@@ -1,6 +1,6 @@
 package com.tradehero.th.models.intent;
 
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 
 public class SimpleTHIntent extends THIntent
 {
@@ -11,8 +11,8 @@ public class SimpleTHIntent extends THIntent
     }
     //</editor-fold>
 
-    @Override public DashboardTabType getDashboardType()
+    @Override public RootFragmentType getDashboardType()
     {
-        return DashboardTabType.TRENDING;
+        return RootFragmentType.TRENDING;
     }
 }

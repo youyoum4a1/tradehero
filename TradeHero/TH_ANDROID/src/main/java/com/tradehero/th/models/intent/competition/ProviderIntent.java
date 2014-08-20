@@ -1,7 +1,7 @@
 package com.tradehero.th.models.intent.competition;
 
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.models.intent.THIntent;
 
 public class ProviderIntent extends THIntent
@@ -18,8 +18,8 @@ public class ProviderIntent extends THIntent
         return getHostUriPath(R.string.intent_host_providers);
     }
 
-    @Override public DashboardTabType getDashboardType()
+    @Override public RootFragmentType getDashboardType()
     {
-        return DashboardTabType.COMMUNITY;
+        return RootFragmentType.COMMUNITY;
     }
 }

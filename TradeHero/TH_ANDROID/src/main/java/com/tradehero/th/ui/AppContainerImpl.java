@@ -9,7 +9,7 @@ import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.widget.reside.THResideMenuItemImpl;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +44,9 @@ public class AppContainerImpl implements AppContainer
                 if (activity instanceof DashboardNavigatorActivity && !activity.isFinishing())
                 {
                     Object tag = v.getTag();
-                    if (tag instanceof DashboardTabType)
+                    if (tag instanceof RootFragmentType)
                     {
-                        DashboardTabType tabType = (DashboardTabType) tag;
+                        RootFragmentType tabType = (RootFragmentType) tag;
                         ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(tabType);
                     }
                 }
@@ -54,7 +54,7 @@ public class AppContainerImpl implements AppContainer
         };
 
         List<View> menuItems = new ArrayList<>();
-        for (DashboardTabType tabType : DashboardTabType.usableValues())
+        for (RootFragmentType tabType : RootFragmentType.forResideMenu())
         {
             if (tabType.show)
             {
@@ -103,7 +103,7 @@ public class AppContainerImpl implements AppContainer
     /**
      * TODO this is a hack due to time constraint
      */
-    private View createMenuItemFromTabType(Context context, DashboardTabType tabType)
+    private View createMenuItemFromTabType(Context context, RootFragmentType tabType)
     {
         View created;
         if (tabType.hasCustomView())
