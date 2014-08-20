@@ -10,7 +10,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
@@ -70,23 +70,23 @@ public class DashboardNavigator extends Navigator
                 });
     }
 
-    private void goToTab(@NotNull DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
+    private void goToTab(@NotNull RootFragmentType tabType, TabHost.OnTabChangeListener changeListener)
     {
         mOnTabChangedListener = changeListener;
         goToTab(tabType);
     }
 
-    public void goToTab(@NotNull DashboardTabType tabType)
+    public void goToTab(@NotNull RootFragmentType tabType)
     {
         this.goToTab(tabType, TAB_SHOULD_ADD_TO_BACKSTACK);
     }
 
-    public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack)
+    public void goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack)
     {
         this.goToTab(tabType, shouldAddToBackStack, TAB_SHOW_HOME_AS_UP);
     }
 
-    public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
+    public void goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
     {
         Bundle args = new Bundle();
 
