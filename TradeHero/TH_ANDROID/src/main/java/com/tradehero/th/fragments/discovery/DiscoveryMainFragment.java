@@ -5,52 +5,78 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
-public class DiscoveryFragment extends DashboardFragment
+public class DiscoveryMainFragment extends DashboardFragment
         implements ActionBar.TabListener
 {
     private DiscoverySessionPagerAdapter mDiscoverySessionPagerAdapter;
+    @InjectView(R.id.pager) ViewPager mViewPager;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.discovery_fragment, container, false);
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(view);
+        View view = inflater.inflate(R.layout.discovery_main_fragment, container, false);
+        initView(view);
+        return view;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        mDiscoverySessionPagerAdapter = new DiscoverySessionPagerAdapter(getFragmentManager());
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+        {
+            setupTabs(actionBar);
+        }
+    }
+
+    private void initView(View view)
+    {
+        ButterKnife.inject(this, view);
+
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
         {
-            // Specify that we will be displaying tabs in the action bar.
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-            for (int i = 0; i < mDiscoverySessionPagerAdapter.getCount(); ++i)
-            {
-                actionBar.addTab(
-                        actionBar.newTab()
-                        .setText(mDiscoverySessionPagerAdapter.getPageTitle(i))
-                        .setTabListener(this));
-            }
+            mDiscoverySessionPagerAdapter = new DiscoverySessionPagerAdapter(((Fragment)this).getChildFragmentManager());
+            setupPager(actionBar);
         }
+    }
+
+    private void setupTabs(ActionBar actionBar)
+    {
+        actionBar.removeAllTabs();
+        for (int i = 0; i < mDiscoverySessionPagerAdapter.getCount(); ++i)
+        {
+            actionBar.addTab(
+                    actionBar.newTab()
+                            .setText(mDiscoverySessionPagerAdapter.getPageTitle(i))
+                            .setTabListener(this));
+        }
+        // Specify that we will be displaying tabs in the action bar.
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+    }
+
+    private void setupPager(final ActionBar actionBar)
+    {
+        mViewPager.setAdapter(mDiscoverySessionPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override public void onPageSelected(int position)
+            {
+                actionBar.setSelectedNavigationItem(position);
+            }
+        });
     }
 
     private class DiscoverySessionPagerAdapter extends FragmentPagerAdapter
@@ -92,7 +118,8 @@ public class DiscoveryFragment extends DashboardFragment
     //region TabListener
     @Override public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft)
     {
-
+        // When the given tab is selected, switch to the corresponding page in the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft)

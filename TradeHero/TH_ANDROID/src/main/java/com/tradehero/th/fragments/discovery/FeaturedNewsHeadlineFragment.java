@@ -5,13 +5,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import butterknife.ButterKnife;
 import com.tradehero.th.R;
 
 public class FeaturedNewsHeadlineFragment extends Fragment
 {
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.featured_news, container, false);
+        View view = inflater.inflate(R.layout.discovery_featured_news, container, false);
+        ButterKnife.inject(view);
         return view;
     }
 }

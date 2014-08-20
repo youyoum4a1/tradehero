@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
-import com.tradehero.th.fragments.discovery.DiscoveryFragment;
+import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -51,7 +51,7 @@ public enum DashboardTabType
             R.drawable.icn_menu_settings, AdminSettingsFragment.class),
     TEMP(R.layout.tab_indicator_holo,
             R.string.security_news, R.string.security_news,
-            R.drawable.icn_menu_settings, DiscoveryFragment.class),
+            R.drawable.icn_menu_settings, DiscoveryMainFragment.class),
     ;
 
     private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;

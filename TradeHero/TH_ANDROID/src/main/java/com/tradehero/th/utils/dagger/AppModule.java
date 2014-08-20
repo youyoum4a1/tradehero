@@ -24,7 +24,7 @@ import com.tradehero.th.fragments.contestcenter.ContestCenterActiveFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterBaseFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterJoinedFragment;
-import com.tradehero.th.fragments.discovery.DiscoveryFragment;
+import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.discovery.FeaturedNewsHeadlineFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
@@ -233,7 +233,7 @@ import javax.inject.Singleton;
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
-                        DiscoveryFragment.class,
+                        DiscoveryMainFragment.class,
                         FeaturedNewsHeadlineFragment.class,
 
                         NewsHeadlineFragment.class,
