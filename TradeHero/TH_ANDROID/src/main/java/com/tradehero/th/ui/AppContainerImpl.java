@@ -56,12 +56,9 @@ public class AppContainerImpl implements AppContainer
         List<View> menuItems = new ArrayList<>();
         for (RootFragmentType tabType : RootFragmentType.forResideMenu())
         {
-            if (tabType.show)
-            {
-                View menuItem = createMenuItemFromTabType(activity, tabType);
-                menuItem.setOnClickListener(menuItemClickListener);
-                menuItems.add(menuItem);
-            }
+            View menuItem = createMenuItemFromTabType(activity, tabType);
+            menuItem.setOnClickListener(menuItemClickListener);
+            menuItems.add(menuItem);
         }
         resideMenu.setMenuListener(new CustomOnMenuListener());
         resideMenu.setMenuItems(menuItems);
