@@ -22,6 +22,7 @@ public class DiscoveryMainFragment extends DashboardFragment
 {
     private DiscoverySessionPagerAdapter mDiscoverySessionPagerAdapter;
     @InjectView(R.id.pager) ViewPager mViewPager;
+    private int selectedTabIndex;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -33,25 +34,24 @@ public class DiscoveryMainFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-
+        setActionBarTitle(getString(R.string.discovery));
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
         {
-            setupTabs(actionBar);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         }
-
-        setActionBarTitle(getString(R.string.discovery));
     }
 
     private void initView(View view)
     {
         ButterKnife.inject(this, view);
 
-        // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null)
         {
             mDiscoverySessionPagerAdapter = new DiscoverySessionPagerAdapter(((Fragment)this).getChildFragmentManager());
+            setupTabs(actionBar);
             setupPager(actionBar);
         }
     }
@@ -66,20 +66,30 @@ public class DiscoveryMainFragment extends DashboardFragment
                             .setText(mDiscoverySessionPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
-        actionBar.selectTab(actionBar.getTabAt(actionBar.getTabCount() / 2));
-        // Specify that we will be displaying tabs in the action bar.
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        if (selectedTabIndex < 0)
+        {
+            selectedTabIndex = actionBar.getTabCount() / 2;
+            selectTabAtPosition(actionBar, selectedTabIndex);
+        }
+    }
+
+    private void selectTabAtPosition(ActionBar actionBar, int position)
+    {
+        selectedTabIndex = position;
+        actionBar.selectTab(actionBar.getTabAt(position));
     }
 
     private void setupPager(final ActionBar actionBar)
     {
         mViewPager.setAdapter(mDiscoverySessionPagerAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
+        {
             @Override public void onPageSelected(int position)
             {
                 if (position < actionBar.getTabCount())
                 {
-                    actionBar.selectTab(actionBar.getTabAt(position));
+                    selectTabAtPosition(actionBar, position);
                 }
             }
         });
