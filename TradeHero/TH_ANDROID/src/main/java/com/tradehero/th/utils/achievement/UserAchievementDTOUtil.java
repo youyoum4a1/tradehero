@@ -75,12 +75,13 @@ public class UserAchievementDTOUtil
         userAchievementDTO.id = 1;
         achievementsDTO.virtualDollars = 50;
         achievementsDTO.visual =
-                "http://fc08.deviantart.net/fs70/f/2013/333/0/0/badge_for_gaming_signature__banner__or_avatar_by_sinner_pwa-d6w26w3.png";
+                "http://uefaclubs.com/images/Sampdoria@2.-other-logo.png";
         achievementsDTO.header = "Achievement Unlocked";
         achievementsDTO.thName = "Master Trader I";
         achievementsDTO.text = "You have earned $50.00 TH$";
         achievementsDTO.subText = "Come back tomorrow to earn $50.00 TH$";
         achievementsDTO.hexColor = "4891E4";
+        achievementsDTO.isQuest = true;
 
         userAchievementDTO.achievementDef = achievementsDTO;
         userAchievementDTO.isReset = true;

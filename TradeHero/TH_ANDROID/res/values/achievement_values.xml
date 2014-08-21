@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <integer name="achievement_animation_start_delay">1000</integer>
   <integer name="achievement_pulse_duration">1800</integer>
   <integer name="achievement_pulse_delay">900</integer>
   <integer name="achievement_zoom_in_delay">100</integer>

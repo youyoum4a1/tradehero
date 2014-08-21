@@ -25,7 +25,8 @@ import javax.inject.Inject;
 
 public class UserLevelProgressBar extends RelativeLayout
 {
-    private static final long MS_PER_XP = 20;
+    private static final long MS_PER_XP = 5;
+
     @InjectView(R.id.user_level_progress_next) protected TextView nextLevelLabel;
     @InjectView(R.id.user_level_progress_bar_indicator) protected TextView xpIndicatorLabel;
     @InjectView(R.id.user_level_progress_current) protected TextView currentLevelLabel;

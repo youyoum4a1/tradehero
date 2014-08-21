@@ -36,7 +36,6 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     @InjectView(R.id.achievement_xp_dollar_earned_container) ViewGroup xpDollarEarnedContainer;
 
-    private float mXpEarnedOriginalY = -1;
     private long mMsLevelUpDelay;
 
     protected AchievementDialogFragment()
@@ -61,6 +60,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         super.initView();
         displayXPDollarsEarned();
         initProgressBar();
+        startAnimation();
     }
 
     private void displayXPDollarsEarned()
@@ -102,6 +102,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
             }
         });
 
+        anim.setStartDelay(getResources().getInteger(R.integer.achievement_animation_start_delay));
         anim.setDuration(getResources().getInteger(R.integer.achievement_earned_duration));
         anim.setInterpolator(new AccelerateInterpolator());
 

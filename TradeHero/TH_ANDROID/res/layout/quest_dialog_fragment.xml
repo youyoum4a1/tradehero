@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/achievement_dummy_container"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -32,11 +33,47 @@
           android:id="@+id/achievement_dialog_fragment_inner_top"
           layout="@layout/achievement_dialog_fragment_inner_top"/>
 
-      <include
-          android:id="@+id/quest_dialog_fragment_inner_bottom"
-          layout="@layout/quest_dialog_fragment_inner_bottom"
-          />
+      <com.tradehero.common.widget.QuestIndicatorGroupView
+          android:layout_width="@dimen/achievement_dialog_width"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/achievement_level_progress_vertical_margin"
+          android:layout_marginBottom="@dimen/achievement_level_progress_vertical_margin"
+          android:layout_below="@id/achievement_more_description"
+          android:orientation="horizontal"
+          android:gravity="center"
+          tools:ignore="UnknownId">
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:id="@+id/quest_indicator_1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:id="@+id/quest_indicator_2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:id="@+id/quest_indicator_3"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:id="@+id/quest_indicator_4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:id="@+id/quest_indicator_5"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+      </com.tradehero.common.widget.QuestIndicatorGroupView>
     </RelativeLayout>
   </LinearLayout>
-  
+
 </LinearLayout>

@@ -118,7 +118,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
             updatePulseColor(pulseEffect2, colorScheme.primaryAccent);
             updatePulseColor(starBurst, colorScheme.primaryAccent);
 
-            title.setTextColor(colorScheme.primaryText);
+            title.setTextColor(colorScheme.primaryAccent);
         }
     }
 
