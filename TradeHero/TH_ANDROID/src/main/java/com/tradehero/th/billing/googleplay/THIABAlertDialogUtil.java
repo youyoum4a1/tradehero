@@ -184,5 +184,4 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
                 context.getString(R.string.iap_send_support_email_chooser_title)));
     }
     //</editor-fold>
-
 }

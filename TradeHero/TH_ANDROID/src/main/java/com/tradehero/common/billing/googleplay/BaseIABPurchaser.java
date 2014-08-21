@@ -92,17 +92,9 @@ abstract public class BaseIABPurchaser<
         this.purchaseFinishedListener = purchaseFinishedListener;
     }
 
-    @Override public void purchase(int activityRequestCode, IABPurchaseOrderType purchaseOrder)
+    @Override public void purchase(int activityRequestCode, @NotNull IABPurchaseOrderType purchaseOrder)
     {
         checkNotPurchasing();
-        if (purchaseOrder == null)
-        {
-            throw new NullPointerException("purchaseOrder cannot be null");
-        }
-        if (purchaseOrder.getProductIdentifier() == null)
-        {
-            throw new NullPointerException("purchaseOrder identifier cannot be null");
-        }
         purchasing = true;
         this.purchaseOrder = purchaseOrder;
         this.activityRequestCode = activityRequestCode;

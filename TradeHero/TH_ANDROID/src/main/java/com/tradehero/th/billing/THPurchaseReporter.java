@@ -27,7 +27,7 @@ public interface THPurchaseReporter<
         void onPurchaseReported(
                 int requestCode,
                 ProductPurchaseType reportedPurchase,
-                UserProfileDTO updatedUserPortfolio);
+                UserProfileDTO updatedUserProfile);
         void onPurchaseReportFailed(
                 int requestCode,
                 ProductPurchaseType reportedPurchase,

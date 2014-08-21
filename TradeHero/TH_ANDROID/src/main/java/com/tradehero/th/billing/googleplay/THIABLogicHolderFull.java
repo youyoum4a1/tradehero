@@ -75,7 +75,7 @@ class THIABLogicHolderFull
     }
     //</editor-fold>
 
-     //<editor-fold desc="Life Cycle">
+    //<editor-fold desc="Life Cycle">
     @Override public void onDestroy()
     {
         thBaseIABPurchaseConsumerHolder.onDestroy();

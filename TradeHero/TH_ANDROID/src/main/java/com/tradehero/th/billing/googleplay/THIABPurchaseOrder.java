@@ -3,49 +3,55 @@ package com.tradehero.th.billing.googleplay;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
 import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.googleplay.exception.IABDeveloperErrorException;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
+import com.tradehero.th.billing.googleplay.exception.IABInvalidQuantityException;
 import com.tradehero.th.billing.googleplay.exception.IABMissingApplicablePortfolioIdException;
 import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseOrder<IABSKU>
 {
-    private IABSKU sku;
+    @NotNull private IABSKU sku;
     private int quantity;
-    private OwnedPortfolioId developerPayload;
-    private UserBaseKey userToFollow;
+    @NotNull private OwnedPortfolioId developerPayload;
+    @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
-    public THIABPurchaseOrder (IABSKU sku, OwnedPortfolioId developerPayload) throws
-            IABMissingApplicablePortfolioIdException
+    public THIABPurchaseOrder (@NotNull IABSKU sku, @NotNull OwnedPortfolioId developerPayload)
     {
         this(sku, 1, developerPayload);
         Timber.d("THIABPurchaseOrder with %s", developerPayload);
     }
 
-    public THIABPurchaseOrder (IABSKU sku, int quantity, OwnedPortfolioId developerPayload) throws
-            IABMissingApplicablePortfolioIdException
+    public THIABPurchaseOrder (@NotNull IABSKU sku, int quantity, @NotNull OwnedPortfolioId developerPayload)
     {
         this.sku = sku;
         this.quantity = quantity;
+        if (quantity <= 0)
+        {
+            throw new IABInvalidQuantityException("Quantity " + quantity + " is invalid");
+        }
+
         this.developerPayload = developerPayload;
         testOwnedPortfolioIdValid(developerPayload);
     }
     //</editor-fold>
 
-    public void testOwnedPortfolioIdValid(OwnedPortfolioId developerPayload) throws
-            IABMissingApplicablePortfolioIdException
+    public void testOwnedPortfolioIdValid(@NotNull OwnedPortfolioId developerPayload)
     {
-        if (developerPayload == null || !developerPayload.isValid())
+        if (!developerPayload.isValid())
         {
             throw new IABMissingApplicablePortfolioIdException("DeveloperPayload is invalid " + developerPayload);
         }
     }
 
-    @Override public IABSKU getProductIdentifier()
+    @Override @NotNull public IABSKU getProductIdentifier()
     {
         return this.sku;
     }
@@ -55,7 +61,7 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
         return this.quantity;
     }
 
-    @Override public String getDeveloperPayload()
+    @Override @NotNull public String getDeveloperPayload()
     {
         try
         {
@@ -64,41 +70,39 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
         catch (IOException e)
         {
             Timber.e("Failed to stringify developerPayload", e);
+            throw new IABMissingApplicablePortfolioIdException("DeveloperPayload is invalid " + developerPayload);
         }
-        return "";
     }
 
-    @Override public void setDeveloperPayload(String developerPayload)
+    @Override public void setApplicablePortfolioId(@NotNull OwnedPortfolioId applicablePortfolioId)
     {
-        if (developerPayload != null)
-        {
-            this.developerPayload = (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
-        }
-        else
-        {
-            this.developerPayload = null;
-        }
+        this.developerPayload = applicablePortfolioId;
+    }
+
+    @NotNull @Override public OwnedPortfolioId getApplicablePortfolioId()
+    {
+        return developerPayload;
     }
 
     @JsonIgnore
-    @Override public void setUserToFollow(UserBaseKey userToFollow)
+    @Override public void setUserToFollow(@Nullable UserBaseKey userToFollow)
     {
         this.userToFollow = userToFollow;
     }
 
     @JsonIgnore
-    @Override public UserBaseKey getUserToFollow()
+    @Override @Nullable public UserBaseKey getUserToFollow()
     {
         return userToFollow;
     }
 
     @Override public String toString()
     {
-        return new StringBuilder().append("THIABPurchaseOrder{sku:")
-                .append(sku).append(", ")
-                .append("quantity:").append(quantity).append(", ")
-                .append("developerPayload:").append(developerPayload).append(", ")
-                .append("}")
-                .toString();
+        return "THIABPurchaseOrder{" +
+                "sku=" + sku +
+                ", quantity=" + quantity +
+                ", developerPayload=" + developerPayload +
+                ", userToFollow=" + userToFollow +
+                '}';
     }
 }

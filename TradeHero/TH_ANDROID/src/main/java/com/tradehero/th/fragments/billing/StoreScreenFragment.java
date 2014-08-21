@@ -14,7 +14,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.request.UIBillingRequest;
+import com.tradehero.common.billing.request.BaseUIBillingRequest;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
@@ -22,6 +22,8 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
@@ -37,6 +39,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import timber.log.Timber;
 
 @Routable({
@@ -47,12 +50,15 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 {
     public static boolean alreadyNotifiedNeedCreateAccount = false;
     protected Integer showBillingAvailableRequestCode;
+    protected Integer showProductRequestCode;
 
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
+    @Inject protected THBillingInteractor userInteractor;
+    @Inject protected Provider<BaseTHUIBillingRequest.Builder> thuiBillingRequestBuilderProvider;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
@@ -144,19 +150,12 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     public THUIBillingRequest getShowBillingAvailableRequest()
     {
-        THUIBillingRequest request = uiBillingRequestProvider.get();
-        request.applicablePortfolioId = getApplicablePortfolioId();
-        request.startWithProgressDialog = false;
-        request.popIfBillingNotAvailable = !alreadyNotifiedNeedCreateAccount;
-        request.billingAvailable = true;
-        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
-        {
-            @Override public void onError(int requestCode, BillingException billingException)
-            {
-                Timber.e(billingException, "Store had error");
-            }
-        };
-        return request;
+        BaseTHUIBillingRequest.Builder request = uiBillingRequestBuilderProvider.get();
+        request.applicablePortfolioId(getApplicablePortfolioId());
+        request.startWithProgressDialog(false);
+        request.popIfBillingNotAvailable(!alreadyNotifiedNeedCreateAccount);
+        request.testBillingAvailable(true);
+        return request.build();
     }
 
     @OnItemClick(R.id.store_option_list)
@@ -167,11 +166,21 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void handlePositionClicked(StoreItemDTO clickedItem)
     {
+        Timber.e(new Exception(), "item clicked");
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
-            createPurchaseActionInteractorBuilder()
-                    .build()
-                    .showProductsList(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain);
+            if (showProductRequestCode != null)
+            {
+                userInteractor.forgetRequestCode(showProductRequestCode);
+            }
+            //noinspection unchecked
+            showProductRequestCode = userInteractor.run(
+                    uiBillingRequestBuilderProvider.get()
+                            .domainToPresent(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain)
+                            .applicablePortfolioId(getApplicablePortfolioId())
+                            .startWithProgressDialog(true)
+                            .doPurchase(true)
+                            .build());
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {

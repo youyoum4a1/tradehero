@@ -8,17 +8,14 @@ import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.googleplay.IABPurchaseCache;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.common.billing.googleplay.request.UIIABBillingRequest;
-import com.tradehero.common.billing.request.BillingRequest;
-import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THBillingLogicHolder;
 import com.tradehero.th.billing.googleplay.exception.THIABExceptionFactory;
+import com.tradehero.th.billing.googleplay.request.BaseTHUIIABRequest;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
-import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THBillingRequest;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -177,28 +174,13 @@ public class GooglePlayBillingModule
         return thiabInteractor;
     }
 
-    @Provides BillingRequest provideBillingRequest(THBillingRequest request)
+    @Provides THBillingRequest.Builder provideTHBillingRequestBuilder()
     {
-        return request;
+        return THIABBillingRequestFull.builder();
     }
 
-    @Provides THBillingRequest provideTHBillingRequest(THIABBillingRequestFull request)
+    @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestTestAvailableBuilder()
     {
-        return request;
-    }
-
-    @Provides UIBillingRequest provideUIBillingRequest(THUIBillingRequest request)
-    {
-        return request;
-    }
-
-    @Provides UIIABBillingRequest provideUIIABBillingRequest(THUIIABBillingRequest request)
-    {
-        return request;
-    }
-
-    @Provides THUIBillingRequest provideTHUIBillingRequest(THUIIABBillingRequest request)
-    {
-        return request;
+        return BaseTHUIIABRequest.builder();
     }
 }

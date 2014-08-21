@@ -32,6 +32,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
@@ -80,7 +81,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
     @Inject Lazy<THBillingInteractor> billingInteractor;
-    @Inject Provider<THUIBillingRequest> emptyBillingRequestProvider;
+    @Inject Provider<BaseTHUIBillingRequest.Builder> thUiBillingRequestBuilderProvider;
 
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
     private Integer restoreRequestCode;
@@ -265,13 +266,14 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     protected THUIBillingRequest createRestoreRequest()
     {
-        THUIBillingRequest request = emptyBillingRequestProvider.get();
-        request.restorePurchase = true;
-        request.startWithProgressDialog = false;
-        request.popRestorePurchaseOutcome = true;
-        request.popRestorePurchaseOutcomeVerbose = false;
-        request.purchaseRestorerListener = purchaseRestorerFinishedListener;
-        return request;
+        BaseTHUIBillingRequest.Builder builder = thUiBillingRequestBuilderProvider.get();
+        //noinspection unchecked
+        builder.restorePurchase(true)
+                .startWithProgressDialog(!Constants.RELEASE)
+                .popRestorePurchaseOutcome(true)
+                .popRestorePurchaseOutcomeVerbose(false)
+                .purchaseRestorerListener(purchaseRestorerFinishedListener);
+        return builder.build();
     }
 
     @Override public void onBackPressed()

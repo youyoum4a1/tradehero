@@ -10,23 +10,17 @@ import com.tradehero.th.billing.samsung.THSamsungOrderId;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
 import com.tradehero.th.billing.samsung.THSamsungPurchaseOrder;
-import javax.inject.Inject;
 
-public class THUISamsungRequest
+public interface THUISamsungRequest
     extends THUIBillingRequest<
-        SamsungSKUListKey,
-        SamsungSKU,
-        SamsungSKUList,
-        THSamsungProductDetail,
-        THSamsungPurchaseOrder,
-        THSamsungOrderId,
-        THSamsungPurchase,
-        SamsungException>
-    implements
+                SamsungSKUListKey,
+                SamsungSKU,
+                SamsungSKUList,
+                THSamsungProductDetail,
+                THSamsungPurchaseOrder,
+                THSamsungOrderId,
+                THSamsungPurchase,
+                SamsungException>,
         UISamsungRequest
 {
-    @Inject public THUISamsungRequest()
-    {
-        super();
-    }
 }

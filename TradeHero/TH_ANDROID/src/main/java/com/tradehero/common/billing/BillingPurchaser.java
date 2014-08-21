@@ -1,6 +1,7 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+import org.jetbrains.annotations.NotNull;
 
 public interface BillingPurchaser<
         ProductIdentifierType extends ProductIdentifier,
@@ -12,7 +13,7 @@ public interface BillingPurchaser<
 {
     OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseFinishedListener();
     void setPurchaseFinishedListener(OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener);
-    void purchase(int requestCode, PurchaseOrderType purchaseOrder);
+    void purchase(int requestCode, @NotNull PurchaseOrderType purchaseOrder);
 
     
     public static interface OnPurchaseFinishedListener<

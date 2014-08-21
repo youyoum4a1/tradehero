@@ -17,6 +17,7 @@ abstract public class BaseSamsungPurchaseFetcher<
         SamsungSKUType extends SamsungSKU,
         SamsungOrderIdType extends SamsungOrderId,
         SamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>,
+        SamsungPurchaseIncompleteType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>,
         SamsungExceptionType extends SamsungException>
     extends BaseSamsungActor
     implements SamsungPurchaseFetcher<
@@ -31,6 +32,7 @@ abstract public class BaseSamsungPurchaseFetcher<
     protected boolean fetching;
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
+    @NotNull protected final List<SamsungPurchaseIncompleteType> fetchedIncompletePurchases;
     @NotNull protected final List<SamsungPurchaseType> purchases;
     @Nullable protected OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> fetchListener;
 
@@ -42,6 +44,7 @@ abstract public class BaseSamsungPurchaseFetcher<
         super(context, mode);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
+        fetchedIncompletePurchases = new ArrayList<>();
         purchases = new ArrayList<>();
     }
     //</editor-fold>
@@ -97,7 +100,7 @@ abstract public class BaseSamsungPurchaseFetcher<
     {
         if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
         {
-            addToPurchases(fetchingGroupId, inboxList);
+            addToIncompletePurchases(fetchingGroupId, inboxList);
             fetchOneInRemainingItemGroups();
         }
         else
@@ -108,18 +111,18 @@ abstract public class BaseSamsungPurchaseFetcher<
 
     abstract protected SamsungExceptionType createException(ErrorVo errorVo);
 
-    protected void addToPurchases(String groupId, ArrayList<InboxVo> inboxList)
+    protected void addToIncompletePurchases(String groupId, ArrayList<InboxVo> inboxList)
     {
         if (inboxList != null)
         {
             for (InboxVo inboxVo : inboxList)
             {
-                purchases.add(createPurchase(groupId, inboxVo));
+                fetchedIncompletePurchases.add(createIncompletePurchase(groupId, inboxVo));
             }
         }
     }
 
-    @NotNull abstract protected SamsungPurchaseType createPurchase(String groupId, InboxVo inboxVo);
+    @NotNull abstract protected SamsungPurchaseIncompleteType createIncompletePurchase(String groupId, InboxVo inboxVo);
 
     @Override @Nullable public OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> getFetchListener()
     {

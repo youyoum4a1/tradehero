@@ -37,6 +37,10 @@ public class THSamsungExceptionFactory extends SamsungExceptionFactory
                 case THSamsungConstants.MISSING_APPLICABLE_PORTFOLIO_ID: // -2003
                     exception = new SamsungMissingApplicablePortfolioIdException(message);
                     break;
+
+                case THSamsungConstants.INVALID_QUANTITY: // -2004
+                    exception = new SamsungInvalidQuantityException(message);
+                    break;
             }
         }
         return exception;

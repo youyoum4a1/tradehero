@@ -34,13 +34,13 @@ public class BillingRequest<
      * Indicates whether we want to test if billing is available
      */
     public boolean testBillingAvailable;
-    public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
+    @Nullable public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
 
     /**
      * Indicates whether we want to fetch the product identifiers
      */
     public boolean fetchProductIdentifiers;
-    public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+    @Nullable public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType,
@@ -51,7 +51,7 @@ public class BillingRequest<
      */
     public boolean fetchInventory;
     public List<ProductIdentifierType> productIdentifiersForInventory;
-    public BillingInventoryFetcher.OnInventoryFetchedListener<
+    @Nullable public BillingInventoryFetcher.OnInventoryFetchedListener<
             ProductIdentifierType,
             ProductDetailType,
             BillingExceptionType> inventoryFetchedListener;
@@ -60,7 +60,7 @@ public class BillingRequest<
      * Indicates whether we want to fetch the purchases
      */
     public boolean fetchPurchase;
-    public BillingPurchaseFetcher.OnPurchaseFetchedListener<
+    @Nullable public BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType,
@@ -70,15 +70,15 @@ public class BillingRequest<
     /**
      * Indicates whether we want to restore purchases
      */
-    public boolean restorePurchase;
+    public final boolean restorePurchase;
     public List<ProductPurchaseType> restoredPurchases = new ArrayList<>();
     public List<ProductPurchaseType> restoreFailedPurchases = new ArrayList<>();
     public List<BillingExceptionType> restoreFailedErrors = new ArrayList<>();
-    public BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener;
+    @Nullable public BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener;
 
     public boolean doPurchase;
     public PurchaseOrderType purchaseOrder;
-    public BillingPurchaser.OnPurchaseFinishedListener<
+    @Nullable public BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             PurchaseOrderType,
             OrderIdType,
@@ -142,7 +142,7 @@ public class BillingRequest<
 
         //<editor-fold desc="Is Billing Available">
         private boolean testBillingAvailable;
-        private BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
+        @Nullable private BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
 
         public BuilderType testBillingAvailable(boolean testBillingAvailable)
         {
@@ -160,7 +160,7 @@ public class BillingRequest<
 
         //<editor-fold desc="Need to Fetch Product Identifiers">
         private boolean fetchProductIdentifiers;
-        private ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+        @Nullable private ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
@@ -183,7 +183,7 @@ public class BillingRequest<
         //<editor-fold desc="Need to Fetch Inventory">
         private boolean fetchInventory;
         private List<ProductIdentifierType> productIdentifiersForInventory;
-        private BillingInventoryFetcher.OnInventoryFetchedListener<
+        @Nullable private BillingInventoryFetcher.OnInventoryFetchedListener<
                 ProductIdentifierType,
                 ProductDetailType,
                 BillingExceptionType> inventoryFetchedListener;
@@ -202,7 +202,10 @@ public class BillingRequest<
         }
 
         public BuilderType inventoryFetchedListener(
-                BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
+                @Nullable BillingInventoryFetcher.OnInventoryFetchedListener<
+                        ProductIdentifierType,
+                        ProductDetailType,
+                        BillingExceptionType> inventoryFetchedListener)
         {
             this.inventoryFetchedListener = inventoryFetchedListener;
             return self();
@@ -211,20 +214,24 @@ public class BillingRequest<
 
         //<editor-fold desc="Need to Fetch Purchases">
         private boolean fetchPurchase;
-        private BillingPurchaseFetcher.OnPurchaseFetchedListener<
+        @Nullable private BillingPurchaseFetcher.OnPurchaseFetchedListener<
                 ProductIdentifierType,
                 OrderIdType,
                 ProductPurchaseType,
                 BillingExceptionType> purchaseFetchedListener;
 
-        public BuilderType fetchPurchase(boolean fetchPurchase)
+        public BuilderType fetchPurchases(boolean fetchPurchase)
         {
             this.fetchPurchase = fetchPurchase;
             return self();
         }
 
         public BuilderType purchaseFetchedListener(
-                BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener)
+                @Nullable BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                        ProductIdentifierType,
+                        OrderIdType,
+                        ProductPurchaseType,
+                        BillingExceptionType> purchaseFetchedListener)
         {
             this.purchaseFetchedListener = purchaseFetchedListener;
             return self();
@@ -233,7 +240,7 @@ public class BillingRequest<
 
         //<editor-fold desc="Need to Restore Purchases">
         private boolean restorePurchase;
-        private BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener;
+        @Nullable private BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener;
 
         public BuilderType restorePurchase(boolean restorePurchase)
         {
@@ -242,7 +249,11 @@ public class BillingRequest<
         }
 
         public BuilderType purchaseRestorerListener(
-                BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener)
+                @Nullable BillingPurchaseRestorer.OnPurchaseRestorerListener<
+                        ProductIdentifierType,
+                        OrderIdType,
+                        ProductPurchaseType,
+                        BillingExceptionType> purchaseRestorerListener)
         {
             this.purchaseRestorerListener = purchaseRestorerListener;
             return self();
@@ -252,7 +263,7 @@ public class BillingRequest<
         //<editor-fold desc="Need to Purchase">
         private boolean doPurchase;
         private PurchaseOrderType purchaseOrder;
-        private BillingPurchaser.OnPurchaseFinishedListener<
+        @Nullable private BillingPurchaser.OnPurchaseFinishedListener<
                 ProductIdentifierType,
                 PurchaseOrderType,
                 OrderIdType,
@@ -273,7 +284,12 @@ public class BillingRequest<
         }
 
         public BuilderType purchaseFinishedListener(
-                BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener)
+                @Nullable BillingPurchaser.OnPurchaseFinishedListener<
+                        ProductIdentifierType,
+                        PurchaseOrderType,
+                        OrderIdType,
+                        ProductPurchaseType,
+                        BillingExceptionType> purchaseFinishedListener)
         {
             this.purchaseFinishedListener = purchaseFinishedListener;
             return self();
@@ -295,5 +311,29 @@ public class BillingRequest<
         this.inventoryFetchedListener = null;
         this.purchaseFetchedListener = null;
         this.purchaseFinishedListener = null;
+    }
+
+    @Override public String toString()
+    {
+        return "BillingRequest:{" +
+                "testBillingAvailable=" + testBillingAvailable +
+                ", billingAvailableListener=" + billingAvailableListener +
+                ", fetchProductIdentifiers=" + fetchProductIdentifiers +
+                ", productIdentifierFetchedListener=" + productIdentifierFetchedListener +
+                ", fetchInventory=" + fetchInventory +
+                ", productIdentifiersForInventory=" + productIdentifiersForInventory +
+                ", inventoryFetchedListener=" + inventoryFetchedListener +
+                ", fetchPurchases=" + fetchPurchase +
+                ", purchaseFetchedListener=" + purchaseFetchedListener +
+                ", fetchedPurchases=" + fetchedPurchases +
+                ", restorePurchase=" + restorePurchase +
+                ", restoredPurchases=" + restoredPurchases +
+                ", restoreFailedPurchases=" + restoreFailedPurchases +
+                ", restoreFailedErrors=" + restoreFailedErrors +
+                ", purchaseRestorerListener=" + purchaseRestorerListener +
+                ", doPurchase=" + doPurchase +
+                ", purchaseOrder=" + purchaseOrder +
+                ", purchaseFinishedListener=" + purchaseFinishedListener +
+                '}';
     }
 }

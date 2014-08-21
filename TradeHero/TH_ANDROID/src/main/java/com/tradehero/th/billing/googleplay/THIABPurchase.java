@@ -23,6 +23,7 @@ import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THProductPurchase;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
@@ -31,66 +32,61 @@ public class THIABPurchase
         extends BaseIABPurchase<IABSKU, THIABOrderId>
     implements THProductPurchase<IABSKU, THIABOrderId>
 {
-    private UserBaseKey userToFollow;
+    @Nullable private UserBaseKey userToFollow;
 
-    public THIABPurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
+    //<editor-fold desc="Constructors">
+    public THIABPurchase(@NotNull String itemType, @NotNull String jsonPurchaseInfo, @NotNull String signature) throws JSONException
     {
         super(itemType, jsonPurchaseInfo, signature);
     }
+    //</editor-fold>
 
-    public GooglePlayPurchaseReportDTO getGooglePlayPurchaseDTO()
+    @Override @NotNull public GooglePlayPurchaseReportDTO getPurchaseReportDTO()
     {
         String signature = this.signature;
-        if (signature != null)
+        // Test its length is a multiple of 4
+        int remainderFour = signature.length() % 4;
+        if (remainderFour != 0)
         {
-            // Test its length is a multiple of 4
-            int remainderFour = this.signature.length() % 4;
-            if (remainderFour != 0)
+            Timber.e(new IllegalArgumentException(
+                    "Patching Google purchase signature that was not of the right length "
+                            + signature.length()
+                            + " "
+                            + this.originalJson
+                            + " "
+                            + signature), "");
+            for (int i = 0; i < 4 - remainderFour; i++)
             {
-                Timber.e(new IllegalArgumentException(
-                        "Patching Google purchase signature that was not of the right length "
-                                + signature.length()
-                                + " "
-                                + this.originalJson
-                                + " "
-                                + signature), "");
-                for (int i = 0; i < 4 - remainderFour; i++)
-                {
-                    signature += "=";
-                }
+                signature += "=";
             }
         }
         return new GooglePlayPurchaseReportDTO(this.originalJson, signature);
     }
 
-    @Override protected IABSKU createIABSKU(String skuString)
+    @Override @NotNull protected IABSKU createIABSKU(@NotNull String skuString)
     {
         return new IABSKU(skuString);
     }
 
-    @Override protected THIABOrderId createIABOrderId(String orderIdString)
+    @Override @NotNull protected THIABOrderId createIABOrderId(String orderIdString)
     {
         return new THIABOrderId(orderIdString);
     }
 
-    @JsonIgnore @Nullable
+    @JsonIgnore @NotNull
     @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
-        if (developerPayload != null)
-        {
-            return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
-        }
-        return null;
+        return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
     }
 
     @JsonIgnore
-    @Override public void setUserToFollow(UserBaseKey userToFollow)
+    @Override public void setUserToFollow(@Nullable UserBaseKey userToFollow)
     {
         this.userToFollow = userToFollow;
     }
 
     @JsonIgnore
-    @Override public UserBaseKey getUserToFollow()
+    @Override @Nullable public UserBaseKey getUserToFollow()
     {
         return userToFollow;
     }

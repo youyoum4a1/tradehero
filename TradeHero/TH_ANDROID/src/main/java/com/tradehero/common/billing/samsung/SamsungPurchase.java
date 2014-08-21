@@ -3,6 +3,7 @@ package com.tradehero.common.billing.samsung;
 import com.sec.android.iap.lib.vo.InboxVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.ProductPurchase;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
@@ -15,30 +16,30 @@ abstract public class SamsungPurchase<
         SamsungSKUType,
         SamsungOrderIdType>
 {
-    protected final String groupId;
+    @NotNull protected final String groupId;
     private String productCode;
 
     //<editor-fold desc="Constructors">
-    public SamsungPurchase(String groupId, String _jsonString)
+    public SamsungPurchase(@NotNull String groupId, @NotNull String _jsonString)
     {
         super(_jsonString);
         this.groupId = groupId;
     }
 
-    public SamsungPurchase(String groupId, PurchaseVo toCopyFrom)
+    public SamsungPurchase(@NotNull String groupId, @NotNull PurchaseVo toCopyFrom)
     {
         super(toCopyFrom.getJsonString());
         this.groupId = groupId;
     }
 
-    public SamsungPurchase(String groupId, InboxVo toCopyFrom)
+    public SamsungPurchase(@NotNull String groupId, @NotNull InboxVo toCopyFrom)
     {
         super(toCopyFrom.getJsonString());
         this.groupId = groupId;
     }
     //</editor-fold>
 
-    public String getGroupId()
+    @NotNull public String getGroupId()
     {
         return groupId;
     }
@@ -53,7 +54,7 @@ abstract public class SamsungPurchase<
         this.productCode = productCode;
     }
 
-    @Override public void setJsonString(String jsonString)
+    @Override public void setJsonString(@NotNull String jsonString)
     {
         super.setJsonString(jsonString);
         try

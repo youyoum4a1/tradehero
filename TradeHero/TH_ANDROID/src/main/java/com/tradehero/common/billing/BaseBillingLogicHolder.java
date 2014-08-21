@@ -141,12 +141,11 @@ abstract public class BaseBillingLogicHolder<
     //<editor-fold desc="Run Logic">
     /**
      *
-     * @param requestCode
-     * @param billingRequest
      * @return true if sequence launched, false otherwise
      */
     @Override public boolean run(int requestCode, @NotNull BillingRequestType billingRequest)
     {
+        Timber.e(new Exception(), "Request %s", billingRequest);
         billingRequests.put(requestCode, billingRequest);
         registerListeners(requestCode, billingRequest);
         return runInternal(requestCode);

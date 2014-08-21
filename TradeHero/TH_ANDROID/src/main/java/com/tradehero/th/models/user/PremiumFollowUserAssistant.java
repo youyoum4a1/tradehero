@@ -2,15 +2,15 @@ package com.tradehero.th.models.user;
 
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THPurchaseReporter;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
 {
     @Inject protected UserProfileCache userProfileCache;
     @Inject protected CurrentUserId currentUserId;
-    @Inject Provider<THUIBillingRequest> billingRequestProvider;
+    @Inject Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider;
     @Inject protected THBillingInteractor billingInteractor;
     protected UserProfileDTO currentUserProfile;
     protected final OwnedPortfolioId applicablePortfolioId;
@@ -95,40 +95,43 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
 
     protected THUIBillingRequest createPurchaseCCRequest()
     {
-        THUIBillingRequest billingRequest = billingRequestProvider.get();
-        billingRequest.domainToPresent = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
-        billingRequest.applicablePortfolioId = applicablePortfolioId;
-        billingRequest.userToFollow = userToFollow;
-        billingRequest.startWithProgressDialog = true;
-        billingRequest.popIfBillingNotAvailable = true;
-        billingRequest.popIfProductIdentifierFetchFailed = true;
-        billingRequest.popIfInventoryFetchFailed = true;
-        billingRequest.popIfPurchaseFailed = true;
-        billingRequest.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
+        BaseTHUIBillingRequest.Builder builder = billingRequestBuilderProvider.get();
+        builder.domainToPresent(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+        builder.applicablePortfolioId(applicablePortfolioId);
+        builder.userToPremiumFollow(userToFollow);
+        builder.startWithProgressDialog(true);
+        builder.popIfBillingNotAvailable(true);
+        builder.popIfProductIdentifierFetchFailed(true);
+        builder.popIfInventoryFetchFailed(true);
+        builder.popIfPurchaseFailed(true);
+        //noinspection unchecked
+        builder.purchaseReportedListener(new PremiumFollowPurchaseReportedListener());
+        return builder.build();
+    }
+
+    protected class PremiumFollowPurchaseReportedListener implements THPurchaseReporter.OnPurchaseReportedListener
+    {
+        @Override
+        public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
+                UserProfileDTO updatedUserPortfolio)
         {
-            @Override public void onError(int requestCode, BillingException billingException)
+            if (updatedUserPortfolio.isPremiumFollowingUser(userToFollow))
             {
-                notifyFollowFailed(userToFollow, billingException);
-                Timber.e(billingException, "Store had error");
+                notifyFollowSuccess(userToFollow, updatedUserPortfolio);
             }
-        };
-        billingRequest.purchaseReportedListener = new THPurchaseReporter.OnPurchaseReportedListener()
-        {
-            @Override
-            public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
-                    UserProfileDTO updatedUserPortfolio)
+            else
             {
                 PremiumFollowUserAssistant.super.launchFollow();
             }
+        }
 
-            @Override
-            public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
-                    BillingException error)
-            {
-                notifyFollowFailed(userToFollow, error);
-                Timber.e(error, "Failed to report purchase");
-            }
-        };
-        return billingRequest;
+        @Override
+        public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
+                BillingException error)
+        {
+            notifyFollowFailed(userToFollow, error);
+            Timber.e(error, "Failed to report purchase");
+        }
     }
+
 }

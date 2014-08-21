@@ -1,24 +1,26 @@
 package com.tradehero.common.billing.samsung;
 
 import com.tradehero.common.billing.ProductIdentifier;
+import org.jetbrains.annotations.NotNull;
 
 public class SamsungSKU
         extends SamsungItemGroup
         implements ProductIdentifier
 {
-    public final String itemId;
+    @NotNull public final String itemId;
 
-    public SamsungSKU(String groupId, String itemId)
+    //<editor-fold desc="Constructors">
+    public SamsungSKU(@NotNull String groupId, @NotNull String itemId)
     {
         super(groupId);
         this.itemId = itemId;
         checkIsValid();
     }
+    //</editor-fold>
 
     public boolean isValid()
     {
-        return super.isValid() &&
-                itemId != null && !itemId.isEmpty();
+        return super.isValid() && !itemId.isEmpty();
     }
 
     public SamsungItemGroup getGroupId()
@@ -28,8 +30,7 @@ public class SamsungSKU
 
     @Override public int hashCode()
     {
-        return super.hashCode() ^
-                (itemId == null ? 0 : itemId.hashCode());
+        return super.hashCode() ^ itemId.hashCode();
     }
 
     @Override public boolean equals(SamsungItemGroup other)
@@ -40,8 +41,7 @@ public class SamsungSKU
 
     public boolean equals(SamsungSKU other)
     {
-        return super.equals(other) &&
-                (itemId == null ? other.itemId == null : itemId.equals(other.itemId));
+        return super.equals(other) && itemId.equals(other.itemId);
     }
 
     @Override public String toString()

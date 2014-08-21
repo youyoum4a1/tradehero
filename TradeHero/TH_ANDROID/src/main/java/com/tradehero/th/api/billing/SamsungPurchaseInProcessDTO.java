@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by xavier2 on 2014/4/8.
- */
 public class SamsungPurchaseInProcessDTO extends SamsungPurchaseReportDTO
 {
     public static final String GROUP_ID_JSON_KEY = "samsung_group_id";
@@ -20,16 +18,12 @@ public class SamsungPurchaseInProcessDTO extends SamsungPurchaseReportDTO
     @JsonProperty(USER_TO_FOLLOW_JSON_KEY)
     public UserBaseKey userToFollow;
     @JsonProperty(APPLICABLE_PORTFOLIO_JSON_KEY)
-    public OwnedPortfolioId applicablePortfolioId;
+    @NotNull public OwnedPortfolioId applicablePortfolioId;
     @JsonProperty(PURCHASE_VO_STRING_JSON_KEY)
     public String purchaseVoJsonString;
 
-    public SamsungPurchaseInProcessDTO()
-    {
-        super();
-    }
-
-    public SamsungPurchaseInProcessDTO(THSamsungPurchase samsungPurchase)
+    //<editor-fold desc="Constructors">
+    public SamsungPurchaseInProcessDTO(@NotNull THSamsungPurchase samsungPurchase)
     {
         super(samsungPurchase);
         this.groupId = samsungPurchase.getGroupId();
@@ -38,12 +32,5 @@ public class SamsungPurchaseInProcessDTO extends SamsungPurchaseReportDTO
         this.applicablePortfolioId = samsungPurchase.getApplicableOwnedPortfolioId();
         this.purchaseVoJsonString = samsungPurchase.getJsonString();
     }
-
-    public THSamsungPurchase createSamsungPurchase()
-    {
-        THSamsungPurchase purchase = new THSamsungPurchase(groupId, purchaseVoJsonString, applicablePortfolioId);
-        purchase.setUserToFollow(userToFollow);
-        purchase.setProductCode(productCode);
-        return purchase;
-    }
+    //</editor-fold>
 }

@@ -15,7 +15,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
@@ -23,7 +22,6 @@ import com.tradehero.th.billing.samsung.request.THUISamsungRequest;
 import com.tradehero.th.fragments.billing.samsung.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.samsung.THSamsungStoreProductDetailView;
 import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -34,9 +32,6 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-/**
- * It expects its Activity to implement THSamsungInteractor.
- * */
 public class THSamsungBillingInteractor
     extends
         THBaseBillingInteractor<
@@ -57,9 +52,6 @@ public class THSamsungBillingInteractor
 {
     public static final String BUNDLE_KEY_ACTION = THSamsungBillingInteractor.class.getName() + ".action";
 
-    @NotNull protected final THSamsungProductDetailCache thiabProductDetailCache;
-    @NotNull protected final THSamsungLogicHolder billingActor;
-    @NotNull protected final THSamsungAlertDialogUtil thSamsungAlertDialogUtil;
     @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
     @NotNull protected final LocalyticsSession localyticsSession;
     @NotNull protected final HeroListCache heroListCache;
@@ -72,18 +64,21 @@ public class THSamsungBillingInteractor
             @NotNull UserProfileCache userProfileCache,
             @NotNull PortfolioCompactListCache portfolioCompactListCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull THSamsungProductDetailCache thiabProductDetailCache,
-            @NotNull THSamsungLogicHolder billingActor,
             @NotNull THSamsungAlertDialogUtil thSamsungAlertDialogUtil,
+            @NotNull THSamsungLogicHolder billingActor,
             @NotNull UserProfileDTOUtil userProfileDTOUtil,
             @NotNull LocalyticsSession localyticsSession,
             @NotNull HeroListCache heroListCache,
             @NotNull UserService userService)
     {
-        super(currentActivityHolder, currentUserId, userProfileCache, portfolioCompactListCache, progressDialogUtil);
-        this.thiabProductDetailCache = thiabProductDetailCache;
-        this.billingActor = billingActor;
-        this.thSamsungAlertDialogUtil = thSamsungAlertDialogUtil;
+        super(
+                billingActor,
+                currentActivityHolder,
+                currentUserId,
+                userProfileCache,
+                portfolioCompactListCache,
+                progressDialogUtil,
+                thSamsungAlertDialogUtil);
         this.userProfileDTOUtil = userProfileDTOUtil;
         this.localyticsSession = localyticsSession;
         this.heroListCache = heroListCache;
@@ -104,10 +99,10 @@ public class THSamsungBillingInteractor
     //</editor-fold>
 
     //<editor-fold desc="Request Handling">
-    @Override public int run(THUISamsungRequest uiBillingRequest)
+    @Override public int run(@NotNull THUISamsungRequest uiBillingRequest)
     {
         // Here we disable the initial restore
-        if (uiBillingRequest != null && uiBillingRequest.restorePurchase && !uiBillingRequest.startWithProgressDialog)
+        if (uiBillingRequest != null && uiBillingRequest.getRestorePurchase() && !uiBillingRequest.getStartWithProgressDialog())
         {
             // In effect skip it
             return getUnusedRequestCode();
@@ -131,37 +126,25 @@ public class THSamsungBillingInteractor
             @NotNull THUISamsungRequest uiBillingRequest)
     {
         super.populateBillingRequestBuilder(builder, uiBillingRequest);
-        if (uiBillingRequest.domainToPresent != null)
+        if (uiBillingRequest.getDomainToPresent() != null)
         {
             builder.testBillingAvailable(true)
                     .fetchInventory(true);
         }
-        else if (uiBillingRequest.restorePurchase)
+        else if (uiBillingRequest.getRestorePurchase())
         {
             builder.testBillingAvailable(true)
                     .fetchInventory(true)
-                    .fetchPurchase(true)
+                    .fetchPurchases(true)
                     .restorePurchase(true);
         }
-        else if (uiBillingRequest.fetchInventory)
+        else if (uiBillingRequest.getFetchInventory())
         {
             builder.testBillingAvailable(true)
                     .fetchInventory(true);
         }
     }
     //</editor-fold>
-
-    //<editor-fold desc="Logic Holder Handling">
-    @Override public THSamsungLogicHolder getBillingLogicHolder()
-    {
-        return billingActor;
-    }
-    //</editor-fold>
-
-    @Override protected BillingAlertDialogUtil<SamsungSKU, THSamsungProductDetail, THSamsungLogicHolder, THSamsungStoreProductDetailView, THSamsungSKUDetailAdapter> getBillingAlertDialogUtil()
-    {
-        return thSamsungAlertDialogUtil;
-    }
 
     public AlertDialog popErrorWhenLoading()
     {
@@ -195,12 +178,12 @@ public class THSamsungBillingInteractor
         {
             @Override public void onInventoryFetchSuccess(int requestCode, List<SamsungSKU> productIdentifiers, Map<SamsungSKU, THSamsungProductDetail> inventory)
             {
-                getBillingLogicHolder().forgetRequestCode(requestCode);
+                billingLogicHolder.forgetRequestCode(requestCode);
             }
 
             @Override public void onInventoryFetchFail(int requestCode, List<SamsungSKU> productIdentifiers, SamsungException exception)
             {
-                getBillingLogicHolder().forgetRequestCode(requestCode);
+                billingLogicHolder.forgetRequestCode(requestCode);
             }
         };
     }
@@ -210,6 +193,7 @@ public class THSamsungBillingInteractor
         Context currentContext = currentActivityHolder.getCurrentContext();
         if (currentContext != null)
         {
+            dismissProgressDialog();
             progressDialog = ProgressDialog.show(
                     currentContext,
                     currentContext.getString(R.string.manage_heroes_follow_progress_title),
@@ -248,11 +232,11 @@ public class THSamsungBillingInteractor
             {
                 if (exception instanceof SamsungPaymentCancelledException)
                 {
-                    dialog = thSamsungAlertDialogUtil.popUserCancelled(currentContext);
+                    dialog = billingAlertDialogUtil.popUserCancelled(currentContext);
                 }
                 else
                 {
-                    dialog = thSamsungAlertDialogUtil.popUnknownError(currentContext, exception);
+                    dialog = billingAlertDialogUtil.popUnknownError(currentContext, exception);
                 }
             }
         }
@@ -262,15 +246,7 @@ public class THSamsungBillingInteractor
     //<editor-fold desc="Purchase Actions">
     @Override protected void launchPurchaseSequence(int requestCode, SamsungSKU productIdentifier)
     {
-        THSamsungLogicHolder logicHolder = getBillingLogicHolder();
-        if (logicHolder != null)
-        {
-            logicHolder.run(requestCode, createPurchaseBillingRequest(requestCode, productIdentifier));
-        }
-        else
-        {
-            Timber.e(new NullPointerException("logicHolder just became null"), "");
-        }
+        billingLogicHolder.run(requestCode, createPurchaseBillingRequest(requestCode, productIdentifier));
     }
 
     @Override protected THSamsungRequestFull createEmptyBillingRequest()
@@ -278,7 +254,10 @@ public class THSamsungBillingInteractor
         return THSamsungRequestFull.builder().build();
     }
 
-    @Override protected void populatePurchaseBillingRequest(int requestCode, THSamsungRequestFull request, SamsungSKU productIdentifier)
+    @Override protected void populatePurchaseBillingRequest(
+            int requestCode,
+            THSamsungRequestFull request,
+            @NotNull SamsungSKU productIdentifier)
     {
         super.populatePurchaseBillingRequest(requestCode, request, productIdentifier);
         THUIBillingRequest uiBillingRequest = uiBillingRequests.get(requestCode);
@@ -288,14 +267,11 @@ public class THSamsungBillingInteractor
         }
     }
 
-    @Override protected THSamsungPurchaseOrder createEmptyPurchaseOrder(int requestCode, SamsungSKU productIdentifier)
+    @Override @NotNull protected THSamsungPurchaseOrder createEmptyPurchaseOrder(
+            @NotNull THUISamsungRequest uiBillingRequest,
+            @NotNull SamsungSKU productIdentifier)
     {
-        THUIBillingRequest uiBillingRequest = uiBillingRequests.get(requestCode);
-        if (uiBillingRequest != null)
-        {
-            return new THSamsungPurchaseOrder(productIdentifier);
-        }
-        return null;
+        return new THSamsungPurchaseOrder(productIdentifier, uiBillingRequest.getApplicablePortfolioId());
     }
 
     @Override protected AlertDialog popPurchaseFailed(
@@ -312,7 +288,7 @@ public class THSamsungBillingInteractor
             if (currentContext != null)
             {
                 // TODO finer dialog
-                dialog = thSamsungAlertDialogUtil.popUnknownError(currentContext, exception);
+                dialog = billingAlertDialogUtil.popUnknownError(currentContext, exception);
             }
         }
         return dialog;
@@ -328,11 +304,8 @@ public class THSamsungBillingInteractor
         THUISamsungRequest billingRequest = uiBillingRequests.get(requestCode);
         if (billingRequest != null)
         {
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
-            if (billingRequest.popRestorePurchaseOutcome)
+            dismissProgressDialog();
+            if (billingRequest.getPopRestorePurchaseOutcome())
             {
                 Context currentContext = currentActivityHolder.getCurrentContext();
                 Exception exception;
@@ -346,13 +319,13 @@ public class THSamsungBillingInteractor
                 }
                 if (currentContext != null)
                 {
-                    thSamsungAlertDialogUtil.handlePurchaseRestoreFinished(
+                    ((THSamsungAlertDialogUtil) billingAlertDialogUtil).handlePurchaseRestoreFinished(
                             currentContext,
                             restoredPurchases,
                             failedRestorePurchases,
-                            thSamsungAlertDialogUtil.createFailedRestoreClickListener(
+                            ((THSamsungAlertDialogUtil) billingAlertDialogUtil).createFailedRestoreClickListener(
                                     currentContext, exception),
-                            billingRequest.popRestorePurchaseOutcomeVerbose);
+                            billingRequest.getPopRestorePurchaseOutcomeVerbose());
                 }
             }
         }

@@ -43,7 +43,7 @@ abstract public class BaseSamsungPurchaser<
         this.purchaseFinishedListener = purchaseFinishedListener;
     }
 
-    @Override public void purchase(int requestCode, SamsungPurchaseOrderType purchaseOrder)
+    @Override public void purchase(int requestCode, @NotNull SamsungPurchaseOrderType purchaseOrder)
     {
         setRequestCode(requestCode);
         this.purchaseOrder = purchaseOrder;

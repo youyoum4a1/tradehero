@@ -45,7 +45,7 @@ public class THBaseSamsungPurchaser
 
     @Override protected THSamsungPurchase createSamsungPurchase(PurchaseVo purchaseVo)
     {
-        return new THSamsungPurchase(purchaseOrder.getProductIdentifier().groupId, purchaseVo, null);
+        return new THSamsungPurchase(purchaseOrder.getProductIdentifier().groupId, purchaseVo, purchaseOrder.getApplicablePortfolioId());
     }
 
     @Override protected SamsungException createSamsungException(ErrorVo errorVo)

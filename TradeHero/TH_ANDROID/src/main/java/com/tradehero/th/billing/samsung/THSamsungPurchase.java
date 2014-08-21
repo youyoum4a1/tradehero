@@ -9,6 +9,8 @@ import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THProductPurchase;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class THSamsungPurchase
     extends SamsungPurchase<
@@ -18,70 +20,70 @@ public class THSamsungPurchase
         SamsungSKU,
         THSamsungOrderId>
 {
-    private UserBaseKey userToFollow;
-    private OwnedPortfolioId applicablePortfolioId;
+    @Nullable private UserBaseKey userToFollow;
+    @NotNull private OwnedPortfolioId applicablePortfolioId;
 
     //<editor-fold desc="Constructors">
-    public THSamsungPurchase(String groupId, String _jsonString, OwnedPortfolioId applicablePortfolioId)
+    public THSamsungPurchase(String groupId, String _jsonString, @NotNull OwnedPortfolioId applicablePortfolioId)
     {
         super(groupId, _jsonString);
         this.applicablePortfolioId = applicablePortfolioId;
     }
 
-    public THSamsungPurchase(String groupId, PurchaseVo toCopyFrom, OwnedPortfolioId applicablePortfolioId)
+    public THSamsungPurchase(String groupId, PurchaseVo toCopyFrom, @NotNull OwnedPortfolioId applicablePortfolioId)
     {
         super(groupId, toCopyFrom);
         this.applicablePortfolioId = applicablePortfolioId;
     }
 
-    public THSamsungPurchase(String groupId, InboxVo toCopyFrom, OwnedPortfolioId applicablePortfolioId)
+    public THSamsungPurchase(String groupId, InboxVo toCopyFrom, @NotNull OwnedPortfolioId applicablePortfolioId)
     {
         super(groupId, toCopyFrom);
         this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>
 
-    @Override public SamsungSKU getProductIdentifier()
+    @Override @NotNull public SamsungSKU getProductIdentifier()
     {
         return new SamsungSKU(getGroupId(), getItemId());
     }
 
-    @Override public THSamsungOrderId getOrderId()
+    @Override @NotNull public THSamsungOrderId getOrderId()
     {
         return new THSamsungOrderId(getPurchaseId());
     }
 
-    @Override public UserBaseKey getUserToFollow()
+    @Override @Nullable public UserBaseKey getUserToFollow()
     {
         return userToFollow;
     }
 
-    @Override public void setUserToFollow(UserBaseKey userToFollow)
+    @Override public void setUserToFollow(@Nullable UserBaseKey userToFollow)
     {
         this.userToFollow = userToFollow;
     }
 
-    @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
+    @Override @NotNull public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
         return applicablePortfolioId;
     }
 
-    public void setApplicablePortfolioId(OwnedPortfolioId applicablePortfolioId)
+    public void setApplicablePortfolioId(@NotNull OwnedPortfolioId applicablePortfolioId)
     {
         this.applicablePortfolioId = applicablePortfolioId;
     }
 
-    public SamsungPurchaseReportDTO getPurchaseDTO()
+    @Override @NotNull public SamsungPurchaseReportDTO getPurchaseReportDTO()
     {
         return new SamsungPurchaseReportDTO(this);
     }
 
-    public SamsungPurchaseInProcessDTO getPurchaseToSaveDTO()
+    @NotNull public SamsungPurchaseInProcessDTO getPurchaseToSaveDTO()
     {
         return new SamsungPurchaseInProcessDTO(this);
     }
 
-    public void populate(SamsungPurchaseInProcessDTO purchaseInProcessDTO)
+    public void populate(@NotNull SamsungPurchaseInProcessDTO purchaseInProcessDTO)
     {
         if (!getPaymentId().equals(purchaseInProcessDTO.paymentId))
         {

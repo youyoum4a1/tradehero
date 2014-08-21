@@ -14,6 +14,7 @@ import com.tradehero.th.billing.THProductPurchase;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.request.THBillingRequest;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class THIABBillingRequest<
         IABSKUListKeyType extends IABSKUListKey,
@@ -39,7 +40,7 @@ public class THIABBillingRequest<
 {
     public boolean consumePurchase;
     public IABPurchaseType purchaseToConsume;
-    public IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+    @Nullable public IABPurchaseConsumer.OnIABConsumptionFinishedListener<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType,
@@ -105,34 +106,33 @@ public class THIABBillingRequest<
         //<editor-fold desc="Whether to Consume Purchase">
         private boolean consumePurchase;
         private IABPurchaseType purchaseToConsume;
-        private IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+        @Nullable private IABPurchaseConsumer.OnIABConsumptionFinishedListener<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType,
                 IABExceptionType> consumptionFinishedListener;
 
-        public void consumePurchase(boolean consumePurchase)
+        public BuilderType consumePurchase(boolean consumePurchase)
         {
             this.consumePurchase = consumePurchase;
+            return self();
         }
 
-        public void purchaseToConsume(boolean consumePurchase, IABPurchaseType purchaseToConsume)
+        public BuilderType purchaseToConsume(IABPurchaseType purchaseToConsume)
         {
-            this.consumePurchase(consumePurchase);
             this.purchaseToConsume = purchaseToConsume;
+            return self();
         }
 
-        public void consumptionFinishedListener(
-                boolean consumePurchase,
-                IABPurchaseType purchaseToConsume,
-                IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+        public BuilderType consumptionFinishedListener(
+                @Nullable IABPurchaseConsumer.OnIABConsumptionFinishedListener<
                 IABSKUType,
                 IABOrderIdType,
                 IABPurchaseType,
                 IABExceptionType> consumptionFinishedListener)
         {
-            this.purchaseToConsume(consumePurchase, purchaseToConsume);
             this.consumptionFinishedListener = consumptionFinishedListener;
+            return self();
         }
         //</editor-fold>
 
@@ -154,5 +154,15 @@ public class THIABBillingRequest<
     {
         this.consumptionFinishedListener = null;
         super.onDestroy();
+    }
+
+    @Override public String toString()
+    {
+        return "THIABBillingRequest:{" +
+                super.toString() +
+                ", consumePurchase=" + consumePurchase +
+                ", purchaseToConsume=" + purchaseToConsume +
+                ", consumptionFinishedListener=" + consumptionFinishedListener +
+                '}';
     }
 }

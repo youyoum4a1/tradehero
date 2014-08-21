@@ -46,17 +46,17 @@ public interface SamsungInteractor<
                 SamsungPurchaseType,
                 SamsungExceptionType> & UISamsungRequest,
         SamsungExceptionType extends SamsungException>
-    extends BillingInteractor<
+        extends BillingInteractor<
         SamsungSKUListKeyType,
         SamsungSKUType,
         SamsungSKUListType,
-            SamsungProductDetailType,
-            SamsungPurchaseOrderType,
-            SamsungOrderIdType,
-            SamsungPurchaseType,
-            SamsungActorType,
-            BillingRequestType,
-            UIBillingRequestType,
-            SamsungExceptionType>
+        SamsungProductDetailType,
+        SamsungPurchaseOrderType,
+        SamsungOrderIdType,
+        SamsungPurchaseType,
+        SamsungActorType,
+        BillingRequestType,
+        UIBillingRequestType,
+        SamsungExceptionType>
 {
 }

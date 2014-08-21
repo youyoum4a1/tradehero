@@ -1,17 +1,19 @@
 package com.tradehero.common.billing.samsung;
 
 import com.tradehero.common.persistence.DTOKey;
-import timber.log.Timber;
+import org.jetbrains.annotations.NotNull;
 
 public class SamsungItemGroup implements DTOKey
 {
-    public final String groupId;
+    @NotNull public final String groupId;
 
-    public SamsungItemGroup(String groupId)
+    //<editor-fold desc="Constructors">
+    public SamsungItemGroup(@NotNull String groupId)
     {
         super();
         this.groupId = groupId;
     }
+    //</editor-fold>
 
     protected void checkIsValid()
     {
@@ -23,12 +25,12 @@ public class SamsungItemGroup implements DTOKey
 
     public boolean isValid()
     {
-        return groupId != null && !groupId.isEmpty();
+        return !groupId.isEmpty();
     }
 
     @Override public int hashCode()
     {
-        return groupId == null ? 0 : groupId.hashCode();
+        return groupId.hashCode();
     }
 
     @Override public boolean equals(Object other)
@@ -42,12 +44,11 @@ public class SamsungItemGroup implements DTOKey
     {
         return (other != null)
                 && getClass().equals(other.getClass())
-                && (groupId == null ? other.groupId == null : groupId.equals(other.groupId));
+                && groupId.equals(other.groupId);
     }
 
     @Override public String toString()
     {
         return String.format("{groupId:%s}", groupId);
     }
-
 }

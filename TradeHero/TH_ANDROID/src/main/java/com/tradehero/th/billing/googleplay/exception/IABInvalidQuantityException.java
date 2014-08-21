@@ -2,12 +2,12 @@ package com.tradehero.th.billing.googleplay.exception;
 
 import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueException;
 
-public class IABMissingApplicablePortfolioIdException extends IABOneResponseValueException
+public class IABInvalidQuantityException extends IABOneResponseValueException
 {
-    public static final int VALID_RESPONSE = THIABExceptionConstants.MISSING_APPLICABLE_PORTFOLIO_ID;
+    public static final int VALID_RESPONSE = THIABExceptionConstants.INVALID_QUANTITY;
 
     //<editor-fold desc="Constructors">
-    public IABMissingApplicablePortfolioIdException(String message)
+    public IABInvalidQuantityException(String message)
     {
         super(VALID_RESPONSE, message);
     }

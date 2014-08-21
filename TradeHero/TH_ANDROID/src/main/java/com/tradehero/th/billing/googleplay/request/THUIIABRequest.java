@@ -11,36 +11,34 @@ import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 
-public class THUIIABBillingRequest
+public interface THUIIABRequest
     extends THUIBillingRequest<
-        IABSKUListKey,
-        IABSKU,
-        IABSKUList,
-        THIABProductDetail,
-        THIABPurchaseOrder,
-        THIABOrderId,
-        THIABPurchase,
-        IABException>
-    implements
+                IABSKUListKey,
+                IABSKU,
+                IABSKUList,
+                THIABProductDetail,
+                THIABPurchaseOrder,
+                THIABOrderId,
+                THIABPurchase,
+                IABException>,
         UIIABBillingRequest
 {
-    /**
-     * Indicates whether we want the Interactor to pop a dialog when the consume has failed.
-     */
-    public boolean popIfConsumeFailed;
-    @Nullable public IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+    //<editor-fold desc="Consuming Purchase">
+    boolean getConsumePurchase();
+    void setConsumePurchase(boolean consumePurchase);
+    boolean getPopIfConsumeFailed();
+    @Nullable IABPurchaseConsumer.OnIABConsumptionFinishedListener<
             IABSKU,
             THIABOrderId,
             THIABPurchase,
-            IABException> consumptionFinishedListener;
-
-    //<editor-fold desc="Constructors">
-    @Inject public THUIIABBillingRequest()
-    {
-        super();
-    }
+            IABException> getConsumptionFinishedListener();
+    void setConsumptionFinishedListener(
+            @Nullable IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+                    IABSKU,
+                    THIABOrderId,
+                    THIABPurchase,
+                    IABException> consumptionFinishedListener);
     //</editor-fold>
 }

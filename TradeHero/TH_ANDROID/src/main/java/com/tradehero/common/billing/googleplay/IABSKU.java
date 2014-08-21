@@ -1,29 +1,33 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.ProductIdentifier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class IABSKU implements ProductIdentifier
 {
-    public final String identifier;
+    @NotNull public final String identifier;
 
-    public IABSKU(String id)
+    //<editor-fold desc="Constructors">
+    public IABSKU(@NotNull String id)
     {
         identifier = id;
     }
+    //</editor-fold>
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
-        return (other != null) && (other instanceof IABSKU) && equals((IABSKU) other);
+        return (other instanceof IABSKU) && equals((IABSKU) other);
     }
 
-    public boolean equals(IABSKU other)
+    public boolean equals(@Nullable IABSKU other)
     {
-        return other != null && (identifier == null ? other.identifier == null : identifier.equals(other.identifier));
+        return other != null && identifier.equals(other.identifier);
     }
 
     @Override public int hashCode()
     {
-        return identifier == null ? 0 : identifier.hashCode();
+        return identifier.hashCode();
     }
 
     @Override public String toString()

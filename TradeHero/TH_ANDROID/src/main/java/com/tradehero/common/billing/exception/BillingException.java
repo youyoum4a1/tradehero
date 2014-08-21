@@ -1,6 +1,6 @@
 package com.tradehero.common.billing.exception;
 
-public class BillingException extends Exception
+public class BillingException extends RuntimeException
 {
     //<editor-fold desc="Constructors">
     public BillingException()

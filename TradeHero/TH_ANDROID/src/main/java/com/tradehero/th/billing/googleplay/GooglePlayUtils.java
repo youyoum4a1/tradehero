@@ -36,7 +36,7 @@ class GooglePlayUtils
 
         if (purchase != null)
         {
-            GooglePlayPurchaseReportDTO googlePlayPurchaseDTO = purchase.getGooglePlayPurchaseDTO();
+            GooglePlayPurchaseReportDTO googlePlayPurchaseDTO = purchase.getPurchaseReportDTO();
             reported.add("data:");
             reported.add(googlePlayPurchaseDTO.googlePlayData);
             reported.add("signature:");

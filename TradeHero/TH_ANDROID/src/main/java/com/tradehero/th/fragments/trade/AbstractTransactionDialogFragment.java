@@ -25,8 +25,8 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -46,10 +46,11 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.billing.THBasePurchaseActionInteractor;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
-import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.billing.THPurchaser;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
@@ -130,7 +131,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Inject Analytics analytics;
 
     @Inject THBillingInteractor userInteractor;
-    @Inject Provider<THUIBillingRequest> uiBillingRequestProvider;
+    @Inject Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
 
     SocialLinkHelper socialLinkHelper;
     private ProgressDialog mTransactionDialog;
@@ -155,6 +156,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private TextWatcher mQuantityTextWatcher;
     private TransactionEditCommentFragment transactionCommentFragment;
     Editable unSpannedComment;
+    private Integer purchaseRequestCode;
 
     protected abstract Integer getMaxValue();
 
@@ -253,6 +255,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
         mQuantityTextWatcher = null;
+        detachPurchaseRequestCode();
         detachPortfolioCompactListCache();
         destroyTransactionDialog();
         destroySocialLinkDialog();
@@ -339,6 +342,24 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         updateTransactionDialog();
     }
 
+    protected void dismissTransactionProgress()
+    {
+        if (mTransactionDialog != null)
+        {
+            mTransactionDialog.dismiss();
+        }
+        mTransactionDialog = null;
+    }
+
+    protected void detachPurchaseRequestCode()
+    {
+        if (purchaseRequestCode != null)
+        {
+            userInteractor.forgetRequestCode(purchaseRequestCode);
+        }
+        purchaseRequestCode = null;
+    }
+
     protected abstract String getLabel();
     protected abstract int getCashLeftLabelResId();
 
@@ -381,77 +402,27 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return mQuantityEditText.getText().toString();
     }
 
-    public QuickPriceButtonSet getQuickPriceButtonSet()
-    {
-        return mQuickPriceButtonSet;
-    }
-
-    public SeekBar getSeekBar()
-    {
-        return mSeekBar;
-    }
-
-    public Button getConfirmButton()
-    {
-        return mConfirm;
-    }
-
-    public CompoundButton getFacebookShareButton()
-    {
-        return mBtnShareFb;
-    }
-
-    public CompoundButton getTwitterShareButton()
-    {
-        return mBtnShareTw;
-    }
-
-    public CompoundButton getLinkedInShareButton()
-    {
-        return mBtnShareLn;
-    }
-
-    public CompoundButton getWeiboShareButton()
-    {
-        return mBtnShareWb;
-    }
-
-    public CompoundButton getWeChatShareButton()
-    {
-        return mBtnShareWeChat;
-    }
-
-    public EditText getQuantityEditText()
-    {
-        return mQuantityEditText;
-    }
-
-    public AlertDialog getSocialLinkingDialog()
-    {
-        return mSocialLinkingDialog;
-    }
-
     @OnClick(R.id.vquantity)
-    public void onQuantityClicked()
+    public void onQuantityClicked(/*View v*/)
     {
         mPriceSelectionMethod = AnalyticsConstants.ManualQuantityInput;
     }
 
     @OnClick(R.id.dialog_btn_cancel)
-    public void onCancelClicked(View v)
+    public void onCancelClicked(/*View v*/)
     {
         getDialog().dismiss();
     }
 
     @OnClick(R.id.dialog_btn_confirm)
-    public void onConfirmClicked(View v)
+    public void onConfirmClicked(/*View v*/)
     {
         socialSharePreferenceHelperNew.save();
         fireBuySellReport();
         launchBuySell();
     }
 
-    @OnClick(R.id.comments) void onCommentAreaClicked(View commentTextBox)
+    @OnClick(R.id.comments) void onCommentAreaClicked(/*View commentTextBox*/)
     {
         Bundle bundle = new Bundle();
         SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
@@ -477,8 +448,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return new TransactionDialogPortfolioCompactListCacheListener();
     }
 
-    protected class TransactionDialogPortfolioCompactListCacheListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
+    protected class TransactionDialogPortfolioCompactListCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, PortfolioCompactDTOList>
     {
+        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        {
+            linkWith(value, true);
+        }
+
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
         {
             Timber.d("Received %s", value);
@@ -524,25 +500,15 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public void handleBtnAddCashPressed()
     {
-        THBasePurchaseActionInteractor.builder()
-                .setBillingInteractor(userInteractor)
-                .setPurchaseApplicableOwnedPortfolioId(new OwnedPortfolioId(currentUserId.get(), portfolioId.key))
-                .setBillingRequest(uiBillingRequestProvider.get())
-                .startWithProgressDialog(true) // true by default
-                .popIfBillingNotAvailable(true)  // true by default
-                .popIfProductIdentifierFetchFailed(true) // true by default
-                .popIfInventoryFetchFailed(true) // true by default
-                .popIfPurchaseFailed(true) // true by default
-                .error(new UIBillingRequest.OnErrorListener()
-                {
-                    @Override public void onError(int requestCode, BillingException billingException)
-                    {
-                        Timber.e(billingException, "Store had error");
-                    }
-                })
-                .setPurchaseReportedListener(createPurchaseReportedListener())
-                .build()
-                .buyVirtualDollar();
+        detachPurchaseRequestCode();
+        //noinspection unchecked
+        purchaseRequestCode = userInteractor.run(uiBillingRequestBuilderProvider.get()
+                .applicablePortfolioId(new OwnedPortfolioId(currentUserId.get(), portfolioId.key))
+                .domainToPresent(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR)
+                .purchaseReportedListener(createPurchaseReportedListener())
+                .purchaseFinishedListener(createPurchaseFinishedListener())
+                .startWithProgressDialog(true)
+                .build());
     }
 
     public void updateTransactionDialog()
@@ -646,6 +612,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             TransactionFormDTO transactionFormDTO = getBuySellOrder();
             if (transactionFormDTO != null)
             {
+                dismissTransactionProgress();
                 mTransactionDialog = progressDialogUtil.show(AbstractTransactionDialogFragment.this.getActivity(),
                         R.string.processing, R.string.alert_dialog_please_wait);
 
@@ -669,9 +636,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             Timber.e("No portfolioId to apply to", new IllegalStateException());
             return null;
         }
-        //Timber.d("fb=%b tw=%b li=%b location=%b public=%b quantity=%d", publishToFb,
-        //        publishToTw, publishToLi, shareLocation, sharePublic,
-        //        isBuy ? mBuyQuantity : mSellQuantity);
 
         return new TransactionFormDTO(
                 shareForTransaction(SocialNetworkEnum.FB),
@@ -1125,13 +1089,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                 return;
             }
 
-            if (isBuy)
-            {
-            }
-            else
-            {
-            }
-
             if (buySellTransactionListener != null)
             {
                 buySellTransactionListener.onTransactionSuccessful(isBuy);
@@ -1164,7 +1121,29 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         }
     }
 
-    private BuySellPurchaseReportedListener createPurchaseReportedListener()
+    protected THPurchaser.OnPurchaseFinishedListener createPurchaseFinishedListener()
+    {
+        return new BuySellPurchaseFinishedListener();
+    }
+
+    protected class BuySellPurchaseFinishedListener implements THPurchaser.OnPurchaseFinishedListener
+    {
+        @Override public void onPurchaseFinished(int requestCode, PurchaseOrder purchaseOrder, ProductPurchase purchase)
+        {
+            dismissTransactionProgress();
+            mTransactionDialog = progressDialogUtil.show(
+                    getActivity(),
+                    R.string.store_billing_report_api_launching_window_title,
+                    R.string.store_billing_report_api_launching_window_message);
+        }
+
+        @Override public void onPurchaseFailed(int requestCode, PurchaseOrder purchaseOrder, BillingException billingException)
+        {
+            // TODO
+        }
+    }
+
+    protected BuySellPurchaseReportedListener createPurchaseReportedListener()
     {
         return new BuySellPurchaseReportedListener();
     }
@@ -1175,6 +1154,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
                 UserProfileDTO updatedUserProfile)
         {
+            Timber.e(new Exception(), "Reported purchase %s", updatedUserProfile);
+            dismissTransactionProgress();
             linkWith(updatedUserProfile);
             fetchPortfolioCompactList();
         }
@@ -1183,6 +1164,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
                 BillingException error)
         {
+            dismissTransactionProgress();
+            // TODO
         }
     }
 

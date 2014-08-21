@@ -23,7 +23,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -37,7 +36,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +45,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
 
     @Inject THBillingInteractor billingInteractor;
-    @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
     private Integer restoreRequestCode;
 

@@ -1,10 +1,10 @@
 package com.tradehero.common.billing;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
+import org.jetbrains.annotations.NotNull;
 
 public interface BillingInteractor<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -52,10 +52,8 @@ public interface BillingInteractor<
 
     int getUnusedRequestCode();
     void forgetRequestCode(int requestCode);
-    BillingLogicHolderType getBillingLogicHolder();
 
-    AlertDialog popBillingUnavailable(BillingExceptionType billingException);
-    int run(UIBillingRequestType uiBillingRequest);
+    int run(@NotNull UIBillingRequestType uiBillingRequest);
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 }

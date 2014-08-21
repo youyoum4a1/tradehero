@@ -12,6 +12,8 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -35,6 +37,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
@@ -144,6 +147,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         userProfileCacheListener = createUserProfileCacheListener();
         messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
+    }
+
+    @Override protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()
+    {
+        return new TimelinePurchaseReportedListener();
     }
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -962,6 +970,25 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
 
         @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // Nothing for now
+        }
+    }
+
+    protected class TimelinePurchaseReportedListener implements THPurchaseReporter.OnPurchaseReportedListener
+    {
+        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO currentUserProfileDTO)
+        {
+            if (!mIsOtherProfile)
+            {
+                linkWith(currentUserProfileDTO, true);
+            }
+            updateBottomButton();
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
+
+        }
+
+        @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
         {
             // Nothing for now
         }
