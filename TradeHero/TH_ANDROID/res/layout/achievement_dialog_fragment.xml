@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/achievement_dummy_container"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -21,156 +20,24 @@
       android:layout_gravity="center"
       android:orientation="vertical"
       android:background="@color/achievement_dialog_bg"
+      android:clipToPadding="false"
+      android:clipChildren="true"
       >
     <RelativeLayout
         android:layout_width="@dimen/achievement_dialog_width"
-        android:layout_height="@dimen/achievement_dialog_height"
+        android:layout_height="wrap_content"
         android:padding="@dimen/achievement_dialog_padding"
         android:clipChildren="false"
         android:clipToPadding="false"
         >
+      <include
+          android:id="@+id/achievement_dialog_fragment_inner_top"
+          layout="@layout/achievement_dialog_fragment_inner_top"/>
 
-      <Button
-          android:id="@+id/btn_achievement_dismiss"
-          android:layout_width="@dimen/small_icon_w_h"
-          android:layout_height="@dimen/small_icon_w_h"
-          style="@style/TH.ButtonClose"
-          android:background="@drawable/basic_transparent_selector"
-          android:layout_alignParentRight="true"
-          android:text="X"/>
-
-      <TextView
-          android:id="@+id/achievement_header"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="Lorem ipsum dolor!"
-          android:layout_alignParentTop="true"
-          android:layout_centerHorizontal="true"
-          style="@style/TH.Achievement.Header"/>
-
-      <ImageView
-          android:id="@+id/achievement_pulse"
-          android:layout_width="@dimen/achievement_pulse_circle_w_h"
-          android:layout_height="@dimen/achievement_pulse_circle_w_h"
-          android:scaleType="fitCenter"
-          android:src="@drawable/white_circle"
-          android:layout_alignParentTop="true"
-          android:layout_marginTop="@dimen/achievement_pulse_circle_margin_top"
-          android:layout_centerHorizontal="true"/>
-
-      <ImageView
-          android:id="@+id/achievement_starburst"
-          android:layout_width="@dimen/achievement_pulse_circle_w_h"
-          android:layout_height="@dimen/achievement_pulse_circle_w_h"
-          android:src="@drawable/achievement_background"
-          android:layout_alignParentTop="true"
-          android:layout_marginTop="@dimen/achievement_pulse_circle_margin_top"
-          android:layout_centerHorizontal="true"
-          android:alpha="0.1"
+      <include
+          android:id="@+id/achievement_dialog_fragment_inner_bottom"
+          layout="@layout/achievement_dialog_fragment_inner_bottom"
           />
-
-      <ImageView
-          android:id="@+id/achievement_badge"
-          android:layout_width="@dimen/achievement_badge_w_h"
-          android:layout_height="@dimen/achievement_badge_w_h"
-          android:scaleType="fitCenter"
-          tools:src="@drawable/launcher"
-          android:layout_marginTop="@dimen/achievement_badge_margin_top"
-          android:layout_alignParentTop="true"
-          android:layout_centerHorizontal="true"/>
-
-      <TextView
-          android:id="@+id/achievement_title"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/achievement_title_margin_top"
-          tools:text="Lorem ipsum dolor sit amet, consectetur"
-          android:layout_below="@id/achievement_badge"
-          android:layout_centerHorizontal="true"
-          style="@style/TH.Achievement.Title"/>
-
-      <TextView
-          android:id="@+id/achievement_description"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/achievement_description_margin_top"
-          tools:text="Lorem ipsum dolor sit amet, consectetur"
-          android:layout_below="@id/achievement_title"
-          android:layout_centerHorizontal="true"
-          style="@style/TH.Achievement.Description"/>
-
-      <TextView
-          android:id="@+id/achievement_more_description"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="tempor incididunt ut labore et dolore magna aliqua."
-          android:layout_below="@id/achievement_description"
-          android:layout_centerHorizontal="true"
-          style="@style/TH.Achievement.Description"/>
-
-      <RelativeLayout
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/achievement_level_progress_container_height"
-          android:layout_below="@id/achievement_more_description"
-          android:layout_marginTop="@dimen/achievement_level_progress_margin_top"
-          android:clipChildren="false"
-          android:clipToPadding="false">
-
-        <ImageView
-            android:id="@+id/user_level_avatar"
-            android:layout_width="@dimen/medium_logo_w_h"
-            android:layout_height="@dimen/medium_logo_w_h"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/ic_level_avatar_placeholder"/>
-
-        <include
-            android:id="@+id/user_level_progress_bar"
-            layout="@layout/user_level_progressbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="@dimen/user_level_current_level_margin_left"/>
-
-        <TextView
-            android:id="@+id/user_level_progress_level_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_above="@id/user_level_progress_bar"
-            android:layout_marginRight="@dimen/user_level_progress_margin_right"
-            style="@style/TH.Level.Earned.LevelUp"
-            android:visibility="gone"
-            android:text="@string/achievement_level_up"
-            tools:text="LEVEL UP!"/>
-
-        <LinearLayout
-            android:id="@+id/achievement_xp_dollar_earned_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="right"
-            android:layout_alignParentRight="true"
-            android:layout_above="@id/user_level_progress_bar"
-            android:layout_marginRight="@dimen/user_level_progress_margin_right">
-
-          <TextView
-              android:id="@+id/user_level_progress_virtual_dollar_earned"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/TH.Level.Earned.VirtualDollar"
-              tools:text="+10,000 TH$!"/>
-
-          <TextView
-              android:id="@+id/user_level_progress_xp_earned"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/TH.Level.Earned.XP"
-              tools:text="+1,000 XP!"/>
-
-        </LinearLayout>
-
-      </RelativeLayout>
-
     </RelativeLayout>
 
     <View
@@ -225,7 +92,6 @@
           style="@style/TH.Achievement.Share"
           />
     </LinearLayout>
-
 
   </LinearLayout>
 </LinearLayout>

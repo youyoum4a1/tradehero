@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/achievement_level_progress_container_height"
+    android:layout_below="@+id/achievement_more_description"
+    android:layout_marginTop="@dimen/achievement_level_progress_vertical_margin"
+    android:layout_marginBottom="@dimen/achievement_level_progress_vertical_margin"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+  <ImageView
+      android:id="@+id/user_level_avatar"
+      android:layout_width="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_logo_w_h"
+      android:layout_alignParentBottom="true"
+      android:src="@drawable/ic_level_avatar_placeholder"/>
+
+  <include
+      android:id="@+id/user_level_progress_bar"
+      layout="@layout/user_level_progressbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_marginLeft="@dimen/user_level_current_level_margin_left"/>
+
+  <TextView
+      android:id="@+id/user_level_progress_level_up"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_above="@id/user_level_progress_bar"
+      android:layout_marginRight="@dimen/user_level_progress_margin_right"
+      style="@style/TH.Level.Earned.LevelUp"
+      android:visibility="gone"
+      android:text="@string/achievement_level_up"
+      tools:text="LEVEL UP!"/>
+
+  <LinearLayout
+      android:id="@+id/achievement_xp_dollar_earned_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center"
+      android:layout_centerHorizontal="true"
+      android:layout_above="@id/user_level_progress_bar"
+      android:layout_marginRight="@dimen/user_level_progress_margin_right">
+
+    <TextView
+        android:id="@+id/user_level_progress_virtual_dollar_earned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TH.Level.Earned.VirtualDollar"
+        tools:text="+10,000 TH$!"/>
+
+    <TextView
+        android:id="@+id/user_level_progress_xp_earned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TH.Level.Earned.XP"
+        tools:text="+1,000 XP!"/>
+
+  </LinearLayout>
+
+</RelativeLayout>

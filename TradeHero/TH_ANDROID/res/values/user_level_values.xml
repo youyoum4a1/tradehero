@@ -10,6 +10,6 @@
   <dimen name="user_level_next_level_w_h">28dp</dimen>
   <dimen name="user_level_indicator_margin_left">8dp</dimen>
   <dimen name="user_level_progressbar_height">14dp</dimen>
-  <dimen name="user_level_progressbar_indicator_text_size">@dimen/text_xxsmall</dimen>
+  <dimen name="user_level_progressbar_indicator_text_size">@dimen/text_xsmall</dimen>
 
 </resources>

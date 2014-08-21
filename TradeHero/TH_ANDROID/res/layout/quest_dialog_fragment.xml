@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/achievement_dummy_container"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:background="@null"
+    android:minHeight="1280dp"
+    android:minWidth="1280dp"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    >
+  <!-- A dummy container which takes the whole screen
+       This container allows us to animate the children view without being clipped-->
+  <LinearLayout
+      android:id="@+id/achievement_content_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:orientation="vertical"
+      android:background="@color/achievement_dialog_bg"
+      >
+    <RelativeLayout
+        android:layout_width="@dimen/achievement_dialog_width"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/achievement_dialog_padding"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        >
+      <include
+          android:id="@+id/achievement_dialog_fragment_inner_top"
+          layout="@layout/achievement_dialog_fragment_inner_top"/>
+
+      <include
+          android:id="@+id/quest_dialog_fragment_inner_bottom"
+          layout="@layout/quest_dialog_fragment_inner_bottom"
+          />
+    </RelativeLayout>
+  </LinearLayout>
+  
+</LinearLayout>

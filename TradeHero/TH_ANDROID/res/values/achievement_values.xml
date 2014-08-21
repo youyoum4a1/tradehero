@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <integer name="achievement_pulse_duration">1600</integer>
+  <integer name="achievement_pulse_duration">1800</integer>
+  <integer name="achievement_pulse_delay">900</integer>
   <integer name="achievement_zoom_in_delay">100</integer>
   <integer name="achievement_dismiss_duration">800</integer>
 
   <dimen name="achievement_dialog_padding">10dp</dimen>
   <dimen name="achievement_dialog_width">300dp</dimen>
-  <dimen name="achievement_dialog_height">450dp</dimen>
   <color name="achievement_dialog_bg">@color/white</color>
   <dimen name="achievement_badge_w_h">160dp</dimen>
   <dimen name="achievement_badge_margin_top">50dp</dimen>
   <dimen name="achievement_pulse_circle_w_h">60dp</dimen>
+  <dimen name="achievement_pulse_circle_w_h_scaled">210dp</dimen>
   <dimen name="achievement_pulse_circle_margin_top">100dp</dimen>
   <dimen name="achievement_title_margin_top">20dp</dimen>
   <dimen name="achievement_description_margin_top">10dp</dimen>
-  <dimen name="achievement_level_progress_margin_top">20dp</dimen>
-  <dimen name="achievement_level_progress_container_height">90dp</dimen>
-  <dimen name="user_level_progressbar_height">14dp</dimen>
-  <dimen name="user_level_progressbar_indicator_text_size">@dimen/text_xxsmall</dimen>
+  <dimen name="achievement_more_description_margin_top">5dp</dimen>
+  <dimen name="achievement_level_progress_vertical_margin">15dp</dimen>
+  <dimen name="achievement_level_progress_container_height">75dp</dimen>
 
+  <integer name="achievement_earned_duration">1000</integer>
 
   <integer name="achievement_level_up_start_duration">100</integer>
   <integer name="achievement_level_up_end_start_offset">1000</integer>

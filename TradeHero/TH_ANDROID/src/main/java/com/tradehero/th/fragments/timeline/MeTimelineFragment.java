@@ -15,7 +15,7 @@ import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.achievement.AchievementDialogFragment;
+import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
@@ -37,7 +37,7 @@ public class MeTimelineFragment extends TimelineFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
-    @Inject Lazy<AchievementDialogFragment.Creator> achievementDialogFragmentCreatorLazy;
+    @Inject Lazy<AbstractAchievementDialogFragment.Creator> achievementDialogFragmentCreatorLazy;
 
     @Inject LevelDefListCache levelDefListCache;
     @Inject UserAchievementCache userAchievementCache;
@@ -102,7 +102,7 @@ public class MeTimelineFragment extends TimelineFragment
         switch (item.getItemId())
         {
             case R.id.menu_edit:
-                AchievementDialogFragment a = achievementDialogFragmentCreatorLazy.get().newInstance(new UserAchievementId(1));
+                AbstractAchievementDialogFragment a = achievementDialogFragmentCreatorLazy.get().newInstance(new UserAchievementId(1));
                 if (a != null)
                 {
                     a.show(getFragmentManager(), "test");
