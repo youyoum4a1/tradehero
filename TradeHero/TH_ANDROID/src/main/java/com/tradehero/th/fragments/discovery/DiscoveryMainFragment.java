@@ -64,6 +64,7 @@ public class DiscoveryMainFragment extends DashboardFragment
                             .setText(mDiscoverySessionPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+        actionBar.selectTab(actionBar.getTabAt(actionBar.getTabCount() / 2));
         // Specify that we will be displaying tabs in the action bar.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     }
