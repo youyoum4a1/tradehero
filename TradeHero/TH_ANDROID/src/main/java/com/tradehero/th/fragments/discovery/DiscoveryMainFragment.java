@@ -39,6 +39,8 @@ public class DiscoveryMainFragment extends DashboardFragment
         {
             setupTabs(actionBar);
         }
+
+        setActionBarTitle(getString(R.string.discovery));
     }
 
     private void initView(View view)
