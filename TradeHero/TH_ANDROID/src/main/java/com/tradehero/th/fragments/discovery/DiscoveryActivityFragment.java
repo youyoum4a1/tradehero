@@ -5,11 +5,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
@@ -21,7 +22,6 @@ import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class DiscoveryActivityFragment extends SherlockFragment
 {
@@ -29,10 +29,11 @@ public class DiscoveryActivityFragment extends SherlockFragment
 
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
     @InjectView(android.R.id.progress) ProgressBar mProgressBar;
-    @InjectView(R.id.timeline_list_view) AbsListView mTimelineListView;
+    @InjectView(R.id.timeline_list_view) PullToRefreshListView mTimelineListView;
 
     private int mDisplayedViewId;
     private SubTimelineAdapter mTimelineAdapter;
+    private ProgressBar mBottomLoadingView;
     @Inject CurrentUserId currentUserId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -52,7 +53,7 @@ public class DiscoveryActivityFragment extends SherlockFragment
             @Override protected void onLoadFinished(ListLoader<TimelineItemDTOKey> loader, List<TimelineItemDTOKey> data)
             {
                 mContentWrapper.setDisplayedChildByLayoutId(mTimelineListView.getId());
-                Timber.d("count: %d", data.size());
+                mBottomLoadingView.setVisibility(View.GONE);
             }
 
             @Override protected ListLoader<TimelineItemDTOKey> onCreateLoader(Bundle args)
@@ -61,10 +62,26 @@ public class DiscoveryActivityFragment extends SherlockFragment
             }
         });
 
+        mBottomLoadingView = new ProgressBar(getActivity());
         mTimelineListView.setAdapter(mTimelineAdapter);
+        mTimelineListView.getRefreshableView().addFooterView(mBottomLoadingView);
+        mTimelineListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener()
+        {
+            @Override public void onLastItemVisible()
+            {
+                mTimelineAdapter.getLoader().loadPrevious();
+                mBottomLoadingView.setVisibility(View.VISIBLE);
+            }
+        });
         getActivity().getSupportLoaderManager().initLoader(
                 mTimelineAdapter.getLoaderId(), null,
                 mTimelineAdapter.getLoaderCallback());
+    }
+
+    @Override public void onDestroyView()
+    {
+        super.onDestroyView();
+        mTimelineListView.setOnLastItemVisibleListener(null);
     }
 
     @Override public void onAttach(Activity activity)
