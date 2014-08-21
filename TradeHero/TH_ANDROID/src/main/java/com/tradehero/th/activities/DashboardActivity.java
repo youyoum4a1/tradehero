@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.TabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -34,8 +35,9 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -63,6 +65,7 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
@@ -74,9 +77,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity,
         ResideMenu.OnMenuListener
 {
-    private final DashboardTabType INITIAL_TAB = DashboardTabType.HOME;
+    private final RootFragmentType INITIAL_TAB = RootFragmentType.HOME;
 
     private DashboardNavigator navigator;
+    @Inject Set<DashboardNavigator.DashboardFragmentWatcher> dashboardFragmentWatchers;
 
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
@@ -169,6 +173,23 @@ public class DashboardActivity extends SherlockFragmentActivity
         showReferralCodeDialog();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        for (DashboardNavigator.DashboardFragmentWatcher watcher: dashboardFragmentWatchers)
+        {
+            navigator.addDashboardFragmentWatcher(watcher);
+        }
+
+        DashboardTabHost fragmentTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
+        fragmentTabHost.setup();
+        navigator.addDashboardFragmentWatcher(fragmentTabHost);
+        fragmentTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        {
+            @Override public void onTabChanged(String tabId)
+            {
+                RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
+                navigator.goToTab(selectedFragmentType);
+            }
+        });
+
         if (savedInstanceState == null && navigator.getCurrentFragment() == null)
         {
             navigator.goToTab(INITIAL_TAB);

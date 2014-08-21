@@ -27,12 +27,12 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertServiceWrapper;
@@ -40,7 +40,6 @@ import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -169,7 +168,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                     AlertEditFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
                 }
                 AlertEditFragment.putAlertId(bundle, alertId);
-                getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
+                getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, null);
                 return true;
         }
         return super.onOptionsItemSelected(item);
