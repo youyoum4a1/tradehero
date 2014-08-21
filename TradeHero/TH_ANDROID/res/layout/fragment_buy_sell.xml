@@ -24,7 +24,7 @@
       android:visibility="visible"
       android:background="@drawable/basic_transparent_selector"
       >
-      <!--TODO use dropdown/spinner view-->
+    <!--TODO use dropdown/spinner view-->
 
     <TextView
         android:id="@+id/selected_title_anchor"
@@ -186,12 +186,9 @@
 
     <LinearLayout
         android:id="@+id/belt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@id/stock_bg_logo"
-        android:padding="5dp"
-        android:gravity="center_vertical"
-        android:background="@color/white">
+        android:layout_width="match_parent"
+        style="@style/TH.BuySell_ViewPager_Belt">
 
       <TextView
           android:id="@+id/info"

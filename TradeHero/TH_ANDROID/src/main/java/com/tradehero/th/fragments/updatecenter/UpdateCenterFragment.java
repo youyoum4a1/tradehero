@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -39,6 +40,7 @@ import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -68,10 +70,11 @@ public class UpdateCenterFragment extends DashboardFragment
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject MessageHeaderListCache messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
+    @Inject GraphicUtil graphicUtil;
+
     @Inject THRouter thRouter;
 
     @RouteProperty("pageIndex") int selectedPageIndex = -1;
-
     private FragmentTabHost mTabHost;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private BroadcastReceiver broadcastReceiver;
@@ -251,7 +254,7 @@ public class UpdateCenterFragment extends DashboardFragment
     {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        //mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
+        graphicUtil.setBackground(mTabHost.getTabWidget(), Color.WHITE);
         Bundle args = getArguments();
         if (args == null)
         {

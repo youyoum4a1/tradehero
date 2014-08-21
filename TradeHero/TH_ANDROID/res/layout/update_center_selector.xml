@@ -19,7 +19,7 @@
       android:id="@+id/iv_icon"
       android:src="@drawable/icn_menu_messages"
       android:contentDescription="@null"
-      tools:background="@android:color/red"
+      tools:background="@color/red"
       android:layout_gravity="center_vertical"
       />
 
