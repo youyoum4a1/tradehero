@@ -52,8 +52,8 @@ public enum RootFragmentType
     ADMIN_SETTINGS(R.layout.tab_indicator_holo,
             R.string.dashboard_admin_settings, R.string.dashboard_admin_settings_key,
             R.drawable.icn_menu_settings, AdminSettingsFragment.class),
-    TEMP(R.layout.tab_indicator_holo,
-            R.string.security_news, R.string.security_news,
+    DISCOVERY(R.layout.tab_indicator_holo,
+            R.string.discovery, R.string.dashboard_discovery_key,
             R.drawable.icn_menu_settings, DiscoveryMainFragment.class),
     ;
 
@@ -96,7 +96,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forBottomBar()
     {
         List<RootFragmentType> forBottomBar = Arrays.asList(
-                TIMELINE, TRENDING, UPDATE_CENTER, CONTEST_CENTER
+                TIMELINE, TRENDING, DISCOVERY, UPDATE_CENTER, CONTEST_CENTER
         );
         return Collections.unmodifiableCollection(forBottomBar);
     }
