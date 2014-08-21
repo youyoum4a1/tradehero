@@ -146,6 +146,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         {
             executePending();
         }
+        onFragmentChanged(activity, getCurrentFragment().getClass(), null);
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
     }
 
