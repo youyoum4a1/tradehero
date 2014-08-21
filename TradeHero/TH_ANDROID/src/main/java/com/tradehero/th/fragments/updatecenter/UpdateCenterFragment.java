@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -94,11 +95,6 @@ public class UpdateCenterFragment extends DashboardFragment
     {
         Timber.d("onCreateView");
         return addTabs();
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override public void onResume()
@@ -254,7 +250,12 @@ public class UpdateCenterFragment extends DashboardFragment
     {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        graphicUtil.setBackground(mTabHost.getTabWidget(), Color.WHITE);
+        TabWidget tabWidget = mTabHost.getTabWidget();
+        if (tabWidget != null)
+        // It otherwise fails in Robolectric because it does not have R.id.tabs in the TabHost
+        {
+            graphicUtil.setBackground(tabWidget, Color.WHITE);
+        }
         Bundle args = getArguments();
         if (args == null)
         {
