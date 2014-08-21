@@ -14,8 +14,8 @@ import org.jetbrains.annotations.Nullable;
 {
     public static final int DEFAULT_MAX_SIZE = 1;
 
-    private final LevelDefCache levelDefCache;
-    private final AchievementServiceWrapper userServiceWrapper;
+    @NotNull private final AchievementServiceWrapper userServiceWrapper;
+    @NotNull private final LevelDefCache levelDefCache;
 
     @Inject public LevelDefListCache(@NotNull AchievementServiceWrapper userServiceWrapper, @NotNull LevelDefCache levelDefCache)
     {
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
     @NotNull @Override protected LevelDefIdList cutValue(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
     {
         levelDefCache.put(value);
-        return value.createKeys();
+        return new LevelDefIdList(value);
     }
 
     @Nullable @Override protected LevelDefDTOList inflateValue(@NotNull LevelDefListId key, @Nullable LevelDefIdList cutValue)
@@ -46,6 +46,6 @@ import org.jetbrains.annotations.Nullable;
 
     @NotNull @Override public LevelDefDTOList fetch(@NotNull LevelDefListId key) throws Throwable
     {
-        return userServiceWrapper.getLevelDefs(key);
+        return userServiceWrapper.getLevelDefs();
     }
 }

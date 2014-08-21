@@ -9,13 +9,8 @@ public class LevelDefListId implements DTOKey
         return 0;
     }
 
-    @Override public boolean equals(Object o)
+    @Override public boolean equals(Object other)
     {
-        if (o == null)
-        {
-            return false;
-        }
-
-        return o instanceof LevelDefListId;
+        return other instanceof LevelDefListId;
     }
 }

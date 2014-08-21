@@ -48,31 +48,6 @@ public class MeTimelineFragment extends TimelineFragment
         thRouter.save(getArguments(), currentUserId.toUserBaseKey());
         Timber.d("MeTimelineFragment onCreate");
 
-        LevelDefDTO mockLevel1 = new LevelDefDTO();
-        mockLevel1.id = 1;
-        mockLevel1.level = 1;
-        mockLevel1.xpFrom = 0;
-        mockLevel1.xpTo = 1000;
-
-        LevelDefDTO mockLevel2 = new LevelDefDTO();
-        mockLevel2.id = 2;
-        mockLevel2.level = 2;
-        mockLevel2.xpFrom = 1001;
-        mockLevel2.xpTo = 2000;
-
-        LevelDefDTO mockLevel3 = new LevelDefDTO();
-        mockLevel3.id = 3;
-        mockLevel3.level = 3;
-        mockLevel3.xpFrom = 2001;
-        mockLevel3.xpTo = 3000;
-
-        LevelDefDTOList levelDefDTOList = new LevelDefDTOList();
-        levelDefDTOList.add(mockLevel1);
-        levelDefDTOList.add(mockLevel3);
-        levelDefDTOList.add(mockLevel2);
-
-        //levelDefListCache.put(new LevelDefListId(), levelDefDTOList);
-        userAchievementCache.put(new UserAchievementId(1), UserAchievementDTOUtil.dummy());
         LevelDefDTOList cached = levelDefListCache.get(new LevelDefListId());
         Timber.d("cached %s", cached);
     }
@@ -80,14 +55,7 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public void onResume()
     {
         super.onResume();
-
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
-    }
-
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
-    {
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

@@ -15,19 +15,25 @@ import timber.log.Timber;
 
 @Singleton public class LevelDefUtil
 {
-    private LevelDefListCache levelDefListCache;
+    @NotNull private LevelDefListCache levelDefListCache;
+
     private LevelDefDTOList levelDefDTOList;
+    @NotNull private final LevelDefListId levelDefListId = new LevelDefListId();
+    @Nullable private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> leaderDefListener;
 
-    private final LevelDefListId levelDefListId = new LevelDefListId();
-
-
-    @Inject public LevelDefUtil(LevelDefListCache levelDefListCache)
+    @Inject public LevelDefUtil(@NotNull LevelDefListCache levelDefListCache)
     {
         super();
         this.levelDefListCache = levelDefListCache;
+        leaderDefListener = createLevelDefListener();
         setAndSortLevelDefDTOList(this.levelDefListCache.get(levelDefListId));
-        this.levelDefListCache.register(levelDefListId, createLevelDefListener());
+        this.levelDefListCache.register(levelDefListId, leaderDefListener);
         this.levelDefListCache.getOrFetchAsync(levelDefListId);
+    }
+
+    public void destroy()
+    {
+        this.levelDefListCache.unregister(leaderDefListener);
     }
 
     public void update()
@@ -42,46 +48,26 @@ import timber.log.Timber;
 
     @Nullable public LevelDefDTO getCurrentLevel(int currentXP)
     {
+        LevelDefDTO found = null;
         if (levelDefDTOList != null)
         {
-            for (LevelDefDTO levelDefDTO : levelDefDTOList)
-            {
-                if (levelDefDTO.xpFrom <= currentXP && levelDefDTO.xpTo >= currentXP)
-                {
-                    return levelDefDTO;
-                }
-            }
+            found = levelDefDTOList.findCurrentLevel(currentXP);
         }
-        return null;
+        return found;
     }
 
     @Nullable public LevelDefDTO getNextLevelDTO(int currentLevel)
     {
-        if(levelDefDTOList != null && !levelDefDTOList.isEmpty())
+        if(levelDefDTOList != null)
         {
-            for (int i = 0; i < levelDefDTOList.size(); i++)
-            {
-                LevelDefDTO levelDefDTO = levelDefDTOList.get(i);
-                if (levelDefDTO.level == currentLevel)
-                {
-                    if (isMaxLevel(levelDefDTO))
-                    {
-                        return levelDefDTO;
-                    }
-                    return levelDefDTOList.get(i + 1);
-                }
-            }
+            return levelDefDTOList.getNextLevelDTO(currentLevel);
         }
         return null;
     }
 
     public boolean isMaxLevel(LevelDefDTO levelDefDTO)
     {
-        if (levelDefDTO == null)
-        {
-            return false;
-        }
-        return levelDefDTO.equals(getMaxLevelDTO());
+        return levelDefDTO != null && levelDefDTO.equals(getMaxLevelDTO());
     }
 
     @Nullable public LevelDefDTO getMaxLevelDTO()
@@ -114,7 +100,6 @@ import timber.log.Timber;
 
     private class LevelDefCacheListener implements DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList>
     {
-
         @Override public void onDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
         {
             //setAndSortLevelDefDTOList(value);

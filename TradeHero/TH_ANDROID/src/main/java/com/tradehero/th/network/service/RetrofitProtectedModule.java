@@ -19,6 +19,11 @@ import retrofit.RestAdapter;
 public class RetrofitProtectedModule
 {
     //<editor-fold desc="API Services">
+    @Provides @Singleton AchievementServiceAsync provideAchievementServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(AchievementServiceAsync.class);
+    }
+
     @Provides @Singleton AlertPlanServiceAsync provideAlertPlanServiceAsync(RestAdapter adapter)
     {
         return adapter.create(AlertPlanServiceAsync.class);
@@ -152,11 +157,6 @@ public class RetrofitProtectedModule
                 .setRequestInterceptor(requestHeaders)
                 .build()
                 .create(HomeServiceAsync.class);
-    }
-
-    @Provides @Singleton AchievementServiceAsync provideAchievementServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(AchievementServiceAsync.class);
     }
     //</editor-fold>
 }

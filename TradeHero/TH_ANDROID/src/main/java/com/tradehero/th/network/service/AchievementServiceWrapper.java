@@ -3,7 +3,6 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
@@ -25,14 +24,12 @@ public class AchievementServiceWrapper
         this.achievementServiceAsync = achievementServiceAsync;
     }
 
-    public LevelDefDTOList getLevelDefs(
-            @NotNull LevelDefListId levelDefListId)
+    public LevelDefDTOList getLevelDefs()
     {
         return achievementService.getLevelDefs();
     }
 
     @NotNull public MiddleCallback<LevelDefDTOList> getLevelDefs(
-            @NotNull LevelDefListId levelDefListId,
             @Nullable Callback<LevelDefDTOList> callback)
     {
         MiddleCallback<LevelDefDTOList> middleCallback = new BaseMiddleCallback<>(callback);

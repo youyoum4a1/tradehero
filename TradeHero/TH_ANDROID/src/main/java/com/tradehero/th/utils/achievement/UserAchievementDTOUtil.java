@@ -2,10 +2,10 @@ package com.tradehero.th.utils.achievement;
 
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import com.tradehero.th.api.achievement.AchievementsDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.UserAchievementId;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,76 +18,55 @@ public class UserAchievementDTOUtil
     @NotNull private final UserAchievementCache userAchievementCache;
     @NotNull private final LocalBroadcastManager localBroadcastManager;
 
-    @Inject public UserAchievementDTOUtil(UserAchievementCache userAchievementCache, LocalBroadcastManager localBroadcastManager)
+    @Inject public UserAchievementDTOUtil(
+            @NotNull UserAchievementCache userAchievementCache,
+            @NotNull LocalBroadcastManager localBroadcastManager)
     {
         super();
         this.userAchievementCache = userAchievementCache;
         this.localBroadcastManager = localBroadcastManager;
     }
 
-    public boolean shouldShow(UserAchievementId userAchievementId)
+    public boolean shouldShow(@NotNull UserAchievementId userAchievementId)
     {
         UserAchievementDTO userAchievementDTO = get(userAchievementId);
-        if (userAchievementDTO == null)
-        {
-            return false;
-        }
-        if (userAchievementDTO.achievementDef.isQuest && !userAchievementDTO.isReset && userAchievementDTO.contiguousCount == 0)
-        {
-            return false;
-        }
-        return true;
+        return userAchievementDTO != null &&
+                !userAchievementDTO.shouldShow();
     }
 
-    @Nullable public UserAchievementDTO pop(UserAchievementId userAchievementId)
+    @Nullable public UserAchievementDTO pop(@NotNull UserAchievementId userAchievementId)
     {
         UserAchievementDTO userAchievementDTO = userAchievementCache.get(userAchievementId);
         if (userAchievementDTO != null)
         {
-            userAchievementCache.invalidate(userAchievementId);
+            remove(userAchievementId);
         }
         return userAchievementDTO;
     }
 
-    @Nullable public UserAchievementDTO get(UserAchievementId userAchievementId)
+    @Nullable public UserAchievementDTO get(@NotNull UserAchievementId userAchievementId)
     {
         return userAchievementCache.get(userAchievementId);
     }
 
-    public void remove(UserAchievementId userAchievementId)
+    public void remove(@NotNull UserAchievementId userAchievementId)
     {
         userAchievementCache.invalidate(userAchievementId);
     }
 
-    public void put(UserAchievementDTO userAchievementDTO)
+    public void put(@NotNull List<? extends UserAchievementDTO> userAchievementDTOs)
+    {
+        for (UserAchievementDTO userAchievementDTO : userAchievementDTOs)
+        {
+            put(userAchievementDTO);
+        }
+    }
+
+    public void put(@NotNull UserAchievementDTO userAchievementDTO)
     {
         userAchievementCache.put(userAchievementDTO.getUserAchievementId(), userAchievementDTO);
         Intent i = new Intent(INTENT_ACTION_NAME);
         i.putExtra(UserAchievementDTO.class.getName(), userAchievementDTO.getUserAchievementId().getArgs());
         localBroadcastManager.sendBroadcastSync(i);
-    }
-
-    public static UserAchievementDTO dummy()
-    {
-        UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
-        AchievementsDTO achievementsDTO = new AchievementsDTO();
-
-        userAchievementDTO.id = 1;
-        achievementsDTO.virtualDollars = 50;
-        achievementsDTO.visual =
-                "http://uefaclubs.com/images/Sampdoria@2.-other-logo.png";
-        achievementsDTO.header = "Achievement Unlocked";
-        achievementsDTO.thName = "Master Trader I";
-        achievementsDTO.text = "You have earned $50.00 TH$";
-        achievementsDTO.subText = "Come back tomorrow to earn $50.00 TH$";
-        achievementsDTO.hexColor = "4891E4";
-        achievementsDTO.isQuest = true;
-
-        userAchievementDTO.achievementDef = achievementsDTO;
-        userAchievementDTO.isReset = true;
-        userAchievementDTO.xpEarned = 400;
-        userAchievementDTO.xpTotal = 1030;
-
-        return userAchievementDTO;
     }
 }

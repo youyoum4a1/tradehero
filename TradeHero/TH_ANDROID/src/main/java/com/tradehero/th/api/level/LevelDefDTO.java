@@ -16,4 +16,21 @@ public class LevelDefDTO implements DTO
     {
         return new LevelDefId(id);
     }
+
+    public boolean isXPInLevel(int currentXP)
+    {
+        return xpFrom <= currentXP && xpTo >= currentXP;
+    }
+
+    @Override public String toString()
+    {
+        return "LevelDefDTO{" +
+                "id=" + id +
+                ", xpFrom=" + xpFrom +
+                ", xpTo=" + xpTo +
+                ", name='" + name + '\'' +
+                ", badge='" + badge + '\'' +
+                ", level=" + level +
+                '}';
+    }
 }

@@ -23,4 +23,10 @@ public class UserAchievementDTO implements DTO
         return xpTotal - xpEarned;
     }
 
+    public boolean shouldShow()
+    {
+        return  achievementDef.isQuest
+                && !isReset
+                && contiguousCount == 0;
+    }
 }

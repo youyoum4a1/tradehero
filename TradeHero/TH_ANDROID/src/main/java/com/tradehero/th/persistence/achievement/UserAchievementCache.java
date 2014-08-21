@@ -14,9 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
     public static final int DEFAULT_SIZE = 20;
 
-    private final AchievementServiceWrapper achievementServiceWrapper;
+    @NotNull private final AchievementServiceWrapper achievementServiceWrapper;
 
-    @Inject public UserAchievementCache(AchievementServiceWrapper achievementServiceWrapper)
+    @Inject public UserAchievementCache(@NotNull AchievementServiceWrapper achievementServiceWrapper)
     {
         super(DEFAULT_SIZE);
         this.achievementServiceWrapper = achievementServiceWrapper;

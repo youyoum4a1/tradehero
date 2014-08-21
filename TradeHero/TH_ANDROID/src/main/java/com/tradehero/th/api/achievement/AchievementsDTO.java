@@ -41,5 +41,4 @@ public class AchievementsDTO implements DTO
             return "Failed to json";
         }
     }
-
 }

@@ -249,11 +249,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     public static class Creator
     {
-        @Inject UserAchievementDTOUtil userAchievementDTOUtil;
+        @NotNull UserAchievementDTOUtil userAchievementDTOUtil;
 
-        @Inject public Creator()
+        @Inject public Creator(@NotNull UserAchievementDTOUtil userAchievementDTOUtil)
         {
             super();
+            this.userAchievementDTOUtil = userAchievementDTOUtil;
         }
 
         @Nullable public AbstractAchievementDialogFragment newInstance(@NotNull UserAchievementId userAchievementId)
@@ -265,18 +266,18 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
             Bundle args = new Bundle();
             args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
-            UserAchievementDTO userAchievementDTO = userAchievementDTOUtil.get(userAchievementId);
-            AbstractAchievementDialogFragment f;
-            if (!userAchievementDTO.achievementDef.isQuest)
+            @Nullable UserAchievementDTO userAchievementDTO = userAchievementDTOUtil.get(userAchievementId);
+            AbstractAchievementDialogFragment dialogFragment;
+            if (userAchievementDTO.achievementDef.isQuest) // TODO handle case where userAchievementDTO is null
             {
-                f = new AchievementDialogFragment();
+                dialogFragment = new QuestDialogFragment();
             }
             else
             {
-                f = new QuestDialogFragment();
+                dialogFragment = new AchievementDialogFragment();
             }
-            f.setArguments(args);
-            return f;
+            dialogFragment.setArguments(args);
+            return dialogFragment;
         }
     }
 }

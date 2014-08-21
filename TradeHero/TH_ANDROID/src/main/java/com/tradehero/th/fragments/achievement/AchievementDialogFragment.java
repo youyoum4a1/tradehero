@@ -2,8 +2,6 @@ package com.tradehero.th.fragments.achievement;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
@@ -160,7 +158,6 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
         @Override public void onAnimationStart(Animation animation)
         {
-
         }
 
         @Override public void onAnimationEnd(Animation animation)
@@ -173,7 +170,6 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
         @Override public void onAnimationRepeat(Animation animation)
         {
-
         }
     }
 

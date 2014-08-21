@@ -59,11 +59,9 @@ import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.utils.RetrofitConstants;
 import com.tradehero.th.widget.VotePair;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Singleton;
 import retrofit.Endpoint;
 import retrofit.Endpoints;
 import retrofit.RestAdapter;
@@ -87,6 +85,11 @@ import retrofit.converter.Converter;
 public class RetrofitModule
 {
     //<editor-fold desc="API Services">
+    @Provides @Singleton AchievementService provideAchievementService(RestAdapter adapter)
+    {
+        return adapter.create(AchievementService.class);
+    }
+
     @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter adapter)
     {
         return adapter.create(AlertPlanService.class);
@@ -250,13 +253,6 @@ public class RetrofitModule
         return objectMapper;
     }
 
-    @Provides ObjectMapperWrapper provideCommonObjectMapperWrapper()
-    {
-        ObjectMapperWrapper objectMapper = new ObjectMapperWrapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return objectMapper;
-    }
-
     @Provides @Singleton @ForApp ObjectMapper provideObjectMapper(
             ObjectMapperWrapper objectMapper,
             UserFriendsDTOJacksonModule userFriendsDTOModule,
@@ -309,11 +305,6 @@ public class RetrofitModule
     @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Endpoint server, RequestHeaders requestHeaders)
     {
         return builder.setEndpoint(server).setRequestInterceptor(requestHeaders).build();
-    }
-
-    @Provides @Singleton AchievementService provideAchievementService(RestAdapter adapter)
-    {
-        return adapter.create(AchievementService.class);
     }
 
     //@Provides Client provideOkClient(Context context)
