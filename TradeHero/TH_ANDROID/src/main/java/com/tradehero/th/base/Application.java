@@ -31,8 +31,8 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.dagger.AppModule;
+import com.tradehero.th.utils.route.THRouter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -124,7 +124,7 @@ public class Application extends PApplication
         if (!Constants.RELEASE)
         {
             List<Object> listModules = new ArrayList<>(Arrays.asList(modules));
-            //listModules.add(new com.tradehero.th.DebugModule());
+            listModules.add(new com.tradehero.th.DebugModule());
             return listModules.toArray();
         }
         return modules;

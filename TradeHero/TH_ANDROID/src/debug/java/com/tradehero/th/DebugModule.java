@@ -1,10 +1,14 @@
 package com.tradehero.th;
 
 import com.tradehero.th.network.NetworkDebugModule;
+import com.tradehero.th.persistence.PersistenceDebugModule;
 import dagger.Module;
 
 @Module(
-        includes = NetworkDebugModule.class,
+        includes = {
+                NetworkDebugModule.class,
+                PersistenceDebugModule.class,
+        },
 
         complete = false,
         library = true
