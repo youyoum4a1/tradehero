@@ -77,7 +77,10 @@ public class DiscoveryMainFragment extends DashboardFragment
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override public void onPageSelected(int position)
             {
-                actionBar.setSelectedNavigationItem(position);
+                if (position < actionBar.getTabCount())
+                {
+                    actionBar.selectTab(actionBar.getTabAt(position));
+                }
             }
         });
     }
