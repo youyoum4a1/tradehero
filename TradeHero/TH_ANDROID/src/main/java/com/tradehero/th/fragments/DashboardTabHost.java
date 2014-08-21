@@ -60,7 +60,7 @@ public class DashboardTabHost extends TabHost
             }
         }
         // none of the bottom bar fragment, hide me
-        hideTabBar();
+        //hideTabBar();
     }
 
     private void hideTabBar()
