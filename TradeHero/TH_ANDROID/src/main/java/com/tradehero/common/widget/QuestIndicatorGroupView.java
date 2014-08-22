@@ -46,17 +46,17 @@ public class QuestIndicatorGroupView extends LinearLayout
         int mCurrent1 = progress + 1;
         int mCurrent2 = progress + 2;
 
-        questIndicatorView1.on();
-        questIndicatorView2.on();
-        questIndicatorView3.animateOn();
+        questIndicatorView1.animateOn();
+        questIndicatorView2.off();
+        questIndicatorView3.off();
         questIndicatorView4.off();
         questIndicatorView5.off();
 
-        questIndicatorView1.setText("Day 1", "TH$ 5k");
-        questIndicatorView2.setText("Day 2", "TH$ 10k");
-        questIndicatorView3.setText("Day 3", "TH$ 15k");
-        questIndicatorView4.setText("Day 4", "TH$ 20k");
-        questIndicatorView5.setText("Day 5", "TH$ 25k");
+        questIndicatorView1.setText("Day 3", "TH$ 15k");
+        questIndicatorView2.setText("Day 4", "TH$ 20k");
+        questIndicatorView3.setText("Day 5", "TH$ 30k");
+        questIndicatorView4.setText("Day 6", "TH$ 50k");
+        questIndicatorView5.setText("Day 7", "TH$ 80k");
 
     }
 }
