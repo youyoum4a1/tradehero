@@ -78,7 +78,7 @@ public class SecurityCompactDTO implements DTO
     public Double pe;
     public Double eps;
 
-    public Boolean marketOpen;
+    @Nullable public Boolean marketOpen;
 
     public Integer pc50DMA;
     public Integer pc200DMA;

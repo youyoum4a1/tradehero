@@ -42,6 +42,7 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItem
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
@@ -55,7 +56,6 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
@@ -147,7 +147,6 @@ import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.FriendListLoader;
-import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
@@ -266,7 +265,6 @@ import javax.inject.Singleton;
                         FollowerPayoutManagerFragment.class,
                         FollowerListItemView.class,
 
-                        SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 
                         TimelineManager.class,
