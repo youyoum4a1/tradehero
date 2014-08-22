@@ -244,4 +244,5 @@
   <string name="discovery_news">News</string>
   <string name="discovery_activity">Activity</string>
   <string name="discovery">Discovery</string>
+  <string name="discovery_learning">Learning</string>
 </resources>

@@ -23,10 +23,7 @@ import com.tradehero.th.fragments.contestcenter.ContestCenterActiveFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterBaseFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterJoinedFragment;
-import com.tradehero.th.fragments.discovery.DiscoveryActivityFragment;
-import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
-import com.tradehero.th.fragments.discovery.FeaturedNewsHeadlineFragment;
-import com.tradehero.th.fragments.discovery.WhatsHotFragment;
+import com.tradehero.th.fragments.discovery.DiscoveryModule;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
@@ -195,6 +192,9 @@ import javax.inject.Singleton;
                 ActivityModule.class,
                 BillingModule.class,
                 PushModule.class,
+
+                // Fragments
+                DiscoveryModule.class
         },
         injects =
                 {
@@ -232,11 +232,6 @@ import javax.inject.Singleton;
                         PushableTimelineFragment.class,
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
-
-                        DiscoveryMainFragment.class,
-                        FeaturedNewsHeadlineFragment.class,
-                        WhatsHotFragment.class,
-                        DiscoveryActivityFragment.class,
 
                         NewsHeadlineFragment.class,
                         ChartFragment.class,

@@ -107,17 +107,9 @@ public class DiscoveryMainFragment extends DashboardFragment
             DiscoveryTabType tabType = DiscoveryTabType.values()[position];
             switch (tabType)
             {
-                case WHAT_HOT:
-                    return new WhatsHotFragment();
-
-                case NEWS:
-                    return new FeaturedNewsHeadlineFragment();
-
-                case ACTIVITY:
-                    return new DiscoveryActivityFragment();
+                default: // special case should be placed above
+                    return Fragment.instantiate(getActivity(), tabType.fragmentClass.getName());
             }
-
-            throw new IllegalStateException();
         }
 
         @Override public CharSequence getPageTitle(int position)
