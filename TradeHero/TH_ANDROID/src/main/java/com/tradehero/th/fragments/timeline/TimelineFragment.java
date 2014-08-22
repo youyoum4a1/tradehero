@@ -592,7 +592,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (shownProfile != null)
         {
-            setActionBarTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+            if (shownProfile.id == currentUserId.get().intValue())
+            {
+                setActionBarTitle(getString(R.string.me));
+            }
+            else
+            {
+                setActionBarTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+            }
         }
         else
         {

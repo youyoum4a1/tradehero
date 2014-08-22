@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -30,6 +31,8 @@ public class MeTimelineFragment extends TimelineFragment
     @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
+    private TextView updateCenterCountTextView;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -51,41 +54,35 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        //inflater.inflate(R.menu.timeline_menu, menu);
-        //displayActionBarTitle();
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.me_custom_actionbar);
-        getSherlockActivity().getSupportActionBar().setDisplayShowCustomEnabled(true);
+        inflater.inflate(R.menu.timeline_menu, menu);
+        displayActionBarTitle();
 
-        View messageCenter = getSherlockActivity().getSupportActionBar().getCustomView().findViewById(R.id.action_bar_message_center_icon);
-        messageCenter.setOnClickListener(this);
-        View home = getSherlockActivity().getSupportActionBar().getCustomView().findViewById(R.id.action_bar_home_icon);
-        home.setOnClickListener(this);
-
+        MenuItem updateCenterItem = menu.findItem(R.id.action_bar_update_center_icon);
+        View updateCenterIcon = updateCenterItem.getActionView();
+        updateCenterIcon.setOnClickListener(this);
+        updateCenterCountTextView = (TextView)updateCenterIcon.findViewById(R.id.action_bar_message_count);
         updateView();
     }
 
-    //@Override public boolean onOptionsItemSelected(MenuItem item)
-    //{
-    //    Timber.d("lyl item.id="+item.getItemId());
-    //    switch (item.getItemId())
-    //    {
-    //        case R.id.menu_edit:
-    //            getDashboardNavigator().pushFragment(SettingsProfileFragment.class);
-    //            return true;
-    //    }
-    //    return super.onOptionsItemSelected(item);
-    //}
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.action_bar_home_icon:
+                getDashboardNavigator().pushFragment(HomeFragment.class);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override protected void updateView()
     {
         super.updateView();
-        if (getSherlockActivity().getSupportActionBar().getCustomView() != null)
+        if (updateCenterCountTextView != null && shownProfile != null)
         {
-            TextView messageCount = (TextView)getSherlockActivity().getSupportActionBar().getCustomView().findViewById(R.id.action_bar_message_count);
-            if (messageCount != null && shownProfile != null)
-            {
-                messageCount.setText(String.valueOf(shownProfile.unreadMessageThreadsCount));
-            }
+            updateCenterCountTextView.setText(String.valueOf(shownProfile.unreadMessageThreadsCount));
         }
     }
 
@@ -98,10 +95,7 @@ public class MeTimelineFragment extends TimelineFragment
     {
         switch(view.getId())
         {
-            case R.id.action_bar_home_icon:
-                getDashboardNavigator().pushFragment(HomeFragment.class);
-                break;
-            case R.id.action_bar_message_center_icon:
+            case R.id.action_bar_update_center_icon:
                 getDashboardNavigator().pushFragment(UpdateCenterFragment.class);
                 break;
         }
