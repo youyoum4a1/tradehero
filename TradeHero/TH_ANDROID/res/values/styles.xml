@@ -140,6 +140,7 @@
   <style name="TradeHero.Dashboard" parent="TradeHero">
     <item name="android:windowActionBarOverlay">false</item>
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
+    <item name="android:actionBarTabStyle">@style/TH.TabStyle</item>
     <item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
     <item name="android:actionBarItemBackground">@drawable/basic_transparent_selector</item>
@@ -398,5 +399,4 @@
   <style name="TH.BuySellDialogAnimation" parent="android:Theme.Holo.Dialog.NoActionBar">
     <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom_and_expand</item>
   </style>
-
 </resources>
