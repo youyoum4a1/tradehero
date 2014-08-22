@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.achievement;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.graphics.Color;
@@ -19,7 +21,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.chrisbanes.colorfinder.ColorScheme;
@@ -39,6 +40,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractAchievementDialogFragment extends BaseDialogFragment
 {
     private static final String BUNDLE_KEY_USER_ACHIEVEMENT_ID = AbstractAchievementDialogFragment.class.getName() + ".UserAchievementDTOKey";
+
+    private static final int DEFAULT_FILTER_COLOR = Color.BLACK;
 
     @InjectView(R.id.achievement_content_container) ViewGroup contentContainer;
 
@@ -60,6 +63,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     protected UserAchievementId userAchievementId;
     protected UserAchievementDTO userAchievementDTO;
+    private int mCurrentColor = DEFAULT_FILTER_COLOR;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -92,6 +96,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         displayTitle();
         displayText();
         displaySubText();
+        setColor(DEFAULT_FILTER_COLOR);
+        playRotatingAnimation();
     }
 
     private void displayStarburst()
@@ -105,27 +111,45 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         if (colorScheme == null)
         {
             int color = graphicUtil.parseColor(userAchievementDTO.achievementDef.hexColor, Color.BLACK);
-
-            updatePulseColor(pulseEffect, color);
-            updatePulseColor(pulseEffect2, color);
-            updatePulseColor(starBurst, color);
-
-            title.setTextColor(color);
+            updateColor(color);
         }
         else
         {
-            updatePulseColor(pulseEffect, colorScheme.primaryAccent);
-            updatePulseColor(pulseEffect2, colorScheme.primaryAccent);
-            updatePulseColor(starBurst, colorScheme.primaryAccent);
-
-            title.setTextColor(colorScheme.primaryAccent);
+            updateColor(colorScheme.primaryAccent);
         }
+    }
+
+    private void updateColor(int color)
+    {
+        if (color != mCurrentColor)
+        {
+            ValueAnimator valueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), mCurrentColor, color);
+            valueAnimator.setDuration(500l);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+            {
+                @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+                {
+                    int color = (Integer) valueAnimator.getAnimatedValue();
+                    setColor(color);
+                }
+            });
+            valueAnimator.start();
+            mCurrentColor = color;
+        }
+    }
+
+    private void setColor(int color)
+    {
+        updatePulseColor(pulseEffect, color);
+        updatePulseColor(pulseEffect2, color);
+        updatePulseColor(starBurst, color);
+        title.setTextColor(color);
     }
 
     private void updatePulseColor(ImageView imageView, int color)
     {
         Drawable d = imageView.getDrawable();
-
+        d.clearColorFilter();
         d.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
     }
 
@@ -148,9 +172,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
                                 new DominantColorCalculator(((BitmapDrawable) badge.getDrawable()).getBitmap());
                         ColorScheme colorScheme = dominantColorCalculator.getColorScheme();
                         updateColor(colorScheme);
-
-                        displayPulse();
-                        displayStarburst();
                     }
 
                     @Override public void onError()
@@ -158,6 +179,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
                     }
                 });
+    }
+
+    private void playRotatingAnimation()
+    {
+        displayPulse();
+        displayStarburst();
     }
 
     private void displayPulse()
