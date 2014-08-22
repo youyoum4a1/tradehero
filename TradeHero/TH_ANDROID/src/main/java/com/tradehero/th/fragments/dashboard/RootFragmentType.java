@@ -24,6 +24,9 @@ public enum RootFragmentType
     TIMELINE(R.layout.home_selector,
             R.string.dashboard_timeline, R.string.dashboard_timeline_key,
             R.color.transparent, MeTimelineFragment.class),
+    ME(R.layout.home_selector,
+            R.string.dashboard_timeline, R.string.dashboard_timeline_key,
+            R.drawable.icn_menu_home, MeTimelineFragment.class),
     HOME(R.layout.tab_indicator_holo,
             R.string.dashboard_home, R.string.dashboard_home_key,
             R.drawable.icn_menu_home, HomeFragment.class),
@@ -82,7 +85,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, HOME, TRENDING, COMMUNITY, UPDATE_CENTER, REFERRAL, CONTEST_CENTER, STORE, SETTING
+                TIMELINE, TRENDING, COMMUNITY, REFERRAL, CONTEST_CENTER, STORE, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);
@@ -91,7 +94,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forBottomBar()
     {
         List<RootFragmentType> forBottomBar = Arrays.asList(
-                TIMELINE, TRENDING, UPDATE_CENTER, CONTEST_CENTER
+                ME, TRENDING, COMMUNITY, CONTEST_CENTER
         );
         return Collections.unmodifiableCollection(forBottomBar);
     }

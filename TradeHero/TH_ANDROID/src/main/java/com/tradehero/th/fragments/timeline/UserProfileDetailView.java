@@ -114,6 +114,15 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
         }
     }
 
+    private void notifyEditProfileClicked()
+    {
+        UserProfileCompactViewHolder.OnProfileClickedListener  listener = profileClickedListener;
+        if (listener != null)
+        {
+            listener.onEditProfileClicked();
+        }
+    }
+
     protected UserProfileCompactViewHolder.OnProfileClickedListener createProfileClickListener()
     {
         return new UserProfileDetailProfileClickedListener();
@@ -134,6 +143,11 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
         @Override public void onDefaultPortfolioClicked()
         {
             notifyDefaultPortfolioRequested();
+        }
+
+        @Override public void onEditProfileClicked()
+        {
+            notifyEditProfileClicked();
         }
     }
 }

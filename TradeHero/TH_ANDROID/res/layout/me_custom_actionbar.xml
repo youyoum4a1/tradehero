@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:text="@string/me"
+      android:textSize="@dimen/text_xlarge"
+      android:textColor="@color/black"/>
+
+  <RelativeLayout
+      android:id="@+id/action_bar_message_center_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_toLeftOf="@+id/action_bar_home_icon"
+      android:background="@drawable/accounts_glyph_email_required">
+    <TextView
+        android:id="@+id/action_bar_message_count"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"/>
+  </RelativeLayout>
+
+  <ImageView
+      android:id="@+id/action_bar_home_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:src="@drawable/icn_menu_home"/>
+</RelativeLayout>

@@ -4,15 +4,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.settings.SettingsProfileFragment;
+import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -23,7 +24,7 @@ import javax.inject.Inject;
         "user/me", "profiles/me"
 })
 public class MeTimelineFragment extends TimelineFragment
-    implements WithTutorial
+    implements WithTutorial, View.OnClickListener
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject Analytics analytics;
@@ -50,23 +51,59 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.timeline_menu, menu);
-        displayActionBarTitle();
+        //inflater.inflate(R.menu.timeline_menu, menu);
+        //displayActionBarTitle();
+        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.me_custom_actionbar);
+        getSherlockActivity().getSupportActionBar().setDisplayShowCustomEnabled(true);
+
+        View messageCenter = getSherlockActivity().getSupportActionBar().getCustomView().findViewById(R.id.action_bar_message_center_icon);
+        messageCenter.setOnClickListener(this);
+        View home = getSherlockActivity().getSupportActionBar().getCustomView().findViewById(R.id.action_bar_home_icon);
+        home.setOnClickListener(this);
+
+        updateView();
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
+    //@Override public boolean onOptionsItemSelected(MenuItem item)
+    //{
+    //    Timber.d("lyl item.id="+item.getItemId());
+    //    switch (item.getItemId())
+    //    {
+    //        case R.id.menu_edit:
+    //            getDashboardNavigator().pushFragment(SettingsProfileFragment.class);
+    //            return true;
+    //    }
+    //    return super.onOptionsItemSelected(item);
+    //}
+
+    @Override protected void updateView()
     {
-        switch (item.getItemId())
+        super.updateView();
+        if (getSherlockActivity().getSupportActionBar().getCustomView() != null)
         {
-            case R.id.menu_edit:
-                getDashboardNavigator().pushFragment(SettingsProfileFragment.class);
-                return true;
+            TextView messageCount = (TextView)getSherlockActivity().getSupportActionBar().getCustomView().findViewById(R.id.action_bar_message_count);
+            if (messageCount != null && shownProfile != null)
+            {
+                messageCount.setText(String.valueOf(shownProfile.unreadMessageThreadsCount));
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_timeline;
+    }
+
+    @Override public void onClick(View view)
+    {
+        switch(view.getId())
+        {
+            case R.id.action_bar_home_icon:
+                getDashboardNavigator().pushFragment(HomeFragment.class);
+                break;
+            case R.id.action_bar_message_center_icon:
+                getDashboardNavigator().pushFragment(UpdateCenterFragment.class);
+                break;
+        }
     }
 }
