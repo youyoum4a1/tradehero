@@ -473,7 +473,7 @@
 
   <style name="TH.Level.Earned" parent="android:TextAppearance.Holo.Small">
     <item name="android:gravity">right|center_vertical</item>
-    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textSize">@dimen/text_large</item>
   </style>
 
   <style name="TH.Level.Earned.VirtualDollar" parent="TH.Level.Earned">
@@ -486,6 +486,7 @@
 
   <style name="TH.Level.Earned.LevelUp" parent="TH.Level.Earned">
     <item name="android:textColor">#CE021B</item>
+    <item name="android:textSize">@dimen/text_small</item>
   </style>
 
   <style name="TH.Achievement.Dialog" parent="android:Theme.Holo.Light.Dialog" >
