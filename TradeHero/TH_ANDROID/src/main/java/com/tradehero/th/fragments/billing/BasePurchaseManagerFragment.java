@@ -72,6 +72,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
+        purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
     }
 
     @Override public void onResume()

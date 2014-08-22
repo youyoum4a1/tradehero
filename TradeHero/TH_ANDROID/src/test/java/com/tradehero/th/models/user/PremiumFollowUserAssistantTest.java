@@ -92,9 +92,9 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
             @Override public Object answer(InvocationOnMock invocation) throws Throwable
             {
                 Integer requestCode = 22;
-                //noinspection unchecked
+                //noinspection unchecked,ConstantConditions
                 ((THUIBillingRequest) invocation.getArguments()[0])
-                        .purchaseReportedListener
+                        .getPurchaseReportedListener()
                         .onPurchaseReported(
                                 requestCode,
                                 mock(ProductPurchase.class),
@@ -118,9 +118,9 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
             @Override public Object answer(InvocationOnMock invocation) throws Throwable
             {
                 Integer requestCode = 22;
-                //noinspection unchecked
+                //noinspection unchecked,ConstantConditions
                 ((THUIBillingRequest) invocation.getArguments()[0])
-                        .purchaseReportedListener
+                        .getPurchaseReportedListener()
                         .onPurchaseReportFailed(
                                 requestCode,
                                 mock(ProductPurchase.class),
@@ -252,9 +252,9 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         verify(billingInteractor, times(1)).run(any(THUIBillingRequest.class));
         assertThat(assistant.requestCode).isEqualTo(13);
         assertThat(receivedRequest).isNotNull();
-        assertThat(receivedRequest.domainToPresent).isEqualTo(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
-        assertThat(receivedRequest.userToFollow).isEqualTo(heroId);
-        assertThat(receivedRequest.applicablePortfolioId).isEqualTo(applicablePortfolioId);
+        assertThat(receivedRequest.getDomainToPresent()).isEqualTo(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+        assertThat(receivedRequest.getUserToPremiumFollow()).isEqualTo(heroId);
+        assertThat(receivedRequest.getApplicablePortfolioId()).isEqualTo(applicablePortfolioId);
     }
 
     @Test public void followWithNotEnoughCCAndBoughtFailedWillNotify()

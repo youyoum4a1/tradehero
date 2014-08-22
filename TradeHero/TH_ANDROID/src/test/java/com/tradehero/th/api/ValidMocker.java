@@ -1,6 +1,9 @@
 package com.tradehero.th.api;
 
 import com.tradehero.th.api.alert.AlertId;
+import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
+import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.CompetitionId;
@@ -257,6 +260,17 @@ public class ValidMocker
                     perPage != null || random.nextBoolean() ? 1 : null,
                     perPage
             );
+        }
+        if (type.equals(PurchaseReportDTO.class))
+        {
+            if (random.nextBoolean())
+            {
+                return new GooglePlayPurchaseReportDTO("data", "signature");
+            }
+            else
+            {
+                return new SamsungPurchaseReportDTO("paymentId", "purchaseId", "productCode");
+            }
         }
 
         if (type.equals(Boolean.class) || type.equals(boolean.class))

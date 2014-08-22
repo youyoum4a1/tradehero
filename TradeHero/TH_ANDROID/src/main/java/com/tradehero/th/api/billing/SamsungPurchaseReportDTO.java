@@ -21,6 +21,14 @@ public class SamsungPurchaseReportDTO implements PurchaseReportDTO
         super();
     }
 
+    public SamsungPurchaseReportDTO(String paymentId, String purchaseId, String productCode)
+    {
+        super();
+        this.paymentId = paymentId;
+        this.purchaseId = purchaseId;
+        this.productCode = productCode;
+    }
+
     public SamsungPurchaseReportDTO(SamsungPurchase samsungPurchase)
     {
         super();

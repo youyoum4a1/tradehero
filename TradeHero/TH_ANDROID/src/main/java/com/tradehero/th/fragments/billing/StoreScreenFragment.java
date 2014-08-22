@@ -109,9 +109,17 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
         if (productDomainIdentifierOrdinal != null)
         {
-            createPurchaseActionInteractorBuilder()
-                    .build()
-                    .showProductsList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
+            detachRequestCode();
+            THUIBillingRequest uiRequest = (THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                    .domainToPresent(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal])
+                    .applicablePortfolioId(getApplicablePortfolioId())
+                    .startWithProgressDialog(true)
+                    .popIfBillingNotAvailable(true)
+                    .popIfProductIdentifierFetchFailed(true)
+                    .popIfInventoryFetchFailed(true)
+                    .build();
+            //noinspection unchecked
+            requestCode = userInteractor.run(uiRequest);
         }
     }
 
@@ -151,7 +159,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     public THUIBillingRequest getShowBillingAvailableRequest()
     {
         BaseTHUIBillingRequest.Builder request = uiBillingRequestBuilderProvider.get();
-        request.applicablePortfolioId(getApplicablePortfolioId());
         request.startWithProgressDialog(false);
         request.popIfBillingNotAvailable(!alreadyNotifiedNeedCreateAccount);
         request.testBillingAvailable(true);

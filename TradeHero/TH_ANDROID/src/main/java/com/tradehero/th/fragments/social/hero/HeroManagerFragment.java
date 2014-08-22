@@ -132,13 +132,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         setActionBarTitle(getTitle());
     }
 
-    private void handleBuyMoreClicked()
-    {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .buyFollowCredits();
-    }
-
     @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
         return super.createPurchaseActionInteractorBuilder()

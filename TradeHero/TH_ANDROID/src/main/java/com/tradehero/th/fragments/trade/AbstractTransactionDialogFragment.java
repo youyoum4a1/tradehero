@@ -151,7 +151,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private BuySellTransactionListener buySellTransactionListener;
     protected UserProfileDTO userProfileDTO;
 
-    private AlertDialog mSocialLinkingDialog;
+    protected AlertDialog mSocialLinkingDialog;
     private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TextWatcher mQuantityTextWatcher;
     private TransactionEditCommentFragment transactionCommentFragment;

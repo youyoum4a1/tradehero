@@ -35,6 +35,8 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
@@ -431,16 +433,26 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleResetPortfolioItemOnClick()
     {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .resetPortfolio();
+        detachRequestCode();
+        //noinspection unchecked
+        requestCode = userInteractor.run((THUIBillingRequest)
+                uiBillingRequestBuilderProvider.get()
+                        .domainToPresent(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO)
+                        .applicablePortfolioId(getApplicablePortfolioId())
+                        .startWithProgressDialog(true)
+                        .build());
     }
 
-    private void handleExtraCashItemOnClick()
+    protected void handleExtraCashItemOnClick()
     {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .buyVirtualDollar();
+        detachRequestCode();
+        //noinspection unchecked
+        requestCode = userInteractor.run((THUIBillingRequest)
+                uiBillingRequestBuilderProvider.get()
+                        .domainToPresent(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR)
+                        .applicablePortfolioId(getApplicablePortfolioId())
+                        .startWithProgressDialog(true)
+                        .build());
     }
 
     private void handleEarnCreditItemOnClick()

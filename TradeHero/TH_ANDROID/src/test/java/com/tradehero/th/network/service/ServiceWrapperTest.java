@@ -54,7 +54,7 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
      * @throws InstantiationException
      */
     @Test public void callingAllServiceWrappersWithCallbackPassesMiddleCallback()
-            throws InvocationTargetException, IllegalAccessException, InstantiationException
+            throws InvocationTargetException, IllegalAccessException, InstantiationException, InterruptedException
     {
         List<Class<?>> serviceWrappers = getAllServiceWrappers();
         serviceWrappers.remove(TranslationServiceWrapper.class); // As it has no associated Async
@@ -66,6 +66,8 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
                 callingServiceWrapperWithCallbackPassesMiddleCallback(
                         serviceWrappers.get(index),
                         serviceAsyncs.get(index));
+                System.gc();
+                Thread.sleep(100);
             }
         }
     }
