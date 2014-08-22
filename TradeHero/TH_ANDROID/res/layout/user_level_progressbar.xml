@@ -31,14 +31,4 @@
       tools:text="10"
       style="@style/TH.Level.Current"/>
 
-  <TextView
-      android:id="@+id/user_level_progress_bar_indicator"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignRight="@id/user_level_main_progress_bar"
-      android:layout_marginRight="@dimen/user_level_indicator_horizontal_margin"
-      android:layout_below="@id/user_level_main_progress_bar"
-      tools:text="2000/8000 XP"
-      style="@style/TH.Level.Indicator"/>
-
 </com.tradehero.th.widget.UserLevelProgressBar>

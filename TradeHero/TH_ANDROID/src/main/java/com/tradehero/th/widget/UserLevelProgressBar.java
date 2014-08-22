@@ -28,7 +28,6 @@ public class UserLevelProgressBar extends RelativeLayout
     private static final long MS_PER_XP = 5;
 
     @InjectView(R.id.user_level_progress_next) protected TextView nextLevelLabel;
-    @InjectView(R.id.user_level_progress_bar_indicator) protected TextView xpIndicatorLabel;
     @InjectView(R.id.user_level_progress_current) protected TextView currentLevelLabel;
 
     @InjectView(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
@@ -127,7 +126,6 @@ public class UserLevelProgressBar extends RelativeLayout
     private void hideNextLevel()
     {
         nextLevelLabel.setVisibility(View.GONE);
-        xpIndicatorLabel.setVisibility(View.GONE);
     }
 
     public void setStartDelayOnLevelUp(long msDelay)
@@ -190,7 +188,6 @@ public class UserLevelProgressBar extends RelativeLayout
     private void updateXPIndicator(int xp)
     {
         mCurrentXP = xp;
-        xpIndicatorLabel.setText(String.format(xpFormat, xp, currentLevelDTO.xpTo));
     }
 
     @VisibleForTesting
