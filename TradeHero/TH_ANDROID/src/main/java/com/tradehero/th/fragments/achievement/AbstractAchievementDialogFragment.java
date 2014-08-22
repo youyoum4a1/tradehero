@@ -53,6 +53,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
     @InjectView(R.id.achievement_badge) ImageView badge;
     @InjectView(R.id.achievement_pulse) ImageView pulseEffect;
     @InjectView(R.id.achievement_pulse2) ImageView pulseEffect2;
+    @InjectView(R.id.achievement_pulse3) ImageView pulseEffect3;
     @InjectView(R.id.achievement_starburst) ImageView starBurst;
 
     @InjectView(R.id.btn_achievement_dismiss) Button btnDismiss;
@@ -142,6 +143,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
     {
         updatePulseColor(pulseEffect, color);
         updatePulseColor(pulseEffect2, color);
+        updatePulseColor(pulseEffect3, color);
         updatePulseColor(starBurst, color);
         title.setTextColor(color);
     }
@@ -193,13 +195,16 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
         Animator animator = AnimatorInflater.loadAnimator(getActivity(), R.animator.achievement_pulse);
         Animator animator1 = animator.clone();
+        Animator animator2 = animator.clone();
 
         animator.setTarget(pulseEffect);
         animator1.setTarget(pulseEffect2);
+        animator2.setTarget(pulseEffect3);
 
         animator1.setStartDelay(getResources().getInteger(R.integer.achievement_pulse_delay));
+        animator2.setStartDelay(getResources().getInteger(R.integer.achievement_pulse_delay2));
 
-        animatorSet.playTogether(animator, animator1);
+        animatorSet.playTogether(animator, animator1, animator2);
         animatorSet.start();
     }
 
