@@ -7,8 +7,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import static com.tradehero.th.fragments.social.friend.SocialFriendHandler.RequestCallback;
+import org.jetbrains.annotations.NotNull;
 
 public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 {
@@ -54,12 +53,12 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
         return new FacebookInviteFriendCallback(usersToInvite);
     }
 
-    class FacebookInviteFriendCallback extends SocialFriendHandlerFacebook.FacebookRequestCallback
+    class FacebookInviteFriendCallback extends FacebookRequestCallback
     {
         final List<UserFriendsDTO> usersToInvite;
 
         //<editor-fold desc="Constructors">
-        public FacebookInviteFriendCallback(Context context, List<UserFriendsDTO> usersToInvite)
+        public FacebookInviteFriendCallback(@NotNull Context context, List<UserFriendsDTO> usersToInvite)
         {
             super(context);
             this.usersToInvite = usersToInvite;
@@ -67,8 +66,7 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 
         private FacebookInviteFriendCallback(List<UserFriendsDTO> usersToInvite)
         {
-            super(getActivity());
-            this.usersToInvite = usersToInvite;
+            this(getActivity(), usersToInvite);
         }
         //</editor-fold>
 

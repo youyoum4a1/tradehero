@@ -50,7 +50,7 @@ public class DiscussionCache extends StraightCutDTOCacheNew<DiscussionKey, Abstr
         }
         else if (discussionKey instanceof NewsItemDTOKey)
         {
-            return newsServiceWrapper.getSecurityNewsDetail(discussionKey.id);
+            return newsServiceWrapper.getSecurityNewsDetail(discussionKey);
         }
         return discussionServiceWrapper.getComment(discussionKey);
     }

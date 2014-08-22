@@ -493,8 +493,8 @@ public class MessagesCenterFragment extends DashboardFragment
         unsetDeletionMiddleCallback();
         messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
                 messageHeaderDTO.getDTOKey(),
-                messageHeaderDTO.senderUserId,
-                messageHeaderDTO.recipientUserId,
+                messageHeaderDTO.getSenderId(),
+                messageHeaderDTO.getRecipientId(),
                 currentUserId.toUserBaseKey(),
                 new MessageDeletionCallback(messageHeaderDTO));
     }
@@ -749,9 +749,9 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         middleCallbackList.add(
                 messageServiceWrapper.get().readMessage(
-                        messageHeaderDTO.id,
-                        messageHeaderDTO.senderUserId,
-                        messageHeaderDTO.recipientUserId,
+                        messageHeaderDTO.getDTOKey(),
+                        messageHeaderDTO.getSenderId(),
+                        messageHeaderDTO.getRecipientId(),
                         messageHeaderDTO.getDTOKey(),
                         currentUserId.toUserBaseKey(),
                         createMessageAsReadCallback(messageHeaderDTO)));

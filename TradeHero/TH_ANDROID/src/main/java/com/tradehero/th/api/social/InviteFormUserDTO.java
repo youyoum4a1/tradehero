@@ -4,35 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public class InviteFormUserDTO extends InviteFormMessageDTO implements InviteFormDTO
+public class InviteFormUserDTO extends InviteFormMessageDTO
 {
-    public List<InviteDTO> users;
+    @NotNull public List<InviteDTO> users;
 
     //<editor-fold desc="Constructors">
     public InviteFormUserDTO()
     {
-        msg = "";
+        super("");
+        users = new ArrayList<>();
+    }
+
+    public InviteFormUserDTO(@NotNull List<? extends UserFriendsDTO> userFriendsDTOs)
+    {
+        this();
+        addAll(userFriendsDTOs);
     }
     //</editor-fold>
 
-    public void addAll(@NotNull List<UserFriendsDTO> userFriendsDTOs)
+    public void addAll(@NotNull List<? extends UserFriendsDTO> userFriendsDTOs)
     {
-        if (users == null)
-        {
-            users = new ArrayList<>();
-        }
         for (@NotNull UserFriendsDTO userFriendsDTO : userFriendsDTOs)
         {
-            users.add(userFriendsDTO.createInvite());
+            add(userFriendsDTO);
         }
     }
 
     public void add(@NotNull UserFriendsDTO userFriendsDTO)
     {
-        if (users == null)
-        {
-            users = new ArrayList<>();
-        }
         users.add(userFriendsDTO.createInvite());
     }
 }

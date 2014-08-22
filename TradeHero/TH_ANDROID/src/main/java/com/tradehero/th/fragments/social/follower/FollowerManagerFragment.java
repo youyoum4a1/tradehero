@@ -33,6 +33,7 @@ import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.GraphicUtil;
 import dagger.Lazy;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -55,9 +56,9 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Inject CurrentUserId currentUserId;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject GraphicUtil graphicUtil;
 
     private UserBaseKey heroId;
-
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
 
     public static void putHeroId(Bundle args, UserBaseKey heroId)
@@ -268,7 +269,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     private void setTitleColor()
     {
-        int color = getResources().getColor(android.R.color.holo_blue_light);
+        int color = getResources().getColor(R.color.tradehero_blue);
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++)
         {
 
@@ -282,6 +283,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             }
             else
             {
+                graphicUtil.setBackground(mTabHost.getTabWidget().getChildAt(i), getResources().getDrawable(R.drawable.tab_indicator_ab_th));
                 tv.setTextColor(color);
             }
         }

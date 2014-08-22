@@ -31,9 +31,9 @@ public class DTOProcessorAddCash extends DTOProcessorUpdateUserProfile
     @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
-        portfolioCompactListCache.invalidate(ownedPortfolioId.getUserBaseKey());
-        portfolioCompactCache.invalidate(ownedPortfolioId.getPortfolioIdKey());
         portfolioCache.invalidate(ownedPortfolioId);
+        portfolioCompactCache.invalidate(ownedPortfolioId.getPortfolioIdKey());
+        portfolioCompactListCache.getOrFetchAsync(ownedPortfolioId.getUserBaseKey(), true);
         return processed;
     }
 }

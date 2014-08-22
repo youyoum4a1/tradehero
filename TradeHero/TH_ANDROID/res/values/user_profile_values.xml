@@ -32,24 +32,13 @@
     <item name="android:textStyle">normal</item>
   </style>
 
-  <style name="UserProfile.ButtonContainer">
-    <item name="android:background">@drawable/profile_bottom_button_bg</item>
-  </style>
-
   <color name="user_profile_blue">@color/button_blue</color>
   <dimen name="user_profile_button_margin">6dp</dimen>
   <drawable name="user_profile_button_active">@drawable/action_button_active_2_0</drawable>
   <drawable name="user_profile_button_default">@drawable/action_button_available_2_0</drawable>
 
-  <style name="UserProfile.Button">
-    <item name="android:layout_width">0dp</item>
-    <item name="android:layout_height">match_parent</item>
-    <item name="android:layout_weight">1</item>
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_small</item>
-    <item name="android:textColor">@color/user_profile_button_text</item>
-    <item name="android:background">@drawable/user_profile_button_bg</item>
-    <item name="android:layout_margin">@dimen/user_profile_button_margin</item>
+  <style name="UserProfile.Button" parent="TH.BuySell_ViewPager_Button">
+
   </style>
 
   <integer name="user_profile_photo_max_edge_pixel">480</integer>

@@ -19,6 +19,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import retrofit.RetrofitError;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -192,7 +193,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(userServiceWrapper, times(1)).follow(heroId, assistant);
     }
@@ -210,7 +211,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
@@ -228,7 +229,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, expected);
     }
@@ -245,7 +246,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         makeBillingInteractorSaveRequest(13);
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         //noinspection unchecked
         verify(billingInteractor, times(1)).run(any(THUIBillingRequest.class));
@@ -285,7 +286,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(userServiceWrapper, times(1)).follow(heroId, assistant);
     }
@@ -308,7 +309,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowFailed(heroId, retrofitError);
     }
@@ -331,7 +332,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, myProfileAfterFollow);
     }

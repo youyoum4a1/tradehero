@@ -80,6 +80,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         super.onStop();
     }
 
+
     @Override public void onDestroy()
     {
         this.leaderboardDefCacheListener = null;

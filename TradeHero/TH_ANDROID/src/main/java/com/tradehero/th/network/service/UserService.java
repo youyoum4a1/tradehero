@@ -22,7 +22,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
+import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -190,7 +190,7 @@ public interface UserService
             @Query("q") String query);
     //</editor-fold>
 
-    @POST("/users/BatchFollow/free") Response followBatchFree(@Body FollowFriendsForm followFriendsForm);
+    @POST("/users/BatchFollow/free") Response followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends") Response inviteFriends(
