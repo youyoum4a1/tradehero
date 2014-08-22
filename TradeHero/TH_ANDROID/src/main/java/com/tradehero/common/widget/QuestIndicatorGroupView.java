@@ -19,27 +19,44 @@ public class QuestIndicatorGroupView extends LinearLayout
 
     public QuestIndicatorGroupView(Context context)
     {
-        this(context, null, 0);
+        super(context);
     }
 
     public QuestIndicatorGroupView(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public QuestIndicatorGroupView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init();
     }
 
-    private void init()
+    @Override protected void onFinishInflate()
     {
+        super.onFinishInflate();
         ButterKnife.inject(this);
     }
 
-    public void setCurrentQuestProgress(int progress)
+    public void setCurrentCount(int progress)
     {
+        int mCurrent = progress;
+        int mCurrentN1 = progress - 1;
+        int mCurrentN2 = progress - 2;
+        int mCurrent1 = progress + 1;
+        int mCurrent2 = progress + 2;
+
+        questIndicatorView1.on();
+        questIndicatorView2.on();
+        questIndicatorView3.animateOn();
+        questIndicatorView4.off();
+        questIndicatorView5.off();
+
+        questIndicatorView1.setText("Day 1", "TH$ 5k");
+        questIndicatorView2.setText("Day 2", "TH$ 10k");
+        questIndicatorView3.setText("Day 3", "TH$ 15k");
+        questIndicatorView4.setText("Day 4", "TH$ 20k");
+        questIndicatorView5.setText("Day 5", "TH$ 25k");
 
     }
 }
