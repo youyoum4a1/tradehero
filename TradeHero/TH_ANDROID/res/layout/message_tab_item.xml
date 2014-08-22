@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal"
-    style="@android:style/Widget.Holo.Tab"
+    style="@style/TH.TabStyle"
     >
-
+  
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
       android:layout_centerInParent="true"
       tools:text="stock name"
       android:textSize="@dimen/text_small"
-      android:textColor="@android:color/holo_blue_light"
+      android:textColor="@color/tradehero_blue"
       />
 
   <TextView
@@ -29,6 +29,7 @@
       android:gravity="center"
       android:textSize="@dimen/text_xxsmall"
       android:background="@drawable/red_circle"
+      android:textColor="@color/white"
       tools:text="33"
       />
 </com.tradehero.th.fragments.updatecenter.TitleTabView>

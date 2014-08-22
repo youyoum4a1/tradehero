@@ -10,6 +10,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class TimelineItemShareFormDTOFactory
 {
@@ -18,22 +19,19 @@ public class TimelineItemShareFormDTOFactory
         super();
     }
 
-    public TimelineItemShareFormDTO createFrom(
-            SocialNetworkEnum socialNetwork,
-            AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+    @NotNull public TimelineItemShareFormDTO createFrom(
+            @NotNull SocialNetworkEnum socialNetwork,
+            @NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
-        if (abstractDiscussionCompactDTO == null)
-        {
-            return null;
-        }
         TimelineItemShareFormDTO timelineItemShareFormDTO = new TimelineItemShareFormDTO();
         populateWith(timelineItemShareFormDTO, socialNetwork, abstractDiscussionCompactDTO);
         return timelineItemShareFormDTO;
     }
 
-    protected void populateWith(TimelineItemShareFormDTO timelineItemShareFormDTO,
-            SocialNetworkEnum socialNetwork,
-            AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+    protected void populateWith(
+            @NotNull TimelineItemShareFormDTO timelineItemShareFormDTO,
+            @NotNull SocialNetworkEnum socialNetwork,
+            @NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         timelineItemShareFormDTO.timelineItemShareRequestDTO = new TimelineItemShareRequestDTO(socialNetwork);
         if (abstractDiscussionCompactDTO instanceof DiscussionDTO)
@@ -43,8 +41,7 @@ public class TimelineItemShareFormDTOFactory
                     DiscussionType.COMMENT,
                     abstractDiscussionCompactDTO.id);
         }
-        else if ((abstractDiscussionCompactDTO instanceof NewsItemCompactDTO) ||
-                (abstractDiscussionCompactDTO instanceof NewsItemDTO))
+        else if (abstractDiscussionCompactDTO instanceof NewsItemCompactDTO)
         {
             timelineItemShareFormDTO.discussionListKey = new DiscussionListKey(
                     DiscussionType.NEWS,

@@ -66,7 +66,8 @@ public class TransformationModule
 		transformation.add(new StackBlurTransformation(30));
         transformation.add(new GradientTransformation(
                 context.getResources().getColor(R.color.profile_view_gradient_top),
-                context.getResources().getColor(R.color.black)));
+                context.getResources().getColor(R.color.profile_view_gradient_bottom)));
+        transformation.add(new AlphaTransformation(0.5f));
         return transformation;
     }
 

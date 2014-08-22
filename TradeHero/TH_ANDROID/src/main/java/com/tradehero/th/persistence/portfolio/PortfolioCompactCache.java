@@ -36,6 +36,12 @@ import org.jetbrains.annotations.Nullable;
 
     @Override public PortfolioCompactDTO put(@NotNull PortfolioId key, @NotNull PortfolioCompactDTO value)
     {
+        PortfolioCompactDTO previous = get(key);
+        //noinspection ConstantConditions
+        if (previous != null && previous.userId != null)
+        {
+            value.userId = previous.userId;
+        }
         //noinspection ConstantConditions
         if (value.userId == null)
         {
