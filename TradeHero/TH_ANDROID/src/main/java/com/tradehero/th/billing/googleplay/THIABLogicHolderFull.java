@@ -2,7 +2,6 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
@@ -18,11 +17,8 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.samsung.THProductDetailDomainPredicate;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
-import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -53,9 +49,6 @@ class THIABLogicHolderFull
             @NotNull THIABInventoryFetcherHolder thiabInventoryFetcherHolder,
             @NotNull THIABPurchaseFetcherHolder thiabPurchaseFetcherHolder,
             @NotNull THIABPurchaserHolder thiabPurchaserHolder,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull HeroListCache heroListCache,
             @NotNull THIABPurchaseReporterHolder thiabPurchaseReporterHolder,
             @NotNull THIABPurchaseConsumerHolder thiabPurchaseConsumerHolder)
     {
@@ -67,9 +60,6 @@ class THIABLogicHolderFull
                 thiabInventoryFetcherHolder,
                 thiabPurchaseFetcherHolder,
                 thiabPurchaserHolder,
-                userProfileCache,
-                userServiceWrapper,
-                heroListCache,
                 thiabPurchaseReporterHolder);
         this.thBaseIABPurchaseConsumerHolder = thiabPurchaseConsumerHolder;
     }

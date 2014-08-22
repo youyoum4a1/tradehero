@@ -15,11 +15,8 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.samsung.persistence.THSamsungGroupItemCache;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
-import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.dagger.ForUIThread;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +50,6 @@ public class THSamsungLogicHolderFull
             @NotNull THSamsungInventoryFetcherHolder thSamsungInventoryFetcherHolder,
             @NotNull THSamsungPurchaseFetcherHolder thSamsungPurchaseFetcherHolder,
             @NotNull THSamsungPurchaserHolder thSamsungPurchaserHolder,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull HeroListCache heroListCache,
             @NotNull THSamsungPurchaseReporterHolder thSamsungPurchaseReporterHolder,
             @NotNull THSamsungGroupItemCache groupItemCache,
             @NotNull @ForUIThread Handler uiHandler)
@@ -68,9 +62,6 @@ public class THSamsungLogicHolderFull
                 thSamsungInventoryFetcherHolder,
                 thSamsungPurchaseFetcherHolder,
                 thSamsungPurchaserHolder,
-                userProfileCache,
-                userServiceWrapper,
-                heroListCache,
                 thSamsungPurchaseReporterHolder);
         this.groupItemCache = groupItemCache;
         this.uiHandler = uiHandler;

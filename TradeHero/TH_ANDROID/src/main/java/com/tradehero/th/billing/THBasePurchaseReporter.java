@@ -119,10 +119,15 @@ abstract public class THBasePurchaseReporter<
                 handled = true;
                 if (purchase.getUserToFollow() != null)
                 {
-                    userServiceWrapper.get().follow(
-                            purchase.getUserToFollow(),
+                    // TODO remove when ok https://www.pivotaltracker.com/story/show/77362688
+                    userServiceWrapper.get().addCredit(
+                            purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                             purchase.getPurchaseReportDTO(),
-                            createPurchaseReportedCallback());
+                            tempCreatePurchaseReportedCreditBeforeFollowCallback());
+                    //userServiceWrapper.get().follow( // TODO put back when ok https://www.pivotaltracker.com/story/show/77362688
+                    //        purchase.getUserToFollow(),
+                    //        purchase.getPurchaseReportDTO(),
+                    //        createPurchaseReportedCallback());
                 }
                 else
                 {
@@ -177,6 +182,24 @@ abstract public class THBasePurchaseReporter<
         if (listener1 != null)
         {
             listener1.onPurchaseReportFailed(requestCode, this.purchase, error);
+        }
+    }
+
+    @Deprecated // Remove when this is ok https://www.pivotaltracker.com/story/show/77362688
+    protected Callback<UserProfileDTO> tempCreatePurchaseReportedCreditBeforeFollowCallback()
+    {
+        return new TempTHBasePurchaseReportedCreditBeforeFollowCallback();
+    }
+
+    @Deprecated // Remove when this is ok https://www.pivotaltracker.com/story/show/77362688
+    protected class TempTHBasePurchaseReportedCreditBeforeFollowCallback
+        extends THBasePurchaseReporterPurchaseCallback
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            userServiceWrapper.get().follow(
+                    purchase.getUserToFollow(),
+                    createPurchaseReportedCallback());
         }
     }
 

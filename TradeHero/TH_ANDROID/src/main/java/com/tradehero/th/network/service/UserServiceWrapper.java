@@ -725,7 +725,7 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
-    @NotNull protected DTOProcessor<UserProfileDTO> createFollowPremiumUserProcessor(@NotNull UserBaseKey userToFollow)
+    @NotNull protected DTOProcessor<UserProfileDTO> createFollowPremiumUserProcessor(@NotNull UserBaseKey heroId)
     {
         return new DTOProcessorFollowPremiumUser(
                 userProfileCache,
@@ -733,41 +733,42 @@ import retrofit.client.Response;
                 getPositionsCache,
                 userMessagingRelationshipCache,
                 allowableRecipientPaginatedCache.get(),
-                userToFollow);
+                currentUserId.toUserBaseKey(),
+                heroId);
     }
 
-    public UserProfileDTO follow(@NotNull UserBaseKey userBaseKey)
+    public UserProfileDTO follow(@NotNull UserBaseKey heroId)
     {
-        return createFollowPremiumUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key));
+        return createFollowPremiumUserProcessor(heroId).process(userService.follow(heroId.key));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> follow(
-            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(userBaseKey));
-        userServiceAsync.follow(userBaseKey.key, middleCallback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(heroId));
+        userServiceAsync.follow(heroId.key, middleCallback);
         return middleCallback;
     }
 
     public UserProfileDTO follow(
-            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserBaseKey heroId,
             @NotNull PurchaseReportDTO purchaseDTO)
     {
-        return createFollowPremiumUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key, purchaseDTO));
+        return createFollowPremiumUserProcessor(heroId).process(userService.follow(heroId.key, purchaseDTO));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> follow(
-            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserBaseKey heroId,
             @NotNull PurchaseReportDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(userBaseKey));
-        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(heroId));
+        userServiceAsync.follow(heroId.key, purchaseDTO, middleCallback);
         return middleCallback;
     }
 
-    @NotNull protected DTOProcessor<UserProfileDTO> createFollowFreeUserProcessor(@NotNull UserBaseKey userToFollow)
+    @NotNull protected DTOProcessor<UserProfileDTO> createFollowFreeUserProcessor(@NotNull UserBaseKey heroId)
     {
         return new DTOProcessorFollowFreeUser(
                 userProfileCache,
@@ -775,26 +776,27 @@ import retrofit.client.Response;
                 getPositionsCache,
                 userMessagingRelationshipCache,
                 allowableRecipientPaginatedCache.get(),
-                userToFollow);
+                currentUserId.toUserBaseKey(),
+                heroId);
     }
 
-    public UserProfileDTO freeFollow(@NotNull UserBaseKey userBaseKey)
+    public UserProfileDTO freeFollow(@NotNull UserBaseKey heroId)
     {
-        return createFollowFreeUserProcessor(userBaseKey).process(userService.freeFollow(userBaseKey.key));
+        return createFollowFreeUserProcessor(heroId).process(userService.freeFollow(heroId.key));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> freeFollow(
-            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowFreeUserProcessor(userBaseKey));
-        userServiceAsync.freeFollow(userBaseKey.key, middleCallback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowFreeUserProcessor(heroId));
+        userServiceAsync.freeFollow(heroId.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
-    @NotNull protected DTOProcessor<UserProfileDTO> createUnfollowUserProcessor(@NotNull UserBaseKey userToFollow)
+    @NotNull protected DTOProcessor<UserProfileDTO> createUnfollowUserProcessor(@NotNull UserBaseKey heroId)
     {
         return new DTOProcessorUnfollowUser(
                 userProfileCache,
@@ -802,20 +804,21 @@ import retrofit.client.Response;
                 getPositionsCache,
                 userMessagingRelationshipCache,
                 allowableRecipientPaginatedCache.get(),
-                userToFollow);
+                currentUserId.toUserBaseKey(),
+                heroId);
     }
 
-    public UserProfileDTO unfollow(@NotNull UserBaseKey userBaseKey)
+    public UserProfileDTO unfollow(@NotNull UserBaseKey heroId)
     {
-        return createUnfollowUserProcessor(userBaseKey).process(userService.unfollow(userBaseKey.key));
+        return createUnfollowUserProcessor(heroId).process(userService.unfollow(heroId.key));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> unfollow(
-            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUnfollowUserProcessor(userBaseKey));
-        userServiceAsync.unfollow(userBaseKey.key, middleCallback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUnfollowUserProcessor(heroId));
+        userServiceAsync.unfollow(heroId.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

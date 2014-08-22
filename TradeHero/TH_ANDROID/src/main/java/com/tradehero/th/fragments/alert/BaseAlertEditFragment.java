@@ -32,8 +32,10 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -274,15 +276,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void popPurchase()
     {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .buyStockAlertSubscription();
-    }
-
-    @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
-    {
-        return super.createPurchaseActionInteractorBuilder()
-                .setPurchaseReportedListener(new THPurchaseReporter.OnPurchaseReportedListener()
+        detachRequestCode();
+        //noinspection unchecked
+        requestCode = userInteractor.run((THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                .domainToPresent(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
+                .purchaseReportedListener(new THPurchaseReporter.OnPurchaseReportedListener()
                 {
                     @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
                     {
@@ -292,7 +290,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                     @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
                     {
                     }
-                });
+                })
+                .build());
     }
 
     protected void saveAlert()

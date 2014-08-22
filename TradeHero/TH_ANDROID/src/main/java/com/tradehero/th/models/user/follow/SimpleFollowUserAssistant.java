@@ -1,4 +1,4 @@
-package com.tradehero.th.models.user;
+package com.tradehero.th.models.user.follow;
 
 import android.content.Context;
 import com.tradehero.th.R;
@@ -16,25 +16,31 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class SimplePremiumFollowUserAssistant implements Callback<UserProfileDTO>
+public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
 {
     @Inject protected Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject protected UserServiceWrapper userServiceWrapper;
     @Inject protected Lazy<CurrentActivityHolder> currentActivityHolderLazy;
+
+    @NotNull protected final UserBaseKey heroId;
     @Nullable private OnUserFollowedListener userFollowedListener;
-    @NotNull protected final UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
-    public SimplePremiumFollowUserAssistant(
-            @NotNull UserBaseKey userToFollow,
+    public SimpleFollowUserAssistant(
+            @NotNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener)
     {
         super();
-        this.userToFollow = userToFollow;
+        this.heroId = heroId;
         this.userFollowedListener = userFollowedListener;
         DaggerUtils.inject(this);
     }
     //</editor-fold>
+
+    public void onDestroy()
+    {
+        setUserFollowedListener(null);
+    }
 
     public void setUserFollowedListener(@Nullable OnUserFollowedListener userFollowedListener)
     {
@@ -43,31 +49,43 @@ public class SimplePremiumFollowUserAssistant implements Callback<UserProfileDTO
 
     public void launchUnFollow()
     {
-        userServiceWrapper.unfollow(userToFollow, this);
+        showProgress(R.string.manage_heroes_unfollow_progress_message);
+        userServiceWrapper.unfollow(heroId, this);
     }
 
-    protected void launchFollow()
+    public void launchFreeFollow()
+    {
+        showProgress(R.string.following_this_hero);
+        userServiceWrapper.freeFollow(heroId, this);
+    }
+
+    protected void launchPremiumFollow()
+    {
+        showProgress(R.string.following_this_hero);
+        userServiceWrapper.follow(heroId, this);
+    }
+
+    protected void showProgress(int contentResId)
     {
         Context currentContext = currentActivityHolderLazy.get().getCurrentContext();
         if (currentContext != null)
         {
             alertDialogUtilLazy.get().showProgressDialog(
                     currentContext,
-                    currentContext.getString(R.string.following_this_hero));
+                    currentContext.getString(contentResId));
         }
-        userServiceWrapper.follow(userToFollow, this);
     }
 
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
-        notifyFollowSuccess(userToFollow, userProfileDTO);
+        notifyFollowSuccess(heroId, userProfileDTO);
     }
 
     @Override public void failure(RetrofitError error)
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
-        notifyFollowFailed(userToFollow, error);
+        notifyFollowFailed(heroId, error);
     }
 
     protected void notifyFollowSuccess(
@@ -94,8 +112,7 @@ public class SimplePremiumFollowUserAssistant implements Callback<UserProfileDTO
 
     public static interface OnUserFollowedListener
     {
-        void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO);
-
-        void onUserFollowFailed(UserBaseKey userFollowed, Throwable error);
+        void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO);
+        void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error);
     }
 }

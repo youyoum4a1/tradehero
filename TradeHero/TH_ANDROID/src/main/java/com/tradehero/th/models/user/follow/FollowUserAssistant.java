@@ -1,4 +1,4 @@
-package com.tradehero.th.models.user;
+package com.tradehero.th.models.user.follow;
 
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -19,29 +19,37 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
+public class FollowUserAssistant extends SimpleFollowUserAssistant
         implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
 {
     @Inject protected UserProfileCache userProfileCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider;
     @Inject protected THBillingInteractor billingInteractor;
+
     protected UserProfileDTO currentUserProfile;
-    protected final OwnedPortfolioId applicablePortfolioId;
+    @NotNull protected final OwnedPortfolioId applicablePortfolioId;
     @Nullable protected Integer requestCode;
 
     //<editor-fold desc="Constructors">
-    public PremiumFollowUserAssistant(
-            @NotNull UserBaseKey userToFollow,
+    public FollowUserAssistant(
+            @NotNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener,
-            OwnedPortfolioId applicablePortfolioId)
+            @NotNull OwnedPortfolioId applicablePortfolioId)
     {
-        super(userToFollow, userFollowedListener);
+        super(heroId, userFollowedListener);
         this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>
 
-    @Override public void launchFollow()
+    @Override public void onDestroy()
+    {
+        haveInteractorForget();
+        userProfileCache.unregister(this);
+        super.onDestroy();
+    }
+
+    @Override public void launchPremiumFollow()
     {
         userProfileCache.register(currentUserId.toUserBaseKey(), this);
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
@@ -55,14 +63,14 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
 
     @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
     {
-        notifyFollowFailed(userToFollow, error);
+        notifyFollowFailed(heroId, error);
     }
 
     protected void checkBalanceAndFollow()
     {
         if (this.currentUserProfile.ccBalance > 0)
         {
-            super.launchFollow();
+            super.launchPremiumFollow();
         }
         else
         {
@@ -98,7 +106,7 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
         BaseTHUIBillingRequest.Builder builder = billingRequestBuilderProvider.get();
         builder.domainToPresent(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
         builder.applicablePortfolioId(applicablePortfolioId);
-        builder.userToPremiumFollow(userToFollow);
+        builder.userToPremiumFollow(heroId);
         builder.startWithProgressDialog(true);
         builder.popIfBillingNotAvailable(true);
         builder.popIfProductIdentifierFetchFailed(true);
@@ -115,13 +123,13 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
         public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
                 UserProfileDTO updatedUserPortfolio)
         {
-            if (updatedUserPortfolio.isPremiumFollowingUser(userToFollow))
+            if (updatedUserPortfolio.isPremiumFollowingUser(heroId))
             {
-                notifyFollowSuccess(userToFollow, updatedUserPortfolio);
+                notifyFollowSuccess(heroId, updatedUserPortfolio);
             }
-            else
+            else // Just covering the case where the interactor did not follow with the purchase
             {
-                PremiumFollowUserAssistant.super.launchFollow();
+                FollowUserAssistant.super.launchPremiumFollow();
             }
         }
 
@@ -129,9 +137,8 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
         public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
                 BillingException error)
         {
-            notifyFollowFailed(userToFollow, error);
+            notifyFollowFailed(heroId, error);
             Timber.e(error, "Failed to report purchase");
         }
     }
-
 }

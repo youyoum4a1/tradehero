@@ -22,7 +22,7 @@ import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
@@ -197,18 +197,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         //noinspection unchecked
         requestCode = userInteractor.run(uiRequest);
     }
-
-    // should call it where the action takes place
-    @Deprecated
-    protected final void unfollowUser(@NotNull UserBaseKey heroId)
-    {
-        detachPurchaseActionInteractor();
-        thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
-                .setUserToFollow(heroId)
-                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
-                .build();
-        thPurchaseActionInteractor.unfollowUser();
-    }
     //endregion
 
     protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
@@ -248,7 +236,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     }
 
     // Use createPurchaseReportedListener
-    @Deprecated protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @Deprecated protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         // default will be used when this one return null
         return null;

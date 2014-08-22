@@ -27,6 +27,7 @@ import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
@@ -37,7 +38,9 @@ import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
@@ -94,6 +97,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected FollowDialogCombo followDialogCombo;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+
+    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -289,6 +294,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         detachUserOnLeaderboardCacheListener();
         detachFollowDialogCombo();
+        detachChoiceFollowAssistant();
         super.onStop();
     }
 
@@ -344,6 +350,16 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             freeFollowMiddleCallback.setPrimaryCallback(null);
         }
         freeFollowMiddleCallback = null;
+    }
+
+    protected void detachChoiceFollowAssistant()
+    {
+        ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
+        if (copy != null)
+        {
+            copy.onDestroy();
+        }
+        choiceFollowUserAssistantWithDialog = null;
     }
 
     @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
@@ -546,84 +562,42 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected void handleFollowRequested(@NotNull final UserBaseDTO userBaseDTO)
     {
-        detachFollowDialogCombo();
-        followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getActivity(), userBaseDTO,
-                UserProfileDTOUtil.IS_NOT_FOLLOWER,
-                createFollowRequestedListener());
+        detachChoiceFollowAssistant();
+        choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
+                userBaseDTO.getBaseKey(),
+                createUserFollowedListener(),
+                getApplicablePortfolioId());
+        choiceFollowUserAssistantWithDialog.setHeroBaseInfo(userBaseDTO);
+        choiceFollowUserAssistantWithDialog.launchChoice();
     }
 
-    protected OnFollowRequestedListener createFollowRequestedListener()
+    @NotNull protected SimpleFollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {
-        return new LeaderBoardFollowRequestedListener();
+        return new LeaderboardMarkUserListOnUserFollowedListener();
     }
 
-    protected class LeaderBoardFollowRequestedListener
-            implements OnFollowRequestedListener
-    {
-        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            freeFollow(heroId);
-        }
-
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            premiumFollowUser(heroId);
-        }
-    }
-
-    protected void freeFollow(@NotNull UserBaseKey heroId)
-    {
-        heroAlertDialogUtilLazy.get().showProgressDialog(
-                getActivity(),
-                getString(R.string.following_this_hero));
-        detachFreeFollowMiddleCallback();
-        freeFollowMiddleCallback =
-                userServiceWrapperLazy.get()
-                        .freeFollow(heroId, new FreeFollowCallback(heroId));
-    }
-
-    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
-    {
-        private final UserBaseKey heroId;
-
-        public FreeFollowCallback(UserBaseKey heroId)
-        {
-            this.heroId = heroId;
-        }
-
-        @Override public void success(@NotNull UserProfileDTO userProfileDTO, Response response)
-        {
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
-            setCurrentUserProfileDTO(userProfileDTO);
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
-
-            updateListViewRow(heroId);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            THToast.show(new THException(retrofitError));
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
-        }
-    }
-
-    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new LeaderboardMarkUserListPremiumUserFollowedListener();
-    }
-
-    protected class LeaderboardMarkUserListPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
+    protected class LeaderboardMarkUserListOnUserFollowedListener implements SimpleFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
         {
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
             setCurrentUserProfileDTO(currentUserProfileDTO);
+            int followType = currentUserProfileDTO.getFollowType(userFollowed);
+            if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+            {
+                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
+            }
+            else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+            {
+                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
+            }
             updateListViewRow(userFollowed);
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
-            // nothing for now
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
+            THToast.show(new THException(error));
         }
     }
 }

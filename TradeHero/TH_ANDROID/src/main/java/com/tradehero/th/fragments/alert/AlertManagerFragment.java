@@ -26,9 +26,11 @@ import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -116,9 +118,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                createPurchaseActionInteractorBuilder()
-                        .build()
-                        .buyStockAlertSubscription();
+                detachRequestCode();
+                //noinspection unchecked
+                requestCode = userInteractor.run((THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                        .domainToPresent(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
+                        .build());
             }
         });
 

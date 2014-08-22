@@ -14,9 +14,6 @@ import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.THBillingRequest;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
 
 abstract public class THBaseBillingLogicHolder<
@@ -62,10 +59,6 @@ abstract public class THBaseBillingLogicHolder<
                 BillingRequestType,
                 BillingExceptionType>
 {
-    @NotNull protected final UserProfileCache userProfileCache;
-    @NotNull protected final UserServiceWrapper userServiceWrapper;
-    @NotNull protected final HeroListCache heroListCache;
-
     @NotNull protected final THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>
             purchaseReporterHolder;
 
@@ -78,9 +71,6 @@ abstract public class THBaseBillingLogicHolder<
             @NotNull BillingInventoryFetcherHolder<ProductIdentifierType, THProductDetailType, BillingExceptionType> inventoryFetcherHolder,
             @NotNull BillingPurchaseFetcherHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaseFetcherHolder,
             @NotNull BillingPurchaserHolder<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaserHolder,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull HeroListCache heroListCache,
             @NotNull THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaseReporterHolder)
     {
         super(
@@ -91,9 +81,6 @@ abstract public class THBaseBillingLogicHolder<
                 inventoryFetcherHolder,
                 purchaseFetcherHolder,
                 purchaserHolder);
-        this.userProfileCache = userProfileCache;
-        this.userServiceWrapper = userServiceWrapper;
-        this.heroListCache = heroListCache;
         this.purchaseReporterHolder = purchaseReporterHolder;
     }
     //</editor-fold>
@@ -167,11 +154,6 @@ abstract public class THBaseBillingLogicHolder<
 
     protected void handlePurchaseReportedSuccess(int requestCode, THProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
-        if (updatedUserPortfolio != null)
-        {
-            userProfileCache.put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
-            heroListCache.invalidate(updatedUserPortfolio.getBaseKey());
-        }
         notifyPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
         prepareRequestForNextRunAfterPurchaseReportedSuccess(requestCode, reportedPurchase, updatedUserPortfolio);
         runInternal(requestCode);

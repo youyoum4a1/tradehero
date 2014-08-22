@@ -54,7 +54,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
@@ -154,7 +154,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new TimelinePurchaseReportedListener();
     }
 
-    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new TimelinePremiumUserFollowedListener();
     }
@@ -164,7 +164,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new FreeUserFollowedCallback();
     }
 
-    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedForMessageListener()
+    protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedForMessageListener()
     {
         return new TimelinePremiumUserForMessageFollowedListener();
     }
@@ -956,10 +956,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected class TimelinePremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
+    protected class TimelinePremiumUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
-                UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(
+                @NotNull UserBaseKey userFollowed,
+                @NotNull UserProfileDTO currentUserProfileDTO)
         {
             if (!mIsOtherProfile)
             {
@@ -969,7 +970,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
             // Nothing for now
         }
@@ -996,8 +997,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected class TimelinePremiumUserForMessageFollowedListener extends TimelinePremiumUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
-                UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(
+                @NotNull UserBaseKey userFollowed,
+                @NotNull UserProfileDTO currentUserProfileDTO)
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             pushPrivateMessageFragment();

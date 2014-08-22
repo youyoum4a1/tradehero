@@ -6,7 +6,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
@@ -25,7 +25,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     private Callback<UserProfileDTO> freeFollowedListener;
 
     private final boolean alertsAreFree;
-    @Nullable private final PremiumFollowUserAssistant premiumFollowUserAssistant;
+    @Nullable private final FollowUserAssistant premiumFollowUserAssistant;
 
     /**
      * Convenient class that will be used to do any purchasing action such as buying extra cash, follow credits, reset portfolio...),
@@ -53,7 +53,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             OwnedPortfolioId purchaseApplicableOwnedPortfolioId,
             THPurchaseReporter.OnPurchaseReportedListener purchaseReportedListener,
             Callback<UserProfileDTO> freeFollowedListener,
-            PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener,
+            FollowUserAssistant.OnUserFollowedListener premiumFollowedListener,
             boolean alertsAreFree)
     {
         this.billingInteractor = billingInteractor;
@@ -66,7 +66,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 
         if (userToFollow != null)
         {
-            this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
+            this.premiumFollowUserAssistant = new FollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
         }
         else
         {
@@ -89,7 +89,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         freeFollowedListener = null;
         if (premiumFollowUserAssistant != null)
         {
-            premiumFollowUserAssistant.setUserFollowedListener(null);
+            premiumFollowUserAssistant.onDestroy();
         }
     }
 
@@ -130,7 +130,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     {
         // Do not call if no hero to follow
         //noinspection ConstantConditions
-        premiumFollowUserAssistant.launchFollow();
+        premiumFollowUserAssistant.launchPremiumFollow();
     }
 
     @Override public void unfollowUser()
@@ -151,7 +151,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     public abstract static class Builder<T extends Builder<T>>
     {
         private THBillingInteractor billingInteractor;
-        private PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener;
+        private FollowUserAssistant.OnUserFollowedListener premiumFollowedListener;
         @Nullable private UserBaseKey userToFollow;
         private OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
         private Callback<UserProfileDTO> freeFollowedListener;
@@ -193,7 +193,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             return self();
         }
 
-        public Builder setPremiumFollowedListener(PremiumFollowUserAssistant.OnUserFollowedListener userFollowedListener)
+        public Builder setPremiumFollowedListener(FollowUserAssistant.OnUserFollowedListener userFollowedListener)
         {
             this.premiumFollowedListener = userFollowedListener;
             return self();
@@ -331,15 +331,15 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
                     }
                 };
 
-        private static final PremiumFollowUserAssistant.OnUserFollowedListener DEFAULT_PREMIUM_FOLLOWED_LISTENER =
-                new PremiumFollowUserAssistant.OnUserFollowedListener()
+        private static final FollowUserAssistant.OnUserFollowedListener DEFAULT_PREMIUM_FOLLOWED_LISTENER =
+                new FollowUserAssistant.OnUserFollowedListener()
                 {
-                    @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+                    @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
                     {
                         // do something by default?
                     }
 
-                    @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+                    @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
                     {
                         // do something by default?
                     }
