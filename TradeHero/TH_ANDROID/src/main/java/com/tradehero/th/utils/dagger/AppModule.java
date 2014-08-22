@@ -147,7 +147,6 @@ import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.FriendListLoader;
-import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
@@ -268,7 +267,6 @@ import javax.inject.Singleton;
                         FollowerPayoutManagerFragment.class,
                         FollowerListItemView.class,
 
-                        SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 
                         TimelineManager.class,

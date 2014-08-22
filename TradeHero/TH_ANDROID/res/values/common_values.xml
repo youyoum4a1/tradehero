@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <dimen name="button_corner_radius">4dp</dimen>
+  <dimen name="global_corner_radius">1dp</dimen>
   <color name="button_blue">@color/tradehero_blue</color>
   <color name="button_gray">#FFcecfd0</color>
   <color name="button_green">#7fe072</color>

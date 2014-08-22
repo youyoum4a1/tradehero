@@ -306,9 +306,13 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayMarketClose()
     {
-        if (marketCloseIcon != null)
+        SecurityCompactDTO securityCompactDTOCopy = securityCompactDTO;
+        MenuItem marketCloseIconCopy = marketCloseIcon;
+        if (marketCloseIconCopy != null)
         {
-            marketCloseIcon.setVisible(securityCompactDTO != null && !securityCompactDTO.marketOpen);
+            marketCloseIconCopy.setVisible(securityCompactDTOCopy != null
+                    && securityCompactDTOCopy.marketOpen != null
+                    && !securityCompactDTOCopy.marketOpen);
         }
     }
 

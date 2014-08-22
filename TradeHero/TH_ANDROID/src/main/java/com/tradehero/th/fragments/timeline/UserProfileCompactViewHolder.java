@@ -11,12 +11,13 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class UserProfileCompactViewHolder
@@ -30,10 +31,12 @@ public class UserProfileCompactViewHolder
     @InjectView(R.id.user_profile_heroes_count)  @Optional public TextView heroesCount;
     @InjectView(R.id.user_profile_display_name) @Optional public TextView displayName;
     @InjectView(R.id.btn_user_profile_default_portfolio) @Optional public ImageView btnDefaultPortfolio;
+    @InjectView(R.id.user_profile_edit) @Optional public TextView mEditTextView;
 
     @Inject protected Context context;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Picasso picasso;
+    @Inject CurrentUserId currentUserId;
     protected UserProfileDTO userProfileDTO;
     private OnProfileClickedListener profileClickedListener;
 
@@ -68,6 +71,18 @@ public class UserProfileCompactViewHolder
         displayFollowersCount();
         displayHeroesCount();
         displayDisplayName();
+        displayEditIcon();
+    }
+
+    private void displayEditIcon()
+    {
+        if (mEditTextView != null)
+        {
+            if (userProfileDTO != null && userProfileDTO.id == currentUserId.get().intValue())
+            {
+                mEditTextView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     protected void displayProfitValue()
@@ -192,6 +207,16 @@ public class UserProfileCompactViewHolder
         }
     }
 
+    @OnClick(R.id.user_profile_edit) @Optional
+    protected void notifyEditProfileClicked()
+    {
+        OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
+        {
+            listener.onEditProfileClicked();
+        }
+    }
+
     @OnClick({R.id.user_profile_heroes_count, R.id.user_profile_heroes_count_wrapper}) @Optional
     protected void notifyHeroClicked()
     {
@@ -227,5 +252,6 @@ public class UserProfileCompactViewHolder
         void onHeroClicked();
         void onFollowerClicked();
         void onDefaultPortfolioClicked();
+        void onEditProfileClicked();
     }
 }

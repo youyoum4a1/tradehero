@@ -6,80 +6,25 @@
 
   <LinearLayout android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:layout_toRightOf="@+id/user_profile_avatar"
-      android:paddingTop="15dp"
-      android:paddingBottom="15dp"
-      tools:background="@color/red"
-      android:layout_centerInParent="true">
+      android:orientation="horizontal"
+      android:paddingBottom="@dimen/common_margin_15"
+      tools:background="@color/red">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="15dp">
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="ROI"
-          android:minWidth="70dp"
-          android:text="@string/user_profile_roi_below"
-          style="@style/UserProfile.Contained.Value"
-          android:gravity="left"/>
-
-      <TextView
-          android:id="@+id/user_profile_roi"
-          style="@style/UserProfile.Contained.Value"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="+408%"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:layout_marginTop="5dp">
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="Profit"
-          android:text="@string/user_profile_profit"
-          android:minWidth="70dp"
-          style="@style/UserProfile.Contained.Value"
-          android:gravity="left"/>
-
-      <!--android:id="@+id/user_profile_profit"-->
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="$89999"
-          android:id="@+id/txt_profile_tradeprofit"
-          style="@style/UserProfile.Contained.Value"
-          />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="15dp"
         android:baselineAligned="false">
 
       <LinearLayout
           android:id="@+id/user_profile_followers_count_wrapper"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:orientation="vertical"
+          android:orientation="horizontal"
           android:layout_weight="1"
           android:background="@drawable/basic_transparent_selector"
           android:addStatesFromChildren="true"
-          android:gravity="center_horizontal"
+          android:gravity="center"
           >
 
         <TextView
@@ -97,6 +42,7 @@
             android:text="@string/user_profile_count_followers"
             android:layout_width="wrap_content"
             style="@style/UserProfile.Contained.Header"
+            android:layout_marginLeft="@dimen/common_margin_4"
             android:gravity="center"
             />
 
@@ -106,11 +52,11 @@
           android:id="@+id/user_profile_heroes_count_wrapper"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:orientation="vertical"
+          android:orientation="horizontal"
           android:layout_weight="1"
           android:background="@drawable/basic_transparent_selector"
           android:addStatesFromChildren="true"
-          android:gravity="center_horizontal"
+          android:gravity="center"
           >
 
         <TextView
@@ -128,6 +74,7 @@
             tools:text="Heroes"
             android:text="@string/user_profile_count_heroes"
             style="@style/UserProfile.Contained.Header"
+            android:layout_marginLeft="@dimen/common_margin_4"
             android:gravity="center"
             />
 
@@ -137,11 +84,11 @@
           android:id="@+id/user_profile_trade_count_wrapper"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:orientation="vertical"
+          android:orientation="horizontal"
           android:layout_weight="1"
           android:background="@drawable/basic_transparent_selector"
           android:addStatesFromChildren="true"
-          android:gravity="center_horizontal"
+          android:gravity="center"
           >
 
         <TextView
@@ -160,6 +107,7 @@
             android:gravity="center"
             android:text="@string/user_profile_count_trades"
             style="@style/UserProfile.Contained.Header"
+            android:layout_marginLeft="@dimen/common_margin_4"
             />
 
       </LinearLayout>
