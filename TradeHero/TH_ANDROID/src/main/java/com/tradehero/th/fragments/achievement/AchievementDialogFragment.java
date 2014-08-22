@@ -19,11 +19,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.widget.UserLevelProgressBar;
+import java.util.List;
 
 public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 {
     private static final String PROPERTY_XP_EARNED = "xpEarned";
-    private static final String PROPERTY_DOLLARS_EARNED = "dollarsEarned";
 
     @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
@@ -31,9 +31,6 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     @InjectView(R.id.user_level_progress_level_up) TextView levelUp;
     @InjectView(R.id.user_level_progress_xp_earned) TextView xpEarned;
-    @InjectView(R.id.user_level_progress_virtual_dollar_earned) TextView dollarEarned;
-
-    @InjectView(R.id.achievement_xp_dollar_earned_container) ViewGroup xpDollarEarnedContainer;
 
     private long mMsLevelUpDelay;
 
@@ -57,20 +54,8 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
     @Override protected void initView()
     {
         super.initView();
-        displayXPDollarsEarned();
-        initProgressBar();
-        startAnimation();
-    }
-
-    private void displayXPDollarsEarned()
-    {
-        displayDollarsEarned(0f);
         displayXpEarned(0);
-    }
-
-    private void displayDollarsEarned(float dollars)
-    {
-        dollarEarned.setText(THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().build().toString());
+        initProgressBar();
     }
 
     private void displayXpEarned(int xp)
@@ -85,39 +70,11 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         userLevelProgressBar.setUserLevelProgressBarListener(createUserLevelProgressBarListener());
     }
 
-    private void startAnimation()
+    @Override protected void onCreatePropertyValuesHolder(List<PropertyValuesHolder> propertyValuesHolders)
     {
-        PropertyValuesHolder dollar = PropertyValuesHolder.ofFloat(PROPERTY_DOLLARS_EARNED, 0f, (float) userAchievementDTO.achievementDef.virtualDollars);
+        super.onCreatePropertyValuesHolder(propertyValuesHolders);
         PropertyValuesHolder xp = PropertyValuesHolder.ofInt(PROPERTY_XP_EARNED, 0, userAchievementDTO.xpEarned);
-
-        ValueAnimator anim = ValueAnimator.ofPropertyValuesHolder(xp, dollar);
-
-        anim.addListener(new AnimatorListenerAdapter()
-        {
-            @Override public void onAnimationEnd(Animator animation)
-            {
-                super.onAnimationEnd(animation);
-                userLevelProgressBar.increment(400);
-            }
-        });
-
-        anim.setStartDelay(getResources().getInteger(R.integer.achievement_animation_start_delay));
-        anim.setDuration(getResources().getInteger(R.integer.achievement_earned_duration));
-        anim.setInterpolator(new AccelerateInterpolator());
-
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-        {
-            @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
-            {
-                float value = (Float) valueAnimator.getAnimatedValue(PROPERTY_DOLLARS_EARNED);
-                displayDollarsEarned(value);
-
-                int xp = (Integer) valueAnimator.getAnimatedValue(PROPERTY_XP_EARNED);
-                displayXpEarned(xp);
-            }
-        });
-
-        anim.start();
+        propertyValuesHolders.add(xp);
     }
 
     @Override public void onDestroyView()
@@ -129,7 +86,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
     @OnClick(R.id.btn_achievement_share)
     public void onShareClicked()
     {
-        startAnimation();
+
     }
 
     private void playLevelUpAnimation()
@@ -141,6 +98,33 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
             Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.achievement_level_up);
             a.setAnimationListener(createLevelUpAnimationListener());
             levelUp.startAnimation(a);
+        }
+    }
+
+    @Override protected ValueAnimator.AnimatorUpdateListener createAnimatorUpdateListener()
+    {
+        return new Achievement2ValueAnimatorUpdateListener();
+    }
+
+    @Override protected AnimatorListenerAdapter createAnimatorListenerAdapter()
+    {
+        return new AnimatorListenerAdapter()
+        {
+            @Override public void onAnimationEnd(Animator animation)
+            {
+                super.onAnimationEnd(animation);
+                userLevelProgressBar.increment(400);
+            }
+        };
+    }
+
+    protected class Achievement2ValueAnimatorUpdateListener extends AchievementValueAnimatorUpdateListener
+    {
+        @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+        {
+            super.onAnimationUpdate(valueAnimator);
+            int xp = (Integer) valueAnimator.getAnimatedValue(PROPERTY_XP_EARNED);
+            displayXpEarned(xp);
         }
     }
 

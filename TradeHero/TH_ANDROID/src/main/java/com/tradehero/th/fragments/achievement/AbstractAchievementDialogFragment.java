@@ -2,8 +2,10 @@ package com.tradehero.th.fragments.achievement;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -31,8 +34,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.UserAchievementId;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.achievement.UserAchievementDTOUtil;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +46,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractAchievementDialogFragment extends BaseDialogFragment
 {
     private static final String BUNDLE_KEY_USER_ACHIEVEMENT_ID = AbstractAchievementDialogFragment.class.getName() + ".UserAchievementDTOKey";
+    private static final String PROPERTY_DOLLARS_EARNED = "dollarsEarned";
 
     private static final int DEFAULT_FILTER_COLOR = Color.BLACK;
 
@@ -49,11 +56,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
     @InjectView(R.id.achievement_title) TextView title;
     @InjectView(R.id.achievement_description) TextView description;
     @InjectView(R.id.achievement_more_description) TextView moreDescription;
+    @InjectView(R.id.achievement_virtual_dollar_earned) TextView dollarEarned;
 
     @InjectView(R.id.achievement_badge) ImageView badge;
     @InjectView(R.id.achievement_pulse) ImageView pulseEffect;
     @InjectView(R.id.achievement_pulse2) ImageView pulseEffect2;
     @InjectView(R.id.achievement_pulse3) ImageView pulseEffect3;
+
     @InjectView(R.id.achievement_starburst) ImageView starBurst;
 
     @InjectView(R.id.btn_achievement_dismiss) Button btnDismiss;
@@ -97,8 +106,36 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         displayTitle();
         displayText();
         displaySubText();
+        displayDollarsEarned(0f);
         setColor(DEFAULT_FILTER_COLOR);
         playRotatingAnimation();
+        startAnimation();
+    }
+
+    private void startAnimation()
+    {
+        List<PropertyValuesHolder> propertyValuesHolders = new ArrayList<>();
+        this.onCreatePropertyValuesHolder(propertyValuesHolders);
+
+        PropertyValuesHolder[] array = new PropertyValuesHolder[propertyValuesHolders.size()];
+        //PropertyValuesHolder xp = PropertyValuesHolder.ofInt(PROPERTY_XP_EARNED, 0, userAchievementDTO.xpEarned);
+
+        ValueAnimator anim = ValueAnimator.ofPropertyValuesHolder(propertyValuesHolders.toArray(array));
+
+        anim.setStartDelay(getResources().getInteger(R.integer.achievement_animation_start_delay));
+        anim.setDuration(getResources().getInteger(R.integer.achievement_earned_duration));
+        anim.setInterpolator(new AccelerateInterpolator());
+
+        anim.addListener(createAnimatorListenerAdapter());
+        anim.addUpdateListener(createAnimatorUpdateListener());
+
+        anim.start();
+    }
+
+    protected void onCreatePropertyValuesHolder(List<PropertyValuesHolder> propertyValuesHolders)
+    {
+        PropertyValuesHolder dollar = PropertyValuesHolder.ofFloat(PROPERTY_DOLLARS_EARNED, 0f, (float) userAchievementDTO.achievementDef.virtualDollars);
+        propertyValuesHolders.add(dollar);
     }
 
     private void displayStarburst()
@@ -277,6 +314,32 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
     public void onOutsideContentClicked()
     {
         getDialog().dismiss();
+    }
+
+    private void displayDollarsEarned(float dollars)
+    {
+        dollarEarned.setText(THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().build().toString());
+    }
+
+    protected ValueAnimator.AnimatorUpdateListener createAnimatorUpdateListener()
+    {
+        return new AchievementValueAnimatorUpdateListener();
+    }
+
+    protected AnimatorListenerAdapter createAnimatorListenerAdapter()
+    {
+        return new AnimatorListenerAdapter()
+        {
+        };
+    }
+
+    protected class AchievementValueAnimatorUpdateListener implements ValueAnimator.AnimatorUpdateListener
+    {
+        @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+        {
+            float value = (Float) valueAnimator.getAnimatedValue(PROPERTY_DOLLARS_EARNED);
+            displayDollarsEarned(value);
+        }
     }
 
     public static class Creator

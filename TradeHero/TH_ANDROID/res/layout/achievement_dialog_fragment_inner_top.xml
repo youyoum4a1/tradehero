@@ -91,5 +91,14 @@
       android:layout_centerHorizontal="true"
       style="@style/TH.Achievement.Description"/>
 
+  <TextView
+      android:id="@+id/achievement_virtual_dollar_earned"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/achievement_more_description"
+      android:layout_marginTop="@dimen/achievement_more_description_margin_top"
+      android:layout_centerHorizontal="true"
+      style="@style/TH.Achievement.Earned.VirtualDollar"
+      tools:text="+10,000 TH$!"/>
 
 </merge>

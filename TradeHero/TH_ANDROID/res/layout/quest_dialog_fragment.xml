@@ -39,10 +39,11 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/achievement_level_progress_vertical_margin"
           android:layout_marginBottom="@dimen/achievement_level_progress_vertical_margin"
-          android:layout_below="@id/achievement_more_description"
+          android:layout_below="@id/achievement_virtual_dollar_earned"
           android:orientation="horizontal"
           android:gravity="center"
           tools:ignore="UnknownId">
+
         <com.tradehero.common.widget.QuestIndicatorView
             android:id="@+id/quest_indicator_1"
             android:layout_width="0dp"

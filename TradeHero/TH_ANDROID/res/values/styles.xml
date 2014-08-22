@@ -472,20 +472,20 @@
     <item name="android:maxHeight">@dimen/user_level_progressbar_height</item>
   </style>
 
-  <style name="TH.Level.Earned" parent="android:TextAppearance.Holo.Small">
-    <item name="android:gravity">right|center_vertical</item>
+  <style name="TH.Achievement.Earned" parent="android:TextAppearance.Holo.Small">
+    <item name="android:gravity">center</item>
     <item name="android:textSize">@dimen/text_large</item>
   </style>
 
-  <style name="TH.Level.Earned.VirtualDollar" parent="TH.Level.Earned">
+  <style name="TH.Achievement.Earned.VirtualDollar" parent="TH.Achievement.Earned">
     <item name="android:textColor">#F3A422</item>
   </style>
 
-  <style name="TH.Level.Earned.XP" parent="TH.Level.Earned">
+  <style name="TH.Achievement.Earned.XP" parent="TH.Achievement.Earned">
     <item name="android:textColor">#407304</item>
   </style>
 
-  <style name="TH.Level.Earned.LevelUp" parent="TH.Level.Earned">
+  <style name="TH.Achievement.Earned.LevelUp" parent="TH.Achievement.Earned">
     <item name="android:textColor">#CE021B</item>
     <item name="android:textSize">@dimen/text_small</item>
   </style>
