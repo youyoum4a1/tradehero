@@ -441,12 +441,17 @@
 
   <style name="TH.Level">
     <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_xsmall</item>
-    <item name="android:paddingBottom">5dp</item>
+    <item name="android:textSize">@dimen/user_level_progressbar_indicator_text_size</item>
+    <item name="android:paddingBottom">@dimen/user_level_indicator_padding_bottom</item>
+    <item name="android:shadowColor">@color/dark_gray</item>
+    <item name="android:shadowDx">1.5</item>
+    <item name="android:shadowDy">1.5</item>
+    <item name="android:shadowRadius">5</item>
+    <item name="android:textStyle">bold</item>
   </style>
 
   <style name="TH.Level.Current" parent="TH.Level">
-    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textSize">@dimen/text_medium</item>
     <item name="android:textColor">@color/user_level_progress_current_text_color</item>
     <item name="android:background">@drawable/current_level_bg</item>
   </style>

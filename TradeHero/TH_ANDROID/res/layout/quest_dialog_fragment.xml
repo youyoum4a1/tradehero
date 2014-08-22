@@ -34,6 +34,7 @@
           layout="@layout/achievement_dialog_fragment_inner_top"/>
 
       <com.tradehero.common.widget.QuestIndicatorGroupView
+          android:id="@+id/quest_indicator_group"
           android:layout_width="@dimen/achievement_dialog_width"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/achievement_level_progress_vertical_margin"

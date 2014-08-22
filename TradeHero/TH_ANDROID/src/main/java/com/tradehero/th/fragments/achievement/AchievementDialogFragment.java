@@ -17,6 +17,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTO;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.widget.UserLevelProgressBar;
 
 public class AchievementDialogFragment extends AbstractAchievementDialogFragment
@@ -69,7 +70,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     private void displayDollarsEarned(float dollars)
     {
-        dollarEarned.setText(getString(R.string.achievement_virtual_dollars_earned_format, dollars));
+        dollarEarned.setText(THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().build().toString());
     }
 
     private void displayXpEarned(int xp)

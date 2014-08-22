@@ -23,7 +23,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
-      android:layout_marginLeft="@dimen/user_level_current_level_margin_left"/>
+      android:layout_marginLeft="@dimen/achievement_level_progress_margin_left"/>
 
   <TextView
       android:id="@+id/user_level_progress_level_up"

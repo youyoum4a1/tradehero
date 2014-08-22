@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
     {
         super(achievementServiceWrapper);
         getOrFetchAsync(new UserAchievementId(1));
+        getOrFetchAsync(new UserAchievementId(2));
     }
 
     @NotNull @Override public UserAchievementDTO fetch(@NotNull UserAchievementId key) throws Throwable
@@ -22,15 +23,30 @@ import org.jetbrains.annotations.NotNull;
         AchievementsDTO achievementsDTO = new AchievementsDTO();
 
         userAchievementDTO.id = key.key;
-        achievementsDTO.virtualDollars = 50;
-        achievementsDTO.visual =
-                "http://uefaclubs.com/images/Sampdoria@2.-other-logo.png";
-        achievementsDTO.header = "Achievement Unlocked";
-        achievementsDTO.thName = "Master Trader " + key.key;
-        achievementsDTO.text = "You have earned $50.00 TH$";
-        achievementsDTO.subText = "Come back tomorrow to earn $50.00 TH$";
+
         achievementsDTO.hexColor = "4891E4";
-        achievementsDTO.isQuest = true;
+        if (key.key > 1)
+        {
+            achievementsDTO.header = "Daily Login Bonus!";
+            achievementsDTO.thName = "Day 3";
+            achievementsDTO.text = "You have earned TH$ 15,000";
+            achievementsDTO.subText = "Come back tomorrow to earn another TH$ 20,000";
+            achievementsDTO.virtualDollars = 15000;
+            achievementsDTO.visual =
+                    "http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-11/512/coin-us-dollar-icon.png";
+            achievementsDTO.isQuest = true;
+            userAchievementDTO.contiguousCount = 3;
+        }
+        else
+        {
+            achievementsDTO.header = "Achievement Unlocked!";
+            achievementsDTO.thName = "Master Trader I";
+            achievementsDTO.text = "You have earned TH$ 10,000 for making 2 trades.";
+            achievementsDTO.subText = "Make 3 more trades to earn another TH$ 15,000";
+            achievementsDTO.virtualDollars = 10000;
+            achievementsDTO.visual =
+                    "http://images.clipartpanda.com/corps-clipart-free-vector-us-army-air-corps-shield-clip-art_106495_Us_Army_Air_Corps_Shield_clip_art_hight.png";
+        }
 
         userAchievementDTO.achievementDef = achievementsDTO;
         userAchievementDTO.isReset = true;

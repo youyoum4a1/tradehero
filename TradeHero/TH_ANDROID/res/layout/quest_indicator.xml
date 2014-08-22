@@ -48,7 +48,7 @@
       android:gravity="center"
       android:lines="2"
       android:textSize="@dimen/text_xsmall"
-      android:layout_below="@id/quest_logo_indicator"
+      android:layout_below="@id/quest_logo_background"
       android:layout_centerHorizontal="true"
       android:text="TH$100k"/>
 </RelativeLayout>

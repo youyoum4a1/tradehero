@@ -19,6 +19,7 @@
   <dimen name="achievement_more_description_margin_top">5dp</dimen>
   <dimen name="achievement_level_progress_vertical_margin">15dp</dimen>
   <dimen name="achievement_level_progress_container_height">75dp</dimen>
+  <dimen name="achievement_level_progress_margin_left">28dp</dimen>
 
   <integer name="achievement_earned_duration">1000</integer>
 
