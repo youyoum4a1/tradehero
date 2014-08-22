@@ -1,5 +1,7 @@
 package com.tradehero.th.ui;
 
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardResideMenu;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView;
 import com.tradehero.th.fragments.discussion.DiscussionView;
@@ -29,6 +31,9 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenter
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsView;
 import dagger.Module;
 import dagger.Provides;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javax.inject.Singleton;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -83,13 +88,15 @@ public class UIModule
         return new PrettyTime();
     }
 
-    @Provides @Singleton AppContainer provideAppContainer()
-    {
-        return AppContainer.DEFAULT;
-    }
-
     @Provides @Singleton ViewWrapper provideViewWrapper()
     {
         return ViewWrapper.DEFAULT;
+    }
+
+    @Provides(type = Provides.Type.SET_VALUES) @Singleton Set<DashboardNavigator.DashboardFragmentWatcher> provideDashboardNavigatorWatchers(
+            DashboardResideMenu dashboardResideMenu
+    )
+    {
+        return new HashSet<>(Arrays.<DashboardNavigator.DashboardFragmentWatcher>asList(dashboardResideMenu));
     }
 }

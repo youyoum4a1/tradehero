@@ -14,13 +14,19 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.utils.Constants;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-public enum DashboardTabType
+public enum RootFragmentType
 {
     TIMELINE(R.layout.home_selector,
             R.string.dashboard_timeline, R.string.dashboard_timeline_key,
             R.color.transparent, MeTimelineFragment.class),
+    ME(R.layout.home_selector,
+            R.string.dashboard_timeline, R.string.dashboard_timeline_key,
+            R.drawable.icn_menu_home, MeTimelineFragment.class),
     HOME(R.layout.tab_indicator_holo,
             R.string.dashboard_home, R.string.dashboard_home_key,
             R.drawable.icn_menu_home, HomeFragment.class),
@@ -55,32 +61,19 @@ public enum DashboardTabType
     public final int stringResId;
     public final int stringKeyResId;
     public final int drawableResId;
-    public final boolean show;
     public final Class<? extends Fragment> fragmentClass;
 
-    private DashboardTabType(
+    private RootFragmentType(
             int viewResId,
             int stringResId,
             int stringKeyResId,
             int drawableResId,
             Class<? extends Fragment> fragmentClass)
     {
-        this(viewResId, stringResId, stringKeyResId, drawableResId, fragmentClass, true);
-    }
-
-    private DashboardTabType(
-            int viewResId,
-            int stringResId,
-            int stringKeyResId,
-            int drawableResId,
-            Class<? extends Fragment> fragmentClass,
-            boolean show)
-    {
         this.viewResId = viewResId;
         this.stringResId = stringResId;
         this.stringKeyResId = stringKeyResId;
         this.drawableResId = drawableResId;
-        this.show = show;
         this.fragmentClass = fragmentClass;
     }
 
@@ -89,16 +82,27 @@ public enum DashboardTabType
         return viewResId != DEFAULT_VIEW_LAYOUT_ID;
     }
 
-    public static List<DashboardTabType> usableValues()
+    public static Collection<RootFragmentType> forResideMenu()
     {
-        List<DashboardTabType> values = new ArrayList<>();
-        for (DashboardTabType value : values())
-        {
-            if (!(value.equals(DashboardTabType.ADMIN_SETTINGS) && Constants.RELEASE))
-            {
-                values.add(value);
-            }
+        List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
+                TIMELINE, TRENDING, COMMUNITY, REFERRAL, CONTEST_CENTER, STORE, SETTING
+        ));
+        addAdminMenuIfNeeded(forResideMenu);
+        return Collections.unmodifiableCollection(forResideMenu);
+    }
+
+    public static Collection<RootFragmentType> forBottomBar()
+    {
+        List<RootFragmentType> forBottomBar = Arrays.asList(
+                ME, TRENDING, COMMUNITY, CONTEST_CENTER
+        );
+        return Collections.unmodifiableCollection(forBottomBar);
+    }
+
+    private static void addAdminMenuIfNeeded(List<RootFragmentType> forResideMenu)
+    {
+        if (!Constants.RELEASE) {
+            forResideMenu.add(ADMIN_SETTINGS);
         }
-        return values;
     }
 }

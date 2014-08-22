@@ -11,29 +11,92 @@
       tools:background="@color/black"
       android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/profile_screen_user_detail_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         tools:background="@color/number_green">
 
-      <ImageView
-          android:id="@+id/user_profile_avatar"
-          android:layout_width="@dimen/big_avatar_w_h"
-          android:layout_height="@dimen/big_avatar_w_h"
-          android:layout_centerVertical="true"
-          android:layout_alignParentLeft="true"
-          android:layout_margin="@dimen/user_profile_compact_avatar_margin"
-          android:background="@drawable/layout_oval"
-          android:padding="0.5dp"
-          tools:src="@drawable/avatar"
-          android:contentDescription="@null"/>
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/user_profile_avatar"
+            android:layout_width="@dimen/big_avatar_w_h"
+            android:layout_height="@dimen/big_avatar_w_h"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="@dimen/user_profile_compact_avatar_margin"
+            android:background="@drawable/layout_oval"
+            android:padding="0.5dp"
+            tools:src="@drawable/avatar"
+            android:contentDescription="@null"/>
+
+        <LinearLayout
+            android:id="@+id/name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_toRightOf="@+id/user_profile_avatar"
+            android:layout_marginTop="@dimen/common_margin_10"
+            android:paddingLeft="@dimen/common_margin_15">
+
+          <TextView
+              android:id="@+id/user_profile_display_name"
+              style="@style/UserProfile.Contained.Value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="+408%"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/roi_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_toRightOf="@+id/user_profile_avatar"
+            android:layout_below="@+id/name_layout"
+            android:paddingLeft="@dimen/common_margin_15">
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="ROI"
+              android:minWidth="70dp"
+              android:text="@string/user_profile_roi_below"
+              style="@style/UserProfile.Contained.Value"
+              android:gravity="left"/>
+
+          <TextView
+              android:id="@+id/user_profile_roi"
+              style="@style/UserProfile.Contained.Value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="+408%"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/user_profile_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/roi_layout"
+            android:layout_toRightOf="@+id/user_profile_avatar"
+            android:layout_marginLeft="@dimen/common_margin_15"
+            android:text="@string/timeline_menu_edit"
+            android:textColor="@color/button_blue"
+            android:visibility="gone"/>
+
+      </RelativeLayout>
 
       <include
           layout="@layout/user_profile_detail_bottom_2_1"
           />
 
-    </RelativeLayout>
+    </LinearLayout>
 
   </com.tradehero.th.fragments.timeline.UserProfileDetailView>
 
