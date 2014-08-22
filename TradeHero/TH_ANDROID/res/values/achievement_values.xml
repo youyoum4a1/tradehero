@@ -9,11 +9,10 @@
   <dimen name="achievement_dialog_padding">10dp</dimen>
   <dimen name="achievement_dialog_width">300dp</dimen>
   <color name="achievement_dialog_bg">@color/white</color>
-  <dimen name="achievement_badge_w_h">160dp</dimen>
+  <dimen name="achievement_badge_w_h">140dp</dimen>
   <dimen name="achievement_badge_margin_top">50dp</dimen>
   <dimen name="achievement_pulse_circle_w_h">60dp</dimen>
-  <dimen name="achievement_pulse_circle_w_h_scaled">210dp</dimen>
-  <dimen name="achievement_pulse_circle_margin_top">100dp</dimen>
+  <dimen name="achievement_pulse_circle_margin_top">90dp</dimen>
   <dimen name="achievement_title_margin_top">20dp</dimen>
   <dimen name="achievement_description_margin_top">10dp</dimen>
   <dimen name="achievement_more_description_margin_top">5dp</dimen>
