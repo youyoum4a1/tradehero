@@ -109,7 +109,7 @@ public class OnBoardPickHeroFragment extends BaseFragment
     public void doFollow()
     {
         List<LeaderboardUserDTO> selected = viewHolder.getSelectedHeroes();
-        if (selected.size() > 0)
+        if (!selected.isEmpty())
         {
             userServiceWrapper.followBatchFree(
                     new BatchFollowFormDTO(

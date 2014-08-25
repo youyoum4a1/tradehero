@@ -9,13 +9,12 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
-import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -103,11 +102,10 @@ public class OnBoardPickStockFragment extends BaseFragment
 
     public void doAddToWatchlist()
     {
-        List<SecurityCompactDTO> selected = viewHolder.getSelectedStocks();
-        for (SecurityCompactDTO securityCompactDTO : selected)
+        SecurityCompactDTOList selected = viewHolder.getSelectedStocks();
+        if (!selected.isEmpty())
         {
-            watchlistServiceWrapper.createWatchlistEntry(
-                    new WatchlistPositionFormDTO(securityCompactDTO, 1), null);
+            watchlistServiceWrapper.batchCreate(new SecurityIntegerIdListForm(selected, (SecurityCompactDTO) null));
         }
     }
 }

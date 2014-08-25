@@ -11,6 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -66,9 +67,9 @@ public class OnBoardPickStockViewHolder
         selectedStocksAdapter.notifyDataSetChanged();
     }
 
-    @NotNull List<SecurityCompactDTO> getSelectedStocks()
+    @NotNull SecurityCompactDTOList getSelectedStocks()
     {
-        List<SecurityCompactDTO> selected = new ArrayList<>();
+        SecurityCompactDTOList selected = new SecurityCompactDTOList();
         SelectableSecurityDTO value;
         for (int position = 0; position < selectedStocksAdapter.getCount(); position++)
         {
