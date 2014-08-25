@@ -1,8 +1,10 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
@@ -48,6 +50,18 @@ public class AchievementServiceWrapper
     {
         MiddleCallback<UserAchievementDTO> middleCallback = new BaseMiddleCallback<>(callback);
         achievementServiceAsync.getUserAchievementDetails(userAchievementId.key, middleCallback);
+        return middleCallback;
+    }
+
+    public AchievementCategoryDTOList getAchievementCategories(@NotNull UserBaseKey key)
+    {
+        return achievementService.getAchievementCategories(key.getUserId());
+    }
+
+    public MiddleCallback<AchievementCategoryDTOList> getAchievementCategories(@NotNull UserBaseKey key, @Nullable Callback<AchievementCategoryDTOList> callback)
+    {
+        MiddleCallback<AchievementCategoryDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        achievementServiceAsync.getAchievementCategories(key.getUserId(), middleCallback);
         return middleCallback;
     }
 }

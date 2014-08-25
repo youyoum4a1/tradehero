@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="achievement_xp_earned_format">+ %d XP!</string>
-  <string name="achievement_virtual_dollars_earned_format">+ %.2f TH$!</string>
+  <string name="achievement_xp_earned_format">+%d XP!</string>
   <string name="achievement_level_up">LEVEL UP!</string>
+  <string name="error_fetch_achievements">There was an error when fetching the list of achievements</string>
 </resources>

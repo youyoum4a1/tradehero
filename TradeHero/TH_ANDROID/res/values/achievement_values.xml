@@ -27,4 +27,9 @@
   <integer name="achievement_level_up_end_start_offset">1000</integer>
   <integer name="achievement_level_up_end_duration">300</integer>
 
+
+  <!-- Cell view -->
+  <dimen name="achivement_cell_padding">10dp</dimen>
+  <dimen name="achivement_cell_content_margin_left">10dp</dimen>
+
 </resources>

@@ -3,6 +3,9 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import com.tradehero.th.fragments.achievement.AchievementCellView;
+import com.tradehero.th.fragments.achievement.AchievementListFragment;
+import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.QuestDialogFragment;
 import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.fragments.achievement.AchievementDialogFragment;
@@ -17,6 +20,9 @@ import javax.inject.Singleton;
                 UserLevelProgressBar.class,
                 AchievementDialogFragment.class,
                 QuestDialogFragment.class,
+                AchievementListFragment.class,
+                AchievementCellView.class,
+                AchievementListTestingFragment.class,
         },
         complete = false,
         library = true

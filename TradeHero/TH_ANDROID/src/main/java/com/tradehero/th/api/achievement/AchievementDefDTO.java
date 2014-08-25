@@ -6,7 +6,7 @@ import com.tradehero.common.utils.THJsonAdapter;
 import java.io.IOException;
 import org.jetbrains.annotations.Nullable;
 
-public class AchievementsDTO implements DTO
+public class AchievementDefDTO implements DTO
 {
     public int id;
     public int trigger;
@@ -23,9 +23,9 @@ public class AchievementsDTO implements DTO
     public boolean isQuest;
 
     @JsonIgnore
-    public AchievementsId getAchievementsId()
+    public AchievementDefId getAchievementsId()
     {
-        return new AchievementsId(id);
+        return new AchievementDefId(id);
     }
 
     @Override

@@ -36,6 +36,7 @@ import com.tradehero.th.api.achievement.UserAchievementId;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.achievement.UserAchievementDTOUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +135,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     protected void onCreatePropertyValuesHolder(List<PropertyValuesHolder> propertyValuesHolders)
     {
-        PropertyValuesHolder dollar = PropertyValuesHolder.ofFloat(PROPERTY_DOLLARS_EARNED, 0f, (float) userAchievementDTO.achievementDef.virtualDollars);
+        PropertyValuesHolder dollar =
+                PropertyValuesHolder.ofFloat(PROPERTY_DOLLARS_EARNED, 0f, (float) userAchievementDTO.achievementDef.virtualDollars);
         propertyValuesHolders.add(dollar);
     }
 
@@ -199,25 +201,31 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     private void displayBadge()
     {
-        picasso.load(userAchievementDTO.achievementDef.visual)
-                .placeholder(R.drawable.achievement_unlocked_placeholder)
-                .fit()
-                .centerInside()
-                .into(badge, new Callback()
-                {
-                    @Override public void onSuccess()
+        if (!StringUtils.isNullOrEmpty(userAchievementDTO.achievementDef.visual))
+        {
+            picasso.load(userAchievementDTO.achievementDef.visual)
+                    .placeholder(R.drawable.achievement_unlocked_placeholder)
+                    .fit()
+                    .centerInside()
+                    .into(badge, new Callback()
                     {
-                        DominantColorCalculator dominantColorCalculator =
-                                new DominantColorCalculator(((BitmapDrawable) badge.getDrawable()).getBitmap());
-                        ColorScheme colorScheme = dominantColorCalculator.getColorScheme();
-                        updateColor(colorScheme);
-                    }
+                        @Override public void onSuccess()
+                        {
+                            DominantColorCalculator dominantColorCalculator =
+                                    new DominantColorCalculator(((BitmapDrawable) badge.getDrawable()).getBitmap());
+                            ColorScheme colorScheme = dominantColorCalculator.getColorScheme();
+                            updateColor(colorScheme);
+                        }
 
-                    @Override public void onError()
-                    {
+                        @Override public void onError()
+                        {
 
-                    }
-                });
+                        }
+                    });
+        }else
+        {
+            badge.setImageResource(R.drawable.achievement_unlocked_placeholder);
+        }
     }
 
     private void playRotatingAnimation()

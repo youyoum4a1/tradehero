@@ -16,6 +16,7 @@ import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
+import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
@@ -70,13 +71,13 @@ public class MeTimelineFragment extends TimelineFragment
         switch (item.getItemId())
         {
             case R.id.menu_edit:
-                AbstractAchievementDialogFragment a = achievementDialogFragmentCreatorLazy.get().newInstance(new UserAchievementId(1));
-                if (a != null)
-                {
-                    a.show(getFragmentManager(), "test");
-                }
+                //AbstractAchievementDialogFragment a = achievementDialogFragmentCreatorLazy.get().newInstance(new UserAchievementId(1));
+                //if (a != null)
+                //{
+                //    a.show(getFragmentManager(), "test");
+                //}
 
-                //getDashboardNavigator().pushFragment(SettingsProfileFragment.class);
+                getDashboardNavigator().pushFragment(AchievementListFragment.class);
                 return true;
         }
         return super.onOptionsItemSelected(item);
