@@ -171,13 +171,11 @@ abstract public class THBaseBillingInteractor<
         }
         requestsToLaunchOnBillingInitialMilestoneComplete.addLast(requestCode);
         THBillingInitialMilestone.launch();
-        Timber.e(new Exception(), "run %d", requestCode);
         return requestCode;
     }
 
     protected void runWaitingRequests()
     {
-        Timber.e(new Exception(), "runWaitingRequests %d", requestsToLaunchOnBillingInitialMilestoneComplete.size());
         while (requestsToLaunchOnBillingInitialMilestoneComplete.size() > 0)
         {
             runRequestCode(requestsToLaunchOnBillingInitialMilestoneComplete.removeFirst());
@@ -278,7 +276,6 @@ abstract public class THBaseBillingInteractor<
             billingRequest.reportPurchase = true;
             billingRequest.purchaseReportedListener = createPurchaseReportedListener();
         }
-        Timber.e(new Exception(), "now purchase %s", billingRequest);
     }
 
     protected THPurchaseOrderType createPurchaseOrder(

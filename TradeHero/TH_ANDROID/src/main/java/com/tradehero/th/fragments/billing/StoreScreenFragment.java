@@ -173,7 +173,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void handlePositionClicked(StoreItemDTO clickedItem)
     {
-        Timber.e(new Exception(), "item clicked");
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
             if (showProductRequestCode != null)

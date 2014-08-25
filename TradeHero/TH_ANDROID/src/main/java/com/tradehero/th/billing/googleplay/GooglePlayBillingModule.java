@@ -1,7 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.BillingInteractor;
-import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
@@ -144,11 +142,6 @@ public class GooglePlayBillingModule
         return exceptionFactory;
     }
 
-    @Provides @Singleton BillingLogicHolder provideBillingActor(THBillingLogicHolder logicHolder)
-    {
-        return logicHolder;
-    }
-
     @Provides @Singleton THBillingLogicHolder provideTHBillingActor(THIABLogicHolder logicHolder)
     {
         return logicHolder;
@@ -157,11 +150,6 @@ public class GooglePlayBillingModule
     @Provides @Singleton THIABLogicHolder provideTHIABLogicHolder(THIABLogicHolderFull thiabLogicHolderFull)
     {
         return thiabLogicHolderFull;
-    }
-
-    @Provides @Singleton BillingInteractor provideBillingInteractor(THBillingInteractor billingInteractor)
-    {
-        return billingInteractor;
     }
 
     @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THIABInteractor thiabInteractor)

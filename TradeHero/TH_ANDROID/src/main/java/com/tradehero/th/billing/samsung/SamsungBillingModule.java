@@ -1,13 +1,14 @@
 package com.tradehero.th.billing.samsung;
 
-import com.tradehero.common.billing.BillingInteractor;
-import com.tradehero.common.billing.BillingLogicHolder;
+import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
+import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THBillingLogicHolder;
@@ -21,6 +22,7 @@ import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import dagger.Module;
 import dagger.Provides;
+import java.util.HashSet;
 import javax.inject.Singleton;
 
 @Module(
@@ -34,6 +36,8 @@ import javax.inject.Singleton;
 )
 public class SamsungBillingModule
 {
+    public static final String PREF_PROCESSING_PURCHASES = "SAMSUNG_PROCESSING_PURCHASES";
+
     @Provides @ForSamsungBillingMode int provideSamsungBillingMode()
     {
         return THSamsungConstants.PURCHASE_MODE;
@@ -138,11 +142,6 @@ public class SamsungBillingModule
         return exceptionFactory;
     }
 
-    @Provides @Singleton BillingLogicHolder provideBillingActor(THBillingLogicHolder logicHolder)
-    {
-        return logicHolder;
-    }
-
     @Provides @Singleton THBillingLogicHolder provideTHBillingActor(THSamsungLogicHolder logicHolder)
     {
         return logicHolder;
@@ -151,11 +150,6 @@ public class SamsungBillingModule
     @Provides @Singleton THSamsungLogicHolder provideTHSamsungLogicHolder(THSamsungLogicHolderFull thSamsungLogicHolderFull)
     {
         return thSamsungLogicHolderFull;
-    }
-
-    @Provides @Singleton BillingInteractor provideBillingInteractor(THBillingInteractor billingInteractor)
-    {
-        return billingInteractor;
     }
 
     @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THSamsungInteractor thSamsungInteractor)
@@ -176,5 +170,10 @@ public class SamsungBillingModule
     @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestTestAvailableBuilder()
     {
         return BaseTHUISamsungRequest.builder();
+    }
+
+    @Provides @Singleton @ProcessingPurchase StringSetPreference provideProcessingPurchasePreference(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new StringSetPreference(sharedPreferences, PREF_PROCESSING_PURCHASES, new HashSet<String>());
     }
 }

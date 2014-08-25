@@ -3,7 +3,6 @@ package com.tradehero.th.billing.samsung;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.samsung.SamsungConstants;
 import com.tradehero.common.billing.samsung.SamsungSKU;
@@ -53,7 +52,6 @@ public class THSamsungBillingInteractor
     public static final String BUNDLE_KEY_ACTION = THSamsungBillingInteractor.class.getName() + ".action";
 
     @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
-    @NotNull protected final LocalyticsSession localyticsSession;
     @NotNull protected final HeroListCache heroListCache;
     @NotNull protected final UserService userService;
 
@@ -67,7 +65,6 @@ public class THSamsungBillingInteractor
             @NotNull THSamsungAlertDialogUtil thSamsungAlertDialogUtil,
             @NotNull THSamsungLogicHolder billingActor,
             @NotNull UserProfileDTOUtil userProfileDTOUtil,
-            @NotNull LocalyticsSession localyticsSession,
             @NotNull HeroListCache heroListCache,
             @NotNull UserService userService)
     {
@@ -80,7 +77,6 @@ public class THSamsungBillingInteractor
                 progressDialogUtil,
                 thSamsungAlertDialogUtil);
         this.userProfileDTOUtil = userProfileDTOUtil;
-        this.localyticsSession = localyticsSession;
         this.heroListCache = heroListCache;
         this.userService = userService;
     }
@@ -102,7 +98,7 @@ public class THSamsungBillingInteractor
     @Override public int run(@NotNull THUISamsungRequest uiBillingRequest)
     {
         // Here we disable the initial restore
-        if (uiBillingRequest != null && uiBillingRequest.getRestorePurchase() && !uiBillingRequest.getStartWithProgressDialog())
+        if (uiBillingRequest.getRestorePurchase() && !uiBillingRequest.getStartWithProgressDialog())
         {
             // In effect skip it
             return getUnusedRequestCode();

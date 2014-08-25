@@ -145,7 +145,6 @@ abstract public class BaseBillingLogicHolder<
      */
     @Override public boolean run(int requestCode, @NotNull BillingRequestType billingRequest)
     {
-        Timber.e(new Exception(), "Request %s", billingRequest);
         billingRequests.put(requestCode, billingRequest);
         registerListeners(requestCode, billingRequest);
         return runInternal(requestCode);

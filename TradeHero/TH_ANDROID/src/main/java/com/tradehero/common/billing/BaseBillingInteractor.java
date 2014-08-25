@@ -148,11 +148,9 @@ abstract public class BaseBillingInteractor<
 
     protected void runRequestCode(int requestCode)
     {
-        Timber.e(new Exception(), "runRequestCode %d", requestCode);
         UIBillingRequestType uiBillingRequest = uiBillingRequests.get(requestCode);
         if (uiBillingRequest != null)
         {
-            Timber.e(new Exception(), "runRequestCode inner %d, %s", requestCode, uiBillingRequest);
             billingLogicHolder.run(requestCode, createBillingRequest(uiBillingRequest));
         }
     }
