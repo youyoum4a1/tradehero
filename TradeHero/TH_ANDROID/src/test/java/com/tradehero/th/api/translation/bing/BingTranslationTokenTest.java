@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,6 +44,7 @@ public class BingTranslationTokenTest extends BaseApiTest
         assertThat(((BingTranslationToken) token).getExpiresInSeconds()).isGreaterThanOrEqualTo(599);
     }
 
+    @Ignore("Don't do thread.sleep")
     @Test public void testExpiresCorrectAfter1Second() throws IOException, InterruptedException
     {
         TranslationToken token = normalMapper.readValue(bingTranslationTokenBody1Stream, TranslationToken.class);

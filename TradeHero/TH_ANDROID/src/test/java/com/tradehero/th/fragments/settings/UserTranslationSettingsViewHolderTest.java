@@ -15,6 +15,7 @@ import com.tradehero.th.persistence.translation.UserTranslationSettingPreference
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -90,6 +91,7 @@ public class UserTranslationSettingsViewHolderTest
         assertThat(shadowPreferenceContainer.isEnabled()).isFalse();
     }
 
+    @Ignore("Don't do thread.sleep")
     @Test public void enabledIfHasCache() throws InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
@@ -105,6 +107,7 @@ public class UserTranslationSettingsViewHolderTest
     //</editor-fold>
 
     //<editor-fold desc="Auto is checked or not">
+    @Ignore("Don't do thread.sleep")
     @Test public void autoIsCheckedIfPrefTrue() throws JsonProcessingException, InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
