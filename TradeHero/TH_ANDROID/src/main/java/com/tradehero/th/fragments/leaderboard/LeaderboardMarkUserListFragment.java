@@ -584,9 +584,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
     {
-        private final UserBaseKey heroId;
+        @NotNull private final UserBaseKey heroId;
 
-        public FreeFollowCallback(UserBaseKey heroId)
+        public FreeFollowCallback(@NotNull UserBaseKey heroId)
         {
             this.heroId = heroId;
         }

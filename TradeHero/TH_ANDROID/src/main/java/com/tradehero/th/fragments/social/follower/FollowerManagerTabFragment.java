@@ -360,7 +360,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     protected DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheRefreshListener()
     {
-        return new RefresFollowerManagerFollowerSummaryListener();
+        return new RefreshFollowerManagerFollowerSummaryListener();
     }
 
     protected class FollowerManagerFollowerSummaryListener
@@ -384,7 +384,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
     }
 
-    protected class RefresFollowerManagerFollowerSummaryListener
+    protected class RefreshFollowerManagerFollowerSummaryListener
             implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
