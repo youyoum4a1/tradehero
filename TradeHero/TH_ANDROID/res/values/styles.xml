@@ -433,6 +433,21 @@
     <item name="android:textSize">@dimen/text_xsmall</item>
   </style>
 
+  <style name="TH.Achievement.Indicator" parent="TH.Achievement">
+    <item name="android:scaleType">fitCenter</item>
+    <item name="android:layout_marginLeft">3dp</item>
+    <item name="android:layout_marginRight">3dp</item>
+    <item name="android:padding">8dp</item>
+    <item name="android:background">@drawable/blue_transparent_circle_padding</item>
+  </style>
+
+  <style name="TH.Achievement.Indicator.Text" parent="TH.Achievement">
+    <item name="android:gravity">center</item>
+    <item name="android:textSize">@dimen/text_xsmall</item>
+    <item name="android:layout_marginLeft">3dp</item>
+    <item name="android:layout_marginRight">3dp</item>
+  </style>
+
   <style name="TH.Achievement.Share" parent="TH.Achievement">
     <item name="android:textColor">@color/white</item>
     <item name="android:minWidth">80dp</item>

@@ -5,13 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/achivement_cell_padding">
+    android:padding="@dimen/achievement_cell_padding">
 
   <ImageView
       android:id="@+id/achievement_badge"
       android:layout_width="@dimen/big_avatar_w_h"
       android:layout_height="@dimen/big_avatar_w_h"
-      android:layout_centerVertical="true"
       android:layout_alignParentLeft="true"
       tools:src="@drawable/launcher"/>
 
@@ -20,7 +19,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/achievement_badge"
-      android:layout_marginLeft="@dimen/achivement_cell_content_margin_left"
+      android:layout_marginLeft="@dimen/achievement_cell_content_margin_left"
       style="@style/TH.Achievement.Title"
       tools:text="Stock Sensei"/>
 
@@ -31,18 +30,81 @@
       android:layout_toRightOf="@id/achievement_badge"
       android:layout_below="@id/achievement_title"
       style="@style/TH.Achievement.Description"
-      android:layout_marginLeft="@dimen/achivement_cell_content_margin_left"
+      android:layout_marginLeft="@dimen/achievement_cell_content_margin_left"
       android:singleLine="false"
       android:maxLines="2"
       android:gravity="top|left"
       tools:text="Gain followers to level up lorem ipsum dolor sit amet."/>
-  <RatingBar
+
+  <LinearLayout
+      android:id="@+id/rating_bar"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:stepSize="1"
-      android:numStars="5"
       android:layout_toRightOf="@id/achievement_badge"
       android:layout_below="@id/achievement_description"
-      android:layout_marginLeft="@dimen/achivement_cell_content_margin_left"
-      />
+      android:orientation="horizontal"
+      android:background="@drawable/blue_transparent_line"
+      >
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator"
+        tools:src="@drawable/lb_star_orange"/>
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator"
+        tools:src="@drawable/lb_star_orange"/>
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator"
+        tools:src="@drawable/lb_star_orange"/>
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator"
+        tools:src="@drawable/lb_star_orange"/>
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator"
+        tools:src="@drawable/lb_star_orange"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignLeft="@id/rating_bar"
+      android:layout_alignRight="@id/rating_bar"
+      android:layout_below="@id/rating_bar"
+      android:orientation="horizontal"
+      >
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="Top 100"/>
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="Top 10"/>
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="Top 5"/>
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="Top 3"/>
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="#1"/>
+  </LinearLayout>
+
 </com.tradehero.th.fragments.achievement.AchievementCellView>

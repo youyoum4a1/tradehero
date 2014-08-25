@@ -29,7 +29,8 @@
 
 
   <!-- Cell view -->
-  <dimen name="achivement_cell_padding">10dp</dimen>
-  <dimen name="achivement_cell_content_margin_left">10dp</dimen>
+  <dimen name="achievement_cell_padding">10dp</dimen>
+  <dimen name="achievement_cell_content_margin_left">5dp</dimen>
+  <dimen name="achievement_cell_progress_indicator_w_h">40dp</dimen>
 
 </resources>

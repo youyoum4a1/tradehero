@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:left="20dp" android:right="20dp">
+    <shape
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="line"
+        >
+      <stroke android:width="5dp" android:color="@color/tradehero_blue_pressed"/>
+
+    </shape>
+  </item>
+</layer-list>
