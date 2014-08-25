@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+  <LinearLayout
+      android:id="@+id/button_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:orientation="horizontal"
+      android:gravity="center"
+      >
+
+    <TextView
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/UserProfile.Button"
+        android:text="@string/next"
+        android:textSize="@dimen/text_large"
+        />
+
+    <TextView
+        android:id="@+id/done_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/UserProfile.Button"
+        android:text="@string/done"
+        android:textSize="@dimen/text_large"
+        android:visibility="gone"
+        />
+
+  </LinearLayout>
+
+  <com.tradehero.th.fragments.onboarding.OnBoardViewPager
+      android:id="@+id/pager"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_above="@id/button_container"
+      android:layout_alignParentTop="true"
+      />
+
+  <ImageView
+      android:id="@+id/close"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentRight="true"
+      android:background="@drawable/basic_white_selector"
+      android:src="@drawable/cross_red"
+      />
+
+</RelativeLayout>
