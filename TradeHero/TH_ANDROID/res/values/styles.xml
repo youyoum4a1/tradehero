@@ -140,6 +140,8 @@
   <style name="TradeHero.Dashboard" parent="TradeHero">
     <item name="android:windowActionBarOverlay">false</item>
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
+    <item name="android:actionBarTabStyle">@style/TradeHero.Dashboard.ActionBar.TabView</item>
+    <item name="android:actionBarTabBarStyle">@style/TradeHero.Dashboard.ActionBar.TabBar</item>
     <item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
     <item name="android:actionBarItemBackground">@drawable/basic_transparent_selector</item>
@@ -399,4 +401,11 @@
     <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom_and_expand</item>
   </style>
 
+  <style name="TradeHero.Dashboard.ActionBar.TabView" parent="@style/Widget.Sherlock.Light.ActionBar.TabView">
+    <item name="android:background">@drawable/action_bar_tab_view</item>
+  </style>
+
+  <style name="TradeHero.Dashboard.ActionBar.TabBar" parent="@style/Widget.Sherlock.Light.ActionBar.TabBar">
+    <item name="android:background">@android:color/white</item>
+  </style>
 </resources>

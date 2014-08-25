@@ -68,31 +68,40 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
                 });
     }
 
-    private void goToTab(@NotNull RootFragmentType tabType, TabHost.OnTabChangeListener changeListener)
+    private <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, TabHost.OnTabChangeListener changeListener)
     {
         mOnTabChangedListener = changeListener;
-        goToTab(tabType);
+        return goToTab(tabType);
     }
 
-    public void goToTab(@NotNull RootFragmentType tabType)
+    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType)
     {
-        this.goToTab(tabType, TAB_SHOULD_ADD_TO_BACKSTACK);
+        return goToTab(tabType, TAB_SHOULD_ADD_TO_BACKSTACK);
     }
 
-    public void goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack)
+    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack)
     {
-        this.goToTab(tabType, shouldAddToBackStack, TAB_SHOW_HOME_AS_UP);
+        return goToTab(tabType, shouldAddToBackStack, TAB_SHOW_HOME_AS_UP);
     }
 
-    public void goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
+    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
     {
+        if (tabType.fragmentClass.isInstance(getCurrentFragment()))
+        {
+            return (T) getCurrentFragment();
+        }
+
         Bundle args = new Bundle();
 
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         manager.executePendingTransactions();
 
-        updateTabBarOnTabChanged(
-                ((Object) pushFragment(tabType.fragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp)).getClass().getName());
+        @SuppressWarnings("unchecked")
+        Class<T> targetFragmentClass = (Class<T>) tabType.fragmentClass;
+        T tabFragment = pushFragment(targetFragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp);
+
+        updateTabBarOnTabChanged(((Object)tabFragment).getClass().getName());
+        return tabFragment;
     }
 
     private void postPushActionFragment(final THIntent thIntent)
@@ -117,7 +126,6 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
     @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
             @Nullable String backStackName, Boolean shouldAddToBackStack, Boolean showHomeAsUp)
     {
-        onFragmentChanged(activity, fragmentClass, args);
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof DashboardFragment)
         {
@@ -130,6 +138,8 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 
         T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, shouldAddToBackStack, showHomeAsUp);
         executePending();
+
+        onFragmentChanged(activity, fragmentClass, args);
         return fragment;
     }
 

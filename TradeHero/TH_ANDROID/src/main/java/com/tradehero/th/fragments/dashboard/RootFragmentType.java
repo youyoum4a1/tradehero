@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
+import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -53,7 +54,11 @@ public enum RootFragmentType
             R.drawable.icn_menu_settings, SettingsFragment.class),
     ADMIN_SETTINGS(R.layout.tab_indicator_holo,
             R.string.dashboard_admin_settings, R.string.dashboard_admin_settings_key,
-            R.drawable.icn_menu_settings, AdminSettingsFragment.class);
+            R.drawable.icn_menu_settings, AdminSettingsFragment.class),
+    DISCOVERY(R.layout.tab_indicator_holo,
+            R.string.discovery, R.string.dashboard_discovery_key,
+            R.drawable.icn_menu_settings, DiscoveryMainFragment.class),
+    ;
 
     private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
 
@@ -94,7 +99,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forBottomBar()
     {
         List<RootFragmentType> forBottomBar = Arrays.asList(
-                ME, TRENDING, COMMUNITY, CONTEST_CENTER
+                ME, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER
         );
         return Collections.unmodifiableCollection(forBottomBar);
     }

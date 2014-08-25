@@ -46,6 +46,10 @@ public interface NewsService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
+    @GET("/news/featured") PaginatedDTO<NewsItemCompactDTO> getFeaturedNewsList(
+        @Query("page") Integer page,
+        @Query("perPage") Integer perPage);
+
     @GET("/news/{newsId}")
     NewsItemDTO getNewsDetails(@Path("newsId") long newsId);
 

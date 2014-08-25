@@ -63,6 +63,10 @@ public class AppContainerImpl implements AppContainer
         resideMenu.setMenuListener(new CustomOnMenuListener());
         resideMenu.setMenuItems(menuItems);
 
+        // only enable swipe from right to left
+        resideMenu.setEnableSwipeLeftToRight(false);
+        resideMenu.setEnableSwipeRightToLeft(true);
+
         return findById(activity, android.R.id.content);
     }
 
