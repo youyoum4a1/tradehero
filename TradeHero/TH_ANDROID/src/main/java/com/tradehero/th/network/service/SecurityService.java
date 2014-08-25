@@ -59,6 +59,15 @@ public interface SecurityService
             @Query("perPage") Integer perPage);
     //</editor-fold>
 
+    //<editor-fold desc="Get List By Sector and Exchange">
+    @GET("/securities/bySectorAndExchange")
+    SecurityCompactDTOList getBySectorAndExchange(
+            @Query("exchange") String exchange,
+            @Query("sector") String sector,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+    //</editor-fold>
+
     //<editor-fold desc="Get Security">
     @GET("/securities/{exchange}/{pathSafeSecuritySymbol}")
     SecurityPositionDetailDTO getSecurity(
