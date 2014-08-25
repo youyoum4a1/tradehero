@@ -34,7 +34,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         extends RelativeLayout
         implements DTOView<SecurityCompactDTOType>
 {
-
     public static final float DIVISOR_PC_50_COLOR = 5f;
 
     @Inject @ForSecurityItemForeground Transformation foregroundTransformation;
