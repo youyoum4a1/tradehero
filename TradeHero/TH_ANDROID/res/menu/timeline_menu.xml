@@ -6,6 +6,7 @@
   <item
       android:id="@+id/action_bar_update_center_icon"
       android:showAsAction="always"
+      android:title="@null"
       android:actionLayout="@layout/action_bar_update_center_icon"/>
 
   <item

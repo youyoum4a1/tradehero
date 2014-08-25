@@ -59,8 +59,11 @@ public class MeTimelineFragment extends TimelineFragment
 
         MenuItem updateCenterItem = menu.findItem(R.id.action_bar_update_center_icon);
         View updateCenterIcon = updateCenterItem.getActionView();
-        updateCenterIcon.setOnClickListener(this);
-        updateCenterCountTextView = (TextView)updateCenterIcon.findViewById(R.id.action_bar_message_count);
+        if (updateCenterIcon != null)
+        {
+            updateCenterIcon.setOnClickListener(this);
+            updateCenterCountTextView = (TextView)updateCenterIcon.findViewById(R.id.action_bar_message_count);
+        }
         updateView();
     }
 
