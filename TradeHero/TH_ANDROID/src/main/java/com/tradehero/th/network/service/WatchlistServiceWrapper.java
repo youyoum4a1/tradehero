@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.PositionCompactId;
+import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
@@ -12,6 +13,7 @@ import com.tradehero.th.api.watchlist.key.SecurityPerPagedWatchlistKey;
 import com.tradehero.th.api.watchlist.key.SkipCacheSecurityPerPagedWatchlistKey;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistCreate;
+import com.tradehero.th.models.watchlist.DTOProcessorWatchlistCreateList;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistDelete;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistUpdate;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -132,6 +134,37 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
+
+    //<editor-fold desc="Batch Create Watchlist Positions">
+    @NotNull protected DTOProcessor<WatchlistPositionDTOList> createWatchlistPositionBatchCreate(@NotNull UserBaseKey concernedUser)
+    {
+        return new DTOProcessorWatchlistCreateList(
+                watchlistPositionCache.get(),
+                concernedUser,
+                portfolioCompactCache.get(),
+                portfolioCache.get(),
+                userWatchlistPositionCache.get());
+    }
+
+    @NotNull public WatchlistPositionDTOList batchCreate(
+            @NotNull SecurityIntegerIdListForm securityIntegerIds)
+    {
+        return createWatchlistPositionBatchCreate(currentUserId.toUserBaseKey())
+                .process(watchlistService.batchCreate(securityIntegerIds));
+    }
+
+    @NotNull MiddleCallback<WatchlistPositionDTOList> batchCreate(
+            @NotNull SecurityIntegerIdListForm securityIntegerIds,
+            @Nullable Callback<WatchlistPositionDTOList> callback)
+    {
+        MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createWatchlistPositionBatchCreate(currentUserId.toUserBaseKey()));
+        watchlistServiceAsync.batchCreate(securityIntegerIds, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
 
     //<editor-fold desc="Query for watchlist">
     @NotNull public WatchlistPositionDTOList getAllByUser(@NotNull PagedWatchlistKey pagedWatchlistKey)
