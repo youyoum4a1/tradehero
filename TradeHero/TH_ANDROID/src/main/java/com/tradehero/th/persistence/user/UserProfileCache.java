@@ -55,7 +55,7 @@ import org.jetbrains.annotations.NotNull;
         heroListCache.get().invalidate(userBaseKey);
         if (userProfileDTO.mostSkilledLbmu != null)
         {
-            leaderboardCache.get().put(userProfileDTO.getMostSkilledLbmuKey(), userProfileDTO.mostSkilledLbmu);
+            leaderboardCache.get().put(userProfileDTO.getMostSkilledUserOnLbmuKey(), userProfileDTO.mostSkilledLbmu);
         }
         userProfileCompactCache.get().put(userBaseKey, userProfileDTO);
         UserProfileDTO previous = super.put(userBaseKey, userProfileDTO);
