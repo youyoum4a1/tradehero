@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.discovery;
 
-import android.app.Instrumentation;
 import com.actionbarsherlock.app.ActionBar;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;

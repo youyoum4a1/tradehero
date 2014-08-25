@@ -57,7 +57,7 @@ public enum RootFragmentType
             R.drawable.icn_menu_settings, AdminSettingsFragment.class),
     DISCOVERY(R.layout.tab_indicator_holo,
             R.string.discovery, R.string.dashboard_discovery_key,
-            R.drawable.icn_menu_settings, DiscoveryMainFragment.class),
+            R.drawable.icn_menu_settings, DiscoveryMainFragment.class)
     ;
 
     private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
@@ -109,5 +109,10 @@ public enum RootFragmentType
         if (!Constants.RELEASE) {
             forResideMenu.add(ADMIN_SETTINGS);
         }
+    }
+
+    public static RootFragmentType getInitialTab()
+    {
+        return RootFragmentType.ME;
     }
 }

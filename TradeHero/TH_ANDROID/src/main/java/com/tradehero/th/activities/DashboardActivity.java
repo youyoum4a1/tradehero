@@ -77,8 +77,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity,
         ResideMenu.OnMenuListener
 {
-    private final RootFragmentType INITIAL_TAB = RootFragmentType.ME;
-
     private DashboardNavigator navigator;
     @Inject Set<DashboardNavigator.DashboardFragmentWatcher> dashboardFragmentWatchers;
 
@@ -192,7 +190,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (savedInstanceState == null && navigator.getCurrentFragment() == null)
         {
-            navigator.goToTab(INITIAL_TAB);
+            navigator.goToTab(RootFragmentType.getInitialTab());
         }
 
         if (getIntent() != null)
