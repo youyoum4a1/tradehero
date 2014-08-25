@@ -4,11 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-  <LinearLayout android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="@dimen/common_margin_15"
-      tools:background="@color/red">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,6 +15,7 @@
           android:id="@+id/user_profile_followers_count_wrapper"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:orientation="horizontal"
           android:layout_weight="1"
           android:background="@drawable/basic_transparent_selector"
@@ -52,6 +48,7 @@
           android:id="@+id/user_profile_heroes_count_wrapper"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:orientation="horizontal"
           android:layout_weight="1"
           android:background="@drawable/basic_transparent_selector"
@@ -84,6 +81,7 @@
           android:id="@+id/user_profile_trade_count_wrapper"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:orientation="horizontal"
           android:layout_weight="1"
           android:background="@drawable/basic_transparent_selector"
@@ -114,6 +112,5 @@
 
     </LinearLayout>
 
-  </LinearLayout>
 
 </merge>
