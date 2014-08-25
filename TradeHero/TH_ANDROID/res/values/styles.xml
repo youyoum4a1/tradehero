@@ -401,11 +401,11 @@
     <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom_and_expand</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.TabView" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
-    <item name="android:background">@color/red</item>
+  <style name="TradeHero.Dashboard.ActionBar.TabView" parent="@style/Widget.Sherlock.Light.ActionBar.TabView">
+    <item name="android:background">@drawable/action_bar_tab_view</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.TabBar" parent="@android:style/Widget.Holo.Light.ActionBar.TabBar">
-    <item name="android:background">@android:color/holo_blue_bright</item>
+  <style name="TradeHero.Dashboard.ActionBar.TabBar" parent="@style/Widget.Sherlock.Light.ActionBar.TabBar">
+    <item name="android:background">@android:color/white</item>
   </style>
 </resources>
