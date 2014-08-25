@@ -51,4 +51,8 @@
   <string name="share_success">Your share is success</string>
   <!--do not thanslate-->
   <string name="security_action_bar_title" translatable="false">%1$s (%2$s)</string>
+
+  <string name="security_on_board_select_invitation_title">Stocks to Watch</string>
+  <string name="security_on_board_select_invitation_come_on">These stocks are hot! Add them to your watchlist now!</string>
+
 </resources>
