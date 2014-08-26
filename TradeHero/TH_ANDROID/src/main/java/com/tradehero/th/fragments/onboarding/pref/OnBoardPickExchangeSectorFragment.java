@@ -8,22 +8,30 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.market.ExchangeSectorCompactKey;
 import com.tradehero.th.persistence.market.ExchangeSectorCompactListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class OnBoardPickExchangeSectorFragment extends BaseFragment
 {
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
     @Inject ExchangeSectorCompactListCache exchangeSectorCompactListCache;
     @NotNull OnBoardPickExchangeSectorViewHolder viewHolder;
+    @Nullable DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Nullable DTOCacheNew.Listener<ExchangeSectorCompactKey, ExchangeSectorCompactListDTO> exchangeSectorListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        userProfileCacheListener = createUSerProfileListener();
         exchangeSectorListener = createExchangeSectorListener();
         viewHolder = new OnBoardPickExchangeSectorViewHolder(getActivity());
     }
@@ -42,11 +50,13 @@ public class OnBoardPickExchangeSectorFragment extends BaseFragment
     @Override public void onStart()
     {
         super.onStart();
+        fetchUserProfile();
         fetchExchangeSectors();
     }
 
     @Override public void onStop()
     {
+        detachUserProfileCache();
         detachExchangeSectorCompactListCache();
         super.onStop();
     }
@@ -60,7 +70,39 @@ public class OnBoardPickExchangeSectorFragment extends BaseFragment
     @Override public void onDestroy()
     {
         exchangeSectorListener = null;
+        userProfileCacheListener = null;
         super.onDestroy();
+    }
+
+    protected void fetchUserProfile()
+    {
+        detachUserProfileCache();
+        UserBaseKey key = currentUserId.toUserBaseKey();
+        userProfileCache.register(key, userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(key);
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUSerProfileListener()
+    {
+        return new OnBoardPickExchangeSectorUserProfileListener();
+    }
+
+    protected class OnBoardPickExchangeSectorUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            viewHolder.setUserProfile(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_your_user_profile);
+        }
+    }
+
+    protected void detachUserProfileCache()
+    {
+        userProfileCache.unregister(userProfileCacheListener);
     }
 
     protected void fetchExchangeSectors()

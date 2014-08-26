@@ -68,6 +68,7 @@ import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.onboarding.hero.OnBoardPickHeroFragment;
 import com.tradehero.th.fragments.onboarding.hero.SelectableUserViewRelative;
+import com.tradehero.th.fragments.onboarding.pref.CountrySpinnerAdapterNew;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPickExchangeSectorFragment;
 import com.tradehero.th.fragments.onboarding.stock.OnBoardPickStockFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
@@ -312,6 +313,7 @@ import javax.inject.Singleton;
                         OnBoardPickStockFragment.class,
                         OnBoardDialogFragment.class,
                         OnBoardPickExchangeSectorFragment.class,
+                        CountrySpinnerAdapterNew.class,
 
                         WebViewFragment.class,
 
