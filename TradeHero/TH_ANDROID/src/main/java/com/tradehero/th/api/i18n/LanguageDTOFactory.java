@@ -39,7 +39,6 @@ public class LanguageDTOFactory
         {
             return known;
         }
-        Timber.e(new Exception("Just reporting"), "Language not found %s", languageCode);
         return new LanguageDTO(languageCode, Locale.ENGLISH);
     }
 
