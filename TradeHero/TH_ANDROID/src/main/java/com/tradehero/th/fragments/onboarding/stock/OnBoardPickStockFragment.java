@@ -10,8 +10,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
+import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
@@ -24,6 +24,7 @@ public class OnBoardPickStockFragment extends BaseFragment
     @Inject SecurityCompactListCache securityCompactListCache;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @NotNull OnBoardPickStockViewHolder viewHolder;
+    @Nullable ExchangeSectorSecurityListType exchangeSectorSecurityListType;
     @Nullable DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListCacheListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -47,7 +48,7 @@ public class OnBoardPickStockFragment extends BaseFragment
     @Override public void onStart()
     {
         super.onStart();
-        fetchTrendingSecurities();
+        fetchExchangeSectorSecurities();
     }
 
     @Override public void onStop()
@@ -69,12 +70,21 @@ public class OnBoardPickStockFragment extends BaseFragment
         super.onDestroy();
     }
 
-    protected void fetchTrendingSecurities()
+    public void setExchangeSectorSecurityListType(
+            @Nullable ExchangeSectorSecurityListType exchangeSectorSecurityListType)
     {
-        detachSecurityListCache();
-        SecurityListType key = new TrendingBasicSecurityListType(1, 10);
-        securityCompactListCache.register(key, securityListCacheListener);
-        securityCompactListCache.getOrFetchAsync(key);
+        this.exchangeSectorSecurityListType = exchangeSectorSecurityListType;
+        fetchExchangeSectorSecurities();
+    }
+
+    protected void fetchExchangeSectorSecurities()
+    {
+        if (exchangeSectorSecurityListType != null)
+        {
+            detachSecurityListCache();
+            securityCompactListCache.register(exchangeSectorSecurityListType, securityListCacheListener);
+            securityCompactListCache.getOrFetchAsync(exchangeSectorSecurityListType);
+        }
     }
 
     protected void detachSecurityListCache()

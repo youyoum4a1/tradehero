@@ -51,7 +51,7 @@
       android:padding="8dp"
       android:layout_alignParentTop="true"
       android:layout_alignParentRight="true"
-      android:background="@drawable/basic_white_selector"
+      android:background="@drawable/basic_transparent_selector"
       android:src="@drawable/cross_red"
       />
 

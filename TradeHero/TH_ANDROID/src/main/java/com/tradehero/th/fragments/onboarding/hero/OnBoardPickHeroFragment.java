@@ -11,6 +11,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
+import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
@@ -27,6 +28,7 @@ public class OnBoardPickHeroFragment extends BaseFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject LeaderboardCache leaderboardCache;
     @NotNull OnBoardPickHeroViewHolder viewHolder;
+    @Nullable ExchangeSectorSecurityListType exchangeSectorSecurityListType;
     @Nullable DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -70,6 +72,13 @@ public class OnBoardPickHeroFragment extends BaseFragment
     {
         leaderboardCacheListener = null;
         super.onDestroy();
+    }
+
+    public void setExchangeSectorSecurityListType(
+            @Nullable ExchangeSectorSecurityListType exchangeSectorSecurityListType)
+    {
+        this.exchangeSectorSecurityListType = exchangeSectorSecurityListType;
+        // TODO fetch appropriate
     }
 
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createLeaderboardCacheListener()

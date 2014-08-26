@@ -68,6 +68,7 @@ import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.onboarding.hero.OnBoardPickHeroFragment;
 import com.tradehero.th.fragments.onboarding.hero.SelectableUserViewRelative;
+import com.tradehero.th.fragments.onboarding.pref.OnBoardPickExchangeSectorFragment;
 import com.tradehero.th.fragments.onboarding.stock.OnBoardPickStockFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
@@ -310,6 +311,7 @@ import javax.inject.Singleton;
                         OnBoardPickHeroFragment.class,
                         OnBoardPickStockFragment.class,
                         OnBoardDialogFragment.class,
+                        OnBoardPickExchangeSectorFragment.class,
 
                         WebViewFragment.class,
 
