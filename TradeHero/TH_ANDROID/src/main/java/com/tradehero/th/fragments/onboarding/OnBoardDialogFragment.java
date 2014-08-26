@@ -11,10 +11,15 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
+    @Inject UserServiceWrapper userServiceWrapper;
+    @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @InjectView(R.id.done_button) View doneButton;
     @InjectView(R.id.close) View closeButton;
     @NotNull OnBoardPagingHolder onBoardPagingHolder;
@@ -23,7 +28,10 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
-        onBoardPagingHolder = new OnBoardPagingHolder(((Fragment) this).getChildFragmentManager());
+        onBoardPagingHolder = new OnBoardPagingHolder(
+                ((Fragment) this).getChildFragmentManager(),
+                userServiceWrapper,
+                watchlistServiceWrapper);
     }
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -52,12 +60,16 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         super.onDestroyView();
     }
 
-    @OnClick({
-            R.id.done_button,
-            R.id.close,
-    })
+    @OnClick(R.id.close)
+    public void onCloseClicked(/*View view*/)
+    {
+        dismiss();
+    }
+
+    @OnClick(R.id.done_button)
     public void onDoneClicked(/*View view*/)
     {
+        onBoardPagingHolder.wrapUpAndSubmitSelection();
         dismiss();
     }
 }

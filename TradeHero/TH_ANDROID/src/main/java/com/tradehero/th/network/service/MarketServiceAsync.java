@@ -7,7 +7,7 @@ import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-public interface MarketServiceAsync
+interface MarketServiceAsync
 {
     //<editor-fold desc="GetExchanges">
     // returns basic exchange DTOs, un-enriched

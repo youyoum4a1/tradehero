@@ -96,7 +96,7 @@ public class OnBoardPickExchangeSectorFragment extends BaseFragment
         }
     }
 
-    public OnBoardPrefDTO getOnBoardPrefs()
+    @NotNull public OnBoardPrefDTO getOnBoardPrefs()
     {
         return viewHolder.getOnBoardPrefs();
     }

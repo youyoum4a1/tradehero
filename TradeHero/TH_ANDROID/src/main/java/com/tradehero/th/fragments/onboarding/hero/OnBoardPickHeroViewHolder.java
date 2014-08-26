@@ -12,6 +12,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -69,9 +70,9 @@ public class OnBoardPickHeroViewHolder
         selectedHeroesAdapter.notifyDataSetChanged();
     }
 
-    @NotNull List<LeaderboardUserDTO> getSelectedHeroes()
+    @NotNull LeaderboardUserDTOList getSelectedHeroes()
     {
-        List<LeaderboardUserDTO> selected = new ArrayList<>();
+        LeaderboardUserDTOList selected = new LeaderboardUserDTOList();
         SelectableUserDTO value;
         for (int position = 0; position < selectedHeroesAdapter.getCount(); position++)
         {

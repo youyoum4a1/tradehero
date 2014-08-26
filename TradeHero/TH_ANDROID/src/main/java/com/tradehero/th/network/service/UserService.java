@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -190,8 +191,6 @@ public interface UserService
             @Query("q") String query);
     //</editor-fold>
 
-    @POST("/users/BatchFollow/free") Response followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
-
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends") Response inviteFriends(
             @Path("userId") int userId,
@@ -214,6 +213,8 @@ public interface UserService
     @POST("/users/{userId}/follow") UserProfileDTO follow(
             @Path("userId") int userId,
             @Body GooglePlayPurchaseDTO purchaseDTO);
+
+    @POST("/users/batchFollow/free") Response followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
@@ -224,6 +225,15 @@ public interface UserService
     //<editor-fold desc="Get Heroes">
     @GET("/users/{userId}/heroes") HeroDTOList getHeroes(
             @Path("userId") int userId);
+    //</editor-fold>
+
+    //<editor-fold desc="Suggest Heroes">
+    @GET("/users/heroes/bySectorAndExchange")
+    LeaderboardUserDTOList suggestHeroes(
+            @Query("exchange") Integer exchangeId,
+            @Query("sector") Integer sectorId,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">

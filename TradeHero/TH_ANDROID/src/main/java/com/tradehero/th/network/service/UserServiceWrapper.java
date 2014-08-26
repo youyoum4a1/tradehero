@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -12,6 +13,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
@@ -831,6 +833,32 @@ import retrofit.client.Response;
     {
         BaseMiddleCallback<HeroDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getHeroes(heroKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Suggest Heroes">
+    @NotNull public LeaderboardUserDTOList suggestHeroes(
+            @NotNull SuggestHeroesListType suggestHeroesListType)
+    {
+        return userService.suggestHeroes(
+                suggestHeroesListType.exchangeId == null ? null : suggestHeroesListType.exchangeId.key,
+                suggestHeroesListType.sectorId == null ? null : suggestHeroesListType.sectorId.key,
+                suggestHeroesListType.page,
+                suggestHeroesListType.perPage);
+    }
+
+    @NotNull public MiddleCallback<LeaderboardUserDTOList> suggestHeroes(
+            @NotNull SuggestHeroesListType suggestHeroesListType,
+            @Nullable Callback<LeaderboardUserDTOList> callback)
+    {
+        MiddleCallback<LeaderboardUserDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.suggestHeroes(
+                suggestHeroesListType.exchangeId == null ? null : suggestHeroesListType.exchangeId.key,
+                suggestHeroesListType.sectorId == null ? null : suggestHeroesListType.sectorId.key,
+                suggestHeroesListType.page,
+                suggestHeroesListType.perPage,
+                middleCallback);
         return middleCallback;
     }
     //</editor-fold>

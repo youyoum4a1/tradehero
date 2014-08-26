@@ -141,9 +141,10 @@ import retrofit.Callback;
         }
         else if (key instanceof ExchangeSectorSecurityListType)
         {
+            ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
             received = this.securityService.getBySectorAndExchange(
-                    ((ExchangeSectorSecurityListType) key).exchange,
-                    ((ExchangeSectorSecurityListType) key).sector,
+                    exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
+                    exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
                     key.page,
                     key.perPage);
         }
@@ -214,9 +215,10 @@ import retrofit.Callback;
         }
         else if (key instanceof ExchangeSectorSecurityListType)
         {
+            ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
             this.securityServiceAsync.getBySectorAndExchange(
-                    ((ExchangeSectorSecurityListType) key).exchange,
-                    ((ExchangeSectorSecurityListType) key).sector,
+                    exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
+                    exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
                     key.page,
                     key.perPage,
                     middleCallback);

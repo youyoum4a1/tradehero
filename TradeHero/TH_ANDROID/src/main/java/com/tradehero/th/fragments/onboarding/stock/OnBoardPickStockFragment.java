@@ -7,13 +7,10 @@ import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 public class OnBoardPickStockFragment extends BaseFragment
 {
     @Inject SecurityCompactListCache securityCompactListCache;
-    @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @NotNull OnBoardPickStockViewHolder viewHolder;
     @Nullable ExchangeSectorSecurityListType exchangeSectorSecurityListType;
     @Nullable DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListCacheListener;
@@ -54,7 +50,6 @@ public class OnBoardPickStockFragment extends BaseFragment
     @Override public void onStop()
     {
         detachSecurityListCache();
-        doAddToWatchlist();
         super.onStop();
     }
 
@@ -110,12 +105,8 @@ public class OnBoardPickStockFragment extends BaseFragment
         }
     }
 
-    public void doAddToWatchlist()
+    public SecurityCompactDTOList getSelectedStocks()
     {
-        SecurityCompactDTOList selected = viewHolder.getSelectedStocks();
-        if (!selected.isEmpty())
-        {
-            watchlistServiceWrapper.batchCreate(new SecurityIntegerIdListForm(selected, (SecurityCompactDTO) null));
-        }
+        return viewHolder.getSelectedStocks();
     }
 }

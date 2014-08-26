@@ -279,12 +279,14 @@ public class TrendingFragment extends SecurityListFragment
 
     private void linkWith(@NotNull ExchangeCompactDTOList exchangeDTOs, boolean andDisplay)
     {
-        linkWith(new ExchangeCompactSpinnerDTOList(
-                        getResources(),
-                        exchangeCompactDTOUtil.filterAndOrderForTrending(
-                                exchangeDTOs,
-                                new ExchangeCompactDTODescriptionNameComparator<>())),
-                andDisplay);
+        ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
+                getResources(),
+                exchangeCompactDTOUtil.filterAndOrderForTrending(
+                        exchangeDTOs,
+                        new ExchangeCompactDTODescriptionNameComparator<>()));
+        // Adding the "All" choice
+        spinnerList.add(0, new ExchangeCompactSpinnerDTO(getResources()));
+        linkWith(spinnerList, andDisplay);
     }
 
     private void linkWith(@NotNull ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs, boolean andDisplay)

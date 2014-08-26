@@ -153,7 +153,7 @@ import retrofit.Callback;
                 .process(watchlistService.batchCreate(securityIntegerIds));
     }
 
-    @NotNull MiddleCallback<WatchlistPositionDTOList> batchCreate(
+    @NotNull public MiddleCallback<WatchlistPositionDTOList> batchCreate(
             @NotNull SecurityIntegerIdListForm securityIntegerIds,
             @Nullable Callback<WatchlistPositionDTOList> callback)
     {

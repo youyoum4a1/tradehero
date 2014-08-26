@@ -62,8 +62,8 @@ public interface SecurityService
     //<editor-fold desc="Get List By Sector and Exchange">
     @GET("/securities/bySectorAndExchange")
     SecurityCompactDTOList getBySectorAndExchange(
-            @Query("exchange") String exchange,
-            @Query("sector") String sector,
+            @Query("exchange") Integer exchangeId,
+            @Query("sector") Integer sectorId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
     //</editor-fold>

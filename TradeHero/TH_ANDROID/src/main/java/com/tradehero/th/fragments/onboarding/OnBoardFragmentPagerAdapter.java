@@ -4,30 +4,35 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.SparseArray;
+import android.view.ViewGroup;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
 import com.tradehero.th.fragments.onboarding.hero.OnBoardPickHeroFragment;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPickExchangeSectorFragment;
 import com.tradehero.th.fragments.onboarding.stock.OnBoardPickStockFragment;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class OnBoardFragmentPagerAdapter extends FragmentStatePagerAdapter
 {
-    private static final int FRAGMENT_PREF = 0;
-    private static final int FRAGMENT_HERO = 1;
-    private static final int FRAGMENT_STOCK = 2;
+    static final int FRAGMENT_PREF = 0;
+    static final int FRAGMENT_HERO = 1;
+    static final int FRAGMENT_STOCK = 2;
 
+    @NotNull private SparseArray<Fragment> fragments;
     @Nullable ExchangeSectorSecurityListType exchangeSectorSecurityListType;
 
     //<editor-fold desc="Constructors">
     public OnBoardFragmentPagerAdapter(FragmentManager fm)
     {
         super(fm);
+        this.fragments = new SparseArray<>();
     }
     //</editor-fold>
 
     @Override public int getCount()
     {
-        return 2;
+        return 3;
     }
 
     @Override public Fragment getItem(int position)
@@ -48,15 +53,18 @@ public class OnBoardFragmentPagerAdapter extends FragmentStatePagerAdapter
                 throw new IllegalArgumentException("Unhandled position " + position);
         }
         fragment.setArguments(new Bundle());
+        fragments.put(position, fragment);
         return fragment;
     }
 
-    public void setExchangeSectorSecurityListType(@Nullable ExchangeSectorSecurityListType exchangeSectorSecurityListType)
+    @Override public void destroyItem(ViewGroup container, int position, Object object)
     {
-        this.exchangeSectorSecurityListType = exchangeSectorSecurityListType;
-        ((OnBoardPickStockFragment) getItem(FRAGMENT_STOCK))
-                .setExchangeSectorSecurityListType(exchangeSectorSecurityListType);
-        ((OnBoardPickHeroFragment) getItem(FRAGMENT_HERO))
-                .setExchangeSectorSecurityListType(exchangeSectorSecurityListType);
+        fragments.remove(position);
+        super.destroyItem(container, position, object);
+    }
+
+    Fragment getFragmentAt(int position)
+    {
+        return fragments.get(position);
     }
 }
