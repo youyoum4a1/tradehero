@@ -12,6 +12,8 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.onboarding.hero.OnBoardPickHeroFragment;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPickExchangeSectorFragment;
@@ -29,6 +31,7 @@ public class OnBoardPagingHolder implements ViewPager.OnPageChangeListener
     @InjectView(R.id.done_button) View doneButton;
     @InjectView(R.id.pager) ViewPager pager;
     @NotNull OnBoardFragmentPagerAdapter pagerAdapter;
+    @NotNull CurrentUserId currentUserId;
     @NotNull UserServiceWrapper userServiceWrapper;
     @NotNull WatchlistServiceWrapper watchlistServiceWrapper;
     @Nullable OnBoardPrefDTO onBoardPrefDTO;
@@ -38,11 +41,13 @@ public class OnBoardPagingHolder implements ViewPager.OnPageChangeListener
     //<editor-fold desc="Constructors">
     public OnBoardPagingHolder(
             @NotNull FragmentManager fm,
+            @NotNull CurrentUserId currentUserId,
             @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull WatchlistServiceWrapper watchlistServiceWrapper)
     {
         super();
         pagerAdapter = new OnBoardFragmentPagerAdapter(fm);
+        this.currentUserId = currentUserId;
         this.userServiceWrapper = userServiceWrapper;
         this.watchlistServiceWrapper = watchlistServiceWrapper;
     }
@@ -115,6 +120,13 @@ public class OnBoardPagingHolder implements ViewPager.OnPageChangeListener
 
     public void wrapUpAndSubmitSelection()
     {
+        // Update country
+        //noinspection ConstantConditions
+        userServiceWrapper.updateCountryCode(
+                currentUserId.toUserBaseKey(),
+                new UpdateCountryCodeFormDTO(onBoardPrefDTO.preferredCountry.name()), null);
+
+        // Follow heroes if any
         if (selectedHeroes != null && !selectedHeroes.isEmpty())
         {
             userServiceWrapper.followBatchFree(
@@ -124,6 +136,7 @@ public class OnBoardPagingHolder implements ViewPager.OnPageChangeListener
                     null);
         }
 
+        // Watch stocks if any
         selectedStocks = ((OnBoardPickStockFragment)
                 pagerAdapter.getFragmentAt(OnBoardFragmentPagerAdapter.FRAGMENT_STOCK))
                 .getSelectedStocks();

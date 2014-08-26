@@ -10,6 +10,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
+    @Inject CurrentUserId currentUserId;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @InjectView(R.id.done_button) View doneButton;
@@ -30,6 +32,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
         onBoardPagingHolder = new OnBoardPagingHolder(
                 ((Fragment) this).getChildFragmentManager(),
+                currentUserId,
                 userServiceWrapper,
                 watchlistServiceWrapper);
     }

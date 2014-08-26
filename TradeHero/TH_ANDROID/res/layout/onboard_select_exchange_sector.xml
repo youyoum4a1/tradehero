@@ -1,63 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/common_margin_15"
-    >
+  >
 
-  <TextView
+  <LinearLayout
+      android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/common_margin_15"
-      android:gravity="center"
-      android:text="@string/tutorial_timeline_header"
-      android:textSize="@dimen/text_large"
-      android:textStyle="bold"
-      />
+      android:padding="@dimen/common_margin_15"
+      >
 
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center"
-      android:text="@string/market_on_board_exchange_sector_subtitle"
-      android:lineSpacingMultiplier="1.2"
-      />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/common_margin_15"
+        android:gravity="center"
+        android:text="@string/tutorial_timeline_header"
+        android:textSize="@dimen/text_large"
+        android:textStyle="bold"
+        />
 
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/market_on_board_exchange_interested"
-      />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/market_on_board_exchange_sector_subtitle"
+        android:lineSpacingMultiplier="1.2"
+        />
 
-  <Spinner
-      android:id="@+id/spinner_exchange"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/market_on_board_exchange_interested"
+        android:layout_marginTop="@dimen/common_margin_50"
+        android:textStyle="bold"
+        />
 
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/market_on_board_sector_interested"
-      />
+    <Spinner
+        android:id="@+id/spinner_exchange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-  <Spinner
-      android:id="@+id/spinner_sector"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/market_on_board_sector_interested"
+        android:layout_marginTop="@dimen/common_margin_50"
+        android:textStyle="bold"
+        />
 
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/market_on_board_country_from"
-      />
+    <Spinner
+        android:id="@+id/spinner_sector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-  <Spinner
-      android:id="@+id/spinner_country"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/market_on_board_country_from"
+        android:layout_marginTop="@dimen/common_margin_50"
+        android:textStyle="bold"
+        />
 
-</LinearLayout>
+    <Spinner
+        android:id="@+id/spinner_country"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+  </LinearLayout>
+
+</ScrollView>
