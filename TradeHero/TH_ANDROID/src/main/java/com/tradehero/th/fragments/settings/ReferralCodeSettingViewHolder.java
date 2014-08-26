@@ -3,10 +3,10 @@ package com.tradehero.th.fragments.settings;
 import com.tradehero.th.R;
 import javax.inject.Inject;
 
-public class ReferralCodeViewHolder extends OneSettingViewHolder
+public class ReferralCodeSettingViewHolder extends OneSettingViewHolder
 {
     //<editor-fold desc="Constructors">
-    @Inject public ReferralCodeViewHolder()
+    @Inject public ReferralCodeSettingViewHolder()
     {
     }
     //</editor-fold>

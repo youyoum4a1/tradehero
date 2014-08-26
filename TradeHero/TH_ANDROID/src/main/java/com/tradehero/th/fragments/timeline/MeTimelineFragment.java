@@ -39,12 +39,6 @@ public class MeTimelineFragment extends TimelineFragment
         thRouter.save(getArguments(), currentUserId.toUserBaseKey());
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -65,6 +59,12 @@ public class MeTimelineFragment extends TimelineFragment
             updateCenterCountTextView = (TextView)updateCenterIcon.findViewById(R.id.action_bar_message_count);
         }
         updateView();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

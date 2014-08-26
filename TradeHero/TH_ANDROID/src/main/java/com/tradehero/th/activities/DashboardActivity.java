@@ -1,6 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -26,7 +25,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -41,6 +39,7 @@ import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.social.friend.ReferralCodeDialogFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.intent.THIntentFactory;
@@ -69,8 +68,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
@@ -112,9 +109,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ProgressDialog progressDialog;
-    private AlertDialog mReferralCodeDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -156,18 +151,14 @@ public class DashboardActivity extends SherlockFragmentActivity
         };
         launchBilling();
 
-        detachUserProfileCache();
-        userProfileCacheListener = createUserProfileFetchListener();
-
         detachNotificationFetchTask();
         notificationFetchListener = createNotificationFetchListener();
 
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
-
+        // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
         //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list,
         // and this line is no use for it will update after login in prefetchesUponLogin
+
         showReferralCodeDialog();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
@@ -202,76 +193,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         pushNotificationManager.get().enablePush();
     }
 
-    private void showReferralCodeDialog()
-    {
-        if (firstShowReferralCodeDialogPreference.get())
-        {
-            firstShowReferralCodeDialogPreference.set(false);
-            if (THUser.getTHAuthenticationProvider() != null)
-            {
-                if (THUser.getTHAuthenticationProvider().getAuthType().equals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
-                {
-                    //not show referral code dialog if login by email by alex
-                    return;
-                }
-            }
-            UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-            if (userProfileDTO != null)
-            {
-                if (userProfileDTO.inviteCode != null && !userProfileDTO.inviteCode.isEmpty())
-                {
-                    return;
-                }
-            }
-            if (mReferralCodeDialog == null)
-            {
-                mReferralCodeDialog = alertDialogUtil.get().getReferralCodeDialog(this, currentUserId.toUserBaseKey(), new TrackCallback());
-            }
-            mReferralCodeDialog.show();
-        }
-    }
-
-    public class TrackCallback implements retrofit.Callback<Response>
-    {
-        @Override public void success(Response response, Response response2)
-        {
-            alertDialogUtil.get().dismissProgressDialog();
-            if (mReferralCodeDialog != null)
-            {
-                mReferralCodeDialog.dismiss();
-            }
-            userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
-            THToast.show(R.string.referral_code_callback_success);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            alertDialogUtil.get().dismissProgressDialog();
-            if ((new THException(retrofitError)).getMessage().contains("Already invited"))
-            {
-                if (mReferralCodeDialog != null)
-                {
-                    mReferralCodeDialog.dismiss();
-                }
-                userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
-                THToast.show(R.string.referral_code_callback_success);
-            }
-            else
-            {
-                THToast.show(new THException(retrofitError));
-            }
-        }
-    }
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev)
     {
         return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
-    }
-
-    private void detachUserProfileCache()
-    {
-        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
     private void launchBilling()
@@ -381,9 +306,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override protected void onResume()
     {
         super.onResume();
-
         launchActions();
-
         analytics.openSession();
     }
 
@@ -419,6 +342,13 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onPause();
     }
 
+    @Override protected void onStop()
+    {
+        detachNotificationFetchTask();
+
+        super.onStop();
+    }
+
     @Override protected void onDestroy()
     {
         THBillingInteractor billingInteractorCopy = billingInteractor.get();
@@ -438,14 +368,47 @@ public class DashboardActivity extends SherlockFragmentActivity
             currentActivityHolder.unsetActivity(this);
         }
         purchaseRestorerFinishedListener = null;
-
-        detachUserProfileCache();
-        userProfileCacheListener = null;
-
-        detachNotificationFetchTask();
         notificationFetchListener = null;
 
         super.onDestroy();
+    }
+
+    private void showReferralCodeDialog()
+    {
+        if (firstShowReferralCodeDialogPreference.get())
+        {
+            firstShowReferralCodeDialogPreference.set(false);
+            if (THUser.getTHAuthenticationProvider() != null)
+            {
+                if (THUser.getTHAuthenticationProvider().getAuthType().equals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
+                {
+                    showOnboard();
+                    //not show referral code dialog if login by email by alex
+                    return;
+                }
+            }
+            UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+            if (userProfileDTO != null)
+            {
+                if (userProfileDTO.inviteCode != null && !userProfileDTO.inviteCode.isEmpty())
+                {
+                    showOnboard();
+                    return;
+                }
+            }
+
+            ReferralCodeDialogFragment.showReferralCodeDialog(getSupportFragmentManager());
+        }
+        else
+        {
+            showOnboard();
+        }
+    }
+
+    protected void showOnboard()
+    {
+        THToast.show("Activate OnBoardDialogFragment");
+        //new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());
     }
 
     private void launchActions()
@@ -496,25 +459,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         // Passing it on just in case it is expecting something
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
-    {
-        return new UserProfileFetchListener();
-    }
-
-    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
-        {
-            supportInvalidateOptionsMenu();
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-
-        }
     }
 
     @Override public void openMenu()

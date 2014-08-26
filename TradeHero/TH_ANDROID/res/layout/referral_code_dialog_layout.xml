@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<com.tradehero.th.fragments.social.friend.ReferralCodeViewLinear
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/referral_code_dialog_key"
     android:orientation="vertical"
@@ -25,49 +25,121 @@
       android:text="@string/referral_code_message"
       android:textSize="@dimen/common_text_size_25"/>
 
-  <EditText
-      android:id="@+id/referral_code"
+  <ViewFlipper
+      android:id="@+id/action_view_switcher"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/common_margin_10"
-      android:maxLength="6"
-      style="@style/TH.DiscussionTextBox"
-      android:textSize="@dimen/text_xlarge"
-      android:textStyle="bold"
-      android:textColor="@color/tradehero_blue"/>
+      >
 
-  <ImageView
-      android:layout_width="match_parent"
-      android:layout_height="1dp"
-      android:background="@color/light_grey"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="40dp"
-      android:orientation="horizontal"
-      android:background="@color/light_grey">
+      <EditText
+          android:id="@+id/referral_code"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/common_margin_10"
+          android:maxLength="6"
+          style="@style/TH.DiscussionTextBox"
+          android:textSize="@dimen/text_xlarge"
+          android:textStyle="bold"
+          android:textColor="@color/tradehero_blue"/>
 
-    <Button
-        android:id="@+id/btn_cancel"
-        android:layout_height="match_parent"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:text="@string/cancel"
-        android:textSize="@dimen/text_small"
-        android:textColor="@color/black"
-        android:background="@drawable/basic_white_selector"/>
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@color/light_grey"/>
 
-    <Button
-        android:id="@+id/btn_ok"
-        android:layout_height="match_parent"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/basic_white_selector"
-        android:text="@string/ok"
-        android:textSize="@dimen/text_small"
-        android:textColor="@color/tradehero_blue"
-        android:layout_marginLeft="1dp"/>
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/medium_logo_w_h"
+          android:orientation="horizontal"
+          android:background="@color/light_grey">
 
-  </LinearLayout>
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            android:textSize="@dimen/text_small"
+            android:textColor="@color/black"
+            android:background="@drawable/basic_white_selector"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btn_send_code"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/basic_white_selector"
+            android:text="@string/ok"
+            android:textSize="@dimen/text_small"
+            android:textColor="@color/tradehero_blue"
+            android:layout_marginLeft="1dp"/>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+      <ProgressBar
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          />
+
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@color/light_grey"/>
+
+      <Button
+          android:id="@+id/btn_cancel_submit"
+          android:layout_height="@dimen/medium_logo_w_h"
+          android:layout_width="match_parent"
+          android:text="@string/cancel"
+          android:textSize="@dimen/text_small"
+          android:textColor="@color/black"
+          android:background="@drawable/basic_white_selector"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/common_margin_10"
+          android:text="@string/referral_code_callback_success"
+          />
+
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@color/light_grey"/>
+
+      <Button
+          android:id="@+id/btn_done"
+          android:layout_height="@dimen/medium_logo_w_h"
+          android:layout_width="match_parent"
+          android:text="@string/ok"
+          android:textSize="@dimen/text_small"
+          android:textColor="@color/tradehero_blue"
+          android:background="@drawable/basic_white_selector"/>
+
+    </LinearLayout>
+
+  </ViewFlipper>
+
+</com.tradehero.th.fragments.social.friend.ReferralCodeViewLinear>
