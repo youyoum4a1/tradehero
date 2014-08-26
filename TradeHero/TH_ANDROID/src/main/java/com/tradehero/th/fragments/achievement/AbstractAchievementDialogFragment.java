@@ -326,7 +326,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     private void displayDollarsEarned(float dollars)
     {
-        dollarEarned.setText(THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().build().toString());
+        dollarEarned.setText(THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().relevantDigitCount(1).build().toString());
     }
 
     protected ValueAnimator.AnimatorUpdateListener createAnimatorUpdateListener()

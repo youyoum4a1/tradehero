@@ -1,6 +1,7 @@
 package com.tradehero.th.api.achievement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THJsonAdapter;
 import java.io.IOException;
@@ -11,6 +12,7 @@ public class AchievementDefDTO implements DTO
     public int id;
     public int trigger;
     public String thName;
+    @JsonProperty("virtualdollars")
     public double virtualDollars;
     public String visual;
     public String text;

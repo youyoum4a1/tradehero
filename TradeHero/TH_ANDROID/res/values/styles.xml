@@ -437,8 +437,8 @@
     <item name="android:scaleType">fitCenter</item>
     <item name="android:layout_marginLeft">3dp</item>
     <item name="android:layout_marginRight">3dp</item>
-    <item name="android:padding">8dp</item>
-    <item name="android:background">@drawable/blue_transparent_circle_padding</item>
+    <item name="android:padding">10dp</item>
+    <item name="android:background">@drawable/achievement_indicator_bg_padding</item>
   </style>
 
   <style name="TH.Achievement.Indicator.Text" parent="TH.Achievement">
