@@ -31,7 +31,6 @@
 
   <string name="dashboard_store">스토어</string>
   <string name="dashboard_menu_settings">설정</string>
-  <string name="dashboard_admin_settings">어드민 설정</string>
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>
