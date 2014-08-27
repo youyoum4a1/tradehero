@@ -16,32 +16,27 @@
         android:id="@+id/achievement_indicator_1"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"
-        tools:src="@drawable/lb_star_orange"/>
+        style="@style/TH.Achievement.Indicator"/>
     <ImageView
         android:id="@+id/achievement_indicator_2"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"
-        tools:src="@drawable/lb_star_orange"/>
+        style="@style/TH.Achievement.Indicator"/>
     <ImageView
         android:id="@+id/achievement_indicator_3"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"
-        tools:src="@drawable/lb_star_orange"/>
+        style="@style/TH.Achievement.Indicator"/>
     <ImageView
         android:id="@+id/achievement_indicator_4"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"
-        tools:src="@drawable/lb_star_orange"/>
+        style="@style/TH.Achievement.Indicator"/>
     <ImageView
         android:id="@+id/achievement_indicator_5"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"
-        tools:src="@drawable/lb_star_orange"/>
+        style="@style/TH.Achievement.Indicator"/>
   </LinearLayout>
 
   <LinearLayout

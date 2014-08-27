@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
@@ -26,5 +27,11 @@ public interface AchievementServiceAsync
     @GET("/achievements/categories")
     void getAchievementCategories(@Query("userId") int userId,
             Callback<AchievementCategoryDTOList> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Get User Achievement">
+    @GET("/achievements/categories/{categoryId}")
+    void getAchievementCategory(@Path("categoryId") int categoryId, @Query("userId") int userId,
+            Callback<AchievementCategoryDTO> callback);
     //</editor-fold>
 }

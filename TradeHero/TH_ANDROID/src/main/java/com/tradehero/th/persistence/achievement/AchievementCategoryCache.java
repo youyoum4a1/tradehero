@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
     @NotNull @Override public AchievementCategoryDTO fetch(@NotNull AchievementCategoryId key) throws Throwable
     {
-        throw new RuntimeException("Not yet implemented");
+        return achievementServiceWrapper.getAchievementCategory(key);
     }
 
     public void put(@NotNull UserBaseKey userBaseKey, @Nullable List<AchievementCategoryDTO> value)

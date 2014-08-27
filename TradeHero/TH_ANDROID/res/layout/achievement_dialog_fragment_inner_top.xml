@@ -66,7 +66,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/achievement_title_margin_top"
-      tools:text="Lorem ipsum dolor sit amet, consectetur"
+      tools:text="Lorem ipsum dolor sit amet"
       android:layout_below="@id/achievement_badge"
       android:layout_centerHorizontal="true"
       style="@style/TH.Achievement.Title"/>

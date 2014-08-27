@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import java.util.List;
 public class AchievementProgressIndicator extends LinearLayout
 {
     List<ViewHolder> indicatorLists = new ArrayList<>();
+    private int mCurrentLevel = 0;
 
     public AchievementProgressIndicator(Context context)
     {
@@ -47,6 +49,8 @@ public class AchievementProgressIndicator extends LinearLayout
 
     public void setAchievementDef(List<AchievementDefDTO> achievementDefs, int currentUserLevel)
     {
+        mCurrentLevel = currentUserLevel;
+
         for (int i = 0; i < achievementDefs.size() && i < indicatorLists.size(); i++)
         {
             ViewHolder viewHolder = indicatorLists.get(i);
@@ -71,6 +75,15 @@ public class AchievementProgressIndicator extends LinearLayout
                 ViewHolder viewHolder = indicatorLists.get(i);
                 viewHolder.hide();
             }
+        }
+    }
+
+    public void animateCurrentLevel()
+    {
+        if(mCurrentLevel > 0 && indicatorLists.size() >= mCurrentLevel)
+        {
+            ViewHolder holder = indicatorLists.get(mCurrentLevel - 1);
+            holder.animateOn();
         }
     }
 
@@ -110,6 +123,16 @@ public class AchievementProgressIndicator extends LinearLayout
         public void hide()
         {
             indicatorImageView.setVisibility(View.GONE);
+        }
+
+        public void animateOn()
+        {
+            AnimationDrawable animationDrawable = new AnimationDrawable();
+            animationDrawable.addFrame(getResources().getDrawable(R.drawable.ic_achievement_star_off), 500);
+            animationDrawable.addFrame(getResources().getDrawable(R.drawable.ic_achievement_star_on), 500);
+            animationDrawable.setOneShot(false);
+            indicatorImageView.setImageDrawable(animationDrawable);
+            animationDrawable.start();
         }
     }
 }

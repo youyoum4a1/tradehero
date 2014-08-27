@@ -3,47 +3,57 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/achievement_level_progress_container_height"
+    android:layout_height="wrap_content"
     android:layout_below="@+id/achievement_virtual_dollar_earned"
-    android:layout_marginBottom="@dimen/achievement_level_progress_vertical_margin"
+    android:layout_marginBottom="@dimen/achievement_progress_vertical_margin"
+    android:layout_marginTop="@dimen/achievement_progress_vertical_margin"
     android:clipChildren="false"
     android:clipToPadding="false">
 
-  <ImageView
-      android:id="@+id/user_level_avatar"
-      android:layout_width="@dimen/medium_logo_w_h"
-      android:layout_height="@dimen/medium_logo_w_h"
-      android:layout_alignParentBottom="true"
-      android:src="@drawable/ic_level_avatar_placeholder"/>
-
   <include
-      android:id="@+id/user_level_progress_bar"
-      layout="@layout/user_level_progressbar"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_marginLeft="@dimen/achievement_level_progress_margin_left"/>
-
-  <TextView
-      android:id="@+id/user_level_progress_level_up"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_above="@id/user_level_progress_bar"
-      android:layout_marginRight="@dimen/user_level_progress_margin_right"
-      style="@style/TH.Achievement.Earned.LevelUp"
-      android:visibility="gone"
-      android:text="@string/achievement_level_up"
-      tools:text="LEVEL UP!"/>
-
-  <TextView
-      android:id="@+id/user_level_progress_xp_earned"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:id="@+id/achievement_progress_indicator"
+      layout="@layout/achievement_progress_indicator"
       android:layout_centerHorizontal="true"
-      android:layout_above="@id/user_level_progress_bar"
-      android:layout_marginRight="@dimen/user_level_progress_margin_right"
-      style="@style/TH.Achievement.Earned.XP"
-      tools:text="+1,000 XP!"/>
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"/>
+
+
+  <!--<ImageView-->
+  <!--android:id="@+id/user_level_avatar"-->
+  <!--android:layout_width="@dimen/medium_logo_w_h"-->
+  <!--android:layout_height="@dimen/medium_logo_w_h"-->
+  <!--android:layout_alignParentBottom="true"-->
+  <!--android:src="@drawable/ic_level_avatar_placeholder"/>-->
+
+  <!--<include-->
+  <!--android:id="@+id/user_level_progress_bar"-->
+  <!--layout="@layout/user_level_progressbar"-->
+  <!--android:layout_width="match_parent"-->
+  <!--android:layout_height="wrap_content"-->
+  <!--android:layout_alignParentBottom="true"-->
+  <!--android:layout_marginLeft="@dimen/achievement_level_progress_margin_left"/>-->
+
+  <!--<TextView-->
+  <!--android:id="@+id/user_level_progress_level_up"-->
+  <!--android:layout_width="wrap_content"-->
+  <!--android:layout_height="wrap_content"-->
+  <!--android:layout_alignParentRight="true"-->
+  <!--android:layout_above="@id/user_level_progress_bar"-->
+  <!--android:layout_marginRight="@dimen/user_level_progress_margin_right"-->
+  <!--style="@style/TH.Achievement.Earned.LevelUp"-->
+  <!--android:visibility="gone"-->
+  <!--android:text="@string/achievement_level_up"-->
+  <!--tools:text="LEVEL UP!"/>-->
+
+  <!--<TextView-->
+  <!--android:id="@+id/user_level_progress_xp_earned"-->
+  <!--android:layout_width="wrap_content"-->
+  <!--android:layout_height="wrap_content"-->
+  <!--android:layout_centerHorizontal="true"-->
+  <!--android:layout_above="@id/user_level_progress_bar"-->
+  <!--android:layout_marginRight="@dimen/user_level_progress_margin_right"-->
+  <!--style="@style/TH.Achievement.Earned.XP"-->
+  <!--tools:text="+1,000 XP!"/>-->
 
 </RelativeLayout>
