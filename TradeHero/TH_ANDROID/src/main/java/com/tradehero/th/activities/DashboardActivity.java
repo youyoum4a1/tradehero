@@ -409,7 +409,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         THToast.show("Activate OnBoardDialogFragment when merged in");
         if (firstShowOnBoardDialogPreference.get())
         {
-            firstShowOnBoardDialogPreference.set(false);
+            // OnBoardDialogFragment handles setting the preference to false when done
             //new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());
         }
     }

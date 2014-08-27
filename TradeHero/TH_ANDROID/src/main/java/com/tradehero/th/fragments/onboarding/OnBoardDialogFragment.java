@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +24,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
+    @Inject @FirstShowOnBoardDialog BooleanPreference firstShowOnBoardDialogPreference;
     @InjectView(R.id.done_button) View doneButton;
     @InjectView(R.id.close) View closeButton;
     @NotNull OnBoardPagingHolder onBoardPagingHolder;
@@ -73,6 +76,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     public void onDoneClicked(/*View view*/)
     {
         onBoardPagingHolder.wrapUpAndSubmitSelection();
+        firstShowOnBoardDialogPreference.set(false);
         dismiss();
     }
 }
