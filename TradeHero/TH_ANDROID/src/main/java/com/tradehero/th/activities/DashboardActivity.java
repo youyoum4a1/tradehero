@@ -34,6 +34,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -376,7 +377,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (shouldShowInviteCode())
         {
             firstShowInviteCodeDialogPreference.set(false);
-            InviteCodeDialogFragment.showInviteCodeDialog(getSupportFragmentManager());
+            InviteCodeDialogFragment dialogFragment = InviteCodeDialogFragment.showInviteCodeDialog(getSupportFragmentManager());
+            dialogFragment.setDismissedListener(new DashboardOnInviteCodeDismissed());
         }
         else
         {
@@ -390,6 +392,14 @@ public class DashboardActivity extends SherlockFragmentActivity
         return firstShowInviteCodeDialogPreference.get()
                 //&& !(THUser.getTHAuthenticationProvider() instanceof EmailAuthenticationProvider)
                 && (userProfileDTO == null || userProfileDTO.inviteCode == null || userProfileDTO.inviteCode.isEmpty());
+    }
+
+    protected class DashboardOnInviteCodeDismissed implements BaseDialogFragment.OnDismissedListener
+    {
+        @Override public void onDismissed(DialogInterface dialog)
+        {
+            showOnboard();
+        }
     }
 
     protected void showOnboard()

@@ -13,9 +13,11 @@ import com.tradehero.th.fragments.base.BaseDialogFragment;
 
 public class InviteCodeDialogFragment extends BaseDialogFragment
 {
-    public static void showInviteCodeDialog(FragmentManager fragmentManager)
+    public static InviteCodeDialogFragment showInviteCodeDialog(FragmentManager fragmentManager)
     {
-        new InviteCodeDialogFragment().show(fragmentManager, InviteCodeDialogFragment.class.getName());
+        InviteCodeDialogFragment dialogFragment = new InviteCodeDialogFragment();
+        dialogFragment.show(fragmentManager, InviteCodeDialogFragment.class.getName());
+        return dialogFragment;
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
