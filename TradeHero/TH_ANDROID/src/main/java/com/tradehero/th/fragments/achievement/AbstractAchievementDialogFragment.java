@@ -75,6 +75,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
     protected UserAchievementId userAchievementId;
     protected UserAchievementDTO userAchievementDTO;
     private int mCurrentColor = DEFAULT_FILTER_COLOR;
+    private ValueAnimator mAnim;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -121,16 +122,16 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         PropertyValuesHolder[] array = new PropertyValuesHolder[propertyValuesHolders.size()];
         //PropertyValuesHolder xp = PropertyValuesHolder.ofInt(PROPERTY_XP_EARNED, 0, userAchievementDTO.xpEarned);
 
-        ValueAnimator anim = ValueAnimator.ofPropertyValuesHolder(propertyValuesHolders.toArray(array));
+        mAnim = ValueAnimator.ofPropertyValuesHolder(propertyValuesHolders.toArray(array));
 
-        anim.setStartDelay(getResources().getInteger(R.integer.achievement_animation_start_delay));
-        anim.setDuration(getResources().getInteger(R.integer.achievement_earned_duration));
-        anim.setInterpolator(new AccelerateInterpolator());
+        mAnim.setStartDelay(getResources().getInteger(R.integer.achievement_animation_start_delay));
+        mAnim.setDuration(getResources().getInteger(R.integer.achievement_earned_duration));
+        mAnim.setInterpolator(new AccelerateInterpolator());
 
-        anim.addListener(createAnimatorListenerAdapter());
-        anim.addUpdateListener(createAnimatorUpdateListener());
+        mAnim.addListener(createAnimatorListenerAdapter());
+        mAnim.addUpdateListener(createAnimatorUpdateListener());
 
-        anim.start();
+        mAnim.start();
     }
 
     protected void onCreatePropertyValuesHolder(List<PropertyValuesHolder> propertyValuesHolders)
@@ -306,8 +307,20 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         super.onPause();
     }
 
+    @Override public void onDestroy()
+    {
+        super.onDestroy();
+    }
+
     @Override public void onDestroyView()
     {
+        if(mAnim != null)
+        {
+            mAnim.cancel();
+            mAnim.removeAllUpdateListeners();
+            mAnim.removeAllListeners();
+            mAnim = null;
+        }
         picasso.cancelRequest(badge);
         super.onDestroyView();
     }
@@ -326,7 +339,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     private void displayDollarsEarned(float dollars)
     {
-        dollarEarned.setText(THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().relevantDigitCount(1).build().toString());
+        dollarEarned.setText(
+                THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().relevantDigitCount(1).build().toString());
     }
 
     protected ValueAnimator.AnimatorUpdateListener createAnimatorUpdateListener()
