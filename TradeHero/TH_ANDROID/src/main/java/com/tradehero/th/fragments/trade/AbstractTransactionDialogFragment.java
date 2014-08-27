@@ -157,7 +157,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private TransactionEditCommentFragment transactionCommentFragment;
     Editable unSpannedComment;
 
-    protected abstract Integer getMaxValue();
+    @Nullable protected abstract Integer getMaxValue();
 
     protected abstract boolean hasValidInfo();
 
@@ -970,7 +970,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         try
         {
             val = Integer.parseInt(string.trim());
-            if (val > getMaxValue())
+            Integer maxValue = getMaxValue();
+            if (maxValue != null && val > maxValue)
             {
                 val = getMaxValue();
             }

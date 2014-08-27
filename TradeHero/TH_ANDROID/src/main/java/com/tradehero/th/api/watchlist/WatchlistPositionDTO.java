@@ -8,7 +8,7 @@ public class WatchlistPositionDTO extends PositionDTO
 {
     public static final String WATCHLIST_PRICE_FIELD = "watchlistPrice";
 
-    public Double watchlistPrice;
+    @Nullable public Double watchlistPrice;
     @Nullable public SecurityCompactDTO securityDTO;
 
     //<editor-fold desc="Constructors">

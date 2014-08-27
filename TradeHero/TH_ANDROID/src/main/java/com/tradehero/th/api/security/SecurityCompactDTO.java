@@ -62,7 +62,7 @@ public class SecurityCompactDTO implements DTO
     //// EDT/EST converted to UTC
     @Nullable public Date lastPriceDateAndTimeUtc;
 
-    public Double toUSDRate;
+    @Nullable public Double toUSDRate;
     public Date toUSDRateDate;
 
     public boolean active;

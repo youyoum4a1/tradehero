@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class WatchlistPortfolioHeaderView extends LinearLayout
         implements DTOView<UserBaseKey>
@@ -208,9 +209,16 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         {
             for (@NotNull WatchlistPositionDTO watchlistItem: watchlistPositionDTOs)
             {
-                if (watchlistItem.securityDTO != null)
+                if (watchlistItem.watchlistPrice != null
+                        && watchlistItem.securityDTO != null
+                        && watchlistItem.securityDTO.toUSDRate != null
+                        && watchlistItem.shares != null)
                 {
                     totalInvested += (watchlistItem.watchlistPrice * watchlistItem.securityDTO.toUSDRate) * watchlistItem.shares;
+                }
+                else
+                {
+                    Timber.e(new Exception("Wrongly returned WatchlistPositionDTO"), "%s", watchlistItem);
                 }
             }
         }
