@@ -23,13 +23,15 @@
   <style name="UserProfile.Contained.Value">
     <item name="android:textSize">@dimen/text_xlarge</item>
     <item name="android:textStyle">bold</item>
+    <item name="android:textColor">@color/black</item>
     <item name="android:drawablePadding">@dimen/timeline_bottom_button_drawable_adjustment</item>
   </style>
 
   <style name="UserProfile.Contained.Header">
     <item name="android:textSize">@dimen/text_xsmall</item>
     <item name="android:layout_marginTop">0dp</item>
-    <item name="android:textStyle">normal</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textColor">@color/signinfnt_color</item>
   </style>
 
   <color name="user_profile_blue">@color/button_blue</color>

@@ -45,9 +45,9 @@
 
           <TextView
               android:id="@+id/user_profile_display_name"
-              style="@style/UserProfile.Contained.Value"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              style="@style/UserProfile.Contained.Value"
               tools:text="+408%"/>
 
         </LinearLayout>
@@ -62,20 +62,20 @@
             android:paddingLeft="@dimen/common_margin_15">
 
           <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              tools:text="ROI"
-              android:minWidth="70dp"
-              android:text="@string/user_profile_roi_below"
-              style="@style/UserProfile.Contained.Value"
-              android:gravity="left"/>
-
-          <TextView
               android:id="@+id/user_profile_roi"
               style="@style/UserProfile.Contained.Value"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               tools:text="+408%"/>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="@dimen/common_margin_4"
+              android:text="@string/user_profile_roi_below"
+              style="@style/UserProfile.Contained.Header"
+              android:textColor="@color/btn_buy_default"
+              tools:text="ROI"/>
 
         </LinearLayout>
 
@@ -88,7 +88,8 @@
             android:layout_marginLeft="@dimen/common_margin_15"
             android:text="@string/timeline_menu_edit"
             android:textColor="@color/button_blue"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:background="@drawable/basic_transparent_selector"/>
 
       </RelativeLayout>
 
