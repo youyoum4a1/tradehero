@@ -8,7 +8,6 @@ public class SectorCompactDTO implements DTO
 {
     public int id;
     public String name;
-    public double sumMarketCap;
 
     @JsonIgnore @NotNull public SectorId getSectorId()
     {
