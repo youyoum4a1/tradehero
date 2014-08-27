@@ -88,4 +88,11 @@ public class OnBoardPickExchangeSectorViewHolder
                 (SectorCompactDTO) sectorSpinner.getSelectedItem(),
                 (Country) countrySpinner.getSelectedItem());
     }
+
+    public boolean canGetPrefs()
+    {
+        return exchangeSpinner.getSelectedItem() != null
+                && sectorSpinner.getSelectedItem() != null
+                && countrySpinner.getSelectedItem() != null;
+    }
 }

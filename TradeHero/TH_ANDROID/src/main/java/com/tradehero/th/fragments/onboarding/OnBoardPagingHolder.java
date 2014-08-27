@@ -75,6 +75,13 @@ public class OnBoardPagingHolder implements ViewPager.OnPageChangeListener
 
     void showNext()
     {
+        if (pager.getCurrentItem() == OnBoardFragmentPagerAdapter.FRAGMENT_PREF
+                && !((OnBoardPickExchangeSectorFragment)
+                pagerAdapter.getFragmentAt(OnBoardFragmentPagerAdapter.FRAGMENT_PREF)).canGetPrefs())
+        {
+            // Prefs not ready
+            return;
+        }
         pager.setCurrentItem(pager.getCurrentItem() + 1, true);
     }
 
@@ -91,9 +98,9 @@ public class OnBoardPagingHolder implements ViewPager.OnPageChangeListener
                 break;
 
             case OnBoardFragmentPagerAdapter.FRAGMENT_HERO:
-                this.onBoardPrefDTO = ((OnBoardPickExchangeSectorFragment)
-                        pagerAdapter.getFragmentAt(OnBoardFragmentPagerAdapter.FRAGMENT_PREF))
-                        .getOnBoardPrefs();
+                OnBoardPickExchangeSectorFragment pickFragment = (OnBoardPickExchangeSectorFragment)
+                        pagerAdapter.getFragmentAt(OnBoardFragmentPagerAdapter.FRAGMENT_PREF);
+                this.onBoardPrefDTO = pickFragment.getOnBoardPrefs();
                 ((OnBoardPickHeroFragment) currentFragment)
                         .setExchangeSectorSecurityListType(
                                 onBoardPrefDTO.createExchangeSectorSecurityListType());

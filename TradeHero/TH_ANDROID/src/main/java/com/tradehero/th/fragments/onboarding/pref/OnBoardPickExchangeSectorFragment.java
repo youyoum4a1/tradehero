@@ -142,4 +142,9 @@ public class OnBoardPickExchangeSectorFragment extends BaseFragment
     {
         return viewHolder.getOnBoardPrefs();
     }
+
+    public boolean canGetPrefs()
+    {
+        return viewHolder.canGetPrefs();
+    }
 }
