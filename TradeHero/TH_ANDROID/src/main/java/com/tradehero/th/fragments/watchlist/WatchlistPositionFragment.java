@@ -44,6 +44,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class WatchlistPositionFragment extends DashboardFragment
 {
@@ -69,11 +70,12 @@ public class WatchlistPositionFragment extends DashboardFragment
     private WatchlistAdapter watchListAdapter;
 
     private TwoStateView.OnStateChange gainLossModeListener;
-    private BroadcastReceiver broadcastReceiver;
+    @Nullable private BroadcastReceiver broadcastReceiver;
     private Runnable setOffsetRunnable;
 
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
+    private WatchlistPositionDTOList watchlistPositionDTOs;
 
     public static void putOwnedPortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -128,6 +130,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                         adapter.notifyDataSetChanged();
                         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Delete));
                         watchlistListView.closeOpenedItems();
+                        fetchWatchlistPositionList();
                     }
                 }
             }
@@ -182,7 +185,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
     }
 
-    protected void fetchSecurityIdList()
+    protected void fetchWatchlistPositionList()
     {
         detachUserWatchlistFetchTask();
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
@@ -224,7 +227,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         shownPortfolioId = getOwnedPortfolioId(getArguments());
         fetchPortfolio();
-        fetchSecurityIdList();
+        fetchWatchlistPositionList();
     }
 
     @Override public void onPause()
@@ -311,19 +314,22 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         if (watchlistPortfolioHeaderView != null)
         {
-            watchlistPortfolioHeaderView.display(currentUserId.toUserBaseKey());
             watchlistPortfolioHeaderView.linkWith(shownPortfolioDTO, true);
+            watchlistPortfolioHeaderView.linkWith(watchlistPositionDTOs, true);
             watchlistPortfolioHeaderView.setOnStateChangeListener(gainLossModeListener);
         }
     }
 
     private void displayWatchlist(WatchlistPositionDTOList watchlistPositionDTOs)
     {
+        this.watchlistPositionDTOs = watchlistPositionDTOs;
+
         WatchlistAdapter newAdapter = createWatchlistAdapter();
         newAdapter.addAll(watchlistPositionDTOs);
         watchlistPositionListView.setAdapter(newAdapter);
         watchListAdapter = newAdapter;
         watchlistPositionListView.onRefreshComplete();
+        displayHeader();
     }
 
     private void openWatchlistItemEditor(int position)
@@ -437,7 +443,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         @Override public void onDismiss(int[] reverseSortedPositions)
         {
             super.onDismiss(reverseSortedPositions);
-            fetchSecurityIdList();
+            fetchWatchlistPositionList();
         }
     }
 

@@ -5,6 +5,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionDTO>
 {
@@ -24,6 +25,38 @@ public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionD
             created.add(watchlistPositionDTO.securityDTO.getSecurityId());
         }
         return created;
+    }
+
+    @Nullable public Double getInvestedUsd()
+    {
+        double total = 0;
+        Double investedOne;
+        for (@NotNull WatchlistPositionDTO watchlistItem: this)
+        {
+            investedOne = watchlistItem.getInvestedUsd();
+            if (investedOne == null)
+            {
+                return null;
+            }
+            total += investedOne;
+        }
+        return total;
+    }
+
+    @Nullable public Double getCurrentValueUsd()
+    {
+        double total = 0;
+        Double currentOne;
+        for (@NotNull WatchlistPositionDTO watchlistItem: this)
+        {
+            currentOne = watchlistItem.getCurrentValueUsd();
+            if (currentOne == null)
+            {
+                return null;
+            }
+            total += currentOne;
+        }
+        return total;
     }
 
     public boolean contains(SecurityId other)

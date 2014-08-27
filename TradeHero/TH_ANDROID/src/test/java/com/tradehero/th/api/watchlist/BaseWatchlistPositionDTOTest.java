@@ -15,7 +15,7 @@ abstract public class BaseWatchlistPositionDTOTest extends BasePositionDTOTest
     public boolean haveSameFields(WatchlistPositionDTO left, WatchlistPositionDTO right)
     {
         boolean have = super.haveSameFields(left, right);
-        have &= left.watchlistPrice == null ? right.watchlistPrice == null : left.watchlistPrice.equals(right.watchlistPrice);
+        have &= left.watchlistPriceRefCcy == null ? right.watchlistPriceRefCcy == null : left.watchlistPriceRefCcy.equals(right.watchlistPriceRefCcy);
         if (left.securityDTO != null && right.securityDTO != null)
         {
             have &= securityCompactDTOTest.haveSameFields(left.securityDTO, right.securityDTO);
