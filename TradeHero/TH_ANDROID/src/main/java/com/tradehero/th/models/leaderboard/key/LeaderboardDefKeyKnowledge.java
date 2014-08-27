@@ -57,6 +57,7 @@ public class LeaderboardDefKeyKnowledge
             case FOLLOWER_ID:
                 return R.drawable.icn_lb_followers;
 
+            case INVITE_FRIENDS_ID:
             case FRIEND_ID:
                 return R.drawable.leaderboard_friends;
 

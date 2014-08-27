@@ -55,7 +55,6 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
-import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
@@ -288,7 +287,6 @@ import javax.inject.Singleton;
                         PeopleSearchFragment.class,
                         LeaderboardDefListFragment.class,
                         LeaderboardDefView.class,
-                        CommunityLeaderboardDefView.class,
                         LeaderboardMarkUserLoader.class,
                         LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,
