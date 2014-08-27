@@ -11,6 +11,7 @@ public class AchievementDefDTO implements DTO
 {
     public int id;
     public int trigger;
+    public String triggerStr;
     public String thName;
     @JsonProperty("virtualdollars")
     public double virtualDollars;
@@ -23,6 +24,7 @@ public class AchievementDefDTO implements DTO
     public String header;
     public int contiguousMax;
     public boolean isQuest;
+    public int categoryId;
 
     @JsonIgnore
     public AchievementDefId getAchievementsId()

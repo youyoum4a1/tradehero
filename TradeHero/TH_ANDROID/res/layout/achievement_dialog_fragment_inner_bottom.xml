@@ -10,9 +10,19 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+  <TextView
+      android:id="@+id/user_level_progress_xp_earned"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_marginRight="@dimen/user_level_progress_margin_right"
+      style="@style/TH.Achievement.Earned.XP"
+      tools:text="+1,000 XP!"/>
+
   <include
       android:id="@+id/achievement_progress_indicator"
       layout="@layout/achievement_progress_indicator"
+      android:layout_below="@id/user_level_progress_xp_earned"
       android:layout_centerHorizontal="true"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -46,14 +56,6 @@
   <!--android:text="@string/achievement_level_up"-->
   <!--tools:text="LEVEL UP!"/>-->
 
-  <!--<TextView-->
-  <!--android:id="@+id/user_level_progress_xp_earned"-->
-  <!--android:layout_width="wrap_content"-->
-  <!--android:layout_height="wrap_content"-->
-  <!--android:layout_centerHorizontal="true"-->
-  <!--android:layout_above="@id/user_level_progress_bar"-->
-  <!--android:layout_marginRight="@dimen/user_level_progress_margin_right"-->
-  <!--style="@style/TH.Achievement.Earned.XP"-->
-  <!--tools:text="+1,000 XP!"/>-->
+
 
 </RelativeLayout>

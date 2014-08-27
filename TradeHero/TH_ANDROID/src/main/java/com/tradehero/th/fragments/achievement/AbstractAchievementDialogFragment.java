@@ -129,7 +129,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         mAnim.setInterpolator(new AccelerateInterpolator());
 
         mAnim.addListener(createAnimatorListenerAdapter());
-        mAnim.addUpdateListener(createAnimatorUpdateListener());
+        mAnim.addUpdateListener(createEarnedAnimatorUpdateListener());
 
         mAnim.start();
     }
@@ -343,9 +343,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
                 THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().relevantDigitCount(1).build().toString());
     }
 
-    protected ValueAnimator.AnimatorUpdateListener createAnimatorUpdateListener()
+    protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
     {
-        return new AchievementValueAnimatorUpdateListener();
+        return new AbstractAchievementValueAnimatorUpdateListener();
     }
 
     protected AnimatorListenerAdapter createAnimatorListenerAdapter()
@@ -355,7 +355,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         };
     }
 
-    protected class AchievementValueAnimatorUpdateListener implements ValueAnimator.AnimatorUpdateListener
+    protected class AbstractAchievementValueAnimatorUpdateListener implements ValueAnimator.AnimatorUpdateListener
     {
         @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
         {

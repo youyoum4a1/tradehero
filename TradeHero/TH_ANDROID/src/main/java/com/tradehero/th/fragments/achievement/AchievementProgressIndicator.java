@@ -80,7 +80,7 @@ public class AchievementProgressIndicator extends LinearLayout
 
     public void animateCurrentLevel()
     {
-        if(mCurrentLevel > 0 && indicatorLists.size() >= mCurrentLevel)
+        if (mCurrentLevel > 0 && indicatorLists.size() >= mCurrentLevel)
         {
             ViewHolder holder = indicatorLists.get(mCurrentLevel - 1);
             holder.animateOn();
@@ -100,7 +100,7 @@ public class AchievementProgressIndicator extends LinearLayout
 
         public void display(AchievementDefDTO achievementDefDTO)
         {
-            indicatorTextView.setText(String.valueOf(achievementDefDTO.trigger));
+            indicatorTextView.setText(achievementDefDTO.triggerStr);
         }
 
         public void on()
@@ -118,11 +118,13 @@ public class AchievementProgressIndicator extends LinearLayout
         private void show()
         {
             indicatorImageView.setVisibility(View.VISIBLE);
+            indicatorTextView.setVisibility(View.VISIBLE);
         }
 
         public void hide()
         {
             indicatorImageView.setVisibility(View.GONE);
+            indicatorTextView.setVisibility(View.GONE);
         }
 
         public void animateOn()

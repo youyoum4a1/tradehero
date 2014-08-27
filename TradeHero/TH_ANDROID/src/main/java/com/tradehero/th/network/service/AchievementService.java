@@ -22,12 +22,12 @@ public interface AchievementService
     //</editor-fold>
 
     //<editor-fold desc="Get User Achievement List">
-    @GET("/achievements/categories")
-    AchievementCategoryDTOList getAchievementCategories(@Query("userId") int userId);
+    @GET("/achievements/categories/{userId}")
+    AchievementCategoryDTOList getAchievementCategories(@Path("userId") int userId);
     //</editor-fold>
 
     //<editor-fold desc="Get User Achievement">
-    @GET("/achievements/categories/{categoryId}")
-    AchievementCategoryDTO getAchievementCategory(@Path("categoryId") int categoryId, @Query("userId") int userId);
+    @GET("/achievements/categories/{userId}")
+    AchievementCategoryDTO getAchievementCategory(@Query("id") int categoryId, @Path("userId") int userId);
     //</editor-fold>
 }

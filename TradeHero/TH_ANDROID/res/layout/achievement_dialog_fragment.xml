@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/achievement_dummy_container"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -10,6 +11,7 @@
     android:minWidth="1280dp"
     android:clipToPadding="false"
     android:clipChildren="false"
+    tools:background="@color/black"
     >
   <!-- A dummy container which takes the whole screen
        This container allows us to animate the children view without being clipped-->

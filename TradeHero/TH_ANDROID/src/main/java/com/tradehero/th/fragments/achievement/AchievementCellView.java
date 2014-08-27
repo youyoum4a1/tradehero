@@ -15,8 +15,9 @@ import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.StringUtils;
-import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class AchievementCellView extends RelativeLayout implements DTOView<AchievementCategoryDTO>
 {
@@ -66,18 +67,25 @@ public class AchievementCellView extends RelativeLayout implements DTOView<Achie
 
     @Override public void display(AchievementCategoryDTO dto)
     {
-        displayBadge(dto);
-        displayTitle(dto);
         displayDescription(dto);
         displayIndicators(dto);
+
+        AchievementDefDTO achievementDefDTO = null;
+        if (dto.currentUserLevel > 0 && dto.achievementDefs.size() >= dto.currentUserLevel)
+        {
+            achievementDefDTO = dto.achievementDefs.get(dto.currentUserLevel - 1);
+        }
+        displayBadge(achievementDefDTO);
+
+        displayTitle(achievementDefDTO, dto);
     }
 
-    private void displayBadge(AchievementCategoryDTO dto)
+    private void displayBadge(@Nullable AchievementDefDTO dto)
     {
         picasso.cancelRequest(badge);
-        if (!StringUtils.isNullOrEmpty(dto.badge))
+        if (dto != null && !StringUtils.isNullOrEmpty(dto.visual))
         {
-            picasso.load(dto.badge)
+            picasso.load(dto.visual)
                     .centerInside()
                     .fit()
                     .placeholder(R.drawable.achievement_unlocked_placeholder)
@@ -91,7 +99,7 @@ public class AchievementCellView extends RelativeLayout implements DTOView<Achie
 
     public void displayIndicators(AchievementCategoryDTO dto)
     {
-        if(dto.achievementDefs != null)
+        if (dto.achievementDefs != null)
         {
             achievementProgressIndicator.setAchievementDef(dto.achievementDefs, dto.currentUserLevel);
             achievementProgressIndicator.setVisibility(View.VISIBLE);
@@ -102,9 +110,16 @@ public class AchievementCellView extends RelativeLayout implements DTOView<Achie
         }
     }
 
-    private void displayTitle(AchievementCategoryDTO dto)
+    private void displayTitle(@Nullable AchievementDefDTO achievementDefDTO, @NotNull AchievementCategoryDTO dto)
     {
-        title.setText(dto.displayName);
+        if (achievementDefDTO != null)
+        {
+            title.setText(achievementDefDTO.thName);
+        }
+        else
+        {
+            title.setText(dto.displayName);
+        }
     }
 
     private void displayDescription(AchievementCategoryDTO dto)

@@ -8,7 +8,7 @@
   <integer name="achievement_dismiss_duration">800</integer>
 
   <dimen name="achievement_dialog_padding">10dp</dimen>
-  <dimen name="achievement_dialog_width">280dp</dimen>
+  <dimen name="achievement_dialog_width">290dp</dimen>
   <color name="achievement_dialog_bg">@color/white</color>
   <dimen name="achievement_badge_w_h">140dp</dimen>
   <dimen name="achievement_badge_margin_top">50dp</dimen>

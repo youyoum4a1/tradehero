@@ -24,14 +24,14 @@ public interface AchievementServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Get User Achievement List">
-    @GET("/achievements/categories")
-    void getAchievementCategories(@Query("userId") int userId,
+    @GET("/achievements/categories/{userId}")
+    void getAchievementCategories(@Path("userId") int userId,
             Callback<AchievementCategoryDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get User Achievement">
-    @GET("/achievements/categories/{categoryId}")
-    void getAchievementCategory(@Path("categoryId") int categoryId, @Query("userId") int userId,
+    @GET("/achievements/categories/{userId}")
+    void getAchievementCategory(@Query("id") int categoryId, @Path("userId") int userId,
             Callback<AchievementCategoryDTO> callback);
     //</editor-fold>
 }
