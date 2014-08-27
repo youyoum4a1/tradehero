@@ -48,10 +48,12 @@
 
   <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:layout_toRightOf="@id/leaderboard_def_item_icon_container"
       android:orientation="vertical"
       android:gravity="center_vertical"
+      android:layout_gravity="center_vertical"
+      android:layout_centerVertical="true"
       android:paddingLeft="@dimen/leaderboard_title_text_padding"
       >
 

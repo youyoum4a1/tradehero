@@ -22,7 +22,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class AbstractLeaderboardDefView extends RelativeLayout
 {
@@ -37,6 +36,7 @@ public class AbstractLeaderboardDefView extends RelativeLayout
     @InjectView(R.id.leaderboard_def_item_name) TextView leaderboardDefName;
     @InjectView(R.id.leaderboard_def_item_user_rank) TextView leaderboardDefUserRank;
     @InjectView(R.id.leaderboard_def_item_desc) TextView leaderboardDefDesc;
+    @InjectView(R.id.leaderboard_def_item_action_icon) ImageView actionIcon;
 
     protected LeaderboardDefDTO dto;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileRequestTask;
@@ -109,9 +109,18 @@ public class AbstractLeaderboardDefView extends RelativeLayout
 
     private void display()
     {
-        leaderboardDefName.setText(dto.name);
-
-        displayIcon();
+        if (dto.id == LeaderboardDefKeyKnowledge.INVITE_FRIENDS_ID)
+        {
+            setBackgroundResource(R.drawable.invite_friends_banner);
+            leaderboardDefIconContainer.setVisibility(INVISIBLE);
+            leaderboardDefName.setVisibility(INVISIBLE);
+            actionIcon.setVisibility(INVISIBLE);
+        }
+        else
+        {
+            leaderboardDefName.setText(dto.name);
+            displayIcon();
+        }
 
         if (dto.isExchangeRestricted() || dto.isSectorRestricted())
         {

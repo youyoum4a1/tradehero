@@ -386,6 +386,9 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             case LeaderboardDefKeyKnowledge.FOLLOWER_ID:
                 pushFollowerFragment();
                 break;
+            case LeaderboardDefKeyKnowledge.INVITE_FRIENDS_ID:
+                pushInvitationFragment();
+                break;
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
