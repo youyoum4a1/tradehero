@@ -48,6 +48,7 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.FirstShowInviteCodeDialog;
+import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
@@ -96,6 +97,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<NotificationCache> notificationCache;
     @Inject DeviceTokenHelper deviceTokenHelper;
     @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
+    @Inject @FirstShowOnBoardDialog BooleanPreference firstShowOnBoardDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
 
     @Inject AppContainer appContainer;
@@ -405,7 +407,11 @@ public class DashboardActivity extends SherlockFragmentActivity
     protected void showOnboard()
     {
         THToast.show("Activate OnBoardDialogFragment when merged in");
-        //new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());
+        if (firstShowOnBoardDialogPreference.get())
+        {
+            firstShowOnBoardDialogPreference.set(false);
+            //new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());
+        }
     }
 
     private void launchActions()
