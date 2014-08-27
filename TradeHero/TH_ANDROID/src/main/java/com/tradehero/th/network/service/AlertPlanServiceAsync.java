@@ -13,7 +13,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public interface AlertPlanServiceAsync
+interface AlertPlanServiceAsync
 {
     //<editor-fold desc="Get Alert Plans">
     @GET("/users/{userId}/alertPlans")
