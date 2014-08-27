@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
+import com.tradehero.th.models.user.DTOProcessorFollowFreeUserBatch;
 import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUnfollowUser;
@@ -66,10 +67,10 @@ import retrofit.client.Response;
     @NotNull private final UserServiceAsync userServiceAsync;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final DTOCacheUtil dtoCacheUtil;
-    @NotNull private final UserProfileCache userProfileCache;
-    @NotNull private final UserMessagingRelationshipCache userMessagingRelationshipCache;
+    @NotNull private final Lazy<UserProfileCache> userProfileCache;
+    @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     @NotNull private final Lazy<HeroListCache> heroListCache;
-    @NotNull private final GetPositionsCache getPositionsCache;
+    @NotNull private final Lazy<GetPositionsCache> getPositionsCache;
     @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
     @NotNull private final Lazy<ProviderListCache> providerListCache;
     @NotNull private final Lazy<ProviderCache> providerCache;
@@ -82,10 +83,10 @@ import retrofit.client.Response;
             @NotNull UserServiceAsync userServiceAsync,
             @NotNull CurrentUserId currentUserId,
             @NotNull DTOCacheUtil dtoCacheUtil,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
+            @NotNull Lazy<UserProfileCache> userProfileCache,
+            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,
-            @NotNull GetPositionsCache getPositionsCache,
+            @NotNull Lazy<GetPositionsCache> getPositionsCache,
             @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache,
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull Lazy<ProviderCache> providerCache,
@@ -112,7 +113,7 @@ import retrofit.client.Response;
     @NotNull protected DTOProcessor<UserProfileDTO> createSignInUpProfileProcessor()
     {
         return new DTOProcessorSignInUpUserProfile(
-                userProfileCache,
+                userProfileCache.get(),
                 currentUserId,
                 dtoCacheUtil);
     }
@@ -235,7 +236,7 @@ import retrofit.client.Response;
     //<editor-fold desc="Update Profile">
     @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
+        return new DTOProcessorUpdateUserProfile(userProfileCache.get());
     }
 
     public UserProfileDTO updateProfile(
@@ -513,7 +514,7 @@ import retrofit.client.Response;
     //<editor-fold desc="Update PayPal Email">
     @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
     {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache, playerId);
+        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), playerId);
     }
 
     public UpdatePayPalEmailDTO updatePayPalEmail(
@@ -540,7 +541,7 @@ import retrofit.client.Response;
     //<editor-fold desc="Update Alipay account">
     @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
     {
-        return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
+        return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId);
     }
 
     public UpdateAlipayAccountDTO updateAlipayAccount(
@@ -567,7 +568,7 @@ import retrofit.client.Response;
     //<editor-fold desc="Delete User">
     @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
     {
-        return new DTOProcessorUserDeleted(userProfileCache, playerId);
+        return new DTOProcessorUserDeleted(userProfileCache.get(), playerId);
     }
 
     public Response deleteUser(@NotNull UserBaseKey userKey)
@@ -666,16 +667,30 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Follow Batch Free">
-    public Response followBatchFree(@NotNull BatchFollowFormDTO batchFollowFormDTO)
+    protected DTOProcessor<UserProfileDTO> createBatchFollowFreeProcessor(@NotNull BatchFollowFormDTO batchFollowFormDTO)
     {
-        return userService.followBatchFree(batchFollowFormDTO);
+        return new DTOProcessorFollowFreeUserBatch(
+                userProfileCache.get(),
+                heroListCache.get(),
+                getPositionsCache.get(),
+                userMessagingRelationshipCache.get(),
+                allowableRecipientPaginatedCache.get(),
+                batchFollowFormDTO);
+    }
+
+    @NotNull public UserProfileDTO followBatchFree(@NotNull BatchFollowFormDTO batchFollowFormDTO)
+    {
+        return createBatchFollowFreeProcessor(batchFollowFormDTO).process(
+                userService.followBatchFree(batchFollowFormDTO));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> followBatchFree(
             @NotNull BatchFollowFormDTO batchFollowFormDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createBatchFollowFreeProcessor(batchFollowFormDTO));
         userServiceAsync.followBatchFree(batchFollowFormDTO, middleCallback);
         return middleCallback;
     }
@@ -728,10 +743,10 @@ import retrofit.client.Response;
     @NotNull protected DTOProcessor<UserProfileDTO> createFollowPremiumUserProcessor(@NotNull UserBaseKey userToFollow)
     {
         return new DTOProcessorFollowPremiumUser(
-                userProfileCache,
+                userProfileCache.get(),
                 heroListCache.get(),
-                getPositionsCache,
-                userMessagingRelationshipCache,
+                getPositionsCache.get(),
+                userMessagingRelationshipCache.get(),
                 allowableRecipientPaginatedCache.get(),
                 userToFollow);
     }
@@ -769,10 +784,10 @@ import retrofit.client.Response;
     @NotNull protected DTOProcessor<UserProfileDTO> createFollowFreeUserProcessor(@NotNull UserBaseKey userToFollow)
     {
         return new DTOProcessorFollowFreeUser(
-                userProfileCache,
+                userProfileCache.get(),
                 heroListCache.get(),
-                getPositionsCache,
-                userMessagingRelationshipCache,
+                getPositionsCache.get(),
+                userMessagingRelationshipCache.get(),
                 allowableRecipientPaginatedCache.get(),
                 userToFollow);
     }
@@ -796,10 +811,10 @@ import retrofit.client.Response;
     @NotNull protected DTOProcessor<UserProfileDTO> createUnfollowUserProcessor(@NotNull UserBaseKey userToFollow)
     {
         return new DTOProcessorUnfollowUser(
-                userProfileCache,
+                userProfileCache.get(),
                 heroListCache.get(),
-                getPositionsCache,
-                userMessagingRelationshipCache,
+                getPositionsCache.get(),
+                userMessagingRelationshipCache.get(),
                 allowableRecipientPaginatedCache.get(),
                 userToFollow);
     }
@@ -841,7 +856,7 @@ import retrofit.client.Response;
             @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         return new DTOProcessorUpdateCountryCode(
-                userProfileCache,
+                userProfileCache.get(),
                 providerListCache.get(),
                 providerCache.get(),
                 providerCompactCache.get(),
@@ -874,7 +889,7 @@ import retrofit.client.Response;
             @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
             @NotNull UserBaseKey invitedUserId)
     {
-        return new DTOProcessorUpdateReferralCode(userProfileCache, updateReferralCodeDTO, invitedUserId);
+        return new DTOProcessorUpdateReferralCode(userProfileCache.get(), updateReferralCodeDTO, invitedUserId);
     }
 
     @NotNull public Response updateReferralCode(

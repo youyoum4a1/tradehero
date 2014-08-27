@@ -190,7 +190,7 @@ public interface UserService
             @Query("q") String query);
     //</editor-fold>
 
-    @POST("/users/BatchFollow/free") Response followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
+    @POST("/users/batchFollow/free") UserProfileDTO followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends") Response inviteFriends(
