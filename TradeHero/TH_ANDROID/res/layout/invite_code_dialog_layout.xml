@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.friend.ReferralCodeViewLinear
+<com.tradehero.th.fragments.social.friend.InviteCodeViewLinear
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/referral_code_dialog_key"
+    android:id="@+id/invite_code_dialog_key"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +13,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/common_margin_10"
       android:gravity="center_horizontal"
-      android:text="@string/referral_code_title"
+      android:text="@string/invite_code_title"
       android:textStyle="bold"
       android:textSize="@dimen/common_text_size_30"/>
 
@@ -22,7 +22,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/common_margin_10"
       android:gravity="center_horizontal"
-      android:text="@string/referral_code_message"
+      android:text="@string/invite_code_message"
       android:textSize="@dimen/common_text_size_25"/>
 
   <ViewFlipper
@@ -38,7 +38,7 @@
         >
 
       <EditText
-          android:id="@+id/referral_code"
+          android:id="@+id/invite_code"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_margin="@dimen/common_margin_10"
@@ -142,4 +142,4 @@
 
   </ViewFlipper>
 
-</com.tradehero.th.fragments.social.friend.ReferralCodeViewLinear>
+</com.tradehero.th.fragments.social.friend.InviteCodeViewLinear>

@@ -109,8 +109,8 @@ import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.friend.ReferralCodeDialogFragment;
-import com.tradehero.th.fragments.social.friend.ReferralCodeViewLinear;
+import com.tradehero.th.fragments.social.friend.InviteCodeDialogFragment;
+import com.tradehero.th.fragments.social.friend.InviteCodeViewLinear;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentFacebook;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentLinkedIn;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentTwitter;
@@ -321,8 +321,8 @@ import javax.inject.Singleton;
                         AllHeroFragment.class,
                         AllRelationsFragment.class,
                         RelationsListItemView.class,
-                        ReferralCodeViewLinear.class,
-                        ReferralCodeDialogFragment.class,
+                        InviteCodeViewLinear.class,
+                        InviteCodeDialogFragment.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,

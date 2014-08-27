@@ -219,8 +219,8 @@
   <string name="notification_new_activities">You have %d new activities</string>
   <string name="friend_link_social_network">Please Link Social Network.</string>
   <string name="exit_app">Exit app</string>
-  <string name="referral_code_title">Claim your virtual dollars!</string>
-  <string name="referral_code_message">If you were referred by a friend, enter the referral code
+  <string name="invite_code_title">Claim your virtual dollars!</string>
+  <string name="invite_code_message">If you were referred by a friend, enter the referral code
     here and get free 10,000 virtual dollars.
   </string>
   <string name="settings_referral_code_message">This is your own referral code. Share it with your
