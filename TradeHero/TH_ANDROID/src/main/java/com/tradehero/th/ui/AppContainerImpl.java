@@ -9,7 +9,9 @@ import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.widget.reside.THResideMenuItemImpl;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,19 @@ public class AppContainerImpl implements AppContainer
                     if (tag instanceof RootFragmentType)
                     {
                         RootFragmentType tabType = (RootFragmentType) tag;
+                        //store and setting in reside menu belongs to ME tab
+                        if (tabType == RootFragmentType.STORE)
+                        {
+                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(RootFragmentType.ME);
+                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(StoreScreenFragment.class);
+                            return;
+                        }
+                        if (tabType == RootFragmentType.SETTING)
+                        {
+                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(RootFragmentType.ME);
+                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(SettingsFragment.class);
+                            return;
+                        }
                         ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(tabType);
                     }
                 }

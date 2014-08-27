@@ -55,7 +55,7 @@ public class DashboardTabHost extends TabHost
             if (rootFragmentType.fragmentClass == fragmentClass)
             {
                 setCurrentTabByTag(rootFragmentType.toString());
-                showTabBar();
+                //showTabBar();
                 return;
             }
         }
