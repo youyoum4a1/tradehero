@@ -29,7 +29,6 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
@@ -39,16 +38,15 @@ import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.social.friend.ReferralCodeDialogFragment;
+import com.tradehero.th.fragments.social.friend.InviteCodeDialogFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.tradehero.th.persistence.prefs.FirstShowReferralCodeDialog;
+import com.tradehero.th.persistence.prefs.FirstShowInviteCodeDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
@@ -96,7 +94,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
     @Inject DeviceTokenHelper deviceTokenHelper;
-    @Inject @FirstShowReferralCodeDialog BooleanPreference firstShowReferralCodeDialogPreference;
+    @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
 
     @Inject AppContainer appContainer;
@@ -159,7 +157,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list,
         // and this line is no use for it will update after login in prefetchesUponLogin
 
-        showReferralCodeDialog();
+        showInviteCodeDialog();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
         for (DashboardNavigator.DashboardFragmentWatcher watcher: dashboardFragmentWatchers)
@@ -373,31 +371,12 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onDestroy();
     }
 
-    private void showReferralCodeDialog()
+    private void showInviteCodeDialog()
     {
-        if (firstShowReferralCodeDialogPreference.get())
+        if (shouldShowInviteCode())
         {
-            firstShowReferralCodeDialogPreference.set(false);
-            if (THUser.getTHAuthenticationProvider() != null)
-            {
-                if (THUser.getTHAuthenticationProvider().getAuthType().equals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
-                {
-                    showOnboard();
-                    //not show referral code dialog if login by email by alex
-                    return;
-                }
-            }
-            UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-            if (userProfileDTO != null)
-            {
-                if (userProfileDTO.inviteCode != null && !userProfileDTO.inviteCode.isEmpty())
-                {
-                    showOnboard();
-                    return;
-                }
-            }
-
-            ReferralCodeDialogFragment.showReferralCodeDialog(getSupportFragmentManager());
+            firstShowInviteCodeDialogPreference.set(false);
+            InviteCodeDialogFragment.showInviteCodeDialog(getSupportFragmentManager());
         }
         else
         {
@@ -405,9 +384,17 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
+    protected boolean shouldShowInviteCode()
+    {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        return firstShowInviteCodeDialogPreference.get()
+                //&& !(THUser.getTHAuthenticationProvider() instanceof EmailAuthenticationProvider)
+                && (userProfileDTO == null || userProfileDTO.inviteCode == null || userProfileDTO.inviteCode.isEmpty());
+    }
+
     protected void showOnboard()
     {
-        THToast.show("Activate OnBoardDialogFragment");
+        THToast.show("Activate OnBoardDialogFragment when merged in");
         //new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());
     }
 

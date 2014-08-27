@@ -21,24 +21,24 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class ReferralCodeViewHolder
+public class InvitedCodeViewHolder
 {
     public static final int VIEW_ENTER_CODE = 0;
     public static final int VIEW_SUBMITTING = 1;
-    public static final int VIEW_DONE = 2;
+    public static final int VIEW_SUBMIT_DONE = 2;
 
     @InjectView(R.id.action_view_switcher) ViewFlipper viewSwitcher;
-    @InjectView(R.id.referral_code) EditText referralCode;
+    @InjectView(R.id.invite_code) EditText inviteCode;
 
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final UserServiceWrapper userServiceWrapper;
     @Nullable private UserProfileDTO userProfileDTO;
 
     @Nullable private Callback<Response> parentCallback;
-    @Nullable private MiddleCallback<Response> middleCallbackUpdateReferral;
+    @Nullable private MiddleCallback<Response> middleCallbackUpdateInviteCode;
 
     //<editor-fold desc="Constructors">
-    @Inject public ReferralCodeViewHolder(
+    @Inject public InvitedCodeViewHolder(
             @NotNull CurrentUserId currentUserId,
             @NotNull UserServiceWrapper userServiceWrapper)
     {
@@ -50,36 +50,36 @@ public class ReferralCodeViewHolder
     public void attachView(View view)
     {
         ButterKnife.inject(this, view);
-        displayCurrentReferralCode();
+        displayCurrentInviteCode();
     }
 
     public void detachView()
     {
-        detachMiddleCallbackUpdateReferral();
+        detachMiddleCallbackUpdateInvite();
         ButterKnife.reset(this);
     }
 
-    private void detachMiddleCallbackUpdateReferral()
+    private void detachMiddleCallbackUpdateInvite()
     {
-        MiddleCallback<Response> middleCallbackCopy = middleCallbackUpdateReferral;
+        MiddleCallback<Response> middleCallbackCopy = middleCallbackUpdateInviteCode;
         if (middleCallbackCopy != null)
         {
             middleCallbackCopy.setPrimaryCallback(null);
         }
-        middleCallbackUpdateReferral = null;
+        middleCallbackUpdateInviteCode = null;
     }
 
     public void setUserProfile(@NotNull UserProfileDTO userProfile)
     {
         this.userProfileDTO = userProfile;
-        displayCurrentReferralCode();
+        displayCurrentInviteCode();
     }
 
-    protected void displayCurrentReferralCode()
+    protected void displayCurrentInviteCode()
     {
-        if (referralCode != null && userProfileDTO != null)
+        if (inviteCode != null && userProfileDTO != null)
         {
-            referralCode.setText(userProfileDTO.inviteCode);
+            inviteCode.setText(userProfileDTO.inviteCode);
         }
     }
 
@@ -107,24 +107,24 @@ public class ReferralCodeViewHolder
     }
 
     @OnClick(R.id.btn_send_code)
-    public void submitReferralCode()
+    public void submitInviteCode()
     {
         viewSwitcher.setDisplayedChild(VIEW_SUBMITTING);
-        detachMiddleCallbackUpdateReferral();
-        UpdateReferralCodeDTO formDTO = new UpdateReferralCodeDTO(referralCode.getText().toString());
-        middleCallbackUpdateReferral = userServiceWrapper.updateReferralCode(currentUserId.toUserBaseKey(), formDTO, createUpdateReferralCallback());
+        detachMiddleCallbackUpdateInvite();
+        UpdateReferralCodeDTO formDTO = new UpdateReferralCodeDTO(inviteCode.getText().toString());
+        middleCallbackUpdateInviteCode = userServiceWrapper.updateReferralCode(currentUserId.toUserBaseKey(), formDTO, createUpdateInviteCallback());
     }
 
-    protected Callback<Response> createUpdateReferralCallback()
+    protected Callback<Response> createUpdateInviteCallback()
     {
-        return new ReferralCodeUpdateReferralCallback();
+        return new InviteCodeUpdateInviteCallback();
     }
 
-    protected class ReferralCodeUpdateReferralCallback implements Callback<Response>
+    protected class InviteCodeUpdateInviteCallback implements Callback<Response>
     {
         @Override public void success(Response response, Response response2)
         {
-            showDone();
+            showSubmitDone();
             notifyParentCallbackSuccess(response, response2);
         }
 
@@ -132,7 +132,7 @@ public class ReferralCodeViewHolder
         {
             if ((new THException(retrofitError)).getMessage().contains("Already invited"))
             {
-                showDone();
+                showSubmitDone();
             }
             else
             {
@@ -143,8 +143,8 @@ public class ReferralCodeViewHolder
         }
     }
 
-    public void showDone()
+    public void showSubmitDone()
     {
-        viewSwitcher.setDisplayedChild(VIEW_DONE);
+        viewSwitcher.setDisplayedChild(VIEW_SUBMIT_DONE);
     }
 }

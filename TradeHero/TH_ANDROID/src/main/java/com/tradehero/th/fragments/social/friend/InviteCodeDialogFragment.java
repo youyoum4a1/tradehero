@@ -11,11 +11,11 @@ import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 
-public class ReferralCodeDialogFragment extends BaseDialogFragment
+public class InviteCodeDialogFragment extends BaseDialogFragment
 {
-    public static void showReferralCodeDialog(FragmentManager fragmentManager)
+    public static void showInviteCodeDialog(FragmentManager fragmentManager)
     {
-        new ReferralCodeDialogFragment().show(fragmentManager, ReferralCodeDialogFragment.class.getName());
+        new InviteCodeDialogFragment().show(fragmentManager, InviteCodeDialogFragment.class.getName());
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -33,7 +33,7 @@ public class ReferralCodeDialogFragment extends BaseDialogFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.referral_code_dialog_layout, container, false);
+        return inflater.inflate(R.layout.invite_code_dialog_layout, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)

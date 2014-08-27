@@ -166,6 +166,11 @@ public class UserProfileDTO extends UserProfileCompactDTO
         return count;
     }
 
+    public boolean alreadyClaimedInvitedDollars()
+    {
+        return inviteCode != null && !inviteCode.isEmpty();
+    }
+
     @Override public String toString()
     {
         return "UserProfileDTO{" +

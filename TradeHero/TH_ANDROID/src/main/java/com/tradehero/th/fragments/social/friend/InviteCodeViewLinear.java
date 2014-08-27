@@ -20,9 +20,9 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-public class ReferralCodeViewLinear extends LinearLayout
+public class InviteCodeViewLinear extends LinearLayout
 {
-    @Inject ReferralCodeViewHolder viewHolder;
+    @Inject InvitedCodeViewHolder viewHolder;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
 
@@ -33,19 +33,19 @@ public class ReferralCodeViewLinear extends LinearLayout
     @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     //<editor-fold desc="Constructors">
-    public ReferralCodeViewLinear(Context context)
+    @SuppressWarnings("UnusedDeclaration") public InviteCodeViewLinear(Context context)
     {
         super(context);
         init();
     }
 
-    public ReferralCodeViewLinear(Context context, AttributeSet attrs)
+    @SuppressWarnings("UnusedDeclaration") public InviteCodeViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         init();
     }
 
-    public ReferralCodeViewLinear(Context context, AttributeSet attrs, int defStyle)
+    @SuppressWarnings("UnusedDeclaration") public InviteCodeViewLinear(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
         init();
@@ -108,10 +108,10 @@ public class ReferralCodeViewLinear extends LinearLayout
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
     {
-        return new ReferralCodeViewUserProfileCacheListener();
+        return new InviteCodeViewUserProfileCacheListener();
     }
 
-    protected class ReferralCodeViewUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class InviteCodeViewUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {

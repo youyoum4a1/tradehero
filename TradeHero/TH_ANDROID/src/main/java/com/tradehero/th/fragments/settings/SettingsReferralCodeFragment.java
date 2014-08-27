@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -15,25 +15,26 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.social.friend.ReferralCodeViewLinear;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class SettingsReferralCodeFragment extends DashboardFragment
 {
+    private static final int VIEW_CLAIM = 0;
+    private static final int VIEW_ALREADY_CLAIMED = 1;
+
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
 
+    @InjectView(R.id.invite_code_claimed_switcher) ViewSwitcher alreadyClaimedSwitcher;
     @InjectView(R.id.settings_referral_code) TextView mReferralCode;
-    @InjectView(R.id.referral_code_dialog_key) ReferralCodeViewLinear mReferralCodeLayout;
-    @InjectView(R.id.already_done_key) LinearLayout mAlreadyDoneLayout;
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -48,12 +49,6 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         return view;
     }
 
-    @Override public void onStart()
-    {
-        super.onStart();
-        mReferralCodeLayout.setParentCallback(new TrackCallback());
-    }
-
     @Override public void onResume()
     {
         super.onResume();
@@ -63,7 +58,6 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @Override public void onStop()
     {
         detachProfileCache();
-        mReferralCodeLayout.setParentCallback(null);
         super.onStop();
     }
 
@@ -100,7 +94,8 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
-            linkWith(value, true);
+            mReferralCode.setText(value.referralCode);
+            alreadyClaimedSwitcher.setDisplayedChild(value.alreadyClaimedInvitedDollars() ? VIEW_ALREADY_CLAIMED : VIEW_CLAIM);
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
@@ -110,35 +105,13 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
-    {
-        if (userProfileDTO != null)
-        {
-            mReferralCode.setText(userProfileDTO.referralCode);
-            if (userProfileDTO.inviteCode != null && !userProfileDTO.inviteCode.isEmpty())
-            {
-                mReferralCodeLayout.setVisibility(View.GONE);
-                mAlreadyDoneLayout.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
     @OnClick({R.id.btn_cancel, R.id.btn_cancel_submit, R.id.btn_done})
-    protected void popFragment(View view)
+    protected void popFragment(/*View view*/)
     {
-        getDashboardNavigator().popFragment();
-    }
-
-    private class TrackCallback implements retrofit.Callback<Response>
-    {
-        @Override public void success(Response response, Response response2)
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
         {
-            mReferralCodeLayout.setVisibility(View.GONE);
-            mAlreadyDoneLayout.setVisibility(View.VISIBLE);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
+            navigator.popFragment();
         }
     }
 }
