@@ -2,7 +2,6 @@ package com.tradehero.common.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,8 +11,11 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.achievement.QuestBonusDTO;
+import org.jetbrains.annotations.NotNull;
 
-public class QuestIndicatorView extends RelativeLayout
+public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestBonusDTO>
 {
     @InjectView(R.id.quest_logo_indicator) View logo;
     @InjectView(R.id.quest_top_indicator) TextView topIndicator;
@@ -58,9 +60,14 @@ public class QuestIndicatorView extends RelativeLayout
         a.start();
     }
 
-    public void setText(String top, String bot)
+    private void setText(String top, String bot)
     {
         topIndicator.setText(top);
         botIndicator.setText(bot);
+    }
+
+    @Override public void display(@NotNull QuestBonusDTO dto)
+    {
+        setText(String.valueOf(dto.level), String.valueOf(dto.bonus));
     }
 }

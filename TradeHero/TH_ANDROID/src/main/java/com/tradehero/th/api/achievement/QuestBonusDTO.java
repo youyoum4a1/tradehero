@@ -13,4 +13,13 @@ public class QuestBonusDTO implements DTO
     {
         return new QuestBonusId(id);
     }
+
+    @Override public String toString()
+    {
+        return "QuestBonusDTO{" +
+                "id=" + id +
+                ", level=" + level +
+                ", bonus=" + bonus +
+                '}';
+    }
 }

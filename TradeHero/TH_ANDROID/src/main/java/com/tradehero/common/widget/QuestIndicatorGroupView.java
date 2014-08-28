@@ -2,20 +2,16 @@ package com.tradehero.common.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.achievement.QuestBonusDTO;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuestIndicatorGroupView extends LinearLayout
 {
-    @InjectView(R.id.quest_indicator_1) QuestIndicatorView questIndicatorView1;
-    @InjectView(R.id.quest_indicator_2) QuestIndicatorView questIndicatorView2;
-    @InjectView(R.id.quest_indicator_3) QuestIndicatorView questIndicatorView3;
-    @InjectView(R.id.quest_indicator_4) QuestIndicatorView questIndicatorView4;
-    @InjectView(R.id.quest_indicator_5) QuestIndicatorView questIndicatorView5;
+    List<QuestIndicatorView> questIndicatorViews = new ArrayList<>();
 
     public QuestIndicatorGroupView(Context context)
     {
@@ -35,28 +31,61 @@ public class QuestIndicatorGroupView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        findIndicators();
     }
 
-    public void setCurrentCount(int progress)
+    private void findIndicators()
     {
-        int mCurrent = progress;
-        int mCurrentN1 = progress - 1;
-        int mCurrentN2 = progress - 2;
-        int mCurrent1 = progress + 1;
-        int mCurrent2 = progress + 2;
+        String tag = getContext().getString(R.string.tag_quest_indicator);
+        for (int i = 0; i < getChildCount(); i++)
+        {
+            View v = getChildAt(i);
+            if (v.getTag() != null && v.getTag().equals(tag) && v instanceof QuestIndicatorView)
+            {
+                questIndicatorViews.add((QuestIndicatorView) v);
+            }
+        }
+    }
 
-        questIndicatorView1.animateOn();
-        questIndicatorView2.off();
-        questIndicatorView3.off();
-        questIndicatorView4.off();
-        questIndicatorView5.off();
+    public void setQuestBonusDef(List<QuestBonusDTO> questBonusDef, int currentCount)
+    {
+        updateDisplay(questBonusDef, currentCount);
+        hideUndefinedIndicators(questBonusDef);
+    }
 
-        questIndicatorView1.setText("Day 3", "TH$ 15k");
-        questIndicatorView2.setText("Day 4", "TH$ 20k");
-        questIndicatorView3.setText("Day 5", "TH$ 30k");
-        questIndicatorView4.setText("Day 6", "TH$ 50k");
-        questIndicatorView5.setText("Day 7", "TH$ 80k");
+    private void updateDisplay(List<QuestBonusDTO> questBonusDTOs, int currentContigousCount)
+    {
+        for (int i = 0; i < questBonusDTOs.size() && i < questIndicatorViews.size(); i++)
+        {
+            QuestIndicatorView questIndicatorView = questIndicatorViews.get(i);
+            QuestBonusDTO questBonusDTO = questBonusDTOs.get(i);
 
+            questIndicatorView.display(questBonusDTO);
+
+            if (questBonusDTO.level < currentContigousCount)
+            {
+                questIndicatorView.on();
+            }
+            else if (questBonusDTO.level == currentContigousCount)
+            {
+                questIndicatorView.animateOn();
+            }
+            else
+            {
+                questIndicatorView.off();
+            }
+        }
+    }
+
+    private void hideUndefinedIndicators(List<QuestBonusDTO> questBonusDef)
+    {
+        if (questBonusDef.size() < questIndicatorViews.size())
+        {
+            for (int i = questBonusDef.size(); i < questIndicatorViews.size(); i++)
+            {
+                QuestIndicatorView viewHolder = questIndicatorViews.get(i);
+                viewHolder.setVisibility(View.GONE);
+            }
+        }
     }
 }

@@ -39,4 +39,7 @@
 
   <!-- Include this tag for a indicator for achievement -->
   <string name="tag_achievement_indicator" translatable="false">is_an_indicator</string>
+
+  <!-- Include this tag for a indicator for quest -->
+  <string name="tag_quest_indicator" translatable="false">is_a_quest_indicator</string>
 </resources>
