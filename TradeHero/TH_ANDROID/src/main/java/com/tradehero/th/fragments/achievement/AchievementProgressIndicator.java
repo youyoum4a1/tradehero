@@ -50,7 +50,12 @@ public class AchievementProgressIndicator extends LinearLayout
     public void setAchievementDef(List<AchievementDefDTO> achievementDefs, int currentUserLevel)
     {
         mCurrentLevel = currentUserLevel;
+        updateDisplay(achievementDefs, currentUserLevel);
+        hideUndefinedIndicators(achievementDefs);
+    }
 
+    private void updateDisplay(List<AchievementDefDTO> achievementDefs, int currentUserLevel)
+    {
         for (int i = 0; i < achievementDefs.size() && i < indicatorLists.size(); i++)
         {
             ViewHolder viewHolder = indicatorLists.get(i);
@@ -67,7 +72,10 @@ public class AchievementProgressIndicator extends LinearLayout
                 viewHolder.off();
             }
         }
+    }
 
+    private void hideUndefinedIndicators(List<AchievementDefDTO> achievementDefs)
+    {
         if (achievementDefs.size() < indicatorLists.size())
         {
             for (int i = achievementDefs.size(); i < indicatorLists.size(); i++)
