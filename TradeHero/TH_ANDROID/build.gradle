@@ -135,13 +135,10 @@ android {
         //region Flavours
         googleplay {
             manifest {
-                srcFile 'src/samsung/AndroidManifest.xml'
                 srcFile 'src/googleplay/AndroidManifest.xml'
             }
             java {
                 srcDir 'src/googleplay/java'
-                // TODO remove samsung when files properly moved, and xav/iap merged in.
-                srcDir 'src/samsung/java'
             }
         }
 
