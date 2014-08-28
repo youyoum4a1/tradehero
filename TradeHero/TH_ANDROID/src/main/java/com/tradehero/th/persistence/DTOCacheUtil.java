@@ -2,6 +2,7 @@ package com.tradehero.th.persistence;
 
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.level.key.LevelDefListId;
@@ -15,6 +16,9 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
+import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
+import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
+import com.tradehero.th.persistence.achievement.QuestBonusListCache;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -102,6 +106,10 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     protected final Lazy<WatchlistPositionCache> watchlistPositionCache;
     protected final Lazy<LevelDefListCache> levelDefListCache;
+
+    protected final Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy;
+    protected final Lazy<AchievementCategoryCache> achievementCategoryCacheLazy;
+    protected final Lazy<QuestBonusListCache> questBonusListCacheLazy;
     //</editor-fold>
 
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
@@ -149,6 +157,9 @@ import org.jetbrains.annotations.Nullable;
             Lazy<WatchlistPositionCache> watchlistPositionCache,
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
             Lazy<LevelDefListCache> levelDefListCacheLazy,
+            Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy,
+            Lazy<AchievementCategoryCache> achievementCategoryCacheLazy,
+            Lazy<QuestBonusListCache> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
             @NotNull UserBaseDTOUtil userBaseDTOUtil)
     {
@@ -194,6 +205,9 @@ import org.jetbrains.annotations.Nullable;
         this.serverEndpointPreference = serverEndpointPreference;
         this.userBaseDTOUtil = userBaseDTOUtil;
         this.levelDefListCache = levelDefListCacheLazy;
+        this.achievementCategoryCacheLazy = achievementCategoryCacheLazy;
+        this.achievementCategoryListCacheLazy = achievementCategoryListCacheLazy;
+        this.questBonusListCacheLazy = questBonusListCacheLazy;
     }
     //</editor-fold>
 
@@ -239,6 +253,9 @@ import org.jetbrains.annotations.Nullable;
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
+
+        achievementCategoryListCacheLazy.get().invalidateAll();
+        achievementCategoryCacheLazy.get().invalidateAll();
     }
 
     public void anonymousPrefetches()
@@ -247,6 +264,7 @@ import org.jetbrains.annotations.Nullable;
         preFetchTrending();
         preFetchProviders();
         preFetchTraderLevels();
+        preFetchQuestBonus();
     }
 
     public void preFetchExchanges()
@@ -263,6 +281,11 @@ import org.jetbrains.annotations.Nullable;
     private void preFetchTraderLevels()
     {
         this.levelDefListCache.get().getOrFetchAsync(new LevelDefListId(), true); //Should it be forceUpdate?
+    }
+
+    private void preFetchQuestBonus()
+    {
+        this.questBonusListCacheLazy.get().getOrFetchAsync(new QuestBonusListId(), true);
     }
 
     public void prefetchesUponLogin(@Nullable UserProfileDTO profile)
@@ -294,7 +317,7 @@ import org.jetbrains.annotations.Nullable;
 
         conveniencePrefetches(); // TODO move them so time after the others
     }
-    
+
     public void preFetchWatchlist()
     {
         userWatchlistPositionCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
