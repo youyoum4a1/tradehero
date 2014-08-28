@@ -27,35 +27,4 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"/>
-
-
-  <!--<ImageView-->
-  <!--android:id="@+id/user_level_avatar"-->
-  <!--android:layout_width="@dimen/medium_logo_w_h"-->
-  <!--android:layout_height="@dimen/medium_logo_w_h"-->
-  <!--android:layout_alignParentBottom="true"-->
-  <!--android:src="@drawable/ic_level_avatar_placeholder"/>-->
-
-  <!--<include-->
-  <!--android:id="@+id/user_level_progress_bar"-->
-  <!--layout="@layout/user_level_progressbar"-->
-  <!--android:layout_width="match_parent"-->
-  <!--android:layout_height="wrap_content"-->
-  <!--android:layout_alignParentBottom="true"-->
-  <!--android:layout_marginLeft="@dimen/achievement_level_progress_margin_left"/>-->
-
-  <!--<TextView-->
-  <!--android:id="@+id/user_level_progress_level_up"-->
-  <!--android:layout_width="wrap_content"-->
-  <!--android:layout_height="wrap_content"-->
-  <!--android:layout_alignParentRight="true"-->
-  <!--android:layout_above="@id/user_level_progress_bar"-->
-  <!--android:layout_marginRight="@dimen/user_level_progress_margin_right"-->
-  <!--style="@style/TH.Achievement.Earned.LevelUp"-->
-  <!--android:visibility="gone"-->
-  <!--android:text="@string/achievement_level_up"-->
-  <!--tools:text="LEVEL UP!"/>-->
-
-
-
 </RelativeLayout>

@@ -429,19 +429,21 @@
   </style>
 
   <style name="TH.Achievement.Indicator" parent="TH.Achievement">
-    <item name="android:scaleType">fitCenter</item>
+    <item name="android:tag">@string/tag_achievement_indicator</item>
     <item name="android:layout_marginLeft">3dp</item>
     <item name="android:layout_marginRight">3dp</item>
+  </style>
+
+  <style name="TH.Achievement.Indicator.Image" parent="TH.Achievement.Indicator">
+    <item name="android:scaleType">fitCenter</item>
     <item name="android:padding">10dp</item>
-    <item name="android:background">@drawable/achievement_indicator_bg_padding</item>
+    <item name="android:background">@drawable/achievement_indicator_bg_padded</item>
     <item name="android:src">@drawable/ic_achievement_star_off</item>
   </style>
 
-  <style name="TH.Achievement.Indicator.Text" parent="TH.Achievement">
+  <style name="TH.Achievement.Indicator.Text" parent="TH.Achievement.Indicator">
     <item name="android:gravity">center</item>
     <item name="android:textSize">@dimen/text_xsmall</item>
-    <item name="android:layout_marginLeft">3dp</item>
-    <item name="android:layout_marginRight">3dp</item>
   </style>
 
   <style name="TH.Achievement.Share" parent="TH.Achievement">

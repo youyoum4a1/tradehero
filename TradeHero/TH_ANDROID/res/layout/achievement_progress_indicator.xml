@@ -7,69 +7,61 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
   <LinearLayout
+      android:id="@+id/achievement_indicator_image_container"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       android:background="@drawable/achievement_indicator_bg_line"
       >
     <ImageView
-        android:id="@+id/achievement_indicator_1"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"/>
+        style="@style/TH.Achievement.Indicator.Image"/>
     <ImageView
-        android:id="@+id/achievement_indicator_2"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"/>
+        style="@style/TH.Achievement.Indicator.Image"/>
     <ImageView
-        android:id="@+id/achievement_indicator_3"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"/>
+        style="@style/TH.Achievement.Indicator.Image"/>
     <ImageView
-        android:id="@+id/achievement_indicator_4"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"/>
+        style="@style/TH.Achievement.Indicator.Image"/>
     <ImageView
-        android:id="@+id/achievement_indicator_5"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
-        style="@style/TH.Achievement.Indicator"/>
+        style="@style/TH.Achievement.Indicator.Image"/>
   </LinearLayout>
 
   <LinearLayout
+      android:id="@+id/achievement_indicator_text_container"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       >
     <TextView
-        android:id="@+id/achievement_indicator_text_1"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="wrap_content"
         style="@style/TH.Achievement.Indicator.Text"
         tools:text="Top 100"/>
     <TextView
-        android:id="@+id/achievement_indicator_text_2"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="wrap_content"
         style="@style/TH.Achievement.Indicator.Text"
         tools:text="Top 10"/>
     <TextView
-        android:id="@+id/achievement_indicator_text_3"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="wrap_content"
         style="@style/TH.Achievement.Indicator.Text"
         tools:text="Top 5"/>
     <TextView
-        android:id="@+id/achievement_indicator_text_4"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="wrap_content"
         style="@style/TH.Achievement.Indicator.Text"
         tools:text="Top 3"/>
     <TextView
-        android:id="@+id/achievement_indicator_text_5"
         android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
         android:layout_height="wrap_content"
         style="@style/TH.Achievement.Indicator.Text"
