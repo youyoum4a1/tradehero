@@ -7,6 +7,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:0.12.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
         classpath 'org.robolectric:robolectric-gradle-plugin:0.12.+'
+        classpath 'com.amazon.device.tools.build:gradle:0.12.+'
     }
 }
 
@@ -41,6 +42,7 @@ project.ext.isIntelliJ = true
 
 android {
     compileSdkVersion 19
+
     buildToolsVersion "19.1.0"
     useOldManifestMerger=true
 
@@ -108,6 +110,10 @@ android {
         amazon {
             flavorDimension "marketSegment"
         }
+        amazonFire {
+            flavorDimension "marketSegment"
+            compileSdkVersion "Amazon.com:Amazon Fire Phone SDK Addon:17"
+        }
     }
 
     sourceSets {
@@ -171,6 +177,15 @@ android {
                 srcDir 'src/amazon/java'
             }
         }
+
+        amazonFire {
+            manifest {
+                srcFile 'src/amazon/AndroidManifest.xml'
+            }
+            java {
+                srcDir 'src/amazon/java'
+            }
+        }
         //endregion
 
         // TODO make sure this is not breaking
@@ -213,7 +228,7 @@ dependencies {
 
     compile project(':ResideMenu')
 
-    samsungCompile project(':samsung_iap')
+    samsungProvided project(':samsung_iap')
 
     compile project(':facebook-android-sdk:facebook')
 
