@@ -11,11 +11,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
-<<<<<<< HEAD
 import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
-import com.tradehero.th.fragments.DashboardNavigator;
-=======
->>>>>>> develop2.0
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;

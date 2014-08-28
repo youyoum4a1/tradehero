@@ -13,14 +13,15 @@ import butterknife.OnItemClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.request.BaseUIBillingRequest;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
@@ -40,6 +41,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 @Routable({
@@ -106,21 +108,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         storeItemAdapter.notifyDataSetChanged();
 
         cancelOthersAndShowBillingAvailable();
-
-        if (productDomainIdentifierOrdinal != null)
-        {
-            detachRequestCode();
-            THUIBillingRequest uiRequest = (THUIBillingRequest) uiBillingRequestBuilderProvider.get()
-                    .domainToPresent(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal])
-                    .applicablePortfolioId(getApplicablePortfolioId())
-                    .startWithProgressDialog(true)
-                    .popIfBillingNotAvailable(true)
-                    .popIfProductIdentifierFetchFailed(true)
-                    .popIfInventoryFetchFailed(true)
-                    .build();
-            //noinspection unchecked
-            requestCode = userInteractor.run(uiRequest);
-        }
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -163,6 +150,51 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         request.popIfBillingNotAvailable(!alreadyNotifiedNeedCreateAccount);
         request.testBillingAvailable(true);
         return request.build();
+    }
+
+    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
+    {
+        return new StoreScreenFragmentPortfolioCompactListFetchListener();
+    }
+
+    protected class StoreScreenFragmentPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
+    {
+        protected StoreScreenFragmentPortfolioCompactListFetchListener()
+        {
+            super();
+        }
+
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        {
+            super.onDTOReceived(key, value);
+            launchRoutedAction();
+        }
+    }
+
+    protected void launchRoutedAction()
+    {
+        if (productDomainIdentifierOrdinal != null)
+        {
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId == null)
+            {
+                Timber.e(new Exception("Null portfolio id"), "Even when received portfolio list");
+            }
+            else
+            {
+                detachRequestCode();
+                THUIBillingRequest uiRequest = (THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                        .domainToPresent(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal])
+                        .applicablePortfolioId(applicablePortfolioId)
+                        .startWithProgressDialog(true)
+                        .popIfBillingNotAvailable(true)
+                        .popIfProductIdentifierFetchFailed(true)
+                        .popIfInventoryFetchFailed(true)
+                        .build();
+                //noinspection unchecked
+                requestCode = userInteractor.run(uiRequest);
+            }
+        }
     }
 
     @OnItemClick(R.id.store_option_list)

@@ -25,12 +25,8 @@ import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
-<<<<<<< HEAD
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
-=======
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.utils.GraphicUtil;
->>>>>>> develop2.0
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;

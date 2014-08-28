@@ -34,12 +34,8 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-<<<<<<< HEAD
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-=======
->>>>>>> develop2.0
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;

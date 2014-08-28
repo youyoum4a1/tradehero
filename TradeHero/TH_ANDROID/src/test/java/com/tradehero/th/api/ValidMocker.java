@@ -262,7 +262,6 @@ public class ValidMocker
                     perPage
             );
         }
-<<<<<<< HEAD
         if (type.equals(PurchaseReportDTO.class))
         {
             if (random.nextBoolean())
@@ -273,11 +272,10 @@ public class ValidMocker
             {
                 return new SamsungPurchaseReportDTO("paymentId", "purchaseId", "productCode");
             }
-=======
+        }
         if (type.equals(VideoCategoryId.class))
         {
             return new VideoCategoryId(1);
->>>>>>> develop2.0
         }
 
         if (type.equals(Boolean.class) || type.equals(boolean.class))

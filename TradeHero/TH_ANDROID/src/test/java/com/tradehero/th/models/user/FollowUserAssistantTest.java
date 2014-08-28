@@ -9,6 +9,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.junit.After;
@@ -29,13 +30,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(THRobolectricTestRunner.class)
-public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
+public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 {
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     protected THBillingInteractor billingInteractor;
     private OwnedPortfolioId applicablePortfolioId = new OwnedPortfolioId(98, 456);
-    private PremiumFollowUserAssistant assistant;
+    private FollowUserAssistant assistant;
     private THUIBillingRequest receivedRequest;
 
     @Before @Override public void setUp()
@@ -146,12 +147,12 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followCallsCache()
     {
-        assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
         // Prepare cache
         userProfileCache = mock(UserProfileCache.class);
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
 
-        assistant.launchFollow();
+        assistant.launchPremiumFollow();
 
         verify(userProfileCache, times(1)).register(currentUserId.toUserBaseKey(), assistant);
         verify(userProfileCache, times(1)).getOrFetchAsync(currentUserId.toUserBaseKey());
@@ -159,7 +160,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void callingErrorFromCacheNotifiesListener()
     {
-        assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new FollowUserAssistant(heroId, listener, applicablePortfolioId);
         //noinspection ThrowableInstanceNeverThrown
         Throwable expected = new IllegalArgumentException();
         assistant.onErrorThrown(currentUserId.toUserBaseKey(), expected);
@@ -169,30 +170,30 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followErrorCacheNotifiesListener()
     {
-        assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
         // Prepare cache
         userProfileCache = mock(UserProfileCache.class);
         //noinspection ThrowableInstanceNeverThrown
         final Throwable expected = new IllegalArgumentException();
         makeProfileCacheThrow(expected);
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
 
-        assistant.launchFollow();
+        assistant.launchPremiumFollow();
 
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
 
     @Test public void followWithEnoughCCWillCallService() throws InterruptedException
     {
-        assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
         // Prepare cache
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
         // Prepare user service
-        assistant.userServiceWrapper = userServiceWrapper;
+        ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchFollow();
+        assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
         verify(userServiceWrapper, times(1)).follow(heroId, assistant);
@@ -200,17 +201,17 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithEnoughCCAndServiceFailedWillNotify() throws InterruptedException
     {
-        assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare user service
         RetrofitError expected = mock(RetrofitError.class);
         prepareUserServiceForFailFollow(assistant, expected);
-        assistant.userServiceWrapper = userServiceWrapper;
+        ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchFollow();
+        assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
@@ -218,17 +219,17 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithEnoughCCAndServiceSuccessWillNotify() throws InterruptedException
     {
-        assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare user service
         UserProfileDTO expected = mockMyProfileWithCC(0d);
         prepareUserServiceForSuccessFollow(assistant, expected);
-        assistant.userServiceWrapper = userServiceWrapper;
+        ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchFollow();
+        assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, expected);
@@ -236,21 +237,21 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithNotEnoughCCWillCallInteractor() throws InterruptedException
     {
-        assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
-        assistant.billingInteractor = billingInteractor;
+        ((OpenFollowUserAssistant) assistant).setBillingInteractor(billingInteractor);
         makeBillingInteractorSaveRequest(13);
 
-        assistant.launchFollow();
+        assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
         //noinspection unchecked
         verify(billingInteractor, times(1)).run(any(THUIBillingRequest.class));
-        assertThat(assistant.requestCode).isEqualTo(13);
+        assertThat(((OpenFollowUserAssistant) assistant).getRequestCode()).isEqualTo(13);
         assertThat(receivedRequest).isNotNull();
         assertThat(receivedRequest.getDomainToPresent()).isEqualTo(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
         assertThat(receivedRequest.getUserToPremiumFollow()).isEqualTo(heroId);
@@ -259,33 +260,33 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithNotEnoughCCAndBoughtFailedWillNotify()
     {
-        assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
         final BillingException billingException = mock(BillingException.class);
         makeBillingInteractorPurchaseFailed(billingException);
-        assistant.billingInteractor = billingInteractor;
+        ((OpenFollowUserAssistant) assistant).setBillingInteractor(billingInteractor);
 
     }
 
     @Test public void followWithNotEnoughCCAndBoughtSuccessWillCallService() throws InterruptedException
     {
-        assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
         final UserProfileDTO myProfileAfterPurchase = mockMyProfileWithCC(1d);
         makeBillingInteractorPurchaseSuccess(myProfileAfterPurchase);
-        assistant.billingInteractor = billingInteractor;
+        ((OpenFollowUserAssistant) assistant).setBillingInteractor(billingInteractor);
 
-        assistant.userServiceWrapper = userServiceWrapper;
+        ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchFollow();
+        assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
         verify(userServiceWrapper, times(1)).follow(heroId, assistant);
@@ -294,21 +295,21 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
     // This is very long but here to test that no listener /callback is lost in the process
     @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowFailedWillNotifyListener() throws InterruptedException
     {
-        assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
         final UserProfileDTO myProfileAfterPurchase = mockMyProfileWithCC(1d);
         makeBillingInteractorPurchaseSuccess(myProfileAfterPurchase);
-        assistant.billingInteractor = billingInteractor;
+        ((OpenFollowUserAssistant) assistant).setBillingInteractor(billingInteractor);
         // Prepare user service
         RetrofitError retrofitError = mock(RetrofitError.class);
         prepareUserServiceForFailFollow(assistant, retrofitError);
-        assistant.userServiceWrapper = userServiceWrapper;
+        ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchFollow();
+        assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowFailed(heroId, retrofitError);
@@ -317,21 +318,21 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
     // This is very long but here to test that no listener /callback is lost in the process
     @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowSuccessWillNotifyListener() throws InterruptedException
     {
-        assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
-        assistant.userProfileCache = userProfileCache;
+        ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
         final UserProfileDTO myProfileAfterPurchase = mockMyProfileWithCC(1d);
         makeBillingInteractorPurchaseSuccess(myProfileAfterPurchase);
-        assistant.billingInteractor = billingInteractor;
+        ((OpenFollowUserAssistant) assistant).setBillingInteractor(billingInteractor);
         // Prepare user service
         UserProfileDTO myProfileAfterFollow = mockMyProfileWithCC(0d);
         prepareUserServiceForSuccessFollow(assistant, myProfileAfterFollow);
-        assistant.userServiceWrapper = userServiceWrapper;
+        ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchFollow();
+        assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, myProfileAfterFollow);
