@@ -608,7 +608,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         mTradeValueTextView.setText(getTradeValueText());
     }
 
-    public abstract String getCashShareLeft();
+    @NotNull public abstract String getCashShareLeft();
 
     private void updateConfirmButton()
     {
