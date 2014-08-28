@@ -171,3 +171,8 @@
 }
 
 -keep @org.junit.runner.RunWith public class *
+
+# Amazon IAPs
+-dontwarn com.amazon.**
+-keep class com.amazon.** {*;}
+-keepattributes *Annotation*
