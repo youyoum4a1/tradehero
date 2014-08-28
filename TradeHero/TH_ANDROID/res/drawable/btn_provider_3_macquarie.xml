@@ -9,7 +9,7 @@
           android:endColor="@color/provider_3_colour_gradient"
           android:startColor="@color/provider_3_colour_main" />
 
-      <corners android:radius="4dp"/>
+      <corners android:radius="@dimen/global_corner_radius"/>
 
     </shape>
 
@@ -24,7 +24,7 @@
           android:endColor="@color/provider_3_colour_gradient"
           android:startColor="@color/provider_3_colour_main" />
 
-      <corners android:radius="4dp"/>
+      <corners android:radius="@dimen/global_corner_radius"/>
 
     </shape>
 
@@ -39,7 +39,7 @@
           android:endColor="@color/provider_3_colour_gradient"
           android:startColor="@color/provider_3_colour_gradient" />
 
-      <corners android:radius="4dp"/>
+      <corners android:radius="@dimen/global_corner_radius"/>
 
     </shape>
 

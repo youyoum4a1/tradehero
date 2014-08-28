@@ -26,8 +26,7 @@ public class TopBannerSettingViewHolder extends OneSettingViewHolder
             Navigator navigator = preferenceFragmentCopy.getNavigator();
             if (navigator != null)
             {
-                navigator.pushFragment(FriendsInvitationFragment.class, null,
-                        Navigator.PUSH_UP_FROM_BOTTOM, null);
+                navigator.pushFragment(FriendsInvitationFragment.class, null, null);
             }
         }
     }

@@ -6,20 +6,22 @@ import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.OnFollowResultListener;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THPurchaseOrder;
+import com.tradehero.th.billing.THPurchaseReporter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class THUIBillingRequest<
+public interface THUIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
+        THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingExceptionType extends BillingException>
@@ -28,37 +30,39 @@ public class THUIBillingRequest<
         ProductIdentifierType,
         ProductIdentifierListType,
         ProductDetailType,
-        PurchaseOrderType,
+        THPurchaseOrderType,
         OrderIdType,
         ProductPurchaseType,
         BillingExceptionType>
 {
-    /**
-     * The domain of product identifiers to present to the user.
-     */
-    public ProductIdentifierDomain domainToPresent;
+    //<editor-fold desc="Generics">
+    @NotNull OwnedPortfolioId getApplicablePortfolioId();
+    //</editor-fold>
 
-    /**
-     * Indicates whether we want the Interactor to pop a dialog when reporting fails
-     */
-    public boolean popIfReportFailed;
-    public PurchaseReporter.OnPurchaseReportedListener<
+    //<editor-fold desc="Product Identifiers To Present">
+    ProductIdentifierDomain getDomainToPresent();
+    void setDomainToPresent(ProductIdentifierDomain domainToPresent);
+    //</editor-fold>
+
+    //<editor-fold desc="Reporting Purchase">
+    boolean getReportPurchase();
+    void setReportPurchase(boolean reportPurchase);
+    boolean getPopIfReportFailed();
+    @Nullable THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType,
-            BillingExceptionType> purchaseReportedListener;
+            BillingExceptionType> getPurchaseReportedListener();
+    void setPurchaseReportedListener(
+            @Nullable THPurchaseReporter.OnPurchaseReportedListener<
+                    ProductIdentifierType,
+                    OrderIdType,
+                    ProductPurchaseType,
+                    BillingExceptionType> purchaseReportedListener);
+    //</editor-fold>
 
-    public OnFollowResultListener followResultListener;
-    public UserBaseKey userToFollow;
-
-    public THUIBillingRequest()
-    {
-        super();
-    }
-
-    public void onDestroy()
-    {
-        this.purchaseReportedListener = null;
-        this.followResultListener = null;
-    }
+    //<editor-fold desc="Premium Following User">
+    UserBaseKey getUserToPremiumFollow();
+    void setUserToPremiumFollow(UserBaseKey userToPremiumFollow);
+    //</editor-fold>
 }

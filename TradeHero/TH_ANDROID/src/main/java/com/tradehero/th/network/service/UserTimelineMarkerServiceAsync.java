@@ -6,7 +6,7 @@ import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;
 
-public interface UserTimelineMarkerServiceAsync
+interface UserTimelineMarkerServiceAsync
 {
     //<editor-fold desc="Post Timeline Marker">
     @POST("/users/{userId}/read")

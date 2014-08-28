@@ -11,5 +11,6 @@
   <string name="timeline_link_account">账号尚未关联, 请至设置并且关联账号 %s</string>
   <string name="news_like">赞</string>
   <string name="news_comment">评论</string>
+  <string name="me">我</string>
 
 </resources>

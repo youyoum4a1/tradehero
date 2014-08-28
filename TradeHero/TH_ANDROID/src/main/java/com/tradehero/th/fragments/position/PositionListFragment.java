@@ -43,7 +43,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
@@ -158,7 +158,7 @@ public class PositionListFragment
         portfolioFetchListener = createPortfolioCacheListener();
     }
 
-    @NotNull @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @NotNull @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new AbstractPositionListPremiumUserFollowedListener();
     }
@@ -706,16 +706,16 @@ public class PositionListFragment
     }
 
     protected class AbstractPositionListPremiumUserFollowedListener
-            implements PremiumFollowUserAssistant.OnUserFollowedListener
+            implements FollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
         {
             displayHeaderView();
             fetchSimplePage(true);
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
             // do nothing for now
         }

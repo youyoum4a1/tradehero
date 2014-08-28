@@ -15,11 +15,14 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
@@ -27,7 +30,8 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.route.THRouter;
@@ -49,6 +53,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @NotNull private UserBaseKey followerId;
     private UserProfileDTO userProfileDTO;
     private List<HeroDTO> heroDTOs;
+    protected SimpleFollowUserAssistant simpleFollowUserAssistant;
 
     @Inject protected HeroManagerInfoFetcher infoFetcher;
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
@@ -58,6 +63,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
 
+    //<editor-fold desc="Argument Passing">
     public static void putFollowerId(Bundle args, UserBaseKey followerId)
     {
         args.putBundle(BUNDLE_KEY_FOLLOWER_ID, followerId.getArgs());
@@ -67,6 +73,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
     }
+    //</editor-fold>
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -217,6 +224,12 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     abstract protected HeroType getHeroType();
 
+    @Override public void onStop()
+    {
+        detachFollowAssistant();
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         if (this.infoFetcher != null)
@@ -245,13 +258,14 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         super.onDestroy();
     }
 
-    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new PremiumFollowUserAssistant.OnUserFollowedListener()
+        return new FollowUserAssistant.OnUserFollowedListener()
         {
             @Override
-            public void onUserFollowSuccess(UserBaseKey userFollowed,
-                    UserProfileDTO currentUserProfileDTO)
+            public void onUserFollowSuccess(
+                    @NotNull UserBaseKey userFollowed,
+                    @NotNull UserProfileDTO currentUserProfileDTO)
             {
                 Timber.d("onUserFollowSuccess");
                 THToast.show(getString(R.string.manage_heroes_unfollow_success));
@@ -262,7 +276,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
                 }
             }
 
-            @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+            @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
             {
                 //TODO offical accounts, do not unfollow
                 if (userFollowed.isOfficialAccount())
@@ -278,11 +292,28 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         };
     }
 
+    protected void detachFollowAssistant()
+    {
+        SimpleFollowUserAssistant assistantCopy = simpleFollowUserAssistant;
+        if (assistantCopy != null)
+        {
+            assistantCopy.onDestroy();
+        }
+        simpleFollowUserAssistant = null;
+    }
+
     private void handleBuyMoreClicked()
     {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .buyFollowCredits();
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
+        {
+            detachRequestCode();
+            //noinspection unchecked
+            requestCode = userInteractor.run((THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                    .applicablePortfolioId(getApplicablePortfolioId())
+                    .domainToPresent(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
+                    .build());
+        }
     }
 
     private void handleHeroStatusButtonClicked(HeroDTO heroDTO)
@@ -318,11 +349,18 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
                         {
                             THToast.show(
                                     getString(R.string.manage_heroes_unfollow_progress_message));
-                            unfollowUser(clickedHeroDTO.getBaseKey());
+                            unfollow(clickedHeroDTO.getBaseKey());
                         }
                     }
             );
         }
+    }
+
+    protected void unfollow(@NotNull UserBaseKey userBaseKey)
+    {
+        detachFollowAssistant();
+        simpleFollowUserAssistant = new SimpleFollowUserAssistant(userBaseKey, createPremiumUserFollowedListener());
+        simpleFollowUserAssistant.launchUnFollow();
     }
 
     private void pushTimelineFragment(UserBaseKey userBaseKey)

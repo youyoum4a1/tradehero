@@ -15,13 +15,18 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
@@ -37,6 +42,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 @Routable({
@@ -47,12 +54,15 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 {
     public static boolean alreadyNotifiedNeedCreateAccount = false;
     protected Integer showBillingAvailableRequestCode;
+    protected Integer showProductRequestCode;
 
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
+    @Inject protected THBillingInteractor userInteractor;
+    @Inject protected Provider<BaseTHUIBillingRequest.Builder> thuiBillingRequestBuilderProvider;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
@@ -84,7 +94,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(R.string.store_option_menu_title);
+        setActionBarTitle(R.string.store_option_menu_title);  // Add the changing cute icon
+        setActionBarSubtitle(userInteractor.getName());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -99,13 +110,12 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         storeItemAdapter.notifyDataSetChanged();
 
         cancelOthersAndShowBillingAvailable();
+    }
 
-        if (productDomainIdentifierOrdinal != null)
-        {
-            createPurchaseActionInteractorBuilder()
-                    .build()
-                    .showProductsList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
-        }
+    @Override public void onDestroyOptionsMenu()
+    {
+        setActionBarSubtitle(null);
+        super.onDestroyOptionsMenu();
     }
 
     @Override public void onDestroyView()
@@ -137,19 +147,56 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     public THUIBillingRequest getShowBillingAvailableRequest()
     {
-        THUIBillingRequest request = uiBillingRequestProvider.get();
-        request.applicablePortfolioId = getApplicablePortfolioId();
-        request.startWithProgressDialog = false;
-        request.popIfBillingNotAvailable = !alreadyNotifiedNeedCreateAccount;
-        request.billingAvailable = true;
-        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
+        BaseTHUIBillingRequest.Builder request = uiBillingRequestBuilderProvider.get();
+        request.startWithProgressDialog(false);
+        request.popIfBillingNotAvailable(!alreadyNotifiedNeedCreateAccount);
+        request.testBillingAvailable(true);
+        return request.build();
+    }
+
+    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
+    {
+        return new StoreScreenFragmentPortfolioCompactListFetchListener();
+    }
+
+    protected class StoreScreenFragmentPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
+    {
+        protected StoreScreenFragmentPortfolioCompactListFetchListener()
         {
-            @Override public void onError(int requestCode, BillingException billingException)
+            super();
+        }
+
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        {
+            super.onDTOReceived(key, value);
+            launchRoutedAction();
+        }
+    }
+
+    protected void launchRoutedAction()
+    {
+        if (productDomainIdentifierOrdinal != null)
+        {
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId == null)
             {
-                Timber.e(billingException, "Store had error");
+                Timber.e(new Exception("Null portfolio id"), "Even when received portfolio list");
             }
-        };
-        return request;
+            else
+            {
+                detachRequestCode();
+                THUIBillingRequest uiRequest = (THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                        .domainToPresent(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal])
+                        .applicablePortfolioId(applicablePortfolioId)
+                        .startWithProgressDialog(true)
+                        .popIfBillingNotAvailable(true)
+                        .popIfProductIdentifierFetchFailed(true)
+                        .popIfInventoryFetchFailed(true)
+                        .build();
+                //noinspection unchecked
+                requestCode = userInteractor.run(uiRequest);
+            }
+        }
     }
 
     @OnItemClick(R.id.store_option_list)
@@ -162,9 +209,18 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
-            createPurchaseActionInteractorBuilder()
-                    .build()
-                    .showProductsList(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain);
+            if (showProductRequestCode != null)
+            {
+                userInteractor.forgetRequestCode(showProductRequestCode);
+            }
+            //noinspection unchecked
+            showProductRequestCode = userInteractor.run(
+                    uiBillingRequestBuilderProvider.get()
+                            .domainToPresent(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain)
+                            .applicablePortfolioId(getApplicablePortfolioId())
+                            .startWithProgressDialog(true)
+                            .doPurchase(true)
+                            .build());
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {

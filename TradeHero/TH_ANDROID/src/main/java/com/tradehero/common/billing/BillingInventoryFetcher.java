@@ -8,8 +8,8 @@ public interface BillingInventoryFetcher<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         BillingExceptionType extends BillingException>
+    extends RequestCodeActor
 {
-    int getRequestCode();
     OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener();
     void setInventoryFetchedListener(OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> onInventoryFetchedListener);
     List<ProductIdentifierType> getProductIdentifiers();

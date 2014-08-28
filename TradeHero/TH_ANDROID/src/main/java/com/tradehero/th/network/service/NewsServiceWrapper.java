@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
 import com.tradehero.th.api.news.key.NewsItemListInterestKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -79,10 +80,19 @@ import retrofit.Callback;
         {
             return getSecurityNews((NewsItemListSecurityKey) key);
         }
+        else if (key instanceof NewsItemListFeaturedKey)
+        {
+            return getFeaturedNews((NewsItemListFeaturedKey) key);
+        }
         else
         {
             throw new IllegalStateException("Unhandled type " + key.getClass());
         }
+    }
+
+    private PaginatedDTO<NewsItemCompactDTO> getFeaturedNews(NewsItemListFeaturedKey key)
+    {
+        return newsService.getFeaturedNewsList(key.page, key.perPage);
     }
 
     public MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> getNews(

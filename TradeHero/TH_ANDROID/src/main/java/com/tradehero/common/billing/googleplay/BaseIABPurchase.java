@@ -16,9 +16,9 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
-import timber.log.Timber;
 
 /**
  * Represents an in-app billing purchase.
@@ -38,17 +38,17 @@ abstract public class BaseIABPurchase<
     public static final String JSON_KEY_PURCHASE_TOKEN = "purchaseToken";
 
     public final String itemType;  // IABConstants.ITEM_TYPE_INAPP or IABConstants.ITEM_TYPE_SUBS
-    protected final IABOrderIdType orderId;
+    @NotNull protected final IABOrderIdType orderId;
     public final String packageName;
-    protected final IABSKUType iabSKU;
+    @NotNull protected final IABSKUType iabSKU;
     public final long purchaseTime;
     public final int purchaseState;
-    public final String developerPayload;
+    @NotNull public final String developerPayload;
     public final String token;
-    public final String originalJson;
-    public final String signature;
+    @NotNull public final String originalJson;
+    @NotNull public final String signature;
 
-    public BaseIABPurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
+    public BaseIABPurchase(@NotNull String itemType, @NotNull String jsonPurchaseInfo, @NotNull String signature) throws JSONException
     {
         this.itemType = itemType;
         this.originalJson = jsonPurchaseInfo;
@@ -79,62 +79,37 @@ abstract public class BaseIABPurchase<
         this.signature = signature;
     }
 
-    abstract protected IABSKUType createIABSKU(String skuString);
-    abstract protected IABOrderIdType createIABOrderId(String orderIdString);
+    @NotNull abstract protected IABSKUType createIABSKU(String skuString);
+    @NotNull abstract protected IABOrderIdType createIABOrderId(String orderIdString);
 
-    @JsonIgnore
-    @Override public String getType()
+    @JsonIgnore @Override public String getType()
     {
         return itemType;
     }
 
-    @JsonIgnore
-    @Override public String getToken()
+    @JsonIgnore @Override public String getToken()
     {
         return token;
     }
 
-    @JsonIgnore
-    @Override public IABOrderIdType getOrderId()
+    @JsonIgnore @Override @NotNull public IABOrderIdType getOrderId()
     {
         return orderId;
     }
 
-    @JsonIgnore
-    @Override public IABSKUType getProductIdentifier()
+    @JsonIgnore @Override @NotNull public IABSKUType getProductIdentifier()
     {
         return iabSKU;
     }
 
-    @JsonIgnore
-    @Override public String getOriginalJson()
+    @JsonIgnore @Override @NotNull public String getOriginalJson()
     {
         return this.originalJson;
     }
 
-    @JsonIgnore
-    @Override public String getSignature()
+    @JsonIgnore @Override @NotNull public String getSignature()
     {
         return this.signature;
-    }
-
-    @Override public GooglePlayPurchaseDTO getGooglePlayPurchaseDTO()
-    {
-        String signature = this.signature;
-        if (signature != null)
-        {
-            // Test its length is a multiple of 4
-            int remainderFour = this.signature.length() % 4;
-            if (remainderFour != 0)
-            {
-                Timber.e(new IllegalArgumentException("Patching Google purchase signature that was not of the right length " + signature.length() + " " + this.originalJson + " " + signature), "");
-                for (int i = 0; i < 4 - remainderFour; i++)
-                {
-                    signature += "=";
-                }
-            }
-        }
-        return new GooglePlayPurchaseDTO(this.originalJson, signature);
     }
 
     @Override public String toString()

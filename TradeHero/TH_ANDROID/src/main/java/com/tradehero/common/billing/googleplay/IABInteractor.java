@@ -46,17 +46,17 @@ public interface IABInteractor<
                 IABPurchaseType,
                 IABExceptionType> & UIIABBillingRequest,
         IABExceptionType extends IABException>
-    extends BillingInteractor<
+        extends BillingInteractor<
         IABSKUListKeyType,
         IABSKUType,
         IABSKUListType,
-            IABProductDetailType,
-            IABPurchaseOrderType,
-            IABOrderIdType,
-            IABPurchaseType,
-            IABActorType,
-            BillingRequestType,
-            UIBillingRequestType,
-            IABExceptionType>
+        IABProductDetailType,
+        IABPurchaseOrderType,
+        IABOrderIdType,
+        IABPurchaseType,
+        IABActorType,
+        BillingRequestType,
+        UIBillingRequestType,
+        IABExceptionType>
 {
 }

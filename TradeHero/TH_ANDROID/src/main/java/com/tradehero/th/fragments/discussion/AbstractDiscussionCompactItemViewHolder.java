@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Html;
 import android.text.Spanned;
@@ -54,8 +55,8 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     @Inject @NotNull protected SocialShareTranslationHelper socialShareHelper;
 
     protected boolean downVote;
-    protected DiscussionDTOType discussionDTO;
-    protected DiscussionDTOType translatedDiscussionDTO;
+    @Nullable protected DiscussionDTOType discussionDTO;
+    @Nullable protected DiscussionDTOType translatedDiscussionDTO;
     protected @NotNull TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
     protected TranslationResult latestTranslationResult;
     protected OnMenuClickedListener menuClickedListener;
@@ -84,6 +85,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     public void onDetachedFromWindow()
     {
         if (discussionActionButtonsView != null)
@@ -243,11 +245,14 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
 
     protected void notifyShareRequested()
     {
-        socialShareHelper.share(discussionDTO);
-        OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
-        if (menuClickedListenerCopy != null)
+        if (discussionDTO != null)
         {
-            menuClickedListenerCopy.onShareButtonClicked();
+            socialShareHelper.share(discussionDTO);
+            OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
+            if (menuClickedListenerCopy != null)
+            {
+                menuClickedListenerCopy.onShareButtonClicked();
+            }
         }
     }
 

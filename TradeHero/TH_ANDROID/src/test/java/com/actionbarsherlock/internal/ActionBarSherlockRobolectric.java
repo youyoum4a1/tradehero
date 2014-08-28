@@ -54,7 +54,8 @@ public class ActionBarSherlockRobolectric extends ActionBarSherlockCompat
 
     @Override public ActionBar getActionBar()
     {
-        return actionBar;
+        //return actionBar;
+        return super.getActionBar();
     }
 
     @Override protected Context getThemedContext()

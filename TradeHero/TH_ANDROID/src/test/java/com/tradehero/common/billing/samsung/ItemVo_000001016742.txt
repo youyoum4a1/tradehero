@@ -1,0 +1,11 @@
+ItemId          : 000001016742
+ItemName        : TH$ 50K
+ItemPrice       : 3.79
+ItemPriceString : $3.79
+CurrencyUnit    : $
+ItemDesc        : TH$ 50K
+ItemImageUrl    : http://img.samsungapps.com/appsitem/itemDefaultImage.jpg
+ItemDownloadUrl :
+Type : 00
+SubscriptionDurationUnit :
+SubscriptionDurationMultiplier :

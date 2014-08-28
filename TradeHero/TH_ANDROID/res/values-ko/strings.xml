@@ -73,7 +73,6 @@
   <string name="about_screen_secure_by">Secure by:</string>
   <string name="about_screen_text_processing_by">Text processing by:</string>
   <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
-  <string name="send_fake_push">가짜 알림 메세지 보내기</string>
 
   <string name="buy_sell_loading_ask_price">요청가 로딩중…</string>
   <string name="buy_sell_loading_bid_price">입찰가 로딩중…</string>

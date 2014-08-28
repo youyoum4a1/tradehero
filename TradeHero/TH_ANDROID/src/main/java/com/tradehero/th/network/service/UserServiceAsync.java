@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
@@ -21,7 +21,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
+import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -223,8 +223,8 @@ interface UserServiceAsync
             Callback<UserFriendsDTOList> callback);
     //</editor-fold>
 
-    @POST("/users/BatchFollow/free")
-    void followBatchFree(@Body FollowFriendsForm followFriendsForm, Callback<UserProfileDTO> callback);
+    @POST("/users/batchFollow/free")
+    void followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO, Callback<UserProfileDTO> callback);
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends")
@@ -238,7 +238,7 @@ interface UserServiceAsync
     @POST("/users/{userId}/addCredit")
     void addCredit(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseReportDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
@@ -256,7 +256,7 @@ interface UserServiceAsync
     @POST("/users/{userId}/follow")
     void follow(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseReportDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 

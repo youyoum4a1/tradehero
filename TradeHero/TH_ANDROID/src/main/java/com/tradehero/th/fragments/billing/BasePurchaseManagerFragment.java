@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.billing;
 import android.os.Bundle;
 import android.view.View;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.request.UIBillingRequest;
+import com.tradehero.common.billing.request.BaseUIBillingRequest;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -13,13 +13,16 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THPurchaseActionInteractor;
+import com.tradehero.th.billing.THPurchaseReporter;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
@@ -37,12 +40,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
     protected THPurchaseActionInteractor thPurchaseActionInteractor;
+    protected Integer requestCode;
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
-    @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
-    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     @Inject protected THBillingInteractor userInteractor;
+    @Inject protected Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
+    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
+    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     @Inject SystemStatusCache systemStatusCache;
 
     public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
@@ -68,6 +72,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
+        purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
     }
 
     @Override public void onResume()
@@ -79,6 +84,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Override public void onStop()
     {
+        detachRequestCode();
         detachPortfolioCompactListCache();
         detachPurchaseActionInteractor();
         super.onStop();
@@ -88,6 +94,15 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         portfolioCompactListFetchListener = null;
         super.onDestroy();
+    }
+
+    protected void detachRequestCode()
+    {
+        if (requestCode != null)
+        {
+            userInteractor.forgetRequestCode(requestCode);
+        }
+        requestCode = null;
     }
 
     private void detachPortfolioCompactListCache()
@@ -149,14 +164,14 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return THBasePurchaseActionInteractor.builder()
                 .setBillingInteractor(userInteractor)
                 .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
-                .setBillingRequest(uiBillingRequestProvider.get())
+                .setBillingRequestBuilder(uiBillingRequestBuilderProvider.get())
                 .startWithProgressDialog(true) // true by default
                 .popIfBillingNotAvailable(true)  // true by default
                 .popIfProductIdentifierFetchFailed(true) // true by default
                 .popIfInventoryFetchFailed(true) // true by default
                 .popIfPurchaseFailed(true) // true by default
                 .setPremiumFollowedListener(createPremiumUserFollowedListener())
-                .error(new UIBillingRequest.OnErrorListener()
+                .error(new BaseUIBillingRequest.OnErrorListener()
                 {
                     @Override public void onError(int requestCode, BillingException billingException)
                     {
@@ -170,25 +185,17 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Deprecated
     protected final void premiumFollowUser(@NotNull UserBaseKey heroId)
     {
-        detachPurchaseActionInteractor();
-        thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
-                .setUserToFollow(heroId)
-                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
-                .build();
-
-        thPurchaseActionInteractor.premiumFollowUser();
-    }
-
-    // should call it where the action takes place
-    @Deprecated
-    protected final void unfollowUser(@NotNull UserBaseKey heroId)
-    {
-        detachPurchaseActionInteractor();
-        thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
-                .setUserToFollow(heroId)
-                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
-                .build();
-        thPurchaseActionInteractor.unfollowUser();
+        detachRequestCode();
+        //noinspection unchecked
+        THUIBillingRequest uiRequest = (THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                    .domainToPresent(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
+                    .applicablePortfolioId(purchaseApplicableOwnedPortfolioId)
+                    .userToPremiumFollow(heroId)
+                    .purchaseReportedListener(createPurchaseReportedListener())
+                    .doPurchase(true)
+                    .build();
+        //noinspection unchecked
+        requestCode = userInteractor.run(uiRequest);
     }
     //endregion
 
@@ -223,7 +230,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return null;
     }
 
-    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()
+    {
+        return null;
+    }
+
+    // Use createPurchaseReportedListener
+    @Deprecated protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         // default will be used when this one return null
         return null;

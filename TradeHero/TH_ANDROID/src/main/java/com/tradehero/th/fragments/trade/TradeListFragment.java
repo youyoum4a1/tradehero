@@ -397,8 +397,11 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             THToast.show(R.string.error_fetch_security_info);
         }
-        detachSecurityActionDialog();
-        securityActionDialog = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityId, createSecurityActionMenuListener());
+        else
+        {
+            detachSecurityActionDialog();
+            securityActionDialog = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityId, createSecurityActionMenuListener());
+        }
     }
 
     protected SecurityActionListLinear.OnActionMenuClickedListener createSecurityActionMenuListener()

@@ -19,9 +19,10 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -160,7 +161,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             leaderboardMarkUserListView.setAdapter(null);
             leaderboardMarkUserListView.setOnItemClickListener(null);
             leaderboardMarkUserListView.setEmptyView(null);
-            leaderboardMarkUserListView.addHeaderView(null);
             leaderboardMarkUserListView = null;
         }
         if (leaderboardFriendsUserListAdapter != null)
@@ -174,6 +174,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             mProgress = null;
         }
 
+        headerView = null;
         super.onDestroyView();
     }
 
@@ -237,25 +238,25 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         }
     }
 
-    @NotNull @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @NotNull @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new LeaderboardMarkUserListPremiumUserFollowedListener();
     }
 
-    protected class LeaderboardMarkUserListPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
+    protected class LeaderboardMarkUserListPremiumUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
         {
             handleFollowSuccess(currentUserProfileDTO);
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
             // nothing for now
         }
     }
 
-    protected void handleFollowRequested(final UserBaseKey userBaseKey)
+    protected void handleFollowRequested(@NotNull final UserBaseKey userBaseKey)
     {
         heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
         {
@@ -264,6 +265,12 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                 premiumFollowUser(userBaseKey);
             }
         });
+    }
+
+    protected void premiumFollow(@NotNull UserBaseKey userBaseKey)
+    {
+        detachRequestCode();
+        //userInteractor.run()
     }
 
     protected void handleFollowSuccess(@NotNull UserProfileDTO userProfileDTO)

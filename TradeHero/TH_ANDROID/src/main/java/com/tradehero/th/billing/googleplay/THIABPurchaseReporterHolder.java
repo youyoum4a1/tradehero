@@ -2,12 +2,13 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import com.tradehero.th.billing.THPurchaseReporterHolder;
 
 interface THIABPurchaseReporterHolder extends
-        IABPurchaseReporterHolder<
-                IABSKU,
-                THIABOrderId,
-                THIABPurchase,
-                IABException>
+        THPurchaseReporterHolder<
+                        IABSKU,
+                        THIABOrderId,
+                        THIABPurchase,
+                        IABException>
 {
 }
