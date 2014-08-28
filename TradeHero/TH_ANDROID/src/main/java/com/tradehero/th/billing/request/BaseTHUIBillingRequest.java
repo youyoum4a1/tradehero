@@ -1,9 +1,15 @@
 package com.tradehero.th.billing.request;
 
 import com.tradehero.common.billing.BaseProductIdentifierList;
+import com.tradehero.common.billing.BillingAvailableTester;
+import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.BillingPurchaseFetcher;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
+import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -208,6 +214,114 @@ abstract public class BaseTHUIBillingRequest<
             BillingExceptionType,
             BuilderType>
     {
+        //<editor-fold desc="Just so the builder model works as intended, since users only know up to this class">
+        @Override public BuilderType startWithProgressDialog(boolean startWithProgressDialog)
+        {
+            return super.startWithProgressDialog(startWithProgressDialog);
+        }
+
+        @Override public BuilderType testBillingAvailable(boolean testBillingAvailable)
+        {
+            return super.testBillingAvailable(testBillingAvailable);
+        }
+
+        @Override public BuilderType popIfBillingNotAvailable(boolean popIfBillingNotAvailable)
+        {
+            return super.popIfBillingNotAvailable(popIfBillingNotAvailable);
+        }
+
+        @Override public BuilderType billingAvailableListener(
+                BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
+        {
+            return super.billingAvailableListener(billingAvailableListener);
+        }
+
+        @Override public BuilderType fetchProductIdentifiers(boolean fetchProductIdentifiers)
+        {
+            return super.fetchProductIdentifiers(fetchProductIdentifiers);
+        }
+
+        @Override public BuilderType popIfProductIdentifierFetchFailed(boolean popIfProductIdentifierFetchFailed)
+        {
+            return super.popIfProductIdentifierFetchFailed(popIfProductIdentifierFetchFailed);
+        }
+
+        @Override public BuilderType productIdentifierFetchedListener(@Nullable
+        ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener)
+        {
+            return super.productIdentifierFetchedListener(productIdentifierFetchedListener);
+        }
+
+        @Override public BuilderType fetchInventory(boolean fetchInventory)
+        {
+            return super.fetchInventory(fetchInventory);
+        }
+
+        @Override public BuilderType popIfInventoryFetchFailed(boolean popIfInventoryFetchFailed)
+        {
+            return super.popIfInventoryFetchFailed(popIfInventoryFetchFailed);
+        }
+
+        @Override public BuilderType inventoryFetchedListener(@Nullable
+        BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
+        {
+            return super.inventoryFetchedListener(inventoryFetchedListener);
+        }
+
+        @Override public BuilderType fetchPurchases(boolean fetchPurchases)
+        {
+            return super.fetchPurchases(fetchPurchases);
+        }
+
+        @Override public BuilderType popIfPurchaseFetchFailed(boolean popIfPurchaseFetchFailed)
+        {
+            return super.popIfPurchaseFetchFailed(popIfPurchaseFetchFailed);
+        }
+
+        @Override public BuilderType purchaseFetchedListener(@Nullable
+        BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener)
+        {
+            return super.purchaseFetchedListener(purchaseFetchedListener);
+        }
+
+        @Override public BuilderType restorePurchase(boolean restorePurchase)
+        {
+            return super.restorePurchase(restorePurchase);
+        }
+
+        @Override public BuilderType popRestorePurchaseOutcome(boolean popRestorePurchaseOutcome)
+        {
+            return super.popRestorePurchaseOutcome(popRestorePurchaseOutcome);
+        }
+
+        @Override public BuilderType popRestorePurchaseOutcomeVerbose(boolean popRestorePurchaseOutcomeVerbose)
+        {
+            return super.popRestorePurchaseOutcomeVerbose(popRestorePurchaseOutcomeVerbose);
+        }
+
+        @Override public BuilderType purchaseRestorerListener(@Nullable
+        BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener)
+        {
+            return super.purchaseRestorerListener(purchaseRestorerListener);
+        }
+
+        @Override public BuilderType doPurchase(boolean doPurchase)
+        {
+            return super.doPurchase(doPurchase);
+        }
+
+        @Override public BuilderType popIfPurchaseFailed(boolean popIfPurchaseFailed)
+        {
+            return super.popIfPurchaseFailed(popIfPurchaseFailed);
+        }
+
+        @Override public BuilderType purchaseFinishedListener(@Nullable
+        BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, THPurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener)
+        {
+            return super.purchaseFinishedListener(purchaseFinishedListener);
+        }
+        //</editor-fold>
+
         //<editor-fold desc="Product Identifiers To Present">
         private ProductIdentifierDomain domainToPresent;
 
@@ -269,7 +383,6 @@ abstract public class BaseTHUIBillingRequest<
         }
         //</editor-fold>
 
-        @Override abstract protected BuilderType self();
         @Override abstract public BaseTHUIBillingRequest<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
