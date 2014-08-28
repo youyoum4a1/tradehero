@@ -1,4 +1,4 @@
-package com.tradehero.th.api.achievement;
+package com.tradehero.th.api.achievement.key;
 
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseKey;

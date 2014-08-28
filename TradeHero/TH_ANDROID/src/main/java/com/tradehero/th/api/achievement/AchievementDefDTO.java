@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THJsonAdapter;
+import com.tradehero.th.api.achievement.key.AchievementDefId;
 import java.io.IOException;
 import org.jetbrains.annotations.Nullable;
 

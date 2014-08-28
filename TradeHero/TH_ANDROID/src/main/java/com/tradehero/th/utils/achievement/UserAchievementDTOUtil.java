@@ -3,7 +3,7 @@ package com.tradehero.th.utils.achievement;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.UserAchievementId;
+import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import java.util.List;
 import javax.inject.Inject;

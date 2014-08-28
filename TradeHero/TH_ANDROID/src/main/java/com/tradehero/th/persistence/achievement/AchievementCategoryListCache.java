@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.achievement;
 
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
-import com.tradehero.th.api.achievement.AchievementCategoryIdList;
+import com.tradehero.th.api.achievement.key.AchievementCategoryIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import javax.inject.Inject;

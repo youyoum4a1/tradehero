@@ -32,7 +32,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.UserAchievementId;
+import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.utils.GraphicUtil;

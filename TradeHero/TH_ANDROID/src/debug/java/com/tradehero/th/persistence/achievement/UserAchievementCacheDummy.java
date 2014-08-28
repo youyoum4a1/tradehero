@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.achievement;
 
 import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.UserAchievementId;
+import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;

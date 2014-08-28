@@ -13,7 +13,7 @@ import butterknife.OnClick;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
-import com.tradehero.th.api.achievement.AchievementCategoryId;
+import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
 import java.util.List;

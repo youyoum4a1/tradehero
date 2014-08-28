@@ -1,4 +1,4 @@
-package com.tradehero.th.api.achievement;
+package com.tradehero.th.api.achievement.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;

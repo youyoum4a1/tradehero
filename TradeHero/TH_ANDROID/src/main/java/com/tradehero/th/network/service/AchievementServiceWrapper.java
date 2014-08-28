@@ -2,9 +2,11 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
-import com.tradehero.th.api.achievement.AchievementCategoryId;
+import com.tradehero.th.api.achievement.QuestBonusDTOList;
+import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.UserAchievementId;
+import com.tradehero.th.api.achievement.key.QuestBonusListId;
+import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -70,5 +72,10 @@ public class AchievementServiceWrapper
     public AchievementCategoryDTO getAchievementCategory(@NotNull AchievementCategoryId achievementCategoryId)
     {
         return achievementService.getAchievementCategory(achievementCategoryId.categoryId, achievementCategoryId.userId);
+    }
+
+    public QuestBonusDTOList getQuestBonuses(QuestBonusListId questBonusListId)
+    {
+        return achievementService.getQuestBonuses();
     }
 }

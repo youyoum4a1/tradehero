@@ -1,6 +1,7 @@
 package com.tradehero.th.api.achievement;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.achievement.key.UserAchievementId;
 import java.util.Date;
 
 public class UserAchievementDTO implements DTO

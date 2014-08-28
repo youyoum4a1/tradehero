@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
+import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import retrofit.http.GET;
@@ -29,5 +30,10 @@ public interface AchievementService
     //<editor-fold desc="Get User Achievement">
     @GET("/achievements/categories/{userId}")
     AchievementCategoryDTO getAchievementCategory(@Query("id") int categoryId, @Path("userId") int userId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Quest Bonus">
+    @GET("/achievements/questbonus")
+    QuestBonusDTOList getQuestBonuses();
     //</editor-fold>
 }
