@@ -105,6 +105,9 @@ android {
         samsung {
             flavorDimension "marketSegment"
         }
+        amazon {
+            flavorDimension "marketSegment"
+        }
     }
 
     sourceSets {
@@ -159,6 +162,15 @@ android {
                 srcDir 'src/samsung/java'
             }
         }
+
+        amazon {
+            manifest {
+                srcFile 'src/amazon/AndroidManifest.xml'
+            }
+            java {
+                srcDir 'src/amazon/java'
+            }
+        }
         //endregion
 
         // TODO make sure this is not breaking
@@ -196,14 +208,13 @@ robolectric {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
     chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
 
     compile project(':ResideMenu')
-    // TODO remove when properly separated
-    chinaCompile project(':samsung_iap')
-    // TODO remove when properly separated
-    googleplayCompile project(':samsung_iap')
+
     samsungCompile project(':samsung_iap')
+
     compile project(':facebook-android-sdk:facebook')
 
     compile ('com.actionbarsherlock:actionbarsherlock:4.4.0@aar') {

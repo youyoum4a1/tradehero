@@ -23,7 +23,7 @@ import javax.inject.Singleton;
         library = true,
         overrides = true
 )
-public class AmazonBillingModule
+public class BillingModule
 {
     //<editor-fold desc="Actors and Action Holders">
     //@Provides THIABBillingAvailableTester provideBillingAvailableTest(THBaseIABBillingAvailableTester thBaseIABBillingAvailableTester)
