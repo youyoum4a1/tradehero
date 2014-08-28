@@ -161,7 +161,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             leaderboardMarkUserListView.setAdapter(null);
             leaderboardMarkUserListView.setOnItemClickListener(null);
             leaderboardMarkUserListView.setEmptyView(null);
-            leaderboardMarkUserListView.addHeaderView(null);
             leaderboardMarkUserListView = null;
         }
         if (leaderboardFriendsUserListAdapter != null)
@@ -175,6 +174,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             mProgress = null;
         }
 
+        headerView = null;
         super.onDestroyView();
     }
 

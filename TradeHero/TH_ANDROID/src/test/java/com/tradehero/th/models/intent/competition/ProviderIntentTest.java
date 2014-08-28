@@ -1,7 +1,7 @@
 package com.tradehero.th.models.intent.competition;
 
 import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.models.intent.THIntent;
 import org.junit.After;
 import org.junit.Before;
@@ -37,6 +37,6 @@ public class ProviderIntentTest
 
     @Test public void typeIsDashboard()
     {
-        assertThat(new ProviderIntent().getDashboardType()).isEqualTo(DashboardTabType.COMMUNITY);
+        assertThat(new ProviderIntent().getDashboardType()).isEqualTo(RootFragmentType.COMMUNITY);
     }
 }

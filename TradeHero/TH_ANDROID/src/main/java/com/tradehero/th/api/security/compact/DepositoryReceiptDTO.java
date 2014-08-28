@@ -8,18 +8,6 @@ public class DepositoryReceiptDTO extends SecurityCompactDTO
 {
     public static final String DTO_DESERIALISING_TYPE = "8";
 
-    //<editor-fold desc="Constructors">
-    public DepositoryReceiptDTO()
-    {
-        super();
-    }
-
-    public DepositoryReceiptDTO(SecurityCompactDTO other)
-    {
-        super(other);
-    }
-    //</editor-fold>
-
     @NotNull @Override public Integer getSecurityTypeStringResourceId()
     {
         return R.string.security_type_depository_receipt;

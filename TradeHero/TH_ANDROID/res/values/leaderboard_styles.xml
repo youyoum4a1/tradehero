@@ -25,7 +25,7 @@
 
   <dimen name="leaderboard_user_item_action_button_horizontal_padding">10dp</dimen>
   <dimen name="leaderboard_user_item_action_follow_button_horizontal_padding">20dp</dimen>
-  <dimen name="leaderboard_user_item_action_button_corner_radius">4dp</dimen>
+  <dimen name="leaderboard_user_item_action_button_corner_radius">1dp</dimen>
   <dimen name="leaderboard_user_item_action_button_border_width">1dp</dimen>
 
 </resources>

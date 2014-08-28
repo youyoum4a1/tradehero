@@ -36,7 +36,12 @@ public class DTOProcessorFollowPremiumUser extends AbstractDTOProcessorFollowUse
     @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
+<<<<<<< HEAD
         userMessagingRelationshipCache.markIsPremiumHero(heroId);
+=======
+        userMessagingRelationshipCache.markIsPremiumHero(userToFollow);
+        allowableRecipientPaginatedCache.invalidateAll();
+>>>>>>> develop2.0
         return processed;
     }
 }

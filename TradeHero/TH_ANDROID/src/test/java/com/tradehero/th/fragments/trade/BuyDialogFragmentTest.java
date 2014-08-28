@@ -79,7 +79,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
         int max = s.getMax();
         int min = 10;
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 10; i++)
         {
             int val = new Random().nextInt((max - min)) + min;
 

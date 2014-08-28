@@ -45,8 +45,7 @@ import timber.log.Timber;
  * news are not in the cache, the download is done in the background using the `fetchSecurityTask`
  * AsyncTask. The task is cancelled when the fragment is paused.
  */
-public class NewsHeadlineFragment
-        extends AbstractSecurityInfoFragment<SecurityCompactDTO>
+public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
     @Inject SecurityCompactCache securityCompactCache;
     @Inject NewsItemCompactListCacheNew newsTitleCache;
@@ -65,7 +64,7 @@ public class NewsHeadlineFragment
     public static final String TEST_KEY = "News-Test";
     public static long start = 0;
 
-    private int tempPostion = 0;
+    private int tempPosition = 0;
     private NewsItemDTOKey tempDto = null;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -111,14 +110,14 @@ public class NewsHeadlineFragment
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
         Bundle bundle = new Bundle();
-        if (abstractDiscussionCompactDTO != null&&((NewsItemCompactDTO) abstractDiscussionCompactDTO).url!=null)
+        if (abstractDiscussionCompactDTO != null && ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url!=null)
         {
             WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
             getNavigator().pushFragment(WebViewFragment.class, bundle);
         }
         else
         {
-            handleNewClicked(tempPostion,tempDto);
+            handleNewClicked(tempPosition,tempDto);
         }
     }
 
@@ -284,7 +283,7 @@ public class NewsHeadlineFragment
         //    getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
         //
         //}
-        tempPostion = position;
+        tempPosition = position;
         tempDto = news;
         if (news != null)
         {

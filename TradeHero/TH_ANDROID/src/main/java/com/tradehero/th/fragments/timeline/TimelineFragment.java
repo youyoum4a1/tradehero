@@ -44,6 +44,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
@@ -238,6 +239,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         defaultPortfolio.id));
             }
         }
+    }
+
+    @Override public void onEditProfileClicked()
+    {
+        getDashboardNavigator().pushFragment(SettingsProfileFragment.class);
     }
 
     protected void pushHeroFragment()
@@ -608,7 +614,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (shownProfile != null)
         {
-            setActionBarTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+            if (shownProfile.id == currentUserId.get().intValue())
+            {
+                setActionBarTitle(getString(R.string.me));
+            }
+            else
+            {
+                setActionBarTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+            }
         }
         else
         {

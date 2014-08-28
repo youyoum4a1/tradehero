@@ -9,7 +9,9 @@ import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.widget.reside.THResideMenuItemImpl;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +46,22 @@ public class AppContainerImpl implements AppContainer
                 if (activity instanceof DashboardNavigatorActivity && !activity.isFinishing())
                 {
                     Object tag = v.getTag();
-                    if (tag instanceof DashboardTabType)
+                    if (tag instanceof RootFragmentType)
                     {
-                        DashboardTabType tabType = (DashboardTabType) tag;
+                        RootFragmentType tabType = (RootFragmentType) tag;
+                        //store and setting in reside menu belongs to ME tab
+                        if (tabType == RootFragmentType.STORE)
+                        {
+                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(RootFragmentType.ME);
+                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(StoreScreenFragment.class);
+                            return;
+                        }
+                        if (tabType == RootFragmentType.SETTING)
+                        {
+                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(RootFragmentType.ME);
+                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(SettingsFragment.class);
+                            return;
+                        }
                         ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(tabType);
                     }
                 }
@@ -54,17 +69,18 @@ public class AppContainerImpl implements AppContainer
         };
 
         List<View> menuItems = new ArrayList<>();
-        for (DashboardTabType tabType : DashboardTabType.usableValues())
+        for (RootFragmentType tabType : RootFragmentType.forResideMenu())
         {
-            if (tabType.show)
-            {
-                View menuItem = createMenuItemFromTabType(activity, tabType);
-                menuItem.setOnClickListener(menuItemClickListener);
-                menuItems.add(menuItem);
-            }
+            View menuItem = createMenuItemFromTabType(activity, tabType);
+            menuItem.setOnClickListener(menuItemClickListener);
+            menuItems.add(menuItem);
         }
         resideMenu.setMenuListener(new CustomOnMenuListener());
         resideMenu.setMenuItems(menuItems);
+
+        // only enable swipe from right to left
+        resideMenu.setEnableSwipeLeftToRight(false);
+        resideMenu.setEnableSwipeRightToLeft(true);
 
         return findById(activity, android.R.id.content);
     }
@@ -103,7 +119,7 @@ public class AppContainerImpl implements AppContainer
     /**
      * TODO this is a hack due to time constraint
      */
-    private View createMenuItemFromTabType(Context context, DashboardTabType tabType)
+    private View createMenuItemFromTabType(Context context, RootFragmentType tabType)
     {
         View created;
         if (tabType.hasCustomView())

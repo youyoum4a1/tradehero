@@ -19,6 +19,7 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
@@ -121,22 +122,31 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         SecurityId securityId = new SecurityId(exchange, symbol);
         Bundle args = new Bundle();
         BuySellFragment.putSecurityId(args, securityId);
-        getNavigator().pushFragment(BuySellFragment.class, args);
+        DashboardNavigator navigator = getNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(BuySellFragment.class, args);
+        }
     }
 
-    private DashboardNavigator getNavigator()
+    @Nullable private DashboardNavigator getNavigator()
     {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getContext());
+        if (activity != null)
+        {
+            return activity.getDashboardNavigator();
+        }
+        return null;
     }
 
     private void openUserProfile(int userId)
     {
         Bundle b = new Bundle();
         thRouter.save(b, new UserBaseKey(userId));
-
-        if (currentUserId.get() != userId)
+        DashboardNavigator navigator = getNavigator();
+        if (currentUserId.get() != userId && navigator != null)
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, b);
+            navigator.pushFragment(PushableTimelineFragment.class, b);
         }
     }
 }

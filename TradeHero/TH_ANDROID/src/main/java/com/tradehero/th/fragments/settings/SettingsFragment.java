@@ -69,7 +69,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected AlipaySettingViewHolder alipaySettingViewHolder;
     @Inject protected TransactionHistoryViewHolder transactionHistoryViewHolder;
     @Inject protected RestorePurchaseSettingViewHolder restorePurchaseSettingViewHolder;
-    @Inject protected ReferralCodeViewHolder referralCodeViewHolder;
+    @Inject protected ReferralCodeSettingViewHolder referralCodeSettingViewHolder;
     @Inject protected SignOutSettingViewHolder signOutSettingViewHolder;
     @Inject protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
     @Inject protected EmailNotificationSettingViewHolder emailNotificationSettingViewHolder;
@@ -179,7 +179,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         emailNotificationSettingViewHolder.destroyViews();
         userTranslationSettingsViewHolder.destroyViews();
         signOutSettingViewHolder.destroyViews();
-        referralCodeViewHolder.destroyViews();
+        referralCodeSettingViewHolder.destroyViews();
         restorePurchaseSettingViewHolder.destroyViews();
         transactionHistoryViewHolder.destroyViews();
         alipaySettingViewHolder.destroyViews();
@@ -204,7 +204,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         emailNotificationSettingViewHolder = null;
         userTranslationSettingsViewHolder = null;
         signOutSettingViewHolder = null;
-        referralCodeViewHolder = null;
+        referralCodeSettingViewHolder = null;
         restorePurchaseSettingViewHolder = null;
         transactionHistoryViewHolder = null;
         alipaySettingViewHolder = null;
@@ -239,7 +239,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         alipaySettingViewHolder.initViews(this);
         transactionHistoryViewHolder.initViews(this);
         restorePurchaseSettingViewHolder.initViews(this);
-        referralCodeViewHolder.initViews(this);
+        referralCodeSettingViewHolder.initViews(this);
         signOutSettingViewHolder.initViews(this);
 
         // Translations

@@ -25,7 +25,12 @@ import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
+<<<<<<< HEAD
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
+=======
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.utils.GraphicUtil;
+>>>>>>> develop2.0
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +50,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     static final int FRAGMENT_LAYOUT_ID = 9999;
 
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
+    @Inject protected GraphicUtil graphicUtil;
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
 
@@ -107,7 +113,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     //TODO should make FragmentTabHost more generic
     private void setTitleColor()
     {
-        int color = getResources().getColor(android.R.color.holo_blue_light);
+        int color = getResources().getColor(R.color.tradehero_blue);
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++)
         {
 
@@ -121,6 +127,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             }
             else
             {
+                graphicUtil.setBackground(mTabHost.getTabWidget().getChildAt(i), getResources().getDrawable(R.drawable.tab_indicator_ab_th));
                 tv.setTextColor(color);
             }
         }

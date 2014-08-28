@@ -79,7 +79,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         return shareLeftText;
     }
 
-    @Override protected Integer getMaxValue()
+    @Override @Nullable protected Integer getMaxValue()
     {
         return getMaxSellableShares();
     }
@@ -126,7 +126,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, IS_BUY);
     }
 
-    public Integer getMaxSellableShares()
+    @Nullable public Integer getMaxSellableShares()
     {
         return positionDTOCompactList == null ? null :
                 positionDTOCompactList.getMaxSellableShares(

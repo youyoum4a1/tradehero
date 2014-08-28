@@ -58,6 +58,11 @@ interface NewsServiceAsync
             @Query("perPage") Integer perPage,
             Callback<PaginatedDTO<NewsItemCompactDTO>> callback);
 
+    @GET("/news/featured") void getFeaturedNewsList(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            Callback<PaginatedDTO<NewsItemCompactDTO>> callback);
+
     @GET("/news/{newsId}")
     void getNewsDetails(@Path("newsId") long newsId, Callback<NewsItemDTO> callback);
 

@@ -21,6 +21,7 @@ import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
+import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
@@ -261,6 +262,7 @@ public class ValidMocker
                     perPage
             );
         }
+<<<<<<< HEAD
         if (type.equals(PurchaseReportDTO.class))
         {
             if (random.nextBoolean())
@@ -271,6 +273,11 @@ public class ValidMocker
             {
                 return new SamsungPurchaseReportDTO("paymentId", "purchaseId", "productCode");
             }
+=======
+        if (type.equals(VideoCategoryId.class))
+        {
+            return new VideoCategoryId(1);
+>>>>>>> develop2.0
         }
 
         if (type.equals(Boolean.class) || type.equals(boolean.class))

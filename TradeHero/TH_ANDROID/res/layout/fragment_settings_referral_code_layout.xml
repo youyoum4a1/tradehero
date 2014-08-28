@@ -43,33 +43,40 @@
 
     </LinearLayout>
 
-    <include
-        layout="@layout/referral_code_dialog_layout"
+    <ViewSwitcher
+        android:id="@+id/invite_code_claimed_switcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_margin_10"/>
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/already_done_key"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_margin_10"
-        android:orientation="vertical"
-        android:alpha="0.5"
-        android:background="@color/white"
-        android:visibility="gone">
-
-      <TextView
+      <include
+          layout="@layout/invite_code_dialog_layout"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="@dimen/common_margin_20"
-          android:layout_gravity="center"
-          android:gravity="center"
-          android:text="@string/referral_dollars_claimed"
-          android:textSize="@dimen/text_xlarge"
-          android:textStyle="bold"/>
+          android:layout_margin="@dimen/common_margin_10"/>
 
-    </LinearLayout>
+      <LinearLayout
+          android:id="@+id/already_done_key"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/common_margin_10"
+          android:orientation="vertical"
+          android:alpha="0.5"
+          android:background="@color/white"
+          android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/common_margin_20"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/referral_dollars_claimed"
+            android:textSize="@dimen/text_xlarge"
+            android:textStyle="bold"/>
+
+      </LinearLayout>
+
+    </ViewSwitcher>
 
   </LinearLayout>
 

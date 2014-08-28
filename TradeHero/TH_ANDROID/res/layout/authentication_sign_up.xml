@@ -69,7 +69,7 @@
   <LinearLayout
       android:id="@+id/authentication_by_sign_in_button"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/clickable_element_min_height"
+      android:layout_height="@dimen/clickable_element_min_dimen"
       android:layout_gravity="bottom"
       android:orientation="horizontal"
       android:gravity="center"

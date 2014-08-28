@@ -25,7 +25,7 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
 
     @Test public void canGetAllServices()
     {
-        int serviceCount = 27;
+        int serviceCount = 28;
         int wrappersWithOutService = 1;
         assertThat(getAllServices().size()).isEqualTo(serviceCount );
         assertThat(getAllServiceAsyncs().size()).isEqualTo(serviceCount);

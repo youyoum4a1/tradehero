@@ -66,7 +66,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
         return cashLeftText;
     }
 
-    @Override protected Integer getMaxValue()
+    @Override @Nullable protected Integer getMaxValue()
     {
         return getMaxPurchasableShares();
     }
@@ -111,7 +111,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, IS_BUY);
     }
 
-    public Integer getMaxPurchasableShares()
+    @Nullable public Integer getMaxPurchasableShares()
     {
         return portfolioCompactDTOUtil.getMaxPurchasableShares(
                 portfolioCompactDTO,

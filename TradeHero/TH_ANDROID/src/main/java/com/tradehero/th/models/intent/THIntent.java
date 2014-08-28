@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import javax.inject.Inject;
 
 abstract public class THIntent extends Intent
@@ -81,7 +81,7 @@ abstract public class THIntent extends Intent
                 getString(actionResId));
     }
 
-    abstract public DashboardTabType getDashboardType();
+    abstract public RootFragmentType getDashboardType();
 
     public Class<? extends Fragment> getActionFragment()
     {

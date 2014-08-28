@@ -5,6 +5,7 @@ import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class SocialShareVerifier
 {
@@ -21,13 +22,10 @@ public class SocialShareVerifier
         super();
     }
 
-    public CanShareType canShare(UserProfileCompactDTO currentUserProfile, SocialShareFormDTO toShare)
+    public CanShareType canShare(
+            @NotNull UserProfileCompactDTO currentUserProfile,
+            @NotNull SocialShareFormDTO toShare)
     {
-        if (currentUserProfile == null || toShare == null)
-        {
-            return null;
-        }
-
         if (toShare instanceof WeChatDTO)
         {
             return CanShareType.TRY_AND_SEE;

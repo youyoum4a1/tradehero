@@ -139,6 +139,11 @@ public class RetrofitProtectedModule
         return adapter.create(UserTimelineServiceAsync.class);
     }
 
+    @Provides @Singleton VideoServiceAsync provideVideoServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(VideoServiceAsync.class);
+    }
+
     @Provides @Singleton WatchlistServiceAsync provideWatchlistServiceAsync(RestAdapter adapter)
     {
         return adapter.create(WatchlistServiceAsync.class);

@@ -12,14 +12,15 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.widget.list.BaseExpandingItemListener;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -80,6 +81,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         super.onStop();
     }
 
+
     @Override public void onDestroy()
     {
         this.leaderboardDefCacheListener = null;
@@ -131,6 +133,9 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             case LeaderboardDefKeyKnowledge.FOLLOWER_ID:
                 pushFollowerFragment();
                 break;
+            case LeaderboardDefKeyKnowledge.INVITE_FRIENDS_ID:
+                pushInvitationFragment();
+                break;
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
@@ -168,6 +173,15 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+    }
+
+    private void pushInvitationFragment()
+    {
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(FriendsInvitationFragment.class);
+        }
     }
 
     protected DTOCacheNew.Listener<LeaderboardDefKey, LeaderboardDefDTO> createLeaderboardDefCacheListener()

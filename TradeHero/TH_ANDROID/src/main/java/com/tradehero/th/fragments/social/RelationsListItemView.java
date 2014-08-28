@@ -27,8 +27,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>, View.OnClickListener

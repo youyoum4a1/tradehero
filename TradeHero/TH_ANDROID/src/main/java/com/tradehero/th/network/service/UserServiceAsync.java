@@ -223,7 +223,7 @@ interface UserServiceAsync
             Callback<UserFriendsDTOList> callback);
     //</editor-fold>
 
-    @POST("/users/BatchFollow/free")
+    @POST("/users/batchFollow/free")
     void followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO, Callback<UserProfileDTO> callback);
 
     //<editor-fold desc="Invite Friends">

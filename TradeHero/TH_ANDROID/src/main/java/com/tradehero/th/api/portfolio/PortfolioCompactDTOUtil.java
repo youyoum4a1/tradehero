@@ -4,6 +4,7 @@ import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.quote.QuoteDTO;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 public class PortfolioCompactDTOUtil
 {
@@ -16,12 +17,12 @@ public class PortfolioCompactDTOUtil
 
     //<editor-fold desc="Max Purchasable Shares">
     // TODO handle refCurrency different from USD
-    public Integer getMaxPurchasableShares(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO)
+    @Nullable public Integer getMaxPurchasableShares(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO)
     {
         return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, true);
     }
 
-    public Integer getMaxPurchasableShares(
+    @Nullable public Integer getMaxPurchasableShares(
             PortfolioCompactDTO portfolioCompactDTO,
             QuoteDTO quoteDTO,
             boolean includeTransactionCostUsd)
