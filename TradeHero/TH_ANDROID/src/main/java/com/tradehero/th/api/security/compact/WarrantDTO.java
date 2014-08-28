@@ -21,33 +21,6 @@ public class WarrantDTO extends SecurityCompactDTO
 
     public String fallbackExternalURL;
 
-    //<editor-fold desc="Constructors">
-    public WarrantDTO()
-    {
-        super();
-    }
-
-    public WarrantDTO(SecurityCompactDTO other)
-    {
-        super(other);
-        this.putAll(other.getAll(), WarrantDTO.class);
-    }
-
-    public WarrantDTO(WarrantDTO other)
-    {
-        super(other);
-        this.warrantType = other.warrantType;
-        this.expiryDate = other.expiryDate;
-        this.strikePrice = other.strikePrice;
-        this.strikePriceCcy = other.strikePriceCcy;
-        this.issuerName = other.issuerName;
-        this.underlyingName = other.underlyingName;
-        this.externalAppURL = other.externalAppURL;
-        this.fallbackExternalURL = other.fallbackExternalURL;
-        this.putAll(other.getAll(), WarrantDTO.class);
-    }
-    //</editor-fold>
-
     @NotNull @Override public Integer getSecurityTypeStringResourceId()
     {
         return R.string.security_type_warrant;
@@ -102,7 +75,6 @@ public class WarrantDTO extends SecurityCompactDTO
                 ", underlyingName='" + underlyingName + '\'' +
                 ", externalAppURL='" + externalAppURL + '\'' +
                 ", fallbackExternalURL='" + fallbackExternalURL + '\'' +
-                ", extras={" + formatExtras(", ").toString() + "}" +
                 '}';
     }
 }

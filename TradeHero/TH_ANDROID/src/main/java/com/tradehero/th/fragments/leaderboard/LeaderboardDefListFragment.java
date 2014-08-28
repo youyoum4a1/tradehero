@@ -71,11 +71,6 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
         super.onDestroyView();
     }
 
-    @Override protected int getCurrentRankLayoutResId()
-    {
-        return 0;
-    }
-
     protected void detachLeaderboardDefListCacheFetchTask()
     {
         leaderboardDefListCache.get().unregister(leaderboardDefListCacheFetchListener);

@@ -1,6 +1,6 @@
 package com.tradehero.th.api.translation.bing;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.i18n.LanguageCodePredicate;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.i18n.LanguageDTOList;
@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class BingLanguageDTOFactoryTest
 {
     @Inject BingLanguageDTOFactory bingLanguageDTOFactory;

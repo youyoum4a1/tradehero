@@ -2,14 +2,11 @@
 package com.tradehero.th.fragments.trending;
 
 import android.content.Context;
-import com.tradehero.th.adapters.ArrayDTOAdapterNew;
-import com.tradehero.th.api.users.UserBaseKey;
-import java.util.List;
+import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
+import com.tradehero.th.api.users.UserSearchResultDTO;
 
-public class PeopleItemViewAdapter extends ArrayDTOAdapterNew<UserBaseKey, SearchPeopleItemView>
+public class PeopleItemViewAdapter extends PagedArrayDTOAdapterNew<UserSearchResultDTO, SearchPeopleItemView>
 {
-    private Integer lastPageLoaded;
-
     //<editor-fold desc="Constructors">
     public PeopleItemViewAdapter(Context context, int peopleItemLayoutResId)
     {
@@ -24,23 +21,6 @@ public class PeopleItemViewAdapter extends ArrayDTOAdapterNew<UserBaseKey, Searc
 
     @Override public long getItemId(int position)
     {
-        return getItem(position).key;
-    }
-
-    public Integer getLastPageLoaded()
-    {
-        return lastPageLoaded;
-    }
-
-    public void addPage(int page, List<UserBaseKey> userBaseKeys)
-    {
-        this.lastPageLoaded = page;
-        addAll(userBaseKeys);
-    }
-
-    @Override public void clear()
-    {
-        super.clear();
-        this.lastPageLoaded = null;
+        return getItem(position).userId;
     }
 }

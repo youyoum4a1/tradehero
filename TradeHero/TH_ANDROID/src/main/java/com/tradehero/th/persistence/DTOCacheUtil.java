@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence;
 
+import android.content.Context;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
@@ -11,9 +12,12 @@ import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
@@ -22,6 +26,8 @@ import com.tradehero.th.persistence.achievement.QuestBonusListCache;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.persistence.competition.CompetitionCache;
+import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -58,6 +64,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -71,6 +78,8 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<AlertCache> alertCache;
     protected final Lazy<AlertCompactCache> alertCompactCache;
     protected final Lazy<AlertCompactListCache> alertCompactListCache;
+    protected final Lazy<CompetitionListCache> competitionListCache;
+    protected final Lazy<CompetitionCache> competitionCache;
     protected final Lazy<DiscussionCache> discussionCache;
     protected final Lazy<DiscussionListCacheNew> discussionListCache;
     protected final Lazy<ExchangeCompactListCache> exchangeCompactListCache;
@@ -115,6 +124,7 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     protected final StringPreference serverEndpointPreference;
     @NotNull protected final UserBaseDTOUtil userBaseDTOUtil;
+    @NotNull protected final Context context;
 
     //<editor-fold desc="Constructors">
     @Inject public DTOCacheUtil(
@@ -122,6 +132,8 @@ import org.jetbrains.annotations.Nullable;
             Lazy<AlertCache> alertCache,
             Lazy<AlertCompactCache> alertCompactCache,
             Lazy<AlertCompactListCache> alertCompactListCache,
+            Lazy<CompetitionListCache> competitionListCache,
+            Lazy<CompetitionCache> competitionCache,
             Lazy<DiscussionCache> discussionCache,
             Lazy<DiscussionListCacheNew> discussionListCache,
             Lazy<ExchangeCompactListCache> exchangeCompactListCache,
@@ -161,12 +173,15 @@ import org.jetbrains.annotations.Nullable;
             Lazy<AchievementCategoryCache> achievementCategoryCacheLazy,
             Lazy<QuestBonusListCache> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
-            @NotNull UserBaseDTOUtil userBaseDTOUtil)
+            @NotNull UserBaseDTOUtil userBaseDTOUtil,
+            @NotNull Context context)
     {
         this.currentUserId = currentUserId;
         this.alertCache = alertCache;
         this.alertCompactCache = alertCompactCache;
         this.alertCompactListCache = alertCompactListCache;
+        this.competitionListCache = competitionListCache;
+        this.competitionCache = competitionCache;
         this.discussionCache = discussionCache;
         this.discussionListCache = discussionListCache;
         this.exchangeCompactListCache = exchangeCompactListCache;
@@ -208,6 +223,7 @@ import org.jetbrains.annotations.Nullable;
         this.achievementCategoryCacheLazy = achievementCategoryCacheLazy;
         this.achievementCategoryListCacheLazy = achievementCategoryListCacheLazy;
         this.questBonusListCacheLazy = questBonusListCacheLazy;
+        this.context = context;
     }
     //</editor-fold>
 
@@ -216,6 +232,8 @@ import org.jetbrains.annotations.Nullable;
         alertCache.get().invalidateAll();
         alertCompactCache.get().invalidateAll();
         alertCompactListCache.get().invalidateAll();
+        competitionListCache.get().invalidateAll();
+        competitionCache.get().invalidateAll();
         discussionCache.get().invalidateAll();
         discussionListCache.get().invalidateAll();
         followerSummaryCache.get().invalidateAll();
@@ -261,7 +279,6 @@ import org.jetbrains.annotations.Nullable;
     public void anonymousPrefetches()
     {
         preFetchExchanges();
-        preFetchTrending();
         preFetchProviders();
         preFetchTraderLevels();
         preFetchQuestBonus();
@@ -274,8 +291,35 @@ import org.jetbrains.annotations.Nullable;
 
     public void preFetchTrending()
     {
-        // TODO Make it take care of the users's default stock exchange.
-        this.securityCompactListCache.get().getOrFetchAsync(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        ExchangeCompactDTOList exchangeCompactDTOs = exchangeCompactListCache.get().get(new ExchangeListType());
+        if (currentUserProfile != null && exchangeCompactDTOs != null)
+        {
+            preFetchTrending(currentUserProfile, exchangeCompactDTOs);
+        }
+    }
+
+    protected void preFetchTrending(
+            @NotNull UserBaseDTO userBaseDTO,
+            @NotNull List<? extends ExchangeCompactDTO> exchangeCompactDTOs)
+    {
+        ExchangeCompactDTO initialExchange = userBaseDTOUtil.getInitialExchange(userBaseDTO, exchangeCompactDTOs);
+        ExchangeCompactSpinnerDTO initialExchangeSpinner;
+        if (initialExchange == null)
+        {
+            initialExchangeSpinner = new ExchangeCompactSpinnerDTO(
+                    context.getResources());
+        }
+        else
+        {
+            initialExchangeSpinner = new ExchangeCompactSpinnerDTO(
+                    context.getResources(),
+                    initialExchange);
+        }
+        TrendingFilterTypeBasicDTO filterTypeBasicDTO = new TrendingFilterTypeBasicDTO(initialExchangeSpinner);
+
+        this.securityCompactListCache.get().getOrFetchAsync(
+                filterTypeBasicDTO.getSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
     }
 
     private void preFetchTraderLevels()
@@ -313,7 +357,6 @@ import org.jetbrains.annotations.Nullable;
     public void initialPrefetches()
     {
         preFetchWatchlist();
-        //preFetchProviders();
 
         conveniencePrefetches(); // TODO move them so time after the others
     }

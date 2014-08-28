@@ -178,39 +178,4 @@ public class AbstractLeaderboardDefView extends RelativeLayout
             leaderboardDefIconContainer.setVisibility(GONE);
         }
     }
-
-    private void updateRankTitle()
-    {
-        Integer rank = dto.getRank();
-        if (rank == null)
-        {
-            // not a hard coded definition
-            if (dto.id > 0)
-            {
-                leaderboardDefUserRank.setText(getContext().getString(R.string.leaderboard_not_ranked));
-            }
-            else
-            {
-                leaderboardDefUserRank.setText("");
-            }
-        }
-        else
-        {
-            leaderboardDefUserRank.setText(rank.toString());
-        }
-        Timber.d("updateRankTitle rank %s for %s result:%s",rank,dto.name,leaderboardDefUserRank.getText().toString());
-    }
-
-    private void updateLeaderboardOwnRank(UserProfileDTO userProfileDTO)
-    {
-        //if (dto != null)
-        //{
-        //    int leaderboardRank = userProfileDTO.getLeaderboardRanking(dto.getId());
-        //    if (leaderboardRank > 0)
-        //    {
-        //        leaderboardDefUserRank.setText("" + leaderboardRank);
-        //    }
-        //}
-    }
-
 }

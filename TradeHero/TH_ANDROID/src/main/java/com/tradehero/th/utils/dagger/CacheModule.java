@@ -15,7 +15,6 @@ import com.tradehero.th.fragments.contestcenter.ContestItemAdapter;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityAdapter;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCompetitionView;
 import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.timeline.UserProfileResideMenuItem;
@@ -40,7 +39,6 @@ import javax.inject.Singleton;
                 AlertViewFragment.class,
 
                 LeaderboardCommunityAdapter.class,
-                LeaderboardCompetitionView.class,
 
                 // Extra Tile needs to know about userProfile data for survey tile element
                 ExtraTileAdapter.class,

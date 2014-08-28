@@ -97,7 +97,7 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
         args.putInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID, leaderboardMarkUserPositionId);
     }
 
-    public Bundle getArgs()
+    @NotNull public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);

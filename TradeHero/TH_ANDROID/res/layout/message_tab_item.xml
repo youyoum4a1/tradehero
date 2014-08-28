@@ -5,8 +5,8 @@
     android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal"
     style="@style/TH.TabStyle"
-
     >
+  
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

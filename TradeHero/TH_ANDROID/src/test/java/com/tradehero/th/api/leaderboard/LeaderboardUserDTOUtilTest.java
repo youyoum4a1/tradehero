@@ -1,6 +1,6 @@
 package com.tradehero.th.api.leaderboard;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.Before;
@@ -10,7 +10,7 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertNull;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class LeaderboardUserDTOUtilTest extends BaseLeaderboardUserDTOUtilTest
 {

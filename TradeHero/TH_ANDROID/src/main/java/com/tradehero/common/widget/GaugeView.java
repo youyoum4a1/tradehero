@@ -268,7 +268,7 @@ public class GaugeView extends View {
 
         int animationDuration;
         final int animationDurationId = a.getResourceId(R.styleable.GaugeView_animationDuration, 0);
-        if (animationDurationId > 0) {
+        if (animationDurationId > 0 && !isInEditMode()) {
             animationDuration = context.getResources().getInteger(animationDurationId);
         } else {
             animationDuration = a.getInteger(R.styleable.GaugeView_animationDuration,ANIMATION_DURATION);
@@ -281,7 +281,7 @@ public class GaugeView extends View {
     }
 
     private void readRanges(final Resources res, final int rangesId, final int colorsId) {
-        if (rangesId > 0 && colorsId > 0) {
+        if (rangesId > 0 && colorsId > 0 && !isInEditMode()) {
             final String[] ranges = res.getStringArray(rangesId);
             final String[] colors = res.getStringArray(colorsId);
             if (ranges.length != colors.length) {
@@ -296,7 +296,7 @@ public class GaugeView extends View {
                 mRangeValues[i] = Float.parseFloat(ranges[i]);
                 mRangeColors[i] = Color.parseColor(colors[i]);
             }
-        } else if (colorsId > 0) {
+        } else if (colorsId > 0 && !isInEditMode()) {
             //determine value ranges according to color ranges
             final String[] colors = res.getStringArray(colorsId);
             final int length = colors.length;

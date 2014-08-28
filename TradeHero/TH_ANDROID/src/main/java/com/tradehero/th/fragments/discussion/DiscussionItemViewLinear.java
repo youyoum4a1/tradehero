@@ -6,7 +6,9 @@ import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
@@ -15,6 +17,7 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
         extends AbstractDiscussionCompactItemViewLinear<T>
 {
     @Inject THRouter thRouter;
+    @Inject CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     public DiscussionItemViewLinear(Context context)
@@ -32,16 +35,6 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
 
     @Override protected void onDetachedFromWindow()
     {
@@ -64,7 +57,14 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
     {
         Bundle bundle = new Bundle();
         thRouter.save(bundle, userClicked);
-        getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+        if (currentUserId.toUserBaseKey().equals(userClicked))
+        {
+            getNavigator().pushFragment(MeTimelineFragment.class, bundle);
+        }
+        else
+        {
+            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+        }
     }
 
     abstract protected class DiscussionItemViewMenuClickedListener

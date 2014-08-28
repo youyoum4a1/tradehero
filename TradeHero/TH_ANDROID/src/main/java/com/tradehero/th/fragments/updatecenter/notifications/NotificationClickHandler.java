@@ -11,6 +11,7 @@ import com.tradehero.th.api.notification.NotificationTradeDTO;
 import com.tradehero.th.api.notification.NotificationType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -19,6 +20,7 @@ import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
@@ -33,6 +35,7 @@ public class NotificationClickHandler
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
+    @Inject CurrentUserId currentUserId;
 
     public NotificationClickHandler(
             Context context,
@@ -217,8 +220,16 @@ public class NotificationClickHandler
         if (notificationDTO != null && notificationDTO.referencedUserId != null)
         {
             Bundle bundle = new Bundle();
-            thRouter.save(bundle, new UserBaseKey(notificationDTO.referencedUserId));
-            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+            UserBaseKey referencedUser = new UserBaseKey(notificationDTO.referencedUserId);
+            thRouter.save(bundle, referencedUser);
+            if (currentUserId.toUserBaseKey().equals(referencedUser))
+            {
+                navigator.pushFragment(MeTimelineFragment.class, bundle);
+            }
+            else
+            {
+                navigator.pushFragment(PushableTimelineFragment.class, bundle);
+            }
         }
     }
 

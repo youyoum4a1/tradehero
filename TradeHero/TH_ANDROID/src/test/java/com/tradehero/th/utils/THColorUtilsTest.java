@@ -2,7 +2,7 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import android.graphics.Color;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import javax.inject.Inject;
 import org.junit.Test;

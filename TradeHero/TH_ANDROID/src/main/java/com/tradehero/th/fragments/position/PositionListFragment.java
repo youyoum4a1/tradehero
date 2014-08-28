@@ -20,12 +20,13 @@ import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -37,13 +38,14 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -77,6 +79,7 @@ public class PositionListFragment
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Analytics analytics;
+    @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCache portfolioCache;
     @Inject UserProfileCache userProfileCache;
 
@@ -102,6 +105,7 @@ public class PositionListFragment
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> refreshGetPositionsDTOListener;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Nullable protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject THRouter thRouter;
 
     //<editor-fold desc="Arguments Handling">
@@ -150,6 +154,8 @@ public class PositionListFragment
 
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         refreshGetPositionsDTOListener = createGetPositionsRefreshCacheListener();
+        userProfileCacheListener = createProfileCacheListener();
+        portfolioFetchListener = createPortfolioCacheListener();
     }
 
     @NotNull @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -188,7 +194,7 @@ public class PositionListFragment
             headerStub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
             int headerLayoutId = headerFactory.get().layoutIdFor(getPositionsDTOKey);
             headerStub.setLayoutResource(headerLayoutId);
-            this.portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
+            portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
         }
         showLoadingView(true);
     }
@@ -385,6 +391,7 @@ public class PositionListFragment
         detachGetPositionsTask();
         detachRefreshGetPositionsTask();
         detachUserProfileCache();
+        detachPortfolioCache();
 
         super.onStop();
     }
@@ -410,6 +417,8 @@ public class PositionListFragment
     {
         fetchGetPositionsDTOListener = null;
         refreshGetPositionsDTOListener = null;
+        userProfileCacheListener = null;
+        portfolioFetchListener = null;
         super.onDestroy();
     }
 
@@ -421,12 +430,11 @@ public class PositionListFragment
     public void linkWith(GetPositionsDTOKey positionsDTOKey, boolean andDisplay)
     {
         this.getPositionsDTOKey = positionsDTOKey;
-        this.userProfileDTO = null;
+        userProfileDTO = null;
 
-        detachUserProfileCache();
-        //fetchPortfolio(false);
         fetchUserProfile();
         fetchSimplePage();
+        fetchPortfolio();
         if (andDisplay)
         {
             // TODO finer grained
@@ -437,7 +445,6 @@ public class PositionListFragment
     protected void fetchUserProfile()
     {
         detachUserProfileCache();
-        userProfileCacheListener = createProfileCacheListener();
         userProfileCache.register(shownUser, userProfileCacheListener);
         userProfileCache.getOrFetchAsync(shownUser);
     }
@@ -469,6 +476,29 @@ public class PositionListFragment
         getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, true);
     }
 
+    protected void fetchPortfolio()
+    {
+        if (getPositionsDTOKey instanceof OwnedPortfolioId)
+        {
+            if (currentUserId.toUserBaseKey().equals(((OwnedPortfolioId) getPositionsDTOKey).getUserBaseKey()))
+            {
+                PortfolioCompactDTO cached = portfolioCompactCache.get(((OwnedPortfolioId) getPositionsDTOKey).getPortfolioIdKey());
+                if (cached == null)
+                {
+                    detachPortfolioCache();
+                    portfolioCache.register((OwnedPortfolioId) getPositionsDTOKey, portfolioFetchListener);
+                    portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey);
+                }
+                else
+                {
+                    linkWith(cached);
+                }
+            }
+            // We do not need to fetch for other players
+        }
+        // We do not care for now about those that are loaded with LeaderboardMarkUserId
+    }
+
     protected void detachGetPositionsTask()
     {
         getPositionsCache.get().unregister(fetchGetPositionsDTOListener);
@@ -481,11 +511,12 @@ public class PositionListFragment
 
     protected void detachUserProfileCache()
     {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.unregister(userProfileCacheListener);
-        }
-        userProfileCacheListener = null;
+        userProfileCache.unregister(userProfileCacheListener);
+    }
+
+    protected void detachPortfolioCache()
+    {
+        portfolioCache.unregister(portfolioFetchListener);
     }
 
     protected void rePurposeAdapter()
@@ -558,41 +589,6 @@ public class PositionListFragment
         }
     }
 
-    private void pushBuySellFragment(@Nullable PositionDTO clickedPositionDTO, boolean isBuy)
-    {
-        if (clickedPositionDTO != null)
-        {
-            SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
-            if (securityId == null)
-            {
-                THToast.show(getString(R.string.error_find_security_id_to_int));
-            }
-            else
-            {
-                Bundle args = new Bundle();
-                BuySellFragment.putSecurityId(args, securityId);
-                if (currentUserId.toUserBaseKey().equals(clickedPositionDTO.getUserBaseKey()))
-                {
-                    // We only add if this the current user portfolio
-                    BuySellFragment.putApplicablePortfolioId(args, clickedPositionDTO.getOwnedPortfolioId());
-                }
-                args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
-
-                OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-                if (ownedPortfolioId != null)
-                {
-                    BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-                }
-
-                getDashboardNavigator().pushFragment(BuySellFragment.class, args);
-            }
-        }
-        else
-        {
-            Timber.e("Was passed a null clickedPositionDTO", new IllegalArgumentException());
-        }
-    }
-
     //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
     {
@@ -617,14 +613,6 @@ public class PositionListFragment
             ((OtherUserPortfolioHeaderView) portfolioHeaderView).showFollowDialog();
         }
         //else do nothing
-
-        //heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
-        //{
-        //    @Override public void onClick(DialogInterface dialog, int which)
-        //    {
-        //        premiumFollowUser(userBaseKey);
-        //    }
-        //});
     }
 
     //<editor-fold desc="PortfolioHeaderView.OnTimelineRequestedListener">
@@ -632,8 +620,16 @@ public class PositionListFragment
     {
         Bundle args = new Bundle();
         thRouter.save(args, userBaseKey);
-        ((DashboardActivity) getActivity())
-                .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+        if (currentUserId.toUserBaseKey().equals(userBaseKey))
+        {
+            ((DashboardActivity) getActivity())
+                    .getDashboardNavigator().pushFragment(MeTimelineFragment.class, args);
+        }
+        else
+        {
+            ((DashboardActivity) getActivity())
+                    .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+        }
     }
     //</editor-fold>
 
@@ -743,5 +739,28 @@ public class PositionListFragment
             //TODO not just toast
             showErrorView();
         }
+    }
+
+    protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener()
+    {
+        return new PortfolioCacheListener();
+    }
+
+    protected class PortfolioCacheListener implements DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO>
+    {
+        @Override public void onDTOReceived(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
+        {
+            linkWith(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull OwnedPortfolioId key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_portfolio_info);
+        }
+    }
+
+    protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
+    {
+        portfolioHeaderView.linkWith(portfolioCompactDTO);
     }
 }

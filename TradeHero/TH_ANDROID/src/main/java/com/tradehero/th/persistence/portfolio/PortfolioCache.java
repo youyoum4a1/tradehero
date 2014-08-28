@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.portfolio;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -47,9 +48,41 @@ import org.jetbrains.annotations.Nullable;
     @Nullable
     @Override public PortfolioDTO put(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
     {
+        PortfolioDTO previous = get(key);
+        //noinspection ConstantConditions
+        if (previous != null && previous.userId != null)
+        {
+            value.userId = previous.userId;
+        }
+        //noinspection ConstantConditions
+        if (value.userId == null)
+        {
+            throw new NullPointerException("UserId should be set");
+        }
+
         portfolioCompactCache.get().put(key.getPortfolioIdKey(), value);
         getPositionsCache.get().invalidate(key);
         return super.put(key, value);
+    }
+
+    public void invalidate(@NotNull UserBaseKey concernedUser)
+    {
+        invalidate(concernedUser, false);
+    }
+
+    public void invalidate(@NotNull UserBaseKey concernedUser, boolean onlyWatchlist)
+    {
+        PortfolioDTO cached;
+        for (@NotNull OwnedPortfolioId key : snapshot().keySet())
+        {
+            cached = get(key);
+            if (cached != null
+                    && key.userId.equals(concernedUser.key)
+                    && (cached.isWatchlist || !onlyWatchlist))
+            {
+                invalidate(key);
+            }
+        }
     }
 
     @Override public void invalidate(@NotNull OwnedPortfolioId key)

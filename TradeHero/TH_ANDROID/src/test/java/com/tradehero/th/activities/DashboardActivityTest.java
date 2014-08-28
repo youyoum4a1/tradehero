@@ -1,7 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.content.Intent;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
@@ -18,7 +18,7 @@ import org.robolectric.shadows.ShadowProgressDialog;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class DashboardActivityTest
 {
     private DashboardActivity activity;

@@ -5,15 +5,15 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 
 /**
- * Header displayed on aPortfolio owned by the authenticated user.
+ * Header displayed on a Portfolio owned by the authenticated user.
  */
 public class CurrentUserPortfolioHeaderView extends LinearLayout implements PortfolioHeaderView
 {
-    private PortfolioDTO portfolioDTO;
+    private PortfolioCompactDTO portfolioCompactDTO;
 
     private TextView totalValueTextView;
     private TextView cashValueTextView;
@@ -47,9 +47,9 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
         cashValueTextView = (TextView) findViewById(R.id.header_portfolio_cash_value);
     }
 
-    @Override public void linkWith(PortfolioDTO portfolioDTO)
+    @Override public void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
-        this.portfolioDTO = portfolioDTO;
+        this.portfolioCompactDTO = portfolioCompactDTO;
 
         displayTotalValueTextView();
         displayCashValueTextView();
@@ -64,9 +64,9 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     {
         if (totalValueTextView != null)
         {
-            if (this.portfolioDTO != null)
+            if (portfolioCompactDTO != null)
             {
-                String valueString = String.format("%s %,.0f", this.portfolioDTO.getNiceCurrency(), this.portfolioDTO.totalValue);
+                String valueString = String.format("%s %,.0f", this.portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.totalValue);
                 totalValueTextView.setText(valueString);
             }
         }
@@ -76,9 +76,9 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     {
         if (cashValueTextView != null)
         {
-            if (this.portfolioDTO != null)
+            if (portfolioCompactDTO != null)
             {
-                String cashString = String.format("%s %,.0f", this.portfolioDTO.getNiceCurrency(), this.portfolioDTO.cashBalance);
+                String cashString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalance);
                 cashValueTextView.setText(cashString);
             }
         }

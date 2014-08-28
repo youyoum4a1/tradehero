@@ -16,7 +16,8 @@ import com.tradehero.th.models.watchlist.DTOProcessorWatchlistDelete;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistUpdate;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
@@ -33,15 +34,18 @@ import retrofit.Callback;
     @NotNull private final WatchlistServiceAsync watchlistServiceAsync;
     @NotNull private final Lazy<WatchlistPositionCache> watchlistPositionCache;
     @NotNull private final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull private final Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @NotNull private final Lazy<PortfolioCache> portfolioCache;
 
+    //<editor-fold desc="Constructors">
     @Inject public WatchlistServiceWrapper(
             @NotNull CurrentUserId currentUserId,
             @NotNull WatchlistService watchlistService,
             @NotNull WatchlistServiceAsync watchlistServiceAsync,
             @NotNull Lazy<WatchlistPositionCache> watchlistPositionCache,
             @NotNull Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
-            @NotNull PortfolioCompactListCache portfolioCompactListCache)
+            @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
+            @NotNull Lazy<PortfolioCache> portfolioCache)
     {
         super();
         this.currentUserId = currentUserId;
@@ -49,35 +53,22 @@ import retrofit.Callback;
         this.watchlistServiceAsync = watchlistServiceAsync;
         this.watchlistPositionCache = watchlistPositionCache;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
-        this.portfolioCompactListCache = portfolioCompactListCache;
+        this.portfolioCompactCache = portfolioCompactCache;
+        this.portfolioCache = portfolioCache;
     }
+    //</editor-fold>
 
-    //<editor-fold desc="DTO Processors">
-    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistUpdateProcessor()
-    {
-        return new DTOProcessorWatchlistUpdate(watchlistPositionCache.get());
-    }
-
+    //<editor-fold desc="Add a watch item">
     @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistCreateProcessor(@NotNull UserBaseKey concernedUser)
     {
         return new DTOProcessorWatchlistCreate(
                 watchlistPositionCache.get(),
                 concernedUser,
-                portfolioCompactListCache,
+                portfolioCompactCache.get(),
+                portfolioCache.get(),
                 userWatchlistPositionCache.get());
     }
 
-    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistDeleteProcessor(@NotNull UserBaseKey concernedUser)
-    {
-        return new DTOProcessorWatchlistDelete(
-                watchlistPositionCache.get(),
-                concernedUser,
-                portfolioCompactListCache,
-                userWatchlistPositionCache.get());
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Add a watch item">
     @Nullable public WatchlistPositionDTO createWatchlistEntry(@NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return createWatchlistCreateProcessor(
@@ -100,6 +91,15 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Edit a watch item">
+    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistUpdateProcessor(@NotNull UserBaseKey concernedUser)
+    {
+        return new DTOProcessorWatchlistUpdate(
+                concernedUser,
+                watchlistPositionCache.get(),
+                portfolioCompactCache.get(),
+                portfolioCache.get());
+    }
+
     @Nullable public WatchlistPositionDTO updateWatchlistEntry(
             @NotNull WatchlistPositionDTO watchlistPositionDTO,
             @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
@@ -119,7 +119,7 @@ import retrofit.Callback;
             @NotNull PositionCompactId positionId,
             @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
-        return createWatchlistUpdateProcessor().process(watchlistService.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO));
+        return createWatchlistUpdateProcessor(currentUserId.toUserBaseKey()).process(watchlistService.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO));
     }
 
     @NotNull public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(
@@ -127,7 +127,7 @@ import retrofit.Callback;
             @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO,
             @Nullable Callback<WatchlistPositionDTO> callback)
     {
-        MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(callback, createWatchlistUpdateProcessor());
+        MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(callback, createWatchlistUpdateProcessor(currentUserId.toUserBaseKey()));
         watchlistServiceAsync.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO, middleCallback);
         return middleCallback;
     }
@@ -210,6 +210,16 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Delete Watchlist">
+    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistDeleteProcessor(@NotNull UserBaseKey concernedUser)
+    {
+        return new DTOProcessorWatchlistDelete(
+                watchlistPositionCache.get(),
+                concernedUser,
+                portfolioCompactCache.get(),
+                portfolioCache.get(),
+                userWatchlistPositionCache.get());
+    }
+
     @Nullable public WatchlistPositionDTO deleteWatchlist(@NotNull WatchlistPositionDTO watchlistPositionDTO)
     {
         return deleteWatchlist(watchlistPositionDTO.getPositionCompactId());

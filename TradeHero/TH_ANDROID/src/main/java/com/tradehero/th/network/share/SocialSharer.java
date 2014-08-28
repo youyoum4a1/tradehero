@@ -2,11 +2,12 @@ package com.tradehero.th.network.share;
 
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
+import org.jetbrains.annotations.NotNull;
 
 public interface SocialSharer
 {
     void setSharedListener(OnSharedListener sharedListener);
-    void share(SocialShareFormDTO shareFormDTO);
+    void share(@NotNull SocialShareFormDTO shareFormDTO);
 
     public static interface OnSharedListener
     {

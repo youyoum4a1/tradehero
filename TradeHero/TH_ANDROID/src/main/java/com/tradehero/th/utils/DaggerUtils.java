@@ -1,6 +1,7 @@
 package com.tradehero.th.utils;
 
 import dagger.ObjectGraph;
+import org.jetbrains.annotations.NotNull;
 
 public class DaggerUtils
 {
@@ -18,5 +19,10 @@ public class DaggerUtils
         {
             objectGraph.inject(object);
         }
+    }
+
+    public static Object getObject(@NotNull Class<?> aClass)
+    {
+        return objectGraph.get(aClass);
     }
 }

@@ -13,7 +13,6 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -25,6 +24,7 @@ import com.tradehero.th.fragments.contestcenter.ContestCenterActiveFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterBaseFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterJoinedFragment;
+import com.tradehero.th.fragments.discovery.DiscoveryModule;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
@@ -39,14 +39,13 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.home.HomeWebView;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardCurrentUserRankHeaderView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardCurrentUserRankHeaderView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFriendsItemView;
@@ -55,6 +54,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
@@ -148,7 +148,6 @@ import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.FriendListLoader;
-import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
@@ -195,10 +194,12 @@ import javax.inject.Singleton;
                 BillingModule.class,
                 PushModule.class,
                 AchievementModule.class,
+
+                // Fragments
+                DiscoveryModule.class
         },
         injects =
                 {
-                        DashboardNavigator.class,
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         ProfileInfoView.class,
@@ -269,7 +270,6 @@ import javax.inject.Singleton;
                         FollowerPayoutManagerFragment.class,
                         FollowerListItemView.class,
 
-                        SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 
                         TimelineManager.class,
@@ -288,7 +288,6 @@ import javax.inject.Singleton;
                         LeaderboardCommunityFragment.class,
                         PeopleSearchFragment.class,
                         LeaderboardDefListFragment.class,
-                        LeaderboardCurrentUserRankHeaderView.class,
                         LeaderboardDefView.class,
                         CommunityLeaderboardDefView.class,
                         LeaderboardMarkUserLoader.class,
@@ -296,9 +295,10 @@ import javax.inject.Singleton;
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
                         CompetitionLeaderboardMarkUserItemView.class,
-                        CompetitionLeaderboardCurrentUserRankHeaderView.class,
+                        CompetitionLeaderboardMarkUserOwnRankingView.class,
                         LeaderboardMarkUserListAdapter.class,
                         LeaderboardMarkUserListView.class,
+                        LeaderboardMarkUserOwnRankingView.class,
                         FriendLeaderboardMarkUserListFragment.class,
                         CompetitionLeaderboardMarkUserListFragment.class,
                         CompetitionLeaderboardMarkUserListClosedFragment.class,

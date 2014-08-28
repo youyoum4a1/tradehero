@@ -35,8 +35,11 @@ public class SocialFriendHeaderView extends SocialFriendItemView
     @Override
     public void display(SocialFriendListItemDTO dto)
     {
-        this.socialFriendListItemHeaderDTO = (SocialFriendListItemHeaderDTO) dto;
-        displayHeadLine();
+        if(dto instanceof SocialFriendListItemHeaderDTO)
+        {
+            this.socialFriendListItemHeaderDTO = (SocialFriendListItemHeaderDTO) dto;
+            displayHeadLine();
+        }
     }
 
     private void displayHeadLine()

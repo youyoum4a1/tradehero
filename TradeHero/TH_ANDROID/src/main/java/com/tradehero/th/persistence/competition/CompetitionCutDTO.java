@@ -5,7 +5,9 @@ import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardUserCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,11 +21,12 @@ class CompetitionCutDTO implements DTO
     public final String iconActiveUrl;
     public final String iconInactiveUrl;
     public final String prizeValueWithCcy;
-    @Nullable public final LeaderboardUserDTO leaderboardUser;
+    @Nullable public final LeaderboardUserId leaderboardUserId;
 
     public CompetitionCutDTO(
             @NotNull CompetitionDTO competitionDTO,
-            @NotNull LeaderboardDefCache leaderboardDefCache)
+            @NotNull LeaderboardDefCache leaderboardDefCache,
+            @NotNull LeaderboardUserCache leaderboardUserCache)
     {
         this.id = competitionDTO.id;
 
@@ -43,16 +46,36 @@ class CompetitionCutDTO implements DTO
         this.iconActiveUrl = competitionDTO.iconActiveUrl;
         this.iconInactiveUrl = competitionDTO.iconInactiveUrl;
         this.prizeValueWithCcy = competitionDTO.prizeValueWithCcy;
-        this.leaderboardUser = competitionDTO.leaderboardUser;
+        if (competitionDTO.leaderboardUser != null)
+        {
+            LeaderboardUserId key = competitionDTO.leaderboardUser.getLeaderboardUserId();
+            leaderboardUserCache.put(key, competitionDTO.leaderboardUser);
+            this.leaderboardUserId = key;
+        }
+        else
+        {
+            this.leaderboardUserId = null;
+        }
     }
 
-    @Nullable public CompetitionDTO create(@NotNull LeaderboardDefCache leaderboardDefCache)
+    @Nullable public CompetitionDTO create(
+            @NotNull LeaderboardDefCache leaderboardDefCache,
+            @NotNull LeaderboardUserCache leaderboardUserCache)
     {
         LeaderboardDefDTO cachedLeaderboardDef = null;
         if (leaderboardKey != null)
         {
             cachedLeaderboardDef = leaderboardDefCache.get(leaderboardKey);
             if (cachedLeaderboardDef == null)
+            {
+                return null;
+            }
+        }
+        LeaderboardUserDTO cachedLeaderboardUser = null;
+        if (leaderboardUserId != null)
+        {
+            cachedLeaderboardUser = leaderboardUserCache.get(leaderboardUserId);
+            if (cachedLeaderboardUser == null)
             {
                 return null;
             }
@@ -65,7 +88,7 @@ class CompetitionCutDTO implements DTO
                 iconActiveUrl,
                 iconInactiveUrl,
                 prizeValueWithCcy,
-                leaderboardUser
+                cachedLeaderboardUser
         );
     }
 }

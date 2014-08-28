@@ -117,6 +117,7 @@
   <string name="manage_heroes_unfollow_progress_title">执行中</string>
   <string name="manage_heroes_unfollow_progress_message">正在尝试取消关注这位英雄</string>
   <string name="manage_heroes_unfollow_failed">取消关注过程中，发生了一点错误</string>
+  <string name="manage_heroes_unfollow_official_accounts_failed">禁止取消关注官方账号</string>
   <string name="manage_heroes_unfollow_success">已经取消关注这位英雄</string>
 
   <!-- Manage followers -->

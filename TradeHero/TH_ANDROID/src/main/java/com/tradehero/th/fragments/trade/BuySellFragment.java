@@ -44,12 +44,12 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -150,13 +150,13 @@ public class BuySellFragment extends AbstractBuySellFragment
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     @Inject protected SecurityAlertAssistant securityAlertAssistant;
-    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchListener;
+    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
 
     private int mQuantity = 0;
     private Bundle desiredArguments;
     //private String mPriceSelectionMethod;
 
-    protected SecurityIdList watchedList;
+    protected WatchlistPositionDTOList watchedList;
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
     private int selectedPageIndex;
@@ -487,7 +487,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected void linkWithWatchlist(SecurityIdList watchedList, boolean andDisplay)
+    protected void linkWithWatchlist(WatchlistPositionDTOList watchedList, boolean andDisplay)
     {
         this.watchedList = watchedList;
         if (andDisplay)
@@ -1182,6 +1182,17 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onTransactionSuccessful(boolean isBuy)
                 {
+                    if (pushPortfolioFragmentRunnable == null)
+                    {
+                        pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
+                        {
+                            @Override
+                            public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+                            {
+                                BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
+                            }
+                        };
+                    }
                     if (pushPortfolioFragmentRunnable != null)
                     {
                         pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
@@ -1219,13 +1230,13 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (isTransactionTypeBuy)
             {
                 weChatDTO.title = getString(R.string.buy_sell_switch_buy) + " "
-                        + securityCompactDTO.name + " " + mQuantity + getString(
+                        + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.ask;
             }
             else
             {
                 weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
-                        + securityCompactDTO.name + " " + mQuantity + getString(
+                        + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
             }
             socialSharerLazy.get().share(weChatDTO); // TODO proper callback?
@@ -1392,16 +1403,16 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> createUserWatchlistCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createUserWatchlistCacheListener()
     {
         return new BuySellUserWatchlistCacheListener();
     }
 
     protected class BuySellUserWatchlistCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
+            implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
         @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
         {
             linkWithWatchlist(value, true);
         }

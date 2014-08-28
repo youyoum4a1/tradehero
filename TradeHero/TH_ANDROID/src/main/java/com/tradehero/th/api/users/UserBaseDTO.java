@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
+// TODO remove ExtendedDTO
 public class UserBaseDTO extends ExtendedDTO
 {
     public int id;
@@ -31,6 +32,11 @@ public class UserBaseDTO extends ExtendedDTO
     @JsonIgnore @NotNull public UserBaseKey getBaseKey()
     {
         return new UserBaseKey(id);
+    }
+
+    @JsonIgnore public boolean isOfficialAccount()
+    {
+        return getBaseKey().isOfficialAccount();
     }
 
     @JsonIgnore @Nullable public Country getCountry()

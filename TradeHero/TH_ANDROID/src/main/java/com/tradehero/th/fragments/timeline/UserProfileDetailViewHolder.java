@@ -23,8 +23,6 @@ import javax.inject.Inject;
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
     @InjectView(R.id.profile_screen_user_detail_top) @Optional protected View profileTop;
-    @InjectView(R.id.user_profile_first_last_name) @Optional protected TextView firstLastName;
-    @InjectView(R.id.txt_member_since) @Optional protected TextView memberSince;
     @InjectView(R.id.txt_profile_tradeprofit) @Optional protected TextView profitFromTrades;
     @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
     @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
@@ -67,8 +65,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @Override public void display(final UserProfileDTO dto)
     {
         super.display(dto);
-        displayFirstLastName();
-        displayMemberSince();
         displayProfitFromTrades();
         displayTotalWealth();
         displayAdditionalCash();
@@ -118,40 +114,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                     .resize(profileTop.getWidth(), profileTop.getHeight())
                     .centerCrop()
                     .into(topDefaultBackgroundTarget);
-        }
-    }
-
-    protected void displayFirstLastName()
-    {
-        if (firstLastName != null)
-        {
-            if (userProfileDTO != null)
-            {
-                firstLastName.setText(context.getString(
-                        R.string.user_profile_first_last_name_display,
-                        userProfileDTO.firstName != null ? userProfileDTO.firstName : "",
-                        userProfileDTO.lastName != null ? userProfileDTO.lastName : ""));
-            }
-            else
-            {
-                firstLastName.setText(R.string.na);
-            }
-        }
-    }
-
-    protected void displayMemberSince()
-    {
-        if (memberSince != null)
-        {
-            if (userProfileDTO != null && userProfileDTO.memberSince != null)
-            {
-                SimpleDateFormat memberSinceFormat = new SimpleDateFormat("MMM yyyy");
-                memberSince.setText(memberSinceFormat.format(userProfileDTO.memberSince));
-            }
-            else
-            {
-                memberSince.setText(R.string.na);
-            }
         }
     }
 

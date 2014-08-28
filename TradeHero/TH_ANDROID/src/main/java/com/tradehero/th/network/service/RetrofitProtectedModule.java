@@ -3,11 +3,9 @@ package com.tradehero.th.network.service;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.retrofit.RequestHeaders;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Singleton;
 import retrofit.RestAdapter;
 
 @Module(
@@ -37,6 +35,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton CompetitionServiceAsync provideCompetitionService(RestAdapter adapter)
     {
         return adapter.create(CompetitionServiceAsync.class);
+    }
+
+    @Provides @Singleton CurrencyServiceAsync provideCurrencyServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(CurrencyServiceAsync.class);
     }
 
     @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
@@ -129,6 +132,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton UserServiceAsync provideUserService(RestAdapter adapter)
     {
         return adapter.create(UserServiceAsync.class);
+    }
+
+    @Provides @Singleton UserTimelineMarkerServiceAsync provideUserTimelineMarkerServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(UserTimelineMarkerServiceAsync.class);
     }
 
     @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)

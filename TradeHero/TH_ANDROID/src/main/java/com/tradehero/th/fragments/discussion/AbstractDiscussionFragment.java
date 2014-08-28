@@ -23,6 +23,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
     private DiscussionKey discussionKey;
 
+    //region Inflow bundling
     public static void putDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKey discussionKey)
     {
         args.putBundle(DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
@@ -36,6 +37,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         }
         return null;
     }
+    //endregion
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -87,8 +89,6 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         }
     }
 
-    abstract protected void handleCommentPosted(DiscussionDTO discussionDTO);
-
     protected PostCommentView.CommentPostedListener createCommentPostedListener()
     {
         return new AbstractDiscussionCommentPostedListener();
@@ -106,4 +106,6 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
             // Nothing to do
         }
     }
+
+    abstract protected void handleCommentPosted(DiscussionDTO discussionDTO);
 }

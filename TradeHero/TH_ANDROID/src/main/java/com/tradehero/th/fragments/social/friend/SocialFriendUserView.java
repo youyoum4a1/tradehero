@@ -111,11 +111,14 @@ public class SocialFriendUserView extends SocialFriendItemView
     @Override
     public void display(@NotNull SocialFriendListItemDTO dto)
     {
-        this.socialFriendListItemUserDTO = (SocialFriendListItemUserDTO) dto;
-        displayUserIcon();
-        displayTitle();
-        displayActionButton();
-        setItemViewClickable();
+        if(dto instanceof SocialFriendListItemUserDTO)
+        {
+            this.socialFriendListItemUserDTO = (SocialFriendListItemUserDTO) dto;
+            displayUserIcon();
+            displayTitle();
+            displayActionButton();
+            setItemViewClickable();
+        }
     }
 
     private void setItemViewClickable()

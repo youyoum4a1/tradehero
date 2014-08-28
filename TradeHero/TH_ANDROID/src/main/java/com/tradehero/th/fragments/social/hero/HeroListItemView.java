@@ -229,7 +229,7 @@ public class HeroListItemView extends RelativeLayout
         if (statusIcon != null)
         {
             statusIcon.setImageResource(RES_ID_CROSS_RED);
-            statusIcon.setVisibility(isFollowerCurrentUser() ? View.VISIBLE : View.GONE);
+            statusIcon.setVisibility((isFollowerCurrentUser() && !isHeroOfficial()) ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -268,6 +268,11 @@ public class HeroListItemView extends RelativeLayout
     public boolean isFollowerCurrentUser()
     {
         return followerId != null && followerId.equals(currentUserId.toUserBaseKey());
+    }
+
+    public boolean isHeroOfficial()
+    {
+        return heroDTO != null && heroDTO.isOfficialAccount();
     }
     //</editor-fold>
 

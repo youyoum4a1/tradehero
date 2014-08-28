@@ -1,8 +1,14 @@
 package com.tradehero.th.fragments.settings;
 
+import android.preference.Preference;
+import android.preference.PreferenceCategory;
+import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.metrics.MarketSegment;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SocialConnectSettingViewHolderContainer implements SettingViewHolder
 {
@@ -11,6 +17,8 @@ public class SocialConnectSettingViewHolderContainer implements SettingViewHolde
     @NotNull protected SocialConnectQQSettingViewHolder socialConnectQQSettingViewHolder;
     @NotNull protected SocialConnectTwitterSettingViewHolder socialConnectTwitterSettingViewHolder;
     @NotNull protected SocialConnectWeiboSettingViewHolder socialConnectWeiboSettingViewHolder;
+
+    @Nullable protected PreferenceCategory container;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialConnectSettingViewHolderContainer(
@@ -30,11 +38,19 @@ public class SocialConnectSettingViewHolderContainer implements SettingViewHolde
 
     @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
     {
+        container = (PreferenceCategory) preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_sharing_group));
         socialConnectFacebookSettingViewHolder.initViews(preferenceFragment);
         socialConnectLinkedInSettingViewHolder.initViews(preferenceFragment);
         socialConnectQQSettingViewHolder.initViews(preferenceFragment);
         socialConnectTwitterSettingViewHolder.initViews(preferenceFragment);
         socialConnectWeiboSettingViewHolder.initViews(preferenceFragment);
+
+        if (Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA))
+            // TODO perhaps reordering should do
+        {
+            removePref(socialConnectFacebookSettingViewHolder.clickablePref);
+            removePref(socialConnectTwitterSettingViewHolder.clickablePref);
+        }
     }
 
     @Override public void destroyViews()
@@ -46,24 +62,33 @@ public class SocialConnectSettingViewHolderContainer implements SettingViewHolde
         socialConnectFacebookSettingViewHolder.destroyViews();
     }
 
+    protected void removePref(@Nullable Preference preference)
+    {
+        PreferenceCategory containerCopy = container;
+        if (containerCopy != null && preference != null)
+        {
+            containerCopy.removePreference(preference);
+        }
+    }
+
     public void changeSharing(SocialNetworkEnum socialNetworkEnum, boolean enable)
     {
         switch (socialNetworkEnum)
         {
             case FB:
-                socialConnectFacebookSettingViewHolder.changeSharing(enable);
+                socialConnectFacebookSettingViewHolder.changeStatus(enable);
                 break;
             case LN:
-                socialConnectLinkedInSettingViewHolder.changeSharing(enable);
+                socialConnectLinkedInSettingViewHolder.changeStatus(enable);
                 break;
             case QQ:
-                socialConnectQQSettingViewHolder.changeSharing(enable);
+                socialConnectQQSettingViewHolder.changeStatus(enable);
                 break;
             case TW:
-                socialConnectTwitterSettingViewHolder.changeSharing(enable);
+                socialConnectTwitterSettingViewHolder.changeStatus(enable);
                 break;
             case WB:
-                socialConnectWeiboSettingViewHolder.changeSharing(enable);
+                socialConnectWeiboSettingViewHolder.changeStatus(enable);
                 break;
         }
     }

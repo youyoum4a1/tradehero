@@ -6,8 +6,12 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
@@ -24,10 +28,13 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper,
-            @NotNull Lazy<FacebookUtils> facebookUtils)
+            @NotNull Lazy<FacebookUtils> facebookUtils,
+            @NotNull MainCredentialsPreference mainCredentialsPreference)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, socialServiceWrapper);
+        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper, alertDialogUtil, socialServiceWrapper,mainCredentialsPreference);
         this.facebookUtils = facebookUtils;
     }
     //</editor-fold>
@@ -35,6 +42,11 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
     @Override protected int getStringKeyResId()
     {
         return R.string.key_settings_sharing_facebook;
+    }
+
+    @Override protected int getOrderIntResId()
+    {
+        return R.integer.key_settings_sharing_facebook_order;
     }
 
     @Override @Nullable protected String getSocialNetworkName()
@@ -57,19 +69,19 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
         return R.string.authentication_connecting_to_facebook;
     }
 
-    @Override protected int getUnlinkingDialogTitle()
+    @Override protected int getUnlinkingProgressDialogTitle()
     {
         return R.string.facebook;
     }
 
-    @Override protected int getUnlinkingDialogMessage()
+    @Override protected int getUnlinkingProgressDialogMessage()
     {
         return R.string.authentication_connecting_tradehero_only;
     }
 
-    @Override protected boolean changeSharing(boolean enable)
+    @Override protected boolean changeStatus(boolean enable)
     {
-        boolean returned = super.changeSharing(enable);
+        boolean returned = super.changeStatus(enable);
         if (enable)
         {
             detachMiddleSocialConnectLogInCallback();
@@ -82,22 +94,30 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
                         middleSocialConnectLogInCallback);
             }
         }
-        else
-        {
-            detachMiddleServerDisconnectCallback();
-            middleCallbackDisconnect = socialServiceWrapper.disconnect(
-                    currentUserId.toUserBaseKey(),
-                    new SocialNetworkFormDTO(SocialNetworkEnum.FB),
-                    createSocialDisconnectCallback());
-        }
         return returned;
     }
 
-    @Override protected void updateSocialConnectStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
+    @Override protected void effectUnlink()
     {
+        super.effectUnlink();
+        detachMiddleServerDisconnectCallback();
+        middleCallbackDisconnect = socialServiceWrapper.disconnect(
+                currentUserId.toUserBaseKey(),
+                new SocialNetworkFormDTO(SocialNetworkEnum.FB),
+                createSocialDisconnectCallback());
+    }
+
+    @Override protected void updateStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
+    {
+        super.updateStatus(updatedUserProfileDTO);
         if (clickablePref != null)
         {
             clickablePref.setChecked(updatedUserProfileDTO.fbLinked);
         }
+    }
+
+    @Override protected boolean isMainLogin()
+    {
+        return mainCredentialsPreference.getCredentials() instanceof FacebookCredentialsDTO;
     }
 }
