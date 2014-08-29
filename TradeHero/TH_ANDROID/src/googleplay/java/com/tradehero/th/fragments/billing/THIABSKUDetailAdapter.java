@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing.googleplay;
+package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,7 +6,6 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
-import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 
 public class THIABSKUDetailAdapter
         extends ProductDetailAdapter<

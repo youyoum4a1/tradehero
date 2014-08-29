@@ -13,6 +13,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
+import com.tradehero.th.billing.THProductDetailDomainPredicate;
 import com.tradehero.th.billing.samsung.persistence.THSamsungGroupItemCache;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
 import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;

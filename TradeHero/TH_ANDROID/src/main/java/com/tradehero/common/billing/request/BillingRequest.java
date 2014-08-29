@@ -85,6 +85,8 @@ public class BillingRequest<
             ProductPurchaseType,
             BillingExceptionType> purchaseFinishedListener;
 
+    public boolean manageSubscriptions;
+
     //<editor-fold desc="Constructors">
     protected BillingRequest(@NotNull Builder<
             ProductIdentifierListKeyType,
@@ -111,6 +113,7 @@ public class BillingRequest<
         this.doPurchase = builder.doPurchase;
         this.purchaseOrder = builder.purchaseOrder;
         this.purchaseFinishedListener = builder.purchaseFinishedListener;
+        this.manageSubscriptions = builder.manageSubscriptions;
     }
     //</editor-fold>
 
@@ -292,6 +295,16 @@ public class BillingRequest<
                         BillingExceptionType> purchaseFinishedListener)
         {
             this.purchaseFinishedListener = purchaseFinishedListener;
+            return self();
+        }
+        //</editor-fold>
+
+        //<editor-fold desc="Manage Subscriptions">
+        private boolean manageSubscriptions;
+
+        public BuilderType manageSubscriptions(boolean manageSubscriptions)
+        {
+            this.manageSubscriptions = manageSubscriptions;
             return self();
         }
         //</editor-fold>

@@ -208,7 +208,8 @@ abstract public class THBaseBillingInteractor<
                 .doPurchase(uiBillingRequest.getDoPurchase())
                 .purchaseFinishedListener(createPurchaseFinishedListener())
                 .reportPurchase(uiBillingRequest.getReportPurchase())
-                .purchaseReportedListener(createPurchaseReportedListener());
+                .purchaseReportedListener(createPurchaseReportedListener())
+                .manageSubscriptions(uiBillingRequest.getManageSubscriptions());
     }
     //</editor-fold>
 

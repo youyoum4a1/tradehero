@@ -1,12 +1,16 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.IABConstants;
+import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertPlanDTO;
+import com.tradehero.th.billing.SecurityAlertKnowledge;
+import com.tradehero.th.billing.THBillingConstants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class THIABSecurityAlertKnowledge
+@Singleton public class THIABSecurityAlertKnowledge extends SecurityAlertKnowledge
 {
     //<editor-fold desc="Constructors">
     @Inject public THIABSecurityAlertKnowledge()
@@ -14,51 +18,26 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    public int getStockAlertIcon(int count)
+    @NotNull @Override public IABSKU createFrom(@NotNull AlertPlanDTO alertPlanDTO)
     {
-        if (count == 0)
-        {
-            return R.drawable.default_image;
-        }
-        else if (count <= 2)
-        {
-            return R.drawable.buy_alerts_2;
-        }
-        else if (count <= 5)
-        {
-            return R.drawable.buy_alerts_5;
-        }
-        else if (count <= 7)
-        {
-            return R.drawable.alerts_7;
-        }
-        else if (count >= IABConstants.ALERT_PLAN_UNLIMITED)
-        {
-            return R.drawable.buy_alerts_infinite;
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unexpected count " + count);
-        }
+        return new IABSKU(alertPlanDTO.productIdentifier);
     }
 
-    public IABSKU getServerEquivalentSKU(IABSKU localSKU)
+    @Override @Nullable public IABSKU getServerEquivalentSKU(@NotNull ProductIdentifier localSKU)
     {
-        if (localSKU == null)
+        if (localSKU instanceof IABSKU)
         {
-            return null;
-        }
+            switch (((IABSKU) localSKU).identifier)
+            {
+                case THBillingConstants.SERVER_ALERT_1:
+                    return new IABSKU(THIABConstants.ALERT_1);
 
-        switch (localSKU.identifier)
-        {
-            case THIABConstants.SERVER_ALERT_1:
-                return new IABSKU(THIABConstants.ALERT_1);
+                case THBillingConstants.SERVER_ALERT_5:
+                    return new IABSKU(THIABConstants.ALERT_5);
 
-            case THIABConstants.SERVER_ALERT_5:
-                return new IABSKU(THIABConstants.ALERT_5);
-
-            case THIABConstants.SERVER_ALERT_UNLIMITED:
-                return new IABSKU(THIABConstants.ALERT_UNLIMITED);
+                case THBillingConstants.SERVER_ALERT_UNLIMITED:
+                    return new IABSKU(THIABConstants.ALERT_UNLIMITED);
+            }
         }
 
         return null;

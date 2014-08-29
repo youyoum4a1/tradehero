@@ -5,11 +5,9 @@ import android.view.LayoutInflater;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 4:14 PM To change this template use File | Settings | File Templates. */
 public class THSamsungSKUDetailAdapter
         extends ProductDetailAdapter<
         SamsungSKU,

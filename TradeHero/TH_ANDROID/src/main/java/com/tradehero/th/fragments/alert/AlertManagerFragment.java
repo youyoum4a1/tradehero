@@ -1,7 +1,5 @@
 package com.tradehero.th.fragments.alert;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +12,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.BillingConstants;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -27,9 +25,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
-import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -56,7 +54,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Inject protected AlertCompactListCache alertCompactListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected THIABSecurityAlertKnowledge THIABSecurityAlertKnowledge;
+    @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfile;
@@ -238,7 +236,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                 alertPlanCount.setText(R.string.stock_alerts_no_alerts);
                 btnPlanUpgrade.setVisibility(View.VISIBLE);
             }
-            else if (count < IABConstants.ALERT_PLAN_UNLIMITED)
+            else if (count < BillingConstants.ALERT_PLAN_UNLIMITED)
             {
                 alertPlanCount.setText(String.format(getString(R.string.stock_alert_count_alert_format), count));
                 btnPlanUpgrade.setVisibility(View.VISIBLE);
@@ -257,7 +255,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             int count = currentUserProfile.getUserAlertPlansAlertCount();
             alertPlanCountIcon.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
-            alertPlanCountIcon.setImageResource(THIABSecurityAlertKnowledge.getStockAlertIcon(count));
+            alertPlanCountIcon.setImageResource(securityAlertKnowledge.getStockAlertIcon(count));
         }
     }
 
@@ -274,8 +272,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private void handleManageSubscriptionClicked()
     {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(IABConstants.GOOGLE_PLAY_ACCOUNT_URL));
-        getActivity().startActivity(intent);
+        detachRequestCode();
+        //noinspection unchecked
+        requestCode = userInteractor.run(uiBillingRequestBuilderProvider.get()
+                .manageSubscriptions(true)
+                .build());
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()

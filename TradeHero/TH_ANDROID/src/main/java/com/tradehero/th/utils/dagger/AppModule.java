@@ -1,8 +1,6 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
-import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
@@ -11,7 +9,6 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
-import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -161,7 +158,6 @@ import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
@@ -313,10 +309,6 @@ import javax.inject.Singleton;
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
                         HeroManagerInfoFetcher.class,
-                        THIABBillingInteractor.class,
-                        IABServiceConnector.class,
-                        IABBillingAvailableTester.class,
-                        IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
                         HeroesTabContentFragment.class,

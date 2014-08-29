@@ -33,6 +33,9 @@ import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
 import com.tradehero.th.billing.googleplay.THIABProductIdentifierFetcher;
 import com.tradehero.th.billing.googleplay.THIABProductIdentifierFetcherHolder;
+import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
+import com.tradehero.th.network.service.AlertPlanServiceWrapper;
+import com.tradehero.th.network.service.AlertPlanServiceWrapperAmazon;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCache;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumerHolder;
@@ -56,6 +59,10 @@ import javax.inject.Singleton;
 
 @Module(
         injects = {
+                IABSKUListRetrievedAsyncMilestone.class,
+                THIABBillingInteractor.class,
+                IABServiceConnector.class,
+                IABBillingAvailableTester.class,
                 IABSKUListRetrievedAsyncMilestone.class,
         },
         staticInjections = {
@@ -151,6 +158,16 @@ public class BillingModule
         return thBaseIABPurchaseConsumerHolder;
     }
     //</editor-fold>
+
+    @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THIABSecurityAlertKnowledge thiabSecurityAlertKnowledge)
+    {
+        return thiabSecurityAlertKnowledge;
+    }
+
+    @Provides @Singleton AlertPlanServiceWrapper provideAlertPlanServiceWrapper(AlertPlanServiceWrapperAmazon alertPlanServiceWrapperAmazon)
+    {
+        return alertPlanServiceWrapperAmazon;
+    }
 
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     {

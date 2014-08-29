@@ -2,9 +2,10 @@ package com.tradehero.common.billing.googleplay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import com.tradehero.common.billing.BillingConstants;
 import timber.log.Timber;
 
-public class IABConstants
+public class IABConstants implements BillingConstants
 {
     public static final String BASE_64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhVgfcepa4NXGyS5kSGD1TmksVWhZcyMrqqJVBsuQgi+Io0+vFmboFN5n/nYPWWFOPjpvo8ht/11bglW+V+LtPOauk3/lCyFYGMVxuzv55J+YPimNBBnpECIqr6wfHyk0k6h2XPDJeEG2fPV3CIgAWiyNlH3JZVPrmVUIoU4537GACssREjFi7DERyv0JPg9n+0qlBb/NKhpbh00uniDXbNcb9KAb3e+kWI3+qpextDn0k6nt6/nqEFNZMD4JFlbqdrbc9Lfd+Zj2XUO983oVBbuRoIW11UUL5nY6qnjdh+FHG6254mbqoPtWeMnYrMPp3d733WOQdXhsfxwC0Fx99QIDAQAB";
 
@@ -51,7 +52,6 @@ public class IABConstants
     // some fields on the getSkuDetails response bundle
     public static final String GET_SKU_DETAILS_ITEM_LIST = "ITEM_ID_LIST";
     public static final String GET_SKU_DETAILS_ITEM_TYPE_LIST = "ITEM_TYPE_LIST";
-    public static final int ALERT_PLAN_UNLIMITED = 10000;
 
     public static final String GOOGLE_PLAY_ACCOUNT_URL = "https://play.google.com/store/account";
 

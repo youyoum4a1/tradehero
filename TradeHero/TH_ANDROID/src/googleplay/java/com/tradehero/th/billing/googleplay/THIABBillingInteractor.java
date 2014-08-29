@@ -1,8 +1,11 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABConstants;
@@ -28,8 +31,8 @@ import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.googleplay.request.THUIIABRequest;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.fragments.billing.googleplay.THIABSKUDetailAdapter;
-import com.tradehero.th.fragments.billing.googleplay.THIABStoreProductDetailView;
+import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
+import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -226,6 +229,28 @@ import timber.log.Timber;
                     true
             );
         }
+    }
+
+    @Override protected void runRequestCode(int requestCode)
+    {
+        THUIIABRequest uiBillingRequest = uiBillingRequests.get(requestCode);
+        if (uiBillingRequest != null)
+        {
+            if (uiBillingRequest.getManageSubscriptions())
+            {
+                Activity currentActivity = currentActivityHolder.getCurrentActivity();
+                if (currentActivity != null)
+                {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(IABConstants.GOOGLE_PLAY_ACCOUNT_URL));
+                    currentActivity.startActivity(intent);
+                }
+            }
+            else
+            {
+                super.runRequestCode(requestCode);
+            }
+        }
+
     }
 
     //<editor-fold desc="Inventory Fetch">

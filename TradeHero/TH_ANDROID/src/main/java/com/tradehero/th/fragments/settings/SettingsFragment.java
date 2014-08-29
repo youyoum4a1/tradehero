@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -23,7 +22,6 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -39,8 +37,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
 
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
@@ -58,7 +54,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
-    @Inject THIABAlertDialogUtil thiabAlertDialogUtil;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
     @Inject Analytics analytics;
     @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;

@@ -339,6 +339,20 @@ abstract public class BaseUIBillingRequest<
     }
     //</editor-fold>
 
+    //<editor-fold desc="Manage Subscriptions">
+    private boolean manageSubscriptions;
+
+    @Override public boolean getManageSubscriptions()
+    {
+        return manageSubscriptions;
+    }
+
+    @Override public void setManageSubscriptions(boolean manageSubscriptions)
+    {
+        this.manageSubscriptions = manageSubscriptions;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Constructors">
     protected BaseUIBillingRequest(@NotNull Builder<
             ProductIdentifierListKeyType,
@@ -377,6 +391,8 @@ abstract public class BaseUIBillingRequest<
         this.doPurchase = builder.doPurchase;
         this.popIfPurchaseFailed = builder.popIfPurchaseFailed;
         this.purchaseFinishedListener = builder.purchaseFinishedListener;
+
+        this.manageSubscriptions = builder.manageSubscriptions;
     }
     //</editor-fold>
 
@@ -623,6 +639,16 @@ abstract public class BaseUIBillingRequest<
                         BillingExceptionType> purchaseFinishedListener)
         {
             this.purchaseFinishedListener = purchaseFinishedListener;
+            return self();
+        }
+        //</editor-fold>
+
+        //<editor-fold desc="Manage Subscriptions">
+        private boolean manageSubscriptions;
+
+        public BuilderType manageSubscriptions(boolean manageSubscriptions)
+        {
+            this.manageSubscriptions = manageSubscriptions;
             return self();
         }
         //</editor-fold>

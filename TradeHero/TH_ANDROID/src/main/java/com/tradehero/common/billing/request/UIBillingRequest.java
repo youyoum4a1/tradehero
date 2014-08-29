@@ -125,6 +125,11 @@ public interface UIBillingRequest<
                     BillingExceptionType> purchaseFinishedListener);
     //</editor-fold>
 
+    //<editor-fold desc="Manage Subscriptions">
+    boolean getManageSubscriptions();
+    void setManageSubscriptions(boolean manageSubscriptions);
+    //</editor-fold>
+
     void onDestroy();
 
     BillingRequest.Builder<

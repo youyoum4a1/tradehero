@@ -1,14 +1,15 @@
-package com.tradehero.th.billing.amazon;
+package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
-import com.tradehero.common.billing.exception.BillingExceptionFactory;
-import com.tradehero.th.billing.BillingAlertDialogUtil;
-import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.THBillingLogicHolder;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
-import com.tradehero.th.billing.request.THBillingRequest;
+import com.tradehero.common.billing.amazon.AmazonPurchaseCache;
+import com.tradehero.th.billing.amazon.THAmazonSecurityAlertKnowledge;
+import com.tradehero.th.network.service.AlertPlanServiceWrapper;
+import com.tradehero.th.network.service.AlertPlanServiceWrapperAmazon;
+import com.tradehero.th.persistence.billing.AmazonSKUListCache;
+import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
+import com.tradehero.th.persistence.billing.THAmazonPurchaseCache;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -25,6 +26,10 @@ import javax.inject.Singleton;
 )
 public class BillingModule
 {
+    public void test()
+    {
+
+    }
     //<editor-fold desc="Actors and Action Holders">
     //@Provides THIABBillingAvailableTester provideBillingAvailableTest(THBaseIABBillingAvailableTester thBaseIABBillingAvailableTester)
     //{
@@ -97,31 +102,41 @@ public class BillingModule
     //}
     //</editor-fold>
 
+    @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THAmazonSecurityAlertKnowledge thAmazonSecurityAlertKnowledge)
+    {
+        return thAmazonSecurityAlertKnowledge;
+    }
+
+    @Provides @Singleton AlertPlanServiceWrapper provideAlertPlanServiceWrapper(AlertPlanServiceWrapperAmazon alertPlanServiceWrapperAmazon)
+    {
+        return alertPlanServiceWrapperAmazon;
+    }
+
     //@Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     //{
     //    return THIABAlertDialogUtil;
     //}
 
     //<editor-fold desc="Caches">
-    //@Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(IABSKUListCache iabskuListCache)
-    //{
-    //    return iabskuListCache;
-    //}
-    //
-    //@Provides @Singleton ProductDetailCache provideProductDetailCache(THIABProductDetailCache productDetailCache)
-    //{
-    //    return productDetailCache;
-    //}
-    //
-    //@Provides @Singleton ProductPurchaseCache provideProductPurchaseCache(IABPurchaseCache purchaseCache)
-    //{
-    //    return purchaseCache;
-    //}
-    //
-    //@Provides @Singleton IABPurchaseCache provideIABPurchaseCache(THIABPurchaseCache purchaseCache)
-    //{
-    //    return purchaseCache;
-    //}
+    @Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(AmazonSKUListCache amazonSkuListCache)
+    {
+        return amazonSkuListCache;
+    }
+
+    @Provides @Singleton ProductDetailCache provideProductDetailCache(THAmazonProductDetailCache productDetailCache)
+    {
+        return productDetailCache;
+    }
+
+    @Provides @Singleton ProductPurchaseCache provideProductPurchaseCache(AmazonPurchaseCache purchaseCache)
+    {
+        return purchaseCache;
+    }
+
+    @Provides @Singleton AmazonPurchaseCache provideIABPurchaseCache(THAmazonPurchaseCache purchaseCache)
+    {
+        return purchaseCache;
+    }
     //</editor-fold>
 
     //@Provides BillingExceptionFactory provideBillingExceptionFactory(IABExceptionFactory exceptionFactory)

@@ -21,9 +21,4 @@ class THIABConstants
     public static final String ALERT_1 = "com.myhero.th.stockalert.subscription.t0";
     public static final String ALERT_5 = "com.myhero.th.stockalert.subscription.t1";
     public static final String ALERT_UNLIMITED = "com.myhero.th.stockalert.subscription.t2";
-
-    // Below are the codes as they may be returned from the server
-    public static final String SERVER_ALERT_1 = "TH.StockAlert.Subscription.0";
-    public static final String SERVER_ALERT_5 = "TH.StockAlert.Subscription.1";
-    public static final String SERVER_ALERT_UNLIMITED = "TH.StockAlert.Subscription.2";
 }

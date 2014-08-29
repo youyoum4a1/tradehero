@@ -147,7 +147,8 @@ android {
                 srcFile 'src/googleplay/AndroidManifest.xml'
             }
             java {
-                srcDir 'src/googleplay/java'
+              srcDir 'src/row/java'
+              srcDir 'src/googleplay/java'
             }
         }
 
@@ -165,7 +166,8 @@ android {
                 srcFile 'src/samsung/AndroidManifest.xml'
             }
             java {
-                srcDir 'src/samsung/java'
+              srcDir 'src/row/java'
+              srcDir 'src/samsung/java'
             }
         }
 
@@ -174,7 +176,8 @@ android {
                 srcFile 'src/amazon/AndroidManifest.xml'
             }
             java {
-                srcDir 'src/amazon/java'
+              srcDir 'src/row/java'
+              srcDir 'src/amazon/java'
             }
         }
 
@@ -183,7 +186,8 @@ android {
                 srcFile 'src/amazon/AndroidManifest.xml'
             }
             java {
-                srcDir 'src/amazon/java'
+              srcDir 'src/row/java'
+              srcDir 'src/amazon/java'
             }
         }
         //endregion
@@ -193,8 +197,10 @@ android {
 
         androidTest {
             java {
-                srcDir 'src/china/java'
-                srcDir 'src/googleplay/java'
+                //srcDir 'src/china/java'
+                //srcDir 'src/googleplay/java'
+                //srcDir 'src/samsung/java'
+                //srcDir 'src/amazon/java'
                 srcDir 'src/debug/java'
                 srcDir 'src/test/java'
             }
@@ -229,6 +235,10 @@ dependencies {
     compile project(':ResideMenu')
 
     samsungProvided project(':samsung_iap')
+
+  // TODO confirm on a hardware that it is "provided" and not "compile"
+    amazonProvided 'com.amazon:in-app-purchasing:2.0.0'
+    amazonFireProvided 'com.amazon:in-app-purchasing:2.0.0'
 
     compile project(':facebook-android-sdk:facebook')
 

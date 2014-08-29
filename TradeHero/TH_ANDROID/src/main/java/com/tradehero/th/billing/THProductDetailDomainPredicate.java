@@ -1,9 +1,7 @@
-package com.tradehero.th.billing.samsung;
+package com.tradehero.th.billing;
 
 import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THProductDetail;
 
 public class THProductDetailDomainPredicate<
         ProductIdentifierType extends ProductIdentifier,

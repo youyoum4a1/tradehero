@@ -16,7 +16,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
-import com.tradehero.th.billing.samsung.THProductDetailDomainPredicate;
+import com.tradehero.th.billing.THProductDetailDomainPredicate;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import java.util.List;

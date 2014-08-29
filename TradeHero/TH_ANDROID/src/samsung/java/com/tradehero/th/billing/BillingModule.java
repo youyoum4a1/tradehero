@@ -45,10 +45,13 @@ import com.tradehero.th.billing.samsung.THSamsungPurchaseReporter;
 import com.tradehero.th.billing.samsung.THSamsungPurchaseReporterHolder;
 import com.tradehero.th.billing.samsung.THSamsungPurchaser;
 import com.tradehero.th.billing.samsung.THSamsungPurchaserHolder;
+import com.tradehero.th.billing.samsung.THSamsungSecurityAlertKnowledge;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCache;
 import com.tradehero.th.billing.samsung.request.BaseTHUISamsungRequest;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
+import com.tradehero.th.network.service.AlertPlanServiceWrapper;
+import com.tradehero.th.network.service.AlertPlanServiceWrapperSamsung;
 import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import dagger.Module;
@@ -148,6 +151,16 @@ public class BillingModule
         return thBaseSamsungPurchaseReporterHolder;
     }
     //</editor-fold>
+
+    @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THSamsungSecurityAlertKnowledge thiabSecurityAlertKnowledge)
+    {
+        return thiabSecurityAlertKnowledge;
+    }
+
+    @Provides @Singleton AlertPlanServiceWrapper provideAlertPlanServiceWrapper(AlertPlanServiceWrapperSamsung alertPlanServiceWrapperGoogle)
+    {
+        return alertPlanServiceWrapperGoogle;
+    }
 
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THSamsungAlertDialogUtil THSamsungAlertDialogUtil)
     {
