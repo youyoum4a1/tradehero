@@ -1,7 +1,9 @@
-package com.tradehero.th.billing.googleplay;
+package com.tradehero.th.persistence.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.IABPurchaseCache;
+import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
 import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.th.billing.googleplay.THIABOrderId;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
