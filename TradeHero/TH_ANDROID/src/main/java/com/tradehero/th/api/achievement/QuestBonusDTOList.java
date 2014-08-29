@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QuestBonusDTOList extends BaseArrayList<QuestBonusDTO> implements DTO
 {
-    private static final int DEFAULT_SIZE = 5;
-
     /**
      * Get <i>next</i> number of {@link com.tradehero.th.api.achievement.QuestBonusDTO} inclusive of <i>currentLevel</i>
      *
@@ -38,22 +37,41 @@ public class QuestBonusDTOList extends BaseArrayList<QuestBonusDTO> implements D
     }
 
     /**
-     * Get 5 or less {@link com.tradehero.th.api.achievement.QuestBonusDTO} which includes the {@link com.tradehero.th.api.achievement.QuestBonusDTO}
-     * with <i>currentLevel</i>
+     * Get <i>numOfItems</i> - or less if the size of the list is less than <i>numOfItems</i> - {@link com.tradehero.th.api.achievement.QuestBonusDTO}
+     * which includes the {@link com.tradehero.th.api.achievement.QuestBonusDTO} with <i>currentLevel</i>
      *
      * @param currentLevel currentLevel
      * @return {@link java.util.List} of {@link com.tradehero.th.api.achievement.QuestBonusDTO}
      */
-    public List<QuestBonusDTO> getInclusive(int currentLevel)
+    public List<QuestBonusDTO> getInclusive(int currentLevel, int numOfItems)
     {
-        List<QuestBonusDTO> list = getNextInclusive(currentLevel, DEFAULT_SIZE);
-        if (list.size() < DEFAULT_SIZE && size() >= DEFAULT_SIZE)
+        List<QuestBonusDTO> list = getNextInclusive(currentLevel, numOfItems);
+        if (list.size() < numOfItems && size() >= numOfItems)
         {
-            for (int i = size() - 1 - list.size(); i >= 0 && list.size() < DEFAULT_SIZE; i--)
+            for (int i = size() - 1 - list.size(); i >= 0 && list.size() < numOfItems; i--)
             {
                 list.add(0, get(i));
             }
         }
         return list;
+    }
+
+    @Nullable public QuestBonusDTO getPrevious(int currentLevel)
+    {
+        ListIterator<QuestBonusDTO> iterator = listIterator();
+        QuestBonusDTO questBonusDTO = null;
+        while (iterator.hasNext() && currentLevel >= 0)
+        {
+            QuestBonusDTO dto = iterator.next();
+            if (dto.level < currentLevel)
+            {
+                questBonusDTO = dto;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return questBonusDTO;
     }
 }

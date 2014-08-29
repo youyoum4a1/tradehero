@@ -1,11 +1,10 @@
 package com.tradehero.common.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestBonusDTO>
 {
-    @InjectView(R.id.quest_logo_indicator) View logo;
+    @InjectView(R.id.quest_logo_indicator) ImageView logo;
     @InjectView(R.id.quest_top_indicator) TextView topIndicator;
     @InjectView(R.id.quest_bottom_indicator) TextView botIndicator;
 
@@ -45,19 +44,19 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
 
     public void on()
     {
-        logo.setVisibility(View.VISIBLE);
+        logo.setImageResource(R.drawable.ic_achievement_star_on);
     }
 
     public void off()
     {
-        logo.setVisibility(View.GONE);
+        logo.setImageResource(R.drawable.ic_achievement_star_off);
     }
 
     public void animateOn()
     {
-        Animator a = AnimatorInflater.loadAnimator(getContext(), R.animator.fade_in_out);
-        a.setTarget(logo);
-        a.start();
+        logo.setImageResource(R.drawable.ic_achivement_star_animate);
+        AnimationDrawable animationDrawable = (AnimationDrawable) logo.getDrawable();
+        animationDrawable.start();
     }
 
     private void setText(String top, String bot)

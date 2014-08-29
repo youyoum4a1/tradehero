@@ -69,7 +69,7 @@ public class QuestListTestingFragment extends DashboardFragment
                 achievementDefDTO.subText = "Come back tomorrow to earn another " + (i+1 >= list.size() ? "surprise " : list.get(i + 1).bonus);
                 achievementDefDTO.virtualDollars = questBonusDTO.bonus;
                 achievementDefDTO.visual =
-                        "http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-11/512/coin-us-dollar-icon.png";
+                        "http://laliberteatoutprix.fr/wp-content/uploads/2013/11/Logo-MoneyManager.png";
                 achievementDefDTO.isQuest = true;
 
                 UserAchievementDTO userAchievementDTO = new UserAchievementDTO();

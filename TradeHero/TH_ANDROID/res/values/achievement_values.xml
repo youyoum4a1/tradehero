@@ -43,4 +43,7 @@
 
   <!-- Include this tag for a indicator for quest -->
   <string name="tag_quest_indicator" translatable="false">is_a_quest_indicator</string>
+
+  <integer name="quest_indicator_animation_start_delay">1000</integer>
+  <integer name="quest_indicator_animation_duration">800</integer>
 </resources>

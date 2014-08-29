@@ -80,8 +80,18 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
     {
         @Override public void onDTOReceived(@NotNull QuestBonusListId key, @NotNull QuestBonusDTOList value)
         {
-            List<QuestBonusDTO> questBonusDTOList = value.getInclusive(userAchievementDTO.contiguousCount);
+            List<QuestBonusDTO> questBonusDTOList = value.getInclusive(userAchievementDTO.contiguousCount, questIndicatorGroupView.getNumberOfIndicators());
+            if(!questBonusDTOList.isEmpty() && questBonusDTOList.get(0).level == userAchievementDTO.contiguousCount)
+            {
+                //Get previous
+                QuestBonusDTO questBonusDTO = value.getPrevious(userAchievementDTO.contiguousCount);
+                if(questBonusDTO != null)
+                {
+                    questBonusDTOList.add(0, questBonusDTO);
+                }
+            }
             questIndicatorGroupView.setQuestBonusDef(questBonusDTOList, userAchievementDTO.contiguousCount);
+            questIndicatorGroupView.revealNext();
         }
 
         @Override public void onErrorThrown(@NotNull QuestBonusListId key, @NotNull Throwable error)
