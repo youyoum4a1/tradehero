@@ -39,37 +39,33 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/achievement_progress_vertical_margin"
           android:layout_marginBottom="@dimen/achievement_progress_vertical_margin"
+          android:background="@drawable/achievement_indicator_bg_line"
           android:layout_below="@id/achievement_virtual_dollar_earned"
           android:orientation="horizontal"
           android:gravity="center"
           tools:ignore="UnknownId">
 
         <com.tradehero.common.widget.QuestIndicatorView
-            android:id="@+id/quest_indicator_1"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
         <com.tradehero.common.widget.QuestIndicatorView
-            android:id="@+id/quest_indicator_2"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
         <com.tradehero.common.widget.QuestIndicatorView
-            android:id="@+id/quest_indicator_3"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
         <com.tradehero.common.widget.QuestIndicatorView
-            android:id="@+id/quest_indicator_4"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
         <com.tradehero.common.widget.QuestIndicatorView
-            android:id="@+id/quest_indicator_5"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"

@@ -35,6 +35,7 @@
 
   <dimen name="achievement_indicator_bg_padding">8dp</dimen>
   <dimen name="achievement_indicator_bg_line_padding">20dp</dimen>
+  <dimen name="achievement_indicator_star_padding">10dp</dimen>
 
 
   <!-- Include this tag for a indicator for achievement -->

@@ -6,36 +6,22 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    tools:background="@color/red">
+    android:gravity="center">
   <TextView
       android:id="@+id/quest_top_indicator"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:singleLine="false"
-      android:gravity="center"
       android:lines="2"
-      android:textSize="@dimen/text_xsmall"
+      style="@style/TH.Achievement.Indicator.Text"
       android:layout_centerHorizontal="true"
-      android:text="Day 1"/>
-
-  <ImageView
-      android:id="@+id/quest_logo_background"
-      android:layout_width="@dimen/medium_logo_w_h"
-      android:layout_height="@dimen/medium_logo_w_h"
-      android:scaleType="fitCenter"
-      android:src="@drawable/grey_circle_solid"
-      android:contentDescription="@null"
-      android:layout_centerHorizontal="true"
-      android:padding="7dp"
-      android:layout_below="@id/quest_top_indicator"/>
+      tools:text="Day 1"/>
 
   <ImageView
       android:id="@+id/quest_logo_indicator"
-      android:layout_width="@dimen/medium_logo_w_h"
-      android:layout_height="@dimen/medium_logo_w_h"
-      android:scaleType="fitCenter"
-      android:src="@drawable/tick_green"
+      android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+      android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+      style="@style/TH.Achievement.Indicator.Image"
       android:contentDescription="@null"
       android:layout_centerHorizontal="true"
       android:layout_below="@id/quest_top_indicator"/>
@@ -45,10 +31,9 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:singleLine="false"
-      android:gravity="center"
       android:lines="2"
-      android:textSize="@dimen/text_xsmall"
-      android:layout_below="@id/quest_logo_background"
+      style="@style/TH.Achievement.Indicator.Text"
+      android:layout_below="@id/quest_logo_indicator"
       android:layout_centerHorizontal="true"
-      android:text="TH$100k"/>
+      tools:text="TH$100k"/>
 </RelativeLayout>

@@ -436,7 +436,7 @@
 
   <style name="TH.Achievement.Indicator.Image" parent="TH.Achievement.Indicator">
     <item name="android:scaleType">fitCenter</item>
-    <item name="android:padding">10dp</item>
+    <item name="android:padding">@dimen/achievement_indicator_star_padding</item>
     <item name="android:background">@drawable/achievement_indicator_bg_padded</item>
     <item name="android:src">@drawable/ic_achievement_star_off</item>
   </style>
@@ -522,6 +522,7 @@
 
   <style name="TH.Achievement.QuestIndicator">
     <item name="android:tag">@string/tag_quest_indicator</item>
+    <item name="android:layout_gravity">center_vertical</item>
   </style>
 
   <style name="TH.BuySellDialogAnimation" parent="android:Theme.Holo.Dialog.NoActionBar">
