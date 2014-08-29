@@ -150,6 +150,9 @@ android {
               srcDir 'src/row/java'
               srcDir 'src/googleplay/java'
             }
+          res {
+            srcDir 'src/googleplay/res'
+          }
         }
 
         china {
@@ -169,6 +172,9 @@ android {
               srcDir 'src/row/java'
               srcDir 'src/samsung/java'
             }
+            res {
+              srcDir 'src/samsung/res'
+            }
         }
 
         amazon {
@@ -178,6 +184,9 @@ android {
             java {
               srcDir 'src/row/java'
               srcDir 'src/amazon/java'
+            }
+            res {
+              srcDir 'src/amazon/res'
             }
         }
 
@@ -189,6 +198,9 @@ android {
               srcDir 'src/row/java'
               srcDir 'src/amazon/java'
             }
+          res {
+            srcDir 'src/amazon/res'
+          }
         }
         //endregion
 

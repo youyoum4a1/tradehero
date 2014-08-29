@@ -1,10 +1,50 @@
 package com.tradehero.th.billing;
 
+import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.amazon.AmazonPurchaseCache;
+import com.tradehero.common.billing.amazon.exception.AmazonExceptionFactory;
+import com.tradehero.common.billing.exception.BillingExceptionFactory;
+import com.tradehero.common.persistence.prefs.StringSetPreference;
+import com.tradehero.th.billing.amazon.ProcessingPurchase;
+import com.tradehero.th.billing.amazon.THAmazonAlertDialogUtil;
+import com.tradehero.th.billing.amazon.THAmazonBillingAvailableTester;
+import com.tradehero.th.billing.amazon.THAmazonBillingAvailableTesterHolder;
+import com.tradehero.th.billing.amazon.THAmazonInteractor;
+import com.tradehero.th.billing.amazon.THAmazonInventoryFetcher;
+import com.tradehero.th.billing.amazon.THAmazonInventoryFetcherHolder;
+import com.tradehero.th.billing.amazon.THAmazonLogicHolder;
+import com.tradehero.th.billing.amazon.THAmazonLogicHolderFull;
+import com.tradehero.th.billing.amazon.THAmazonProductIdentifierFetcher;
+import com.tradehero.th.billing.amazon.THAmazonProductIdentifierFetcherHolder;
+import com.tradehero.th.billing.amazon.THAmazonPurchaseFetcher;
+import com.tradehero.th.billing.amazon.THAmazonPurchaseFetcherHolder;
+import com.tradehero.th.billing.amazon.THAmazonPurchaseReporter;
+import com.tradehero.th.billing.amazon.THAmazonPurchaseReporterHolder;
+import com.tradehero.th.billing.amazon.THAmazonPurchaser;
+import com.tradehero.th.billing.amazon.THAmazonPurchaserHolder;
 import com.tradehero.th.billing.amazon.THAmazonSecurityAlertKnowledge;
+import com.tradehero.th.billing.amazon.THBaseAmazonBillingAvailableTester;
+import com.tradehero.th.billing.amazon.THBaseAmazonBillingAvailableTesterHolder;
+import com.tradehero.th.billing.amazon.THBaseAmazonInteractor;
+import com.tradehero.th.billing.amazon.THBaseAmazonInventoryFetcher;
+import com.tradehero.th.billing.amazon.THBaseAmazonInventoryFetcherHolder;
+import com.tradehero.th.billing.amazon.THBaseAmazonProductIdentifierFetcher;
+import com.tradehero.th.billing.amazon.THBaseAmazonProductIdentifierFetcherHolder;
+import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseFetcher;
+import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseFetcherHolder;
+import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseReporter;
+import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseReporterHolder;
+import com.tradehero.th.billing.amazon.THBaseAmazonPurchaser;
+import com.tradehero.th.billing.amazon.THBaseAmazonPurchaserHolder;
+import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
+import com.tradehero.th.billing.amazon.request.BaseTHUIAmazonRequest;
+import com.tradehero.th.billing.amazon.request.THAmazonRequestFull;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
+import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.AlertPlanServiceWrapperAmazon;
 import com.tradehero.th.persistence.billing.AmazonSKUListCache;
@@ -12,6 +52,7 @@ import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCache;
 import dagger.Module;
 import dagger.Provides;
+import java.util.HashSet;
 import javax.inject.Singleton;
 
 @Module(
@@ -26,80 +67,68 @@ import javax.inject.Singleton;
 )
 public class BillingModule
 {
-    public void test()
-    {
+    public static final String PREF_PROCESSING_PURCHASES = "AMAZON_PROCESSING_PURCHASES";
 
-    }
     //<editor-fold desc="Actors and Action Holders">
-    //@Provides THIABBillingAvailableTester provideBillingAvailableTest(THBaseIABBillingAvailableTester thBaseIABBillingAvailableTester)
-    //{
-    //    return thBaseIABBillingAvailableTester;
-    //}
-    //
-    //@Provides THIABBillingAvailableTesterHolder provideBillingAvailableTesterHolder(THBaseIABBillingAvailableTesterHolder thBaseIABBillingAvailableTesterHolder)
-    //{
-    //    return thBaseIABBillingAvailableTesterHolder;
-    //}
-    //
-    //@Provides THIABProductIdentifierFetcher provideProductIdentifierFetcher(THBaseIABProductIdentifierFetcher thBaseIABProductIdentifierFetcher)
-    //{
-    //    return thBaseIABProductIdentifierFetcher;
-    //}
-    //
-    //@Provides THIABProductIdentifierFetcherHolder provideProductIdentifierFetcherHolder(THBaseIABProductIdentifierFetcherHolder thBaseIABProductIdentifierFetcherHolder)
-    //{
-    //    return thBaseIABProductIdentifierFetcherHolder;
-    //}
-    //
-    //@Provides THIABInventoryFetcher provideInventoryFetcher(THBaseIABInventoryFetcher thBaseIABInventoryFetcher)
-    //{
-    //    return thBaseIABInventoryFetcher;
-    //}
-    //
-    //@Provides THIABInventoryFetcherHolder provideInventoryFetcherHolder(THBaseIABInventoryFetcherHolder thBaseIABInventoryFetcherHolder)
-    //{
-    //    return thBaseIABInventoryFetcherHolder;
-    //}
-    //
-    //@Provides THIABPurchaseFetcher providePurchaseFetcher(THBaseIABPurchaseFetcher thBaseIABPurchaseFetcher)
-    //{
-    //    return thBaseIABPurchaseFetcher;
-    //}
-    //
-    //@Provides THIABPurchaseFetcherHolder providePurchaseFetcherHolder(THBaseIABPurchaseFetcherHolder thBaseIABPurchaseFetcherHolder)
-    //{
-    //    return thBaseIABPurchaseFetcherHolder;
-    //}
-    //
-    //@Provides THIABPurchaser providePurchaser(THBaseIABPurchaser thBaseIABPurchaser)
-    //{
-    //    return thBaseIABPurchaser;
-    //}
-    //
-    //@Provides THIABPurchaserHolder providePurchaserHolder(THBaseIABPurchaserHolder thBaseIABPurchaserHolder)
-    //{
-    //    return thBaseIABPurchaserHolder;
-    //}
-    //
-    //@Provides THIABPurchaseReporter providePurchaseReporter(THBaseIABPurchaseReporter thBaseIABPurchaseReporter)
-    //{
-    //    return thBaseIABPurchaseReporter;
-    //}
-    //
-    //@Provides THIABPurchaseReporterHolder providePurchaseReporterHolder(THBaseIABPurchaseReporterHolder thBaseIABPurchaseReporterHolder)
-    //{
-    //    return thBaseIABPurchaseReporterHolder;
-    //}
-    //
-    //@Provides THIABPurchaseConsumer providePurchaseConsumer(THBaseIABPurchaseConsumer thBaseIABPurchaseConsumer)
-    //{
-    //    return thBaseIABPurchaseConsumer;
-    //}
-    //
-    //@Provides THIABPurchaseConsumerHolder providePurchaseConsumerHolder(THBaseIABPurchaseConsumerHolder thBaseIABPurchaseConsumerHolder)
-    //{
-    //    return thBaseIABPurchaseConsumerHolder;
-    //}
+    @Provides THAmazonBillingAvailableTester provideBillingAvailableTest(THBaseAmazonBillingAvailableTester thBaseAmazonBillingAvailableTester)
+    {
+        return thBaseAmazonBillingAvailableTester;
+    }
+
+    @Provides THAmazonBillingAvailableTesterHolder provideBillingAvailableTesterHolder(THBaseAmazonBillingAvailableTesterHolder thBaseAmazonBillingAvailableTesterHolder)
+    {
+        return thBaseAmazonBillingAvailableTesterHolder;
+    }
+
+    @Provides THAmazonProductIdentifierFetcher provideProductIdentifierFetcher(THBaseAmazonProductIdentifierFetcher thBaseAmazonProductIdentifierFetcher)
+    {
+        return thBaseAmazonProductIdentifierFetcher;
+    }
+
+    @Provides THAmazonProductIdentifierFetcherHolder provideProductIdentifierFetcherHolder(THBaseAmazonProductIdentifierFetcherHolder thBaseAmazonProductIdentifierFetcherHolder)
+    {
+        return thBaseAmazonProductIdentifierFetcherHolder;
+    }
+
+    @Provides THAmazonInventoryFetcher provideInventoryFetcher(THBaseAmazonInventoryFetcher thBaseIABInventoryFetcher)
+    {
+        return thBaseIABInventoryFetcher;
+    }
+
+    @Provides THAmazonInventoryFetcherHolder provideInventoryFetcherHolder(THBaseAmazonInventoryFetcherHolder thBaseAmazonInventoryFetcherHolder)
+    {
+        return thBaseAmazonInventoryFetcherHolder;
+    }
+
+    @Provides THAmazonPurchaseFetcher providePurchaseFetcher(THBaseAmazonPurchaseFetcher thBaseAmazonPurchaseFetcher)
+    {
+        return thBaseAmazonPurchaseFetcher;
+    }
+
+    @Provides THAmazonPurchaseFetcherHolder providePurchaseFetcherHolder(THBaseAmazonPurchaseFetcherHolder thBaseAmazonPurchaseFetcherHolder)
+    {
+        return thBaseAmazonPurchaseFetcherHolder;
+    }
+
+    @Provides THAmazonPurchaser providePurchaser(THBaseAmazonPurchaser thBaseAmazonPurchaser)
+    {
+        return thBaseAmazonPurchaser;
+    }
+
+    @Provides THAmazonPurchaserHolder providePurchaserHolder(THBaseAmazonPurchaserHolder thBaseAmazonPurchaserHolder)
+    {
+        return thBaseAmazonPurchaserHolder;
+    }
+
+    @Provides THAmazonPurchaseReporter providePurchaseReporter(THBaseAmazonPurchaseReporter thBaseAmazonPurchaseReporter)
+    {
+        return thBaseAmazonPurchaseReporter;
+    }
+
+    @Provides THAmazonPurchaseReporterHolder providePurchaseReporterHolder(THBaseAmazonPurchaseReporterHolder thBaseAmazonPurchaseReporterHolder)
+    {
+        return thBaseAmazonPurchaseReporterHolder;
+    }
     //</editor-fold>
 
     @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THAmazonSecurityAlertKnowledge thAmazonSecurityAlertKnowledge)
@@ -112,10 +141,10 @@ public class BillingModule
         return alertPlanServiceWrapperAmazon;
     }
 
-    //@Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
-    //{
-    //    return THIABAlertDialogUtil;
-    //}
+    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THAmazonAlertDialogUtil thAmazonAlertDialogUtil)
+    {
+        return thAmazonAlertDialogUtil;
+    }
 
     //<editor-fold desc="Caches">
     @Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(AmazonSKUListCache amazonSkuListCache)
@@ -139,43 +168,48 @@ public class BillingModule
     }
     //</editor-fold>
 
-    //@Provides BillingExceptionFactory provideBillingExceptionFactory(IABExceptionFactory exceptionFactory)
-    //{
-    //    return exceptionFactory;
-    //}
-    //
-    //@Provides IABExceptionFactory provideIABExceptionFactory(THIABExceptionFactory exceptionFactory)
-    //{
-    //    return exceptionFactory;
-    //}
-    //
-    //@Provides @Singleton THBillingLogicHolder provideTHBillingActor(THIABLogicHolder logicHolder)
-    //{
-    //    return logicHolder;
-    //}
-    //
-    //@Provides @Singleton THIABLogicHolder provideTHIABLogicHolder(THIABLogicHolderFull thiabLogicHolderFull)
-    //{
-    //    return thiabLogicHolderFull;
-    //}
-    //
-    //@Provides @Singleton THBillingInteractor provideTHBillingInteractor(THIABInteractor thiabInteractor)
-    //{
-    //    return thiabInteractor;
-    //}
-    //
-    //@Provides @Singleton THIABInteractor provideTHIABInteractor(THIABBillingInteractor thiabInteractor)
-    //{
-    //    return thiabInteractor;
-    //}
-    //
-    //@Provides THBillingRequest.Builder provideTHBillingRequestBuilder()
-    //{
-    //    return THIABBillingRequestFull.builder();
-    //}
-    //
-    //@Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestTestAvailableBuilder()
-    //{
-    //    return BaseTHUIIABRequest.builder();
-    //}
+    @Provides BillingExceptionFactory provideBillingExceptionFactory(AmazonExceptionFactory exceptionFactory)
+    {
+        return exceptionFactory;
+    }
+
+    @Provides AmazonExceptionFactory provideIABExceptionFactory(THAmazonExceptionFactory exceptionFactory)
+    {
+        return exceptionFactory;
+    }
+
+    @Provides @Singleton THBillingLogicHolder provideTHBillingActor(THAmazonLogicHolder logicHolder)
+    {
+        return logicHolder;
+    }
+
+    @Provides @Singleton THAmazonLogicHolder provideTHIABLogicHolder(THAmazonLogicHolderFull thAmazonLogicHolderFull)
+    {
+        return thAmazonLogicHolderFull;
+    }
+
+    @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THAmazonInteractor thAmazonInteractor)
+    {
+        return thAmazonInteractor;
+    }
+
+    @Provides @Singleton THAmazonInteractor provideTHIABInteractor(THBaseAmazonInteractor thBaseAmazonInteractor)
+    {
+        return thBaseAmazonInteractor;
+    }
+
+    @Provides THBillingRequest.Builder provideTHBillingRequestBuilder()
+    {
+        return THAmazonRequestFull.builder();
+    }
+
+    @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestTestAvailableBuilder()
+    {
+        return BaseTHUIAmazonRequest.builder();
+    }
+
+    @Provides @Singleton @ProcessingPurchase StringSetPreference provideProcessingPurchasePreference(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new StringSetPreference(sharedPreferences, PREF_PROCESSING_PURCHASES, new HashSet<String>());
+    }
 }

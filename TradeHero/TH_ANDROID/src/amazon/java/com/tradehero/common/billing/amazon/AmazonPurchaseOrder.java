@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.amazon;
 
-import com.amazon.device.iap.model.RequestId;
 import com.tradehero.common.billing.PurchaseOrder;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,17 +8,14 @@ public class AmazonPurchaseOrder<AmazonSKUType extends AmazonSKU>
 {
     @NotNull protected final AmazonSKUType sku;
     protected final int quantity;
-    @NotNull protected final RequestId requestId;
 
     //<editor-fold desc="Constructors">
     public AmazonPurchaseOrder(
             @NotNull AmazonSKUType sku,
-            int quantity,
-            @NotNull RequestId requestId)
+            int quantity)
     {
         this.sku = sku;
         this.quantity = quantity;
-        this.requestId = requestId;
     }
     //</editor-fold>
 

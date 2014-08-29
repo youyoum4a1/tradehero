@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AmazonOrderId implements OrderId
 {
-    @NotNull protected final Receipt receipt;
+    @NotNull public final Receipt receipt;
 
     //<editor-fold desc="Constructors">
     public AmazonOrderId(@NotNull Receipt receipt)

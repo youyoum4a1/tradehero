@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.amazon;
 
-import com.amazon.device.iap.model.RequestId;
 import com.tradehero.common.billing.amazon.AmazonPurchaseOrder;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -19,9 +18,10 @@ public class THAmazonPurchaseOrder extends AmazonPurchaseOrder<AmazonSKU>
     public THAmazonPurchaseOrder(
             @NotNull AmazonSKU sku,
             int quantity,
-            @NotNull RequestId requestId)
+            @NotNull OwnedPortfolioId applicablePortfolioId)
     {
-        super(sku, quantity, requestId);
+        super(sku, quantity);
+        this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>
 

@@ -8,6 +8,7 @@ import com.tradehero.th.billing.amazon.THAmazonOrderId;
 import com.tradehero.th.billing.amazon.THAmazonProductDetail;
 import com.tradehero.th.billing.amazon.THAmazonPurchase;
 import com.tradehero.th.billing.amazon.THAmazonPurchaseOrder;
+import com.tradehero.th.billing.amazon.THBaseAmazonPurchase;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import org.jetbrains.annotations.NotNull;
 

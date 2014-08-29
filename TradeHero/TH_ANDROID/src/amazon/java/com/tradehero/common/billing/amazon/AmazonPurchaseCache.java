@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 public class AmazonPurchaseCache<
             AmazonSKUType extends AmazonSKU,
             AmazonOrderIdType extends AmazonOrderId,
-            AmazonPurchaseType extends AmazonPurchase<AmazonSKUType, AmazonOrderIdType>>
+            AmazonPurchaseType extends BaseAmazonPurchase<AmazonSKUType, AmazonOrderIdType>>
         extends ProductPurchaseCache<
             AmazonSKUType,
             AmazonOrderIdType,
