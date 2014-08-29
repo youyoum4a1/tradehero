@@ -5,12 +5,8 @@ import com.tradehero.th.api.ApiTestModule;
 import com.tradehero.th.auth.AuthenticationTestModule;
 import com.tradehero.th.fragments.FragmentTestModule;
 import com.tradehero.th.models.ModelsTestModule;
-<<<<<<< HEAD
-import com.tradehero.th.models.level.LevelTestModule;
 import com.tradehero.th.network.retrofit.RetrofitTestModule;
-=======
 import com.tradehero.th.network.NetworkTestModule;
->>>>>>> develop2.0
 import com.tradehero.th.persistence.PersistenceTestModule;
 import com.tradehero.th.ui.GraphicTestModule;
 import com.tradehero.th.utils.AppUtilsTestModule;
