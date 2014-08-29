@@ -191,11 +191,8 @@ public class AchievementProgressIndicator extends LinearLayout
 
         public void animateOn()
         {
-            AnimationDrawable animationDrawable = new AnimationDrawable();
-            animationDrawable.addFrame(indicatorImageView.getContext().getResources().getDrawable(R.drawable.ic_achievement_star_off), 500);
-            animationDrawable.addFrame(indicatorImageView.getContext().getResources().getDrawable(R.drawable.ic_achievement_star_on), 500);
-            animationDrawable.setOneShot(false);
-            indicatorImageView.setImageDrawable(animationDrawable);
+            indicatorImageView.setImageResource(R.drawable.ic_achivement_star_animate);
+            AnimationDrawable animationDrawable = (AnimationDrawable) indicatorImageView.getDrawable();
             animationDrawable.start();
         }
     }
