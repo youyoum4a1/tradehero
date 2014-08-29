@@ -76,6 +76,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
     protected UserAchievementDTO userAchievementDTO;
     private int mCurrentColor = DEFAULT_FILTER_COLOR;
     private ValueAnimator mAnim;
+    private ValueAnimator colorValueAnimator;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -164,9 +165,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
     {
         if (color != mCurrentColor)
         {
-            ValueAnimator valueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), mCurrentColor, color);
-            valueAnimator.setDuration(500l);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+            colorValueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), mCurrentColor, color);
+            colorValueAnimator.setDuration(500l);
+            colorValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
             {
                 @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
                 {
@@ -174,7 +175,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
                     setColor(color);
                 }
             });
-            valueAnimator.start();
+            colorValueAnimator.start();
             mCurrentColor = color;
         }
     }
@@ -320,6 +321,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
             mAnim.removeAllUpdateListeners();
             mAnim.removeAllListeners();
             mAnim = null;
+        }
+        if(colorValueAnimator != null)
+        {
+            colorValueAnimator.cancel();
+            colorValueAnimator.removeAllUpdateListeners();
+            colorValueAnimator.removeAllListeners();
+            colorValueAnimator = null;
         }
         picasso.cancelRequest(badge);
         super.onDestroyView();
