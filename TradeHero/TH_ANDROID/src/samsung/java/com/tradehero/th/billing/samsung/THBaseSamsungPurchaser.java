@@ -28,7 +28,7 @@ public class THBaseSamsungPurchaser
     implements THSamsungPurchaser
 {
     @NotNull protected final THSamsungExceptionFactory samsungExceptionFactory;
-    @NotNull @ProcessingPurchase protected final StringSetPreference processingPurchaseStringSet;
+    @NotNull protected final StringSetPreference processingPurchaseStringSet;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungPurchaser(
