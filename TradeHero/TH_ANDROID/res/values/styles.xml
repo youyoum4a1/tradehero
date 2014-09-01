@@ -410,6 +410,7 @@
     <item name="android:layout_alignParentTop">true</item>
     <item name="android:layout_marginTop">@dimen/achievement_pulse_circle_margin_top</item>
     <item name="android:contentDescription">@null</item>
+    <item name="android:layerType">hardware</item>
   </style>
 
   <style name="TH.Achievement.Header" parent="TH.Achievement">
