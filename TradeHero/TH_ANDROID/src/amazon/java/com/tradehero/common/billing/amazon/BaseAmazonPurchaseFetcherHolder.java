@@ -74,7 +74,7 @@ abstract public class BaseAmazonPurchaseFetcherHolder<
         {
             if (purchaseFetcher != null)
             {
-                purchaseFetcher.setPurchaseFetchedListener(null);
+                purchaseFetcher.onDestroy();
             }
         }
         purchaseFetchers.clear();

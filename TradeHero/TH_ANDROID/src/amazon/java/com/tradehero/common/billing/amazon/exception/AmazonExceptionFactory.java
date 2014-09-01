@@ -40,6 +40,12 @@ public class AmazonExceptionFactory implements BillingExceptionFactory
     {
         switch (requestStatus)
         {
+            case ALREADY_PURCHASED:
+                return new AmazonAlreadyPurchasedException(message);
+
+            case INVALID_SKU:
+                return new AmazonInvalidSkuException(message);
+
             case FAILED:
                 return new AmazonPurchaseFailedException(message);
 

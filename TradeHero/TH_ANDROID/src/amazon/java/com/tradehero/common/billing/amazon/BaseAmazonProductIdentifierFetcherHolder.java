@@ -74,7 +74,7 @@ abstract public class BaseAmazonProductIdentifierFetcherHolder<
         {
             if (inventoryFetcher != null)
             {
-                inventoryFetcher.setProductIdentifierListener(null);
+                inventoryFetcher.onDestroy();
             }
         }
         skuFetchers.clear();

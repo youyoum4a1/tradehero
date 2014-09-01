@@ -19,6 +19,12 @@ abstract public class BaseAmazonBillingAvailableTester<AmazonExceptionType exten
     }
     //</editor-fold>
 
+    @Override public void onDestroy()
+    {
+        setBillingAvailableListener(null);
+        super.onDestroy();
+    }
+
     @Override @Nullable public OnBillingAvailableListener<AmazonExceptionType> getBillingAvailableListener()
     {
         return availableListener;

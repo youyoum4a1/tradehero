@@ -59,7 +59,7 @@ abstract public class BaseAmazonBillingAvailableTesterHolder<
         {
             if (tester != null)
             {
-                tester.setBillingAvailableListener(null);
+                tester.onDestroy();
             }
         }
         testers.clear();

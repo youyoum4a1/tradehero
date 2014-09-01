@@ -34,6 +34,8 @@ public interface THAmazonLogicHolder
         THAmazonInventoryFetcherHolder,
         THAmazonPurchaseFetcherHolder,
         THAmazonPurchaserHolder,
-        THAmazonPurchaseReporterHolder
+        THAmazonPurchaseReporterHolder,
+        THAmazonPurchaseConsumerHolder
 {
+    void unregisterPurchaseConsumptionListener(int requestCode);
 }

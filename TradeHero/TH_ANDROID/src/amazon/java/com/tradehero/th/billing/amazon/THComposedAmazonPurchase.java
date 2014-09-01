@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.amazon;
 
+import com.amazon.device.iap.model.ProductType;
 import com.amazon.device.iap.model.Receipt;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
@@ -62,5 +63,10 @@ public class THComposedAmazonPurchase implements THAmazonPurchase
     @NotNull @Override public AmazonPurchaseReportDTO getPurchaseReportDTO()
     {
         return purchaseInProcessDTO;
+    }
+
+    @Override public boolean shouldConsume()
+    {
+        return receipt.getProductType().equals(ProductType.CONSUMABLE);
     }
 }

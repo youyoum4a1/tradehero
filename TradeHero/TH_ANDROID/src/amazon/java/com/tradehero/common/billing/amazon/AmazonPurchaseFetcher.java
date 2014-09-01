@@ -14,6 +14,6 @@ public interface AmazonPurchaseFetcher<
         AmazonOrderIdType,
         AmazonPurchaseType,
         AmazonExceptionType>,
-        PurchasingListener
+        AmazonActor, PurchasingListener
 {
 }

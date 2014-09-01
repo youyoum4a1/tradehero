@@ -12,6 +12,6 @@ public interface AmazonInventoryFetcher<
         AmazonSKUType,
         AmazonProductDetailsType,
         AmazonExceptionType>,
-        PurchasingListener
+        AmazonActor, PurchasingListener
 {
 }

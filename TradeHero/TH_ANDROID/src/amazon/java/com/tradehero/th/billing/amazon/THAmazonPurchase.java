@@ -15,4 +15,5 @@ public interface THAmazonPurchase
     void setApplicablePortfolioId(@NotNull OwnedPortfolioId applicablePortfolioId);
     @NotNull @Override AmazonPurchaseReportDTO getPurchaseReportDTO();
     @NotNull AmazonPurchaseInProcessDTO getPurchaseToSaveDTO();
+    boolean shouldConsume();
 }

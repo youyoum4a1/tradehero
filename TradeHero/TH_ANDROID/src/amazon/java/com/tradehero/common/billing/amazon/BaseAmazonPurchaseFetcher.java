@@ -26,6 +26,7 @@ abstract public class BaseAmazonPurchaseFetcher<
 {
     protected boolean fetching;
     @NotNull protected final List<AmazonPurchaseIncompleteType> fetchedIncompletePurchases;
+    @NotNull protected final List<AmazonPurchaseIncompleteType> fetchedCanceledPurchases;
     @NotNull protected final List<AmazonPurchaseType> purchases;
     @Nullable protected OnPurchaseFetchedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> fetchListener;
 
@@ -34,9 +35,16 @@ abstract public class BaseAmazonPurchaseFetcher<
     {
         super(context);
         fetchedIncompletePurchases = new ArrayList<>();
+        fetchedCanceledPurchases = new ArrayList<>();
         purchases = new ArrayList<>();
     }
     //</editor-fold>
+
+    @Override public void onDestroy()
+    {
+        setPurchaseFetchedListener(null);
+        super.onDestroy();
+    }
 
     @Override public void fetchPurchases(int requestCode)
     {
@@ -83,7 +91,15 @@ abstract public class BaseAmazonPurchaseFetcher<
     {
         for (Receipt receipt : receipts)
         {
-            fetchedIncompletePurchases.add(createIncompletePurchase(receipt));
+            if (receipt.isCanceled())
+            {
+                fetchedCanceledPurchases.add(createIncompletePurchase(receipt));
+                // TODO do something with those?
+            }
+            else
+            {
+                fetchedIncompletePurchases.add(createIncompletePurchase(receipt));
+            }
         }
     }
 

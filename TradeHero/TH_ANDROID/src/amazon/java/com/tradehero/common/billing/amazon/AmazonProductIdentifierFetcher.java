@@ -14,6 +14,6 @@ public interface AmazonProductIdentifierFetcher<
         AmazonSKUType,
         AmazonSKUListType,
         AmazonExceptionType>,
-        PurchasingListener
+        AmazonActor, PurchasingListener
 {
 }

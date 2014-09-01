@@ -3,7 +3,10 @@ package com.tradehero.th.billing.amazon;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Handler;
+import com.amazon.device.iap.model.ProductType;
 import com.amazon.device.iap.model.RequestId;
+import com.tradehero.common.billing.amazon.AmazonConstants;
+import com.tradehero.common.billing.amazon.AmazonPurchaseConsumer;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
@@ -14,6 +17,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.THProductDetailDomainPredicate;
+import com.tradehero.th.billing.amazon.request.THAmazonRequest;
 import com.tradehero.th.billing.amazon.request.THAmazonRequestFull;
 import com.tradehero.th.persistence.billing.AmazonSKUListCache;
 import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
@@ -39,6 +43,7 @@ public class THAmazonLogicHolderFull
         AmazonException>
     implements THAmazonLogicHolder
 {
+    @NotNull private final THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder;
     @NotNull protected final Handler uiHandler;
 
     @NotNull protected Map<RequestId, Integer> requestIdsToCode;
@@ -53,6 +58,7 @@ public class THAmazonLogicHolderFull
             @NotNull THAmazonPurchaseFetcherHolder thAmazonPurchaseFetcherHolder,
             @NotNull THAmazonPurchaserHolder thAmazonPurchaserHolder,
             @NotNull THAmazonPurchaseReporterHolder thAmazonPurchaseReporterHolder,
+            @NotNull THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder,
             @NotNull @ForUIThread Handler uiHandler)
     {
         super(
@@ -64,14 +70,43 @@ public class THAmazonLogicHolderFull
                 thAmazonPurchaseFetcherHolder,
                 thAmazonPurchaserHolder,
                 thAmazonPurchaseReporterHolder);
+        this.thAmazonPurchaseConsumerHolder = thAmazonPurchaseConsumerHolder;
         this.uiHandler = uiHandler;
         this.requestIdsToCode = new HashMap<>();
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Life Cycle">
+    @Override public void onDestroy()
+    {
+        thAmazonPurchaseConsumerHolder.onDestroy();
+        super.onDestroy();
     }
     //</editor-fold>
 
     @Override public String getBillingHolderName(Resources resources)
     {
         return resources.getString(R.string.th_amazon_logic_holder_name);
+    }
+
+    //<editor-fold desc="Request Code Management">
+    @Override public boolean isUnusedRequestCode(int requestCode)
+    {
+        return super.isUnusedRequestCode(requestCode)
+                && thAmazonPurchaseConsumerHolder.isUnusedRequestCode(requestCode);
+    }
+
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        super.forgetRequestCode(requestCode);
+        thAmazonPurchaseConsumerHolder.forgetRequestCode(requestCode);
+    }
+    //</editor-fold>
+
+    @Override public void registerListeners(int requestCode, @NotNull THAmazonRequestFull billingRequest)
+    {
+        super.registerListeners(requestCode, billingRequest);
+        registerConsumptionFinishedListener(requestCode, billingRequest.consumptionFinishedListener);
     }
 
     @Override public List<THAmazonProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
@@ -93,7 +128,12 @@ public class THAmazonLogicHolderFull
         THAmazonRequestFull billingRequest = billingRequests.get(requestCode);
         if (!launched && billingRequest != null)
         {
-            if (billingRequest.restorePurchase && billingRequest.fetchedPurchases != null)
+            if (billingRequest.consumePurchase && billingRequest.purchaseToConsume != null)
+            {
+                launchConsumeSequence(requestCode, billingRequest.purchaseToConsume);
+                launched = true;
+            }
+            else if (billingRequest.restorePurchase && billingRequest.fetchedPurchases != null)
             {
                 boolean prepared = billingRequest.fetchedPurchases.size() > 0 && prepareToRestoreOnePurchase(requestCode, billingRequest);
                 if (prepared)
@@ -108,85 +148,6 @@ public class THAmazonLogicHolderFull
             }
         }
         return launched;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Launch Sequence Methods">
-    /**
-     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
-     * @param requestCode
-     */
-    @Override public void launchBillingAvailableTestSequence(final int requestCode)
-    {
-        uiHandler.post(new Runnable()
-        {
-            public void run()
-            {
-                THAmazonLogicHolderFull.super.launchBillingAvailableTestSequence(requestCode);
-            }
-        });
-    }
-
-    /**
-     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
-     * @param requestCode
-     */
-    @Override public void launchProductIdentifierFetchSequence(final int requestCode)
-    {
-        uiHandler.post(new Runnable()
-        {
-            public void run()
-            {
-                THAmazonLogicHolderFull.super.launchProductIdentifierFetchSequence(requestCode);
-            }
-        });
-    }
-
-    /**
-     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
-     * @param requestCode
-     * @param allIds
-     */
-    @Override public void launchInventoryFetchSequence(final int requestCode, final List<AmazonSKU> allIds)
-    {
-        uiHandler.post(new Runnable()
-        {
-            public void run()
-            {
-                THAmazonLogicHolderFull.super.launchInventoryFetchSequence(requestCode, allIds);
-            }
-        });
-    }
-
-    /**
-     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
-     * @param requestCode
-     * @param purchaseOrder
-     */
-    @Override public void launchPurchaseSequence(final int requestCode, final THAmazonPurchaseOrder purchaseOrder)
-    {
-        uiHandler.post(new Runnable()
-        {
-            public void run()
-            {
-                THAmazonLogicHolderFull.super.launchPurchaseSequence(requestCode, purchaseOrder);
-            }
-        });
-    }
-
-    /**
-     * We need to post otherwise the iap helper may forget the listener if this method is launched right after another
-     * @param requestCode
-     */
-    @Override public void launchFetchPurchaseSequence(final int requestCode)
-    {
-        uiHandler.post(new Runnable()
-        {
-            @Override public void run()
-            {
-                THAmazonLogicHolderFull.super.launchFetchPurchaseSequence(requestCode);
-            }
-        });
     }
     //</editor-fold>
 
@@ -210,6 +171,11 @@ public class THAmazonLogicHolderFull
     {
         super.prepareRequestForNextRunAfterPurchaseReportedSuccess(requestCode, reportedPurchase,
                 updatedUserPortfolio);
+        THAmazonRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.purchaseToConsume = reportedPurchase;
+        }
     }
 
     @Override protected void prepareRequestForNextRunAfterPurchaseReportedFailed(int requestCode, THAmazonPurchase reportedPurchase, AmazonException error)
@@ -227,12 +193,147 @@ public class THAmazonLogicHolderFull
             }
         }
     }
+
+    protected void handlePurchaseConsumed(int requestCode, THAmazonPurchase purchase)
+    {
+        notifyPurchaseConsumed(requestCode, purchase);
+        prepareRequestForNextRunAfterPurchaseConsumed(requestCode, purchase);
+        runInternal(requestCode);
+    }
+
+    protected void handlePurchaseNeedNotBeConsumed(int requestCode, THAmazonPurchase purchase)
+    {
+        prepareRequestForNextRunAfterPurchaseConsumed(requestCode, purchase);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseConsumed(int requestCode, THAmazonPurchase purchase)
+    {
+        THAmazonRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.consumePurchase = false;
+            if (billingRequest.restorePurchase)
+            {
+                if (purchase != null && purchase.shouldConsume())
+                {
+                    billingRequest.restoredPurchases.add(purchase);
+                }
+                prepareToRestoreOnePurchase(requestCode, billingRequest);
+            }
+        }
+    }
+
+    protected void handlePurchaseConsumedFailed(int requestCode, THAmazonPurchase purchase, AmazonException exception)
+    {
+        notifyPurchaseConsumedFailed(requestCode, purchase, exception);
+        prepareRequestForNextRunAfterPurchaseConsumedFailed(requestCode, purchase, exception);
+        runInternal(requestCode);
+    }
+
+    protected void prepareRequestForNextRunAfterPurchaseConsumedFailed(int requestCode, THAmazonPurchase purchase, AmazonException exception)
+    {
+        THAmazonRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.consumePurchase = false;
+            if (billingRequest.restorePurchase)
+            {
+                Timber.e(exception, "Failed to consume a purchase to be restored");
+                billingRequest.restoreFailedPurchases.add(purchase);
+                prepareToRestoreOnePurchase(requestCode, billingRequest);
+            }
+        }
+    }
     //</editor-fold>
 
     //<editor-fold desc="Fetch Inventory">
     @Override protected void handleInventoryFetchedSuccess(int requestCode, List<AmazonSKU> productIdentifiers, Map<AmazonSKU, THAmazonProductDetail> inventory)
     {
         super.handleInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Consume Purchase">
+    @Override public AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKU, THAmazonOrderId, THAmazonPurchase, AmazonException> getConsumptionFinishedListener(int requestCode)
+    {
+        THAmazonRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest == null)
+        {
+            return null;
+        }
+        return billingRequest.consumptionFinishedListener;
+    }
+
+    @Override public void registerConsumptionFinishedListener(int requestCode,
+            AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKU, THAmazonOrderId, THAmazonPurchase, AmazonException> consumptionFinishedListener)
+    {
+        THAmazonRequest billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.consumptionFinishedListener = consumptionFinishedListener;
+            thAmazonPurchaseConsumerHolder.registerConsumptionFinishedListener(requestCode, createPurchaseConsumptionListener());
+        }
+    }
+
+    protected AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKU, THAmazonOrderId, THAmazonPurchase, AmazonException> createPurchaseConsumptionListener()
+    {
+        return new AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKU, THAmazonOrderId, THAmazonPurchase, AmazonException>()
+        {
+            @Override public void onPurchaseConsumed(int requestCode, THAmazonPurchase purchase)
+            {
+                handlePurchaseConsumed(requestCode, purchase);
+            }
+
+            @Override public void onPurchaseConsumeFailed(int requestCode, THAmazonPurchase purchase, AmazonException exception)
+            {
+                handlePurchaseConsumedFailed(requestCode, purchase, exception);
+            }
+        };
+    }
+
+    @Override public void unregisterPurchaseConsumptionListener(int requestCode)
+    {
+        thAmazonPurchaseConsumerHolder.forgetRequestCode(requestCode);
+        THAmazonRequestFull billingRequest = billingRequests.get(requestCode);
+        if (billingRequest != null)
+        {
+            billingRequest.consumptionFinishedListener = null;
+        }
+    }
+
+    protected void notifyPurchaseConsumed(int requestCode, THAmazonPurchase purchase)
+    {
+        AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKU, THAmazonOrderId, THAmazonPurchase, AmazonException> consumptionFinishedListener = getConsumptionFinishedListener(requestCode);
+        if (consumptionFinishedListener != null)
+        {
+            consumptionFinishedListener.onPurchaseConsumed(requestCode, purchase);
+        }
+        unregisterPurchaseConsumptionListener(requestCode);
+    }
+
+    protected void notifyPurchaseConsumedFailed(int requestCode, THAmazonPurchase purchase, AmazonException exception)
+    {
+        AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKU, THAmazonOrderId, THAmazonPurchase, AmazonException> consumptionFinishedListener = getConsumptionFinishedListener(requestCode);
+        if (consumptionFinishedListener != null)
+        {
+            consumptionFinishedListener.onPurchaseConsumeFailed(requestCode, purchase, exception);
+        }
+        unregisterPurchaseConsumptionListener(requestCode);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Launch Sequence Methods">
+    @Override public void launchConsumeSequence(int requestCode, THAmazonPurchase purchase)
+    {
+        if (purchase != null && purchase.shouldConsume())
+        {
+            thAmazonPurchaseConsumerHolder.launchConsumeSequence(requestCode, purchase);
+        }
+        else
+        {
+            handlePurchaseNeedNotBeConsumed(requestCode, purchase);
+        }
     }
     //</editor-fold>
 

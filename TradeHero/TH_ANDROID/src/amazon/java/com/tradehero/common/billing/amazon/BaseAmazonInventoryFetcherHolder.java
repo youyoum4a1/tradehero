@@ -73,7 +73,7 @@ abstract public class BaseAmazonInventoryFetcherHolder<
         {
             if (inventoryFetcher != null)
             {
-                inventoryFetcher.setInventoryFetchedListener(null);
+                inventoryFetcher.onDestroy();
             }
         }
         inventoryFetchers.clear();

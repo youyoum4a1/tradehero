@@ -41,6 +41,12 @@ abstract public class BaseAmazonInventoryFetcher<
     }
     //</editor-fold>
 
+    @Override public void onDestroy()
+    {
+        setInventoryFetchedListener(null);
+        super.onDestroy();
+    }
+
     @Override @Nullable public OnInventoryFetchedListener<AmazonSKUType, AmazonProductDetailType, AmazonExceptionType> getInventoryFetchedListener()
     {
         return inventoryFetchedListener;

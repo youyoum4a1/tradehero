@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.amazon;
 
+import com.amazon.device.iap.model.ProductType;
 import com.amazon.device.iap.model.PurchaseResponse;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchase;
 import com.tradehero.common.billing.amazon.AmazonSKU;
@@ -75,5 +76,10 @@ public class THBaseAmazonPurchase extends BaseAmazonPurchase<AmazonSKU, THAmazon
         }
         setApplicablePortfolioId(purchaseInProcessDTO.applicablePortfolioId);
         setUserToFollow(purchaseInProcessDTO.userToFollow);
+    }
+
+    @Override public boolean shouldConsume()
+    {
+        return purchaseResponse.getReceipt().getProductType().equals(ProductType.CONSUMABLE);
     }
 }

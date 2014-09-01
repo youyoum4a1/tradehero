@@ -40,6 +40,12 @@ abstract public class BaseAmazonProductIdentifierFetcher<
     }
     //</editor-fold>
 
+    @Override public void onDestroy()
+    {
+        setProductIdentifierListener(null);
+        super.onDestroy();
+    }
+
     @Override @Nullable public OnProductIdentifierFetchedListener<AmazonSKUListKeyType, AmazonSKUType, AmazonSKUListType, AmazonExceptionType> getProductIdentifierListener()
     {
         return fetchedListener;

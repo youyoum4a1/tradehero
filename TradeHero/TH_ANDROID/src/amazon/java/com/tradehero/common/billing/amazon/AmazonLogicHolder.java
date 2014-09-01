@@ -32,6 +32,11 @@ public interface AmazonLogicHolder<
                 AmazonOrderIdType,
                 AmazonPurchaseType,
                 BillingRequestType,
+                AmazonExceptionType>,
+        AmazonPurchaseConsumerHolder<
+                AmazonSKUType,
+                AmazonOrderIdType,
+                AmazonPurchaseType,
                 AmazonExceptionType>
 {
 }

@@ -73,11 +73,11 @@ abstract public class BaseAmazonPurchaserHolder<
 
     @Override public void onDestroy()
     {
-        for (AmazonPurchaserType iabPurchaser: purchasers.values())
+        for (AmazonPurchaserType purchaser: purchasers.values())
         {
-            if (iabPurchaser != null)
+            if (purchaser != null)
             {
-                iabPurchaser.setPurchaseFinishedListener(null);
+                purchaser.onDestroy();
             }
         }
         purchasers.clear();

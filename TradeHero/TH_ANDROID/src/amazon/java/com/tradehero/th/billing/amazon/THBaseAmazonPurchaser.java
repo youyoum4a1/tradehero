@@ -5,6 +5,7 @@ import com.amazon.device.iap.model.PurchaseResponse;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaser;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
+import com.tradehero.common.billing.amazon.exception.AmazonPurchaseCanceledException;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
@@ -50,6 +51,11 @@ public class THBaseAmazonPurchaser
         return amazonExceptionFactory.create(requestStatus, "Failed to purchase " + purchaseOrder.getProductIdentifier().skuId);
     }
 
+    @Override protected AmazonException createAmazonCanceledException()
+    {
+        return new AmazonPurchaseCanceledException("Purchase canceled by user");
+    }
+
     @Override protected void handlePurchaseFinished(THAmazonPurchase purchase)
     {
         savePurchaseInPref(purchase);
@@ -59,6 +65,7 @@ public class THBaseAmazonPurchaser
     protected void savePurchaseInPref(THAmazonPurchase purchase)
     {
         Timber.d("Saving purchase %s", purchase);
+
         String stringedPurchase = null;
         try
         {

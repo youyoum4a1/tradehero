@@ -21,6 +21,10 @@ public interface THUIAmazonRequest
             THAmazonOrderId,
             THAmazonPurchase,
             AmazonException>,
-        UIAmazonRequest
+        UIAmazonRequest<
+                AmazonSKU,
+                THAmazonOrderId,
+                THAmazonPurchase,
+                AmazonException>
 {
 }

@@ -32,6 +32,12 @@ abstract public class BaseAmazonPurchaser<
     }
     //</editor-fold>
 
+    @Override public void onDestroy()
+    {
+        setPurchaseFinishedListener(null);
+        super.onDestroy();
+    }
+
     @Override @Nullable public OnPurchaseFinishedListener<AmazonSKUType, AmazonPurchaseOrderType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> getPurchaseFinishedListener()
     {
         return this.purchaseFinishedListener;
@@ -61,9 +67,16 @@ abstract public class BaseAmazonPurchaser<
         switch (purchaseResponse.getRequestStatus())
         {
             case SUCCESSFUL:
-                AmazonPurchaseType purchase = createAmazonPurchase(purchaseResponse);
-                handlePurchaseFinished(purchase);
-                notifyPurchaseFinished(purchase);
+                if (purchaseResponse.getReceipt().isCanceled())
+                {
+                    notifyPurchaseFailed(createAmazonCanceledException());
+                }
+                else
+                {
+                    AmazonPurchaseType purchase = createAmazonPurchase(purchaseResponse);
+                    handlePurchaseFinished(purchase);
+                    notifyPurchaseFinished(purchase);
+                }
                 break;
             case FAILED:
             case NOT_SUPPORTED:
@@ -74,6 +87,7 @@ abstract public class BaseAmazonPurchaser<
 
     abstract protected AmazonPurchaseType createAmazonPurchase(PurchaseResponse purchaseResponse);
     abstract protected AmazonExceptionType createAmazonException(PurchaseResponse.RequestStatus status);
+    abstract protected AmazonExceptionType createAmazonCanceledException();
 
     protected void handlePurchaseFinished(AmazonPurchaseType purchase)
     {

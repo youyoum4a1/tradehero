@@ -12,7 +12,7 @@ import com.tradehero.common.billing.RequestCodeActor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-abstract public class BaseAmazonActor implements PurchasingListener, RequestCodeActor
+abstract public class BaseAmazonActor implements PurchasingListener, AmazonActor
 {
     @NotNull protected Context appContext;
     private int activityRequestCode;
@@ -39,7 +39,7 @@ abstract public class BaseAmazonActor implements PurchasingListener, RequestCode
         this.activityRequestCode = requestCode;
     }
 
-    public void onDestroy()
+    @Override public void onDestroy()
     {
         middlePurchasingListener.setInnerListener(null);
         currentRequestId = null;
