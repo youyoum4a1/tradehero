@@ -36,6 +36,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
@@ -199,35 +200,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         pushFollowerFragment();
     }
 
-    @Override public void onDefaultPortfolioClicked()
+    @Override public void onAchievementClicked()
     {
-        if (portfolioCompactDTOs == null || portfolioCompactDTOs.size() < 1 || portfolioCompactDTOs.get(0) == null)
-        {
-            // HACK, instead we should test for Default title on PortfolioDTO
-            THToast.show("Not enough data, try again");
-        }
-        else if (shownUserBaseKey == null)
-        {
-            Timber.e(new NullPointerException("shownUserBaseKey is null"), "");
-        }
-        else if (portfolioCompactListCache == null)
-        {
-            Timber.e(new NullPointerException("portfolioCompactListCache is null"), "");
-        }
-        else if (portfolioCompactListCache.get() == null)
-        {
-            Timber.e(new NullPointerException("portfolioCompactListCache.get() is null"), "");
-        }
-        else
-        {
-            @Nullable PortfolioCompactDTO defaultPortfolio = portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey);
-            if (defaultPortfolio != null)
-            {
-                pushPositionListFragment(new OwnedPortfolioId(
-                        shownUserBaseKey.key,
-                        defaultPortfolio.id));
-            }
-        }
+        pushAchievementFragment();
     }
 
     @Override public void onEditProfileClicked()
@@ -261,6 +236,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+    }
+
+    protected void pushAchievementFragment()
+    {
+        Bundle bundle = new Bundle();
+        AchievementListFragment.putUserId(bundle, mIsOtherProfile? shownUserBaseKey : currentUserId.toUserBaseKey());
+        getDashboardNavigator().pushFragment(AchievementListFragment.class, bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

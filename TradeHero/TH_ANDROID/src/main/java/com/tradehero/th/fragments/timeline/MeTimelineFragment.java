@@ -13,7 +13,7 @@ import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
-import com.tradehero.th.fragments.achievement.AchievementListFragment;
+import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
@@ -77,14 +77,7 @@ public class MeTimelineFragment extends TimelineFragment
         switch (item.getItemId())
         {
             case R.id.action_bar_home_icon:
-                //getDashboardNavigator().pushFragment(HomeFragment.class);
-                //AbstractAchievementDialogFragment a = achievementDialogFragmentCreatorLazy.get().newInstance(new UserAchievementId(1));
-                //if (a != null)
-                //{
-                //    a.show(getFragmentManager(), "test");
-                //}
-
-                getDashboardNavigator().pushFragment(AchievementListFragment.class);
+                getDashboardNavigator().pushFragment(HomeFragment.class);
                 return true;
             default:
                 break;

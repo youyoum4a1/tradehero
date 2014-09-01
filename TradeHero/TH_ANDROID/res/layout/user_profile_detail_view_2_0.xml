@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:background="@color/number_green">
+        tools:background="@color/light_grey">
 
       <RelativeLayout
           android:layout_width="match_parent"
@@ -34,61 +34,46 @@
             tools:src="@drawable/avatar"
             android:contentDescription="@null"/>
 
-        <LinearLayout
-            android:id="@+id/name_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_toRightOf="@+id/user_profile_avatar"
+        <ImageView
+            android:id="@+id/user_profile_edit"
+            android:layout_width="@dimen/small_icon_w_h"
+            android:layout_height="@dimen/small_icon_w_h"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:scaleType="fitCenter"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/basic_transparent_selector"
             android:layout_marginTop="@dimen/common_margin_10"
-            android:paddingLeft="@dimen/common_margin_15">
-
-          <TextView
-              android:id="@+id/user_profile_display_name"
-              style="@style/UserProfile.Contained.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              tools:text="+408%"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/roi_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_toRightOf="@+id/user_profile_avatar"
-            android:layout_below="@+id/name_layout"
-            android:paddingLeft="@dimen/common_margin_15">
-
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              tools:text="ROI"
-              android:minWidth="70dp"
-              android:text="@string/user_profile_roi_below"
-              style="@style/UserProfile.Contained.Value"
-              android:gravity="left"/>
-
-          <TextView
-              android:id="@+id/user_profile_roi"
-              style="@style/UserProfile.Contained.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              tools:text="+408%"/>
-
-        </LinearLayout>
+            android:src="@drawable/ic_action_content_edit"
+            android:visibility="visible"/>
 
         <TextView
-            android:id="@+id/user_profile_edit"
+            android:id="@+id/user_profile_display_name"
+            style="@style/UserProfile.Contained.Value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/roi_layout"
+            android:gravity="left|center_vertical"
             android:layout_toRightOf="@+id/user_profile_avatar"
-            android:layout_marginLeft="@dimen/common_margin_15"
-            android:text="@string/timeline_menu_edit"
-            android:textColor="@color/button_blue"
-            android:visibility="gone"/>
+            android:layout_toLeftOf="@id/user_profile_edit"
+            android:layout_marginTop="@dimen/common_margin_10"
+            tools:text="Lorem ipsum dolor sit amet contentulla"/>
+
+
+        <TextView
+            android:id="@+id/user_profile_roi"
+            style="@style/UserProfile.Contained.Value"
+            android:layout_toRightOf="@+id/user_profile_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_profile_display_name"
+            tools:text="+408%"/>
+
+
+        <!--<include layout="@layout/user_level_progressbar"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_below="@id/user_profile_roi"-->
+            <!--android:layout_toRightOf="@id/user_profile_avatar"-->
+            <!--/>-->
 
       </RelativeLayout>
 

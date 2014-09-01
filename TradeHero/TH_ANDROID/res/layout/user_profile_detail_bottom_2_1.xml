@@ -9,51 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:baselineAligned="false">
-
-      <LinearLayout
-          android:id="@+id/user_profile_followers_count_wrapper"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:orientation="horizontal"
-          android:layout_weight="1"
-          android:background="@drawable/basic_transparent_selector"
-          android:addStatesFromChildren="true"
-          android:gravity="center"
-          >
-
-        <TextView
-            android:id="@+id/user_profile_followers_count"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            tools:text="299"
-            style="@style/UserProfile.Contained.Value"
-            android:gravity="center"
-            />
-
-        <TextView
-            android:layout_height="wrap_content"
-            tools:text="Followers"
-            android:text="@string/user_profile_count_followers"
-            android:layout_width="wrap_content"
-            style="@style/UserProfile.Contained.Header"
-            android:layout_marginLeft="@dimen/common_margin_4"
-            android:gravity="center"
-            />
-
-      </LinearLayout>
+        android:baselineAligned="false"
+        tools:background="@color/light_grey">
 
       <LinearLayout
           android:id="@+id/user_profile_heroes_count_wrapper"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:orientation="horizontal"
           android:layout_weight="1"
-          android:background="@drawable/basic_transparent_selector"
-          android:addStatesFromChildren="true"
-          android:gravity="center"
+          style="@style/UserProfile.BottomButtonBar"
           >
 
         <TextView
@@ -71,6 +35,36 @@
             tools:text="Heroes"
             android:text="@string/user_profile_count_heroes"
             style="@style/UserProfile.Contained.Header"
+            android:drawableTop="@drawable/ic_profile_heroes"
+            android:layout_marginLeft="@dimen/common_margin_4"
+            android:gravity="center"
+            />
+
+      </LinearLayout>
+      <LinearLayout
+          android:id="@+id/user_profile_followers_count_wrapper"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          style="@style/UserProfile.BottomButtonBar"
+          >
+
+        <TextView
+            android:id="@+id/user_profile_followers_count"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            tools:text="299"
+            style="@style/UserProfile.Contained.Value"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_height="wrap_content"
+            tools:text="Followers"
+            android:text="@string/user_profile_count_followers"
+            android:layout_width="wrap_content"
+            style="@style/UserProfile.Contained.Header"
+            android:drawableTop="@drawable/ic_profile_followers"
             android:layout_marginLeft="@dimen/common_margin_4"
             android:gravity="center"
             />
@@ -78,19 +72,15 @@
       </LinearLayout>
 
       <LinearLayout
-          android:id="@+id/user_profile_trade_count_wrapper"
+          android:id="@+id/user_profile_achievement_count_wrapper"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:orientation="horizontal"
           android:layout_weight="1"
-          android:background="@drawable/basic_transparent_selector"
-          android:addStatesFromChildren="true"
-          android:gravity="center"
+          style="@style/UserProfile.BottomButtonBar"
           >
 
         <TextView
-            android:id="@+id/user_profile_trade_count"
+            android:id="@+id/user_profile_achievement_count"
             style="@style/UserProfile.Contained.Value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -101,10 +91,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Trades"
+            tools:text="Achievements"
             android:gravity="center"
-            android:text="@string/user_profile_count_trades"
+            android:text="@string/user_profile_achievements_count"
             style="@style/UserProfile.Contained.Header"
+            android:drawableTop="@drawable/ic_profile_achievements"
             android:layout_marginLeft="@dimen/common_margin_4"
             />
 

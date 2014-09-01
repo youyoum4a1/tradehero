@@ -17,7 +17,6 @@ import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.models.number.THSignedNumber;
-import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
@@ -27,10 +26,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
     @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
     @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
-    @InjectView(R.id.user_profile_trade_count_wrapper) @Optional protected View tradesCountWrapper;
-    @InjectView(R.id.user_profile_trade_count) @Optional protected TextView tradesCount;
-    @InjectView(R.id.user_profile_exchanges_count_wrapper) @Optional protected View exchangesCountWrapper;
-    @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
+    @InjectView(R.id.user_profile_achievement_count) @Optional protected TextView achievementCount;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     @Inject GraphicUtil graphicUtil;
@@ -65,12 +61,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @Override public void display(final UserProfileDTO dto)
     {
         super.display(dto);
-        displayProfitFromTrades();
         displayTotalWealth();
         displayAdditionalCash();
         displayCashOnHand();
-        displayExchangesCount();
-        displayTradesCount();
+        displayAchievementCount();
         loadBgPicture();
     }
 
@@ -114,43 +108,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                     .resize(profileTop.getWidth(), profileTop.getHeight())
                     .centerCrop()
                     .into(topDefaultBackgroundTarget);
-        }
-    }
-
-    protected void displayProfitFromTrades()
-    {
-        if (profitFromTrades != null)
-        {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
-            {
-                Double pl = userProfileDTO.portfolio.plSinceInception;
-                if (pl == null)
-                {
-                    pl = 0.0;
-                }
-                THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
-                        .withSign()
-                        .signTypePlusMinusAlways()
-                        .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build();
-                profitFromTrades.setText(thPlSinceInception.toString());
-                profitFromTrades.setTextColor(thPlSinceInception.getColor());
-                if (profitValue != null)
-                {
-                    profitValue.setText(thPlSinceInception.toString());
-                    profitValue.setTextColor(thPlSinceInception.getColor());
-                }
-            }
-            else
-            {
-                profitFromTrades.setText(R.string.na);
-                profitFromTrades.setTextColor(context.getResources().getColor(R.color.black));
-                if (profitValue != null)
-                {
-                    profitValue.setText(R.string.na);
-                    profitValue.setTextColor(context.getResources().getColor(R.color.black));
-                }
-            }
         }
     }
 
@@ -208,33 +165,12 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         }
     }
 
-    protected void displayExchangesCount()
+    protected void displayAchievementCount()
     {
-        if (exchangesCount != null)
+        if (achievementCount != null)
         {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
-            {
-                exchangesCount.setText(Integer.toString(userProfileDTO.portfolio.countExchanges));
-            }
-            else
-            {
-                exchangesCount.setText(R.string.na);
-            }
-        }
-    }
-
-    protected void displayTradesCount()
-    {
-        if (tradesCount != null)
-        {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
-            {
-                tradesCount.setText(Integer.toString(userProfileDTO.portfolio.countTrades));
-            }
-            else
-            {
-                tradesCount.setText(R.string.na);
-            }
+            //TODO
+            achievementCount.setText(String.valueOf(0));
         }
     }
 
@@ -272,7 +208,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     {
     }
 
-    @OnClick(R.id.user_profile_trade_count_wrapper) @Optional
+    @OnClick(R.id.user_profile_achievement_count_wrapper) @Optional
     @Override protected void notifyDefaultPortfolioClicked()
     {
         super.notifyDefaultPortfolioClicked();

@@ -15,17 +15,17 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
+import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class AchievementListFragment extends DashboardFragment
 {
-    private static final int MENU_TEST = 19841223;
+    private static final String BUNDLE_KEY_USER_ID = AchievementListFragment.class.getName() + ".userId";
 
     @InjectView(android.R.id.list) protected AbsListView listView;
     @InjectView(android.R.id.empty) protected ProgressBar emptyView;
@@ -33,9 +33,19 @@ public class AchievementListFragment extends DashboardFragment
     protected AchievementListAdapter achievementListAdapter;
 
     @Inject AchievementCategoryListCache achievementCategoryListCache;
-    @Inject CurrentUserId currentUserId;
+    UserBaseKey shownUserId;
 
     protected DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList> achievementCategoryListCacheListener;
+
+    public static void putUserId(Bundle bundle, UserBaseKey userBaseKey)
+    {
+        bundle.putBundle(BUNDLE_KEY_USER_ID, userBaseKey.getArgs());
+    }
+
+    private UserBaseKey getUserId()
+    {
+        return new UserBaseKey(getArguments().getBundle(BUNDLE_KEY_USER_ID));
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -47,6 +57,8 @@ public class AchievementListFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
+        init();
+
         initAdapter();
 
         achievementCategoryListCacheListener = createAchievementCategoryListCacheListener();
@@ -55,17 +67,30 @@ public class AchievementListFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.add(0, MENU_TEST, Menu.NONE, "Test");
+        setActionBarTitle(R.string.achievements);
+        if (!Constants.RELEASE)
+        {
+            inflater.inflate(R.menu.achievement_testing, menu);
+        }
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
         {
-            case MENU_TEST:
+            case R.id.menu_test_achievement:
                 getDashboardNavigator().pushFragment(AchievementListTestingFragment.class, null);
+                break;
+            case R.id.menu_test_achievement_daily:
+                getDashboardNavigator().pushFragment(QuestListTestingFragment.class, null);
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void init()
+    {
+        this.shownUserId = getUserId();
     }
 
     private void initAdapter()
@@ -90,9 +115,8 @@ public class AchievementListFragment extends DashboardFragment
     {
         achievementListAdapter.clear();
 
-        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        achievementCategoryListCache.register(userBaseKey, achievementCategoryListCacheListener);
-        achievementCategoryListCache.getOrFetchAsync(userBaseKey);
+        achievementCategoryListCache.register(shownUserId, achievementCategoryListCacheListener);
+        achievementCategoryListCache.getOrFetchAsync(shownUserId);
     }
 
     protected void detachAchievementCategoryListener()

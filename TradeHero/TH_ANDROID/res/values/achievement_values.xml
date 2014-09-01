@@ -46,4 +46,6 @@
 
   <integer name="quest_indicator_animation_start_delay">1000</integer>
   <integer name="quest_indicator_animation_duration">800</integer>
+
+  <string name="achievements">Achievements</string>
 </resources>
