@@ -3,9 +3,6 @@ package com.tradehero.th.billing.amazon;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Handler;
-import com.amazon.device.iap.model.ProductType;
-import com.amazon.device.iap.model.RequestId;
-import com.tradehero.common.billing.amazon.AmazonConstants;
 import com.tradehero.common.billing.amazon.AmazonPurchaseConsumer;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
@@ -22,7 +19,6 @@ import com.tradehero.th.billing.amazon.request.THAmazonRequestFull;
 import com.tradehero.th.persistence.billing.AmazonSKUListCache;
 import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
 import com.tradehero.th.utils.dagger.ForUIThread;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -45,8 +41,6 @@ public class THAmazonLogicHolderFull
 {
     @NotNull private final THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder;
     @NotNull protected final Handler uiHandler;
-
-    @NotNull protected Map<RequestId, Integer> requestIdsToCode;
 
     //<editor-fold desc="Constructors">
     @Inject public THAmazonLogicHolderFull(
@@ -72,7 +66,6 @@ public class THAmazonLogicHolderFull
                 thAmazonPurchaseReporterHolder);
         this.thAmazonPurchaseConsumerHolder = thAmazonPurchaseConsumerHolder;
         this.uiHandler = uiHandler;
-        this.requestIdsToCode = new HashMap<>();
     }
     //</editor-fold>
 

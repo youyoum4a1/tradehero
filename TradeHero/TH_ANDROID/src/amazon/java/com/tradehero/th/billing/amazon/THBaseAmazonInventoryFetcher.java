@@ -3,6 +3,7 @@ package com.tradehero.th.billing.amazon;
 import android.content.Context;
 import com.amazon.device.iap.model.Product;
 import com.amazon.device.iap.model.ProductDataResponse;
+import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonInventoryFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
@@ -22,9 +23,10 @@ public class THBaseAmazonInventoryFetcher
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonInventoryFetcher(
             @NotNull Context context,
+            @NotNull AmazonPurchasingService purchasingService,
             @NotNull THAmazonExceptionFactory amazonExceptionFactory)
     {
-        super(context);
+        super(context, purchasingService);
         this.amazonExceptionFactory = amazonExceptionFactory;
     }
     //</editor-fold>

@@ -25,9 +25,11 @@ abstract public class BaseAmazonPurchaseConsumer<
     @Nullable private OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException> consumptionFinishedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonPurchaseConsumer(@NotNull Context appContext)
+    public BaseAmazonPurchaseConsumer(
+            @NotNull Context appContext,
+            @NotNull AmazonPurchasingService purchasingService)
     {
-        super(appContext);
+        super(appContext, purchasingService);
     }
     //</editor-fold>
 

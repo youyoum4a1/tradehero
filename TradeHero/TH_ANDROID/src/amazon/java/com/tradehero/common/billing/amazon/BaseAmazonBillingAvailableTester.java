@@ -1,7 +1,6 @@
 package com.tradehero.common.billing.amazon;
 
 import android.content.Context;
-import com.amazon.device.iap.PurchasingService;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,10 +11,12 @@ abstract public class BaseAmazonBillingAvailableTester<AmazonExceptionType exten
 {
     @Nullable private OnBillingAvailableListener<AmazonExceptionType> availableListener;
 
-    //<editor-fold desc="Description">
-    public BaseAmazonBillingAvailableTester(@NotNull Context appContext)
+    //<editor-fold desc="Constructors">
+    public BaseAmazonBillingAvailableTester(
+            @NotNull Context appContext,
+            @NotNull AmazonPurchasingService purchasingService)
     {
-        super(appContext);
+        super(appContext, purchasingService);
     }
     //</editor-fold>
 
@@ -39,15 +40,7 @@ abstract public class BaseAmazonBillingAvailableTester<AmazonExceptionType exten
     @Override public void testBillingAvailable(int requestCode)
     {
         setRequestCode(requestCode);
-        try
-        {
-            PurchasingService.registerListener(appContext, middlePurchasingListener);
-            notifyBillingAvailable();
-        }
-        catch (Exception e)
-        {
-            notifyBillingNotAvailable(createNotAvailable(e));
-        }
+        notifyBillingAvailable();
     }
 
     abstract protected AmazonExceptionType createNotAvailable(Exception cause);
@@ -61,6 +54,7 @@ abstract public class BaseAmazonBillingAvailableTester<AmazonExceptionType exten
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     protected void notifyBillingNotAvailable(AmazonExceptionType exception)
     {
         OnBillingAvailableListener<AmazonExceptionType> listenerCopy = availableListener;

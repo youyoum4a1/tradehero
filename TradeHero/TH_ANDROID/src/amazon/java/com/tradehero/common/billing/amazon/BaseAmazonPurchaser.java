@@ -1,7 +1,6 @@
 package com.tradehero.common.billing.amazon;
 
 import android.content.Context;
-import com.amazon.device.iap.PurchasingService;
 import com.amazon.device.iap.model.PurchaseResponse;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +25,11 @@ abstract public class BaseAmazonPurchaser<
     @Nullable private OnPurchaseFinishedListener<AmazonSKUType, AmazonPurchaseOrderType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> purchaseFinishedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonPurchaser(@NotNull Context context)
+    public BaseAmazonPurchaser(
+            @NotNull Context context,
+            @NotNull AmazonPurchasingService purchasingService)
     {
-        super(context);
+        super(context, purchasingService);
     }
     //</editor-fold>
 
@@ -52,18 +53,12 @@ abstract public class BaseAmazonPurchaser<
     {
         setRequestCode(requestCode);
         this.purchaseOrder = purchaseOrder;
-        prepareAndCallService();
+        purchasingService.purchase(purchaseOrder.sku.skuId, this);
     }
 
-    protected void prepareAndCallService()
+    @Override public void onPurchaseResponse(@NotNull PurchaseResponse purchaseResponse)
     {
-        prepareListener();
-        PurchasingService.purchase(purchaseOrder.sku.skuId);
-    }
-
-    @Override protected void onMyPurchaseResponse(@NotNull PurchaseResponse purchaseResponse)
-    {
-        super.onMyPurchaseResponse(purchaseResponse);
+        super.onPurchaseResponse(purchaseResponse);
         switch (purchaseResponse.getRequestStatus())
         {
             case SUCCESSFUL:

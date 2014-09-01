@@ -2,6 +2,7 @@ package com.tradehero.th.billing.amazon;
 
 import android.content.Context;
 import com.tradehero.common.billing.amazon.AmazonPurchaseCache;
+import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseConsumer;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
@@ -22,10 +23,11 @@ public class THBaseAmazonPurchaseConsumer
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseConsumer(
             @NotNull Context appContext,
+            @NotNull AmazonPurchasingService purchasingService,
             @NotNull THAmazonExceptionFactory amazonExceptionFactory,
             @NotNull THAmazonPurchaseCache thAmazonPurchaseCache)
     {
-        super(appContext);
+        super(appContext, purchasingService);
         this.thAmazonExceptionFactory = amazonExceptionFactory;
         this.thiabPurchaseCache = thAmazonPurchaseCache;
     }

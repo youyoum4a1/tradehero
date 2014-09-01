@@ -1,7 +1,6 @@
 package com.tradehero.common.billing.amazon;
 
 import android.content.Context;
-import com.amazon.device.iap.PurchasingService;
 import com.amazon.device.iap.model.Product;
 import com.amazon.device.iap.model.ProductDataResponse;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
@@ -34,9 +33,11 @@ abstract public class BaseAmazonInventoryFetcher<
     @Nullable private OnInventoryFetchedListener<AmazonSKUType, AmazonProductDetailType, AmazonExceptionType> inventoryFetchedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonInventoryFetcher(@NotNull Context context)
+    public BaseAmazonInventoryFetcher(
+            @NotNull Context context,
+            @NotNull AmazonPurchasingService purchasingService)
     {
-        super(context);
+        super(context, purchasingService);
         inventory = new HashMap<>();
     }
     //</editor-fold>
@@ -91,11 +92,10 @@ abstract public class BaseAmazonInventoryFetcher<
         {
             skuIds.add(amazonSKU.skuId);
         }
-        prepareListener();
-        PurchasingService.getProductData(skuIds);
+        purchasingService.getProductData(skuIds, this);
     }
 
-    @Override protected void onMyProductDataResponse(@NotNull ProductDataResponse productDataResponse)
+    @Override public void onProductDataResponse(@NotNull ProductDataResponse productDataResponse)
     {
         super.onProductDataResponse(productDataResponse);
         switch(productDataResponse.getRequestStatus())

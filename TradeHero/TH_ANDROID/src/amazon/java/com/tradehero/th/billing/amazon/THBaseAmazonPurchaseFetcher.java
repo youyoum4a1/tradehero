@@ -4,6 +4,7 @@ import android.content.Context;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.Receipt;
 import com.amazon.device.iap.model.UserData;
+import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
@@ -35,10 +36,11 @@ public class THBaseAmazonPurchaseFetcher
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseFetcher(
             @NotNull Context context,
+            @NotNull AmazonPurchasingService purchasingService,
             @NotNull THAmazonExceptionFactory samsungExceptionFactory,
             @NotNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
-        super(context);
+        super(context, purchasingService);
         this.samsungExceptionFactory = samsungExceptionFactory;
         this.processingPurchaseStringSet = processingPurchaseStringSet;
         savedPurchasesInProcess = new ArrayList<>();

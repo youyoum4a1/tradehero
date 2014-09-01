@@ -1,0 +1,146 @@
+package com.tradehero.common.billing.amazon;
+
+import android.content.Context;
+import android.util.LruCache;
+import com.amazon.device.iap.PurchasingListener;
+import com.amazon.device.iap.PurchasingService;
+import com.amazon.device.iap.model.FulfillmentResult;
+import com.amazon.device.iap.model.ProductDataResponse;
+import com.amazon.device.iap.model.PurchaseResponse;
+import com.amazon.device.iap.model.PurchaseUpdatesResponse;
+import com.amazon.device.iap.model.RequestId;
+import com.amazon.device.iap.model.UserDataResponse;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+
+@Singleton public class AmazonPurchasingService
+    implements PurchasingListener
+{
+    private static final int DEFAULT_MAP_LENGTH = 30;
+
+    @NotNull private final LruCache<RequestId, PurchasingListener> purchasingListeners;
+    @NotNull private final LruCache<RequestId, Object> waitingResponses;
+
+    //<editor-fold desc="Constructors">
+    @Inject public AmazonPurchasingService(@NotNull Context appContext)
+    {
+        super();
+        this.purchasingListeners = new LruCache<>(DEFAULT_MAP_LENGTH);
+        this.waitingResponses = new LruCache<>(DEFAULT_MAP_LENGTH);
+        PurchasingService.registerListener(appContext, this);
+    }
+    //</editor-fold>
+
+    public void unregisterListener(@NotNull PurchasingListener listener)
+    {
+        for (RequestId requestId : new HashSet<>(purchasingListeners.snapshot().keySet()))
+        {
+            if (listener.equals(purchasingListeners.get(requestId)))
+            {
+                purchasingListeners.remove(requestId);
+            }
+        }
+    }
+
+    public void unregisterListener(@NotNull RequestId requestId)
+    {
+        purchasingListeners.remove(requestId);
+    }
+
+    public RequestId getUserData(@NotNull PurchasingListener listener)
+    {
+        RequestId requestId = PurchasingService.getUserData();
+        purchasingListeners.put(requestId, listener);
+        callWaitingResponses();
+        return requestId;
+    }
+
+    public RequestId purchase(String sku, @NotNull PurchasingListener listener)
+    {
+        RequestId requestId = PurchasingService.purchase(sku);
+        purchasingListeners.put(requestId, listener);
+        callWaitingResponses();
+        return requestId;
+    }
+
+    public RequestId getProductData(Set<String> skus, @NotNull PurchasingListener listener)
+    {
+        RequestId requestId = PurchasingService.getProductData(skus);
+        purchasingListeners.put(requestId, listener);
+        callWaitingResponses();
+        return requestId;
+    }
+
+    public RequestId getPurchaseUpdates(boolean reset, @NotNull PurchasingListener listener)
+    {
+        RequestId requestId = PurchasingService.getPurchaseUpdates(reset);
+        purchasingListeners.put(requestId, listener);
+        callWaitingResponses();
+        return requestId;
+    }
+
+    public void notifyFulfillment(String receiptId, FulfillmentResult fulfillmentResult)
+    {
+        PurchasingService.notifyFulfillment(receiptId, fulfillmentResult);
+    }
+
+    @Override public void onUserDataResponse(@NotNull UserDataResponse userDataResponse)
+    {
+        waitingResponses.put(userDataResponse.getRequestId(), userDataResponse);
+        callWaitingResponses();
+    }
+
+    @Override public void onProductDataResponse(@NotNull ProductDataResponse productDataResponse)
+    {
+        waitingResponses.put(productDataResponse.getRequestId(), productDataResponse);
+        callWaitingResponses();
+    }
+
+    @Override public void onPurchaseResponse(@NotNull PurchaseResponse purchaseResponse)
+    {
+        waitingResponses.put(purchaseResponse.getRequestId(), purchaseResponse);
+        callWaitingResponses();
+    }
+
+    @Override public void onPurchaseUpdatesResponse(@NotNull PurchaseUpdatesResponse purchaseUpdatesResponse)
+    {
+        waitingResponses.put(purchaseUpdatesResponse.getRequestId(), purchaseUpdatesResponse);
+        callWaitingResponses();
+    }
+
+    protected void callWaitingResponses()
+    {
+        PurchasingListener listener;
+        Object response;
+        for (Map.Entry<RequestId, Object> requestEntry : new HashSet<>(waitingResponses.snapshot().entrySet()))
+        {
+            listener = purchasingListeners.get(requestEntry.getKey());
+            if (listener != null)
+            {
+                purchasingListeners.remove(requestEntry.getKey());
+                waitingResponses.remove(requestEntry.getKey());
+                response = requestEntry.getValue();
+                if (response instanceof UserDataResponse)
+                {
+                    listener.onUserDataResponse((UserDataResponse) response);
+                }
+                else if (response instanceof ProductDataResponse)
+                {
+                    listener.onProductDataResponse((ProductDataResponse) response);
+                }
+                else if (response instanceof PurchaseResponse)
+                {
+                    listener.onPurchaseResponse((PurchaseResponse) response);
+                }
+                else
+                {
+                    listener.onPurchaseUpdatesResponse((PurchaseUpdatesResponse) response);
+                }
+            }
+        }
+    }
+}

@@ -32,9 +32,11 @@ abstract public class BaseAmazonPurchaseFetcher<
     @Nullable protected OnPurchaseFetchedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> fetchListener;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonPurchaseFetcher(@NotNull Context context)
+    public BaseAmazonPurchaseFetcher(
+            @NotNull Context context,
+            @NotNull AmazonPurchasingService purchasingService)
     {
-        super(context);
+        super(context, purchasingService);
         fetchedIncompletePurchases = new ArrayList<>();
         fetchedCanceledPurchases = new ArrayList<>();
         purchases = new ArrayList<>();
@@ -52,7 +54,7 @@ abstract public class BaseAmazonPurchaseFetcher<
         checkNotFetching();
         this.fetching = true;
         setRequestCode(requestCode);
-        prepareAndCallService();
+        purchasingService.getPurchaseUpdates(true, this);
     }
 
     protected void checkNotFetching()
@@ -63,28 +65,19 @@ abstract public class BaseAmazonPurchaseFetcher<
         }
     }
 
-    protected void prepareAndCallService()
-    {
-        prepareListener();
-        PurchasingService.getPurchaseUpdates(true);
-    }
-
-    @Override public void onMyPurchaseUpdatesResponse(@NotNull PurchaseUpdatesResponse purchaseUpdatesResponse)
+    @Override public void onPurchaseUpdatesResponse(@NotNull PurchaseUpdatesResponse purchaseUpdatesResponse)
     {
         super.onPurchaseUpdatesResponse(purchaseUpdatesResponse);
-        if (currentRequestId != null && currentRequestId.equals(purchaseUpdatesResponse.getRequestId()))
+        switch (purchaseUpdatesResponse.getRequestStatus())
         {
-            switch (purchaseUpdatesResponse.getRequestStatus())
-            {
-                case SUCCESSFUL:
-                    handleReceived(purchaseUpdatesResponse.getReceipts(), purchaseUpdatesResponse.getUserData());
-                    notifyListenerFetched();
-                    break;
-                case FAILED:
-                case NOT_SUPPORTED:
-                    notifyListenerFetchFailed(createException(purchaseUpdatesResponse.getRequestStatus()));
-                    break;
-            }
+            case SUCCESSFUL:
+                handleReceived(purchaseUpdatesResponse.getReceipts(), purchaseUpdatesResponse.getUserData());
+                notifyListenerFetched();
+                break;
+            case FAILED:
+            case NOT_SUPPORTED:
+                notifyListenerFetchFailed(createException(purchaseUpdatesResponse.getRequestStatus()));
+                break;
         }
     }
 

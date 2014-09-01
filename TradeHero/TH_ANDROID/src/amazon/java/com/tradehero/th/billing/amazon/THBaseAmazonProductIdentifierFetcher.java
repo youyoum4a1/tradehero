@@ -2,6 +2,7 @@ package com.tradehero.th.billing.amazon;
 
 import android.content.Context;
 import com.amazon.device.iap.model.ProductType;
+import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
@@ -20,9 +21,10 @@ public class THBaseAmazonProductIdentifierFetcher
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonProductIdentifierFetcher(
-            @NotNull Context context)
+            @NotNull Context context,
+            @NotNull AmazonPurchasingService purchasingService)
     {
-        super(context);
+        super(context, purchasingService);
     }
     //</editor-fold>
 

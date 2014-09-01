@@ -31,9 +31,11 @@ abstract public class BaseAmazonProductIdentifierFetcher<
     @Nullable private OnProductIdentifierFetchedListener<AmazonSKUListKeyType, AmazonSKUType, AmazonSKUListType, AmazonExceptionType> fetchedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonProductIdentifierFetcher(@NotNull Context context)
+    public BaseAmazonProductIdentifierFetcher(
+            @NotNull Context context,
+            @NotNull AmazonPurchasingService purchasingService)
     {
-        super(context);
+        super(context, purchasingService);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
         amazonSKUs = new HashMap<>();
