@@ -277,6 +277,12 @@
       <groupId>com.squareup.retrofit</groupId>
       <artifactId>retrofit</artifactId>
       <version>1.5.1-TradeHero</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
