@@ -6,6 +6,8 @@ import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
+import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
+import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.billing.googleplay.THBaseIABBillingAvailableTester;
@@ -35,7 +37,7 @@ import com.tradehero.th.billing.googleplay.THIABProductIdentifierFetcher;
 import com.tradehero.th.billing.googleplay.THIABProductIdentifierFetcherHolder;
 import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
-import com.tradehero.th.network.service.AlertPlanServiceWrapperAmazon;
+import com.tradehero.th.network.service.AlertPlanServiceWrapperGoogle;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCache;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumerHolder;
@@ -164,9 +166,9 @@ public class BillingModule
         return thiabSecurityAlertKnowledge;
     }
 
-    @Provides @Singleton AlertPlanServiceWrapper provideAlertPlanServiceWrapper(AlertPlanServiceWrapperAmazon alertPlanServiceWrapperAmazon)
+    @Provides @Singleton AlertPlanServiceWrapper provideAlertPlanServiceWrapper(AlertPlanServiceWrapperGoogle alertPlanServiceWrapperGoogle)
     {
-        return alertPlanServiceWrapperAmazon;
+        return alertPlanServiceWrapperGoogle;
     }
 
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
