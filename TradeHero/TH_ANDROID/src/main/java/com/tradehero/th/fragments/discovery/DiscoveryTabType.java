@@ -5,7 +5,7 @@ import com.tradehero.th.R;
 
 enum DiscoveryTabType
 {
-    NEWS(R.string.discovery_news, FeaturedNewsHeadlineFragment.class),
+    NEWS(R.string.discovery_news, NewsPagerFragment.class),
     DISCUSSION(R.string.discovery_discussions, DiscoveryDiscussionFragment.class),
     LEARNING(R.string.discovery_learning, LearningFragment.class);
 

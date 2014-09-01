@@ -253,4 +253,7 @@
   </string>
   <string name="ask_for_review_rate">Rate TradeHero Now</string>
   <string name="maybe_later">Maybe Later</string>
+  <string name="regional_news">Regional News</string>
+  <string name="motley_fool">Motley Fool</string>
+  <string name="global_news">Global News</string>
 </resources>
