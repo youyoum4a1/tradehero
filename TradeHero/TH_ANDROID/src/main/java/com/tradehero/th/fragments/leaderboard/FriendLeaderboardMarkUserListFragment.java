@@ -39,7 +39,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 {
     @Nullable @Optional @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     @Nullable @InjectView(R.id.progress) ProgressBar mProgress;
-    @Nullable protected  View headerView;
+    @Nullable protected View headerView;
 
     @Nullable protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
     private TextView leaderboardMarkUserMarkingTime;

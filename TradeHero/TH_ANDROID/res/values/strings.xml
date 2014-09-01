@@ -247,4 +247,10 @@
   <string name="discovery_discussions">Discussions</string>
   <string name="discovery">Discovery</string>
   <string name="discovery_learning">Learning</string>
+  <string name="ask_for_review_title">Love TradeHero?</string>
+  <string name="ask_for_review_summary">Please give a rating on the App Store and let us know what
+    you think.
+  </string>
+  <string name="ask_for_review_rate">Rate TradeHero Now</string>
+  <string name="maybe_later">Maybe Later</string>
 </resources>

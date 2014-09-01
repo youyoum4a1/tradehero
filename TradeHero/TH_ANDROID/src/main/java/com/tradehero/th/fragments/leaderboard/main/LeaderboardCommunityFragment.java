@@ -155,10 +155,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             case R.id.btn_search:
                 pushSearchFragment();
                 return true;
-
-            case R.id.btn_add:
-                pushInvitationFragment();
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
