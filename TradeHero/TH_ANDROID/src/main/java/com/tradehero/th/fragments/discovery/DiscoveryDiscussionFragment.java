@@ -38,7 +38,7 @@ public class DiscoveryDiscussionFragment extends SherlockFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.discovery_activity, container, false);
+        View view = inflater.inflate(R.layout.discovery_discussion, container, false);
         initView(view);
         return view;
     }
