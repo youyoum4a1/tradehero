@@ -16,14 +16,14 @@
        This container allows us to animate the children view without being clipped-->
   <LinearLayout
       android:id="@+id/achievement_content_container"
-      android:layout_width="wrap_content"
+      android:layout_width="@dimen/achievement_dialog_width"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:orientation="vertical"
       android:background="@color/achievement_dialog_bg"
       >
     <RelativeLayout
-        android:layout_width="@dimen/achievement_dialog_width"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/achievement_dialog_padding"
         android:clipChildren="false"

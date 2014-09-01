@@ -15,9 +15,9 @@
     >
   <!-- A dummy container which takes the whole screen
        This container allows us to animate the children view without being clipped-->
-  <LinearLayout
+  <RelativeLayout
       android:id="@+id/achievement_content_container"
-      android:layout_width="wrap_content"
+      android:layout_width="@dimen/achievement_dialog_width"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:orientation="vertical"
@@ -26,7 +26,8 @@
       android:clipChildren="true"
       >
     <RelativeLayout
-        android:layout_width="@dimen/achievement_dialog_width"
+        android:id="@+id/achievement_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/achievement_dialog_padding"
         android:clipChildren="false"
@@ -46,54 +47,36 @@
         android:id="@+id/achievement_horizontal_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/light_grey"/>
+        android:background="@color/light_grey"
+        android:layout_below="@id/achievement_content"/>
+
+    <Button
+        android:id="@+id/btn_achievement_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/timeline_share"
+        style="@style/TH.Achievement.Share"
+        android:layout_below="@id/achievement_horizontal_divider"
+        android:layout_alignParentRight="true"
+        />
 
     <LinearLayout
         android:id="@+id/achievement_share_button_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:measureWithLargestChild="true">
+        android:measureWithLargestChild="true"
+        android:layout_toLeftOf="@id/btn_achievement_share"
+        android:layout_below="@+id/achievement_horizontal_divider"
+        android:layout_alignParentLeft="true"
+        android:layout_alignBottom="@+id/btn_achievement_share">
 
-      <ToggleButton
-          android:id="@+id/btn_share_fb"
-          style="@style/TH.ShareButtons"
-          android:background="@drawable/ic_share_fb"
-          />
+      <include layout="@layout/share_panel_layout"/>
 
-      <ToggleButton
-          android:id="@+id/btn_share_tw"
-          style="@style/TH.ShareButtons"
-          android:background="@drawable/ic_share_tw"
-          />
-
-      <ToggleButton
-          android:id="@+id/btn_share_li"
-          style="@style/TH.ShareButtons"
-          android:background="@drawable/ic_share_li"
-          />
-
-      <ToggleButton
-          android:id="@+id/btn_share_wechat"
-          style="@style/TH.ShareButtons"
-          android:background="@drawable/ic_wechat"
-          />
-
-      <ToggleButton
-          android:id="@+id/btn_share_wb"
-          style="@style/TH.ShareButtons"
-          android:background="@drawable/ic_share_wb"
-          />
-
-      <Button
-          android:id="@+id/btn_achievement_share"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/timeline_share"
-          style="@style/TH.Achievement.Share"
-          />
     </LinearLayout>
 
-  </LinearLayout>
+
+
+  </RelativeLayout>
 </LinearLayout>
