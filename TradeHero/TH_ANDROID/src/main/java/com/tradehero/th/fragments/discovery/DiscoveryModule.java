@@ -7,7 +7,7 @@ import dagger.Module;
                 DiscoveryMainFragment.class,
                 FeaturedNewsHeadlineFragment.class,
                 WhatsHotFragment.class,
-                DiscoveryActivityFragment.class,
+                DiscoveryDiscussionFragment.class,
         },
         library = true,
         complete = false

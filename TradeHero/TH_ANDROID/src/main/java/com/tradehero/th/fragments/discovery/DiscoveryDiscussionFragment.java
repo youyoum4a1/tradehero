@@ -23,7 +23,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
 
-public class DiscoveryActivityFragment extends SherlockFragment
+public class DiscoveryDiscussionFragment extends SherlockFragment
 {
     private static final int TIMELINE_LOADER_ID = 0;
 

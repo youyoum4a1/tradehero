@@ -244,7 +244,7 @@
   <!-- Discovery -->
   <string name="discovery_whats_hot">What\'s hot</string>
   <string name="discovery_news">News</string>
-  <string name="discovery_activity">Activity</string>
+  <string name="discovery_discussions">Discussions</string>
   <string name="discovery">Discovery</string>
   <string name="discovery_learning">Learning</string>
 </resources>
