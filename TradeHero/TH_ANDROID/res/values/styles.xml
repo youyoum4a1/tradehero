@@ -526,10 +526,6 @@
     <item name="android:layout_gravity">center_vertical</item>
   </style>
 
-  <style name="TH.BuySellDialogAnimation" parent="android:Theme.Holo.Dialog.NoActionBar">
-    <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom_and_expand</item>
-  </style>
-
   <style name="TradeHero.Dashboard.ActionBar.TabView" parent="@style/Widget.Sherlock.Light.ActionBar.TabView">
     <item name="android:background">@drawable/action_bar_tab_view</item>
   </style>

@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.achievement;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
@@ -14,6 +15,7 @@ public class UserAchievementDTOUtil
 {
     public static final String INTENT_ACTION_NAME = "com.tradehero.th.achievement.ALERT";
     public static final String KEY_ACHIEVEMENT_NODE = "achievements";
+    private static final int DELAY_INTERVAL = 5000;
 
     @NotNull private final UserAchievementCache userAchievementCache;
     @NotNull private final LocalBroadcastManager localBroadcastManager;
@@ -65,8 +67,24 @@ public class UserAchievementDTOUtil
     public void put(@NotNull UserAchievementDTO userAchievementDTO)
     {
         userAchievementCache.put(userAchievementDTO.getUserAchievementId(), userAchievementDTO);
+        final UserAchievementId userAchievementId = userAchievementDTO.getUserAchievementId();
+        if (!broadcast(userAchievementId))
+        {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable()
+            {
+                @Override public void run()
+                {
+                    broadcast(userAchievementId);
+                }
+            }, DELAY_INTERVAL);
+        }
+    }
+
+    private boolean broadcast(UserAchievementId userAchievementId)
+    {
         Intent i = new Intent(INTENT_ACTION_NAME);
-        i.putExtra(UserAchievementDTO.class.getName(), userAchievementDTO.getUserAchievementId().getArgs());
-        localBroadcastManager.sendBroadcastSync(i);
+        i.putExtra(UserAchievementDTO.class.getName(), userAchievementId.getArgs());
+        return localBroadcastManager.sendBroadcast(i);
     }
 }

@@ -222,7 +222,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
-        d.getWindow().setWindowAnimations(R.style.TH_BuySellDialogAnimation);
         return d;
     }
 
