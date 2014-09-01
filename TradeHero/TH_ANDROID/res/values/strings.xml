@@ -42,6 +42,8 @@
   <string name="discussion_empty">Be the first to discuss this.</string>
   <!--<string name="network_error">Sorry,network error.</string>-->
 
+  <string name="trade_list_action">Action</string>
+
   <string name="news_view_on_web">View on the Web</string>
   <string name="add_a_comment">Add a comment…</string>
   <string name="start_new_discussion">Start a New Discussion</string>
