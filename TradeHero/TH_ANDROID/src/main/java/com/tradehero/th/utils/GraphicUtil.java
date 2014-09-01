@@ -232,7 +232,7 @@ public class GraphicUtil implements BitmapForProfileFactory
     {
         float hsvVals[] = new float[3];
         Color.colorToHSV(color, hsvVals);
-        hsvVals[2] = 0.5f * hsvVals[2];
+        hsvVals[2] = 0.8f * hsvVals[2];
         return Color.HSVToColor(hsvVals);
     }
 
@@ -272,6 +272,11 @@ public class GraphicUtil implements BitmapForProfileFactory
         states.addState(new int[] {android.R.attr.state_focused}, new ColorDrawable(focused)); //Focused
         states.addState(new int[] {}, new ColorDrawable(normal)); //normal
         return states;
+    }
+
+    public void setBackground(@NotNull View view, int color)
+    {
+        this.setBackground(view, new ColorDrawable(color));
     }
 
     @SuppressLint("NewApi")

@@ -60,7 +60,7 @@ class WatchlistPositionCutDTO implements DTO
         this.sumInvestedAmountRefCcy = inflated.sumInvestedAmountRefCcy;
         this.totalTransactionCostRefCcy = inflated.totalTransactionCostRefCcy;
         this.aggregateCount = inflated.aggregateCount;
-        this.watchlistPrice = inflated.watchlistPrice;
+        this.watchlistPrice = inflated.watchlistPriceRefCcy;
         if (inflated.securityDTO == null)
         {
             this.securityIdKey = null;
@@ -103,7 +103,7 @@ class WatchlistPositionCutDTO implements DTO
         inflated.sumInvestedAmountRefCcy = sumInvestedAmountRefCcy;
         inflated.totalTransactionCostRefCcy = totalTransactionCostRefCcy;
         inflated.aggregateCount = aggregateCount;
-        inflated.watchlistPrice = watchlistPrice;
+        inflated.watchlistPriceRefCcy = watchlistPrice;
         return inflated;
     }
 }

@@ -31,6 +31,7 @@ public class DTOProcessorFollowFreeUser extends AbstractDTOProcessorFollowUser
     {
         UserProfileDTO processed = super.process(userProfileDTO);
         userMessagingRelationshipCache.markIsFreeHero(userToFollow);
+        allowableRecipientPaginatedCache.invalidateAll();
         return processed;
     }
 }

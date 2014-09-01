@@ -7,7 +7,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -26,7 +26,7 @@ public class SecurityPushBuyIntent extends THIntent
         return getHostUriPath(R.string.intent_host_security);
     }
 
-    @Override public DashboardTabType getDashboardType()
+    @Override public RootFragmentType getDashboardType()
     {
         //TODO when you click the link from user send private message "[$TSX:MM](tradehero://security/38756_TSX_MM)", will come here
         //throw new IllegalStateException("This intent is not tab based");

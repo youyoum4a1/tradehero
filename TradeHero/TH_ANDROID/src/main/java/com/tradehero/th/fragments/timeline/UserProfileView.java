@@ -107,6 +107,15 @@ public class UserProfileView extends BetterViewAnimator
         }
     }
 
+    private void notifyEditProfileClicked()
+    {
+        UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
+        if (listener != null)
+        {
+            listener.onEditProfileClicked();
+        }
+    }
+
     protected UserProfileCompactViewHolder.OnProfileClickedListener createProfileClickListener()
     {
         return new UserProfileClickedListener();
@@ -127,6 +136,11 @@ public class UserProfileView extends BetterViewAnimator
         @Override public void onDefaultPortfolioClicked()
         {
             notifyDefaultPortfolioRequested();
+        }
+
+        @Override public void onEditProfileClicked()
+        {
+            notifyEditProfileClicked();
         }
     }
 }

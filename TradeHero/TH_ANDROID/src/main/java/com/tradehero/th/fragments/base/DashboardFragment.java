@@ -96,6 +96,7 @@ abstract public class DashboardFragment extends BaseFragment
                         | ActionBar.DISPLAY_USE_LOGO);
                 actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
             }
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             actionBar.setHomeButtonEnabled(true);
         }
     }

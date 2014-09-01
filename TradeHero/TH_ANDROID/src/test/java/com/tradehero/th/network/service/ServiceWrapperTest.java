@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import retrofit.Callback;
 import timber.log.Timber;
 
+import static com.tradehero.th.api.ValidMocker.mockValidParameter;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -24,7 +25,7 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
 
     @Test public void canGetAllServices()
     {
-        int serviceCount = 27;
+        int serviceCount = 28;
         int wrappersWithOutService = 1;
         assertThat(getAllServices().size()).isEqualTo(serviceCount );
         assertThat(getAllServiceAsyncs().size()).isEqualTo(serviceCount);

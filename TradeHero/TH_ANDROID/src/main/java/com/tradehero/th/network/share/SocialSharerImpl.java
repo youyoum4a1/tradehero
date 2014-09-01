@@ -21,29 +21,31 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 public class SocialSharerImpl implements SocialSharer
 {
-    private final CurrentActivityHolder currentActivityHolder;
-    private final CurrentUserId currentUserId;
-    private final UserProfileCache userProfileCache;
-    private final DiscussionServiceWrapper discussionServiceWrapper;
-    private final SocialShareVerifier socialShareVerifier;
+    @NotNull private final CurrentActivityHolder currentActivityHolder;
+    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
+    @NotNull private final SocialShareVerifier socialShareVerifier;
 
     private OnSharedListener sharedListener;
-    private UserProfileDTO currentUserProfile;
-    private SocialShareFormDTO waitingSocialShareFormDTO;
+    @Nullable private UserProfileDTO currentUserProfile;
+    @Nullable private SocialShareFormDTO waitingSocialShareFormDTO;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharerImpl(
-            CurrentActivityHolder currentActivityHolder,
-            CurrentUserId currentUserId,
-            UserProfileCache userProfileCache,
-            DiscussionServiceWrapper discussionServiceWrapper,
-            SocialShareVerifier socialShareVerifier)
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull DiscussionServiceWrapper discussionServiceWrapper,
+            @NotNull SocialShareVerifier socialShareVerifier)
     {
         this.currentActivityHolder = currentActivityHolder;
         this.currentUserId = currentUserId;
@@ -87,7 +89,7 @@ public class SocialSharerImpl implements SocialSharer
     }
     //</editor-fold>
 
-    @Override public void share(SocialShareFormDTO shareFormDTO)
+    @Override public void share(@NotNull SocialShareFormDTO shareFormDTO)
     {
         this.waitingSocialShareFormDTO = shareFormDTO;
         shareWaitingDTOIfCan();
@@ -98,6 +100,10 @@ public class SocialSharerImpl implements SocialSharer
         if (currentUserProfile == null)
         {
             fetchUserProfile();
+        }
+        else if (waitingSocialShareFormDTO == null)
+        {
+            Timber.e(new Exception(), "You should not shareWaitingDTOIfCan where there is no waitingSocialShareFormDTO");
         }
         else
         {

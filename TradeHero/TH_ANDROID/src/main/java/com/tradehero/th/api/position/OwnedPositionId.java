@@ -37,6 +37,11 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         return super.hashCode() ^ positionId.hashCode();
     }
 
+    @Override public boolean equals(@NotNull OwnedPortfolioId other)
+    {
+        return (other instanceof OwnedPositionId) ? equals((OwnedPositionId) other) : super.equals(other);
+    }
+
     public boolean equals(OwnedPositionId other)
     {
         return (other != null) &&

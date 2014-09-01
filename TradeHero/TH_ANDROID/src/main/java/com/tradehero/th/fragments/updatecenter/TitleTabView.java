@@ -55,27 +55,6 @@ public class TitleTabView extends RelativeLayout
         }
     }
 
-    //public void setTitleNumber(int number)
-    //{
-    //    //if (number > 100)
-    //    //{
-    //    //    //when message count is greater 100, just show red background
-    //    //    //this is not the best way
-    //    //    numberView.setText(" ");
-    //    //    numberView.setVisibility(View.VISIBLE);
-    //    //}
-    //    if (number > 0)
-    //    {
-    //        numberView.setText(String.valueOf(number));
-    //        numberView.setVisibility(View.VISIBLE);
-    //    }
-    //    else
-    //    {
-    //        numberView.setText("");
-    //        numberView.setVisibility(View.INVISIBLE);
-    //    }
-    //}
-
     public void setTitle(String title)
     {
         titleView.setText(title);

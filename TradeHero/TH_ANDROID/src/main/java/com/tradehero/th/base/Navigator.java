@@ -1,7 +1,6 @@
 package com.tradehero.th.base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class Navigator
+public class Navigator<ActivityType extends Activity>
 {
     public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
 
@@ -37,21 +36,21 @@ public class Navigator
             R.anim.slide_left_in, R.anim.slide_right_out
     };
 
-    protected final Context context;
+    protected final ActivityType activity;
     protected final FragmentManager manager;
     private int fragmentContentId;
     private int backPressedCount;
 
     //<editor-fold desc="Constructors">
-    public Navigator(Activity activity, FragmentManager manager)
+    public Navigator(ActivityType activity, FragmentManager manager)
     {
         this(activity, manager, 0);
         setFragmentContentId(((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0).getId());
     }
 
-    public Navigator(Context context, FragmentManager manager, int fragmentContentId)
+    public Navigator(ActivityType activity, FragmentManager manager, int fragmentContentId)
     {
-        this.context = context;
+        this.activity = activity;
         this.manager = manager;
         this.fragmentContentId = fragmentContentId;
     }
@@ -69,20 +68,15 @@ public class Navigator
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args)
     {
-        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, null);
+        return pushFragment(fragmentClass, args, null);
     }
 
-    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, String backStackName)
+    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable String backStackName)
     {
-        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName);
+        return pushFragment(fragmentClass, args, backStackName, DEFAULT_ADD_TO_BACK_STACK);
     }
 
-    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName)
-    {
-        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, DEFAULT_ADD_TO_BACK_STACK);
-    }
-
-    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName,
+    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable String backStackName,
             Boolean shouldAddToBackStack)
     {
         return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, shouldAddToBackStack, DEFAULT_SHOW_HOME_KEY_AS_UP);
@@ -93,12 +87,12 @@ public class Navigator
     {
         resetBackPressCount();
 
-        Timber.d("Push Keyboard visible %s", DeviceUtil.isKeyboardVisible(context));
+        Timber.d("Push Keyboard visible %s", DeviceUtil.isKeyboardVisible(activity));
         Timber.d("Pushing fragment %s", fragmentClass.getSimpleName());
 
         setupHomeAsUp(fragmentClass, args, showHomeAsUp);
 
-        Fragment fragment = Fragment.instantiate(context, fragmentClass.getName(), args);
+        Fragment fragment = Fragment.instantiate(activity, fragmentClass.getName(), args);
         fragment.setArguments(args);
         FragmentTransaction transaction = manager.beginTransaction();
 
@@ -141,45 +135,39 @@ public class Navigator
 
     public void popFragment(String backStackName)
     {
-        Timber.d("Pop Keyboard visible %b", DeviceUtil.isKeyboardVisible(context));
+        Timber.d("Pop Keyboard visible %b", DeviceUtil.isKeyboardVisible(activity));
         Timber.d("Popping fragment, count: %d", manager.getBackStackEntryCount());
 
-        if (DeviceUtil.isKeyboardVisible(context) && context instanceof Activity)
+        if (activity != null)
         {
-            DeviceUtil.dismissKeyboard((Activity) context);
-        }
-
-        if (isBackStackEmpty())
-        {
-            if (backPressedCount > 0)
+            if (DeviceUtil.isKeyboardVisible(activity))
             {
-                resetBackPressCount();
+                DeviceUtil.dismissKeyboard(activity);
+            }
 
-                if (context instanceof Activity)
+            if (isBackStackEmpty())
+            {
+                if (backPressedCount > 0)
                 {
-                    ((Activity) context).finish();
+                    resetBackPressCount();
+                    activity.finish();
                 }
                 else
                 {
-                    // Question: do we really need this?
-                    sendAppToBackground();
+                    ++backPressedCount;
+                    THToast.show(R.string.press_back_again_to_exit);
                 }
+                return;
+            }
+
+            if (backStackName == null)
+            {
+                manager.popBackStack();
             }
             else
             {
-                ++backPressedCount;
-                THToast.show(R.string.press_back_again_to_exit);
+                manager.popBackStack(backStackName, 0);
             }
-            return;
-        }
-
-        if (backStackName == null)
-        {
-            manager.popBackStack();
-        }
-        else
-        {
-            manager.popBackStack(backStackName, 0);
         }
     }
 
@@ -188,7 +176,7 @@ public class Navigator
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        activity.startActivity(intent);
     }
 
     public void popFragment()

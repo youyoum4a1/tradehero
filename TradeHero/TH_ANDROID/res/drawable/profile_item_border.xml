@@ -5,7 +5,7 @@
         android:endColor="@color/gray_3"
         android:startColor="@color/gray_3" />
 
-    <corners android:radius="8dp" />
+    <corners android:radius="@dimen/global_corner_radius" />
 
   <padding
         android:bottom="10dp"

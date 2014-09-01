@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.settings;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
@@ -16,15 +15,17 @@ import com.tradehero.th.persistence.translation.UserTranslationSettingPreference
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowPreference;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
-public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
+public class UserTranslationSettingsViewHolderTest
 {
     @Inject TranslationTokenCache translationTokenCache;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
@@ -90,6 +91,7 @@ public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
         assertThat(shadowPreferenceContainer.isEnabled()).isFalse();
     }
 
+    @Ignore("Don't do thread.sleep")
     @Test public void enabledIfHasCache() throws InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
@@ -105,6 +107,7 @@ public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
     //</editor-fold>
 
     //<editor-fold desc="Auto is checked or not">
+    @Ignore("Don't do thread.sleep")
     @Test public void autoIsCheckedIfPrefTrue() throws JsonProcessingException, InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));

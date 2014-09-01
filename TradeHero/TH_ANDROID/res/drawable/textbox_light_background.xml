@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_focused="true" android:state_enabled="true">
+    <shape>
+      <solid android:color="@color/white"/>
+      <corners android:radius="@dimen/textbox_light_background_radius"/>
+      <stroke android:width="0.5dp" android:color="@color/tradehero_blue"/>
+    </shape>
+  </item>
   <item>
     <shape>
       <gradient
@@ -10,4 +17,4 @@
       <stroke android:width="0.5dp" android:color="@color/textbox_border_color_light"/>
     </shape>
   </item>
-</layer-list>
+</selector>

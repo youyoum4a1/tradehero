@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
-import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.base.Navigator;
@@ -66,11 +65,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
             BuySellFragment.putApplicablePortfolioId(argsBundle, getApplicablePortfolioId());
             argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, getProviderId().getArgs());
         }
-        getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle,
-                new int[] {
-                        R.anim.slide_right_in, R.anim.alpha_out,
-                        R.anim.slide_left_in, R.anim.slide_right_out
-                }, null);
+        getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle, null);
         Timber.d("onIntentPassed %s", thIntent);
     }
 }

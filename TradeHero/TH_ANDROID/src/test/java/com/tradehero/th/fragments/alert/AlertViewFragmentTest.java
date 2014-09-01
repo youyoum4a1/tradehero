@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.activities.DashboardActivity;
@@ -24,10 +23,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
-public class AlertViewFragmentTest extends AbstractTestBase
+public class AlertViewFragmentTest
 {
     @Inject @ForApp ObjectMapper mapper;
     @Inject CurrentUserId currentUserId;

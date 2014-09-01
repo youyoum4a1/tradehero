@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.translation;
 
 import android.content.Context;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -17,10 +16,11 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowToast;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
-public class TranslatableLanguageListFragmentTest extends AbstractTestBase
+public class TranslatableLanguageListFragmentTest
 {
     @Inject Context context;
     @Inject TranslationTokenCache translationTokenCache;
@@ -39,14 +39,13 @@ public class TranslatableLanguageListFragmentTest extends AbstractTestBase
         listFragment = null;
     }
 
-    @Test public void shouldToastErrorOnStartUpBecauseNoTokenService()
+    @Test public void shouldToastErrorOnStartUpBecauseNoTokenService() throws InterruptedException
     {
         ShadowToast.reset();
         listFragment = dashboardNavigator.pushFragment(TranslatableLanguageListFragment.class);
         assertThat(listFragment).isNotNull();
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(3);
 
         String latestToastText = ShadowToast.getTextOfLatestToast();
         assertThat(latestToastText).isEqualTo(context.getString(R.string.error_incomplete_info_message));

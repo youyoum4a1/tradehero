@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
 import android.text.Editable;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -21,11 +20,12 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.robolectric.Robolectric;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public abstract class AbstractTransactionDialogFragmentTest extends AbstractTestBase
+public abstract class AbstractTransactionDialogFragmentTest
 {
     protected static final int CASH_BALANCE = 100000;
 
@@ -60,6 +60,7 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
         UserProfileDTO mockUserProfileDTO = new UserProfileDTO();
         mockUserProfileDTO.fbLinked = true;
         mockUserProfileDTO.twLinked = false;
+        mockUserProfileDTO.displayName = "mockedName";
         userProfileCache.put(currentUserId.toUserBaseKey(), mockUserProfileDTO);
 
         //TODO create MockObjects

@@ -19,7 +19,10 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
     {
         super(object);
         displayName = object.getString(UserFormFactory.KEY_DISPLAY_NAME);
-        inviteCode = object.getString(UserFormFactory.KEY_INVITE_CODE);
+        if (object.has(UserFormFactory.KEY_INVITE_CODE))
+        {
+            inviteCode = object.getString(UserFormFactory.KEY_INVITE_CODE);
+        }
         if (object.has(UserFormFactory.KEY_FIRST_NAME))
         {
             firstName = object.getString(UserFormFactory.KEY_FIRST_NAME);
