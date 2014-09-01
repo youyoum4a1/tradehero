@@ -34,10 +34,8 @@ public class MeTimelineFragment extends TimelineFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
-    @Inject Lazy<AbstractAchievementDialogFragment.Creator> achievementDialogFragmentCreatorLazy;
 
     @Inject LevelDefListCache levelDefListCache;
-    @Inject UserAchievementCache userAchievementCache;
 
     private TextView updateCenterCountTextView;
 
