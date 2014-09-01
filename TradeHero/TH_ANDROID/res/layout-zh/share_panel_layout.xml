@@ -7,9 +7,9 @@
 
   <ToggleButton
       android:id="@+id/btn_share_wechat"
-      android:layout_width="28dp"
-      android:layout_height="28dp"
-      android:layout_marginLeft="8dp"
+      android:layout_width="@dimen/share_button_w_h"
+      android:layout_height="@dimen/share_button_w_h"
+      android:layout_marginLeft="@dimen/share_button_horizontal_margin"
       android:contentDescription="@null"
       android:scaleType="fitCenter"
       android:background="@drawable/ic_wechat"
@@ -20,9 +20,9 @@
 
   <ToggleButton
       android:id="@+id/btn_share_li"
-      android:layout_width="28dp"
-      android:layout_height="28dp"
-      android:layout_marginLeft="8dp"
+      android:layout_width="@dimen/share_button_w_h"
+      android:layout_height="@dimen/share_button_w_h"
+      android:layout_marginLeft="@dimen/share_button_horizontal_margin"
       android:contentDescription="@null"
       android:scaleType="fitCenter"
       android:background="@drawable/ic_share_li"
@@ -33,9 +33,9 @@
 
   <ToggleButton
       android:id="@+id/btn_share_wb"
-      android:layout_width="28dp"
-      android:layout_height="28dp"
-      android:layout_marginLeft="8dp"
+      android:layout_width="@dimen/share_button_w_h"
+      android:layout_height="@dimen/share_button_w_h"
+      android:layout_marginLeft="@dimen/share_button_horizontal_margin"
       android:contentDescription="@null"
       android:scaleType="fitCenter"
       android:background="@drawable/ic_share_wb"

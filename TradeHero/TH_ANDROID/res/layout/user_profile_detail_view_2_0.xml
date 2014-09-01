@@ -36,10 +36,10 @@
 
         <ImageView
             android:id="@+id/user_profile_edit"
-            android:layout_width="@dimen/small_icon_w_h"
-            android:layout_height="@dimen/small_icon_w_h"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_width="@dimen/medium_logo_w_h"
+            android:layout_height="@dimen/medium_logo_w_h"
             android:scaleType="fitCenter"
+            android:padding="8dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/basic_transparent_selector"
             android:layout_marginTop="@dimen/common_margin_10"
