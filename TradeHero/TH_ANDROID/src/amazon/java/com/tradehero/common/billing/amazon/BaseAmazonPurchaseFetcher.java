@@ -4,6 +4,7 @@ import android.content.Context;
 import com.amazon.device.iap.PurchasingService;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.Receipt;
+import com.amazon.device.iap.model.UserData;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ abstract public class BaseAmazonPurchaseFetcher<
             switch (purchaseUpdatesResponse.getRequestStatus())
             {
                 case SUCCESSFUL:
-                    handleReceived(purchaseUpdatesResponse.getReceipts());
+                    handleReceived(purchaseUpdatesResponse.getReceipts(), purchaseUpdatesResponse.getUserData());
                     notifyListenerFetched();
                     break;
                 case FAILED:
@@ -87,23 +88,23 @@ abstract public class BaseAmazonPurchaseFetcher<
         }
     }
 
-    protected void handleReceived(@NotNull List<Receipt> receipts)
+    protected void handleReceived(@NotNull List<Receipt> receipts, @NotNull UserData userData)
     {
         for (Receipt receipt : receipts)
         {
             if (receipt.isCanceled())
             {
-                fetchedCanceledPurchases.add(createIncompletePurchase(receipt));
+                fetchedCanceledPurchases.add(createIncompletePurchase(receipt, userData));
                 // TODO do something with those?
             }
             else
             {
-                fetchedIncompletePurchases.add(createIncompletePurchase(receipt));
+                fetchedIncompletePurchases.add(createIncompletePurchase(receipt, userData));
             }
         }
     }
 
-    @NotNull protected abstract AmazonPurchaseIncompleteType createIncompletePurchase(Receipt receipt);
+    @NotNull protected abstract AmazonPurchaseIncompleteType createIncompletePurchase(@NotNull Receipt receipt, @NotNull UserData userData);
 
     abstract protected AmazonExceptionType createException(@NotNull PurchaseUpdatesResponse.RequestStatus requestStatus);
 

@@ -8,12 +8,12 @@ import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
 import com.tradehero.th.api.billing.AmazonPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THProductPurchase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class THBaseAmazonPurchase extends BaseAmazonPurchase<AmazonSKU, THAmazonOrderId>
-    implements THAmazonPurchase
+public class THBaseAmazonPurchase
+        extends BaseAmazonPurchase<AmazonSKU, THAmazonOrderId>
+        implements THAmazonPurchase
 {
     @NotNull private OwnedPortfolioId applicablePortfolioId;
     @Nullable private UserBaseKey userToFollow;
@@ -60,7 +60,7 @@ public class THBaseAmazonPurchase extends BaseAmazonPurchase<AmazonSKU, THAmazon
 
     @NotNull @Override public AmazonPurchaseReportDTO getPurchaseReportDTO()
     {
-        return new AmazonPurchaseReportDTO(purchaseResponse.getReceipt().getReceiptId());
+        return new AmazonPurchaseReportDTO(purchaseResponse.getReceipt().getReceiptId(), purchaseResponse.getUserData().getUserId());
     }
 
     @NotNull public AmazonPurchaseInProcessDTO getPurchaseToSaveDTO()
@@ -70,9 +70,9 @@ public class THBaseAmazonPurchase extends BaseAmazonPurchase<AmazonSKU, THAmazon
 
     public void populate(@NotNull AmazonPurchaseInProcessDTO purchaseInProcessDTO)
     {
-        if (!purchaseResponse.getReceipt().getReceiptId().equals(purchaseInProcessDTO.amazonReceiptId))
+        if (!purchaseResponse.getReceipt().getReceiptId().equals(purchaseInProcessDTO.amazonPurchaseToken))
         {
-            throw new IllegalArgumentException(String.format("Non-matching paymentId %s - %s", purchaseResponse.getReceipt().getReceiptId(), purchaseInProcessDTO.amazonReceiptId));
+            throw new IllegalArgumentException(String.format("Non-matching paymentId %s - %s", purchaseResponse.getReceipt().getReceiptId(), purchaseInProcessDTO.amazonPurchaseToken));
         }
         setApplicablePortfolioId(purchaseInProcessDTO.applicablePortfolioId);
         setUserToFollow(purchaseInProcessDTO.userToFollow);

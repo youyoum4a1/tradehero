@@ -18,4 +18,9 @@ abstract public class BaseAmazonPurchase<
         this.purchaseResponse = purchaseResponse;
     }
     //</editor-fold>
+
+    @NotNull @Override public String getAmazonUserId()
+    {
+        return purchaseResponse.getUserData().getUserId();
+    }
 }

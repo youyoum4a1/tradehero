@@ -3,6 +3,7 @@ package com.tradehero.th.billing.amazon;
 import android.content.Context;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.Receipt;
+import com.amazon.device.iap.model.UserData;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
@@ -45,9 +46,9 @@ public class THBaseAmazonPurchaseFetcher
     }
     //</editor-fold>
 
-    @Override @NotNull protected THAmazonPurchaseIncomplete createIncompletePurchase(Receipt receipt)
+    @NotNull @Override protected THAmazonPurchaseIncomplete createIncompletePurchase(@NotNull Receipt receipt, @NotNull UserData userData)
     {
-        return new THAmazonPurchaseIncomplete(receipt);
+        return new THAmazonPurchaseIncomplete(receipt, userData);
     }
 
     @Override @Nullable protected AmazonException createException(@NotNull PurchaseUpdatesResponse.RequestStatus requestStatus)
@@ -55,9 +56,9 @@ public class THBaseAmazonPurchaseFetcher
         return samsungExceptionFactory.create(requestStatus, "Failed to fetch purchases");
     }
 
-    @Override protected void handleReceived(@NotNull List<Receipt> receipts)
+    @Override protected void handleReceived(@NotNull List<Receipt> receipts, @NotNull UserData userData)
     {
-        super.handleReceived(receipts);
+        super.handleReceived(receipts, userData);
         mergeWithSavedPurchases();
     }
 
@@ -70,7 +71,7 @@ public class THBaseAmazonPurchaseFetcher
             for (THAmazonPurchaseIncomplete incompleteFetchedPurchase : fetchedIncompletePurchases)
             {
                 if (incompleteFetchedPurchase.getOrderId().receipt.getReceiptId()
-                        .equals(savedPurchase.amazonReceiptId))
+                        .equals(savedPurchase.amazonPurchaseToken))
                 {
                     Timber.d("Populating for %s", incompleteFetchedPurchase.getOrderId().receipt.getReceiptId());
                     purchases.add(new THComposedAmazonPurchase(

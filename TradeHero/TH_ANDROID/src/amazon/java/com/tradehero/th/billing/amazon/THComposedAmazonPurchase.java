@@ -62,7 +62,12 @@ public class THComposedAmazonPurchase implements THAmazonPurchase
 
     @NotNull @Override public AmazonPurchaseReportDTO getPurchaseReportDTO()
     {
-        return purchaseInProcessDTO;
+        return new AmazonPurchaseReportDTO(purchaseInProcessDTO);
+    }
+
+    @NotNull @Override public String getAmazonUserId()
+    {
+        return purchaseInProcessDTO.amazonUserId;
     }
 
     @Override public boolean shouldConsume()
