@@ -252,8 +252,6 @@ dependencies {
     compile 'com.urbanairship:urbanairship-lib:3.2.1'
 
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0'
-    // TODO remove after DiskLruMemCache is removed
-    compile 'com.jakewharton:disklrucache:2.0.2'
 
     compile 'com.tradehero.route:route:0.2-SNAPSHOT'
 
