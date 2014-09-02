@@ -46,6 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractAchievementDialogFragment extends BaseDialogFragment
 {
+    public static final String TAG = AbstractAchievementDialogFragment.class.getName();
     private static final String BUNDLE_KEY_USER_ACHIEVEMENT_ID = AbstractAchievementDialogFragment.class.getName() + ".UserAchievementDTOKey";
     private static final String PROPERTY_DOLLARS_EARNED = "dollarsEarned";
 

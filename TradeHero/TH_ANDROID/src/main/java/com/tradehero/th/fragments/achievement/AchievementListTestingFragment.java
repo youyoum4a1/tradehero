@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -39,6 +39,7 @@ public class AchievementListTestingFragment extends DashboardFragment
     @Inject AbstractAchievementDialogFragment.Creator creator;
 
     @Inject UserAchievementCache userAchievementCache;
+    @Inject LocalBroadcastManager localBroadcastManager;
 
     protected DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList> achievementCategoryListCacheListener;
     private List<AchievementDefDTO> list = new ArrayList<>();
@@ -71,13 +72,7 @@ public class AchievementListTestingFragment extends DashboardFragment
                 userAchievementDTO.xpEarned = 400;
                 userAchievementDTO.xpTotal = 1030;
 
-                userAchievementCache.put(new UserAchievementId(i), userAchievementDTO);
-
-                AbstractAchievementDialogFragment abstractAchievementDialogFragment = creator.newInstance(new UserAchievementId(i));
-                if(abstractAchievementDialogFragment != null)
-                {
-                    abstractAchievementDialogFragment.show(getFragmentManager(), "testing");
-                }
+                userAchievementCache.put(userAchievementDTO);
             }
         });
     }

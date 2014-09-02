@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 @Singleton public class UserAchievementCache extends StraightDTOCacheNew<UserAchievementId, UserAchievementDTO>
 {
     //TODO implements CutDTO when AchievementsDTO has its own cache?
+    public static final String KEY_USER_ACHIEVEMENT_ID = UserAchievementCache.class.getName()+".achievementId";
     public static final String INTENT_ACTION_NAME = "com.tradehero.th.achievement.ALERT";
     public static final String KEY_ACHIEVEMENT_NODE = "achievements";
     public static final int DEFAULT_SIZE = 20;
@@ -88,7 +89,7 @@ import org.jetbrains.annotations.Nullable;
     private boolean broadcast(UserAchievementId userAchievementId)
     {
         Intent i = new Intent(INTENT_ACTION_NAME);
-        i.putExtra(UserAchievementDTO.class.getName(), userAchievementId.getArgs());
+        i.putExtra(KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
         return localBroadcastManager.sendBroadcast(i);
     }
 }

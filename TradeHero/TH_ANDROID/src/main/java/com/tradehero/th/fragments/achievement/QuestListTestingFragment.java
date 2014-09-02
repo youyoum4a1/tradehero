@@ -18,7 +18,6 @@ import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
-import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.achievement.QuestBonusListCache;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
@@ -66,7 +65,7 @@ public class QuestListTestingFragment extends DashboardFragment
                 achievementDefDTO.header = "Daily Login Bonus!";
                 achievementDefDTO.thName = "Day " + questBonusDTO.level;
                 achievementDefDTO.text = "You have earned " + questBonusDTO.bonus;
-                achievementDefDTO.subText = "Come back tomorrow to earn another " + (i+1 >= list.size() ? "surprise " : list.get(i + 1).bonus);
+                achievementDefDTO.subText = "Come back tomorrow to earn another " + (i + 1 >= list.size() ? "surprise " : list.get(i + 1).bonus);
                 achievementDefDTO.virtualDollars = questBonusDTO.bonus;
                 achievementDefDTO.visual =
                         "http://laliberteatoutprix.fr/wp-content/uploads/2013/11/Logo-MoneyManager.png";
@@ -82,13 +81,7 @@ public class QuestListTestingFragment extends DashboardFragment
                 userAchievementDTO.xpEarned = 400;
                 userAchievementDTO.xpTotal = 1030;
 
-                userAchievementCache.put(new UserAchievementId(i), userAchievementDTO);
-
-                AbstractAchievementDialogFragment abstractAchievementDialogFragment = creator.newInstance(new UserAchievementId(i));
-                if (abstractAchievementDialogFragment != null)
-                {
-                    abstractAchievementDialogFragment.show(getFragmentManager(), "testing");
-                }
+                userAchievementCache.put(userAchievementDTO);
             }
         });
     }

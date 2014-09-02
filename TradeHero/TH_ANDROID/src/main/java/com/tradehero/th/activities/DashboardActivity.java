@@ -3,11 +3,15 @@ package com.tradehero.th.activities;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -23,6 +27,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -37,6 +42,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -48,6 +54,7 @@ import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.FirstShowReferralCodeDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
@@ -60,6 +67,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
@@ -110,11 +118,17 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject Analytics analytics;
 
+    @Inject LocalBroadcastManager localBroadcastManager;
+    @Inject @ForAchievement IntentFilter intentFilter;
+    @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
+
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ProgressDialog progressDialog;
     private AlertDialog mReferralCodeDialog;
+
+    private BroadcastReceiver mAchievementBroadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -200,6 +214,28 @@ public class DashboardActivity extends SherlockFragmentActivity
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
+
+        initAchievementBroadcastRecevier();
+    }
+
+    private void initAchievementBroadcastRecevier()
+    {
+        mAchievementBroadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                if(intent != null && intent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID) != null)
+                {
+                    Bundle bundle = intent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID);
+                    UserAchievementId userAchievementId = new UserAchievementId(bundle);
+                    AbstractAchievementDialogFragment abstractAchievementDialogFragment = achievementDialogCreator.newInstance(userAchievementId);
+                    if(abstractAchievementDialogFragment != null)
+                    {
+                        abstractAchievementDialogFragment.show(getSupportFragmentManager(), AbstractAchievementDialogFragment.TAG);
+                    }
+                }
+            }
+        };
     }
 
     private void showReferralCodeDialog()
@@ -385,6 +421,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         launchActions();
 
         analytics.openSession();
+
+        localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, intentFilter);
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -416,6 +454,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override protected void onPause()
     {
         analytics.closeSession();
+        localBroadcastManager.unregisterReceiver(mAchievementBroadcastReceiver);
         super.onPause();
     }
 
