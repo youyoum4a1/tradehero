@@ -44,7 +44,7 @@
             android:background="@drawable/basic_transparent_selector"
             android:layout_marginTop="@dimen/common_margin_10"
             android:src="@drawable/ic_action_content_edit"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/user_profile_display_name"

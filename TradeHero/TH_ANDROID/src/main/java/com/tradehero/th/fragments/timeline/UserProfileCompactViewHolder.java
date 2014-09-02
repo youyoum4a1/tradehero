@@ -28,7 +28,7 @@ public class UserProfileCompactViewHolder
     @InjectView(R.id.user_profile_heroes_count_wrapper) @Optional public View heroesCountWrapper;
     @InjectView(R.id.user_profile_heroes_count) @Optional public TextView heroesCount;
     @InjectView(R.id.user_profile_display_name) @Optional public TextView displayName;
-    @InjectView(R.id.user_profile_edit) @Optional public ImageView mEditTextView;
+    @InjectView(R.id.user_profile_edit) @Optional public ImageView mEdit;
 
     @Inject protected Context context;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
@@ -72,11 +72,15 @@ public class UserProfileCompactViewHolder
 
     private void displayEditIcon()
     {
-        if (mEditTextView != null)
+        if (mEdit != null)
         {
             if (userProfileDTO != null && userProfileDTO.id == currentUserId.get().intValue())
             {
-                mEditTextView.setVisibility(View.VISIBLE);
+                mEdit.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                mEdit.setVisibility(View.GONE);
             }
         }
     }
