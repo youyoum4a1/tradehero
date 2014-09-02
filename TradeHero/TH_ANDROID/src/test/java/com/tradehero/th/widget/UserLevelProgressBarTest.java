@@ -68,6 +68,7 @@ public class UserLevelProgressBarTest
         levelDefListCache.put(new LevelDefListId(), levelDefDTOList);
 
         userLevelProgressBar = (UserLevelProgressBar) LayoutInflater.from(activity).inflate(R.layout.user_level_progressbar, null, false);
+        userLevelProgressBar.setLevelDefDTOList(levelDefDTOList);
     }
 
     @After
@@ -76,7 +77,14 @@ public class UserLevelProgressBarTest
         userLevelProgressBar = null;
     }
 
-    @Test(expected = RuntimeException.class) public void testShouldCrashWhenNotInititate()
+    @Test(expected = RuntimeException.class) public void testShouldCrashWhenListIsNotSet()
+    {
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
+        userLevelProgressBar = (UserLevelProgressBar) LayoutInflater.from(activity).inflate(R.layout.user_level_progressbar, null, false);
+        userLevelProgressBar.startsWith(200);
+    }
+
+    @Test(expected = RuntimeException.class) public void testShouldCrashWhenNotInitiated()
     {
         userLevelProgressBar.increment(200);
     }
@@ -107,7 +115,7 @@ public class UserLevelProgressBarTest
 
     @Test public void testShouldLevelUp()
     {
-        //TODO
+        //TODO when we know how to Run animator test with Robolectric
         //userLevelProgressBar.startsWith(400);
         //assertThat(userLevelProgressBar.getCurrentLevel()).isEqualTo("1");
         //

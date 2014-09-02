@@ -12,18 +12,18 @@ import org.junit.runner.RunWith;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
-public class LevelDefUtilTest
+public class LevelDefDTOListTest
 {
-    @Inject LevelDefUtil levelDefUtil;
     @Inject LevelDefListCache levelDefListCache;
 
     @Test
     public void testShouldReturnNull()
     {
         int xp = new Random().nextInt(Integer.MAX_VALUE);
-        LevelDefDTO levelDefDTO = levelDefUtil.getCurrentLevel(xp);
+        LevelDefDTOList levelDefDTOList = new LevelDefDTOList();
+        LevelDefDTO levelDefDTO = levelDefDTOList.findCurrentLevel(xp);
         assertThat(levelDefDTO).isNull();
-        LevelDefDTO nextLevelDefDTO = levelDefUtil.getNextLevelDTO(1);
+        LevelDefDTO nextLevelDefDTO = levelDefDTOList.getNextLevelDTO(1);
         assertThat(nextLevelDefDTO).isNull();
     }
 
@@ -34,9 +34,7 @@ public class LevelDefUtilTest
 
         LevelDefDTOList levelDefDTOList = createMockList();
 
-        levelDefUtil.setAndSortLevelDefDTOList(levelDefDTOList);
-
-        LevelDefDTO current = levelDefUtil.getCurrentLevel(xp);
+        LevelDefDTO current = levelDefDTOList.findCurrentLevel(xp);
         assertThat(current).isNotNull();
         assertThat(current.level).isEqualTo(2);
     }
@@ -48,9 +46,7 @@ public class LevelDefUtilTest
 
         LevelDefDTOList levelDefDTOList = createMockList();
 
-        levelDefUtil.setAndSortLevelDefDTOList(levelDefDTOList);
-
-        LevelDefDTO next = levelDefUtil.getNextLevelDTO(level);
+        LevelDefDTO next = levelDefDTOList.getNextLevelDTO(level);
         assertThat(next).isNotNull();
         assertThat(next.level).isEqualTo(3);
     }
@@ -62,12 +58,10 @@ public class LevelDefUtilTest
 
         int level = levelDefDTOList.size();
 
-        levelDefUtil.setAndSortLevelDefDTOList(levelDefDTOList);
-
-        LevelDefDTO max = levelDefUtil.getNextLevelDTO(level);
+        LevelDefDTO max = levelDefDTOList.getNextLevelDTO(level);
         assertThat(max).isNotNull();
         assertThat(max.level).isEqualTo(level);
-        assertThat(max).isEqualTo(levelDefUtil.getMaxLevelDTO());
+        assertThat(max).isEqualTo(levelDefDTOList.getMaxLevelDTO());
     }
 
     private LevelDefDTOList createMockList()
@@ -94,6 +88,9 @@ public class LevelDefUtilTest
         levelDefDTOList.add(mockLevel1);
         levelDefDTOList.add(mockLevel3);
         levelDefDTOList.add(mockLevel2);
+
+        //Override add method and sort whenever there's an add?
+        levelDefDTOList.sort();
 
         return levelDefDTOList;
     }

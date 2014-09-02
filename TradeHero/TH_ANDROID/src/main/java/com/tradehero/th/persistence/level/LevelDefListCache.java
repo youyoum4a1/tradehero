@@ -2,9 +2,11 @@ package com.tradehero.th.persistence.level;
 
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.api.level.LevelDefDTONumericLevelComparator;
 import com.tradehero.th.api.level.LevelDefIdList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
+import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +24,13 @@ import org.jetbrains.annotations.Nullable;
         super(DEFAULT_MAX_SIZE);
         this.userServiceWrapper = userServiceWrapper;
         this.levelDefCache = levelDefCache;
+        getOrFetchAsync(new LevelDefListId());
+    }
+
+    @Nullable @Override public LevelDefDTOList put(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+    {
+        value.sort();
+        return super.put(key, value);
     }
 
     @NotNull @Override protected LevelDefIdList cutValue(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)

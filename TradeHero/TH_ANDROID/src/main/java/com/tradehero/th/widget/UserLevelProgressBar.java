@@ -17,31 +17,33 @@ import butterknife.InjectView;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTO;
-import com.tradehero.th.models.level.LevelDefUtil;
+import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class UserLevelProgressBar extends RelativeLayout
 {
     private static final long MS_PER_XP = 5;
+
+    private static final String PROPERTY_MAX = "max";
+    private static final String PROPERTY_PROGRESS = "progress";
+    private static final String PROPERTY_SECONDARY_PROGRESS = "secondaryProgress";
 
     @InjectView(R.id.user_level_progress_next) protected TextView nextLevelLabel;
     @InjectView(R.id.user_level_progress_current) protected TextView currentLevelLabel;
 
     @InjectView(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
 
-    @Inject LevelDefUtil levelDefUtil;
-
     private int mCurrentXP = -1;
-    private LevelDefDTO currentLevelDTO;
-    private String xpFormat;
-
     private UserLevelProgressBarListener userLevelProgressBarListener;
+
     private AnimatorSet mAnimatorSet;
     private long mMsDelay;
-    private LevelDefDTO mMaxLevelDefDTO;
+    private LevelDefDTO mCurrentLevelDTO;
+    private LevelDefDTO mMaxLevelDTO;
+    private LevelDefDTOList mLevelDefDTOList;
 
     public UserLevelProgressBar(Context context)
     {
@@ -63,16 +65,26 @@ public class UserLevelProgressBar extends RelativeLayout
         super.onFinishInflate();
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
+    }
 
-        if(!isInEditMode())
-        {
-            xpFormat = getContext().getString(R.string.user_level_xp_indicator_format);
-            mMaxLevelDefDTO = levelDefUtil.getMaxLevelDTO();
-        }
+    public LevelDefDTOList getLevelDefDTOList()
+    {
+        return mLevelDefDTOList;
+    }
+
+    public void setLevelDefDTOList(@NotNull LevelDefDTOList mLevelDefDTOList)
+    {
+        this.mLevelDefDTOList = mLevelDefDTOList;
+        mMaxLevelDTO = mLevelDefDTOList.getMaxLevelDTO();
     }
 
     public void startsWith(int current)
     {
+        if (mLevelDefDTOList == null)
+        {
+            throw new RuntimeException("Must call setLevelDefDTOList before calling starts");
+        }
+
         if (current < 0)
         {
             throw new RuntimeException("Current XP must not be negative");
@@ -80,47 +92,55 @@ public class UserLevelProgressBar extends RelativeLayout
 
         this.mCurrentXP = current;
         determineLevel();
-
     }
 
     private void determineLevel()
     {
-        currentLevelDTO = levelDefUtil.getCurrentLevel(mCurrentXP);
-        xpProgressBar.setMax(getMaxProgress(currentLevelDTO));
-        xpProgressBar.setProgress(currentXpToProgress());
-        updateDisplay();
-        updateXPIndicator(mCurrentXP);
-        if(currentLevelDTO.equals(mMaxLevelDefDTO))
+        if (mLevelDefDTOList != null)
         {
-            setBarProgressAtMax();
+            mCurrentLevelDTO = mLevelDefDTOList.findCurrentLevel(mCurrentXP);
+            xpProgressBar.setMax(getMaxProgress(mCurrentLevelDTO));
+            xpProgressBar.setProgress(currentXpToProgress());
+            updateLevelDisplay();
+            updateXPIndicator(mCurrentXP);
+            if (mCurrentLevelDTO.equals(mMaxLevelDTO))
+            {
+                setBarProgressAtMax();
+            }
+        }
+        else
+        {
+            //TODO
         }
     }
 
     private void setBarProgressAtMax()
     {
-        xpProgressBar.setMax(getMaxProgress(currentLevelDTO));
+        xpProgressBar.setMax(getMaxProgress(mCurrentLevelDTO));
     }
 
-    private void updateDisplay()
+    private void updateLevelDisplay()
     {
-        currentLevelLabel.setText(String.valueOf(currentLevelDTO.level));
-        if (currentLevelDTO.equals(mMaxLevelDefDTO))
+        if (mCurrentLevelDTO != null)
         {
-            hideNextLevel();
-        }
-        else
-        {
-            LevelDefDTO nextLevel = levelDefUtil.getNextLevelDTO(currentLevelDTO.level);
-            if (nextLevel != null)
-            {
-                nextLevelLabel.setText(String.valueOf(nextLevel.level));
-            }
-            else
+            currentLevelLabel.setText(String.valueOf(mCurrentLevelDTO.level));
+            if (mCurrentLevelDTO.equals(mMaxLevelDTO))
             {
                 hideNextLevel();
             }
+            else if (mLevelDefDTOList != null)
+            {
+                LevelDefDTO nextLevel = mLevelDefDTOList.getNextLevelDTO(mCurrentLevelDTO.level);
+                if (nextLevel != null)
+                {
+                    nextLevelLabel.setText(String.valueOf(nextLevel.level));
+                }
+                else
+                {
+                    hideNextLevel();
+                }
+            }
         }
-
     }
 
     private void hideNextLevel()
@@ -138,7 +158,7 @@ public class UserLevelProgressBar extends RelativeLayout
 
     public void increment(int xpGained)
     {
-        if (currentLevelDTO == null)
+        if (mCurrentLevelDTO == null)
         {
             throw new RuntimeException("Must call startsWith before calling increment!");
         }
@@ -161,7 +181,7 @@ public class UserLevelProgressBar extends RelativeLayout
 
     private int currentXpToProgress()
     {
-        return mCurrentXP - currentLevelDTO.xpFrom;
+        return mCurrentXP - mCurrentLevelDTO.xpFrom;
     }
 
     private int gainedXpToEndProgress(int currentXp, int xpGained, LevelDefDTO levelDTO)
@@ -179,7 +199,7 @@ public class UserLevelProgressBar extends RelativeLayout
         {
             @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
             {
-                Integer xp = currentLevelDTO.xpFrom + (Integer) valueAnimator.getAnimatedValue("secondaryProgress");
+                Integer xp = mCurrentLevelDTO.xpFrom + (Integer) valueAnimator.getAnimatedValue("secondaryProgress");
                 updateXPIndicator(xp);
             }
         };
@@ -195,28 +215,28 @@ public class UserLevelProgressBar extends RelativeLayout
     {
         List<Animator> aList = new ArrayList<>();
 
-        PropertyValuesHolder p0Progress = PropertyValuesHolder.ofInt("progress", currentXpToProgress(), currentXpToProgress());
-        PropertyValuesHolder p0SecondaryProgress = PropertyValuesHolder.ofInt("secondaryProgress", currentXpToProgress(),
-                gainedXpToEndProgress(mCurrentXP, xpGained, currentLevelDTO));
-        PropertyValuesHolder p0Max = PropertyValuesHolder.ofInt("max", getMaxProgress(currentLevelDTO), getMaxProgress(currentLevelDTO));
+        PropertyValuesHolder p0Progress = PropertyValuesHolder.ofInt(PROPERTY_PROGRESS, currentXpToProgress(), currentXpToProgress());
+        PropertyValuesHolder p0SecondaryProgress = PropertyValuesHolder.ofInt(PROPERTY_SECONDARY_PROGRESS, currentXpToProgress(),
+                gainedXpToEndProgress(mCurrentXP, xpGained, mCurrentLevelDTO));
+        PropertyValuesHolder p0Max = PropertyValuesHolder.ofInt(PROPERTY_MAX, getMaxProgress(mCurrentLevelDTO), getMaxProgress(mCurrentLevelDTO));
 
         ValueAnimator v0 =
                 ObjectAnimator.ofPropertyValuesHolder(xpProgressBar, p0Progress, p0SecondaryProgress, p0Max);
         v0.addUpdateListener(createUpdateListener());
-        v0.setDuration(getAnimationDuration(currentXpToProgress(), gainedXpToEndProgress(mCurrentXP, xpGained, currentLevelDTO)));
+        v0.setDuration(getAnimationDuration(currentXpToProgress(), gainedXpToEndProgress(mCurrentXP, xpGained, mCurrentLevelDTO)));
         aList.add(v0);
 
         int targetXp = mCurrentXP + xpGained;
-        LevelDefDTO levelDefDTO = currentLevelDTO;
-        if(willLevelUp(targetXp, levelDefDTO))
+        LevelDefDTO levelDefDTO = mCurrentLevelDTO;
+        if (willLevelUp(targetXp, levelDefDTO))
         {
             v0.addListener(createAnimationAdapter());
         }
 
         while (willLevelUp(targetXp, levelDefDTO))
         {
-            LevelDefDTO nextLevelDTO = levelDefUtil.getNextLevelDTO(levelDefDTO.level);
-            if (levelDefUtil.isMaxLevel(nextLevelDTO) || nextLevelDTO == null)
+            LevelDefDTO nextLevelDTO = mLevelDefDTOList.getNextLevelDTO(levelDefDTO.level);
+            if (mLevelDefDTOList.isMaxLevel(nextLevelDTO) || nextLevelDTO == null)
             {
                 break;
             }
@@ -224,16 +244,16 @@ public class UserLevelProgressBar extends RelativeLayout
             int xpGainedN = targetXp - nextLevelDTO.xpFrom;
             int startProgress = 0;
 
-            PropertyValuesHolder pNa = PropertyValuesHolder.ofInt("progress", startProgress, startProgress);
-            PropertyValuesHolder pNb = PropertyValuesHolder.ofInt("secondaryProgress", startProgress,
+            PropertyValuesHolder pNa = PropertyValuesHolder.ofInt(PROPERTY_PROGRESS, startProgress, startProgress);
+            PropertyValuesHolder pNb = PropertyValuesHolder.ofInt(PROPERTY_SECONDARY_PROGRESS, startProgress,
                     gainedXpToEndProgress(nextLevelDTO.xpFrom, xpGainedN, nextLevelDTO));
-            PropertyValuesHolder pNc = PropertyValuesHolder.ofInt("max", getMaxProgress(nextLevelDTO), getMaxProgress(nextLevelDTO));
+            PropertyValuesHolder pNc = PropertyValuesHolder.ofInt(PROPERTY_MAX, getMaxProgress(nextLevelDTO), getMaxProgress(nextLevelDTO));
 
             ValueAnimator vN = ObjectAnimator.ofPropertyValuesHolder(xpProgressBar, pNa, pNb, pNc);
             vN.addUpdateListener(createUpdateListener());
             vN.setDuration(getAnimationDuration(startProgress, gainedXpToEndProgress(nextLevelDTO.xpFrom, xpGainedN, nextLevelDTO)));
             vN.setStartDelay(mMsDelay);
-            if(willLevelUp(targetXp, nextLevelDTO))
+            if (willLevelUp(targetXp, nextLevelDTO))
             {
                 vN.addListener(createAnimationAdapter());
             }
@@ -270,13 +290,13 @@ public class UserLevelProgressBar extends RelativeLayout
                 if (xpProgressBar.getSecondaryProgress() >= xpProgressBar.getMax())
                 {
                     UserLevelProgressBarListener userLevelProgressBarListenerCopy = userLevelProgressBarListener;
-                    LevelDefDTO nextLevel = levelDefUtil.getNextLevelDTO(currentLevelDTO.level);
+                    LevelDefDTO nextLevel = mLevelDefDTOList.getNextLevelDTO(mCurrentLevelDTO.level);
                     if (userLevelProgressBarListenerCopy != null)
                     {
-                        userLevelProgressBarListenerCopy.onLevelUp(currentLevelDTO, nextLevel);
+                        userLevelProgressBarListenerCopy.onLevelUp(mCurrentLevelDTO, nextLevel);
                     }
-                    currentLevelDTO = nextLevel;
-                    updateDisplay();
+                    mCurrentLevelDTO = nextLevel;
+                    updateLevelDisplay();
                 }
             }
 

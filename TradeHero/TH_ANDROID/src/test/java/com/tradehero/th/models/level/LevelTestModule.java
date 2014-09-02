@@ -4,7 +4,7 @@ import dagger.Module;
 
 @Module(
         injects = {
-                LevelDefUtilTest.class,
+                LevelDefDTOListTest.class,
         },
         complete = false,
         library = true,

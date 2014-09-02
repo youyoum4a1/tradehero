@@ -3,6 +3,7 @@ package com.tradehero.th.api.level;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
+import java.util.Collections;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +24,7 @@ public class LevelDefDTOList extends BaseArrayList<LevelDefDTO>
 
     @Nullable public LevelDefDTO getNextLevelDTO(int currentLevel)
     {
-        if(!isEmpty())
+        if (!isEmpty())
         {
             for (int index = 0; index < size(); index++)
             {
@@ -54,5 +55,10 @@ public class LevelDefDTOList extends BaseArrayList<LevelDefDTO>
             return get(size() - 1);
         }
         return null;
+    }
+
+    public void sort()
+    {
+        Collections.sort(this, new LevelDefDTONumericLevelComparator());
     }
 }
