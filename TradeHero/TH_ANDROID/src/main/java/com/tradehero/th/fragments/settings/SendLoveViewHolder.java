@@ -28,7 +28,7 @@ public class SendLoveViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        AskForReviewDialogFragment.showInviteCodeDialog(
+        AskForReviewDialogFragment.showReviewDialog(
                 ((SherlockFragmentActivity) currentActivityHolder.getCurrentActivity()).getSupportFragmentManager());
     }
 }

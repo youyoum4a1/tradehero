@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.R;
@@ -21,10 +20,13 @@ import timber.log.Timber;
 
 public class AskForReviewDialogFragment extends BaseDialogFragment
 {
+    static public long ONE_DAY = 24*60*60*100;
+    static public long ONE_YEAR = (long)365*24*60*60*100;
+
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject @ShowAskForReviewDialog LongPreference mShowAskForReviewDialogPreference;
 
-    public static AskForReviewDialogFragment showInviteCodeDialog(FragmentManager fragmentManager)
+    public static AskForReviewDialogFragment showReviewDialog(FragmentManager fragmentManager)
     {
         AskForReviewDialogFragment dialogFragment = new AskForReviewDialogFragment();
         dialogFragment.show(fragmentManager, AskForReviewDialogFragment.class.getName());
@@ -50,24 +52,11 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
         return inflater.inflate(R.layout.ask_for_review_dialog_layout, container, false);
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
-    }
-
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        super.onDestroyView();
-    }
-
     @OnClick(R.id.btn_later)
     public void onLater()
     {
         dismiss();
-        //mShowAskForReviewDialogPreference.set(System.currentTimeMillis()+60*1000);//1 min for test
-        mShowAskForReviewDialogPreference.set(System.currentTimeMillis()+24*60*60*1000);//1 day
+        mShowAskForReviewDialogPreference.set(System.currentTimeMillis()+ONE_DAY);
     }
 
     @OnClick(R.id.btn_rate)
@@ -102,7 +91,6 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
                         R.string.cancel);
             }
         }
-        mShowAskForReviewDialogPreference.set(
-                System.currentTimeMillis() + 365 * 24 * 60 * 60 * 1000);
+        mShowAskForReviewDialogPreference.set((long)System.currentTimeMillis() + ONE_YEAR);
     }
 }

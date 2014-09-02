@@ -48,6 +48,7 @@ public class PreferenceModule
     private static final String PREF_FIRST_SHOW_INVITE_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
     private static final String PREF_FIRST_SHOW_ON_BOARD_FLAG = "PREF_FIRST_SHOW_ON_BOARD_FLAG";
     private static final String PREF_SHOW_ASK_FOR_REVIEW_FLAG = "PREF_SHOW_ASK_FOR_REVIEW_FLAG";
+    private static final String PREF_SHOW_ASK_FOR_INVITE_FLAG = "PREF_SHOW_ASK_FOR_INVITE_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
     private static final String PREF_SAVED_TRANSLATION_SETTING_KEY = "PREF_SAVED_TRANSLATION_SETTING_KEY";
@@ -166,5 +167,11 @@ public class PreferenceModule
             @ForUser SharedPreferences sharedPreferences)
     {
         return new LongPreference(sharedPreferences, PREF_SHOW_ASK_FOR_REVIEW_FLAG, 0);
+    }
+
+    @Provides @Singleton @ShowAskForInviteDialog LongPreference provideAskForInviteDialogPreference(
+            @ForUser SharedPreferences sharedPreferences)
+    {
+        return new LongPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_FLAG, 0);
     }
 }

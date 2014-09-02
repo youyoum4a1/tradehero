@@ -40,6 +40,7 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
+import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -51,6 +52,7 @@ import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -89,6 +91,7 @@ public class PositionListFragment
     @Inject UserProfileCache userProfileCache;
     @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject @ShowAskForReviewDialog LongPreference mShowAskForReviewDialogPreference;
+    @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
 
     @InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
@@ -761,18 +764,19 @@ public class PositionListFragment
         Double profit = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey).roiSinceInception;
         if (profit != null)
         {
-            if (profit > 0)
+            SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolderLazy.get().getCurrentActivity();
+            if (profit > 0 && activity != null)
             {
-                long lastReviewTime = mShowAskForReviewDialogPreference.get();
-                if (System.currentTimeMillis() < lastReviewTime)
+                long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();
+                if (System.currentTimeMillis() > lastInviteLimitTime)
                 {
+                    AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
                     return;
                 }
-                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolderLazy.get().getCurrentActivity();
-                if (activity != null)
+                long lastReviewLimitTime = mShowAskForReviewDialogPreference.get();
+                if (System.currentTimeMillis() > lastReviewLimitTime)
                 {
-                    AskForReviewDialogFragment.showInviteCodeDialog(
-                            activity.getSupportFragmentManager());
+                    AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
                 }
             }
         }

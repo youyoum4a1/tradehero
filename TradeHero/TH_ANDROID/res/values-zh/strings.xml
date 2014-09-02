@@ -111,4 +111,7 @@
   <string name="ask_for_review_summary">请给我们评分，让我们知您所想。</string>
   <string name="ask_for_review_rate">给 全民股神 投票</string>
   <string name="maybe_later">稍后</string>
+  <string name="ask_for_invite_title">同朋友分享快乐 !</string>
+  <string name="ask_for_invite_summary1">邀请你的好友，并获得</string>
+  <string name="ask_for_invite">现在就去邀请好友 !</string>
 </resources>

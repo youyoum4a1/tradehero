@@ -90,6 +90,7 @@ import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
+import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
@@ -323,6 +324,7 @@ import javax.inject.Singleton;
                         InviteCodeViewLinear.class,
                         InviteCodeDialogFragment.class,
                         AskForReviewDialogFragment.class,
+                        AskForInviteDialogFragment.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,
