@@ -35,6 +35,7 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
     {
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
+        setCancelable(false);
     }
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -61,20 +62,12 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
         super.onDestroyView();
     }
 
-    @OnClick(R.id.btn_cancel)
-    @Override public void dismiss()
-    {
-        super.dismiss();
-        mShowAskForReviewDialogPreference.set(
-                System.currentTimeMillis() + 365 * 24 * 60 * 60 * 1000);
-    }
-
     @OnClick(R.id.btn_later)
     public void onLater()
     {
         dismiss();
         //mShowAskForReviewDialogPreference.set(System.currentTimeMillis()+60*1000);//1 min for test
-        mShowAskForReviewDialogPreference.set(System.currentTimeMillis()+30*24*60*60*1000);//1 month
+        mShowAskForReviewDialogPreference.set(System.currentTimeMillis()+24*60*60*1000);//1 day
     }
 
     @OnClick(R.id.btn_rate)
