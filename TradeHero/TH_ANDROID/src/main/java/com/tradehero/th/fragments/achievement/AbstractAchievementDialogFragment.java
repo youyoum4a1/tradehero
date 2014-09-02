@@ -35,9 +35,9 @@ import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.achievement.UserAchievementDTOUtil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -68,7 +68,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     @InjectView(R.id.btn_achievement_dismiss) Button btnDismiss;
 
-    @Inject UserAchievementDTOUtil userAchievementDTOUtil;
+    @Inject UserAchievementCache userAchievementCache;
     @Inject Picasso picasso;
     @Inject GraphicUtil graphicUtil;
 
@@ -98,7 +98,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
     protected void init()
     {
         userAchievementId = new UserAchievementId(getArguments().getBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID));
-        userAchievementDTO = userAchievementDTOUtil.pop(userAchievementId);
+        userAchievementDTO = userAchievementCache.pop(userAchievementId);
         initView();
     }
 
@@ -224,7 +224,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
                         }
                     });
-        }else
+        }
+        else
         {
             badge.setImageResource(R.drawable.achievement_unlocked_placeholder);
         }
@@ -315,14 +316,14 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     @Override public void onDestroyView()
     {
-        if(mAnim != null)
+        if (mAnim != null)
         {
             mAnim.cancel();
             mAnim.removeAllUpdateListeners();
             mAnim.removeAllListeners();
             mAnim = null;
         }
-        if(colorValueAnimator != null)
+        if (colorValueAnimator != null)
         {
             colorValueAnimator.cancel();
             colorValueAnimator.removeAllUpdateListeners();
@@ -374,24 +375,24 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     public static class Creator
     {
-        @NotNull UserAchievementDTOUtil userAchievementDTOUtil;
+        @NotNull UserAchievementCache userAchievementCacheInner;
 
-        @Inject public Creator(@NotNull UserAchievementDTOUtil userAchievementDTOUtil)
+        @Inject public Creator(@NotNull UserAchievementCache userAchievementCacheInner)
         {
             super();
-            this.userAchievementDTOUtil = userAchievementDTOUtil;
+            this.userAchievementCacheInner = userAchievementCacheInner;
         }
 
         @Nullable public AbstractAchievementDialogFragment newInstance(@NotNull UserAchievementId userAchievementId)
         {
-            if (!userAchievementDTOUtil.shouldShow(userAchievementId))
+            if (!userAchievementCacheInner.shouldShow(userAchievementId))
             {
                 return null;
             }
 
             Bundle args = new Bundle();
             args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
-            @Nullable UserAchievementDTO userAchievementDTO = userAchievementDTOUtil.get(userAchievementId);
+            @Nullable UserAchievementDTO userAchievementDTO = userAchievementCacheInner.get(userAchievementId);
             AbstractAchievementDialogFragment dialogFragment;
             if (userAchievementDTO.achievementDef.isQuest) // TODO handle case where userAchievementDTO is null
             {

@@ -8,9 +8,9 @@ import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.QuestDialogFragment;
 import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
+import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.fragments.achievement.AchievementDialogFragment;
-import com.tradehero.th.utils.achievement.UserAchievementDTOUtil;
 import com.tradehero.th.widget.UserLevelProgressBar;
 import dagger.Module;
 import dagger.Provides;
@@ -39,6 +39,6 @@ public class AchievementModule
 
     @Provides @ForAchievement IntentFilter providesIntentFilterAchievement()
     {
-        return new IntentFilter(UserAchievementDTOUtil.INTENT_ACTION_NAME);
+        return new IntentFilter(UserAchievementCache.INTENT_ACTION_NAME);
     }
 }

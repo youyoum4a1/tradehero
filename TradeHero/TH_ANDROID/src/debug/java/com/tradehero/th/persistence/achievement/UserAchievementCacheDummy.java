@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.achievement;
 
+import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
@@ -10,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 @Singleton public class UserAchievementCacheDummy extends UserAchievementCache
 {
-    @Inject public UserAchievementCacheDummy(@NotNull AchievementServiceWrapper achievementServiceWrapper)
+    @Inject public UserAchievementCacheDummy(@NotNull AchievementServiceWrapper achievementServiceWrapper, @NotNull LocalBroadcastManager localBroadcastManager)
     {
-        super(achievementServiceWrapper);
+        super(achievementServiceWrapper, localBroadcastManager);
         getOrFetchAsync(new UserAchievementId(1));
         getOrFetchAsync(new UserAchievementId(2));
     }

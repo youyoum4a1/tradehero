@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.utils.achievement.UserAchievementDTOUtil;
+import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.Iterator;
@@ -22,13 +22,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class ObjectMapperWrapper extends ObjectMapper
 {
-    @NotNull protected final Lazy<UserAchievementDTOUtil> userAchievementDTOUtil;
+    @NotNull protected final Lazy<UserAchievementCache> userAchievementCacheLazy;
 
     //<editor-fold desc="Constructors">
-    @Inject public ObjectMapperWrapper(@NotNull Lazy<UserAchievementDTOUtil> userAchievementDTOUtil)
+    @Inject public ObjectMapperWrapper(@NotNull Lazy<UserAchievementCache> userAchievementCacheLazy)
     {
         super();
-        this.userAchievementDTOUtil = userAchievementDTOUtil;
+        this.userAchievementCacheLazy = userAchievementCacheLazy;
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
     //</editor-fold>
@@ -56,8 +56,8 @@ public class ObjectMapperWrapper extends ObjectMapper
             element = elementsIterator.next();
             if (isAchievementNode(element))
             {
-                handleAchievement(objectNode.get(UserAchievementDTOUtil.KEY_ACHIEVEMENT_NODE));
-                objectNode.remove(UserAchievementDTOUtil.KEY_ACHIEVEMENT_NODE);
+                handleAchievement(objectNode.get(UserAchievementCache.KEY_ACHIEVEMENT_NODE));
+                objectNode.remove(UserAchievementCache.KEY_ACHIEVEMENT_NODE);
                 break;
             }
             //else if (isOther(element)) {}
@@ -66,7 +66,7 @@ public class ObjectMapperWrapper extends ObjectMapper
 
     protected boolean isAchievementNode(@NotNull Map.Entry<String, JsonNode> element)
     {
-        return element.getKey().equals(UserAchievementDTOUtil.KEY_ACHIEVEMENT_NODE);
+        return element.getKey().equals(UserAchievementCache.KEY_ACHIEVEMENT_NODE);
     }
 
     protected void handleAchievement(
@@ -78,6 +78,6 @@ public class ObjectMapperWrapper extends ObjectMapper
                 new TypeReference<List<UserAchievementDTO>>()
                 {
                 });
-        userAchievementDTOUtil.get().put(userAchievementDTOs);
+        userAchievementCacheLazy.get().put(userAchievementDTOs);
     }
 }

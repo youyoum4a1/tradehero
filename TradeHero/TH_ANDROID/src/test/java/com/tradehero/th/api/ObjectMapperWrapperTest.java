@@ -15,8 +15,8 @@ import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.utils.achievement.ForAchievement;
-import com.tradehero.th.utils.achievement.UserAchievementDTOUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 public class ObjectMapperWrapperTest extends BaseApiTest
 {
     @Inject @ForApp ObjectMapper objectMapper;
-    @Inject UserAchievementDTOUtil userAchievementDTOUtil;
+    @Inject UserAchievementCache userAchievementCache;
     @Inject Context context;
 
     private InputStream positionDTOBody1Stream;
@@ -78,7 +78,7 @@ public class ObjectMapperWrapperTest extends BaseApiTest
     {
         objectMapper.readValue(positionDTOBody1Stream, GetPositionsDTO.class);
 
-        UserAchievementDTO userAchievementDTO = userAchievementDTOUtil.get(new UserAchievementId(1));
+        UserAchievementDTO userAchievementDTO = userAchievementCache.get(new UserAchievementId(1));
         assertThat(userAchievementDTO).isNotNull();
         assertThat(userAchievementDTO.id).isEqualTo(1);
     }
@@ -113,7 +113,7 @@ public class ObjectMapperWrapperTest extends BaseApiTest
         assertThat(userAchievementId).isNotNull();
         assertThat(userAchievementId.key).isEqualTo(1);
 
-        UserAchievementDTO userAchievementDTO = userAchievementDTOUtil.get(userAchievementId);
+        UserAchievementDTO userAchievementDTO = userAchievementCache.get(userAchievementId);
 
         assertThat(userAchievementDTO.id).isEqualTo(1);
     }
