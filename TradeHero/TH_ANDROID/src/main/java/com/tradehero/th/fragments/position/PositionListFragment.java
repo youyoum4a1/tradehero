@@ -751,7 +751,14 @@ public class PositionListFragment
 
     private void showPrettyReviewAndInvite()
     {
-        Double profit = userProfileDTO.portfolio.roiSinceInception;
+        if (shownUser != null)
+        {
+            if (shownUser.getUserId().intValue() != currentUserId.get().intValue())
+            {
+                return;
+            }
+        }
+        Double profit = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey).roiSinceInception;
         if (profit != null)
         {
             if (profit > 0)
