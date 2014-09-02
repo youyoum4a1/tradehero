@@ -106,6 +106,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle(
                     notificationBuilder
                             .setContentText(message)
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                             .setNumber(totalUnreadCount)
             );
 
