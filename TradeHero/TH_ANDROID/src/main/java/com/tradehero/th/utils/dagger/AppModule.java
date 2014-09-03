@@ -410,9 +410,13 @@ public class AppModule
         return application.getApplicationContext();
     }
 
-    @Provides @LanguageCode String provideCurrentLanguageCode(Context context)
+    @Provides Locale provideLocale(Context context)
     {
-        Locale locale = context.getResources().getConfiguration().locale;
+        return context.getResources().getConfiguration().locale;
+    }
+
+    @Provides @LanguageCode String provideCurrentLanguageCode(Locale locale)
+    {
         return String.format("%s-%s", locale.getLanguage(), locale.getCountry());
     }
 

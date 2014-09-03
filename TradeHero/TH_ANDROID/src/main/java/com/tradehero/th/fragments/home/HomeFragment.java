@@ -44,7 +44,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.FacebookUtils;
@@ -69,7 +68,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @InjectView(R.id.main_content_wrapper) BetterViewAnimator mainContentWrapper;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
-    @Inject @LanguageCode String languageCode;
 
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject Lazy<FacebookUtils> facebookUtils;

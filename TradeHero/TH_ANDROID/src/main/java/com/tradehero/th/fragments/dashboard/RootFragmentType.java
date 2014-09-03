@@ -106,7 +106,8 @@ public enum RootFragmentType
 
     private static void addAdminMenuIfNeeded(List<RootFragmentType> forResideMenu)
     {
-        if (!Constants.RELEASE) {
+        if (!Constants.RELEASE)
+        {
             forResideMenu.add(ADMIN_SETTINGS);
         }
     }

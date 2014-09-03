@@ -20,7 +20,6 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
-import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
@@ -41,7 +40,7 @@ public class NewsHeadlineFragment extends SherlockFragment
     private int mDisplayedViewId;
     private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> mFeaturedNewsListener;
     private NewsHeadlineAdapter mFeaturedNewsAdapter;
-    private NewsItemListKey newsItemListKey;
+    protected NewsItemListKey newsItemListKey;
 
     public NewsHeadlineFragment(NewsItemListKey newsItemListKey)
     {
@@ -53,7 +52,7 @@ public class NewsHeadlineFragment extends SherlockFragment
         switch (newsType)
         {
             case Region:
-                return new NewsHeadlineFragment(new NewsItemListRegionalKey("CN", "zh", null, null));
+                return new RegionalNewsHeadlineFragment();
             case MotleyFool:
                 return new NewsHeadlineFragment(new NewsItemListFeaturedKey(null, null));
             case Global:
@@ -99,6 +98,11 @@ public class NewsHeadlineFragment extends SherlockFragment
             mContentWrapper.setDisplayedChildByLayoutId(mDisplayedViewId);
         }
 
+        refreshNews();
+    }
+
+    protected void refreshNews()
+    {
         detachFetchFeaturedNewsTask();
         newsItemCompactListCache.register(newsItemListKey, mFeaturedNewsListener);
         newsItemCompactListCache.getOrFetchAsync(newsItemListKey);
