@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 public class AskForInviteDialogFragment extends BaseDialogFragment
 {
+    static public long ONE_YEAR = (long)365*24*60*60*1000;
     static public long ONE_MONTH = (long)30*24*60*60*1000;
     static public long ONE_MIN = 60*1000;
 
@@ -66,7 +67,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
     {
         pushInvitationFragment();
         dismiss();
-        mShowAskForInviteDialogPreference.set((long)System.currentTimeMillis() + ONE_MONTH);
+        mShowAskForInviteDialogPreference.set((long)System.currentTimeMillis() + ONE_YEAR);
     }
 
     private void pushInvitationFragment()
