@@ -8,10 +8,39 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="right">
+
+    <ImageView
+        android:id="@+id/btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_btn_popup_close"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="-40dp"
+      android:gravity="center">
+
+    <View
+        android:layout_width="@dimen/common_margin_140"
+        android:layout_height="@dimen/common_margin_140"
+        android:background="@drawable/ic_icn_popup_refer"
+        android:layout_marginTop="-10dp"
+        />
+
+  </LinearLayout>
+
   <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/common_margin_10"
+      android:layout_marginTop="-20dp"
+      android:layout_marginBottom="@dimen/common_margin_10"
       android:gravity="center_horizontal"
       android:text="@string/ask_for_invite_title"
       android:textStyle="bold"

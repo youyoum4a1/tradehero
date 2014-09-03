@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -39,7 +38,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
     {
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
-        //setCancelable(false);
+        setCancelable(false);
     }
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -54,9 +53,10 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
         return inflater.inflate(R.layout.ask_for_invite_dialog_layout, container, false);
     }
 
-    @Override public void onDismiss(DialogInterface dialog)
+    @OnClick(R.id.btn_cancel)
+    public void onCancel()
     {
-        super.onDismiss(dialog);
+        dismiss();
         mShowAskForInviteDialogPreference.set((long)System.currentTimeMillis() + ONE_MONTH);
     }
 

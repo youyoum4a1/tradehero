@@ -52,6 +52,13 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
         return inflater.inflate(R.layout.ask_for_review_dialog_layout, container, false);
     }
 
+    @OnClick(R.id.btn_cancel)
+    public void onCancel()
+    {
+        dismiss();
+        mShowAskForReviewDialogPreference.set(System.currentTimeMillis()+ONE_YEAR);
+    }
+
     @OnClick(R.id.btn_later)
     public void onLater()
     {

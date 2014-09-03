@@ -164,13 +164,13 @@ public class PreferenceModule
     }
 
     @Provides @Singleton @ShowAskForReviewDialog LongPreference provideAskForReviewDialogPreference(
-            @ForUser SharedPreferences sharedPreferences)
+            @ForApp SharedPreferences sharedPreferences)
     {
         return new LongPreference(sharedPreferences, PREF_SHOW_ASK_FOR_REVIEW_FLAG, 0);
     }
 
     @Provides @Singleton @ShowAskForInviteDialog LongPreference provideAskForInviteDialogPreference(
-            @ForUser SharedPreferences sharedPreferences)
+            @ForApp SharedPreferences sharedPreferences)
     {
         return new LongPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_FLAG, 0);
     }

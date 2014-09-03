@@ -8,6 +8,53 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="right">
+
+    <View
+        android:id="@+id/btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_btn_popup_close"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center"
+      android:layout_marginTop="-20dp">
+
+    <View
+        android:layout_width="@dimen/common_margin_60"
+        android:layout_height="@dimen/common_margin_60"
+        android:background="@drawable/icn_popup_star"/>
+
+    <View
+        android:layout_width="@dimen/common_margin_60"
+        android:layout_height="@dimen/common_margin_60"
+        android:background="@drawable/icn_popup_star"/>
+
+    <View
+        android:layout_width="@dimen/common_margin_60"
+        android:layout_height="@dimen/common_margin_60"
+        android:background="@drawable/icn_popup_star"/>
+
+    <View
+        android:layout_width="@dimen/common_margin_60"
+        android:layout_height="@dimen/common_margin_60"
+        android:background="@drawable/icn_popup_star"/>
+
+    <View
+        android:layout_width="@dimen/common_margin_60"
+        android:layout_height="@dimen/common_margin_60"
+        android:background="@drawable/icn_popup_star"/>
+
+  </LinearLayout>
+
   <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

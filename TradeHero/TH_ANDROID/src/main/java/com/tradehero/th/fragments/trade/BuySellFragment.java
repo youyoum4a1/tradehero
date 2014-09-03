@@ -1238,16 +1238,16 @@ public class BuySellFragment extends AbstractBuySellFragment
                 SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolderLazy.get().getCurrentActivity();
                 if (profit > 0 && activity != null)
                 {
-                    long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();
-                    if (System.currentTimeMillis() > lastInviteLimitTime)
-                    {
-                        AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
-                        return;
-                    }
                     long lastReviewLimitTime = mShowAskForReviewDialogPreference.get();
                     if (System.currentTimeMillis() > lastReviewLimitTime)
                     {
                         AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
+                        return;
+                    }
+                    long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();
+                    if (System.currentTimeMillis() > lastInviteLimitTime)
+                    {
+                        AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
                     }
                 }
             }
