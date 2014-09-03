@@ -143,32 +143,40 @@ public class THUser
             userFormDTO.deviceToken = deviceTokenHelper.getDeviceToken();
         }
 
-        if ((userFormDTO instanceof FacebookUserFormDTO ||
-                userFormDTO instanceof LinkedinUserFormDTO ||
-                userFormDTO instanceof TwitterUserFormDTO)) {
-            mainCredentialsPreference.setCredentials(credentialsDTO);
-            sessionServiceWrapper.get().updateAuthorizationTokens(userFormDTO, new Callback<Response>() {
-                @Override
-                public void success(Response response, Response response2) {
-                    authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    THToast.show(new THException(error));
-                }
-            });
-        } else {
-            authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
-        }
-    }
-
-    private static void authenticateWithNewCredential(CredentialsDTO credentialsDTO, LogInCallback callback, UserFormDTO userFormDTO) {
         if (authenticationMode == null)
         {
             authenticationMode = AuthenticationMode.SignIn;
         }
 
+        if (authenticationMode == AuthenticationMode.SignIn &&
+                (userFormDTO instanceof FacebookUserFormDTO ||
+                userFormDTO instanceof LinkedinUserFormDTO ||
+                userFormDTO instanceof TwitterUserFormDTO))
+        {
+            mainCredentialsPreference.setCredentials(credentialsDTO);
+            sessionServiceWrapper.get().updateAuthorizationTokens(userFormDTO, new Callback<Response>()
+            {
+                @Override
+                public void success(Response response, Response response2)
+                {
+                    authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
+                }
+
+                @Override
+                public void failure(RetrofitError error)
+                {
+                    THToast.show(new THException(error));
+                }
+            });
+        }
+        else
+        {
+            authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
+        }
+    }
+
+    private static void authenticateWithNewCredential(CredentialsDTO credentialsDTO, LogInCallback callback, UserFormDTO userFormDTO)
+    {
         switch (authenticationMode)
         {
             case SignUpWithEmail:
