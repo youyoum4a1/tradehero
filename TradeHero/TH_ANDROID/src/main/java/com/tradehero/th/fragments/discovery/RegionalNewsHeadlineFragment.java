@@ -34,6 +34,12 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
         userProfileListener = new FetchUserProfileListener();
     }
 
+    @Override public void onDestroyView()
+    {
+        detachFetchUserProfileTask();
+        super.onDestroyView();
+    }
+
     @Override protected void refreshNews()
     {
         detachFetchUserProfileTask();

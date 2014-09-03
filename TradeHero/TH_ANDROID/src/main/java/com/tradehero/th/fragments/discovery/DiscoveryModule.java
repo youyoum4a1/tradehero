@@ -11,6 +11,8 @@ import dagger.Module;
                 RegionalNewsHeadlineFragment.class,
                 WhatsHotFragment.class,
                 DiscoveryDiscussionFragment.class,
+
+                RegionalNewsSelectorView.class
         },
         library = true,
         complete = false
