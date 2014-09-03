@@ -5,20 +5,20 @@
   <!-- Google Play Store -->
   <uses-permission android:name="com.android.vending.BILLING"/>
 
-    <!-- BEGIN push notification permission -->
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <!-- BEGIN push notification permission -->
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+  <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
-    <permission
-        android:name="com.tradehero.th.permission.C2D_MESSAGE"
-        android:protectionLevel="signature"/>
-    <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE"/>
+  <permission
+      android:name="com.tradehero.th.permission.C2D_MESSAGE"
+      android:protectionLevel="signature"/>
+  <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE"/>
 
-    <!-- OPTIONAL - This permission is only necessary if your app has multiple processes -->
-    <!-- <uses-permission android:name="android.permission.BROADCAST_STICKY" /> -->
-    <!-- END OPTIONAL Urban Airship Settings -->
-    <!-- END push notification permission -->
+  <!-- OPTIONAL - This permission is only necessary if your app has multiple processes -->
+  <!-- <uses-permission android:name="android.permission.BROADCAST_STICKY" /> -->
+  <!-- END OPTIONAL Urban Airship Settings -->
+  <!-- END push notification permission -->
 
   <application>
 
@@ -62,13 +62,6 @@
     <!-- Replace the receiver below with your package and class name -->
     <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
 
-    <receiver android:name="com.mobileapptracker.Tracker" android:exported="true">
-      <intent-filter>
-        <action android:name="com.android.vending.INSTALL_REFERRER" />
-      </intent-filter>
-    </receiver>
-
-    <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
-    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="431745923529834"/>
   </application>
+
 </manifest>

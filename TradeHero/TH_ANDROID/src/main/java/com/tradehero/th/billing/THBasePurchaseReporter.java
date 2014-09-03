@@ -7,6 +7,7 @@ import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -34,6 +35,7 @@ abstract public class THBasePurchaseReporter<
     @NotNull protected final CurrentUserId currentUserId;
     @NotNull protected final Lazy<? extends UserServiceWrapper> userServiceWrapper;
     @NotNull protected final Lazy<? extends AlertPlanServiceWrapper> alertPlanServiceWrapper;
+    @NotNull protected final Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper;
     @NotNull protected final Lazy<? extends PortfolioCompactListCache> portfolioCompactListCache;
     @NotNull protected final Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper;
     @NotNull protected final Lazy<? extends ProductDetailCache<
@@ -50,6 +52,7 @@ abstract public class THBasePurchaseReporter<
     protected THBasePurchaseReporter(
             @NotNull CurrentUserId currentUserId,
             @NotNull Lazy<? extends AlertPlanServiceWrapper> alertPlanServiceWrapper,
+            @NotNull Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
             @NotNull Lazy<? extends UserServiceWrapper> userServiceWrapper,
             @NotNull Lazy<? extends PortfolioCompactListCache> portfolioCompactListCache,
             @NotNull Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper,
@@ -61,6 +64,7 @@ abstract public class THBasePurchaseReporter<
         super();
         this.currentUserId = currentUserId;
         this.alertPlanServiceWrapper = alertPlanServiceWrapper;
+        this.alertPlanCheckServiceWrapper = alertPlanCheckServiceWrapper;
         this.userServiceWrapper = userServiceWrapper;
         this.portfolioCompactListCache = portfolioCompactListCache;
         this.portfolioServiceWrapper = portfolioServiceWrapper;
@@ -218,7 +222,7 @@ abstract public class THBasePurchaseReporter<
 
     protected void checkAlertPlanAttribution(RetrofitError retrofitErrorFromReport)
     {
-        alertPlanServiceWrapper.get().checkAlertPlanAttribution(
+        alertPlanCheckServiceWrapper.get().checkAlertPlanAttribution(
                 purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                 purchase.getPurchaseReportDTO(),
                 new THBasePurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));

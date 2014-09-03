@@ -46,6 +46,7 @@ abstract public class BaseAmazonInventoryFetcherHolder<
         BillingInventoryFetcher.OnInventoryFetchedListener<AmazonSKUType, AmazonProductDetailType, AmazonExceptionType> skuFetchedListener = createInventoryFetchedListener();
         AmazonInventoryFetcherType inventoryFetcher = amazonInventoryFetcherTypeProvider.get();
         inventoryFetcher.setInventoryFetchedListener(skuFetchedListener);
+        inventoryFetcher.setProductIdentifiers(allIds);
         inventoryFetchers.put(requestCode, inventoryFetcher);
         inventoryFetcher.fetchInventory(requestCode);
     }

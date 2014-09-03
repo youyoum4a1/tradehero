@@ -18,14 +18,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
-public abstract class AlertPlanServiceWrapper
+public class AlertPlanServiceWrapper
 {
     @NotNull protected final AlertPlanService alertPlanService;
     @NotNull protected final AlertPlanServiceAsync alertPlanServiceAsync;
     @NotNull protected final UserProfileCache userProfileCache;
 
     //<editor-fold desc="Constructors">
-    public AlertPlanServiceWrapper(
+    @Inject public AlertPlanServiceWrapper(
             @NotNull AlertPlanService alertPlanService,
             @NotNull AlertPlanServiceAsync alertPlanServiceAsync,
             @NotNull UserProfileCache userProfileCache)
@@ -87,17 +87,6 @@ public abstract class AlertPlanServiceWrapper
         alertPlanServiceAsync.checkAlertPlanSubscription(userBaseKey.key, middleCallback);
         return middleCallback;
     }
-    //</editor-fold>
-
-    //<editor-fold desc="Check Alert Plan Attribution">
-    public abstract AlertPlanStatusDTO checkAlertPlanAttribution(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull PurchaseReportDTO purchaseReportDTO);
-
-    @NotNull public abstract MiddleCallback<AlertPlanStatusDTO> checkAlertPlanAttribution(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull PurchaseReportDTO purchaseReportDTO,
-            @Nullable Callback<AlertPlanStatusDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Restore Purchases">

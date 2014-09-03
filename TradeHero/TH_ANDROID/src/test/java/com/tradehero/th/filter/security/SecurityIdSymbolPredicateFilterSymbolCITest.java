@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 @RunWith(THRobolectricTestRunner.class)
-public class SecurityIdSymbolPredicateFilterSymbolCITest extends AbstractSecurityIdPredicateFilterTest
+public class SecurityIdSymbolPredicateFilterSymbolCITest extends SecurityIdPredicateFilterTestBase
 {
     @Override protected CharSequencePredicate<SecurityId> provideSecurityIdPredicate()
     {

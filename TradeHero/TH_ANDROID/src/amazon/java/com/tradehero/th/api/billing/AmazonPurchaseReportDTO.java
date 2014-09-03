@@ -10,6 +10,11 @@ public class AmazonPurchaseReportDTO implements PurchaseReportDTO
     @NotNull public String amazonUserId;
 
     //<editor-fold desc="Constructors">
+    protected AmazonPurchaseReportDTO()
+    {
+        super();
+    }
+
     public AmazonPurchaseReportDTO(
             @NotNull String amazonPurchaseToken,
             @NotNull String amazonUserId)

@@ -93,6 +93,6 @@ public class THAmazonProductDetail extends AmazonProductDetail<AmazonSKU>
 
     @Override @Nullable public String getDescription()
     {
-        return product.getDescription();
+        return product.getTitle();
     }
 }

@@ -51,7 +51,7 @@ import org.jetbrains.annotations.NotNull;
         purchasingListeners.remove(requestId);
     }
 
-    public RequestId getUserData(@NotNull PurchasingListener listener)
+    @NotNull public RequestId getUserData(@NotNull PurchasingListener listener)
     {
         RequestId requestId = PurchasingService.getUserData();
         purchasingListeners.put(requestId, listener);
@@ -59,7 +59,7 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    public RequestId purchase(String sku, @NotNull PurchasingListener listener)
+    @NotNull public RequestId purchase(@NotNull String sku, @NotNull PurchasingListener listener)
     {
         RequestId requestId = PurchasingService.purchase(sku);
         purchasingListeners.put(requestId, listener);
@@ -67,7 +67,7 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    public RequestId getProductData(Set<String> skus, @NotNull PurchasingListener listener)
+    @NotNull public RequestId getProductData(@NotNull Set<String> skus, @NotNull PurchasingListener listener)
     {
         RequestId requestId = PurchasingService.getProductData(skus);
         purchasingListeners.put(requestId, listener);
@@ -75,7 +75,8 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    public RequestId getPurchaseUpdates(boolean reset, @NotNull PurchasingListener listener)
+    // TODO implement further calling of purchases within this class
+    @NotNull public RequestId getPurchaseUpdates(boolean reset, @NotNull PurchasingListener listener)
     {
         RequestId requestId = PurchasingService.getPurchaseUpdates(reset);
         purchasingListeners.put(requestId, listener);
@@ -83,40 +84,45 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    public void notifyFulfillment(String receiptId, FulfillmentResult fulfillmentResult)
+    public void notifyFulfillment(@NotNull String receiptId, @NotNull FulfillmentResult fulfillmentResult)
     {
         PurchasingService.notifyFulfillment(receiptId, fulfillmentResult);
     }
 
     @Override public void onUserDataResponse(@NotNull UserDataResponse userDataResponse)
     {
-        waitingResponses.put(userDataResponse.getRequestId(), userDataResponse);
+        putWaitingResponse(userDataResponse.getRequestId(), userDataResponse);
         callWaitingResponses();
     }
 
     @Override public void onProductDataResponse(@NotNull ProductDataResponse productDataResponse)
     {
-        waitingResponses.put(productDataResponse.getRequestId(), productDataResponse);
+        putWaitingResponse(productDataResponse.getRequestId(), productDataResponse);
         callWaitingResponses();
     }
 
     @Override public void onPurchaseResponse(@NotNull PurchaseResponse purchaseResponse)
     {
-        waitingResponses.put(purchaseResponse.getRequestId(), purchaseResponse);
+        putWaitingResponse(purchaseResponse.getRequestId(), purchaseResponse);
         callWaitingResponses();
     }
 
     @Override public void onPurchaseUpdatesResponse(@NotNull PurchaseUpdatesResponse purchaseUpdatesResponse)
     {
-        waitingResponses.put(purchaseUpdatesResponse.getRequestId(), purchaseUpdatesResponse);
+        putWaitingResponse(purchaseUpdatesResponse.getRequestId(), purchaseUpdatesResponse);
         callWaitingResponses();
+    }
+
+    protected void putWaitingResponse(@NotNull RequestId requestId, @NotNull Object response)
+    {
+        waitingResponses.put(requestId, response);
     }
 
     protected void callWaitingResponses()
     {
         PurchasingListener listener;
         Object response;
-        for (Map.Entry<RequestId, Object> requestEntry : new HashSet<>(waitingResponses.snapshot().entrySet()))
+        for (@NotNull Map.Entry<RequestId, Object> requestEntry : new HashSet<>(waitingResponses.snapshot().entrySet()))
         {
             listener = purchasingListeners.get(requestEntry.getKey());
             if (listener != null)

@@ -8,6 +8,7 @@ import com.tradehero.th.billing.THBasePurchaseReporter;
 import com.tradehero.th.billing.amazon.exception.AmazonMissingCachedProductDetailException;
 import com.tradehero.th.billing.amazon.exception.AmazonPurchaseReportRetrofitException;
 import com.tradehero.th.billing.amazon.exception.AmazonUnhandledSKUDomainException;
+import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -34,6 +35,7 @@ public class THBaseAmazonPurchaseReporter
     @Inject public THBaseAmazonPurchaseReporter(
             @NotNull CurrentUserId currentUserId,
             @NotNull Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper,
+            @NotNull Lazy<AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
             @NotNull Lazy<UserServiceWrapper> userServiceWrapper,
             @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
             @NotNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
@@ -42,6 +44,7 @@ public class THBaseAmazonPurchaseReporter
         super(
                 currentUserId,
                 alertPlanServiceWrapper,
+                alertPlanCheckServiceWrapper,
                 userServiceWrapper,
                 portfolioCompactListCache,
                 portfolioServiceWrapper,

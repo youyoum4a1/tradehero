@@ -20,6 +20,8 @@ import com.tradehero.th.billing.amazon.THAmazonLogicHolder;
 import com.tradehero.th.billing.amazon.THAmazonLogicHolderFull;
 import com.tradehero.th.billing.amazon.THAmazonProductIdentifierFetcher;
 import com.tradehero.th.billing.amazon.THAmazonProductIdentifierFetcherHolder;
+import com.tradehero.th.billing.amazon.THAmazonPurchaseConsumer;
+import com.tradehero.th.billing.amazon.THAmazonPurchaseConsumerHolder;
 import com.tradehero.th.billing.amazon.THAmazonPurchaseFetcher;
 import com.tradehero.th.billing.amazon.THAmazonPurchaseFetcherHolder;
 import com.tradehero.th.billing.amazon.THAmazonPurchaseReporter;
@@ -34,6 +36,8 @@ import com.tradehero.th.billing.amazon.THBaseAmazonInventoryFetcher;
 import com.tradehero.th.billing.amazon.THBaseAmazonInventoryFetcherHolder;
 import com.tradehero.th.billing.amazon.THBaseAmazonProductIdentifierFetcher;
 import com.tradehero.th.billing.amazon.THBaseAmazonProductIdentifierFetcherHolder;
+import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseConsumer;
+import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseConsumerHolder;
 import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseFetcher;
 import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseFetcherHolder;
 import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseReporter;
@@ -45,8 +49,6 @@ import com.tradehero.th.billing.amazon.request.BaseTHUIAmazonRequest;
 import com.tradehero.th.billing.amazon.request.THAmazonRequestFull;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THBillingRequest;
-import com.tradehero.th.network.service.AlertPlanServiceWrapper;
-import com.tradehero.th.network.service.AlertPlanServiceWrapperAmazon;
 import com.tradehero.th.persistence.billing.AmazonSKUListCache;
 import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCache;
@@ -129,16 +131,21 @@ public class BillingModule
     {
         return thBaseAmazonPurchaseReporterHolder;
     }
+
+    @Provides THAmazonPurchaseConsumer providePurchaseConsumer(THBaseAmazonPurchaseConsumer thBaseAmazonPurchaseConsumer)
+    {
+        return thBaseAmazonPurchaseConsumer;
+    }
+
+    @Provides THAmazonPurchaseConsumerHolder providePurchaseConsumerHolder(THBaseAmazonPurchaseConsumerHolder thBaseAmazonPurchaseConsumerHolder)
+    {
+        return thBaseAmazonPurchaseConsumerHolder;
+    }
     //</editor-fold>
 
     @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THAmazonSecurityAlertKnowledge thAmazonSecurityAlertKnowledge)
     {
         return thAmazonSecurityAlertKnowledge;
-    }
-
-    @Provides @Singleton AlertPlanServiceWrapper provideAlertPlanServiceWrapper(AlertPlanServiceWrapperAmazon alertPlanServiceWrapperAmazon)
-    {
-        return alertPlanServiceWrapperAmazon;
     }
 
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THAmazonAlertDialogUtil thAmazonAlertDialogUtil)

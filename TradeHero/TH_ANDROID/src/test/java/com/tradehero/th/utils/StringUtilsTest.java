@@ -39,22 +39,22 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
     @Test public void joinArrayNull_shouldReturnNull()
     {
-        assertThat(StringUtils.join(",", (String[]) null)).isNull();
+        assertThat(StringUtils.join(",", (Object[]) null)).isNull();
     }
 
     @Test public void joinArrayEmpty_shouldReturnNull()
     {
-        assertThat(StringUtils.join(",", new String[0])).isNull();
+        assertThat(StringUtils.join(",", (Object[]) new String[0])).isNull();
     }
 
     @Test public void joinArrayOne_shouldReturnSame()
     {
-        assertThat(StringUtils.join(",", new String[] {"a"})).isEqualTo("a");
+        assertThat(StringUtils.join(",", (Object[]) new String[] {"a"})).isEqualTo("a");
     }
 
     @Test public void joinArrayTwo_shouldReturnOk()
     {
-        assertThat(StringUtils.join(",", new String[]{"a", "b"})).isEqualTo("a,b");
+        assertThat(StringUtils.join(",", (Object[]) new String[]{"a", "b"})).isEqualTo("a,b");
     }
 
     @Test public void joinParamNull_shouldReturnNull()

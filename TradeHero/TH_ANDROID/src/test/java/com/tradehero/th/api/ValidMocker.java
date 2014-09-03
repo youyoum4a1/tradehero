@@ -1,9 +1,6 @@
 package com.tradehero.th.api;
 
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
-import com.tradehero.th.api.billing.PurchaseReportDTO;
-import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.CompetitionId;
@@ -48,16 +45,22 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.Random;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.mock;
 
 public class ValidMocker
 {
-    private static Random random = new Random();
+    public static Random random = new Random();
+
+    @Inject public ValidMocker()
+    {
+        super();
+    }
 
     //<editor-fold desc="Create valid parameters">
-    public static Object mockValidParameter(@NotNull Class<?> type)
+    public Object mockValidParameter(@NotNull Class<?> type)
     {
         if (type.equals(UserBaseKey.class))
         {
@@ -261,17 +264,6 @@ public class ValidMocker
                     perPage != null || random.nextBoolean() ? 1 : null,
                     perPage
             );
-        }
-        if (type.equals(PurchaseReportDTO.class))
-        {
-            if (random.nextBoolean())
-            {
-                return new GooglePlayPurchaseReportDTO("data", "signature");
-            }
-            else
-            {
-                return new SamsungPurchaseReportDTO("paymentId", "purchaseId", "productCode");
-            }
         }
         if (type.equals(VideoCategoryId.class))
         {

@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class PerPagedFilteredLeaderboardKeyTest extends BasePerPagedFilteredLeaderboardKeyTest
+public class PerPagedFilteredLeaderboardKeyTest extends PerPagedFilteredLeaderboardKeyTestBase
 {
     @Before public void setUp()
     {

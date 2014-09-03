@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import retrofit.Callback;
+import timber.log.Timber;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -129,10 +130,22 @@ abstract public class AbstractServiceTestBase
         Field[] fields = serviceWrapper.getClass().getDeclaredFields();
         for (Field field :fields)
         {
-            if (isServiceAsync(field.getType()))
+            if (field.getType().isAssignableFrom(withAsyncService.getClass()))
+            //if (isServiceAsync(field.getType()))
             {
+                Timber.d("Replacing %s's %s field with a %s",
+                        serviceWrapper.getClass().getSimpleName(),
+                        field.getName(),
+                        withAsyncService.getClass().getSimpleName());
                 field.setAccessible(true);
                 field.set(serviceWrapper, withAsyncService);
+            }
+            else
+            {
+                Timber.d("Did not replace %s's %s field with a %s",
+                        serviceWrapper.getClass().getSimpleName(),
+                        field.getName(),
+                        withAsyncService.getClass().getSimpleName());
             }
         }
     }
@@ -146,6 +159,7 @@ abstract public class AbstractServiceTestBase
         List<Method> callbackMethods = getCallbackMethods(serviceAsyncType);
         for (Method callbackMethod: callbackMethods)
         {
+            Timber.d("Tying %s.%s", serviceAsyncType.getSimpleName(), callbackMethod.getName());
             Class<?>[] parameterTypes = callbackMethod.getParameterTypes();
             Object[] parameters = new Object[parameterTypes.length];
             for (int index = 0; index < parameterTypes.length; index++)

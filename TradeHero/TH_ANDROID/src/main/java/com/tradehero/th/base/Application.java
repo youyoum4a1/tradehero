@@ -124,7 +124,7 @@ public class Application extends PApplication
         if (!Constants.RELEASE)
         {
             List<Object> listModules = new ArrayList<>(Arrays.asList(modules));
-            //listModules.add(new com.tradehero.th.DebugModule());
+            listModules.add(new com.tradehero.th.DebugModule());
             return listModules.toArray();
         }
         return modules;

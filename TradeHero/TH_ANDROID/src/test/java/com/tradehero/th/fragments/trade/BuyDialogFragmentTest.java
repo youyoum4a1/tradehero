@@ -18,6 +18,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ import org.junit.runner.RunWith;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
-public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
+public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTestBase
 {
     @Inject Context context; //Dummy inject
 
@@ -73,7 +74,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     }
 
     @Test
-    public void testTradeValueOnRandomSliderValue()
+    public void testTradeValueOnRandomSliderValue() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException
     {
         SeekBar s = abstractTransactionDialogFragment.mSeekBar;
 
@@ -102,7 +103,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     }
 
     @Test
-    public void testConfirmButtonShouldBeDisabled()
+    public void testConfirmButtonShouldBeDisabled() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException
     {
         Button btn = abstractTransactionDialogFragment.mConfirm;
 
@@ -114,7 +115,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     }
 
     @Test
-    public void testConfirmButtonShouldBeEnabled()
+    public void testConfirmButtonShouldBeEnabled() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException
     {
         Button btn = abstractTransactionDialogFragment.mConfirm;
 
@@ -140,7 +141,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     }
 
     @Test
-    public void testValueShouldMatch()
+    public void testValueShouldMatch() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException
     {
         this.performUserSetProgress(abstractTransactionDialogFragment.mSeekBar, 500);
         assertThat(abstractTransactionDialogFragment.getQuantity()).isEqualTo(500);
@@ -181,17 +182,12 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     }
 
     private void performUserSetProgress(SeekBar mSeekBar, int newProgress)
+            throws InvocationTargetException, IllegalAccessException, NoSuchMethodException
     {
         Method privateSetProgressMethod = null;
-        try
-        {
-            privateSetProgressMethod = ProgressBar.class.getDeclaredMethod("setProgress", Integer.TYPE, Boolean.TYPE);
-            privateSetProgressMethod.setAccessible(true);
-            privateSetProgressMethod.invoke(mSeekBar, newProgress, true);
-        } catch (ReflectiveOperationException e)
-        {
-            e.printStackTrace();
-        }
+        privateSetProgressMethod = ProgressBar.class.getDeclaredMethod("setProgress", Integer.TYPE, Boolean.TYPE);
+        privateSetProgressMethod.setAccessible(true);
+        privateSetProgressMethod.invoke(mSeekBar, newProgress, true);
     }
 
     private String getCashLeft(double transactionValue)
@@ -415,6 +411,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
     @Test
     public void testGenerateSharingOptionsHaveCorrectPriceSelectionMethod()
+            throws IllegalAccessException, NoSuchMethodException, InvocationTargetException
     {
         String key = "lastSelectBy";
         String value = getMapValueFromSharingOptionsEvent(key);

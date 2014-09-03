@@ -96,6 +96,7 @@ public class THBaseAmazonPurchaseFetcher
                     (AmazonPurchaseInProcessDTO) THJsonAdapter.getInstance().fromBody(
                             savedPurchaseString,
                             AmazonPurchaseInProcessDTO.class));
+            Timber.d("Added %s", savedPurchaseString);
         }
     }
 }

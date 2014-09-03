@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class PerPagedWatchlistKeyTest extends BasePerPagedWatchlistKeyTest
+public class PerPagedWatchlistKeyTest extends PerPagedWatchlistKeyTestBase
 {
     @Before public void setUp()
     {

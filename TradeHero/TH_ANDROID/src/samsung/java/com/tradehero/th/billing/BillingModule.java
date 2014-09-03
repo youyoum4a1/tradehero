@@ -50,8 +50,6 @@ import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCache;
 import com.tradehero.th.billing.samsung.request.BaseTHUISamsungRequest;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
-import com.tradehero.th.network.service.AlertPlanServiceWrapper;
-import com.tradehero.th.network.service.AlertPlanServiceWrapperSamsung;
 import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import dagger.Module;
@@ -155,11 +153,6 @@ public class BillingModule
     @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THSamsungSecurityAlertKnowledge thiabSecurityAlertKnowledge)
     {
         return thiabSecurityAlertKnowledge;
-    }
-
-    @Provides @Singleton AlertPlanServiceWrapper provideAlertPlanServiceWrapper(AlertPlanServiceWrapperSamsung alertPlanServiceWrapperGoogle)
-    {
-        return alertPlanServiceWrapperGoogle;
     }
 
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THSamsungAlertDialogUtil THSamsungAlertDialogUtil)

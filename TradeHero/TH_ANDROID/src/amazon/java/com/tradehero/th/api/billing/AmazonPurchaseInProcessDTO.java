@@ -17,6 +17,11 @@ public class AmazonPurchaseInProcessDTO extends AmazonPurchaseReportDTO
     @NotNull public OwnedPortfolioId applicablePortfolioId;
 
     //<editor-fold desc="Constructors">
+    protected AmazonPurchaseInProcessDTO()
+    {
+        super();
+    }
+
     public AmazonPurchaseInProcessDTO(@NotNull THBaseAmazonPurchase amazonPurchase)
     {
         super(amazonPurchase);

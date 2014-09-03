@@ -7,6 +7,7 @@ import dagger.Module;
                 ServiceWrapperTest.class,
 
                 // These additions are here to help pass the tests
+                AlertPlanCheckServiceWrapper.class,
                 AlertPlanServiceWrapper.class,
                 AlertServiceWrapper.class,
                 CompetitionServiceWrapper.class,

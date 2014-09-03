@@ -21,7 +21,7 @@ public class THSamsungConstants
     }
 
     // All IAP items on the Samsung store are grouped under this GroupId.
-    public static final String IAP_ITEM_GROUP_ID = "100000103210";
+    public static final String IAP_ITEM_GROUP_ID = "100000104349";
     public static SamsungItemGroup getItemGroupId()
     {
         return new SamsungItemGroup(IAP_ITEM_GROUP_ID);

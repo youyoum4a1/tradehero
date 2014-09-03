@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.api.ValidMocker;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -14,7 +15,6 @@ import org.junit.runner.RunWith;
 import retrofit.Callback;
 import timber.log.Timber;
 
-import static com.tradehero.th.api.ValidMocker.mockValidParameter;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -22,14 +22,31 @@ import static org.mockito.Mockito.mock;
 public class ServiceWrapperTest extends AbstractServiceTestBase
 {
     @Inject AlertPlanServiceWrapper alertPlanServiceWrapper;
+    @Inject ValidMocker validMocker;
 
     @Test public void canGetAllServices()
     {
-        int serviceCount = 28;
+        int serviceCount = 29;
         int wrappersWithOutService = 1;
-        assertThat(getAllServices().size()).isEqualTo(serviceCount );
+        //for (Class<?> service : getAllServices())
+        //{
+        //    Timber.d("%s", service);
+        //}
+        assertThat(getAllServices().size()).isEqualTo(serviceCount);
+        //for (Class<?> serviceAsync : getAllServiceAsyncs())
+        //{
+        //    Timber.d("%s", serviceAsync);
+        //}
         assertThat(getAllServiceAsyncs().size()).isEqualTo(serviceCount);
+        //for (Class<?> wrapper : getAllServiceWrappers())
+        //{
+        //    Timber.d("%s", wrapper);
+        //}
         assertThat(getAllServiceWrappers().size()).isEqualTo(serviceCount + wrappersWithOutService);
+        //for (Class<?> injector : getAllServiceWrapperInjectors())
+        //{
+        //    Timber.d("%s", injector);
+        //}
         assertThat(getAllServiceWrapperInjectors().size()).isEqualTo(serviceCount + wrappersWithOutService);
     }
 
@@ -42,6 +59,7 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
 
         MiddleCallback<List<AlertPlanDTO>> middleCallback = alertPlanServiceWrapper.getAlertPlans(new UserBaseKey(1), mock(Callback.class));
 
+        assertThat(middleCallback).isNotNull();
         assertThat(holder.callback).isNotNull();
         assertThat(holder.callback).isSameAs(middleCallback);
     }
@@ -103,7 +121,7 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
         Object[] parameters = new Object[parameterTypes.length];
         for (int index = 0; index < parameterTypes.length; index++)
         {
-            parameters[index] = mockValidParameter(parameterTypes[index]);
+            parameters[index] = validMocker.mockValidParameter(parameterTypes[index]);
         }
 
         MiddleCallback middleCallback = (MiddleCallback) wrapperCallbackMethod.invoke(

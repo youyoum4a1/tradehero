@@ -73,6 +73,7 @@ import retrofit.converter.Converter;
 
 @Module(
         includes = {
+                FlavorRetrofitModule.class,
                 RetrofitProtectedModule.class,
         },
         injects = {

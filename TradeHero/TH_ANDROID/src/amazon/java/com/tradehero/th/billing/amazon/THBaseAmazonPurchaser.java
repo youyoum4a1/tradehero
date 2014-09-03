@@ -28,7 +28,7 @@ public class THBaseAmazonPurchaser
     implements THAmazonPurchaser
 {
     @NotNull protected final THAmazonExceptionFactory amazonExceptionFactory;
-    @NotNull @ProcessingPurchase protected final StringSetPreference processingPurchaseStringSet;
+    @NotNull protected final StringSetPreference processingPurchaseStringSet;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaser(

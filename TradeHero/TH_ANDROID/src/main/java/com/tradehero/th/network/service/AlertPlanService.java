@@ -33,21 +33,6 @@ public interface AlertPlanService
             @Path("userId") int userId);
     //</editor-fold>
 
-    //<editor-fold desc="Check Alert Plan Attribution">
-    @GET("/users/{userId}/alertPlans/check")
-    AlertPlanStatusDTO checkAlertPlanAttribution(
-            @Path("userId") int userId,
-            @Query("google_play_data") String googlePlayData,
-            @Query("google_play_signature") String googlePlaySignature);
-
-    @Deprecated // TODO set in server
-    @GET("/users/{userId}/alertPlans/checkSamsung")
-    AlertPlanStatusDTO checkAlertPlanAttributionSamsung(
-            @Path("userId") int userId,
-            @Query("paymentId") String paymentId,
-            @Query("productCode") String productCode);
-    //</editor-fold>
-
     //<editor-fold desc="Restore Purchases">
     @POST("/users/{userId}/alertPlans/restore")
     UserProfileDTO restorePurchases(

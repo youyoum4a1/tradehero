@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class MessageDiscussionListKeyTest extends BaseMessageDiscussionListKeyTest
+public class MessageDiscussionListKeyTest extends MessageDiscussionListKeyTestBase
 {
     @Test public void equalItself()
     {

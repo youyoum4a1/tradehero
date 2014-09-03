@@ -52,7 +52,8 @@ public class RobolectricGradleTestRunner extends RobolectricTestRunner
     private String getConfigPath(String configType)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("TradeHero").append(File.separator).append("TH_ANDROID").append(File.separator)
+        sb
+                //.append("TradeHero").append(File.separator).append("TH_ANDROID").append(File.separator)
                 .append("build")
                 .append(File.separator)
                 .append("intermediates")

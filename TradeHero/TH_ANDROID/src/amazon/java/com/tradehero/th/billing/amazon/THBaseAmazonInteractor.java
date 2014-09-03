@@ -126,11 +126,13 @@ public class THBaseAmazonInteractor
         if (uiBillingRequest.getDomainToPresent() != null)
         {
             builder.testBillingAvailable(true)
+                    .fetchProductIdentifiers(true)
                     .fetchInventory(true);
         }
         else if (uiBillingRequest.getRestorePurchase())
         {
             builder.testBillingAvailable(true)
+                    .fetchProductIdentifiers(true)
                     .fetchInventory(true)
                     .fetchPurchases(true)
                     .restorePurchase(true);
@@ -138,6 +140,7 @@ public class THBaseAmazonInteractor
         else if (uiBillingRequest.getFetchInventory())
         {
             builder.testBillingAvailable(true)
+                    .fetchProductIdentifiers(true)
                     .fetchInventory(true);
         }
     }

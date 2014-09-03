@@ -37,23 +37,6 @@ interface AlertPlanServiceAsync
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
-    //<editor-fold desc="Check Alert Plan Attribution">
-    @GET("/users/{userId}/alertPlans/check")
-    void checkAlertPlanAttribution(
-            @Path("userId") int userId,
-            @Query("google_play_data") String googlePlayData,
-            @Query("google_play_signature") String googlePlaySignature,
-            Callback<AlertPlanStatusDTO> callback);
-
-    @Deprecated // TODO set in server
-    @GET("/users/{userId}/alertPlans/checkSamsung")
-    void checkAlertPlanAttributionSamsung(
-            @Path("userId") int userId,
-            @Query("paymentId") String paymentId,
-            @Query("productCode") String productCode,
-            Callback<AlertPlanStatusDTO> callback);
-    //</editor-fold>
-
     //<editor-fold desc="Restore Purchases">
     @POST("/users/{userId}/alertPlans/restore")
     void restorePurchases(
