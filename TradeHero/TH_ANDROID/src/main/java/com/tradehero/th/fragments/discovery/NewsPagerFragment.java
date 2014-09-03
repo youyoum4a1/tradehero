@@ -78,7 +78,7 @@ public class NewsPagerFragment extends SherlockFragment
 
         @Override public Fragment getItem(int i)
         {
-            return FeaturedNewsHeadlineFragment.newInstance(NewsType.values()[i]);
+            return NewsHeadlineFragment.newInstance(NewsType.values()[i]);
         }
     }
 

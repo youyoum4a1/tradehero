@@ -6,7 +6,7 @@ import dagger.Module;
         injects = {
                 DiscoveryMainFragment.class,
                 NewsPagerFragment.class,
-                FeaturedNewsHeadlineFragment.class,
+                NewsHeadlineFragment.class,
                 WhatsHotFragment.class,
                 DiscoveryDiscussionFragment.class,
         },
