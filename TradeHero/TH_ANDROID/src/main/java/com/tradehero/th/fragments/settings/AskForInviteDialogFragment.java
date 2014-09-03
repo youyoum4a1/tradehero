@@ -24,8 +24,8 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
     static public long ONE_MIN = 60*1000;
 
     @Inject AlertDialogUtil alertDialogUtil;
-    @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
     @Inject CurrentActivityHolder currentActivityHolder;
+    @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
 
     public static AskForInviteDialogFragment showInviteDialog(FragmentManager fragmentManager)
     {
@@ -39,6 +39,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
         setCancelable(false);
+        mShowAskForInviteDialogPreference.set(System.currentTimeMillis() + ONE_MIN);
     }
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)

@@ -17,7 +17,8 @@
         android:id="@+id/btn_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_btn_popup_close"/>
+        android:src="@drawable/ic_btn_popup_close"
+        android:background="@drawable/basic_white_selector"/>
 
   </LinearLayout>
 

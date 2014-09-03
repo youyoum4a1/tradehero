@@ -121,8 +121,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         if (backButton != null)
         {
             backButton.setOnClickListener(null);
-            backButton = null;
         }
+        backButton = null;
         super.onDestroyView();
     }
 
@@ -148,7 +148,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             case R.id.authentication_sign_in_forgot_password:
                 showForgotPasswordUI();
                 break;
-
             default:
                 break;
         }

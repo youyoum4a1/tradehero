@@ -20,8 +20,9 @@ import timber.log.Timber;
 
 public class AskForReviewDialogFragment extends BaseDialogFragment
 {
-    static public long ONE_DAY = 24*60*60*100;
-    static public long ONE_YEAR = (long)365*24*60*60*100;
+    static public long ONE_MIN = 60*1000;
+    static public long ONE_DAY = 24*60*60*1000;
+    static public long ONE_YEAR = (long)365*24*60*60*1000;
 
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject @ShowAskForReviewDialog LongPreference mShowAskForReviewDialogPreference;
@@ -38,6 +39,7 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
         setCancelable(false);
+        mShowAskForReviewDialogPreference.set(System.currentTimeMillis() + ONE_MIN);
     }
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -71,6 +73,7 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
     {
         rate();
         dismiss();
+        mShowAskForReviewDialogPreference.set((long)System.currentTimeMillis() + ONE_YEAR);
     }
 
     private void rate()
@@ -98,6 +101,5 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
                         R.string.cancel);
             }
         }
-        mShowAskForReviewDialogPreference.set((long)System.currentTimeMillis() + ONE_YEAR);
     }
 }

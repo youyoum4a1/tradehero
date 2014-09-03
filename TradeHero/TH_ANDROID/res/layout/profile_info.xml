@@ -76,9 +76,6 @@
         android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
         />
-    <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
-    <!--app:invalidDrawable="@drawable/accounts_glyph_password_error"-->
-    <!--app:validDrawable="@drawable/accounts_glyph_password_ok"-->
 
     <FrameLayout
         android:layout_width="match_parent"
