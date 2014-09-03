@@ -31,6 +31,7 @@
   <string name="dashboard_timeline">Timeline</string>
   <string name="dashboard_home">Home</string>
   <string name="dashboard_trending">Trade</string>
+  <string name="dashboard_education">Education</string>
   <string name="dashboard_community">Social</string>
   <string name="dashboard_message_center">Message</string>
   <string name="dashboard_referral">Refer Friends</string>

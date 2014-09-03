@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="video_thumbnail_width">180dp</dimen>
+  <dimen name="video_thumbnail_height">135dp</dimen>
+  <dimen name="video_thumbnail_spacing">10dp</dimen>
+  <dimen name="video_thumbnail_container_height">155dp</dimen>
+
+  <color name="video_thumbnail_strip_background">#ff0a0a0a</color>
+  <color name="video_title_background">#aaffffff</color>
+
+  <string name="error_loading_videos">An error has occurred while loading for videos</string>
+</resources>

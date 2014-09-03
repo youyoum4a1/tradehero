@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
+import com.tradehero.th.fragments.education.VideoCategoriesFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -24,6 +25,9 @@ public enum DashboardTabType
     HOME(R.layout.tab_indicator_holo,
             R.string.dashboard_home, R.string.dashboard_home_key,
             R.drawable.icn_menu_home, HomeFragment.class),
+    EDUCATION(R.layout.tab_indicator_holo,
+            R.string.dashboard_education, R.string.dashboard_education_key,
+            R.drawable.icn_menu_trending, VideoCategoriesFragment.class),
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
             R.drawable.icn_menu_trending, TrendingFragment.class),
