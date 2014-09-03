@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <com.viewpagerindicator.TitlePageIndicator
-      android:id="@+id/news_indicator"
-      android:padding="10dip"
-      android:layout_height="wrap_content"
-      android:layout_width="fill_parent"
-      />
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/discovery_news_carousel_height">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/news_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        tools:background="@android:color/holo_green_dark"
+        />
+    <ImageButton
+        android:id="@+id/previous_filter"
+        android:src="@drawable/trending_filter_back"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@null"
+        style="@style/TradeHero.CarouselNavigationButton"
+        />
+
+    <ImageButton
+        android:id="@+id/next_filter"
+        android:src="@drawable/trending_filter_forward"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@null"
+        style="@style/TradeHero.CarouselNavigationButton"
+        />
+  </RelativeLayout>
+
   <com.tradehero.common.widget.NonSwipeableViewPager
       android:id="@+id/news_pager"
-      android:layout_width="fill_parent"
+      android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="1"
+      tools:background="@android:color/holo_red_dark"
       />
 </LinearLayout>

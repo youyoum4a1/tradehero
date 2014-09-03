@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+  <TextView
+      android:id="@+id/description"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:gravity="center_horizontal"
+      android:textSize="@dimen/text_large"
+      android:textStyle="bold"
+      android:maxLines="1"
+      android:layout_marginTop="8dp"
+      android:text="@string/regional_news"
+      />
+
+  <Spinner
+      android:id="@+id/news_selector"
+      android:layout_width="@dimen/discovery_news_carousel_spinner_width"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:gravity="center_horizontal"
+      android:dropDownSelector="@drawable/basic_transparent_selector"
+      style="@style/TH.Spinner"
+      />
+</LinearLayout>
