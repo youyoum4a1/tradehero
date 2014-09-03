@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,8 +37,6 @@ public class AlertItemView extends RelativeLayout
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.alert_description) TextView alertDescription;
     @InjectView(R.id.alert_status) TextView alertStatus;
-    @InjectView(R.id.buy_stock) ImageView buyStock;
-    @InjectView(R.id.sell_stock) ImageView sellStock;
 
     @Inject protected Lazy<Picasso> picasso;
 
@@ -211,16 +208,10 @@ public class AlertItemView extends RelativeLayout
         }
     }
 
-    @OnClick({R.id.buy_stock, R.id.sell_stock})
-    public void onBuySellClick(View v)
+    @OnClick({R.id.trade})
+    public void onTradeClick()
     {
-        switch (v.getId())
-        {
-            case R.id.buy_stock:
-            case R.id.sell_stock:
-                handleBuyAndSellButtonClick();
-                break;
-        }
+        handleBuyAndSellButtonClick();
     }
 
     private void handleBuyAndSellButtonClick()
