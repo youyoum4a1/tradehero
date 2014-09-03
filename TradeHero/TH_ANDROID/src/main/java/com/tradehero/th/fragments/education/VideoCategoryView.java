@@ -1,6 +1,12 @@
 package com.tradehero.th.fragments.education;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,19 +15,23 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.education.PagedVideoCategoryId;
 import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.api.education.VideoDTO;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.education.PaginatedVideoCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -38,7 +48,7 @@ public class VideoCategoryView extends RelativeLayout implements DTOView<VideoCa
     private VideoAdapter galleryAdapter;
 
     @Inject PaginatedVideoCache paginatedVideoCache;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
 
     private DTOCacheNew.Listener<VideoCategoryId, PaginatedVideoDTO> cacheListener;
 
@@ -93,10 +103,40 @@ public class VideoCategoryView extends RelativeLayout implements DTOView<VideoCa
                 if (gallery.getSelectedItemPosition() == i)
                 {
                     VideoDTO videoDTO = galleryAdapter.getItem(i);
-                    THToast.show(videoDTO.name + " " + videoDTO.id);
+                    handleItemClicked(videoDTO);
                 }
             }
         });
+    }
+
+    private void handleItemClicked(@NotNull VideoDTO videoDTO)
+    {
+        if (!StringUtils.isNullOrEmpty(videoDTO.url))
+        {
+            Uri url = Uri.parse(videoDTO.url);
+            Intent videoIntent = new Intent(Intent.ACTION_VIEW, url);
+            PackageManager packageManager = getContext().getPackageManager();
+            List<ResolveInfo> handlerActivities = packageManager.queryIntentActivities(videoIntent, 0);
+            if (handlerActivities.size() > 0)
+            {
+                getContext().startActivity(videoIntent);
+            }
+            else
+            {
+
+                Activity activity = currentActivityHolderLazy.get().getCurrentActivity();
+                if (activity instanceof DashboardActivity)
+                {
+                    Bundle bundle = new Bundle();
+                    WebViewFragment.putUrl(bundle, videoDTO.url);
+                    ((DashboardActivity) activity).getDashboardNavigator().pushFragment(WebViewFragment.class, bundle);
+                }
+                else
+                {
+                    THToast.show(R.string.unable_to_play_videos);
+                }
+            }
+        }
     }
 
     @Override public void display(VideoCategoryDTO dto)
