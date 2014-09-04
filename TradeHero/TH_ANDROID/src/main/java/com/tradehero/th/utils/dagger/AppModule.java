@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
+import com.tradehero.FlavorModule;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
@@ -177,6 +178,7 @@ import javax.inject.Singleton;
 
 @Module(
         includes = {
+                FlavorModule.class,
                 CacheModule.class,
                 GraphicModule.class,
                 NetworkModule.class,
@@ -192,7 +194,7 @@ import javax.inject.Singleton;
                 PushModule.class,
 
                 // Fragments
-                DiscoveryModule.class
+                DiscoveryModule.class,
         },
         injects =
                 {

@@ -50,8 +50,6 @@ public class Constants
     public static final String CONTENT_ENCODING_GZIP = ACCEPT_ENCODING_GZIP;
     public static final String TH_ERROR_CODE = "TH-Error-Code";
 
-    // Google PlayStore
-    public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 
     // Localytics

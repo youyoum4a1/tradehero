@@ -98,6 +98,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
     @Inject @FirstShowOnBoardDialog BooleanPreference firstShowOnBoardDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
+    @Inject Lazy<MarketUtil> marketUtilLazy;
 
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
@@ -237,17 +238,8 @@ public class DashboardActivity extends SherlockFragmentActivity
                 {
                     @Override public void onClick(DialogInterface dialog, int which)
                     {
-                        try
-                        {
-                            THToast.show(R.string.update_guide);
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
-                                            "market://details?id=" + Constants.PLAYSTORE_APP_ID)));
-                        } catch (ActivityNotFoundException ex)
-                        {
-                            startActivity(new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse("https://play.google.com/store/apps/details?id="
-                                                            + Constants.PLAYSTORE_APP_ID)));
-                        }
+                        THToast.show(R.string.update_guide);
+                        marketUtilLazy.get().showAppOnMarket(DashboardActivity.this);
                     }
                 });
         }
