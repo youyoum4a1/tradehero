@@ -1,7 +1,6 @@
 package com.tradehero.common.billing.amazon;
 
 import android.content.Context;
-import com.amazon.device.iap.PurchasingService;
 import com.amazon.device.iap.model.FulfillmentResult;
 import com.amazon.device.iap.model.ProductType;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
@@ -137,7 +136,7 @@ abstract public class BaseAmazonPurchaseConsumer<
 
     private void consumeEffectively()
     {
-        PurchasingService.notifyFulfillment(purchase.getOrderId().receipt.getReceiptId(), FulfillmentResult.FULFILLED);
+        purchasingService.notifyFulfillment(purchase.getOrderId().receipt.getReceiptId(), FulfillmentResult.FULFILLED);
         handleConsumeFinishedInternal(purchase);
     }
 }
