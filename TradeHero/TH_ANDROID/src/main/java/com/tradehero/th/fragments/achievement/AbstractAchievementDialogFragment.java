@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -264,14 +265,14 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
 
     private void displayText()
     {
-        description.setText(userAchievementDTO.achievementDef.text);
+        description.setText(Html.fromHtml(userAchievementDTO.achievementDef.text));
     }
 
     private void displaySubText()
     {
         if (userAchievementDTO.achievementDef.subText != null)
         {
-            moreDescription.setText(userAchievementDTO.achievementDef.subText);
+            moreDescription.setText(Html.fromHtml(userAchievementDTO.achievementDef.subText));
         }
         else
         {
