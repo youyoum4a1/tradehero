@@ -16,7 +16,11 @@ public class CountryLanguagePairDTO
         this.languageCode = languageCode;
     }
 
-    public CountryLanguagePairDTO()
+    /** Naked constructor for deserialization */
+    public CountryLanguagePairDTO() { }
+
+    @Override public String toString()
     {
+        return this.name;
     }
 }
