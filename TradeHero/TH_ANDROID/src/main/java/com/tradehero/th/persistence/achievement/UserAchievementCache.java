@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.achievement;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
@@ -75,6 +76,7 @@ import org.jetbrains.annotations.Nullable;
         final UserAchievementId userAchievementId = userAchievementDTO.getUserAchievementId();
         if (!broadcast(userAchievementId))
         {
+            Looper.prepare();
             Handler handler = new Handler();
             handler.postDelayed(new Runnable()
             {
@@ -83,6 +85,7 @@ import org.jetbrains.annotations.Nullable;
                     broadcast(userAchievementId);
                 }
             }, DELAY_INTERVAL);
+            Looper.loop();
         }
     }
 

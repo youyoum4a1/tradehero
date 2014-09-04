@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/achievement_virtual_dollar_earned"
     android:layout_marginBottom="@dimen/achievement_progress_vertical_margin"
     android:layout_marginTop="@dimen/achievement_progress_vertical_margin"
     android:clipChildren="false"
     android:clipToPadding="false">
 
   <TextView
+      android:id="@+id/achievement_virtual_dollar_earned"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/achievement_more_description"
+      android:layout_marginTop="@dimen/achievement_more_description_margin_top"
+      android:layout_alignParentLeft="true"
+      style="@style/TH.Achievement.Earned.VirtualDollar"
+      tools:ignore="unknownId"
+      tools:text="+100,000 TH$!"/>
+
+  <TextView
       android:id="@+id/user_level_progress_xp_earned"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerHorizontal="true"
-      android:layout_marginRight="@dimen/user_level_progress_margin_right"
+      android:layout_below="@+id/achievement_more_description"
+      android:layout_alignBaseline="@id/achievement_virtual_dollar_earned"
+      android:layout_alignParentRight="true"
       style="@style/TH.Achievement.Earned.XP"
+      tools:ignore="unknownId"
       tools:text="+1,000 XP!"/>
 
   <include
@@ -27,4 +40,4 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"/>
-</RelativeLayout>
+</merge>
