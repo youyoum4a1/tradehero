@@ -60,7 +60,10 @@ public class THBaseAmazonPurchase
 
     @NotNull @Override public AmazonPurchaseReportDTO getPurchaseReportDTO()
     {
-        return new AmazonPurchaseReportDTO(purchaseResponse.getReceipt().getReceiptId(), purchaseResponse.getUserData().getUserId());
+        return new AmazonPurchaseReportDTO(
+                purchaseResponse.getReceipt().getSku(),
+                purchaseResponse.getReceipt().getReceiptId(),
+                purchaseResponse.getUserData().getUserId());
     }
 
     @NotNull public AmazonPurchaseInProcessDTO getPurchaseToSaveDTO()

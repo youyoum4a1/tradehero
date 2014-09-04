@@ -29,7 +29,7 @@ public class THBaseAmazonPurchaseFetcher
         AmazonException>
         implements THAmazonPurchaseFetcher
 {
-    @NotNull protected final THAmazonExceptionFactory samsungExceptionFactory;
+    @NotNull protected final THAmazonExceptionFactory amazonExceptionFactory;
     @NotNull protected final StringSetPreference processingPurchaseStringSet;
     @NotNull protected final List<AmazonPurchaseInProcessDTO> savedPurchasesInProcess;
 
@@ -37,11 +37,11 @@ public class THBaseAmazonPurchaseFetcher
     @Inject public THBaseAmazonPurchaseFetcher(
             @NotNull Context context,
             @NotNull AmazonPurchasingService purchasingService,
-            @NotNull THAmazonExceptionFactory samsungExceptionFactory,
+            @NotNull THAmazonExceptionFactory amazonExceptionFactory,
             @NotNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
         super(context, purchasingService);
-        this.samsungExceptionFactory = samsungExceptionFactory;
+        this.amazonExceptionFactory = amazonExceptionFactory;
         this.processingPurchaseStringSet = processingPurchaseStringSet;
         savedPurchasesInProcess = new ArrayList<>();
         populateSavedPurchasesInProcess();
@@ -55,7 +55,7 @@ public class THBaseAmazonPurchaseFetcher
 
     @Override @Nullable protected AmazonException createException(@NotNull PurchaseUpdatesResponse.RequestStatus requestStatus)
     {
-        return samsungExceptionFactory.create(requestStatus, "Failed to fetch purchases");
+        return amazonExceptionFactory.create(requestStatus, "Failed to fetch purchases");
     }
 
     @Override protected void handleReceived(@NotNull List<Receipt> receipts, @NotNull UserData userData)
