@@ -111,7 +111,7 @@ public class VideoCategoryView extends RelativeLayout implements DTOView<VideoCa
 
     private void handleItemClicked(@NotNull VideoDTO videoDTO)
     {
-        if (!StringUtils.isNullOrEmpty(videoDTO.url))
+        if (!videoDTO.locked && !StringUtils.isNullOrEmpty(videoDTO.url))
         {
             Uri url = Uri.parse(videoDTO.url);
             Intent videoIntent = new Intent(Intent.ACTION_VIEW, url);

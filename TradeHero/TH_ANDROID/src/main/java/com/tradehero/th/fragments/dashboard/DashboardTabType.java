@@ -27,7 +27,7 @@ public enum DashboardTabType
             R.drawable.icn_menu_home, HomeFragment.class),
     ACADEMY(R.layout.tab_indicator_holo,
             R.string.dashboard_education, R.string.dashboard_education_key,
-            R.drawable.icn_menu_trending, VideoCategoriesFragment.class),
+            R.drawable.icn_menu_compass_white, VideoCategoriesFragment.class),
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
             R.drawable.icn_menu_trending, TrendingFragment.class),

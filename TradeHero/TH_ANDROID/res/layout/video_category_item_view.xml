@@ -12,6 +12,7 @@
       android:layout_height="wrap_content"
       android:padding="5dp"
       android:textSize="@dimen/text_medium"
+      android:textStyle="bold"
       tools:text="Basic of Trading and Investing"
       android:background="@color/white"/>
 

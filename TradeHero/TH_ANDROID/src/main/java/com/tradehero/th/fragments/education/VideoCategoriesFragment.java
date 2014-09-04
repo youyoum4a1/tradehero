@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.education;
 
 import android.os.Bundle;
 import android.view.View;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
@@ -25,6 +27,12 @@ public class VideoCategoriesFragment extends BasePagedListFragment<
 {
     @Inject PaginatedVideoCategoryCache paginatedVideoCategoryCache;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setActionBarTitle(R.string.dashboard_education);
+    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
