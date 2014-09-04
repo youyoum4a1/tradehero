@@ -67,6 +67,6 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
 
     @Override public void display(@NotNull QuestBonusDTO dto)
     {
-        setText(String.valueOf(dto.level), String.valueOf(dto.bonus));
+        setText(dto.levelStr, dto.bonusStr);
     }
 }

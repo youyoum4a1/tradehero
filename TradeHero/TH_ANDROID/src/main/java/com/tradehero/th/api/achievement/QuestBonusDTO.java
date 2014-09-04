@@ -8,6 +8,8 @@ public class QuestBonusDTO implements DTO
     public int id;
     public int level;
     public double bonus;
+    public String levelStr;
+    public String bonusStr;
 
     public QuestBonusId getQuestBonusId()
     {
@@ -20,6 +22,8 @@ public class QuestBonusDTO implements DTO
                 "id=" + id +
                 ", level=" + level +
                 ", bonus=" + bonus +
+                ", levelStr='" + levelStr + '\'' +
+                ", bonusStr='" + bonusStr + '\'' +
                 '}';
     }
 }
