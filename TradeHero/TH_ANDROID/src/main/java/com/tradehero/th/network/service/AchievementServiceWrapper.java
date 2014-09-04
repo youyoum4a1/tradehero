@@ -69,9 +69,14 @@ public class AchievementServiceWrapper
         return middleCallback;
     }
 
-    public AchievementCategoryDTO getAchievementCategory(@NotNull AchievementCategoryId achievementCategoryId)
+    @Nullable public AchievementCategoryDTO getAchievementCategory(@NotNull AchievementCategoryId achievementCategoryId)
     {
-        return achievementService.getAchievementCategory(achievementCategoryId.categoryId, achievementCategoryId.userId);
+        AchievementCategoryDTOList achievementCategoryDTOs = achievementService.getAchievementCategory(achievementCategoryId.categoryId, achievementCategoryId.userId);
+        if(achievementCategoryDTOs != null && !achievementCategoryDTOs.isEmpty())
+        {
+            return achievementCategoryDTOs.get(0);
+        }
+        return null;
     }
 
     public QuestBonusDTOList getQuestBonuses(QuestBonusListId questBonusListId)

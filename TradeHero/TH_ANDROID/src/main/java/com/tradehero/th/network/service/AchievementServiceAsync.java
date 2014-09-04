@@ -32,6 +32,6 @@ public interface AchievementServiceAsync
     //<editor-fold desc="Get User Achievement">
     @GET("/achievements/categories/{userId}")
     void getAchievementCategory(@Query("id") int categoryId, @Path("userId") int userId,
-            Callback<AchievementCategoryDTO> callback);
+            Callback<AchievementCategoryDTOList> callback);
     //</editor-fold>
 }

@@ -6,6 +6,7 @@ import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.achievement.key.AchievementCategoryIdList;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
@@ -27,7 +28,12 @@ import org.jetbrains.annotations.Nullable;
 
     @NotNull @Override public AchievementCategoryDTO fetch(@NotNull AchievementCategoryId key) throws Throwable
     {
-        return achievementServiceWrapper.getAchievementCategory(key);
+        AchievementCategoryDTO achievementCategoryDTO = achievementServiceWrapper.getAchievementCategory(key);
+        if(achievementCategoryDTO != null)
+        {
+            return achievementCategoryDTO;
+        }
+        throw new THException("Not Found");
     }
 
     public void put(@NotNull UserBaseKey userBaseKey, @Nullable List<AchievementCategoryDTO> value)
