@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -124,8 +126,19 @@ public class RegionalNewsSelectorView extends LinearLayout
                 CountryLanguagePairDTO countryLanguagePair = (CountryLanguagePairDTO) parent.getItemAtPosition(position);
                 mRegionSelector.setText(countryLanguagePair.name);
                 cancelSearch();
+                sendRegionalNewsChangedEvent(countryLanguagePair);
             }
         });
+    }
+
+    private void sendRegionalNewsChangedEvent(CountryLanguagePairDTO countryLanguagePair)
+    {
+        Intent regionalNewsChangedIntent = new Intent(RegionalNewsHeadlineFragment.REGION_CHANGED);
+        regionalNewsChangedIntent.putExtra(CountryLanguagePairDTO.BUNDLE_KEY_COUNTRY_CODE, countryLanguagePair.countryCode);
+        regionalNewsChangedIntent.putExtra(CountryLanguagePairDTO.BUNDLE_KEY_LANGUAGE_CODE, countryLanguagePair.languageCode);
+
+        LocalBroadcastManager.getInstance(getContext())
+                .sendBroadcast(regionalNewsChangedIntent);
     }
 
     private void cancelSearch()

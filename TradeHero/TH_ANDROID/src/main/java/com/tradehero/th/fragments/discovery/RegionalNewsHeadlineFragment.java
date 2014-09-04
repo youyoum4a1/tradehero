@@ -1,8 +1,14 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -12,14 +18,16 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.Locale;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 {
+    public static final String REGION_CHANGED = RegionalNewsHeadlineFragment.class + ".regionChanged";
+
     @Inject Locale locale;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
+    private BroadcastReceiver regionChangeBroadcastReceiver;
 
     public RegionalNewsHeadlineFragment()
     {
@@ -32,12 +40,41 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 
         newsItemListKey = new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
         userProfileListener = new FetchUserProfileListener();
+        regionChangeBroadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                String countryCode = intent.getStringExtra(CountryLanguagePairDTO.BUNDLE_KEY_COUNTRY_CODE);
+                String languageCode = intent.getStringExtra(CountryLanguagePairDTO.BUNDLE_KEY_LANGUAGE_CODE);
+                fetchNewsForRegion(countryCode, languageCode);
+            }
+        };
+    }
+
+    private void fetchNewsForRegion(String countryCode, String languageCode)
+    {
+        newsItemListKey = new NewsItemListRegionalKey(countryCode, languageCode, null, null);
+        super.refreshNews();
     }
 
     @Override public void onDestroyView()
     {
         detachFetchUserProfileTask();
         super.onDestroyView();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity())
+                .registerReceiver(regionChangeBroadcastReceiver, new IntentFilter(REGION_CHANGED));
+    }
+
+    @Override public void onPause()
+    {
+        LocalBroadcastManager.getInstance(getActivity())
+                .unregisterReceiver(regionChangeBroadcastReceiver);
+        super.onPause();
     }
 
     @Override protected void refreshNews()
@@ -75,12 +112,9 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 
     private void linkWith(UserProfileDTO userProfileDTO, boolean display)
     {
-        Timber.d("Country code: %s", userProfileDTO.countryCode);
-        newsItemListKey = new NewsItemListRegionalKey(userProfileDTO.countryCode, locale.getLanguage(), null, null);
-        
         if (display)
         {
-            super.refreshNews();
+            fetchNewsForRegion(userProfileDTO.countryCode, locale.getLanguage());
         }
     }
 }

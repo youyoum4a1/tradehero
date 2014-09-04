@@ -141,6 +141,7 @@ public class NewsHeadlineFragment extends SherlockFragment
             newsItemDTOKeys.add(newsItemCompactDTO.getDiscussionKey());
         }
 
+        mFeaturedNewsAdapter.clear();
         mFeaturedNewsAdapter.addAll(newsItemDTOKeys);
         mFeaturedNewsAdapter.notifyDataSetChanged();
 
