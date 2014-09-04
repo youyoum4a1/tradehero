@@ -771,6 +771,7 @@ public class PositionListFragment
                 if (System.currentTimeMillis() > lastReviewLimitTime)
                 {
                     AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
+                    mShowAskForInviteDialogPreference.set(System.currentTimeMillis()+AskForReviewDialogFragment.ONE_DAY);
                     return;
                 }
                 long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();

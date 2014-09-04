@@ -37,7 +37,7 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
+        setStyle(BaseDialogFragment.STYLE_NO_FRAME, getTheme());
         setCancelable(false);
         mShowAskForReviewDialogPreference.set(System.currentTimeMillis() + ONE_MIN);
     }
