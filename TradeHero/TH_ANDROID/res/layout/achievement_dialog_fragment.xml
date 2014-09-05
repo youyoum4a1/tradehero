@@ -54,7 +54,7 @@
         android:id="@+id/btn_achievement_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/timeline_share"
+        android:text="@string/achievement_share"
         style="@style/TH.Achievement.Share"
         android:layout_below="@id/achievement_horizontal_divider"
         android:layout_alignParentRight="true"

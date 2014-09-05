@@ -18,6 +18,7 @@ public class QuestIndicatorGroupView extends LinearLayout
     List<QuestIndicatorView> questIndicatorViews = new ArrayList<>();
     private ValueAnimator revealNextAnimator;
     private QuestBonusDTO mNextBonusDTO;
+    private int mCurrentCount;
 
     public QuestIndicatorGroupView(Context context)
     {
@@ -55,7 +56,8 @@ public class QuestIndicatorGroupView extends LinearLayout
 
     public void setQuestBonusDef(List<QuestBonusDTO> questBonusDef, int currentCount)
     {
-        updateDisplay(questBonusDef, currentCount);
+        this.mCurrentCount = currentCount;
+        updateDisplay(questBonusDef);
         hideUndefinedIndicators(questBonusDef);
         detectNextIndicator(questBonusDef);
     }
@@ -90,7 +92,7 @@ public class QuestIndicatorGroupView extends LinearLayout
                 QuestIndicatorView indicatorView =
                         new QuestIndicatorView(getContext());
                 indicatorView.setLayoutParams(new LayoutParams(source.getLayoutParams()));
-                indicatorView.display(mNextBonusDTO);
+                indicatorView.display(mNextBonusDTO, mCurrentCount);
                 return indicatorView;
             }
 
@@ -168,27 +170,14 @@ public class QuestIndicatorGroupView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    private void updateDisplay(List<QuestBonusDTO> questBonusDTOs, int currentContigousCount)
+    private void updateDisplay(List<QuestBonusDTO> questBonusDTOs)
     {
         for (int i = 0; i < questBonusDTOs.size() && i < questIndicatorViews.size(); i++)
         {
             QuestIndicatorView questIndicatorView = questIndicatorViews.get(i);
             QuestBonusDTO questBonusDTO = questBonusDTOs.get(i);
 
-            questIndicatorView.display(questBonusDTO);
-
-            if (questBonusDTO.level < currentContigousCount)
-            {
-                questIndicatorView.on();
-            }
-            else if (questBonusDTO.level == currentContigousCount)
-            {
-                questIndicatorView.animateOn();
-            }
-            else
-            {
-                questIndicatorView.off();
-            }
+            questIndicatorView.display(questBonusDTO, mCurrentCount);
         }
     }
 

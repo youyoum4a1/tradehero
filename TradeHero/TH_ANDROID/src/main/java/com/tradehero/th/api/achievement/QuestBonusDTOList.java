@@ -74,4 +74,21 @@ public class QuestBonusDTOList extends BaseArrayList<QuestBonusDTO> implements D
         }
         return questBonusDTO;
     }
+
+    @NotNull public List<QuestBonusDTO> getPrevious(int currentLevel, int numOfItems)
+    {
+        List<QuestBonusDTO> questBonusDTOList = new ArrayList<>();
+        if (numOfItems > 0)
+        {
+            for (int i = size() - 1 ; i >= 0 && questBonusDTOList.size() < numOfItems; i--)
+            {
+                QuestBonusDTO dto = get(i);
+                if(dto.level < currentLevel)
+                {
+                    questBonusDTOList.add(0, dto);
+                }
+            }
+        }
+        return questBonusDTOList;
+    }
 }

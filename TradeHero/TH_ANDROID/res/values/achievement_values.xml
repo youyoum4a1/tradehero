@@ -19,6 +19,8 @@
   <dimen name="achievement_more_description_margin_top">5dp</dimen>
   <dimen name="achievement_progress_vertical_margin">5dp</dimen>
   <dimen name="achievement_progress_container_height">70dp</dimen>
+  <dimen name="achievement_dollar_xp_earned_horizontal_margin">10dp</dimen>
+  <dimen name="achievement_dollar_xp_earned_vertical_margin">13dp</dimen>
 
   <integer name="achievement_earned_duration">1000</integer>
 
@@ -27,12 +29,14 @@
   <integer name="achievement_level_up_end_duration">300</integer>
 
   <color name="achievement_indicator_blue_bg_transparent">#241376FB</color>
+  <color name="achievement_dollars_earned_color">#F3A422</color>
 
   <!-- Cell view -->
   <dimen name="achievement_cell_padding">10dp</dimen>
   <dimen name="achievement_cell_content_margin_left">5dp</dimen>
   <dimen name="achievement_cell_progress_indicator_w_h">40dp</dimen>
 
+  <dimen name="achievement_indicator_bg_line_height">10dp</dimen>
   <dimen name="achievement_indicator_bg_padding">8dp</dimen>
   <dimen name="achievement_indicator_bg_line_padding">20dp</dimen>
   <dimen name="achievement_indicator_star_padding">10dp</dimen>
@@ -47,5 +51,4 @@
   <integer name="quest_indicator_animation_start_delay">1000</integer>
   <integer name="quest_indicator_animation_duration">800</integer>
 
-  <string name="achievements">Achievements</string>
 </resources>

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -50,13 +52,26 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
     public void off()
     {
         logo.setImageResource(R.drawable.ic_achievement_star_off);
+        updateIndicatorTextColor(R.color.text_gray_normal);
     }
 
     public void animateOn()
     {
+        updateIndicatorTextColor(R.color.achievement_dollars_earned_color);
+
         logo.setImageResource(R.drawable.ic_achivement_star_animate);
         AnimationDrawable animationDrawable = (AnimationDrawable) logo.getDrawable();
         animationDrawable.start();
+
+        Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.quest_indicator_zoom_in);
+        startAnimation(a);
+    }
+
+    private void updateIndicatorTextColor(int colorResId)
+    {
+        int col = getResources().getColor(colorResId);
+        topIndicator.setTextColor(col);
+        botIndicator.setTextColor(col);
     }
 
     private void setText(String top, String bot)
@@ -68,5 +83,22 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
     @Override public void display(@NotNull QuestBonusDTO dto)
     {
         setText(dto.levelStr, dto.bonusStr);
+    }
+
+    public void display(@NotNull QuestBonusDTO dto, int currentLevel)
+    {
+        display(dto);
+        if (dto.level < currentLevel)
+        {
+            on();
+        }
+        else if (dto.level == currentLevel)
+        {
+            animateOn();
+        }
+        else
+        {
+            off();
+        }
     }
 }

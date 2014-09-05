@@ -33,17 +33,6 @@
           android:id="@+id/achievement_dialog_fragment_inner_top"
           layout="@layout/achievement_dialog_fragment_inner_top"/>
 
-      <TextView
-          android:id="@+id/achievement_virtual_dollar_earned"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/achievement_more_description"
-          android:layout_marginTop="@dimen/achievement_more_description_margin_top"
-          android:layout_centerHorizontal="true"
-          style="@style/TH.Achievement.Earned.VirtualDollar"
-          tools:text="+100,000 TH$!"/>
-
-
       <com.tradehero.common.widget.QuestIndicatorGroupView
           android:id="@+id/quest_indicator_group"
           android:layout_width="@dimen/achievement_dialog_width"
@@ -51,7 +40,7 @@
           android:layout_marginTop="@dimen/achievement_progress_vertical_margin"
           android:layout_marginBottom="@dimen/achievement_progress_vertical_margin"
           android:background="@drawable/achievement_indicator_bg_line"
-          android:layout_below="@id/achievement_virtual_dollar_earned"
+          android:layout_below="@id/achievement_title"
           android:orientation="horizontal"
           android:gravity="center"
           tools:ignore="UnknownId">
@@ -82,6 +71,27 @@
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
       </com.tradehero.common.widget.QuestIndicatorGroupView>
+
+      <TextView
+          android:id="@+id/achievement_description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/achievement_description_margin_top"
+          tools:text="Lorem ipsum dolor sit amet, consectetur"
+          android:layout_below="@id/quest_indicator_group"
+          android:layout_centerHorizontal="true"
+          style="@style/TH.Achievement.Description"/>
+
+      <TextView
+          android:id="@+id/achievement_more_description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="tempor incididunt ut labore et dolore magna aliqua."
+          android:layout_marginTop="@dimen/achievement_more_description_margin_top"
+          android:layout_below="@id/achievement_description"
+          android:layout_centerHorizontal="true"
+          style="@style/TH.Achievement.Description"/>
+
     </RelativeLayout>
   </LinearLayout>
 

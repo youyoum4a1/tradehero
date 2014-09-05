@@ -71,25 +71,6 @@
       android:layout_centerHorizontal="true"
       style="@style/TH.Achievement.Title"/>
 
-  <TextView
-      android:id="@+id/achievement_description"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/achievement_description_margin_top"
-      tools:text="Lorem ipsum dolor sit amet, consectetur"
-      android:layout_below="@id/achievement_title"
-      android:layout_centerHorizontal="true"
-      style="@style/TH.Achievement.Description"/>
-
-  <TextView
-      android:id="@+id/achievement_more_description"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="tempor incididunt ut labore et dolore magna aliqua."
-      android:layout_marginTop="@dimen/achievement_more_description_margin_top"
-      android:layout_below="@id/achievement_description"
-      android:layout_centerHorizontal="true"
-      style="@style/TH.Achievement.Description"/>
 
 
 

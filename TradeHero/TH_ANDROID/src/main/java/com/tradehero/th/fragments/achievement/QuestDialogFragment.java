@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class QuestDialogFragment extends AbstractAchievementDialogFragment
 {
+    private static final int NO_OF_QUEST_BEFORE_CURRENT = 2;
+
     @InjectView(R.id.quest_indicator_group) QuestIndicatorGroupView questIndicatorGroupView;
 
     private DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList> mQuestBonusListCacheListener;
@@ -81,17 +83,22 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
         @Override public void onDTOReceived(@NotNull QuestBonusListId key, @NotNull QuestBonusDTOList value)
         {
             List<QuestBonusDTO> questBonusDTOList = value.getInclusive(userAchievementDTO.contiguousCount, questIndicatorGroupView.getNumberOfIndicators());
-            if(!questBonusDTOList.isEmpty() && questBonusDTOList.get(0).level == userAchievementDTO.contiguousCount)
+            if(firstIsCurrentLevel(questBonusDTOList))
             {
                 //Get previous
-                QuestBonusDTO questBonusDTO = value.getPrevious(userAchievementDTO.contiguousCount);
-                if(questBonusDTO != null)
+                List<QuestBonusDTO> questBonusDTO = value.getPrevious(userAchievementDTO.contiguousCount, NO_OF_QUEST_BEFORE_CURRENT);
+                if(!questBonusDTO.isEmpty())
                 {
-                    questBonusDTOList.add(0, questBonusDTO);
+                    questBonusDTOList.addAll(0, questBonusDTO);
                 }
             }
             questIndicatorGroupView.setQuestBonusDef(questBonusDTOList, userAchievementDTO.contiguousCount);
             questIndicatorGroupView.revealNext();
+        }
+
+        private boolean firstIsCurrentLevel(List<QuestBonusDTO> questBonusDTOList)
+        {
+            return !questBonusDTOList.isEmpty() && questBonusDTOList.get(0).level == userAchievementDTO.contiguousCount;
         }
 
         @Override public void onErrorThrown(@NotNull QuestBonusListId key, @NotNull Throwable error)

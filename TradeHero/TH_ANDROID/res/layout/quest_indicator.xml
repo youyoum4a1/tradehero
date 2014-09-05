@@ -13,7 +13,7 @@
       android:layout_height="wrap_content"
       android:singleLine="false"
       android:lines="2"
-      style="@style/TH.Achievement.Indicator.Text"
+      style="@style/TH.Achievement.Indicator.Text.Top"
       android:layout_centerHorizontal="true"
       tools:text="Day 1"/>
 
@@ -32,7 +32,7 @@
       android:layout_height="wrap_content"
       android:singleLine="false"
       android:lines="2"
-      style="@style/TH.Achievement.Indicator.Text"
+      style="@style/TH.Achievement.Indicator.Text.Bot"
       android:layout_below="@id/quest_logo_indicator"
       android:layout_centerHorizontal="true"
       tools:text="TH$100k"/>

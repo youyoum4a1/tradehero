@@ -19,6 +19,7 @@ import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.achievement.QuestBonusListCache;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import java.util.ArrayList;
@@ -62,13 +63,13 @@ public class QuestListTestingFragment extends DashboardFragment
                 QuestBonusDTO questBonusDTO = list.get(i);
                 AchievementDefDTO achievementDefDTO = new AchievementDefDTO();
 
-                achievementDefDTO.header = "Daily Login Bonus!";
+                achievementDefDTO.header = "Your Daily Salary!";
                 achievementDefDTO.thName = "Day " + questBonusDTO.level;
-                achievementDefDTO.text = "You have earned " + questBonusDTO.bonus;
-                achievementDefDTO.subText = "Come back tomorrow to earn another " + (i + 1 >= list.size() ? "surprise " : list.get(i + 1).bonus);
+                achievementDefDTO.text = "You have earned " + THSignedMoney.builder(questBonusDTO.bonus).currency("TH$").withOutSign().build().toString();
+                achievementDefDTO.subText = "Come back tomorrow to earn another " + (i + 1 >= list.size() ? "surprise " : THSignedMoney.builder(list.get(i + 1).bonus).currency("TH$").withOutSign().build().toString());
                 achievementDefDTO.virtualDollars = questBonusDTO.bonus;
                 achievementDefDTO.visual =
-                        "http://laliberteatoutprix.fr/wp-content/uploads/2013/11/Logo-MoneyManager.png";
+                        "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/achievements/levels/daily_bonus.png";
                 achievementDefDTO.isQuest = true;
 
                 UserAchievementDTO userAchievementDTO = new UserAchievementDTO();

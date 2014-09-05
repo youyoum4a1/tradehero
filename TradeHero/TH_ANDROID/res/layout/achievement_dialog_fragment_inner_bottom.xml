@@ -9,14 +9,45 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+
+  <include
+      android:id="@+id/achievement_progress_indicator"
+      layout="@layout/achievement_progress_indicator"
+      android:layout_below="@id/achievement_title"
+      android:layout_centerHorizontal="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"/>
+
+  <TextView
+      android:id="@+id/achievement_description"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/achievement_description_margin_top"
+      tools:text="Lorem ipsum dolor sit amet, consectetur"
+      android:layout_below="@id/achievement_progress_indicator"
+      android:layout_centerHorizontal="true"
+      style="@style/TH.Achievement.Description"/>
+
+  <TextView
+      android:id="@+id/achievement_more_description"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="tempor incididunt ut labore et dolore magna aliqua."
+      android:layout_marginTop="@dimen/achievement_more_description_margin_top"
+      android:layout_below="@id/achievement_description"
+      android:layout_centerHorizontal="true"
+      style="@style/TH.Achievement.Description"/>
+
   <TextView
       android:id="@+id/achievement_virtual_dollar_earned"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/achievement_more_description"
-      android:layout_marginTop="@dimen/achievement_more_description_margin_top"
-      android:layout_alignParentLeft="true"
       style="@style/TH.Achievement.Earned.VirtualDollar"
+      android:layout_alignParentLeft="true"
+      android:layout_below="@id/achievement_more_description"
+      android:layout_marginTop="@dimen/achievement_dollar_xp_earned_vertical_margin"
+      android:layout_marginLeft="@dimen/achievement_dollar_xp_earned_horizontal_margin"
       tools:ignore="unknownId"
       tools:text="+100,000 TH$!"/>
 
@@ -24,17 +55,15 @@
       android:id="@+id/user_level_progress_xp_earned"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_centerHorizontal="true"
-      android:layout_below="@+id/achievement_more_description"
-      android:layout_alignBaseline="@id/achievement_virtual_dollar_earned"
-      android:layout_alignParentRight="true"
+      android:layout_alignTop="@id/achievement_virtual_dollar_earned"
       style="@style/TH.Achievement.Earned.XP"
-      tools:ignore="unknownId"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="@dimen/achievement_dollar_xp_earned_horizontal_margin"
       tools:text="+1,000 XP!"/>
 
   <include
-      android:id="@+id/achievement_progress_indicator"
-      layout="@layout/achievement_progress_indicator"
+      android:id="@+id/user_level_progress_bar"
+      layout="@layout/user_level_progressbar"
       android:layout_below="@id/user_level_progress_xp_earned"
       android:layout_centerHorizontal="true"
       android:layout_width="wrap_content"
