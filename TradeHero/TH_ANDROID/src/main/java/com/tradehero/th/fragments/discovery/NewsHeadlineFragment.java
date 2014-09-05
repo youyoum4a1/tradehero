@@ -2,11 +2,11 @@ package com.tradehero.th.fragments.discovery;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public class NewsHeadlineFragment extends SherlockFragment
 {
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
-    @InjectView(android.R.id.list) AbsListView mNewsListView;
+    @InjectView(android.R.id.list) ListView mNewsListView;
     @InjectView(android.R.id.progress) ProgressBar mProgressBar;
 
     @Inject NewsItemCompactListCacheNew newsItemCompactListCache;
@@ -41,13 +41,14 @@ public class NewsHeadlineFragment extends SherlockFragment
     private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> mFeaturedNewsListener;
     private NewsHeadlineAdapter mFeaturedNewsAdapter;
     protected NewsItemListKey newsItemListKey;
+    private AbsListView.OnScrollListener scrollListener;
 
     public NewsHeadlineFragment(NewsItemListKey newsItemListKey)
     {
         this.newsItemListKey = newsItemListKey;
     }
 
-    public static Fragment newInstance(NewsType newsType)
+    public static NewsHeadlineFragment newInstance(NewsType newsType)
     {
         switch (newsType)
         {
@@ -76,7 +77,17 @@ public class NewsHeadlineFragment extends SherlockFragment
         mFeaturedNewsListener = new FeaturedNewsListener();
 
         mFeaturedNewsAdapter = new NewsHeadlineAdapter(getActivity(), R.layout.news_headline_item_view);
+
+        View paddingHeader = new View(getActivity());
+        paddingHeader.setLayoutParams(new AbsListView.LayoutParams(1, getResources().getDimensionPixelOffset(R.dimen.discovery_news_carousel_height)));
+        mNewsListView.addHeaderView(paddingHeader);
         mNewsListView.setAdapter(mFeaturedNewsAdapter);
+        mNewsListView.setOnScrollListener(scrollListener);
+    }
+
+    public void setScrollListener(AbsListView.OnScrollListener scrollListener)
+    {
+        this.scrollListener = scrollListener;
     }
 
     @Override public void onAttach(Activity activity)
