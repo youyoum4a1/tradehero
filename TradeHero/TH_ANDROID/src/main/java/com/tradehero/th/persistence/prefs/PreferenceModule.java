@@ -138,11 +138,6 @@ public class PreferenceModule
         return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, "");
     }
 
-    @Provides @Singleton @BaiduPushDeviceIdentifierSentFlag BooleanPreference providePushIdentifierSentFlag(@ForUser SharedPreferences sharedPreferences)
-    {
-        return new BooleanPreference(sharedPreferences, PREF_PUSH_IDENTIFIER_SENT_FLAG, false);
-    }
-
     @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, true);

@@ -55,9 +55,6 @@ public class SocialNetworkModule
                     + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
                     + "follow_app_official_microblog," + "invitation_write";
 
-    private static final String BAIDU_API_KEY = "iI9WWqP3SfGApTW37UuSyIdc";
-    private static final String BAIDU_SECRET_KEY = "i5xkWnVUQLYE703cYG85QoSkrPwjl3ip";
-
     @Provides @Singleton @ConsumerKey("Twitter") String provideTwitterConsumerKey()
     {
         return TWITTER_CONSUMER_KEY;
