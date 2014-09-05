@@ -1,21 +1,22 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Activity;
-import android.support.v4.preference.PreferenceFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.MarketUtil;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class SendLoveViewHolder extends OneSettingViewHolder
 {
-    @NotNull private final MarketUtil marketUtil;
+    @NotNull private final CurrentActivityHolder currentActivityHolder;
 
     //<editor-fold desc="Constructors">
-    @Inject public SendLoveViewHolder(@NotNull MarketUtil marketUtil)
+    @Inject public SendLoveViewHolder(
+            @NotNull CurrentActivityHolder currentActivityHolder)
     {
         super();
-        this.marketUtil = marketUtil;
+        this.currentActivityHolder = currentActivityHolder;
     }
     //</editor-fold>
 
@@ -26,14 +27,11 @@ public class SendLoveViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
-        if (preferenceFragmentCopy != null)
+        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        if (currentActivity != null)
         {
-            Activity activity = preferenceFragmentCopy.getActivity();
-            if (activity != null)
-            {
-                marketUtil.showAppOnMarket(activity);
-            }
+            AskForReviewDialogFragment.showReviewDialog(
+                    ((SherlockFragmentActivity) currentActivity).getSupportFragmentManager());
         }
     }
 }

@@ -14,7 +14,7 @@ public class NewsItemDTO extends NewsItemCompactDTO
 
     private List<NewsItemMediaDTO> textEntities; // Needed to Hyperlink NewsItem's content
     private List<NewsItemMediaDTO> entities; // Needed to Hyperlink NewsItem's content
-    private List<NewsItemMediaDTO> categories; // Header:Referenced Calais Entities
+    @Nullable private List<NewsItemMediaDTO> categories; // Header:Referenced Calais Entities
     @Nullable public List<Integer> securityIds;
 
     public String message;
@@ -52,12 +52,16 @@ public class NewsItemDTO extends NewsItemCompactDTO
         this.entities = entities;
     }
 
-    public List<NewsItemMediaDTO> getCategories()
+    @Nullable public List<NewsItemMediaDTO> getCategories()
     {
-        return Collections.unmodifiableList(categories);
+        if(categories != null)
+        {
+            return Collections.unmodifiableList(categories);
+        }
+        return null;
     }
 
-    public void setCategories(List<NewsItemMediaDTO> categories)
+    public void setCategories(@Nullable List<NewsItemMediaDTO> categories)
     {
         this.categories = categories;
     }

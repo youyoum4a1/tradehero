@@ -23,7 +23,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
 
-public class DiscoveryActivityFragment extends SherlockFragment
+public class DiscoveryDiscussionFragment extends SherlockFragment
 {
     private static final int TIMELINE_LOADER_ID = 0;
 
@@ -38,7 +38,7 @@ public class DiscoveryActivityFragment extends SherlockFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.discovery_activity, container, false);
+        View view = inflater.inflate(R.layout.discovery_discussion, container, false);
         initView(view);
         return view;
     }

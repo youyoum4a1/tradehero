@@ -13,7 +13,7 @@ class NewsItemCutDTO extends NewsItemCompactCutDTO
     public String imageUrl;
     private List<NewsItemMediaDTO> textEntities;
     private List<NewsItemMediaDTO> entities;
-    private List<NewsItemMediaDTO> categories;
+    @Nullable private List<NewsItemMediaDTO> categories;
     @Nullable public List<Integer> securityIds;
     public String message;
 

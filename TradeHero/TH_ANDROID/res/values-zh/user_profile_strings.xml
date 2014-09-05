@@ -15,6 +15,7 @@
   <string name="user_profile_password">*密码</string>
   <string name="user_profile_confirm_pwd">*确认密码</string>
   <string name="user_profile_display_name">*用户名</string>
+  <string name="user_profile_referral_code">邀请码</string>
   <string name="user_profile_optional">可选项</string>
   <string name="user_profile_first_name">名</string>
   <string name="user_profile_last_name">姓</string>

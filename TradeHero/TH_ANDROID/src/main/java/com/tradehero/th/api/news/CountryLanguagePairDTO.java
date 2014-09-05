@@ -1,10 +1,10 @@
 package com.tradehero.th.api.news;
 
-import com.tradehero.common.persistence.DTO;
-
 public class CountryLanguagePairDTO
-        implements DTO
 {
+    public static final String BUNDLE_KEY_COUNTRY_CODE = CountryLanguagePairDTO.class.getName() + ".countryCode";
+    public static final String BUNDLE_KEY_LANGUAGE_CODE = CountryLanguagePairDTO.class.getName() + ".languageCode";
+
     public String name;
     public String countryCode;
     public String languageCode;
@@ -16,7 +16,11 @@ public class CountryLanguagePairDTO
         this.languageCode = languageCode;
     }
 
-    public CountryLanguagePairDTO()
+    /** Naked constructor for deserialization */
+    public CountryLanguagePairDTO() { }
+
+    @Override public String toString()
     {
+        return this.name;
     }
 }

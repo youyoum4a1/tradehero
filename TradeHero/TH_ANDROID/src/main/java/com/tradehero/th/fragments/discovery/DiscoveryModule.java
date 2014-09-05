@@ -5,9 +5,14 @@ import dagger.Module;
 @Module(
         injects = {
                 DiscoveryMainFragment.class,
-                FeaturedNewsHeadlineFragment.class,
+                NewsPagerFragment.class,
+
+                NewsHeadlineFragment.class,
+                RegionalNewsHeadlineFragment.class,
                 WhatsHotFragment.class,
-                DiscoveryActivityFragment.class,
+                DiscoveryDiscussionFragment.class,
+
+                RegionalNewsSelectorView.class
         },
         library = true,
         complete = false

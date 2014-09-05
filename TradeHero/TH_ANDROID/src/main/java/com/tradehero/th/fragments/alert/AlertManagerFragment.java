@@ -61,7 +61,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private AlertListItemAdapter alertListItemAdapter;
     private DTOCacheNew.Listener<UserBaseKey, AlertCompactDTOList> alertCompactListListener;
-    private int currentDisplayLayoutId;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -137,18 +136,9 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        if (currentDisplayLayoutId != 0)
-        {
-            progressAnimator.setDisplayedChildByLayoutId(currentDisplayLayoutId);
-        }
+        progressAnimator.setDisplayedChildByLayoutId(0);
         fetchUserProfile();
         fetchAlertCompactList();
-    }
-
-    @Override public void onPause()
-    {
-        currentDisplayLayoutId = progressAnimator.getDisplayedChildLayoutId();
-        super.onPause();
     }
 
     @Override public void onDestroyView()

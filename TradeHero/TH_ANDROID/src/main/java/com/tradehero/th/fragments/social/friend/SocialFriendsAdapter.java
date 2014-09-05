@@ -20,10 +20,8 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
     @Nullable private SocialFriendUserView.OnElementClickListener elementClickedListener;
     private List<SocialFriendListItemDTO> mArrayList;
 
-
-
     //<editor-fold desc="Constructors">
-    public SocialFriendsAdapter(Context context, List<SocialFriendListItemDTO> objects, int layoutItemResId, int layoutHeaderResId)
+    public SocialFriendsAdapter(@NotNull Context context, List<SocialFriendListItemDTO> objects, int layoutItemResId, int layoutHeaderResId)
     {
         super(context, 0);
         addAll(objects);

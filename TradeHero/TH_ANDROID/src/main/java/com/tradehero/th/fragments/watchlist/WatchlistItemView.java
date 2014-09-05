@@ -28,6 +28,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
@@ -529,7 +530,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         if (watchlistPositionDTO != null)
         {
             WatchlistEditFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-            DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
+            ActionBarOwnerMixin.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, null);
     }
