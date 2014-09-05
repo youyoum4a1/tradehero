@@ -154,10 +154,7 @@ public class RegionalNewsSelectorView extends LinearLayout
         {
             mRegionSelector.setText(mCountryCode);
         }
-        else
-        {
-            fetchAndSetUserDefaultLanguage();
-        }
+        fetchAndSetUserRegional();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -167,7 +164,7 @@ public class RegionalNewsSelectorView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    private void fetchAndSetUserDefaultLanguage()
+    private void fetchAndSetUserRegional()
     {
         UserBaseKey currentUserBaseKey = currentUserId.toUserBaseKey();
         detachUserProfileFetchTask();
