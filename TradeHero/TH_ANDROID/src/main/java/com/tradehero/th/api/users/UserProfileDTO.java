@@ -68,6 +68,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public boolean competitionAutoEnrollOnFirstLaunch;
     public LeaderboardDTO mostSkilledLbmu;
 
+    public int achievementCount;
+
     public LeaderboardKey getMostSkilledLbmuKey()
     {
         return new LeaderboardKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);

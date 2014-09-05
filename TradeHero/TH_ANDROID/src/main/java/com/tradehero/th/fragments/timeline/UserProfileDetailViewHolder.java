@@ -15,8 +15,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.utils.GraphicUtil;
 import javax.inject.Inject;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
@@ -44,13 +44,13 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     {
         super.initViews(view);
         topBackgroundTarget = new BackgroundTarget();
-		topDefaultBackgroundTarget = new DefaultBackgroundTarget();
+        topDefaultBackgroundTarget = new DefaultBackgroundTarget();
     }
 
     @Override public void detachViews()
     {
         topBackgroundTarget = null;
-		topDefaultBackgroundTarget = null;
+        topDefaultBackgroundTarget = null;
         if (profileTop != null)
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
@@ -169,8 +169,14 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     {
         if (achievementCount != null)
         {
-            //TODO
-            achievementCount.setText(String.valueOf(0));
+            if (userProfileDTO != null)
+            {
+                achievementCount.setText(String.valueOf(userProfileDTO.achievementCount));
+            }
+            else
+            {
+                achievementCount.setText(R.string.na);
+            }
         }
     }
 
@@ -204,7 +210,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     }
 
     protected class DefaultBackgroundTarget
-			extends BackgroundTarget
+            extends BackgroundTarget
     {
     }
 
