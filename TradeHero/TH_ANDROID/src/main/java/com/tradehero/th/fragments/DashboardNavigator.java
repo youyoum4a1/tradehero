@@ -1,36 +1,34 @@
 package com.tradehero.th.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.widget.TabHost;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class DashboardNavigator extends Navigator
+public class DashboardNavigator extends Navigator<FragmentActivity>
 {
     private static final boolean TAB_SHOULD_ADD_TO_BACKSTACK = false;
     private static final boolean TAB_SHOW_HOME_AS_UP = false;
 
+    private Set<DashboardFragmentWatcher> dashboardFragmentWatchers = new HashSet<>();
+
     private TabHost.OnTabChangeListener mOnTabChangedListener;
 
-    @Inject ResideMenu resideMenu;
-
-    public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId)
+    public DashboardNavigator(FragmentActivity context, FragmentManager manager, int fragmentContentId)
     {
         super(context, manager, fragmentContentId);
-        DaggerUtils.inject(this);
     }
 
     /**
@@ -55,7 +53,7 @@ public class DashboardNavigator extends Navigator
             return;
         }
 
-        final String expectedTag = context.getString(thIntent.getDashboardType().stringKeyResId);
+        final String expectedTag = activity.getString(thIntent.getDashboardType().stringKeyResId);
         goToTab(
                 thIntent.getDashboardType(),
                 new TabHost.OnTabChangeListener()
@@ -70,30 +68,40 @@ public class DashboardNavigator extends Navigator
                 });
     }
 
-    private void goToTab(@NotNull DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
+    private <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, TabHost.OnTabChangeListener changeListener)
     {
         mOnTabChangedListener = changeListener;
-        goToTab(tabType);
+        return goToTab(tabType);
     }
 
-    public void goToTab(@NotNull DashboardTabType tabType)
+    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType)
     {
-        this.goToTab(tabType, TAB_SHOULD_ADD_TO_BACKSTACK);
+        return goToTab(tabType, TAB_SHOULD_ADD_TO_BACKSTACK);
     }
 
-    public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack)
+    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack)
     {
-        this.goToTab(tabType, shouldAddToBackStack, TAB_SHOW_HOME_AS_UP);
+        return goToTab(tabType, shouldAddToBackStack, TAB_SHOW_HOME_AS_UP);
     }
 
-    public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
+    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
     {
+        if (tabType.fragmentClass.isInstance(getCurrentFragment()))
+        {
+            return (T) getCurrentFragment();
+        }
+
         Bundle args = new Bundle();
 
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         manager.executePendingTransactions();
 
-        updateTabBarOnTabChanged(((Object) pushFragment(tabType.fragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp)).getClass().getName());
+        @SuppressWarnings("unchecked")
+        Class<T> targetFragmentClass = (Class<T>) tabType.fragmentClass;
+        T tabFragment = pushFragment(targetFragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp);
+
+        updateTabBarOnTabChanged(((Object)tabFragment).getClass().getName());
+        return tabFragment;
     }
 
     private void postPushActionFragment(final THIntent thIntent)
@@ -118,7 +126,6 @@ public class DashboardNavigator extends Navigator
     @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
             @Nullable String backStackName, Boolean shouldAddToBackStack, Boolean showHomeAsUp)
     {
-        resideMenu.closeMenu();
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof DashboardFragment)
         {
@@ -130,11 +137,13 @@ public class DashboardNavigator extends Navigator
         }
 
         T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, shouldAddToBackStack, showHomeAsUp);
-        executePending(fragment);
+        executePending();
+
+        onFragmentChanged(activity, fragmentClass, args);
         return fragment;
     }
 
-    private void executePending(Fragment fragment)
+    private void executePending()
     {
         manager.executePendingTransactions();
     }
@@ -145,8 +154,9 @@ public class DashboardNavigator extends Navigator
 
         if (!isBackStackEmpty())
         {
-            executePending(null);
+            executePending();
         }
+        onFragmentChanged(activity, getCurrentFragment().getClass(), null);
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
     }
 
@@ -162,4 +172,34 @@ public class DashboardNavigator extends Navigator
         }
         mOnTabChangedListener = null;
     }
+
+    //<editor-fold desc="DashboardFragmentWatcher">
+    private <T extends Fragment> void onFragmentChanged(FragmentActivity activity, Class<T> fragmentClass, Bundle args)
+    {
+        for (DashboardFragmentWatcher dashboardFragmentWatcher: dashboardFragmentWatchers)
+        {
+            dashboardFragmentWatcher.onFragmentChanged(activity, fragmentClass, args);
+        }
+    }
+
+    public void addDashboardFragmentWatcher(DashboardFragmentWatcher watcher)
+    {
+        dashboardFragmentWatchers.add(watcher);
+    }
+
+    public void clearDashboardFragmentWatchers()
+    {
+        dashboardFragmentWatchers.clear();
+    }
+
+    public void removeDashboardFragmentWatchers(DashboardFragmentWatcher watcher)
+    {
+        dashboardFragmentWatchers.remove(watcher);
+    }
+
+    public static interface DashboardFragmentWatcher
+    {
+        <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle);
+    }
+    //</editor-fold>
 }

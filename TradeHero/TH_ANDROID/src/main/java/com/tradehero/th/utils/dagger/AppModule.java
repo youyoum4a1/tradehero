@@ -1,9 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
-import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
-import com.tradehero.common.billing.googleplay.IABServiceConnector;
+import com.tradehero.FlavorModule;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
@@ -12,7 +10,6 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -24,6 +21,7 @@ import com.tradehero.th.fragments.contestcenter.ContestCenterActiveFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterBaseFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterJoinedFragment;
+import com.tradehero.th.fragments.discovery.DiscoveryModule;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
@@ -42,6 +40,7 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItem
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
@@ -54,8 +53,6 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
-import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
@@ -91,6 +88,8 @@ import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
+import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
+import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -109,6 +108,8 @@ import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
+import com.tradehero.th.fragments.social.friend.InviteCodeDialogFragment;
+import com.tradehero.th.fragments.social.friend.InviteCodeViewLinear;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentFacebook;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentLinkedIn;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentTwitter;
@@ -117,6 +118,7 @@ import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
 import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
@@ -147,7 +149,6 @@ import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.FriendListLoader;
-import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
@@ -156,10 +157,10 @@ import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
-import com.tradehero.th.models.user.SimplePremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
@@ -179,6 +180,7 @@ import javax.inject.Singleton;
 
 @Module(
         includes = {
+                FlavorModule.class,
                 CacheModule.class,
                 GraphicModule.class,
                 NetworkModule.class,
@@ -192,15 +194,18 @@ import javax.inject.Singleton;
                 ActivityModule.class,
                 BillingModule.class,
                 PushModule.class,
+
+                // Fragments
+                DiscoveryModule.class,
         },
         injects =
                 {
-                        DashboardNavigator.class,
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         ProfileInfoView.class,
-                        SimplePremiumFollowUserAssistant.class,
-                        PremiumFollowUserAssistant.class,
+                        SimpleFollowUserAssistant.class,
+                        FollowUserAssistant.class,
+                        ChoiceFollowUserAssistantWithDialog.class,
                         SettingsFragment.class,
                         TranslatableLanguageListFragment.class,
                         LocationListFragment.class,
@@ -266,7 +271,6 @@ import javax.inject.Singleton;
                         FollowerPayoutManagerFragment.class,
                         FollowerListItemView.class,
 
-                        SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 
                         TimelineManager.class,
@@ -286,7 +290,6 @@ import javax.inject.Singleton;
                         PeopleSearchFragment.class,
                         LeaderboardDefListFragment.class,
                         LeaderboardDefView.class,
-                        CommunityLeaderboardDefView.class,
                         LeaderboardMarkUserLoader.class,
                         LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,
@@ -307,10 +310,9 @@ import javax.inject.Singleton;
 
                         CompetitionWebViewFragment.class,
 
-                        IABServiceConnector.class,
-                        IABBillingAvailableTester.class,
-                        IABBillingInventoryFetcher.class,
-                        IABSKUListRetrievedAsyncMilestone.class,
+                        PortfolioCompactListRetrievedMilestone.class,
+                        UserProfileRetrievedMilestone.class,
+                        HeroManagerInfoFetcher.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
                         HeroesTabContentFragment.class,
@@ -319,6 +321,10 @@ import javax.inject.Singleton;
                         AllHeroFragment.class,
                         AllRelationsFragment.class,
                         RelationsListItemView.class,
+                        InviteCodeViewLinear.class,
+                        InviteCodeDialogFragment.class,
+                        AskForReviewDialogFragment.class,
+                        AskForInviteDialogFragment.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,
@@ -386,7 +392,7 @@ import javax.inject.Singleton;
                         THUser.class,
                 },
         complete = false,
-        library = true // TODO remove this line
+        library = false // TODO remove this line
 )
 public class AppModule
 {
@@ -404,9 +410,13 @@ public class AppModule
         return application.getApplicationContext();
     }
 
-    @Provides @LanguageCode String provideCurrentLanguageCode(Context context)
+    @Provides Locale provideLocale(Context context)
     {
-        Locale locale = context.getResources().getConfiguration().locale;
+        return context.getResources().getConfiguration().locale;
+    }
+
+    @Provides @LanguageCode String provideCurrentLanguageCode(Locale locale)
+    {
         return String.format("%s-%s", locale.getLanguage(), locale.getCountry());
     }
 

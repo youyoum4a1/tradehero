@@ -23,17 +23,20 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -58,6 +61,8 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
+import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -76,6 +81,8 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
+import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
@@ -116,6 +123,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.news) protected TextView mNewsTextView;
 
     @Inject ResideMenu resideMenu;
+    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
+    @Inject @ShowAskForReviewDialog LongPreference mShowAskForReviewDialogPreference;
+    @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
 
     //for dialog
     private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
@@ -1195,8 +1205,11 @@ public class BuySellFragment extends AbstractBuySellFragment
                     }
                     if (pushPortfolioFragmentRunnable != null)
                     {
+                        setActionBarSubtitle(null);
                         pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
                     }
+
+                    showPrettyReviewAndInvite(isBuy);
                 }
 
                 @Override public void onTransactionFailed(boolean isBuy, THException error)
@@ -1212,6 +1225,32 @@ public class BuySellFragment extends AbstractBuySellFragment
                     R.string.buy_sell_no_quote_title,
                     R.string.buy_sell_no_quote_message,
                     R.string.buy_sell_no_quote_cancel);
+        }
+    }
+
+    private void showPrettyReviewAndInvite(boolean isBuy)
+    {
+        if (!isBuy)//only check after sell
+        {
+            Double profit = abstractTransactionDialogFragment.getProfitOrLossUsd();
+            if (profit != null)
+            {
+                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolderLazy.get().getCurrentActivity();
+                if (profit > 0 && activity != null)
+                {
+                    long lastReviewLimitTime = mShowAskForReviewDialogPreference.get();
+                    if (System.currentTimeMillis() > lastReviewLimitTime)
+                    {
+                        AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
+                        return;
+                    }
+                    long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();
+                    if (System.currentTimeMillis() > lastInviteLimitTime)
+                    {
+                        AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
+                    }
+                }
+            }
         }
     }
 
@@ -1367,15 +1406,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     public void selectPage(int position)
     {
         selectedPageIndex = position;
-        mInfoTextView.setEnabled(position != 0);
-        mDiscussTextView.setEnabled(position != 1);
-        mNewsTextView.setEnabled(position != 2);
-        mInfoTextView.setTextColor(getResources().getColor(
-                position == 0 ? R.color.white : R.color.btn_twitter_color_end));
-        mDiscussTextView.setTextColor(getResources().getColor(
-                position == 1 ? R.color.white : R.color.btn_twitter_color_end));
-        mNewsTextView.setTextColor(getResources().getColor(
-                position == 2 ? R.color.white : R.color.btn_twitter_color_end));
+        mInfoTextView.setSelected(position == 0);
+        mDiscussTextView.setSelected(position == 1);
+        mNewsTextView.setSelected(position == 2);
 
         if (selectedPageIndex == 0)
         {

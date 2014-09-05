@@ -9,13 +9,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorProviderCompactReceived implements DTOProcessor<ProviderCompactDTO>
 {
-    @NotNull private final CurrentUserId currentUserId;
     @NotNull private final DTOProcessor<PortfolioCompactDTO> portfolioCompactProcessor;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorProviderCompactReceived(@NotNull CurrentUserId currentUserId)
     {
-        this.currentUserId = currentUserId;
         this.portfolioCompactProcessor = new DTOProcessorPortfolioReceived<>(currentUserId.toUserBaseKey());
     }
     //</editor-fold>

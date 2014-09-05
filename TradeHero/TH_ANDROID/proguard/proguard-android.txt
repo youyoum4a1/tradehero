@@ -118,6 +118,7 @@
 -assumenosideeffects class com.tradehero.common.utils.THLog { *; }
 
 -keep class !com.tradehero.** { *; }
+-dontwarn com.actionbarsherlock.**
 -dontwarn java.nio.files.**
 -dontwarn okio.**
 -dontwarn com.tencent.**
@@ -170,3 +171,8 @@
 }
 
 -keep @org.junit.runner.RunWith public class *
+
+# Amazon IAPs
+-dontwarn com.amazon.**
+-keep class com.amazon.** {*;}
+-keepattributes *Annotation*

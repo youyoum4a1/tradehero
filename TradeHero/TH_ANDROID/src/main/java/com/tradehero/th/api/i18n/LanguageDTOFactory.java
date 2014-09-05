@@ -14,7 +14,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class LanguageDTOFactory
 {
@@ -39,7 +38,6 @@ public class LanguageDTOFactory
         {
             return known;
         }
-        Timber.e(new Exception("Just reporting"), "Language not found %s", languageCode);
         return new LanguageDTO(languageCode, Locale.ENGLISH);
     }
 

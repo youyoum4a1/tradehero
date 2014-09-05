@@ -3,19 +3,20 @@ package com.tradehero.th.api.translation.bing;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.api.BaseApiTest;
+import com.tradehero.th.api.BaseApiTestClass;
 import com.tradehero.th.api.translation.TranslationToken;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
-public class BingTranslationTokenTest extends BaseApiTest
+public class BingTranslationTokenTest extends BaseApiTestClass
 {
     @Inject @ForApp ObjectMapper normalMapper;
 
@@ -43,6 +44,7 @@ public class BingTranslationTokenTest extends BaseApiTest
         assertThat(((BingTranslationToken) token).getExpiresInSeconds()).isGreaterThanOrEqualTo(599);
     }
 
+    @Ignore("Don't do thread.sleep")
     @Test public void testExpiresCorrectAfter1Second() throws IOException, InterruptedException
     {
         TranslationToken token = normalMapper.readValue(bingTranslationTokenBody1Stream, TranslationToken.class);

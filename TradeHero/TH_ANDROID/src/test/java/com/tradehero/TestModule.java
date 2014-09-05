@@ -9,7 +9,8 @@ import dagger.Module;
 @Module(
         includes = {
                 CommonModule.class,
-                AppTestModule.class
+                AppTestModule.class,
+                FlavorAppTestModule.class,
         },
         injects = {
                 TestApplication.class,

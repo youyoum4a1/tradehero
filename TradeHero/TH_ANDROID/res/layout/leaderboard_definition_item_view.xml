@@ -3,9 +3,9 @@
 <com.tradehero.th.fragments.leaderboard.LeaderboardDefView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:background="@color/white"
+    android:background="@drawable/basic_white_selector"
     >
 
   <include layout="@layout/leaderboard_definition_item_view_inner"/>

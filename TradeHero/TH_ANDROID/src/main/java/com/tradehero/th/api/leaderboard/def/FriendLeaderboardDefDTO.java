@@ -12,6 +12,7 @@ public class FriendLeaderboardDefDTO extends ConnectedLeaderboardDefDTO
         super();
         id = LeaderboardDefKeyKnowledge.FRIEND_ID;
         name = context.getString(R.string.leaderboard_community_friends);
+        //bannerResId = R.drawable.lb_friends_bg;
     }
     //</editor-fold>
 }

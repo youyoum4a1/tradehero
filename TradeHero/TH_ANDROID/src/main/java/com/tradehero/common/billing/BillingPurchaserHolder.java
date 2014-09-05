@@ -8,9 +8,8 @@ public interface BillingPurchaserHolder<
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingExceptionType extends BillingException>
+    extends RequestCodeHolder
 {
-    boolean isUnusedRequestCode(int requestCode);
-    void forgetRequestCode(int requestCode);
     BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             PurchaseOrderType,
@@ -24,5 +23,4 @@ public interface BillingPurchaserHolder<
             ProductPurchaseType,
             BillingExceptionType> purchaseFinishedListener);
     void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder);
-    void onDestroy();
 }

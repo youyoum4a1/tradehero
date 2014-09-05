@@ -10,7 +10,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -155,10 +155,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             case R.id.btn_search:
                 pushSearchFragment();
                 return true;
-
-            case R.id.btn_add:
-                pushInvitationFragment();
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -257,15 +253,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
         {
-            Object item = adapterView.getItemAtPosition(position);
-            if (item instanceof LeaderboardDefCommunityPageDTO)
-            {
-                handleLeaderboardItemClicked(((LeaderboardDefCommunityPageDTO) item).leaderboardDefDTO);
-            }
-            else
-            {
-                throw new IllegalArgumentException("Unhandled item type " + item);
-            }
+            handleLeaderboardItemClicked((LeaderboardDefDTO) adapterView.getItemAtPosition(position));
         }
     }
 
@@ -321,7 +309,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         return new LeaderboardCommunityAdapter(
                 getActivity(),
-                R.layout.leaderboard_definition_item_view_community);
+                R.layout.leaderboard_definition_item_view);
     }
 
     /**
@@ -385,6 +373,9 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
                 break;
             case LeaderboardDefKeyKnowledge.FOLLOWER_ID:
                 pushFollowerFragment();
+                break;
+            case LeaderboardDefKeyKnowledge.INVITE_FRIENDS_ID:
+                pushInvitationFragment();
                 break;
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);

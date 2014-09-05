@@ -1,16 +1,17 @@
 package com.tradehero.th.base;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.CurrentActivityHolder;
+import com.tradehero.th.activities.MarketUtil;
+import com.tradehero.th.api.form.FacebookUserFormDTO;
+import com.tradehero.th.api.form.LinkedinUserFormDTO;
+import com.tradehero.th.api.form.TwitterUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -41,13 +42,15 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 public class THUser
@@ -72,6 +75,7 @@ public class THUser
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
     @Inject static LoginSignUpFormDTOFactory loginSignUpFormDTOFactory;
     @Inject static DeviceTokenHelper deviceTokenHelper;
+    @Inject static Lazy<MarketUtil> marketUtilLazy;
 
     public static void initialize()
     {
@@ -122,30 +126,58 @@ public class THUser
 
     public static void logInAsyncWithJson(final CredentialsDTO credentialsDTO, final LogInCallback callback)
     {
-        UserFormDTO userFormDTO = credentialsDTO.createUserFormDTO();
+        final UserFormDTO userFormDTO = credentialsDTO.createUserFormDTO();
+
         if (userFormDTO == null)
         {
             // input error, unable to parse as json data
             THToast.show(R.string.authentication_error_creating_signup_form);
             return;
         }
+
         if (userFormDTO.deviceToken == null)
         {
             userFormDTO.deviceToken = deviceTokenHelper.getDeviceToken();
         }
-        Timber.d("APID: %s,authenticationMode :%s", userFormDTO.deviceToken,/*PushManager.shared().getAPID()*/
-                authenticationMode);
-        //userFormDTO.deviceToken = DeviceTokenHelper.getDeviceToken();//PushManager.shared().getAPID();
 
         if (authenticationMode == null)
         {
             authenticationMode = AuthenticationMode.SignIn;
         }
 
+        if (authenticationMode == AuthenticationMode.SignIn &&
+                (userFormDTO instanceof FacebookUserFormDTO ||
+                userFormDTO instanceof LinkedinUserFormDTO ||
+                userFormDTO instanceof TwitterUserFormDTO))
+        {
+            mainCredentialsPreference.setCredentials(credentialsDTO);
+            sessionServiceWrapper.get().updateAuthorizationTokens(userFormDTO, new Callback<Response>()
+            {
+                @Override
+                public void success(Response response, Response response2)
+                {
+                    authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
+                }
+
+                @Override
+                public void failure(RetrofitError error)
+                {
+                    THToast.show(new THException(error));
+                }
+            });
+        }
+        else
+        {
+            authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
+        }
+    }
+
+    private static void authenticateWithNewCredential(CredentialsDTO credentialsDTO, LogInCallback callback, UserFormDTO userFormDTO)
+    {
         switch (authenticationMode)
         {
             case SignUpWithEmail:
-                Timber.d("SignUpWithEmail Auth Header "+authenticator.getAuthHeader());
+                Timber.d("SignUpWithEmail Auth Header " + authenticator.getAuthHeader());
                 userServiceWrapper.get().signUpWithEmail(
                         authenticator.getAuthHeader(),
                         userFormDTO,
@@ -262,19 +294,10 @@ public class THUser
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
-                            try
+                            THToast.show(R.string.update_guide);
+                            if (currentActivity != null)
                             {
-                                THToast.show(R.string.update_guide);
-                                currentActivity.startActivity(
-                                        new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
-                                currentActivity.finish();
-                            }
-                            catch (ActivityNotFoundException ex)
-                            {
-
-                                currentActivity.startActivity(
-                                        new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
+                                marketUtilLazy.get().showAppOnMarket(currentActivity);
                                 currentActivity.finish();
                             }
                         }

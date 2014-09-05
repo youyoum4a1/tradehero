@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class MessageListKeyTest extends BaseMessageListKeyTest
+public class MessageListKeyTest extends MessageListKeyTestBase
 {
     @Test public void equalItself()
     {

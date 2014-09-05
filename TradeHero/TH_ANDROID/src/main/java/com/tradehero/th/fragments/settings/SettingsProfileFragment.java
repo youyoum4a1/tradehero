@@ -102,10 +102,15 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         //signupButton.setOnTouchListener(this);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachMiddleCallbackUpdateUserProfile();
         detachUserProfileCache();
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         if (profileView != null)
         {
             profileView.setOnTouchListenerOnFields(null);

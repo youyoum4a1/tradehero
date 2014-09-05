@@ -7,13 +7,14 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SellDialogFragment extends AbstractTransactionDialogFragment
 {
     private static final boolean IS_BUY = false;
 
-    protected SellDialogFragment()
+    public SellDialogFragment()
     {
         super();
     }
@@ -58,7 +59,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         return R.string.buy_sell_share_left;
     }
 
-    @Override public String getCashShareLeft()
+    @Override @NotNull public String getCashShareLeft()
     {
         String shareLeftText = getResources().getString(R.string.na);
         if (quoteDTO != null)
@@ -79,7 +80,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         return shareLeftText;
     }
 
-    @Override protected Integer getMaxValue()
+    @Override @Nullable protected Integer getMaxValue()
     {
         return getMaxSellableShares();
     }
@@ -126,7 +127,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, IS_BUY);
     }
 
-    public Integer getMaxSellableShares()
+    @Nullable public Integer getMaxSellableShares()
     {
         return positionDTOCompactList == null ? null :
                 positionDTOCompactList.getMaxSellableShares(

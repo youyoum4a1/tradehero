@@ -1,0 +1,425 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    maven { url 'http://download.crashlytics.com/maven' }
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:0.12.+'
+    classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    classpath 'org.robolectric:robolectric-gradle-plugin:0.12.+'
+    classpath 'com.amazon.device.tools.build:gradle:0.12.+'
+  }
+}
+
+// Manifest version information!
+project.ext.versionMajor = 2
+project.ext.versionMinor = 4
+project.ext.versionPatch = 0
+project.ext.versionBuild = 180 // bump for dogfood builds, public betas, etc.
+
+project.ext.currentDate = (int) (System.currentTimeMillis() / (1000 * 60 * 60 * 24))
+project.ext.moduloDate = project.ext.currentDate % 1000
+
+apply plugin: 'com.android.application'
+apply plugin: 'crashlytics'
+apply plugin: 'robolectric'
+
+repositories {
+  maven { url "http://dl.bintray.com/populov/maven" }
+  mavenCentral()
+  maven { url 'http://download.crashlytics.com/maven' }
+  maven { url "https://github.com/dahlgren/pulltorefresh-aar/raw/master" }
+  maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
+  maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
+}
+
+project.ext.gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+project.ext.buildTime = new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
+
+project.ext.isTravis = "true".equals(System.getenv("TRAVIS"))
+project.ext.preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
+project.ext.isIntelliJ = true
+
+android {
+  compileSdkVersion 19
+
+  buildToolsVersion "19.1.0"
+  useOldManifestMerger=true
+
+  dexOptions {
+    // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
+    preDexLibraries = project.ext.preDexEnabled && !project.ext.isTravis
+    // TODO is this really necessary?
+    jumboMode = true
+  }
+
+  defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 19
+
+    versionCode project.ext.moduloDate * 1000 + project.ext.versionPatch * 100 + project.ext.versionBuild
+    versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
+
+    buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
+    buildConfigField "String", "BUILD_TIME", "\"${project.ext.buildTime}\""
+    buildConfigField "boolean", "IS_INTELLIJ", "${project.ext.isIntelliJ}"
+    buildConfigField "int", "TAPSTREAM_VERSION", "0"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+
+  signingConfigs {
+    release {
+    }
+  }
+
+  buildTypes {
+    debug {
+      // versionNameSuffix interferes with the version the server receives
+      // applicationIdSuffix '.dev'
+      // versionNameSuffix '-dev'
+    }
+    release {
+      runProguard true
+      proguardFiles 'proguard/proguard-android.txt'
+      signingConfig signingConfigs.release
+    }
+  }
+
+  // There may be further flavorGroups dimensions in the future
+  flavorDimensions "marketSegment"
+
+  productFlavors {
+    googleplay {
+      flavorDimension "marketSegment"
+    }
+    china {
+      flavorDimension "marketSegment"
+
+      // change for different branch (baidu, tencent...)
+      buildConfigField "int", "TAPSTREAM_VERSION", "1"
+      // TODO handle the different kinds
+      // http://stackoverflow.com/questions/9035356/how-can-i-transform-a-properties-file-during-a-gradle-build
+    }
+    samsung {
+      flavorDimension "marketSegment"
+    }
+    amazon {
+      flavorDimension "marketSegment"
+    }
+    amazonFire {
+      flavorDimension "marketSegment"
+      //compileSdkVersion "Amazon.com:Amazon Fire Phone SDK Addon:17"
+    }
+  }
+
+  sourceSets {
+    main {
+      manifest {
+        srcFile 'AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/main/java'
+      }
+      aidl {
+        srcDir 'src/main/java'
+      }
+      res {
+        srcDir 'res'
+      }
+      assets {
+        srcDir 'assets'
+      }
+    }
+
+    debug {
+      java {
+        srcDir 'src/debug/java'
+      }
+    }
+
+    //region Flavours
+    googleplay {
+      manifest {
+        srcFile 'src/googleplay/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/row/java'
+        srcDir 'src/googleplay/java'
+      }
+      res {
+        srcDir 'src/googleplay/res'
+      }
+    }
+
+    china {
+      manifest {
+        srcFile 'src/china/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/china/java'
+      }
+      res {
+        srcDir 'src/china/res'
+      }
+    }
+
+    samsung {
+      manifest {
+        srcFile 'src/samsung/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/row/java'
+        srcDir 'src/samsung/java'
+      }
+      res {
+        srcDir 'src/samsung/res'
+      }
+    }
+
+    amazon {
+      manifest {
+        srcFile 'src/amazon/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/row/java'
+        srcDir 'src/amazon/java'
+      }
+      res {
+        srcDir 'src/amazon/res'
+      }
+    }
+
+    amazonFire {
+      manifest {
+        srcFile 'src/amazon/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/row/java'
+        srcDir 'src/amazon/java'
+      }
+      res {
+        srcDir 'src/amazon/res'
+      }
+    }
+    //endregion
+
+    // TODO make sure this is not breaking
+    //androidTest.setRoot('src/test')
+
+    androidTest {
+      java {
+        srcDir 'src/row/java'
+        srcDir 'src/debug/java'
+        srcDir 'src/test/java'
+      }
+      resources {
+        srcDir 'src/test/resources'
+      }
+    }
+  }
+
+  lintOptions {
+    checkReleaseBuilds false
+    abortOnError false
+  }
+
+  packagingOptions {
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/services/javax.annotation.processing.Processor'
+  }
+}
+
+robolectric {
+  // configure the set of classes for JUnit tests
+  include '**/*Test.class'
+  exclude '**/espresso/**/*.class'
+
+  // configure max heap size of the test JVM
+  maxHeapSize = '2048m'
+
+  // configure whether failing tests should fail the build
+  //ignoreFailures true
+
+  // use afterTest to listen to the test execution results
+  //afterTest { descriptor, result ->
+  //  println "Executing test for {$descriptor.name} with result: ${result.resultType}"
+  //}
+}
+
+dependencies {
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+
+  chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
+
+  compile project(':ResideMenu')
+
+  samsungCompile project(':samsung_iap')
+
+  // TODO confirm on a hardware that it is "provided" and not "compile"
+  amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
+  androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
+  androidTestAmazonFireCompile 'com.amazon:in-app-purchasing:2.0.0'
+
+  compile project(':facebook-android-sdk:facebook')
+
+  compile ('com.actionbarsherlock:actionbarsherlock:4.4.0@aar') {
+    exclude group: 'com.google.android', module: 'support-v4'
+  }
+  compile 'com.android.support:support-v4:19.1.0'
+  compile ('com.github.chrisbanes.pulltorefresh:library:2.1.2-SNAPSHOT@aar') {
+    exclude group: 'commons-codec', module: 'android'
+    // exclude group: 'com.android.support', module: 'appcompat-v7'
+  }
+  compile ('com.viewpagerindicator:library:2.4.1@aar') {
+    exclude group: 'com.google.android', module: 'support-v4'
+  }
+  compile ('se.emilsjolander:stickylistheaders:2.4.1@aar') {
+    exclude group: 'com.google.android', module: 'support-v4'
+  }
+  compile ('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
+    exclude group: 'com.nineoldandroids', module: 'library'
+    // exclude group: 'com.android.support', module: 'appcompat-v7'
+  }
+
+  compile ('com.etiennelawlor.quickreturn:library:1.0-aar@aar')
+
+  compile ('com.squareup.picasso:picasso:2.3.3') {
+    exclude group: "com.squareup.okhttp", module: "okhttp"
+    exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
+  }
+  compile 'com.squareup.okhttp:okhttp:2.0.0'
+  compile ('com.squareup.okhttp:okhttp-urlconnection:2.0.0') {
+    exclude group: "com.squareup.okhttp", module: "okhttp"
+  }
+  compile ('com.squareup.retrofit:retrofit:1.6.1') {
+    exclude module: 'gson'
+  }
+  compile ('com.squareup.retrofit:converter-simplexml:1.6.1') {
+    exclude module: 'stax'
+    exclude module: 'stax-api'
+    exclude module: 'xpp3'
+    exclude group: 'com.squareup.retrofit', module: 'retrofit'
+  }
+  compile 'com.squareup.dagger:dagger:1.2.1'
+  provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+
+  compile 'com.jakewharton.timber:timber:2.2.2'
+  compile 'com.urbanairship:urbanairship-lib:3.2.1'
+
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0'
+  // TODO remove after DiskLruMemCache is removed
+  compile 'com.jakewharton:disklrucache:2.0.2'
+
+  compile 'com.tradehero.route:route:0.2-SNAPSHOT'
+
+  compile 'org.jetbrains:annotations:13.0'
+  compile 'com.crashlytics.android:crashlytics:1.1.10+'
+
+  compile ('oauth.signpost:signpost-core:1.2.1.2') {
+    exclude group: 'commons-codec', module: 'commons-codec'
+  }
+  compile ('oauth.signpost:signpost-commonshttp4:1.2.1.2') {
+    exclude group: 'commons-logging', module: 'commons-logging'
+    exclude group: 'commons-codec', module: 'commons-codec'
+    exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+  }
+  compile 'org.twitter4j:twitter4j-core:3.0+'
+
+  compile ('com.localytics.android:library:2.19.0') {
+    exclude group: 'com.google.android', module: 'support-v4'
+  }
+
+  compile 'org.ocpsoft.prettytime:prettytime:3.2.1.Final'
+  compile 'com.jakewharton:butterknife:4.0.1'
+
+  // For Test
+  androidTestCompile 'junit:junit:4.10'
+  androidTestCompile('org.robolectric:robolectric:2.3'){
+    exclude module: 'classworlds'
+    exclude module: 'commons-logging'
+    exclude module: 'httpclient'
+    exclude module: 'maven-artifact'
+    exclude module: 'maven-artifact-manager'
+    exclude module: 'maven-error-diagnostics'
+    exclude module: 'maven-model'
+    exclude module: 'maven-project'
+    exclude module: 'maven-settings'
+    exclude module: 'plexus-container-default'
+    exclude module: 'plexus-interpolation'
+    exclude module: 'plexus-utils'
+    exclude module: 'wagon-file'
+    exclude module: 'wagon-http-lightweight'
+    exclude module: 'wagon-provider-api'
+  }
+  androidTestCompile 'org.easytesting:fest-assert-core:2.0M10'
+  androidTestCompile 'org.mockito:mockito-core:1.9.5'
+
+  androidTestCompile 'org.apache.commons:commons-lang3:3.1'
+  androidTestCompile 'org.apache.commons:commons-io:1.3.2'
+
+  androidTestCompile 'org.reflections:reflections:0.9.8'
+
+  if (project.ext.isIntelliJ) {
+    androidTestCompile files('build/test-classes')
+  }
+}
+
+File propFile = file('signing.properties');
+if (propFile.exists()) {
+  def Properties props = new Properties()
+  props.load(new FileInputStream(propFile))
+
+  if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+          props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+    android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+    android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+    android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+    android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+  } else {
+    android.buildTypes.release.signingConfig = null
+  }
+} else {
+  android.buildTypes.release.signingConfig = null
+}
+
+tasks.withType(JavaCompile) {
+  options.encoding = "UTF-8"
+}
+
+// Fix this annoyance: https://github.com/robolectric/deckard-gradle/blob/master/README.md#required-tweaking-the-module-dependency-order-ie-classpath
+task reorderDependencyToFixJunit4Issue {
+  def file = file(project.name + ".iml")
+
+  println "reorderDependencyToFixJunit4Issue"
+  doLast {
+    println "reorderDependencyToFixJunit4Issue-doLast"
+    if (file.exists()) {
+      def parsedXml = (new XmlParser()).parse(file)
+      // find first component node which has orderEntry child
+      def targetComponent = parsedXml.component.find { it.orderEntry }
+      if (targetComponent) {
+        def androidSdk = targetComponent.find {
+          it.@type == 'jdk' && it.@jdkType == 'Android SDK'
+        }
+        if (androidSdk && androidSdk != targetComponent.children().last()) {
+          // reposition android sdk dependency in the iml file
+          targetComponent.remove(androidSdk)
+          targetComponent.append(androidSdk)
+
+          // update iml file
+          def writer = new StringWriter()
+          new XmlNodePrinter(new PrintWriter(writer)).print(parsedXml)
+          file.text = writer.toString()
+        }
+      }
+    }
+  }
+}
+
+preBuild.dependsOn(reorderDependencyToFixJunit4Issue)

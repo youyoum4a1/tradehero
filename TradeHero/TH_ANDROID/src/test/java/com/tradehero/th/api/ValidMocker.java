@@ -18,6 +18,7 @@ import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
+import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
@@ -44,16 +45,22 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.Random;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.mock;
 
 public class ValidMocker
 {
-    private static Random random = new Random();
+    public static Random random = new Random();
+
+    @Inject public ValidMocker()
+    {
+        super();
+    }
 
     //<editor-fold desc="Create valid parameters">
-    public static Object mockValidParameter(@NotNull Class<?> type)
+    public Object mockValidParameter(@NotNull Class<?> type)
     {
         if (type.equals(UserBaseKey.class))
         {
@@ -257,6 +264,10 @@ public class ValidMocker
                     perPage != null || random.nextBoolean() ? 1 : null,
                     perPage
             );
+        }
+        if (type.equals(VideoCategoryId.class))
+        {
+            return new VideoCategoryId(1);
         }
 
         if (type.equals(Boolean.class) || type.equals(boolean.class))

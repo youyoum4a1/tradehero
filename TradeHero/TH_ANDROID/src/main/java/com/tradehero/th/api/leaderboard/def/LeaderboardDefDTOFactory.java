@@ -27,6 +27,7 @@ public class LeaderboardDefDTOFactory
 
     public void complementServerLeaderboardDefDTOs(@NotNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
+        leaderboardDefDTOs.add(new InviteFriendsLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new HeroLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new FollowerLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new FriendLeaderboardDefDTO(context));

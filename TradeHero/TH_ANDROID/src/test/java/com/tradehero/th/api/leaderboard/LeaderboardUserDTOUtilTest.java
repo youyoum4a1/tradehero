@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class LeaderboardUserDTOUtilTest extends BaseLeaderboardUserDTOUtilTest
+public class LeaderboardUserDTOUtilTest extends LeaderboardUserDTOUtilTestBase
 {
     private LeaderboardUserDTOUtil leaderboardUserDTOUtil;
 

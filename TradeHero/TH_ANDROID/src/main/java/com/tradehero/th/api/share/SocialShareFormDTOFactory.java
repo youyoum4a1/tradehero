@@ -11,28 +11,28 @@ import com.tradehero.th.models.share.ShareDestinationWithEnum;
 import com.tradehero.th.models.share.TwitterShareDestination;
 import com.tradehero.th.models.share.WeChatShareDestination;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class SocialShareFormDTOFactory
 {
-    private final WeChatDTOFactory weChatDTOFactory;
-    private final TimelineItemShareFormDTOFactory timelineItemShareFormDTOFactory;
+    @NotNull private final WeChatDTOFactory weChatDTOFactory;
+    @NotNull private final TimelineItemShareFormDTOFactory timelineItemShareFormDTOFactory;
 
+    //<editor-fold desc="Constructors">
     @Inject public SocialShareFormDTOFactory(
-            WeChatDTOFactory weChatDTOFactory,
-            TimelineItemShareFormDTOFactory timelineItemShareFormDTOFactory)
+            @NotNull WeChatDTOFactory weChatDTOFactory,
+            @NotNull TimelineItemShareFormDTOFactory timelineItemShareFormDTOFactory)
     {
         this.weChatDTOFactory = weChatDTOFactory;
         this.timelineItemShareFormDTOFactory = timelineItemShareFormDTOFactory;
     }
+    //</editor-fold>
 
-    public SocialShareFormDTO createForm(ShareDestination shareDestination,
-            AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+    @NotNull public SocialShareFormDTO createForm(
+            @NotNull ShareDestination shareDestination,
+            @NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
-        if (shareDestination == null)
-        {
-            return null;
-        }
-        else if (shareDestination instanceof WeChatShareDestination)
+        if (shareDestination instanceof WeChatShareDestination)
         {
             return weChatDTOFactory.createFrom(abstractDiscussionCompactDTO);
         }

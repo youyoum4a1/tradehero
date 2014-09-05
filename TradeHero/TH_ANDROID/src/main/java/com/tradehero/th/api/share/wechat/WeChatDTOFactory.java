@@ -3,10 +3,10 @@ package com.tradehero.th.api.share.wechat;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class WeChatDTOFactory
 {
@@ -14,18 +14,16 @@ public class WeChatDTOFactory
     {
     }
 
-    public WeChatDTO createFrom(AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+    @NotNull public WeChatDTO createFrom(@NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
-        if (abstractDiscussionCompactDTO == null)
-        {
-            return null;
-        }
         WeChatDTO weChatDTO = new WeChatDTO();
         populateWith(weChatDTO, abstractDiscussionCompactDTO);
         return weChatDTO;
     }
 
-    protected void populateWith(WeChatDTO weChatDTO, AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+    protected void populateWith(
+            @NotNull WeChatDTO weChatDTO,
+            @NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         weChatDTO.id = abstractDiscussionCompactDTO.id;
         if (abstractDiscussionCompactDTO instanceof DiscussionDTO)
@@ -42,12 +40,6 @@ public class WeChatDTOFactory
         {
             weChatDTO.type = WeChatMessageType.News;
             weChatDTO.title = ((NewsItemCompactDTO) abstractDiscussionCompactDTO).title;
-        }
-        else if (abstractDiscussionCompactDTO instanceof NewsItemDTO)
-        {
-            weChatDTO.type = WeChatMessageType.News;
-            weChatDTO.title = ((NewsItemDTO) abstractDiscussionCompactDTO).title;
-
         }
         else if (abstractDiscussionCompactDTO instanceof TimelineItemDTO)
         {

@@ -18,4 +18,14 @@
       android:key="send_fake_push"
       android:title="@string/send_fake_push"
       />
+
+  <Preference
+      android:key="show_review_dialog"
+      android:title="show_review_dialog"
+      />
+
+  <Preference
+      android:key="show_invite_dialog"
+      android:title="show_invite_dialog"
+      />
 </PreferenceScreen>

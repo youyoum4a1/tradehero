@@ -9,8 +9,8 @@ public interface ProductIdentifierFetcher<
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         BillingExceptionType extends BillingException>
+        extends RequestCodeActor
 {
-    int getRequestCode();
     ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> getProductIdentifierListener();
     void setProductIdentifierListener(ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> listener);
     void fetchProductIdentifiers(int requestCode);

@@ -64,6 +64,7 @@ public class SocialFriendUserView extends SocialFriendItemView
 
     @Override protected void onDetachedFromWindow()
     {
+        picasso.cancelRequest(friendLogo);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }

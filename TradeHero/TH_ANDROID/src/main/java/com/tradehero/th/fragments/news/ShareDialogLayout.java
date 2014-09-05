@@ -33,7 +33,7 @@ public class ShareDialogLayout extends LinearLayout
     @Inject SocialShareFormDTOFactory socialShareFormDTOFactory;
 
     @Nullable protected OnShareMenuClickedListener menuClickedListener;
-    protected AbstractDiscussionCompactDTO discussionToShare;
+    @Nullable protected AbstractDiscussionCompactDTO discussionToShare;
 
     //<editor-fold desc="Constructors">
     public ShareDialogLayout(Context context)
@@ -79,7 +79,7 @@ public class ShareDialogLayout extends LinearLayout
         listViewSharingOptions.setDividerHeight(1);
     }
 
-    public void setDiscussionToShare(@NotNull AbstractDiscussionCompactDTO discussionToShare)
+    public void setDiscussionToShare(@SuppressWarnings("NullableProblems") @NotNull AbstractDiscussionCompactDTO discussionToShare)
     {
         this.discussionToShare = discussionToShare;
     }
@@ -90,7 +90,7 @@ public class ShareDialogLayout extends LinearLayout
     }
 
     @OnClick(R.id.news_action_share_cancel)
-    protected void onCancelClicked(View view)
+    protected void onCancelClicked(/*View view*/)
     {
         OnShareMenuClickedListener listenerCopy = menuClickedListener;
         if (listenerCopy != null)
@@ -100,21 +100,26 @@ public class ShareDialogLayout extends LinearLayout
     }
 
     @OnItemClick(R.id.news_action_list_sharing_items)
-    protected void onShareOptionsItemClicked(AdapterView<?> parent, View view, int position, long id)
+    protected void onShareOptionsItemClicked(
+            AdapterView<?> parent,
+            @SuppressWarnings("UnusedParameters") View view,
+            int position,
+            @SuppressWarnings("UnusedParameters") long id)
     {
         OnShareMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
+        AbstractDiscussionCompactDTO discussionToShareCopy = discussionToShare;
+        if (listenerCopy != null && discussionToShareCopy != null)
         {
             listenerCopy.onShareRequestedClicked(
                     socialShareFormDTOFactory.createForm(
                             (ShareDestination) parent.getItemAtPosition(position),
-                            discussionToShare));
+                            discussionToShareCopy));
         }
     }
 
     public static interface OnShareMenuClickedListener
     {
         void onCancelClicked();
-        void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO);
+        void onShareRequestedClicked(@NotNull SocialShareFormDTO socialShareFormDTO);
     }
 }

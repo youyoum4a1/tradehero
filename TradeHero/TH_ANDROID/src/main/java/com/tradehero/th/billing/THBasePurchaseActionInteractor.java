@@ -1,11 +1,12 @@
 package com.tradehero.th.billing;
 
-import com.tradehero.common.billing.request.UIBillingRequest;
+import com.tradehero.common.billing.request.BaseUIBillingRequest;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
@@ -18,13 +19,13 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 
     private final THBillingInteractor billingInteractor;
     private final THUIBillingRequest billingRequest;
-    private UIBillingRequest.OnErrorListener errorListener;
+    private BaseUIBillingRequest.OnErrorListener errorListener;
     private final ProductIdentifierDomain productIdentifierDomain;
-    private PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
+    private THPurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
     private Callback<UserProfileDTO> freeFollowedListener;
 
     private final boolean alertsAreFree;
-    @Nullable private final PremiumFollowUserAssistant premiumFollowUserAssistant;
+    @Nullable private final FollowUserAssistant premiumFollowUserAssistant;
 
     /**
      * Convenient class that will be used to do any purchasing action such as buying extra cash, follow credits, reset portfolio...),
@@ -46,13 +47,13 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     protected THBasePurchaseActionInteractor(
             THBillingInteractor billingInteractor,
             THUIBillingRequest billingRequest,
-            UIBillingRequest.OnErrorListener errorListener,
+            BaseUIBillingRequest.OnErrorListener errorListener,
             ProductIdentifierDomain productIdentifierDomain,
             @Nullable UserBaseKey userToFollow,
             OwnedPortfolioId purchaseApplicableOwnedPortfolioId,
-            PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener,
+            THPurchaseReporter.OnPurchaseReportedListener purchaseReportedListener,
             Callback<UserProfileDTO> freeFollowedListener,
-            PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener,
+            FollowUserAssistant.OnUserFollowedListener premiumFollowedListener,
             boolean alertsAreFree)
     {
         this.billingInteractor = billingInteractor;
@@ -65,7 +66,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 
         if (userToFollow != null)
         {
-            this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
+            this.premiumFollowUserAssistant = new FollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
         }
         else
         {
@@ -88,7 +89,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         freeFollowedListener = null;
         if (premiumFollowUserAssistant != null)
         {
-            premiumFollowUserAssistant.setUserFollowedListener(null);
+            premiumFollowUserAssistant.onDestroy();
         }
     }
 
@@ -101,7 +102,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 
     protected THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
     {
-        billingRequest.domainToPresent = domain;
+        billingRequest.setDomainToPresent(domain);
         return billingRequest;
     }
 
@@ -129,7 +130,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     {
         // Do not call if no hero to follow
         //noinspection ConstantConditions
-        premiumFollowUserAssistant.launchFollow();
+        premiumFollowUserAssistant.launchPremiumFollow();
     }
 
     @Override public void unfollowUser()
@@ -150,7 +151,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     public abstract static class Builder<T extends Builder<T>>
     {
         private THBillingInteractor billingInteractor;
-        private PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener;
+        private FollowUserAssistant.OnUserFollowedListener premiumFollowedListener;
         @Nullable private UserBaseKey userToFollow;
         private OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
         private Callback<UserProfileDTO> freeFollowedListener;
@@ -159,12 +160,12 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         private boolean popIfProductIdentifierFetchFailed = true;
         private boolean popIfInventoryFetchFailed = true;
         private boolean popIfPurchaseFailed = true;
-        private UIBillingRequest.OnErrorListener errorListener;
+        private BaseUIBillingRequest.OnErrorListener errorListener;
         private ProductIdentifierDomain productIdentifierDomain;
-        private PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
+        private THPurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
         private boolean alertsAreFree = alertsAreFree();
 
-        private THUIBillingRequest billingRequest;
+        private BaseTHUIBillingRequest.Builder billingRequestBuilder;
 
         protected abstract T self();
 
@@ -192,7 +193,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             return self();
         }
 
-        public Builder setPremiumFollowedListener(PremiumFollowUserAssistant.OnUserFollowedListener userFollowedListener)
+        public Builder setPremiumFollowedListener(FollowUserAssistant.OnUserFollowedListener userFollowedListener)
         {
             this.premiumFollowedListener = userFollowedListener;
             return self();
@@ -228,7 +229,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             return self();
         }
 
-        public Builder error(UIBillingRequest.OnErrorListener errorListener)
+        public Builder error(BaseUIBillingRequest.OnErrorListener errorListener)
         {
             this.errorListener = errorListener;
             return self();
@@ -240,7 +241,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             return self();
         }
 
-        public Builder setPurchaseReportedListener(PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener)
+        public Builder setPurchaseReportedListener(THPurchaseReporter.OnPurchaseReportedListener purchaseReportedListener)
         {
             this.purchaseReportedListener = purchaseReportedListener;
             return self();
@@ -255,23 +256,23 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         /**
          * We should create billingRequest from other properties instead of setting it here
          * This is for the time being ...
-         * @param billingRequest
+         * @param billingRequestBuilder
          * @return
          */
         @Deprecated
-        public Builder setBillingRequest(THUIBillingRequest billingRequest)
+        public Builder setBillingRequestBuilder(BaseTHUIBillingRequest.Builder billingRequestBuilder)
         {
-            this.billingRequest = billingRequest;
+            this.billingRequestBuilder = billingRequestBuilder;
             return self();
         }
 
         public THPurchaseActionInteractor build()
         {
             ensureSaneDefaults();
-            populateBillingRequest();
+            populateBillingRequestBuilder();
             return new THBasePurchaseActionInteractor(
                     billingInteractor,
-                    billingRequest,
+                    billingRequestBuilder.build(),
                     errorListener,
                     productIdentifierDomain,
                     userToFollow,
@@ -283,14 +284,14 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         }
 
         // TODO, look at {@link setBillingRequest()}
-        private void populateBillingRequest()
+        private void populateBillingRequestBuilder()
         {
-            billingRequest.applicablePortfolioId = purchaseApplicableOwnedPortfolioId;
-            billingRequest.startWithProgressDialog = startWithProgressDialog;
-            billingRequest.popIfBillingNotAvailable = popIfBillingNotAvailable;
-            billingRequest.popIfProductIdentifierFetchFailed = popIfProductIdentifierFetchFailed;
-            billingRequest.popIfInventoryFetchFailed = popIfInventoryFetchFailed;
-            billingRequest.popIfReportFailed = popIfPurchaseFailed;
+            billingRequestBuilder.applicablePortfolioId(purchaseApplicableOwnedPortfolioId);
+            billingRequestBuilder.startWithProgressDialog(startWithProgressDialog);
+            billingRequestBuilder.popIfBillingNotAvailable(popIfBillingNotAvailable);
+            billingRequestBuilder.popIfProductIdentifierFetchFailed(popIfProductIdentifierFetchFailed);
+            billingRequestBuilder.popIfInventoryFetchFailed(popIfInventoryFetchFailed);
+            billingRequestBuilder.popIfReportFailed(popIfPurchaseFailed);
         }
 
         private void ensureSaneDefaults()
@@ -330,15 +331,15 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
                     }
                 };
 
-        private static final PremiumFollowUserAssistant.OnUserFollowedListener DEFAULT_PREMIUM_FOLLOWED_LISTENER =
-                new PremiumFollowUserAssistant.OnUserFollowedListener()
+        private static final FollowUserAssistant.OnUserFollowedListener DEFAULT_PREMIUM_FOLLOWED_LISTENER =
+                new FollowUserAssistant.OnUserFollowedListener()
                 {
-                    @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+                    @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
                     {
                         // do something by default?
                     }
 
-                    @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+                    @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
                     {
                         // do something by default?
                     }

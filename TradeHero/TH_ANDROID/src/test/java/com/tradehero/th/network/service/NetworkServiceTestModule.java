@@ -7,6 +7,7 @@ import dagger.Module;
                 ServiceWrapperTest.class,
 
                 // These additions are here to help pass the tests
+                AlertPlanCheckServiceWrapper.class,
                 AlertPlanServiceWrapper.class,
                 AlertServiceWrapper.class,
                 CompetitionServiceWrapper.class,
@@ -33,6 +34,7 @@ import dagger.Module;
                 UserServiceWrapper.class,
                 UserTimelineMarkerServiceWrapper.class,
                 UserTimelineServiceWrapper.class,
+                VideoServiceWrapper.class,
                 WatchlistServiceWrapper.class,
                 WeChatServiceWrapper.class,
                 YahooNewsServiceWrapper.class,

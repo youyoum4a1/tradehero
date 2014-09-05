@@ -4,6 +4,7 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -86,6 +87,7 @@ public class StraightDTOCacheNewTest
     //</editor-fold>
 
     //<editor-fold desc="Test Get When Invalid">
+    @Ignore("Don't do thread.sleep")
     @Test public void testGetInvalidWithNoListenerThenClears() throws InterruptedException
     {
         UserBaseKey key = new UserBaseKey(1);
@@ -101,6 +103,7 @@ public class StraightDTOCacheNewTest
         assertThatHasNoCacheValue(key);
     }
 
+    @Ignore("Don't do thread.sleep")
     @Test public void testGetInvalidWithListenerThenDoesNotClear() throws InterruptedException
     {
         UserBaseKey key = new UserBaseKey(1);

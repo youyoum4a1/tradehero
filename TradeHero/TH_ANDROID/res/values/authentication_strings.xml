@@ -16,7 +16,6 @@
   <string name="authentication_sign_in_with">sign in with</string>
   <string name="authentication_sign_in_with_email">or sign in with an\u0020</string>
   <string name="authentication_existing_user">existing user</string>
-  <!--<string name="authentication_email_address">email address</string>-->
   <string name="authentication_ask_for_email">Please enter your email address:</string>
   <string name="authentication_thank_you_message_email">Thank You ! Please follow your mail box</string>
   <string name="authentication_confirm">Confirm</string>

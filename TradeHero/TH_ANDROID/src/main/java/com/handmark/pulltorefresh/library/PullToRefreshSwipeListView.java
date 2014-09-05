@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListAdapter;
-import com.fortysevendeg.android.swipelistview.SwipeListView;
+import com.fortysevendeg.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
 
 public class PullToRefreshSwipeListView extends PullToRefreshListViewBase<SwipeListView>

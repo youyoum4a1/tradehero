@@ -106,6 +106,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle(
                     notificationBuilder
                             .setContentText(message)
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                             .setNumber(totalUnreadCount)
             );
 
@@ -237,7 +238,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 
     private NotificationCompat.Builder getCommonNotificationBuilder()
     {
-        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_status_icon);
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.launcher);
         return new NotificationCompat.Builder(context)
                         .setLargeIcon(largeIcon)
                         .setSmallIcon(R.drawable.th_logo)

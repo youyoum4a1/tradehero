@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
@@ -44,7 +45,10 @@ public class PreferenceModule
     private static final String PREF_PUSH_IDENTIFIER_SENT_FLAG = "PREF_PUSH_IDENTIFIER_SENT_FLAG";
     private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
     private static final String PREF_FIRST_LAUNCH_FLAG = "PREF_FIRST_LAUNCH_FLAG";
-    private static final String PREF_FIRST_SHOW_REFERRAL_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
+    private static final String PREF_FIRST_SHOW_INVITE_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
+    private static final String PREF_FIRST_SHOW_ON_BOARD_FLAG = "PREF_FIRST_SHOW_ON_BOARD_FLAG";
+    private static final String PREF_SHOW_ASK_FOR_REVIEW_FLAG = "PREF_SHOW_ASK_FOR_REVIEW_FLAG";
+    private static final String PREF_SHOW_ASK_FOR_INVITE_FLAG = "PREF_SHOW_ASK_FOR_INVITE_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
     private static final String PREF_SAVED_TRANSLATION_SETTING_KEY = "PREF_SAVED_TRANSLATION_SETTING_KEY";
@@ -137,18 +141,32 @@ public class PreferenceModule
         return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, "");
     }
 
-    @Provides @Singleton @BaiduPushDeviceIdentifierSentFlag BooleanPreference providePushIdentifierSentFlag(@ForUser SharedPreferences sharedPreferences)
-    {
-        return new BooleanPreference(sharedPreferences, PREF_PUSH_IDENTIFIER_SENT_FLAG, false);
-    }
-
     @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, true);
     }
 
-    @Provides @Singleton @FirstShowReferralCodeDialog BooleanPreference provideFirstShowReferralCodeDialogPreference(@ForUser SharedPreferences sharedPreferences)
+    @Provides @Singleton @FirstShowInviteCodeDialog BooleanPreference provideFirstShowInviteCodeDialogPreference(
+            @ForUser SharedPreferences sharedPreferences)
     {
-        return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_REFERRAL_CODE_FLAG, true);
+        return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_INVITE_CODE_FLAG, true);
+    }
+
+    @Provides @Singleton @FirstShowOnBoardDialog BooleanPreference provideFirstShowOnBoardDialogPreference(
+            @ForUser SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_ON_BOARD_FLAG, true);
+    }
+
+    @Provides @Singleton @ShowAskForReviewDialog LongPreference provideAskForReviewDialogPreference(
+            @ForApp SharedPreferences sharedPreferences)
+    {
+        return new LongPreference(sharedPreferences, PREF_SHOW_ASK_FOR_REVIEW_FLAG, 0);
+    }
+
+    @Provides @Singleton @ShowAskForInviteDialog LongPreference provideAskForInviteDialogPreference(
+            @ForApp SharedPreferences sharedPreferences)
+    {
+        return new LongPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_FLAG, 0);
     }
 }

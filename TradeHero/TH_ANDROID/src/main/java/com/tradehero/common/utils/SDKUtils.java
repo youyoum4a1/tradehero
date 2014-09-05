@@ -4,6 +4,8 @@ import android.os.Build;
 
 public class SDKUtils
 {
+    public static final int KITKAT = 19;
+
     public static boolean isHoneycombOrHigher()
     {
         return isDeviceSDKGreaterOrEqualThan(Build.VERSION_CODES.HONEYCOMB);
@@ -16,7 +18,7 @@ public class SDKUtils
 
     public static boolean isKitKatOrHigher()
     {
-        return isDeviceSDKGreaterOrEqualThan(Build.VERSION_CODES.KITKAT);
+        return isDeviceSDKGreaterOrEqualThan(KITKAT);
     }
 
     public static boolean isJellyBeanOrHigher()
