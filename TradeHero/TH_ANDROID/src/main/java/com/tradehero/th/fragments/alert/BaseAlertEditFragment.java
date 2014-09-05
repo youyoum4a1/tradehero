@@ -17,7 +17,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;

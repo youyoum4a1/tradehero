@@ -1,6 +1,6 @@
 package com.tradehero.th.ui;
 
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardResideMenu;
 import dagger.Module;

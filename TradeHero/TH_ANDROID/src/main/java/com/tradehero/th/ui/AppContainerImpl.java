@@ -5,7 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.common.widget.reside.THResideMenuItemImpl;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;

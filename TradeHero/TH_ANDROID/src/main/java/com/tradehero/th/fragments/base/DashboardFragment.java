@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;

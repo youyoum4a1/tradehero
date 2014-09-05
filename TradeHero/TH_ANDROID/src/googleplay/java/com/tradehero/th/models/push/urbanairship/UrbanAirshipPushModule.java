@@ -12,12 +12,15 @@ import com.tradehero.th.utils.Constants;
 import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.push.CustomPushNotificationBuilder;
 import com.urbanairship.push.PushNotificationBuilder;
-import dagger.Module;
-import dagger.Provides;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {

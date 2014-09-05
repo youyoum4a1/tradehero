@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tradehero.th">
+
+    <!-- Samsung IAP -->
+    <uses-permission android:name="com.sec.android.iap.permission.BILLING"/>
+
+    <application>
+        <!-- Samsung IAP -->
+        <activity
+            android:name="com.sec.android.iap.lib.activity.InboxActivity"
+            android:theme="@style/Theme.Empty"
+            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name="com.sec.android.iap.lib.activity.PaymentActivity"
+            android:theme="@style/Theme.Empty"
+            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name="com.sec.android.iap.lib.activity.ItemActivity"
+            android:theme="@style/Theme.Empty"
+            android:configChanges="orientation|screenSize"/>
+    </application>
+
+</manifest>

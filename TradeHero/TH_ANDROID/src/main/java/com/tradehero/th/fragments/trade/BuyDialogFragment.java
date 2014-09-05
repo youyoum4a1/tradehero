@@ -14,7 +14,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
 {
     private static final boolean IS_BUY = true;
 
-    protected BuyDialogFragment()
+    public BuyDialogFragment()
     {
         super();
     }

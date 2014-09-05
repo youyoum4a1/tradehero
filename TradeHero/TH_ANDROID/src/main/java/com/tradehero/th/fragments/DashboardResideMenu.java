@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import javax.inject.Inject;
 
 public class DashboardResideMenu extends ResideMenu
