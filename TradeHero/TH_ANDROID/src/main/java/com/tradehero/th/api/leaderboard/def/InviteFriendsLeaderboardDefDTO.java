@@ -12,7 +12,7 @@ public class InviteFriendsLeaderboardDefDTO extends ConnectedLeaderboardDefDTO
         super();
         id = LeaderboardDefKeyKnowledge.INVITE_FRIENDS_ID;
         name = context.getString(R.string.leaderboard_community_invite_friends);
-        //bannerResId = R.drawable.invite_friends_banner;
+        bannerResId = R.drawable.invite_friends_banner;
     }
     //</editor-fold>
 }

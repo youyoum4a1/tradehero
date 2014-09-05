@@ -15,10 +15,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+<<<<<<< HEAD
 import com.special.residemenu.ResideMenu;
+=======
+>>>>>>> build/gradle
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;

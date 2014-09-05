@@ -79,6 +79,8 @@ public class LeaderboardDefView extends RelativeLayout
 
     private void display()
     {
+        leaderboardDefName.setText(dto.name);
+        displayIcon();
         if (dto instanceof ConnectedLeaderboardDefDTO)
         {
             showAsConnected((ConnectedLeaderboardDefDTO) dto);
@@ -87,8 +89,6 @@ public class LeaderboardDefView extends RelativeLayout
         {
             showAsRegular();
         }
-        leaderboardDefName.setText(dto.name);
-        displayIcon();
 
         if (dto.isExchangeRestricted() || dto.isSectorRestricted())
         {

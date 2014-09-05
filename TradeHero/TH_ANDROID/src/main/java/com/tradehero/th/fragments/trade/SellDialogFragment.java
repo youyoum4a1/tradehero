@@ -7,6 +7,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SellDialogFragment extends AbstractTransactionDialogFragment
@@ -58,7 +59,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         return R.string.buy_sell_share_left;
     }
 
-    @Override public String getCashShareLeft()
+    @Override @NotNull public String getCashShareLeft()
     {
         String shareLeftText = getResources().getString(R.string.na);
         if (quoteDTO != null)
