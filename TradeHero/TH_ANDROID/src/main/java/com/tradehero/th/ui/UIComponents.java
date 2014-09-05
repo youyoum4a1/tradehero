@@ -1,6 +1,5 @@
 package com.tradehero.th.ui;
 
-import android.content.Context;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardResideMenu;
