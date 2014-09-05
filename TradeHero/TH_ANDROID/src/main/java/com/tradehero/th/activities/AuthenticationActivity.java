@@ -123,7 +123,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private void setupViewFragmentMapping()
     {
         //two buttons in WelcomeFragment
-        mapViewFragment.put(R.id.authentication_by_sign_up_button, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_by_sign_up_back_button, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_by_sign_in_button, SignInFragment.class);
         mapViewFragment.put(R.id.authentication_by_sign_in_back_button, SignInFragment.class);

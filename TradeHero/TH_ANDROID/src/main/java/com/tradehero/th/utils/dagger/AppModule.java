@@ -90,6 +90,8 @@ import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
+import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
+import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -321,6 +323,8 @@ import javax.inject.Singleton;
                         RelationsListItemView.class,
                         InviteCodeViewLinear.class,
                         InviteCodeDialogFragment.class,
+                        AskForReviewDialogFragment.class,
+                        AskForInviteDialogFragment.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,
@@ -406,9 +410,13 @@ public class AppModule
         return application.getApplicationContext();
     }
 
-    @Provides @LanguageCode String provideCurrentLanguageCode(Context context)
+    @Provides Locale provideLocale(Context context)
     {
-        Locale locale = context.getResources().getConfiguration().locale;
+        return context.getResources().getConfiguration().locale;
+    }
+
+    @Provides @LanguageCode String provideCurrentLanguageCode(Locale locale)
+    {
         return String.format("%s-%s", locale.getLanguage(), locale.getCountry());
     }
 

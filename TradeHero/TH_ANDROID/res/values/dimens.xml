@@ -144,6 +144,11 @@
   <dimen name="text_xxlarge">25sp</dimen>
   <dimen name="text_xxxlarge">30sp</dimen>
 
+  <!--Margin sizes will instead of common margin-->
+  <dimen name="margin_xsmall">5dp</dimen>
+  <dimen name="margin_small">10dp</dimen>
+  <dimen name="margin_medium">20dp</dimen>
+
   <!--common margin should not change-->
   <dimen name="common_margin_1">1dp</dimen>
   <dimen name="common_margin_2">2dp</dimen>
@@ -179,7 +184,8 @@
   <dimen name="leaderboard_position_width">60dp</dimen>
 
   <dimen name="message_read_all_button_radius">4dp</dimen>
-
-
-
+  <dimen name="discovery_news_carousel_height">70dp</dimen>
+  <dimen name="discovery_news_carousel_motleyfool_logo_height">60dp</dimen>
+  <dimen name="discovery_news_carousel_spinner_width">250dp</dimen>
+  <dimen name="country_search_margin">5dp</dimen>
 </resources>

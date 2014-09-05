@@ -73,36 +73,6 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
     }
 
-    public synchronized void extendAccessToken(Context context, THAuthenticationProvider.THAuthenticationCallback callback)
-    {
-        if (this.currentOperationCallback != null)
-        {
-            cancel();
-        }
-        this.currentOperationCallback = callback;
-        boolean result = this.facebook.extendAccessToken(context, new Facebook.ServiceListener()
-        {
-            @Override public void onComplete(Bundle values)
-            {
-                createAndExecuteMeRequest(session);
-            }
-
-            @Override public void onFacebookError(FacebookError e)
-            {
-                FacebookAuthenticationProvider.this.handleError(e);
-            }
-
-            @Override public void onError(Error e)
-            {
-                FacebookAuthenticationProvider.this.handleError(e);
-            }
-        });
-        if (!result)
-        {
-            handleCancel();
-        }
-    }
-
     @Override public synchronized void authenticate(THAuthenticationProvider.THAuthenticationCallback callback)
     {
         if (this.currentOperationCallback != null)
@@ -145,11 +115,6 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
                 {
                     if (FacebookAuthenticationProvider.this.currentOperationCallback == null)
                     {
-                        return;
-                    }
-                    if (facebook.isSessionValid())
-                    {
-                        extendAccessToken(activity, currentOperationCallback);
                         return;
                     }
                     createAndExecuteMeRequest(session);

@@ -6,9 +6,9 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
 import org.jetbrains.annotations.NotNull;
 
-public class FeaturedNewsHeadlineAdapter extends ArrayDTOAdapterNew<NewsItemDTOKey, NewsHeadlineViewLinear>
+public class NewsHeadlineAdapter extends ArrayDTOAdapterNew<NewsItemDTOKey, NewsHeadlineViewLinear>
 {
-    public FeaturedNewsHeadlineAdapter(@NotNull Context context, int layoutResourceId)
+    public NewsHeadlineAdapter(@NotNull Context context, int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
