@@ -286,6 +286,8 @@ dependencies {
     // exclude group: 'com.android.support', module: 'appcompat-v7'
   }
 
+  compile ('com.etiennelawlor.quickreturn:library:1.0-aar@aar')
+
   compile ('com.squareup.picasso:picasso:2.3.3') {
     exclude group: "com.squareup.okhttp", module: "okhttp"
     exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
