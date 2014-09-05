@@ -348,7 +348,7 @@ import timber.log.Timber;
                 }
                 else if (exception instanceof IABRemoteException)
                 {
-                    dialog = billingAlertDialogUtil.popRemoteError(currentContext);
+                    dialog = ((THIABAlertDialogUtil) billingAlertDialogUtil).popRemoteError(currentContext);
                 }
                 else if (exception instanceof IABItemAlreadyOwnedException)
                 {

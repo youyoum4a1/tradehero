@@ -34,7 +34,7 @@
           android:id="@+id/news_title_title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          tools:text="Google to be bought by private equity"
+          tools:text="Company Name to be bought by private equity"
           android:textSize="@dimen/text_large"
           />
 

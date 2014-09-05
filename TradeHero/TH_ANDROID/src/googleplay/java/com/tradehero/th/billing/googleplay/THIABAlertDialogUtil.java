@@ -69,6 +69,13 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
                 R.string.google_play_billing_result_error_cancel);
     }
 
+    public AlertDialog popRemoteError(final Context context)
+    {
+        return popWithNegativeButton(context, R.string.google_play_billing_remote_error_window_title,
+                R.string.google_play_billing_remote_error_window_description,
+                R.string.google_play_billing_remote_error_cancel);
+    }
+
     public AlertDialog popSendIntent(final Context context)
     {
         return popWithNegativeButton(context, R.string.google_play_billing_send_intent_error_window_title,

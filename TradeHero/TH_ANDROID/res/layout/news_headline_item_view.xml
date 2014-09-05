@@ -43,7 +43,7 @@
           android:textStyle="bold"
           android:textSize="@dimen/text_large"
           android:singleLine="true"
-          tools:text="Google to be bought by private equity"
+          tools:text="Company Name to be bought by private equity"
           />
 
       <LinearLayout

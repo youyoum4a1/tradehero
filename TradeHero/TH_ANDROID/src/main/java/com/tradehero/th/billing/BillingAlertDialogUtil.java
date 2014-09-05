@@ -273,13 +273,6 @@ abstract public class BillingAlertDialogUtil<
         activityUtil.sendSupportEmail(context, emailIntent);
     }
 
-    public AlertDialog popRemoteError(final Context context)
-    {
-        return popWithNegativeButton(context, R.string.store_billing_remote_error_window_title,
-                R.string.store_billing_remote_error_window_description,
-                R.string.store_billing_remote_error_cancel);
-    }
-
     public AlertDialog popUserCancelled(final Context context)
     {
         return popWithOkCancelButton(context,

@@ -40,7 +40,7 @@
       android:textStyle="bold"
       android:singleLine="true"
 
-      tools:text="Google"
+      tools:text="Company Name"
       />
 
   <ImageView

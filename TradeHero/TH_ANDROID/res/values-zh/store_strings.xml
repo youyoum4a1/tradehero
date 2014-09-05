@@ -23,10 +23,6 @@
   <string name="store_billing_loading_window_title">读取中&#8230;</string>
   <string name="store_billing_loading_window_description">请耐心等待，正在读取中</string>
   <string name="store_billing_loading_cancel">知道了</string>
-  <string name="store_billing_verification_failed_window_title">验证失败</string>
-  <string name="store_billing_verification_failed_window_description">关键时刻掉链子，抱歉，与应用商店通讯失败</string>
-  <!--string name="store_billing_verification_failed_ok">Sure</string-->
-  <string name="store_billing_verification_failed_cancel">别担心</string>
   <string name="store_billing_user_cancelled_window_title">你取消了订单</string>
   <string name="store_billing_user_cancelled_window_description">是否愿意告诉我们取消订单的原因？</string>
   <string name="store_billing_user_cancelled_ok">好的</string>
@@ -45,14 +41,6 @@
   </string>
   <!--string name="store_billing_result_error_ok">Sure</string-->
   <string name="store_billing_result_error_cancel">好的</string>
-  <string name="store_billing_remote_error_window_title">啊?</string>
-  <string name="store_billing_remote_error_window_description">远程服务请求，收到错误信息</string>
-  <!--string name="store_billing_remote_error_ok">Sure</string-->
-  <string name="store_billing_remote_error_cancel">好的</string>
-  <string name="store_billing_send_intent_error_window_title">啊哦！</string>
-  <string name="store_billing_send_intent_error_window_description">打开应用商店时，收到错误信息</string>
-  <!--string name="store_billing_send_intent_error_ok">Sure</string-->
-  <string name="store_billing_send_intent_error_cancel">好的</string>
   <string name="store_billing_loading_info_window_title">登录信息</string>
   <string name="store_billing_loading_info_window_message">请等待&#8230;</string>
   <string name="store_billing_report_api_launching_window_title">交易进行中</string>
