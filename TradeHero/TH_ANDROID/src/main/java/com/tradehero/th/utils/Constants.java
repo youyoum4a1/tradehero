@@ -5,9 +5,7 @@ import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 
 public class Constants
 {
-    // build constants
-    // TODO fix
-    public static final boolean RELEASE = false; // !BuildConfig.DEBUG;
+    public static final boolean RELEASE = !BuildConfig.DEBUG;
 
     public static final boolean USE_BETA_HOME_PAGE = true;
 
