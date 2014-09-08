@@ -29,14 +29,14 @@ public class NewsPagerFragment extends SherlockFragment
     {
         int currentItem = mNewsCarousel.getCurrentItem();
         int size = mNewsCarousel.getAdapter().getCount();
-        mNewsCarousel.setCurrentItem((currentItem + size - 1) % size);
+        mNewsCarousel.setCurrentItem((currentItem + size - 1) % size, currentItem != 0);
     }
 
     @OnClick(R.id.next_filter) void handleNextFilterClick()
     {
         int currentItem = mNewsCarousel.getCurrentItem();
         int size = mNewsCarousel.getAdapter().getCount();
-        mNewsCarousel.setCurrentItem((currentItem + 1) % size);
+        mNewsCarousel.setCurrentItem((currentItem + 1) % size, currentItem + 1 != size);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
