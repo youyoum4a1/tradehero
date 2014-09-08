@@ -3,12 +3,12 @@
   <!-- Default screen margins, per the Android Design guidelines. -->
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
-  <dimen name="authentication_button_radius">8dp</dimen>
+  <dimen name="authentication_button_radius">1dp</dimen>
   <dimen name="authentication_head_text_size">@dimen/text_large</dimen>
   <dimen name="authentication_text_size">@dimen/text_small</dimen>
   <dimen name="copyright_text_size">@dimen/text_xsmall</dimen>
-  <dimen name="textbox_light_background_radius">5dp</dimen>
-  <dimen name="user_profile_corner_radius">0dp</dimen>
+  <dimen name="textbox_light_background_radius">1dp</dimen>
+  <dimen name="user_profile_corner_radius">1dp</dimen>
   <dimen name="dashboard_padding">0dp</dimen>
 
   <!-- Trending screen -->
@@ -34,7 +34,7 @@
   <dimen name="timeline_item_margin">10dp</dimen>
   <dimen name="timeline_side_spacing">10dp</dimen>
   <dimen name="timeline_item_padding">10dip</dimen>
-  <dimen name="timeline_item_corner_radius">2dp</dimen>
+  <dimen name="timeline_item_corner_radius">1dp</dimen>
   <dimen name="timeline_action_buttons_drawable_padding">5dp</dimen>
   <dimen name="user_profile_compact_avatar_margin">10dp</dimen>
   <dimen name="timeline_vendor_logo_max_height">40dp</dimen>
@@ -128,7 +128,7 @@
   <dimen name="notification_vertical_margin">0dp</dimen>
 
   <dimen name="message_center_horizontal_margin">10dp</dimen>
-  <dimen name="message_center_vertical_margin">0dp</dimen>
+  <dimen name="message_center_vertical_margin">10dp</dimen>
 
   <dimen name="timeline_belt_height">40dp</dimen>
   <dimen name="comment_count_drawable_padding">4dp</dimen>
@@ -143,6 +143,11 @@
   <dimen name="text_xlarge">20sp</dimen>
   <dimen name="text_xxlarge">25sp</dimen>
   <dimen name="text_xxxlarge">30sp</dimen>
+
+  <!--Margin sizes will instead of common margin-->
+  <dimen name="margin_xsmall">5dp</dimen>
+  <dimen name="margin_small">10dp</dimen>
+  <dimen name="margin_medium">20dp</dimen>
 
   <!--common margin should not change-->
   <dimen name="common_margin_1">1dp</dimen>
@@ -162,7 +167,7 @@
   <dimen name="common_text_size_30">30sp</dimen>
   <dimen name="common_text_size_25">25sp</dimen>
 
-  <dimen name="clickable_element_min_height">48dp</dimen>
+  <dimen name="clickable_element_min_dimen">48dp</dimen>
   <dimen name="small_icon_w_h">24dp</dimen>
   <dimen name="medium_logo_w_h">48dp</dimen>
   <dimen name="big_avatar_w_h">70dp</dimen>
@@ -179,7 +184,8 @@
   <dimen name="leaderboard_position_width">60dp</dimen>
 
   <dimen name="message_read_all_button_radius">4dp</dimen>
-
-
-
+  <dimen name="discovery_news_carousel_height">70dp</dimen>
+  <dimen name="discovery_news_carousel_motleyfool_logo_height">60dp</dimen>
+  <dimen name="discovery_news_carousel_spinner_width">250dp</dimen>
+  <dimen name="country_search_margin">5dp</dimen>
 </resources>

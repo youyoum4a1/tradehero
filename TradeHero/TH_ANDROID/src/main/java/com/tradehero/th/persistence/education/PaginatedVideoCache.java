@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.education;
 
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
-import com.tradehero.th.api.education.PagedVideoCategoryId;
 import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.network.service.VideoServiceWrapper;

@@ -1,8 +1,8 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
@@ -13,7 +13,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public interface AlertPlanServiceAsync
+interface AlertPlanServiceAsync
 {
     //<editor-fold desc="Get Alert Plans">
     @GET("/users/{userId}/alertPlans")
@@ -26,7 +26,7 @@ public interface AlertPlanServiceAsync
     @POST("/users/{userId}/alertPlans")
     void subscribeToAlertPlan(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseReportDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
@@ -35,15 +35,6 @@ public interface AlertPlanServiceAsync
     void checkAlertPlanSubscription(
             @Path("userId") int userId,
             Callback<UserProfileDTO> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Check Alert Plan Attribution">
-    @GET("/users/{userId}/alertPlans/check")
-    void checkAlertPlanAttribution(
-            @Path("userId") int userId,
-            @Query("google_play_data") String googlePlayData,
-            @Query("google_play_signature") String googlePlaySignature,
-            Callback<AlertPlanStatusDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Restore Purchases">

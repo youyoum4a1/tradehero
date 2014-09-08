@@ -203,7 +203,7 @@ public class SendMessageFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        DeviceUtil.dismissKeyboard(getActivity(), inputText);
+        DeviceUtil.dismissKeyboard(inputText);
         progressDialogUtilLazy.get().dismiss(getActivity());
         super.onDestroy();
     }

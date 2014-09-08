@@ -23,6 +23,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
     private DiscussionKey discussionKey;
 
+    //region Inflow bundling
     public static void putDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKey discussionKey)
     {
         args.putBundle(DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
@@ -36,6 +37,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         }
         return null;
     }
+    //endregion
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -13,11 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -39,6 +41,7 @@ import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -68,10 +71,11 @@ public class UpdateCenterFragment extends DashboardFragment
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject MessageHeaderListCache messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
+    @Inject GraphicUtil graphicUtil;
+
     @Inject THRouter thRouter;
 
     @RouteProperty("pageIndex") int selectedPageIndex = -1;
-
     private FragmentTabHost mTabHost;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private BroadcastReceiver broadcastReceiver;
@@ -91,11 +95,6 @@ public class UpdateCenterFragment extends DashboardFragment
     {
         Timber.d("onCreateView");
         return addTabs();
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override public void onResume()
@@ -251,7 +250,12 @@ public class UpdateCenterFragment extends DashboardFragment
     {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        //mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
+        TabWidget tabWidget = mTabHost.getTabWidget();
+        if (tabWidget != null)
+        // It otherwise fails in Robolectric because it does not have R.id.tabs in the TabHost
+        {
+            graphicUtil.setBackground(tabWidget, Color.WHITE);
+        }
         Bundle args = getArguments();
         if (args == null)
         {

@@ -9,19 +9,9 @@ public class SecurityIntegerIdList extends ArrayList<SecurityIntegerId>
     implements DTOKey
 {
     //<editor-fold desc="Constructors">
-    public SecurityIntegerIdList(int initialCapacity)
-    {
-        super(initialCapacity);
-    }
-
     public SecurityIntegerIdList()
     {
         super();
-    }
-
-    public SecurityIntegerIdList(Collection<? extends SecurityIntegerId> c)
-    {
-        super(c);
     }
 
     public SecurityIntegerIdList(@NotNull Collection<? extends Integer> c, Integer type)

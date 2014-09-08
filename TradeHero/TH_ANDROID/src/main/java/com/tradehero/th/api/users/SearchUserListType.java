@@ -53,7 +53,7 @@ public class SearchUserListType extends UserListType
         }
         if (!(other instanceof SearchUserListType))
         {
-            return SearchUserListType.class.getName().compareTo(other.getClass().getName());
+            return SearchUserListType.class.getName().compareTo(((Object) other).getClass().getName());
         }
 
         SearchUserListType searchUserListType = (SearchUserListType) other;

@@ -45,16 +45,22 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.Random;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.mock;
 
 public class ValidMocker
 {
-    private static Random random = new Random();
+    public static Random random = new Random();
+
+    @Inject public ValidMocker()
+    {
+        super();
+    }
 
     //<editor-fold desc="Create valid parameters">
-    public static Object mockValidParameter(@NotNull Class<?> type)
+    public Object mockValidParameter(@NotNull Class<?> type)
     {
         if (type.equals(UserBaseKey.class))
         {

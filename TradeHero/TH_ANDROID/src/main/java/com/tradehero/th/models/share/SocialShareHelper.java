@@ -150,20 +150,14 @@ public class SocialShareHelper
     }
     //</editor-fold>
 
-    public boolean canShare(AbstractDiscussionCompactDTO discussionToShare)
+    public void share(@NotNull AbstractDiscussionCompactDTO discussionToShare)
     {
-        return discussionToShare != null;
-    }
-
-    public void share(AbstractDiscussionCompactDTO discussionToShare)
-    {
-        if (canShare(discussionToShare))
-        {
-            cancelFormWaiting();
-            dismissShareDialog();
-            shareDialog = shareDialogFactory.createShareDialog(currentActivityHolder.getCurrentContext(), discussionToShare,
-                    createShareMenuClickedListener());
-        }
+        cancelFormWaiting();
+        dismissShareDialog();
+        shareDialog = shareDialogFactory.createShareDialog(
+                currentActivityHolder.getCurrentContext(),
+                discussionToShare,
+                createShareMenuClickedListener());
     }
 
     protected ShareDialogLayout.OnShareMenuClickedListener createShareMenuClickedListener()
@@ -180,7 +174,7 @@ public class SocialShareHelper
             notifyShareMenuCancelClicked();
         }
 
-        @Override public void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO)
+        @Override public void onShareRequestedClicked(@NotNull SocialShareFormDTO socialShareFormDTO)
         {
             dismissShareDialog();
             notifyShareMenuRequestedClicked(socialShareFormDTO);
@@ -188,12 +182,7 @@ public class SocialShareHelper
         }
     }
 
-    public void shareWaitingForm()
-    {
-        share(formWaitingToConnect);
-    }
-
-    public void share(SocialShareFormDTO socialShareFormDTO)
+    public void share(@NotNull SocialShareFormDTO socialShareFormDTO)
     {
         cancelFormWaiting();
         formWaitingToConnect = socialShareFormDTO;

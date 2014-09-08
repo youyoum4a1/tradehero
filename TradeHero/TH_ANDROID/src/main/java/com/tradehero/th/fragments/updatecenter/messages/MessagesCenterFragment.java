@@ -12,10 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import butterknife.ButterKnife;
-import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
-import com.fortysevendeg.android.swipelistview.SwipeListView;
+import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
+import com.fortysevendeg.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -493,8 +493,8 @@ public class MessagesCenterFragment extends DashboardFragment
         unsetDeletionMiddleCallback();
         messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
                 messageHeaderDTO.getDTOKey(),
-                messageHeaderDTO.senderUserId,
-                messageHeaderDTO.recipientUserId,
+                messageHeaderDTO.getSenderId(),
+                messageHeaderDTO.getRecipientId(),
                 currentUserId.toUserBaseKey(),
                 new MessageDeletionCallback(messageHeaderDTO));
     }
@@ -749,9 +749,9 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         middleCallbackList.add(
                 messageServiceWrapper.get().readMessage(
-                        messageHeaderDTO.id,
-                        messageHeaderDTO.senderUserId,
-                        messageHeaderDTO.recipientUserId,
+                        messageHeaderDTO.getDTOKey(),
+                        messageHeaderDTO.getSenderId(),
+                        messageHeaderDTO.getRecipientId(),
                         messageHeaderDTO.getDTOKey(),
                         currentUserId.toUserBaseKey(),
                         createMessageAsReadCallback(messageHeaderDTO)));

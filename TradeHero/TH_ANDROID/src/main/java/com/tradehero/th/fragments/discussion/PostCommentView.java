@@ -36,6 +36,12 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+/**
+ * A layout that often will be included in {@link com.tradehero.th.fragments.discussion.DiscussionView},
+ * consists of a TextView for input discussion comment and a submit button.
+ *
+ *
+ */
 public class PostCommentView extends RelativeLayout
 {
     /**
@@ -109,7 +115,7 @@ public class PostCommentView extends RelativeLayout
         commentText.setOnFocusChangeListener(null);
         commentPostedListener = null;
 
-        DeviceUtil.dismissKeyboard(getContext(), commentText);
+        DeviceUtil.dismissKeyboard(commentText);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -118,7 +124,7 @@ public class PostCommentView extends RelativeLayout
     {
         if (keypadIsShowing)
         {
-            DeviceUtil.dismissKeyboard(getContext(), commentText);
+            DeviceUtil.dismissKeyboard(commentText);
             keypadIsShowing = false;
             commentText.clearFocus();
         }
@@ -170,11 +176,7 @@ public class PostCommentView extends RelativeLayout
     protected boolean validate()
     {
         String comment = commentText.getText().toString();
-        if (comment == null || comment.trim().isEmpty())
-        {
-            return false;
-        }
-        return true;
+        return !comment.trim().isEmpty();
     }
 
     protected void submitAsDiscussionReply()
@@ -304,6 +306,24 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
+    protected OnFocusChangeListener createEditTextFocusChangeListener()
+    {
+        return new PostCommentViewEditTextFocusChangeListener();
+    }
+
+    protected class PostCommentViewEditTextFocusChangeListener implements OnFocusChangeListener
+    {
+        @Override public void onFocusChange(View v, boolean hasFocus)
+        {
+            if (hasFocus)
+            {
+                keypadIsShowing = true;
+                ((SherlockFragmentActivity) getContext()).getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
+        }
+    }
+
     protected Callback<DiscussionDTO> createCommentSubmitCallback()
     {
         return new CommentSubmitCallback();
@@ -321,24 +341,6 @@ public class PostCommentView extends RelativeLayout
             setPosted();
             THToast.show(new THException(retrofitError));
             notifyCommentPostFailed(retrofitError);
-        }
-    }
-
-    protected OnFocusChangeListener createEditTextFocusChangeListener()
-    {
-        return new PostCommentViewEditTextFocusChangeListener();
-    }
-
-    protected class PostCommentViewEditTextFocusChangeListener implements OnFocusChangeListener
-    {
-        @Override public void onFocusChange(View v, boolean hasFocus)
-        {
-            if (hasFocus)
-            {
-                keypadIsShowing = true;
-                ((SherlockFragmentActivity) getContext()).getWindow().setSoftInputMode(
-                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            }
         }
     }
 

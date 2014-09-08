@@ -10,6 +10,7 @@ import com.tradehero.th.api.purchase.UserCreditPlanDTO;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class UserProfileDTO extends UserProfileCompactDTO
 {
@@ -88,6 +89,11 @@ public class UserProfileDTO extends UserProfileCompactDTO
         return userBaseDTO != null && isFollowingUser(userBaseDTO.id);
     }
 
+    public boolean isPremiumFollowingUser(@NotNull UserBaseKey userBaseKey)
+    {
+        return this.premiumHeroIds != null && this.premiumHeroIds.contains(userBaseKey.key);
+    }
+
     public int getFollowType(UserBaseKey userBaseKey)
     {
         return userBaseKey == null ? UserProfileDTOUtil.IS_NOT_FOLLOWER : getFollowType(userBaseKey.key);
@@ -164,6 +170,11 @@ public class UserProfileDTO extends UserProfileCompactDTO
             }
         }
         return count;
+    }
+
+    public boolean alreadyClaimedInvitedDollars()
+    {
+        return inviteCode != null && !inviteCode.isEmpty();
     }
 
     @Override public String toString()

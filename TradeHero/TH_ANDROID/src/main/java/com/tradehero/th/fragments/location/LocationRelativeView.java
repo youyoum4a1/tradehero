@@ -3,11 +3,12 @@ package com.tradehero.th.fragments.location;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-import butterknife.ButterKnife;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 
+import butterknife.ButterKnife;
 public class LocationRelativeView extends RelativeLayout
     implements DTOView<ListedLocationDTO>
 {

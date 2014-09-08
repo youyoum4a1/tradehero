@@ -7,7 +7,7 @@ import dagger.Module;
                 BuySellFragmentTest.class,
                 TradeListFragmentTest.class,
 
-                AbstractTransactionDialogFragmentTest.class,
+                AbstractTransactionDialogFragmentTestBase.class,
                 BuyDialogFragmentTest.class,
         },
         complete = false,

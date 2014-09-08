@@ -269,25 +269,32 @@ public class MessageServiceWrapper
 
     public Response deleteMessage(
             @NotNull MessageHeaderId messageHeaderId,
-            int senderUserId,
-            int recipientUserId,
+            @NotNull UserBaseKey senderUserId,
+            @NotNull UserBaseKey recipientUserId,
             @NotNull UserBaseKey readerId)
     {
         return createMessageHeaderDeletedProcessor(messageHeaderId, readerId).process(
-                messageService.deleteMessage(messageHeaderId.commentId, senderUserId, recipientUserId));
+                messageService.deleteMessage(
+                        messageHeaderId.commentId,
+                        senderUserId.key,
+                        recipientUserId.key));
     }
 
     public MiddleCallback<Response> deleteMessage(
-            @NotNull final MessageHeaderId messageHeaderId,
-            int senderUserId,
-            int recipientUserId,
+            @NotNull MessageHeaderId messageHeaderId,
+            @NotNull UserBaseKey senderUserId,
+            @NotNull UserBaseKey recipientUserId,
             @NotNull UserBaseKey readerId,
             @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createMessageHeaderDeletedProcessor(messageHeaderId, readerId));
-        messageServiceAsync.deleteMessage(messageHeaderId.commentId, senderUserId, recipientUserId, middleCallback);
+        messageServiceAsync.deleteMessage(
+                messageHeaderId.commentId,
+                senderUserId.key,
+                recipientUserId.key,
+                middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -304,28 +311,35 @@ public class MessageServiceWrapper
     }
 
     @NotNull public Response readMessage(
-            int commentId,
-            int senderUserId,
-            int recipientUserId,
+            @NotNull MessageHeaderId commentId,
+            @NotNull UserBaseKey senderUserId,
+            @NotNull UserBaseKey recipientUserId,
             @NotNull MessageHeaderId messageHeaderId,
             @NotNull UserBaseKey readerId)
     {
         return createMessageHeaderReadProcessor(messageHeaderId, readerId).process(
-                messageService.readMessage(commentId, senderUserId, recipientUserId));
+                messageService.readMessage(
+                        commentId.commentId,
+                        senderUserId.key,
+                        recipientUserId.key));
     }
 
     @NotNull public MiddleCallback<Response> readMessage(
-            int commentId,
-            int senderUserId,
-            int recipientUserId,
-            @NotNull final MessageHeaderId messageHeaderId,
-            @NotNull final UserBaseKey readerId,
+            @NotNull MessageHeaderId commentId,
+            @NotNull UserBaseKey senderUserId,
+            @NotNull UserBaseKey recipientUserId,
+            @NotNull MessageHeaderId messageHeaderId,
+            @NotNull UserBaseKey readerId,
             @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createMessageHeaderReadProcessor(messageHeaderId, readerId));
-        messageServiceAsync.readMessage(commentId, senderUserId, recipientUserId, middleCallback);
+        messageServiceAsync.readMessage(
+                commentId.commentId,
+                senderUserId.key,
+                recipientUserId.key,
+                middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -338,14 +352,14 @@ public class MessageServiceWrapper
     }
 
     @NotNull public Response readAllMessage(
-            @NotNull final UserBaseKey readerId)
+            @NotNull UserBaseKey readerId)
     {
         return createMessageHeaderReadAllProcessor(readerId).process(
                 messageService.readAllMessage());
     }
 
     @NotNull public MiddleCallback<Response> readAllMessage(
-            @NotNull final UserBaseKey readerId,
+            @NotNull UserBaseKey readerId,
             @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(

@@ -17,19 +17,21 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
+import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
+import com.tradehero.th.utils.GraphicUtil;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class HeroManagerFragment extends BasePurchaseManagerFragment
@@ -44,6 +46,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     static final int FRAGMENT_LAYOUT_ID = 9999;
 
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
+    @Inject protected GraphicUtil graphicUtil;
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
 
@@ -57,7 +60,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
     }
 
-    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new HeroManagerPremiumUserFollowedListener();
     }
@@ -76,7 +79,8 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(),
+                FRAGMENT_LAYOUT_ID);
         mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
 
         List<HeroTypeResourceDTO> resourceDTOs = heroTypeResourceDTOFactory.getListOfHeroType();
@@ -105,7 +109,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     //TODO should make FragmentTabHost more generic
     private void setTitleColor()
     {
-        int color = getResources().getColor(android.R.color.holo_blue_light);
+        int color = getResources().getColor(R.color.tradehero_blue);
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++)
         {
 
@@ -119,6 +123,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             }
             else
             {
+                graphicUtil.setBackground(mTabHost.getTabWidget().getChildAt(i), getResources().getDrawable(R.drawable.tab_indicator_ab_th));
                 tv.setTextColor(color);
             }
         }
@@ -129,13 +134,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
 
         setActionBarTitle(getTitle());
-    }
-
-    private void handleBuyMoreClicked()
-    {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .buyFollowCredits();
     }
 
     @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
@@ -214,22 +212,23 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     }
 
     protected class HeroManagerPremiumUserFollowedListener
-            implements PremiumFollowUserAssistant.OnUserFollowedListener
+            implements FollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
-                UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(
+                @NotNull UserBaseKey userFollowed,
+                @NotNull UserProfileDTO currentUserProfileDTO)
         {
             handleFollowSuccess(currentUserProfileDTO);
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
             // nothing for now
         }
     }
 
     protected class HeroManagerOnPurchaseReportedListener
-            implements PurchaseReporter.OnPurchaseReportedListener
+            implements THPurchaseReporter.OnPurchaseReportedListener
     {
         @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
                 UserProfileDTO updatedUserPortfolio)

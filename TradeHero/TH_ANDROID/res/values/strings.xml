@@ -42,6 +42,8 @@
   <string name="discussion_empty">Be the first to discuss this.</string>
   <!--<string name="network_error">Sorry,network error.</string>-->
 
+  <string name="trade_list_action">Action</string>
+
   <string name="news_view_on_web">View on the Web</string>
   <string name="add_a_comment">Add a comment…</string>
   <string name="start_new_discussion">Start a New Discussion</string>
@@ -219,8 +221,8 @@
   <string name="notification_new_activities">You have %d new activities</string>
   <string name="friend_link_social_network">Please Link Social Network.</string>
   <string name="exit_app">Exit app</string>
-  <string name="referral_code_title">Claim your virtual dollars!</string>
-  <string name="referral_code_message">If you were referred by a friend, enter the referral code
+  <string name="invite_code_title">Claim your virtual dollars!</string>
+  <string name="invite_code_message">If you were referred by a friend, enter the referral code
     here and get free 10,000 virtual dollars.
   </string>
   <string name="settings_referral_code_message">This is your own referral code. Share it with your
@@ -238,4 +240,24 @@
   <string name="trade_comment">Trade Comment</string>
 
   <string name="mark_as_all_read">Mark as all Read</string>
+
+  <!-- Discovery -->
+  <string name="discovery_whats_hot">What\'s hot</string>
+  <string name="discovery_news">News</string>
+  <string name="discovery_discussions">Discussions</string>
+  <string name="discovery">Discovery</string>
+  <string name="discovery_learning">Learning</string>
+  <string name="ask_for_review_title">Love TradeHero?</string>
+  <string name="ask_for_review_summary">Please give a rating on the App Store and let us know what
+    you think.
+  </string>
+  <string name="ask_for_review_rate">Rate TradeHero Now</string>
+  <string name="maybe_later">Maybe Later</string>
+  <string name="regional_news">Regional News</string>
+  <string name="motley_fool">Motley Fool</string>
+  <string name="global_news">Global News</string>
+  <string name="ask_for_invite_title">More Fun with Friends !</string>
+  <string name="ask_for_invite_summary1">Invite your buddies and earn</string>
+  <string name="ask_for_invite_summary2">10,000 TH$</string>
+  <string name="ask_for_invite">Invite Friends Now !</string>
 </resources>

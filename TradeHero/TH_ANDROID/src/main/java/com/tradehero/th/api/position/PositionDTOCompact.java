@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class PositionDTOCompact implements DTO
 {
     public int id;
-    public Integer shares;
+    @Nullable public Integer shares;
     public int portfolioId;
 
     // This price is always in the portfolio currency

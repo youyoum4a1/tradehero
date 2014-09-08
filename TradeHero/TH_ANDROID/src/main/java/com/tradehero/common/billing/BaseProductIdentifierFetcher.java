@@ -3,6 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class BaseProductIdentifierFetcher<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -16,12 +17,14 @@ abstract public class BaseProductIdentifierFetcher<
         BillingExceptionType>
 {
     protected int requestCode;
-    protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener;
+    @Nullable protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener;
 
+    //<editor-fold desc="Constructors">
     public BaseProductIdentifierFetcher()
     {
         super();
     }
+    //</editor-fold>
 
     @Override public void fetchProductIdentifiers(int requestCode)
     {
@@ -33,13 +36,13 @@ abstract public class BaseProductIdentifierFetcher<
         return requestCode;
     }
 
-    @Override public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> getProductIdentifierListener()
+    @Override @Nullable public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> getProductIdentifierListener()
     {
         return productIdentifierFetchedListener;
     }
 
     @Override public void setProductIdentifierListener(
-            ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> listener)
+            @Nullable ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> listener)
     {
         this.productIdentifierFetchedListener = listener;
     }

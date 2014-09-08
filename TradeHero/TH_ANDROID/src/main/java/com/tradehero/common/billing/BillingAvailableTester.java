@@ -3,8 +3,8 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 
 public interface BillingAvailableTester<BillingExceptionType extends BillingException>
+    extends RequestCodeActor
 {
-    int getRequestCode();
     OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener();
     void setBillingAvailableListener(OnBillingAvailableListener<BillingExceptionType> billingAvailableListener);
     void testBillingAvailable(int requestCode);

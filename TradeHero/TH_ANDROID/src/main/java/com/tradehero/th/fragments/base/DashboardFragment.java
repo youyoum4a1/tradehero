@@ -2,11 +2,10 @@ package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -20,35 +19,8 @@ import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment
 {
-    private static final String BUNDLE_KEY_TITLE = DashboardFragment.class.getName() + ".title";
-    private static final String BUNDLE_KEY_SHOW_HOME_AS_UP = DashboardFragment.class.getName() + ".show_home_as_up";
-
-    private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
-
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
-
-    public static void putKeyShowHomeAsUp(@NotNull Bundle args, boolean showAsUp)
-    {
-        args.putBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, showAsUp);
-    }
-
-    protected static boolean getKeyShowHomeAsUp(@Nullable Bundle args)
-    {
-        if (args == null)
-        {
-            return DEFAULT_SHOW_HOME_AS_UP;
-        }
-        return args.getBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, DEFAULT_SHOW_HOME_AS_UP);
-    }
-
-    public static void putActionBarTitle(Bundle args, String title)
-    {
-        if (args != null)
-        {
-            args.putString(BUNDLE_KEY_TITLE, title);
-        }
-    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -68,36 +40,7 @@ abstract public class DashboardFragment extends BaseFragment
             inflater.inflate(R.menu.menu_with_tutorial, menu);
         }
 
-        Bundle argument = getArguments();
-
-        if (argument != null && argument.containsKey(BUNDLE_KEY_TITLE))
-        {
-            String title = argument.getString(BUNDLE_KEY_TITLE);
-
-            if (title != null && !title.isEmpty())
-            {
-                setActionBarTitle(title);
-            }
-        }
-
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null)
-        {
-            if (shouldShowHomeAsUp())
-            {
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                        | ActionBar.DISPLAY_SHOW_TITLE
-                        | ActionBar.DISPLAY_SHOW_HOME);
-            }
-            else
-            {
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                        | ActionBar.DISPLAY_SHOW_HOME
-                        | ActionBar.DISPLAY_USE_LOGO);
-                actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-            }
-            actionBar.setHomeButtonEnabled(true);
-        }
+        actionBarOwnerMixin.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -105,7 +48,7 @@ abstract public class DashboardFragment extends BaseFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                if (shouldShowHomeAsUp())
+                if (actionBarOwnerMixin.shouldShowHomeAsUp())
                 {
                     DashboardNavigator navigator = getDashboardNavigator();
                     if (navigator != null)
@@ -136,11 +79,6 @@ abstract public class DashboardFragment extends BaseFragment
         {
             Timber.d("%s is not implementing WithTutorial interface, but has info menu", getClass().getName());
         }
-    }
-
-    protected boolean shouldShowHomeAsUp()
-    {
-        return getKeyShowHomeAsUp(getArguments());
     }
 
     @Nullable protected DashboardNavigator getDashboardNavigator()

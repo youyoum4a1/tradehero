@@ -52,28 +52,21 @@
       tools:text="alert status"
       />
 
-  <ImageView
+  <TextView
+      android:id="@+id/trade"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:id="@+id/buy_stock"
       android:layout_toRightOf="@id/logo"
       android:layout_below="@id/alert_status"
-      android:layout_alignParentBottom="true"
-      android:paddingLeft="5dp"
-      android:src="@drawable/buy_stock"
-      android:contentDescription="@null"
-      />
-
-  <ImageView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:id="@+id/sell_stock"
-      android:layout_toRightOf="@id/buy_stock"
-      android:layout_below="@id/alert_status"
-      android:layout_alignParentBottom="true"
-      android:layout_marginLeft="15dp"
-      android:src="@drawable/sell_stock"
-      android:contentDescription="@null"
+      android:layout_marginLeft="@dimen/common_margin_4"
+      android:paddingTop="@dimen/margin_xsmall"
+      android:paddingBottom="@dimen/margin_xsmall"
+      android:paddingLeft="@dimen/margin_small"
+      android:paddingRight="@dimen/margin_small"
+      android:background="@drawable/authentication_button"
+      android:text="@string/timeline_trade"
+      android:textColor="@color/white"
+      android:textSize="@dimen/text_xsmall"
       />
 
   <ImageView

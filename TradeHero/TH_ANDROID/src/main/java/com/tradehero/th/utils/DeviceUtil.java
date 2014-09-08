@@ -22,11 +22,11 @@ public final class DeviceUtil
         return imm != null && imm.isAcceptingText();
     }
 
-    public static void dismissKeyboard(Context ctx, View v)
+    public static void dismissKeyboard(View v)
     {
-        InputMethodManager imm = getInputMethodManager(ctx);
-        if (imm != null && v != null)
+        if (v != null)
         {
+            InputMethodManager imm = getInputMethodManager(v.getContext());
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
     }
@@ -35,7 +35,7 @@ public final class DeviceUtil
     {
         if (activity != null)
         {
-            dismissKeyboard(activity, activity.getCurrentFocus());
+            dismissKeyboard(activity.getCurrentFocus());
         }
     }
 

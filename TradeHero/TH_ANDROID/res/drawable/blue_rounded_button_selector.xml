@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_mediumAnimTime">
 
-    <item android:state_pressed="true">
-        <shape android:shape="rectangle">
-            <gradient android:angle="270" android:endColor="@color/btn_linkedin_color_light" android:startColor="@color/btn_linkedin_color_dark"/>
+  <item android:state_pressed="true">
+    <shape android:shape="rectangle">
+      <solid android:color="@color/tradehero_blue_pressed"/>
+      <corners android:radius="@dimen/buy_sell_button_radius"/>
+    </shape>
+  </item>
 
-            <corners android:radius="4dp"/>
-        </shape>
-    </item>
+  <item android:state_focused="true">
+    <shape android:shape="rectangle">
+      <solid android:color="@color/tradehero_blue_focused"/>
+      <corners android:radius="@dimen/buy_sell_button_radius"/>
+    </shape>
+  </item>
 
-    <item android:state_focused="true">
-        <shape android:shape="rectangle">
-            <gradient android:angle="270" android:endColor="@color/btn_linkedin_color_light" android:startColor="@color/btn_linkedin_color_dark"/>
-
-            <corners android:radius="4dp"/>
-        </shape>
-    </item>
-
-    <item>
-        <shape android:shape="rectangle">
-            <gradient android:angle="270" android:endColor="@color/btn_linkedin_color_light" android:startColor="@color/btn_linkedin_color_light"/>
-
-            <corners android:radius="4dp"/>
-        </shape>
-    </item>
+  <item>
+    <shape android:shape="rectangle">
+      <solid android:color="@color/tradehero_blue"/>
+      <corners android:radius="@dimen/buy_sell_button_radius"/>
+    </shape>
+  </item>
 
 
 </selector>

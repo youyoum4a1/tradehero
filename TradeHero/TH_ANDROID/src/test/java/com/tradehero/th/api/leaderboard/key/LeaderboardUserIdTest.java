@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class LeaderboardUserIdTest extends BaseLeaderboardUserIdTest
+public class LeaderboardUserIdTest extends LeaderboardUserIdTestBase
 {
     @Before public void setUp()
     {

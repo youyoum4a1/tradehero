@@ -2,7 +2,7 @@
 
 <com.tradehero.common.widget.BetterViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/contest_center_content_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +19,6 @@
       android:id="@android:id/list"
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
-      android:paddingTop="10dp"
       android:paddingBottom="10dp"
       android:clipToPadding="false"
       app:hasStickyHeaders="false"

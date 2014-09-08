@@ -1,16 +1,14 @@
 package com.tradehero.th.base;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.CurrentActivityHolder;
+import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.api.form.FacebookUserFormDTO;
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
 import com.tradehero.th.api.form.TwitterUserFormDTO;
@@ -44,7 +42,6 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -79,6 +76,7 @@ public class THUser
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
     @Inject static LoginSignUpFormDTOFactory loginSignUpFormDTOFactory;
     @Inject static DeviceTokenHelper deviceTokenHelper;
+    @Inject static Lazy<MarketUtil> marketUtilLazy;
 
     public static void initialize()
     {
@@ -297,19 +295,10 @@ public class THUser
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
-                            try
+                            THToast.show(R.string.update_guide);
+                            if (currentActivity != null)
                             {
-                                THToast.show(R.string.update_guide);
-                                currentActivity.startActivity(
-                                        new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
-                                currentActivity.finish();
-                            }
-                            catch (ActivityNotFoundException ex)
-                            {
-
-                                currentActivity.startActivity(
-                                        new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
+                                marketUtilLazy.get().showAppOnMarket(currentActivity);
                                 currentActivity.finish();
                             }
                         }

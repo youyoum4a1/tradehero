@@ -34,6 +34,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
@@ -397,8 +398,11 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             THToast.show(R.string.error_fetch_security_info);
         }
-        detachSecurityActionDialog();
-        securityActionDialog = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityId, createSecurityActionMenuListener());
+        else
+        {
+            detachSecurityActionDialog();
+            securityActionDialog = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityId, createSecurityActionMenuListener());
+        }
     }
 
     protected SecurityActionListLinear.OnActionMenuClickedListener createSecurityActionMenuListener()
@@ -421,12 +425,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             if (watchlistPositionCache.get(securityId) != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
-                WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
             }
             else
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
-                WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_add_title));
+                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
             }
             DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)

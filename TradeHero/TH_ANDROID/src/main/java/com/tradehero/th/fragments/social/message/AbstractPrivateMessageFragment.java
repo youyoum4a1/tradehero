@@ -269,9 +269,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         updateMessageCacheReadStatus(messageHeaderDTO.id);
         messageServiceWrapper.get().readMessage(
-                messageHeaderDTO.id,
-                messageHeaderDTO.senderUserId,
-                messageHeaderDTO.recipientUserId,
+                messageHeaderDTO.getDTOKey(),
+                messageHeaderDTO.getSenderId(),
+                messageHeaderDTO.getRecipientId(),
                 messageHeaderDTO.getDTOKey(),
                 currentUserId.toUserBaseKey(),
                 createMessageAsReadCallback(messageHeaderDTO.id));

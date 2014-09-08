@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
@@ -69,30 +70,25 @@ public class AlertViewFragmentTest
         userProfileCache.invalidateAll();
     }
 
-    @Test public void launchWillPopulateFromCache()
+    @Test public void launchWillPopulateFromCache() throws InterruptedException
     {
         Bundle args = new Bundle();
         AlertViewFragment.putAlertId(args, cachedAlertDTO.getAlertId(currentUserId.toUserBaseKey()));
         AlertViewFragment alertViewFragment = dashboardNavigator.pushFragment(AlertViewFragment.class, args);
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(3);
 
         assertThat(cachedAlertDTO).isNotNull();
         assertThat(alertViewFragment.alertDTO).isNotNull();
         assertThat(alertViewFragment.alertDTO.id).isEqualTo(cachedAlertDTO.id);
     }
 
-    @Test public void clickOnOffWillSetMiddleCallback()
-    {
+    @Test public void clickOnOffWillSetMiddleCallback() throws InterruptedException {
         Bundle args = new Bundle();
         AlertViewFragment.putAlertId(args, cachedAlertDTO.getAlertId(currentUserId.toUserBaseKey()));
         AlertViewFragment alertViewFragment = dashboardNavigator.pushFragment(AlertViewFragment.class, args);
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(3);
 
         assertThat(alertViewFragment.alertUpdateMiddleCallback).isNull();
 

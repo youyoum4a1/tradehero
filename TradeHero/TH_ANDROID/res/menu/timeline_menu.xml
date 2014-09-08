@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu
-        xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<item-->
-            <!--android:id="@+id/menu_settings"-->
-            <!--android:icon="@drawable/icon_menu"-->
-            <!--android:title="@string/action_menu_settings"-->
-            <!--android:showAsAction="ifRoom"/>-->
+  <item
+      android:id="@+id/action_bar_update_center_icon"
+      android:showAsAction="always"
+      android:title="@string/message_center_title"
+      android:actionLayout="@layout/action_bar_update_center_icon"/>
 
-    <item
-            android:id="@+id/menu_edit"
-            android:title="@string/timeline_menu_edit"
-            android:showAsAction="ifRoom"
-        />
+  <item
+      android:id="@+id/action_bar_home_icon"
+      android:icon="@drawable/icn_menu_home_blue"
+      android:showAsAction="always"
+      android:title="@string/dashboard_home"/>
 
 </menu>

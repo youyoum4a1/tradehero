@@ -1,8 +1,8 @@
 package com.tradehero.th.models.user;
 
-import com.tradehero.AbstractTestBase;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import org.mockito.invocation.InvocationOnMock;
@@ -13,16 +13,16 @@ import retrofit.RetrofitError;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-abstract public class FollowUserAssistantTestBase extends AbstractTestBase
+abstract public class FollowUserAssistantTestBase
 {
     protected UserBaseKey heroId;
-    protected SimplePremiumFollowUserAssistant.OnUserFollowedListener listener;
+    protected SimpleFollowUserAssistant.OnUserFollowedListener listener;
     protected UserServiceWrapper userServiceWrapper;
 
     public void setUp()
     {
         heroId = new UserBaseKey(123);
-        listener = mock(SimplePremiumFollowUserAssistant.OnUserFollowedListener.class);
+        listener = mock(SimpleFollowUserAssistant.OnUserFollowedListener.class);
         userServiceWrapper = mock(UserServiceWrapper.class);
     }
 
@@ -58,28 +58,28 @@ abstract public class FollowUserAssistantTestBase extends AbstractTestBase
 
     //<editor-fold desc="Prepare ServiceWrapper">
     protected void prepareUserServiceForFailUnfollow(
-            SimplePremiumFollowUserAssistant assistant,
+            SimpleFollowUserAssistant assistant,
             RetrofitError expected)
     {
         when(userServiceWrapper.unfollow(heroId, assistant)).then(createFailUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForSuccessUnfollow(
-            SimplePremiumFollowUserAssistant assistant,
+            SimpleFollowUserAssistant assistant,
             UserProfileDTO expected)
     {
         when(userServiceWrapper.unfollow(heroId, assistant)).then(createSuccessUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForFailFollow(
-            SimplePremiumFollowUserAssistant assistant,
+            SimpleFollowUserAssistant assistant,
             RetrofitError expected)
     {
         when(userServiceWrapper.follow(heroId, assistant)).then(createFailUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForSuccessFollow(
-            SimplePremiumFollowUserAssistant assistant,
+            SimpleFollowUserAssistant assistant,
             UserProfileDTO expected)
     {
         when(userServiceWrapper.follow(heroId, assistant)).then(createSuccessUserServiceAnswer(expected));

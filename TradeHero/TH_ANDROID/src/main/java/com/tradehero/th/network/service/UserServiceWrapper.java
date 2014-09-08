@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
@@ -27,10 +27,11 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
+import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
+import com.tradehero.th.models.user.DTOProcessorFollowFreeUserBatch;
 import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUnfollowUser;
@@ -66,10 +67,10 @@ import retrofit.client.Response;
     @NotNull private final UserServiceAsync userServiceAsync;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final DTOCacheUtil dtoCacheUtil;
-    @NotNull private final UserProfileCache userProfileCache;
-    @NotNull private final UserMessagingRelationshipCache userMessagingRelationshipCache;
+    @NotNull private final Lazy<UserProfileCache> userProfileCache;
+    @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     @NotNull private final Lazy<HeroListCache> heroListCache;
-    @NotNull private final GetPositionsCache getPositionsCache;
+    @NotNull private final Lazy<GetPositionsCache> getPositionsCache;
     @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
     @NotNull private final Lazy<ProviderListCache> providerListCache;
     @NotNull private final Lazy<ProviderCache> providerCache;
@@ -82,10 +83,10 @@ import retrofit.client.Response;
             @NotNull UserServiceAsync userServiceAsync,
             @NotNull CurrentUserId currentUserId,
             @NotNull DTOCacheUtil dtoCacheUtil,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
+            @NotNull Lazy<UserProfileCache> userProfileCache,
+            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,
-            @NotNull GetPositionsCache getPositionsCache,
+            @NotNull Lazy<GetPositionsCache> getPositionsCache,
             @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache,
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull Lazy<ProviderCache> providerCache,
@@ -112,7 +113,7 @@ import retrofit.client.Response;
     @NotNull protected DTOProcessor<UserProfileDTO> createSignInUpProfileProcessor()
     {
         return new DTOProcessorSignInUpUserProfile(
-                userProfileCache,
+                userProfileCache.get(),
                 currentUserId,
                 dtoCacheUtil);
     }
@@ -235,12 +236,12 @@ import retrofit.client.Response;
     //<editor-fold desc="Update Profile">
     @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
+        return new DTOProcessorUpdateUserProfile(userProfileCache.get());
     }
 
     public UserProfileDTO updateProfile(
-            UserBaseKey userBaseKey,
-            UserFormDTO userFormDTO)
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserFormDTO userFormDTO)
     {
         UserProfileDTO updated;
         if (userFormDTO.profilePicture == null)
@@ -284,9 +285,9 @@ import retrofit.client.Response;
     }
 
     public MiddleCallback<UserProfileDTO> updateProfile(
-            UserBaseKey userBaseKey,
-            UserFormDTO userFormDTO,
-            Callback<UserProfileDTO> callback)
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserFormDTO userFormDTO,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
         if (userFormDTO.profilePicture == null)
@@ -332,18 +333,18 @@ import retrofit.client.Response;
     }
 
     public UserProfileDTO updateProfilePropertyEmailNotifications(
-            UserBaseKey userBaseKey,
-            Boolean emailNotificationsEnabled)
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull Boolean emailNotificationsEnabled)
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
         return this.updateProfile(userBaseKey, userFormDTO);
     }
 
-    public MiddleCallback<UserProfileDTO> updateProfilePropertyEmailNotifications(
-            UserBaseKey userBaseKey,
-            Boolean emailNotificationsEnabled,
-            Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> updateProfilePropertyEmailNotifications(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull Boolean emailNotificationsEnabled,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
@@ -351,18 +352,18 @@ import retrofit.client.Response;
     }
 
     public UserProfileDTO updateProfilePropertyPushNotifications(
-            UserBaseKey userBaseKey,
-            Boolean pushNotificationsEnabled)
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull Boolean pushNotificationsEnabled)
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
         return this.updateProfile(userBaseKey, userFormDTO);
     }
 
-    public MiddleCallback<UserProfileDTO> updateProfilePropertyPushNotifications(
-            UserBaseKey userBaseKey,
-            Boolean pushNotificationsEnabled,
-            Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> updateProfilePropertyPushNotifications(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull Boolean pushNotificationsEnabled,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         UserFormDTO userFormDTO = new UserFormDTO();
         userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
@@ -371,14 +372,14 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">
-    public UserAvailabilityDTO checkDisplayNameAvailable(String username)
+    public UserAvailabilityDTO checkDisplayNameAvailable(@NotNull String username)
     {
         return userService.checkDisplayNameAvailable(username);
     }
 
-    public MiddleCallback<UserAvailabilityDTO> checkDisplayNameAvailable(
-            String username,
-            Callback<UserAvailabilityDTO> callback)
+    @NotNull public MiddleCallback<UserAvailabilityDTO> checkDisplayNameAvailable(
+            @NotNull String username,
+            @Nullable Callback<UserAvailabilityDTO> callback)
     {
         MiddleCallback<UserAvailabilityDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.checkDisplayNameAvailable(username, middleCallback);
@@ -387,14 +388,14 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Forgot Password">
-    public ForgotPasswordDTO forgotPassword(ForgotPasswordFormDTO forgotPasswordFormDTO)
+    public ForgotPasswordDTO forgotPassword(@NotNull ForgotPasswordFormDTO forgotPasswordFormDTO)
     {
         return userService.forgotPassword(forgotPasswordFormDTO);
     }
 
-    public MiddleCallback<ForgotPasswordDTO> forgotPassword(
-            ForgotPasswordFormDTO forgotPasswordFormDTO,
-            Callback<ForgotPasswordDTO> callback)
+    @NotNull public MiddleCallback<ForgotPasswordDTO> forgotPassword(
+            @NotNull ForgotPasswordFormDTO forgotPasswordFormDTO,
+            @Nullable Callback<ForgotPasswordDTO> callback)
     {
         MiddleCallback<ForgotPasswordDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.forgotPassword(forgotPasswordFormDTO, middleCallback);
@@ -403,7 +404,7 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Search Users">
-    public UserSearchResultDTOList searchUsers(UserListType key)
+    public UserSearchResultDTOList searchUsers(@NotNull UserListType key)
     {
         if (key instanceof SearchUserListType)
         {
@@ -412,7 +413,7 @@ import retrofit.client.Response;
         throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
-    protected UserSearchResultDTOList searchUsers(SearchUserListType key)
+    protected UserSearchResultDTOList searchUsers(@NotNull SearchUserListType key)
     {
         if (key.searchString == null)
         {
@@ -421,7 +422,9 @@ import retrofit.client.Response;
         return this.userService.searchUsers(key.searchString, key.page, key.perPage);
     }
 
-    public MiddleCallback<UserSearchResultDTOList> searchUsers(UserListType key, Callback<UserSearchResultDTOList> callback)
+    @NotNull public MiddleCallback<UserSearchResultDTOList> searchUsers(
+            @NotNull UserListType key,
+            @Nullable Callback<UserSearchResultDTOList> callback)
     {
         if (key instanceof SearchUserListType)
         {
@@ -430,7 +433,9 @@ import retrofit.client.Response;
         throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
-    protected MiddleCallback<UserSearchResultDTOList> searchUsers(SearchUserListType key, Callback<UserSearchResultDTOList> callback)
+    @NotNull protected MiddleCallback<UserSearchResultDTOList> searchUsers(
+            @NotNull SearchUserListType key,
+            @Nullable Callback<UserSearchResultDTOList> callback)
     {
         MiddleCallback<UserSearchResultDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         if (key.searchString == null)
@@ -446,16 +451,18 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Search Allowable Recipients">
-    public PaginatedAllowableRecipientDTO searchAllowableRecipients(SearchAllowableRecipientListType key)
+    public PaginatedAllowableRecipientDTO searchAllowableRecipients(@Nullable SearchAllowableRecipientListType key)
     {
         if (key == null)
         {
             return userService.searchAllowableRecipients(null, null, null);
         }
-         return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
+        return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
     }
 
-    public BaseMiddleCallback<PaginatedAllowableRecipientDTO> searchAllowableRecipients(SearchAllowableRecipientListType key, Callback<PaginatedAllowableRecipientDTO> callback)
+    @NotNull public BaseMiddleCallback<PaginatedAllowableRecipientDTO> searchAllowableRecipients(
+            @Nullable SearchAllowableRecipientListType key,
+            @Nullable Callback<PaginatedAllowableRecipientDTO> callback)
     {
         BaseMiddleCallback<PaginatedAllowableRecipientDTO>
                 middleCallback = new BaseMiddleCallback<>(callback);
@@ -472,14 +479,14 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Get User">
-    public UserProfileDTO getUser(UserBaseKey userKey)
+    public UserProfileDTO getUser(@NotNull UserBaseKey userKey)
     {
         return userService.getUser(userKey.key);
     }
 
-    public MiddleCallback<UserProfileDTO> getUser(
-            UserBaseKey userKey,
-            Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> getUser(
+            @NotNull UserBaseKey userKey,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getUser(userKey.key, middleCallback);
@@ -507,19 +514,21 @@ import retrofit.client.Response;
     //<editor-fold desc="Update PayPal Email">
     @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
     {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache, playerId);
+        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), playerId);
     }
 
-    public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey,
-            UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
+    public UpdatePayPalEmailDTO updatePayPalEmail(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
         return createUpdatePaypalEmailProcessor(userBaseKey).process(
                 userService.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO));
     }
 
-    public MiddleCallback<UpdatePayPalEmailDTO> updatePayPalEmail(UserBaseKey userBaseKey,
-            UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
-            Callback<UpdatePayPalEmailDTO> callback)
+    @NotNull public MiddleCallback<UpdatePayPalEmailDTO> updatePayPalEmail(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
+            @Nullable Callback<UpdatePayPalEmailDTO> callback)
     {
         MiddleCallback<UpdatePayPalEmailDTO>
                 middleCallback = new BaseMiddleCallback<>(callback, createUpdatePaypalEmailProcessor(userBaseKey));
@@ -532,21 +541,21 @@ import retrofit.client.Response;
     //<editor-fold desc="Update Alipay account">
     @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
     {
-        return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
+        return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId);
     }
 
     public UpdateAlipayAccountDTO updateAlipayAccount(
-            UserBaseKey userBaseKey,
-            UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
     {
         return createUpdateAlipayAccountProcessor(userBaseKey).process(
                 userService.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO));
     }
 
-    public MiddleCallback<UpdateAlipayAccountDTO> updateAlipayAccount(
-            UserBaseKey userBaseKey,
-            UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
-            Callback<UpdateAlipayAccountDTO> callback)
+    @NotNull public MiddleCallback<UpdateAlipayAccountDTO> updateAlipayAccount(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
+            @Nullable Callback<UpdateAlipayAccountDTO> callback)
     {
         MiddleCallback<UpdateAlipayAccountDTO>
                 middleCallback = new BaseMiddleCallback<>(callback, createUpdateAlipayAccountProcessor(userBaseKey));
@@ -559,14 +568,17 @@ import retrofit.client.Response;
     //<editor-fold desc="Delete User">
     @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
     {
-        return new DTOProcessorUserDeleted(userProfileCache, playerId);
+        return new DTOProcessorUserDeleted(userProfileCache.get(), playerId);
     }
-    public Response deleteUser(UserBaseKey userKey)
+
+    public Response deleteUser(@NotNull UserBaseKey userKey)
     {
         return createUserDeletedProcessor(userKey).process(userService.deleteUser(userKey.key));
     }
 
-    public MiddleCallback<Response> deleteUser(UserBaseKey userKey, Callback<Response> callback)
+    @NotNull public MiddleCallback<Response> deleteUser(
+            @NotNull UserBaseKey userKey,
+            @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createUserDeletedProcessor(userKey));
         userServiceAsync.deleteUser(userKey.key, middleCallback);
@@ -587,7 +599,7 @@ import retrofit.client.Response;
         }
         else if (friendsListKey.socialNetworkEnum != null)
         {
-            if(friendsListKey.socialNetworkEnum == SocialNetworkEnum.WB)
+            if (friendsListKey.socialNetworkEnum == SocialNetworkEnum.WB)
             {
                 received = userService.getSocialWeiboFriends(friendsListKey.userBaseKey.key);
             }
@@ -606,7 +618,7 @@ import retrofit.client.Response;
         return received;
     }
 
-    public MiddleCallback<UserFriendsDTOList> getFriends(
+    @NotNull public MiddleCallback<UserFriendsDTOList> getFriends(
             @NotNull FriendsListKey friendsListKey,
             @Nullable Callback<UserFriendsDTOList> callback)
     {
@@ -637,7 +649,7 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Search Social Friends">
-    public MiddleCallback<UserFriendsDTOList> searchSocialFriends(
+    @NotNull public MiddleCallback<UserFriendsDTOList> searchSocialFriends(
             @NotNull UserBaseKey userKey,
             @Nullable SocialNetworkEnum socialNetworkEnum,
             @NotNull String query,
@@ -655,31 +667,52 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Follow Batch Free">
-    public Response followBatchFree(FollowFriendsForm followFriendsForm)
+    protected DTOProcessor<UserProfileDTO> createBatchFollowFreeProcessor(@NotNull BatchFollowFormDTO batchFollowFormDTO)
     {
-        return userService.followBatchFree(followFriendsForm);
+        return new DTOProcessorFollowFreeUserBatch(
+                userProfileCache.get(),
+                heroListCache.get(),
+                getPositionsCache.get(),
+                userMessagingRelationshipCache.get(),
+                allowableRecipientPaginatedCache.get(),
+                batchFollowFormDTO);
     }
 
-    public MiddleCallback<UserProfileDTO> followBatchFree(FollowFriendsForm followFriendsForm,Callback<UserProfileDTO> callback)
+    @NotNull public UserProfileDTO followBatchFree(@NotNull BatchFollowFormDTO batchFollowFormDTO)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.followBatchFree(followFriendsForm,middleCallback);
+        return createBatchFollowFreeProcessor(batchFollowFormDTO).process(
+                userService.followBatchFree(batchFollowFormDTO));
+    }
+
+    @NotNull public MiddleCallback<UserProfileDTO> followBatchFree(
+            @NotNull BatchFollowFormDTO batchFollowFormDTO,
+            @Nullable Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createBatchFollowFreeProcessor(batchFollowFormDTO));
+        userServiceAsync.followBatchFree(batchFollowFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
-    protected DTOProcessor<Response> createDTOProcessorFriendInvited()
+    @NotNull protected DTOProcessor<Response> createDTOProcessorFriendInvited()
     {
         return new DTOProcessorFriendInvited(this.leaderboardFriendsCache.get());
     }
 
-    public Response inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO)
+    public Response inviteFriends(
+            @NotNull UserBaseKey userKey,
+            @NotNull InviteFormDTO inviteFormDTO)
     {
         return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
     }
 
-    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO, Callback<Response> callback)
+    @NotNull public MiddleCallback<Response> inviteFriends(
+            @NotNull UserBaseKey userKey,
+            @NotNull InviteFormDTO inviteFormDTO,
+            @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorFriendInvited());
         userServiceAsync.inviteFriends(userKey.key, inviteFormDTO, middleCallback);
@@ -688,12 +721,17 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Add Credit">
-    public UserProfileDTO addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO)
+    public UserProfileDTO addCredit(
+            @NotNull UserBaseKey userKey,
+            @Nullable PurchaseReportDTO purchaseDTO)
     {
         return createUpdateProfileProcessor().process(userService.addCredit(userKey.key, purchaseDTO));
     }
 
-    public MiddleCallback<UserProfileDTO> addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> addCredit(
+            @NotNull UserBaseKey userKey,
+            @Nullable PurchaseReportDTO purchaseDTO,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
         userServiceAsync.addCredit(userKey.key, purchaseDTO, middleCallback);
@@ -702,96 +740,100 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
-    @NotNull protected DTOProcessor<UserProfileDTO> createFollowPremiumUserProcessor(@NotNull UserBaseKey userToFollow)
+    @NotNull protected DTOProcessor<UserProfileDTO> createFollowPremiumUserProcessor(@NotNull UserBaseKey heroId)
     {
         return new DTOProcessorFollowPremiumUser(
-                userProfileCache,
+                userProfileCache.get(),
                 heroListCache.get(),
-                getPositionsCache,
-                userMessagingRelationshipCache,
+                getPositionsCache.get(),
+                userMessagingRelationshipCache.get(),
                 allowableRecipientPaginatedCache.get(),
-                userToFollow);
+                currentUserId.toUserBaseKey(),
+                heroId);
     }
 
-    public UserProfileDTO follow(@NotNull UserBaseKey userBaseKey)
+    public UserProfileDTO follow(@NotNull UserBaseKey heroId)
     {
-        return createFollowPremiumUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key));
+        return createFollowPremiumUserProcessor(heroId).process(userService.follow(heroId.key));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> follow(
-            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(userBaseKey));
-        userServiceAsync.follow(userBaseKey.key, middleCallback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(heroId));
+        userServiceAsync.follow(heroId.key, middleCallback);
         return middleCallback;
     }
 
     public UserProfileDTO follow(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO)
+            @NotNull UserBaseKey heroId,
+            @NotNull PurchaseReportDTO purchaseDTO)
     {
-        return createFollowPremiumUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key, purchaseDTO));
+        return createFollowPremiumUserProcessor(heroId).process(userService.follow(heroId.key, purchaseDTO));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> follow(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO, @Nullable Callback<UserProfileDTO> callback)
+            @NotNull UserBaseKey heroId,
+            @NotNull PurchaseReportDTO purchaseDTO,
+            @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(userBaseKey));
-        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(heroId));
+        userServiceAsync.follow(heroId.key, purchaseDTO, middleCallback);
         return middleCallback;
     }
 
-    @NotNull protected DTOProcessor<UserProfileDTO> createFollowFreeUserProcessor(@NotNull UserBaseKey userToFollow)
+    @NotNull protected DTOProcessor<UserProfileDTO> createFollowFreeUserProcessor(@NotNull UserBaseKey heroId)
     {
         return new DTOProcessorFollowFreeUser(
-                userProfileCache,
+                userProfileCache.get(),
                 heroListCache.get(),
-                getPositionsCache,
-                userMessagingRelationshipCache,
+                getPositionsCache.get(),
+                userMessagingRelationshipCache.get(),
                 allowableRecipientPaginatedCache.get(),
-                userToFollow);
+                currentUserId.toUserBaseKey(),
+                heroId);
     }
 
-    public UserProfileDTO freeFollow(@NotNull UserBaseKey userBaseKey)
+    public UserProfileDTO freeFollow(@NotNull UserBaseKey heroId)
     {
-        return createFollowFreeUserProcessor(userBaseKey).process(userService.freeFollow(userBaseKey.key));
+        return createFollowFreeUserProcessor(heroId).process(userService.freeFollow(heroId.key));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> freeFollow(
-            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowFreeUserProcessor(userBaseKey));
-        userServiceAsync.freeFollow(userBaseKey.key, middleCallback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowFreeUserProcessor(heroId));
+        userServiceAsync.freeFollow(heroId.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
-    @NotNull protected DTOProcessor<UserProfileDTO> createUnfollowUserProcessor(@NotNull UserBaseKey userToFollow)
+    @NotNull protected DTOProcessor<UserProfileDTO> createUnfollowUserProcessor(@NotNull UserBaseKey heroId)
     {
         return new DTOProcessorUnfollowUser(
-                userProfileCache,
+                userProfileCache.get(),
                 heroListCache.get(),
-                getPositionsCache,
-                userMessagingRelationshipCache,
+                getPositionsCache.get(),
+                userMessagingRelationshipCache.get(),
                 allowableRecipientPaginatedCache.get(),
-                userToFollow);
+                currentUserId.toUserBaseKey(),
+                heroId);
     }
 
-    public UserProfileDTO unfollow(@NotNull UserBaseKey userBaseKey)
+    public UserProfileDTO unfollow(@NotNull UserBaseKey heroId)
     {
-        return createUnfollowUserProcessor(userBaseKey).process(userService.unfollow(userBaseKey.key));
+        return createUnfollowUserProcessor(heroId).process(userService.unfollow(heroId.key));
     }
 
-    public MiddleCallback<UserProfileDTO> unfollow(
-            @NotNull UserBaseKey userBaseKey,
+    @NotNull public MiddleCallback<UserProfileDTO> unfollow(
+            @NotNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUnfollowUserProcessor(userBaseKey));
-        userServiceAsync.unfollow(userBaseKey.key, middleCallback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUnfollowUserProcessor(heroId));
+        userServiceAsync.unfollow(heroId.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -802,7 +844,7 @@ import retrofit.client.Response;
         return userService.getHeroes(heroKey.key);
     }
 
-    public BaseMiddleCallback<HeroDTOList> getHeroes(
+    @NotNull public MiddleCallback<HeroDTOList> getHeroes(
             @NotNull UserBaseKey heroKey,
             @Nullable Callback<HeroDTOList> callback)
     {
@@ -818,7 +860,7 @@ import retrofit.client.Response;
             @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         return new DTOProcessorUpdateCountryCode(
-                userProfileCache,
+                userProfileCache.get(),
                 providerListCache.get(),
                 providerCache.get(),
                 providerCompactCache.get(),
@@ -851,7 +893,7 @@ import retrofit.client.Response;
             @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
             @NotNull UserBaseKey invitedUserId)
     {
-        return new DTOProcessorUpdateReferralCode(userProfileCache, updateReferralCodeDTO, invitedUserId);
+        return new DTOProcessorUpdateReferralCode(userProfileCache.get(), updateReferralCodeDTO, invitedUserId);
     }
 
     @NotNull public Response updateReferralCode(

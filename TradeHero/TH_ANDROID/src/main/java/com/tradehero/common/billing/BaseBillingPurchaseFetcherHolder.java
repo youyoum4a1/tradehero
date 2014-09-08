@@ -4,6 +4,8 @@ import com.tradehero.common.billing.exception.BillingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class BaseBillingPurchaseFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
@@ -16,17 +18,19 @@ abstract public class BaseBillingPurchaseFetcherHolder<
         ProductPurchaseType,
         BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<
+    @NotNull protected final Map<Integer /*requestCode*/, BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType,
             BillingExceptionType>> parentPurchaseFetchedListeners;
 
+    //<editor-fold desc="Constructors">
     public BaseBillingPurchaseFetcherHolder()
     {
         super();
         parentPurchaseFetchedListeners = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
@@ -38,7 +42,7 @@ abstract public class BaseBillingPurchaseFetcherHolder<
         parentPurchaseFetchedListeners.remove(requestCode);
     }
 
-    @Override public BillingPurchaseFetcher.OnPurchaseFetchedListener<
+    @Override @Nullable public BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType,
@@ -51,16 +55,18 @@ abstract public class BaseBillingPurchaseFetcherHolder<
      * @param requestCode
      * @param purchaseFetchedListener
      */
-    @Override public void registerPurchaseFetchedListener(int requestCode, BillingPurchaseFetcher.OnPurchaseFetchedListener<
-            ProductIdentifierType,
-            OrderIdType,
-            ProductPurchaseType,
-            BillingExceptionType> purchaseFetchedListener)
+    @Override public void registerPurchaseFetchedListener(
+            int requestCode,
+            @Nullable BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                    ProductIdentifierType,
+                    OrderIdType,
+                    ProductPurchaseType,
+                    BillingExceptionType> purchaseFetchedListener)
     {
         parentPurchaseFetchedListeners.put(requestCode, purchaseFetchedListener);
     }
 
-    protected BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>
+    @NotNull protected BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>
         createPurchaseFetchedListener()
     {
         return new BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType>()

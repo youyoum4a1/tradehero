@@ -48,6 +48,18 @@ import org.jetbrains.annotations.Nullable;
     @Nullable
     @Override public PortfolioDTO put(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
     {
+        PortfolioDTO previous = get(key);
+        //noinspection ConstantConditions
+        if (previous != null && previous.userId != null)
+        {
+            value.userId = previous.userId;
+        }
+        //noinspection ConstantConditions
+        if (value.userId == null)
+        {
+            throw new NullPointerException("UserId should be set");
+        }
+
         portfolioCompactCache.get().put(key.getPortfolioIdKey(), value);
         getPositionsCache.get().invalidate(key);
         return super.put(key, value);
