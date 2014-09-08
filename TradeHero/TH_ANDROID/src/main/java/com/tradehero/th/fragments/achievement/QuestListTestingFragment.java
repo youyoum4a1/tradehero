@@ -82,7 +82,7 @@ public class QuestListTestingFragment extends DashboardFragment
                 userAchievementDTO.xpEarned = 400;
                 userAchievementDTO.xpTotal = 1030;
 
-                userAchievementCache.put(userAchievementDTO);
+                userAchievementCache.putAndBroadcast(userAchievementDTO);
             }
         });
     }

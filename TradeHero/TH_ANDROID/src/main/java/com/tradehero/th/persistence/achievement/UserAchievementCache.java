@@ -17,9 +17,10 @@ import org.jetbrains.annotations.Nullable;
 @Singleton public class UserAchievementCache extends StraightDTOCacheNew<UserAchievementId, UserAchievementDTO>
 {
     //TODO implements CutDTO when AchievementsDTO has its own cache?
-    public static final String KEY_USER_ACHIEVEMENT_ID = UserAchievementCache.class.getName()+".achievementId";
+    public static final String KEY_USER_ACHIEVEMENT_ID = UserAchievementCache.class.getName() + ".achievementId";
     public static final String INTENT_ACTION_NAME = "com.tradehero.th.achievement.ALERT";
     public static final String KEY_ACHIEVEMENT_NODE = "achievements";
+
     public static final int DEFAULT_SIZE = 20;
 
     private static final int DELAY_INTERVAL = 5000;
@@ -66,33 +67,85 @@ import org.jetbrains.annotations.Nullable;
     {
         for (UserAchievementDTO userAchievementDTO : userAchievementDTOs)
         {
-            put(userAchievementDTO);
+            putAndBroadcast(userAchievementDTO);
         }
     }
 
-    public void put(@NotNull UserAchievementDTO userAchievementDTO)
+    public BroadcastTask putAndBroadcast(@NotNull UserAchievementDTO userAchievementDTO)
     {
         put(userAchievementDTO.getUserAchievementId(), userAchievementDTO);
         final UserAchievementId userAchievementId = userAchievementDTO.getUserAchievementId();
-        if (!broadcast(userAchievementId))
-        {
-            Looper.prepare();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable()
-            {
-                @Override public void run()
-                {
-                    broadcast(userAchievementId);
-                }
-            }, DELAY_INTERVAL);
-            Looper.loop();
-        }
+        BroadcastTask broadcastTask = new BroadcastTask(userAchievementId, localBroadcastManager);
+        broadcastTask.start();
+        return broadcastTask;
     }
 
-    private boolean broadcast(UserAchievementId userAchievementId)
+    protected static class BroadcastTask
     {
-        Intent i = new Intent(INTENT_ACTION_NAME);
-        i.putExtra(KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
-        return localBroadcastManager.sendBroadcast(i);
+        private static final int MAX_BROADCAST_TRY = 4;
+
+        private int mDelayInterval = DELAY_INTERVAL;
+        private UserAchievementId mUserAchievementId;
+        private Handler mHandler;
+        private LocalBroadcastManager mLocalBroadcastManager;
+        private volatile int mTry;
+        public volatile boolean isRunning;
+
+        private Runnable mTask = new Runnable()
+        {
+            @Override public void run()
+            {
+                if (mTry >= MAX_BROADCAST_TRY)
+                {
+                    stop();
+                }
+                else if (!broadcast(mUserAchievementId))
+                {
+
+                    mHandler.postDelayed(mTask, mDelayInterval);
+                    mTry++;
+                }
+                else
+                {
+                    stop();
+                }
+            }
+        };
+
+        public BroadcastTask(UserAchievementId mUserAchievementId, LocalBroadcastManager mLocalBroadcastManager)
+        {
+            this.mUserAchievementId = mUserAchievementId;
+            this.mLocalBroadcastManager = mLocalBroadcastManager;
+            if (Looper.myLooper() == null)
+            {
+                Looper.prepare();
+            }
+            mHandler = new Handler();
+            Looper.loop();
+        }
+
+        public int getCurrentTry()
+        {
+            return mTry;
+        }
+
+        private boolean broadcast(UserAchievementId userAchievementId)
+        {
+            Intent i = new Intent(INTENT_ACTION_NAME);
+            i.putExtra(KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
+            return mLocalBroadcastManager.sendBroadcast(i);
+        }
+
+        public void start()
+        {
+            isRunning = true;
+            mTask.run();
+        }
+
+        public void stop()
+        {
+            mHandler.removeCallbacks(mTask);
+            isRunning = false;
+        }
     }
 }

@@ -106,7 +106,7 @@ public class ObjectMapperWrapperTest extends BaseApiTest
 
         assertThat(aReceivedIntent).isNotNull();
 
-        Bundle bundle = aReceivedIntent.getBundleExtra(UserAchievementDTO.class.getName());
+        Bundle bundle = aReceivedIntent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID);
         assertThat(bundle).isNotNull();
 
         UserAchievementId userAchievementId = new UserAchievementId(bundle);
