@@ -341,7 +341,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         {
             @Override public void onClick(View view)
             {
-                DeviceUtil.dismissKeyboard(getActivity(), mCommentsEditText);
+                DeviceUtil.dismissKeyboard(mCommentsEditText);
                 handleBtnAddCashPressed();
             }
         });

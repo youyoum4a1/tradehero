@@ -115,7 +115,7 @@ public class PostCommentView extends RelativeLayout
         commentText.setOnFocusChangeListener(null);
         commentPostedListener = null;
 
-        DeviceUtil.dismissKeyboard(getContext(), commentText);
+        DeviceUtil.dismissKeyboard(commentText);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -124,7 +124,7 @@ public class PostCommentView extends RelativeLayout
     {
         if (keypadIsShowing)
         {
-            DeviceUtil.dismissKeyboard(getContext(), commentText);
+            DeviceUtil.dismissKeyboard(commentText);
             keypadIsShowing = false;
             commentText.clearFocus();
         }

@@ -47,7 +47,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
 
     protected void handleSignInOrUpButtonClicked(View view)
     {
-        DeviceUtil.dismissKeyboard(getActivity(), view);
+        DeviceUtil.dismissKeyboard(view);
 
         forceValidateFields();
 
