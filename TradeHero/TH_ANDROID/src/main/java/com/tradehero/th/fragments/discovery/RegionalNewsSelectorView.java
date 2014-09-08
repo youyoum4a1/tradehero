@@ -144,6 +144,7 @@ public class RegionalNewsSelectorView extends LinearLayout
     private void cancelSearch()
     {
         mRegionSelectorWrapper.setDisplayedChildByLayoutId(mRegionSelector.getId());
+        DeviceUtil.dismissKeyboard(mCountryFilter);
     }
 
     @Override protected void onAttachedToWindow()
