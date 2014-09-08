@@ -3,7 +3,7 @@
 	url = git@github.com:nguyentruongtho/java-code-styles.git
 [submodule "facebook-android-sdk"]
 	path = facebook-android-sdk
-	url = git@github.com:nguyentruongtho/facebook-android-sdk.git
+	url = git@github.com:TradeHero/facebook-android-sdk.git
 [submodule "AndroidResideMenu"]
 	path = AndroidResideMenu
 	url = git@github.com:nguyentruongtho/AndroidResideMenu.git
