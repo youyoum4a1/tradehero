@@ -78,6 +78,8 @@ android {
 
   buildTypes {
     debug {
+      runProguard true
+      proguardFiles 'proguard/proguard-android-fast.txt'
       // versionNameSuffix interferes with the version the server receives
       // applicationIdSuffix '.dev'
       // versionNameSuffix '-dev'
@@ -252,6 +254,7 @@ robolectric {
 }
 
 dependencies {
+  // Helper here http://gradleplease.appspot.com
   compile fileTree(dir: 'libs', include: ['*.jar'])
 
   chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
@@ -265,7 +268,19 @@ dependencies {
   androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   androidTestAmazonFireCompile 'com.amazon:in-app-purchasing:2.0.0'
 
-  compile project(':facebook-android-sdk:facebook')
+  // This does not work as we would hope. Second "setProperty" wins
+  def fbGoogproj = project(':facebook-android-sdk:facebook')
+  fbGoogproj.setProperty('TEST_GOOGLE_PLAY', "true")
+  println "in GoogleplayCompile "
+  googleplayCompile fbGoogproj
+
+  def fbproj = project(':facebook-android-sdk:facebook')
+  fbproj.setProperty('TEST_GOOGLE_PLAY', "false")
+  println "in Compile "
+  amazonCompile fbproj
+  amazonFireCompile fbproj
+  chinaCompile fbproj
+  samsungCompile fbproj
 
   compile ('com.actionbarsherlock:actionbarsherlock:4.4.0@aar') {
     exclude group: 'com.google.android', module: 'support-v4'
@@ -286,7 +301,12 @@ dependencies {
     // exclude group: 'com.android.support', module: 'appcompat-v7'
   }
 
-  compile ('com.etiennelawlor.quickreturn:library:1.0-aar@aar')
+  compile ('com.etiennelawlor.quickreturn:library:1.0-aar@aar') {
+    exclude group: 'com.android.support', module: 'support-v13'
+    exclude group: 'com.jakewharton', module: 'butterknife'
+    exclude group: 'com.squareup.picasso', module: 'picasso'
+    exclude group: 'com.nineoldandroids', module: 'library'
+  }
 
   compile ('com.squareup.picasso:picasso:2.3.3') {
     exclude group: "com.squareup.okhttp", module: "okhttp"
@@ -423,3 +443,14 @@ task reorderDependencyToFixJunit4Issue {
 }
 
 preBuild.dependsOn(reorderDependencyToFixJunit4Issue)
+
+project.afterEvaluate {
+  println("afterEvaluate")
+  tasks.each { task ->
+    if (task.name.matches("compileGoogle.*"))
+    {
+      println("adding depend task " + task.name)
+    }
+  }
+}
+
