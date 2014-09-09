@@ -2,45 +2,63 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/basic_white_selector"
     >
 
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/common_margin_15"
       android:orientation="vertical"
       >
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/common_margin_30"
         android:gravity="center"
         android:text="@string/security_on_board_select_invitation_title"
         android:textSize="@dimen/text_large"
         android:textStyle="bold"
+        android:textColor="@color/black"
         />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/common_margin_30"
+        android:layout_marginTop="@dimen/common_margin_10"
         android:gravity="center"
         android:text="@string/security_on_board_select_invitation_come_on"
         android:lineSpacingMultiplier="1.2"
+        android:textColor="@color/black"
         />
 
   </LinearLayout>
 
-  <GridView
-      android:id="@android:id/list"
+  <ViewSwitcher
+      android:id="@+id/switcher_stock"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:numColumns="@integer/trending_list_column_count"
-      />
+      android:layout_margin="@dimen/common_margin_4"
+      >
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_gravity="center"
+        />
+
+    <GridView
+        android:id="@+id/stocks_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:horizontalSpacing="@dimen/common_margin_10"
+        android:verticalSpacing="@dimen/common_margin_10"
+        android:numColumns="@integer/trending_list_column_count"
+        />
+
+  </ViewSwitcher>
 
 </LinearLayout>

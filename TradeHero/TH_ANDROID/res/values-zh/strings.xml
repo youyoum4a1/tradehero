@@ -108,4 +108,7 @@
   <string name="referral_dollars_claimed">已成功提交邀请码</string>
 
   <string name="mark_as_all_read">全部已读</string>
+  <string name="onboard_exchange_title">帮助您开始</string>
+  <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
+  <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>
 </resources>

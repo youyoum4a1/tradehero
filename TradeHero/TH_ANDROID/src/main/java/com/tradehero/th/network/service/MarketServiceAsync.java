@@ -25,7 +25,7 @@ interface MarketServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Get All Exchange And Sectors Compact">
-    @GET("/api/allExchangesAndSectors")
+    @GET("/allExchangesAndSectors")
     void getAllExchangeSectorCompact(Callback<ExchangeSectorCompactListDTO> callback);
     //</editor-fold>
 }

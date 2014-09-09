@@ -155,7 +155,7 @@ public class PreferenceModule
     }
 
     @Provides @Singleton @FirstShowOnBoardDialog BooleanPreference provideFirstShowOnBoardDialogPreference(
-            @ForUser SharedPreferences sharedPreferences)
+            @ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_ON_BOARD_FLAG, true);
     }

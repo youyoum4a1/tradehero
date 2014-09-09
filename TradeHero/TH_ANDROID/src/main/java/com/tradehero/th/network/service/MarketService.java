@@ -21,7 +21,7 @@ public interface MarketService
     //</editor-fold>
 
     //<editor-fold desc="Get All Exchange And Sectors Compact">
-    @GET("/api/allExchangesAndSectors")
+    @GET("/allExchangesAndSectors")
     ExchangeSectorCompactListDTO getAllExchangeSectorCompact();
     //</editor-fold>
 }

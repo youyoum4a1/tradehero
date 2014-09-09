@@ -79,6 +79,7 @@ public class OnBoardPickExchangeSectorViewHolder
         sectorAdapter.clear();
         sectorAdapter.addAll(exchangeSectorCompactListDTO.sectors);
         sectorAdapter.notifyDataSetChanged();
+        sectorSpinner.setSelection(12);
     }
 
     public OnBoardPrefDTO getOnBoardPrefs()

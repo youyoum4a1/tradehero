@@ -18,6 +18,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class OnBoardPickExchangeSectorFragment extends BaseFragment
 {
@@ -129,6 +130,7 @@ public class OnBoardPickExchangeSectorFragment extends BaseFragment
     {
         @Override public void onDTOReceived(@NotNull ExchangeSectorCompactKey key, @NotNull ExchangeSectorCompactListDTO value)
         {
+            Timber.d("lyl "+value.toString());
             viewHolder.setExchangeSector(value);
         }
 

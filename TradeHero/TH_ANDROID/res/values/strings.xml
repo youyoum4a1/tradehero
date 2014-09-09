@@ -246,4 +246,7 @@
   <string name="discovery_activity">Activity</string>
   <string name="discovery">Discovery</string>
   <string name="discovery_learning">Learning</string>
+  <string name="onboard_exchange_title">To help get you started</string>
+  <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
+  <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>
 </resources>

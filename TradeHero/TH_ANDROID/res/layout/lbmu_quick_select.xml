@@ -58,7 +58,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
-      android:src="@drawable/tick_green"
+      android:src="@drawable/icn_tick_blue"
       />
 
 </com.tradehero.th.fragments.onboarding.hero.SelectableUserViewRelative>

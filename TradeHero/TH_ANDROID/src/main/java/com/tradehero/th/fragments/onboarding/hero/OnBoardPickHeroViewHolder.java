@@ -22,8 +22,8 @@ public class OnBoardPickHeroViewHolder
     private static final int PROGRESS_VIEW_ID = 0;
     private static final int LIST_VIEW_ID = 1;
 
-    @InjectView(R.id.switcher) ViewSwitcher switcher;
-    @InjectView(android.R.id.list) ListView heroListView;
+    @InjectView(R.id.switcher_hero) ViewSwitcher switcher;
+    @InjectView(R.id.heros_list) ListView heroListView;
 
     @NotNull DTOAdapterNew<SelectableUserDTO> selectedHeroesAdapter;
 
@@ -37,24 +37,26 @@ public class OnBoardPickHeroViewHolder
     }
     //</editor-fold>
 
-    void attachView(View view)
+    public void attachView(View view)
     {
         ButterKnife.inject(this, view);
         switcher.setDisplayedChild(PROGRESS_VIEW_ID);
         heroListView.setAdapter(selectedHeroesAdapter);
     }
 
-    void detachView()
+    public void detachView()
     {
         ButterKnife.reset(this);
     }
 
-    void setUsers(@NotNull List<LeaderboardUserDTO> users)
+    public void setUsers(@NotNull List<LeaderboardUserDTO> users)
     {
         List<SelectableUserDTO> list = new ArrayList<>();
         for (LeaderboardUserDTO user : users)
         {
-            list.add(new SelectableUserDTO(user));
+            SelectableUserDTO selectableUserDTO = new SelectableUserDTO(user);
+            selectableUserDTO.selected = true;
+            list.add(selectableUserDTO);
         }
         selectedHeroesAdapter.clear();
         selectedHeroesAdapter.addAll(list);
@@ -62,7 +64,7 @@ public class OnBoardPickHeroViewHolder
         switcher.setDisplayedChild(LIST_VIEW_ID);
     }
 
-    @OnItemClick(android.R.id.list)
+    @OnItemClick(R.id.heros_list)
     void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
         SelectableUserDTO value = (SelectableUserDTO) adapterView.getItemAtPosition(position);
@@ -70,7 +72,7 @@ public class OnBoardPickHeroViewHolder
         selectedHeroesAdapter.notifyDataSetChanged();
     }
 
-    @NotNull LeaderboardUserDTOList getSelectedHeroes()
+    public @NotNull LeaderboardUserDTOList getSelectedHeroes()
     {
         LeaderboardUserDTOList selected = new LeaderboardUserDTOList();
         SelectableUserDTO value;

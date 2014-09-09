@@ -36,6 +36,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -410,7 +411,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (firstShowOnBoardDialogPreference.get())
         {
             // OnBoardDialogFragment handles setting the preference to false when done
-            //new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());
+            new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
@@ -18,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class OnBoardPickStockViewHolder
 {
-    @InjectView(android.R.id.list) AbsListView stockListView;
+    @InjectView(R.id.stocks_list) AbsListView stockListView;
+    @InjectView(R.id.switcher_stock) ViewSwitcher switcher;
 
     @NotNull DTOAdapterNew<SelectableSecurityDTO> selectedStocksAdapter;
 
@@ -32,30 +34,34 @@ public class OnBoardPickStockViewHolder
     }
     //</editor-fold>
 
-    void attachView(View view)
+    public void attachView(View view)
     {
         ButterKnife.inject(this, view);
+        switcher.setDisplayedChild(0);
         stockListView.setAdapter(selectedStocksAdapter);
     }
 
-    void detachView()
+    public void detachView()
     {
         ButterKnife.reset(this);
     }
 
-    void setStocks(@NotNull List<SecurityCompactDTO> securityCompactDTOs)
+    public void setStocks(@NotNull List<SecurityCompactDTO> securityCompactDTOs)
     {
         List<SelectableSecurityDTO> list = new ArrayList<>();
         for (SecurityCompactDTO securityCompactDTO : securityCompactDTOs)
         {
-            list.add(new SelectableSecurityDTO(securityCompactDTO));
+            SelectableSecurityDTO item = new SelectableSecurityDTO(securityCompactDTO);
+            item.selected = true;
+            list.add(item);
         }
         selectedStocksAdapter.clear();
         selectedStocksAdapter.addAll(list);
         selectedStocksAdapter.notifyDataSetChanged();
+        switcher.setDisplayedChild(1);
     }
 
-    @OnItemClick(android.R.id.list)
+    @OnItemClick(R.id.stocks_list)
     void onItemClick(
             AdapterView<?> adapterView,
             @SuppressWarnings("UnusedParameters") View view,
@@ -67,7 +73,7 @@ public class OnBoardPickStockViewHolder
         selectedStocksAdapter.notifyDataSetChanged();
     }
 
-    @NotNull SecurityCompactDTOList getSelectedStocks()
+    public @NotNull SecurityCompactDTOList getSelectedStocks()
     {
         SecurityCompactDTOList selected = new SecurityCompactDTOList();
         SelectableSecurityDTO value;
