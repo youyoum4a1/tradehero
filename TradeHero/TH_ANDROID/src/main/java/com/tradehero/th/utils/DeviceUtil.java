@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import java.lang.ref.WeakReference;
+import org.jetbrains.annotations.Nullable;
 
 public final class DeviceUtil
 {
@@ -22,7 +23,7 @@ public final class DeviceUtil
         return imm != null && imm.isAcceptingText();
     }
 
-    public static void dismissKeyboard(View v)
+    public static void dismissKeyboard(@Nullable View v)
     {
         if (v != null)
         {
@@ -31,7 +32,7 @@ public final class DeviceUtil
         }
     }
 
-    public static void dismissKeyboard(Activity activity)
+    public static void dismissKeyboard(@Nullable Activity activity)
     {
         if (activity != null)
         {
