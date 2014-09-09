@@ -217,7 +217,12 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                             .domainToPresent(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain)
                             .applicablePortfolioId(getApplicablePortfolioId())
                             .startWithProgressDialog(true)
+                            .popIfBillingNotAvailable(true)
+                            .popIfProductIdentifierFetchFailed(true)
+                            .popIfInventoryFetchFailed(true)
                             .doPurchase(true)
+                            .popIfPurchaseFailed(true)
+                            .popIfReportFailed(true)
                             .build());
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)

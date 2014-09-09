@@ -75,6 +75,8 @@ abstract public class BaseAmazonPurchaser<
                 break;
             case FAILED:
             case NOT_SUPPORTED:
+            case ALREADY_PURCHASED:
+            case INVALID_SKU:
                 notifyPurchaseFailed(createAmazonException(purchaseResponse.getRequestStatus()));
                 break;
         }
