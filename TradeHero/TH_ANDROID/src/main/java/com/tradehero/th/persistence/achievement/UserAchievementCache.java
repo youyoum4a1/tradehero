@@ -101,7 +101,6 @@ import org.jetbrains.annotations.Nullable;
                 }
                 else if (!broadcast(mUserAchievementId))
                 {
-
                     mHandler.postDelayed(mTask, mDelayInterval);
                     mTry++;
                 }
@@ -121,7 +120,6 @@ import org.jetbrains.annotations.Nullable;
                 Looper.prepare();
             }
             mHandler = new Handler();
-            Looper.loop();
         }
 
         public int getCurrentTry()
