@@ -1,10 +1,12 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
+import com.tradehero.th.key.MockQuestBonusId;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTOList;
@@ -82,5 +84,17 @@ public class AchievementServiceWrapper
     public QuestBonusDTOList getQuestBonuses(QuestBonusListId questBonusListId)
     {
         return achievementService.getQuestBonuses();
+    }
+
+    public DTO getMockBonusDTO(MockQuestBonusId mockQuestBonusId)
+    {
+        return achievementService.getMockQuestBonus(mockQuestBonusId.key, mockQuestBonusId.xpEarned, mockQuestBonusId.xpTotal);
+    }
+
+    public MiddleCallback<DTO> getMockBonusDTO(MockQuestBonusId mockQuestBonusId, Callback<DTO> callback)
+    {
+        MiddleCallback<DTO> middleCallback = new BaseMiddleCallback<>(callback);
+        achievementServiceAsync.getMockQuestBonus(mockQuestBonusId.key, mockQuestBonusId.xpEarned, mockQuestBonusId.xpTotal, middleCallback);
+        return middleCallback;
     }
 }

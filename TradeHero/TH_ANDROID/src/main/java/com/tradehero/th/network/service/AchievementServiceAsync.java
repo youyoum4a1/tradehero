@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.achievement.AchievementCategoryDTO;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
@@ -33,5 +33,9 @@ public interface AchievementServiceAsync
     @GET("/achievements/categories/{userId}")
     void getAchievementCategory(@Query("id") int categoryId, @Path("userId") int userId,
             Callback<AchievementCategoryDTOList> callback);
+
+    //<editor-fold desc="Get Mock Quest Bonus">
+    @GET("/achievements/mockdaily/{contiguousCount}")
+    void getMockQuestBonus(@Path("contiguousCount") int contiguousCount, @Query("xpEarned") int xpEarned, @Query("xpTotal") int xpTotal, Callback<DTO> middleCallback);
     //</editor-fold>
 }
