@@ -16,7 +16,6 @@ import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.StringUtils;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AchievementCellView extends RelativeLayout implements DTOView<AchievementCategoryDTO>
@@ -75,17 +74,25 @@ public class AchievementCellView extends RelativeLayout implements DTOView<Achie
         {
             achievementDefDTO = dto.achievementDefs.get(dto.currentUserLevel - 1);
         }
-        displayBadge(achievementDefDTO);
+        displayBadge(achievementDefDTO, dto.badge);
 
-        displayTitle(achievementDefDTO, dto);
+        displayTitle(achievementDefDTO, dto.displayName);
     }
 
-    private void displayBadge(@Nullable AchievementDefDTO dto)
+    private void displayBadge(@Nullable AchievementDefDTO dto, @Nullable String defaultBadge)
     {
         picasso.cancelRequest(badge);
         if (dto != null && !StringUtils.isNullOrEmpty(dto.visual))
         {
             picasso.load(dto.visual)
+                    .centerInside()
+                    .fit()
+                    .placeholder(R.drawable.achievement_unlocked_placeholder)
+                    .into(badge);
+        }
+        else if (defaultBadge != null)
+        {
+            picasso.load(defaultBadge)
                     .centerInside()
                     .fit()
                     .placeholder(R.drawable.achievement_unlocked_placeholder)
@@ -110,7 +117,7 @@ public class AchievementCellView extends RelativeLayout implements DTOView<Achie
         }
     }
 
-    private void displayTitle(@Nullable AchievementDefDTO achievementDefDTO, @NotNull AchievementCategoryDTO dto)
+    private void displayTitle(@Nullable AchievementDefDTO achievementDefDTO, String defaultName)
     {
         if (achievementDefDTO != null)
         {
@@ -118,7 +125,7 @@ public class AchievementCellView extends RelativeLayout implements DTOView<Achie
         }
         else
         {
-            title.setText(dto.displayName);
+            title.setText(defaultName);
         }
     }
 
