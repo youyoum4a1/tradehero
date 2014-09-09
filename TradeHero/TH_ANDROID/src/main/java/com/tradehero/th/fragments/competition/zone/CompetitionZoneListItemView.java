@@ -106,7 +106,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
             {
                 CompetitionZoneDisplayCellDTO displayCellDTO = (CompetitionZoneDisplayCellDTO) competitionZoneDTO;
                 String iconUrl = displayCellDTO.getIconUrl();
-                if (iconUrl != null)
+                if (iconUrl != null && !iconUrl.isEmpty())
                 {
                     picasso.cancelRequest(zoneIcon);
                     picasso.load(iconUrl)
