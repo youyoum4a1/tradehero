@@ -75,8 +75,5 @@
       <include layout="@layout/share_panel_layout"/>
 
     </LinearLayout>
-
-
-
   </RelativeLayout>
 </LinearLayout>

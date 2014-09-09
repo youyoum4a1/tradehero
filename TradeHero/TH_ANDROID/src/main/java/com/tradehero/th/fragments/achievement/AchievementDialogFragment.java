@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.achievement;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
@@ -33,6 +34,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 {
     private static final String PROPERTY_XP_EARNED = "xpEarned";
     private static final String PROPERTY_DOLLARS_EARNED = "dollarsEarned";
+    private static final String PROPERTY_BTN_COLOR = "btnColor";
 
     @InjectView(R.id.btn_achievement_share) Button btnShare;
 
@@ -47,6 +49,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
     private DTOCacheNew.Listener<AchievementCategoryId, AchievementCategoryDTO> mCategoryCacheListener;
 
     private ValueAnimator mAnim;
+    private ObjectAnimator btnColorAnimation;
 
     protected AchievementDialogFragment()
     {
@@ -127,6 +130,13 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
             mAnim.removeAllListeners();
             mAnim = null;
         }
+        if (btnColorAnimation != null)
+        {
+            btnColorAnimation.cancel();
+            btnColorAnimation.removeAllListeners();
+            btnColorAnimation.removeAllUpdateListeners();
+            btnColorAnimation = null;
+        }
         super.onDestroyView();
     }
 
@@ -177,23 +187,34 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     private void setShareButtonColor()
     {
-        //TODO cancel this animator
-        ValueAnimator valueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), Color.BLUE, Color.WHITE, mCurrentColor);
-        valueAnimator.setDuration(1000l);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        List<PropertyValuesHolder> propertyValuesHolders = graphicUtil.wiggleWiggle(1f);
+
+        PropertyValuesHolder pvhColor = PropertyValuesHolder.ofObject(PROPERTY_BTN_COLOR,
+                new ArgbEvaluator(),
+                getResources().getColor(R.color.tradehero_blue),
+                Color.WHITE,
+                mCurrentColor);
+
+        propertyValuesHolders.add(pvhColor);
+
+        PropertyValuesHolder[] array = new PropertyValuesHolder[propertyValuesHolders.size()];
+
+        btnColorAnimation = ObjectAnimator.ofPropertyValuesHolder(btnShare, propertyValuesHolders.toArray(array));
+        btnColorAnimation.setDuration(getResources().getInteger(R.integer.achievement_share_button_animation_duration));
+        btnColorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
         {
             @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
             {
-                int color = (Integer) valueAnimator.getAnimatedValue();
+                int color = (Integer) valueAnimator.getAnimatedValue(PROPERTY_BTN_COLOR);
                 StateListDrawable drawable = graphicUtil.createStateListDrawable(getActivity(), color);
                 int textColor = graphicUtil.getContrastingColor(color);
                 graphicUtil.setBackground(btnShare, drawable);
                 btnShare.setTextColor(textColor);
             }
         });
-        valueAnimator.setStartDelay(300l);
-        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        valueAnimator.start();
+        btnColorAnimation.setStartDelay(getResources().getInteger(R.integer.achievement_share_button_animation_delay));
+        btnColorAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        btnColorAnimation.start();
     }
 
     protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()

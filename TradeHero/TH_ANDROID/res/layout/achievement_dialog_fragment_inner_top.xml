@@ -16,6 +16,7 @@
       style="@style/TH.ButtonClose"
       android:background="@drawable/basic_transparent_selector"
       android:layout_alignParentRight="true"
+      android:visibility="gone"
       android:text="X"/>
 
   <TextView

@@ -11,10 +11,11 @@
     android:minWidth="1280dp"
     android:clipToPadding="false"
     android:clipChildren="false"
+    tools:background="@color/black"
     >
   <!-- A dummy container which takes the whole screen
        This container allows us to animate the children view without being clipped-->
-  <LinearLayout
+  <RelativeLayout
       android:id="@+id/achievement_content_container"
       android:layout_width="@dimen/achievement_dialog_width"
       android:layout_height="wrap_content"
@@ -23,6 +24,7 @@
       android:background="@color/achievement_dialog_bg"
       >
     <RelativeLayout
+        android:id="@+id/achievement_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/achievement_dialog_padding"
@@ -72,7 +74,7 @@
             style="@style/TH.Achievement.QuestIndicator"/>
       </com.tradehero.common.widget.QuestIndicatorGroupView>
 
-      <TextView
+      <com.tradehero.th.widget.MarkdownTextView
           android:id="@+id/achievement_description"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -82,7 +84,7 @@
           android:layout_centerHorizontal="true"
           style="@style/TH.Achievement.Description"/>
 
-      <TextView
+      <com.tradehero.th.widget.MarkdownTextView
           android:id="@+id/achievement_more_description"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -92,7 +94,60 @@
           android:layout_centerHorizontal="true"
           style="@style/TH.Achievement.Description"/>
 
+      <TextView
+          android:id="@+id/user_level_progress_xp_earned"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/achievement_more_description"
+          style="@style/TH.Achievement.Earned.XP"
+          android:layout_marginTop="@dimen/achievement_dollar_xp_earned_vertical_margin"
+          android:layout_centerHorizontal="true"
+          tools:text="+1,000 XP!"/>
+
+      <include
+          android:id="@+id/user_level_progress_bar"
+          layout="@layout/user_level_progressbar"
+          android:layout_below="@id/user_level_progress_xp_earned"
+          android:layout_centerHorizontal="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"/>
+
     </RelativeLayout>
-  </LinearLayout>
+
+    <View
+        android:id="@+id/achievement_horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_grey"
+        android:layout_below="@id/achievement_content"/>
+
+    <Button
+        android:id="@+id/btn_achievement_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/achievement_share"
+        style="@style/TH.Achievement.Share"
+        android:layout_below="@id/achievement_horizontal_divider"
+        android:layout_alignParentRight="true"
+        />
+
+    <LinearLayout
+        android:id="@+id/achievement_share_button_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:measureWithLargestChild="true"
+        android:layout_toLeftOf="@id/btn_achievement_share"
+        android:layout_below="@+id/achievement_horizontal_divider"
+        android:layout_alignParentLeft="true"
+        android:layout_alignBottom="@+id/btn_achievement_share">
+
+      <include layout="@layout/share_panel_layout"/>
+
+    </LinearLayout>
+
+  </RelativeLayout>
 
 </LinearLayout>

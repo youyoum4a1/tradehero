@@ -9,7 +9,6 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-
   <include
       android:id="@+id/achievement_progress_indicator"
       layout="@layout/achievement_progress_indicator"
@@ -19,7 +18,7 @@
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"/>
 
-  <TextView
+  <com.tradehero.th.widget.MarkdownTextView
       android:id="@+id/achievement_description"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -29,7 +28,7 @@
       android:layout_centerHorizontal="true"
       style="@style/TH.Achievement.Description"/>
 
-  <TextView
+  <com.tradehero.th.widget.MarkdownTextView
       android:id="@+id/achievement_more_description"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

@@ -1,5 +1,7 @@
 package com.tradehero.th.utils;
 
+import android.animation.Keyframe;
+import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -19,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,8 +54,7 @@ public class GraphicUtil implements BitmapForProfileFactory
             return exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_NORMAL);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             return null;
         }
@@ -145,8 +148,7 @@ public class GraphicUtil implements BitmapForProfileFactory
                     expectedW * Math.sin(rotationRad)));
 
             return decodeFileWithOrientation(f, rotationDegree, options2);
-        }
-        catch (FileNotFoundException e)
+        } catch (FileNotFoundException e)
         {
         }
         return null;
@@ -161,8 +163,7 @@ public class GraphicUtil implements BitmapForProfileFactory
             Bitmap scaledPhoto = BitmapFactory.decodeStream(new FileInputStream(f), null, options);
             scaledPhoto = new RotateTransformation(rotationDegree).transform(scaledPhoto);
             return scaledPhoto;
-        }
-        catch (FileNotFoundException e)
+        } catch (FileNotFoundException e)
         {
         }
         return null;
@@ -282,7 +283,7 @@ public class GraphicUtil implements BitmapForProfileFactory
     @SuppressLint("NewApi")
     public void setBackground(@NotNull View view, Drawable drawable)
     {
-        if(SDKUtils.isJellyBeanOrHigher())
+        if (SDKUtils.isJellyBeanOrHigher())
         {
             view.setBackground(drawable);
         }
@@ -290,5 +291,57 @@ public class GraphicUtil implements BitmapForProfileFactory
         {
             view.setBackgroundDrawable(drawable);
         }
+    }
+
+    public List<PropertyValuesHolder> wiggleWiggle(float shakeFactor)
+    {
+        PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofKeyframe(View.SCALE_X,
+                Keyframe.ofFloat(0f, 1f),
+                Keyframe.ofFloat(.1f, .9f),
+                Keyframe.ofFloat(.2f, .9f),
+                Keyframe.ofFloat(.3f, 1.1f),
+                Keyframe.ofFloat(.4f, 1.1f),
+                Keyframe.ofFloat(.5f, 1.1f),
+                Keyframe.ofFloat(.6f, 1.1f),
+                Keyframe.ofFloat(.7f, 1.1f),
+                Keyframe.ofFloat(.8f, 1.1f),
+                Keyframe.ofFloat(.9f, 1.1f),
+                Keyframe.ofFloat(1f, 1f)
+        );
+
+        PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofKeyframe(View.SCALE_Y,
+                Keyframe.ofFloat(0f, 1f),
+                Keyframe.ofFloat(.1f, .9f),
+                Keyframe.ofFloat(.2f, .9f),
+                Keyframe.ofFloat(.3f, 1.1f),
+                Keyframe.ofFloat(.4f, 1.1f),
+                Keyframe.ofFloat(.5f, 1.1f),
+                Keyframe.ofFloat(.6f, 1.1f),
+                Keyframe.ofFloat(.7f, 1.1f),
+                Keyframe.ofFloat(.8f, 1.1f),
+                Keyframe.ofFloat(.9f, 1.1f),
+                Keyframe.ofFloat(1f, 1f)
+        );
+
+        PropertyValuesHolder pvhRotate = PropertyValuesHolder.ofKeyframe(View.ROTATION,
+                Keyframe.ofFloat(0f, 0f),
+                Keyframe.ofFloat(.1f, -3f * shakeFactor),
+                Keyframe.ofFloat(.2f, -3f * shakeFactor),
+                Keyframe.ofFloat(.3f, 3f * shakeFactor),
+                Keyframe.ofFloat(.4f, -3f * shakeFactor),
+                Keyframe.ofFloat(.5f, 3f * shakeFactor),
+                Keyframe.ofFloat(.6f, -3f * shakeFactor),
+                Keyframe.ofFloat(.7f, 3f * shakeFactor),
+                Keyframe.ofFloat(.8f, -3f * shakeFactor),
+                Keyframe.ofFloat(.9f, 3f * shakeFactor),
+                Keyframe.ofFloat(1f, 0)
+        );
+
+        ArrayList<PropertyValuesHolder> propertyValuesHolders = new ArrayList<>();
+        propertyValuesHolders.add(pvhScaleX);
+        propertyValuesHolders.add(pvhScaleY);
+        propertyValuesHolders.add(pvhRotate);
+
+        return propertyValuesHolders;
     }
 }
