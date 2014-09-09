@@ -78,8 +78,9 @@ android {
 
   buildTypes {
     debug {
-      runProguard true
-      proguardFiles 'proguard/proguard-android-fast.txt'
+      //runProguard true
+      //proguardFiles 'proguard/proguard-android-fast.txt'
+      //zipAlign true
       // versionNameSuffix interferes with the version the server receives
       // applicationIdSuffix '.dev'
       // versionNameSuffix '-dev'
@@ -139,7 +140,7 @@ android {
 
     debug {
       java {
-        srcDir 'src/debug/java'
+        //srcDir 'src/debug/java'
       }
     }
 
@@ -271,12 +272,10 @@ dependencies {
   // This does not work as we would hope. Second "setProperty" wins
   def fbGoogproj = project(':facebook-android-sdk:facebook')
   fbGoogproj.setProperty('TEST_GOOGLE_PLAY', "true")
-  println "in GoogleplayCompile "
   googleplayCompile fbGoogproj
 
   def fbproj = project(':facebook-android-sdk:facebook')
   fbproj.setProperty('TEST_GOOGLE_PLAY', "false")
-  println "in Compile "
   amazonCompile fbproj
   amazonFireCompile fbproj
   chinaCompile fbproj
@@ -289,9 +288,6 @@ dependencies {
   compile ('com.github.chrisbanes.pulltorefresh:library:2.1.2-SNAPSHOT@aar') {
     exclude group: 'commons-codec', module: 'android'
     // exclude group: 'com.android.support', module: 'appcompat-v7'
-  }
-  compile ('com.viewpagerindicator:library:2.4.1@aar') {
-    exclude group: 'com.google.android', module: 'support-v4'
   }
   compile ('se.emilsjolander:stickylistheaders:2.4.1@aar') {
     exclude group: 'com.google.android', module: 'support-v4'
@@ -332,8 +328,6 @@ dependencies {
   compile 'com.urbanairship:urbanairship-lib:3.2.1'
 
   compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0'
-  // TODO remove after DiskLruMemCache is removed
-  compile 'com.jakewharton:disklrucache:2.0.2'
 
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
 
