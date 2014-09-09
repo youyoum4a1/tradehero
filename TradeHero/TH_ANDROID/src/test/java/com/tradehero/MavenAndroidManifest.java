@@ -1,6 +1,6 @@
 package com.tradehero;
 
-import com.tradehero.th.base.TestApplication;
+import com.tradehero.th.base.TestTHApp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class MavenAndroidManifest extends AndroidManifest
 
     @Override public String getApplicationName()
     {
-        return TestApplication.class.getName();
+        return TestTHApp.class.getName();
     }
 
     /**

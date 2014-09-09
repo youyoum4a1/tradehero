@@ -7,7 +7,7 @@ import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
@@ -203,7 +203,7 @@ import javax.inject.Singleton;
         },
         injects =
                 {
-                        com.tradehero.th.base.Application.class,
+                        THApp.class,
                         SettingsProfileFragment.class,
                         ProfileInfoView.class,
                         SimpleFollowUserAssistant.class,
@@ -402,18 +402,18 @@ import javax.inject.Singleton;
 )
 public class AppModule
 {
-    private final Application application;
+    private final THApp THApp;
 
-    public AppModule(Application application)
+    public AppModule(THApp THApp)
     {
-        this.application = application;
+        this.THApp = THApp;
     }
 
     // We should not use like this. Instead use like CurrentActivityHolder
     @Deprecated
     @Provides Context provideContext()
     {
-        return application.getApplicationContext();
+        return THApp.getApplicationContext();
     }
 
     @Provides Locale provideLocale(Context context)
@@ -426,8 +426,8 @@ public class AppModule
         return String.format("%s-%s", locale.getLanguage(), locale.getCountry());
     }
 
-    @Provides @Singleton Application provideApplication()
+    @Provides @Singleton THApp provideApplication()
     {
-        return application;
+        return THApp;
     }
 }

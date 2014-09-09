@@ -10,7 +10,7 @@ import com.tradehero.th.api.users.signup.LoginSignUpFormLinkedinDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormQQDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormTwitterDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormWeiboDTO;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.network.retrofit.RetrofitModule;
 import com.tradehero.th.utils.VersionUtils;
@@ -40,7 +40,7 @@ public class NetworkModule
         return new LoginFormDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(THApp.context()));
     }
 
     @Provides LoginSignUpFormEmailDTO provideLoginSignUpFormEmailDTO(DeviceTokenHelper deviceTokenHelper)
@@ -48,7 +48,7 @@ public class NetworkModule
         return new LoginSignUpFormEmailDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(THApp.context()));
     }
 
     @Provides LoginSignUpFormFacebookDTO provideLoginSignUpFormFacebookDTO(DeviceTokenHelper deviceTokenHelper)
@@ -56,7 +56,7 @@ public class NetworkModule
         return new LoginSignUpFormFacebookDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(THApp.context()));
     }
 
     @Provides LoginSignUpFormLinkedinDTO provideLoginSignUpFormLinkedinDTO(DeviceTokenHelper deviceTokenHelper)
@@ -64,7 +64,7 @@ public class NetworkModule
         return new LoginSignUpFormLinkedinDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(THApp.context()));
     }
 
     @Provides LoginSignUpFormQQDTO provideLoginSignUpFormQQDTO(DeviceTokenHelper deviceTokenHelper)
@@ -72,7 +72,7 @@ public class NetworkModule
         return new LoginSignUpFormQQDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(THApp.context()));
     }
 
     @Provides LoginSignUpFormTwitterDTO provideLoginSignUpFormTwitterDTO(DeviceTokenHelper deviceTokenHelper)
@@ -80,7 +80,7 @@ public class NetworkModule
         return new LoginSignUpFormTwitterDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(THApp.context()));
     }
 
     @Provides LoginSignUpFormWeiboDTO provideLoginSignUpFormWeiboDTO(DeviceTokenHelper deviceTokenHelper)
@@ -88,6 +88,6 @@ public class NetworkModule
         return new LoginSignUpFormWeiboDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(THApp.context()));
     }
 }

@@ -26,6 +26,7 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -118,15 +119,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override public void onCreate(Bundle savedInstanceState)
     {
         AppTiming.dashboardCreate = System.currentTimeMillis();
-
-        // this need tobe early than super.onCreate or it will crash
-        // when device scroll into landscape.
-        // request the progress-bar feature for the activity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         super.onCreate(savedInstanceState);
 
-        DaggerUtils.inject(this);
+        THApp app = THApp.get(this);
+        app.inject(this);
 
         currentActivityHolder.setCurrentActivity(this);
 

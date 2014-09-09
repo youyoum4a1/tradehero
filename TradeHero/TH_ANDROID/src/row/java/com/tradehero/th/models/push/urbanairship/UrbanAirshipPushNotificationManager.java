@@ -1,6 +1,6 @@
 package com.tradehero.th.models.push.urbanairship;
 
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
@@ -26,7 +26,7 @@ import timber.log.Timber;
 
     @Override public void initialise()
     {
-        UAirship.takeOff(Application.context(), options);
+        UAirship.takeOff(THApp.context(), options);
 
         PushManager.enablePush();
         PushManager.shared().setNotificationBuilder(customPushNotificationBuilder.get());

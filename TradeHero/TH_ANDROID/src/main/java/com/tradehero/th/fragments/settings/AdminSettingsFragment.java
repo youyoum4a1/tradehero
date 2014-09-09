@@ -21,7 +21,7 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
@@ -38,7 +38,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private static final CharSequence KEY_SEND_FAKE_PUSH = "send_fake_push";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
-    @Inject Application app;
+    @Inject THApp app;
     @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;

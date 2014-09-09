@@ -3,7 +3,7 @@ package com.tradehero.th.models.intent;
 import android.content.Intent;
 import android.net.Uri;
 import com.tradehero.th.R;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import java.util.List;
 
 abstract public class THIntentFactory<THIntentType extends THIntent>
@@ -16,12 +16,12 @@ abstract public class THIntentFactory<THIntentType extends THIntent>
 
     public static String getString(int resId)
     {
-        return Application.getResourceString(resId);
+        return THApp.getResourceString(resId);
     }
 
     public static int getInteger(int resId)
     {
-        return Application.getResourceInteger(resId);
+        return THApp.getResourceInteger(resId);
     }
 
     public boolean isHandlableIntent(Intent intent)

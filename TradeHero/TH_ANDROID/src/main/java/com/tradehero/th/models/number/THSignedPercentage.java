@@ -1,7 +1,7 @@
 package com.tradehero.th.models.number;
 
 import com.tradehero.th.R;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import org.jetbrains.annotations.NotNull;
 
 public class THSignedPercentage extends THSignedNumber
@@ -55,6 +55,6 @@ public class THSignedPercentage extends THSignedNumber
                 "%s%s%s",
                 getConditionalSignPrefix(),
                 createPlainNumber(),
-                Application.getResourceString(R.string.percentage_suffix));
+                THApp.getResourceString(R.string.percentage_suffix));
     }
 }

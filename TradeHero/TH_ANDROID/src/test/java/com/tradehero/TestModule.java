@@ -2,7 +2,7 @@ package com.tradehero;
 
 import com.tradehero.common.CommonModule;
 import com.tradehero.th.AppTestModule;
-import com.tradehero.th.base.TestApplication;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.models.push.handers.NotificationOpenedHandlerTest;
 import dagger.Module;
 
@@ -13,7 +13,7 @@ import dagger.Module;
                 FlavorAppTestModule.class,
         },
         injects = {
-                TestApplication.class,
+                TestTHApp.class,
                 NotificationOpenedHandlerTest.class,
                 SampleTest.class,
         },
