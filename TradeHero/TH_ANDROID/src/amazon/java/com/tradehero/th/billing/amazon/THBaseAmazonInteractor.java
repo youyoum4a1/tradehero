@@ -8,9 +8,14 @@ import com.tradehero.common.billing.amazon.AmazonConstants;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
+import com.tradehero.common.billing.amazon.exception.AmazonAlreadyPurchasedException;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryFailedException;
 import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryUnsupportedException;
+import com.tradehero.common.billing.amazon.exception.AmazonInvalidSkuException;
+import com.tradehero.common.billing.amazon.exception.AmazonPurchaseCanceledException;
+import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedException;
+import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -230,10 +235,19 @@ public class THBaseAmazonInteractor
             Context currentContext = currentActivityHolder.getCurrentContext();
             if (currentContext != null)
             {
-                if (exception instanceof AmazonFetchInventoryFailedException
-                        || exception instanceof AmazonFetchInventoryUnsupportedException)
+                if (exception instanceof AmazonFetchInventoryFailedException)
                 {
-                    dialog = billingAlertDialogUtil.popUserCancelled(currentContext);
+                    dialog = ((THAmazonAlertDialogUtil) billingAlertDialogUtil)
+                            .popInventoryFailedError(
+                                    currentContext,
+                                    (AmazonFetchInventoryFailedException) exception);
+                }
+                else if (exception instanceof AmazonFetchInventoryUnsupportedException)
+                {
+                    dialog = ((THAmazonAlertDialogUtil) billingAlertDialogUtil)
+                            .popInventoryNotSupportedError(
+                                    currentContext,
+                                    (AmazonFetchInventoryUnsupportedException) exception);
                 }
                 else
                 {
@@ -288,8 +302,37 @@ public class THBaseAmazonInteractor
             Context currentContext = currentActivityHolder.getCurrentContext();
             if (currentContext != null)
             {
-                // TODO finer dialog
-                dialog = billingAlertDialogUtil.popUnknownError(currentContext, exception);
+                if (exception instanceof AmazonPurchaseCanceledException)
+                {
+                    dialog = billingAlertDialogUtil.popUserCancelled(currentContext);
+                }
+                else if (exception instanceof AmazonPurchaseFailedException)
+                {
+                    dialog = ((THAmazonAlertDialogUtil) billingAlertDialogUtil)
+                            .popPurchaseFailedError(currentContext, (AmazonPurchaseFailedException) exception);
+                }
+                else if (exception instanceof AmazonPurchaseUnsupportedException)
+                {
+                    dialog = ((THAmazonAlertDialogUtil) billingAlertDialogUtil)
+                            .popPurchaseUnsupportedError(currentContext, (AmazonPurchaseUnsupportedException) exception);
+                }
+                else if (exception instanceof AmazonAlreadyPurchasedException)
+                {
+                    //noinspection unchecked
+                    dialog = billingAlertDialogUtil.popSKUAlreadyOwned(
+                            currentContext,
+                            null, // TODO better?
+                            null);
+                }
+                else
+                {
+                    if (exception instanceof AmazonInvalidSkuException)
+                    {
+                        Timber.e(exception, "When purchasing %s", purchaseOrder);
+                    }
+                    // TODO finer dialog
+                    dialog = billingAlertDialogUtil.popUnknownError(currentContext, exception);
+                }
             }
         }
         return dialog;

@@ -9,6 +9,10 @@ import android.view.LayoutInflater;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.amazon.AmazonSKU;
+import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryFailedException;
+import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryUnsupportedException;
+import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedException;
+import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -16,8 +20,8 @@ import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCache;
 import com.tradehero.th.utils.ActivityUtil;
-import java.util.HashMap;
 import com.tradehero.th.utils.metrics.Analytics;
+import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -129,5 +133,79 @@ public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
                 context.getString(R.string.iap_send_support_email_chooser_title)));
     }
     //</editor-fold>
+
+    //<editor-fold desc="Inventory Fetch related">
+    public AlertDialog popInventoryFailedError(final Context context, final AmazonFetchInventoryFailedException exception)
+    {
+        return popWithOkCancelButton(context,
+                R.string.amazon_store_billing_inventory_failed_error_window_title,
+                R.string.amazon_store_billing_inventory_failed_error_window_description,
+                R.string.amazon_store_billing_inventory_failed_error_ok,
+                R.string.amazon_store_billing_inventory_failed_error_cancel,
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                        sendSupportEmailBillingUnknownError(context, exception);
+                    }
+                }
+        );
+    }
+
+    public AlertDialog popInventoryNotSupportedError(final Context context, final AmazonFetchInventoryUnsupportedException exception)
+    {
+        return popWithOkCancelButton(context,
+                R.string.amazon_store_billing_inventory_unsupported_error_window_title,
+                R.string.amazon_store_billing_inventory_unsupported_error_window_description,
+                R.string.amazon_store_billing_inventory_unsupported_error_ok,
+                R.string.amazon_store_billing_inventory_unsupported_error_cancel,
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                        sendSupportEmailBillingUnknownError(context, exception);
+                    }
+                }
+        );
+    }
+    //</editor-fold>
+
+    public AlertDialog popPurchaseFailedError(final Context context, final AmazonPurchaseFailedException exception)
+    {
+        return popWithOkCancelButton(context,
+                R.string.amazon_store_billing_purchase_failed_error_window_title,
+                R.string.amazon_store_billing_purchase_failed_error_window_description,
+                R.string.amazon_store_billing_purchase_failed_error_ok,
+                R.string.amazon_store_billing_purchase_failed_error_cancel,
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                        sendSupportEmailBillingUnknownError(context, exception);
+                    }
+                }
+        );
+    }
+
+    public AlertDialog popPurchaseUnsupportedError(final Context context, final AmazonPurchaseUnsupportedException exception)
+    {
+        return popWithOkCancelButton(context,
+                R.string.amazon_store_billing_purchase_unsupported_error_window_title,
+                R.string.amazon_store_billing_purchase_unsupported_error_window_description,
+                R.string.amazon_store_billing_purchase_unsupported_error_ok,
+                R.string.amazon_store_billing_purchase_unsupported_error_cancel,
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                        sendSupportEmailBillingUnknownError(context, exception);
+                    }
+                }
+        );
+    }
 
 }
