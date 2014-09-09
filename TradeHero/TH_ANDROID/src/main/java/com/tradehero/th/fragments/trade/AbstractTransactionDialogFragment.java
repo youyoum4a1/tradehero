@@ -1,9 +1,7 @@
 package com.tradehero.th.fragments.trade;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,15 +13,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Optional;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -43,7 +38,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -53,23 +47,19 @@ import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.TransactionEditCommentFragment;
-import com.tradehero.th.fragments.social.SocialLinkHelper;
-import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -84,7 +74,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public abstract class AbstractTransactionDialogFragment extends BaseDialogFragment
+public abstract class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
 {
     protected static final String KEY_SECURITY_ID = AbstractTransactionDialogFragment.class.getName() + ".security_id";
     protected static final String KEY_PORTFOLIO_ID = AbstractTransactionDialogFragment.class.getName() + ".portfolio_id";
@@ -109,31 +99,19 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @InjectView(R.id.dialog_btn_confirm) protected Button mConfirm;
     @InjectView(R.id.dialog_btn_cancel) protected Button mCancel;
 
-    @Optional @InjectView(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
-    @InjectView(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
-    @Optional @InjectView(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
-    @InjectView(R.id.btn_share_wb) protected ToggleButton mBtnShareWb;
-    @InjectView(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
-
-    @Inject UserProfileCache userProfileCache;
     @Inject SecurityCompactCache securityCompactCache;
     @Inject PortfolioCompactListCache portfolioCompactListCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
-    @Inject CurrentUserId currentUserId;
-    @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @Inject PortfolioCompactDTOUtil portfolioCompactDTOUtil;
-    @Inject AlertDialogUtil alertDialogUtil;
-    @Inject SocialLinkHelperFactory socialLinkHelperFactory;
     @Inject Analytics analytics;
 
     @Inject THBillingInteractor userInteractor;
     @Inject Provider<THUIBillingRequest> uiBillingRequestProvider;
 
-    SocialLinkHelper socialLinkHelper;
     private ProgressDialog mTransactionDialog;
 
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
@@ -149,9 +127,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected boolean showProfitLossUsd = true; // false will show in RefCcy
 
     private BuySellTransactionListener buySellTransactionListener;
-    protected UserProfileDTO userProfileDTO;
 
-    private AlertDialog mSocialLinkingDialog;
     private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TextWatcher mQuantityTextWatcher;
     private TransactionEditCommentFragment transactionCommentFragment;
@@ -262,9 +238,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         mQuantityTextWatcher = null;
         detachPortfolioCompactListCache();
         destroyTransactionDialog();
-        destroySocialLinkDialog();
         detachBuySellMiddleCallback();
-        detachSocialLinkHelper();
         super.onDestroyView();
     }
 
@@ -289,8 +263,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             positionDTOCompactList = detailDTO.positions;
         }
         clampQuantity(true);
-        linkWith(userProfileCache.get(currentUserId.toUserBaseKey()));
-        setPublishToShareBySetting();
     }
 
     private void initViews()
@@ -342,11 +314,11 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             }
         });
 
-        initSocialButtons();
         updateTransactionDialog();
     }
 
     protected abstract String getLabel();
+
     protected abstract int getCashLeftLabelResId();
 
     public String getTitle()
@@ -403,39 +375,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return mConfirm;
     }
 
-    public CompoundButton getFacebookShareButton()
-    {
-        return mBtnShareFb;
-    }
-
-    public CompoundButton getTwitterShareButton()
-    {
-        return mBtnShareTw;
-    }
-
-    public CompoundButton getLinkedInShareButton()
-    {
-        return mBtnShareLn;
-    }
-
-    public CompoundButton getWeiboShareButton()
-    {
-        return mBtnShareWb;
-    }
-
-    public CompoundButton getWeChatShareButton()
-    {
-        return mBtnShareWeChat;
-    }
-
     public EditText getQuantityEditText()
     {
         return mQuantityEditText;
-    }
-
-    public AlertDialog getSocialLinkingDialog()
-    {
-        return mSocialLinkingDialog;
     }
 
     @OnClick(R.id.vquantity)
@@ -453,7 +395,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @OnClick(R.id.dialog_btn_confirm)
     public void onConfirmClicked(View v)
     {
-        socialSharePreferenceHelperNew.save();
+        saveShareSettings();
         fireBuySellReport();
         launchBuySell();
     }
@@ -676,9 +618,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             Timber.e("No portfolioId to apply to", new IllegalStateException());
             return null;
         }
-        //Timber.d("fb=%b tw=%b li=%b location=%b public=%b quantity=%d", publishToFb,
-        //        publishToTw, publishToLi, shareLocation, sharePublic,
-        //        isBuy ? mBuyQuantity : mSellQuantity);
 
         return new TransactionFormDTO(
                 shareForTransaction(SocialNetworkEnum.FB),
@@ -700,11 +639,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         );
     }
 
-    protected boolean shareForTransaction(@NotNull SocialNetworkEnum socialNetworkEnum)
-    {
-        return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinkedOr(socialNetworkEnum, true));
-    }
-
     private void detachBuySellMiddleCallback()
     {
         if (buySellMiddleCallback != null)
@@ -712,153 +646,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             buySellMiddleCallback.setPrimaryCallback(null);
             buySellMiddleCallback = null;
         }
-    }
-
-    public void setPublishToShareBySetting()
-    {
-        socialSharePreferenceHelperNew.load();
-    }
-
-    public void onSuccessSocialLink(UserProfileDTO userProfileDTO, SocialNetworkEnum socialNetworkEnum)
-    {
-        linkWith(userProfileDTO);
-        setPublishEnable(socialNetworkEnum);
-    }
-
-    public void setPublishEnable(SocialNetworkEnum socialNetwork)
-    {
-        socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetwork, true);
-        switch (socialNetwork)
-        {
-            case FB:
-                mBtnShareFb.setChecked(true);
-                break;
-            case TW:
-                mBtnShareTw.setChecked(true);
-                break;
-            case LN:
-                mBtnShareLn.setChecked(true);
-                break;
-            case WB:
-                mBtnShareWb.setChecked(true);
-                break;
-        }
-    }
-
-    @Nullable public Boolean isSocialLinked(SocialNetworkEnum socialNetwork)
-    {
-        UserProfileDTO userProfileCopy = userProfileDTO;
-        if (userProfileCopy != null)
-        {
-            switch (socialNetwork)
-            {
-                case FB:
-                    return userProfileCopy.fbLinked;
-                case TW:
-                    return userProfileCopy.twLinked;
-                case LN:
-                    return userProfileCopy.liLinked;
-                case WB:
-                    return userProfileCopy.wbLinked;
-                case WECHAT:
-                    return null;
-                default:
-                    Timber.e(new IllegalArgumentException(), "Unhandled socialNetwork.%s", socialNetwork);
-                    return false;
-            }
-        }
-        return null;
-    }
-
-    public boolean isSocialLinkedOr(SocialNetworkEnum socialNetwork, boolean orElse)
-    {
-        @Nullable Boolean socialLinked = isSocialLinked(socialNetwork);
-        return socialLinked != null ? socialLinked : orElse;
-    }
-
-    private void initSocialButtons()
-    {
-        initSocialButton(mBtnShareFb, SocialNetworkEnum.FB);
-        initSocialButton(mBtnShareTw, SocialNetworkEnum.TW);
-        initSocialButton(mBtnShareLn, SocialNetworkEnum.LN);
-        initSocialButton(mBtnShareWeChat, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
-        initSocialButton(mBtnShareWb, SocialNetworkEnum.WB);
-    }
-
-    private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum)
-    {
-        initSocialButton(socialButton, socialNetworkEnum, createCheckedChangeListener());
-    }
-
-    private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum,
-            CompoundButton.OnCheckedChangeListener onCheckedChangedListener)
-    {
-        if (socialButton != null)
-        {
-            socialButton.setTag(socialNetworkEnum);
-            socialButton.setChecked(initialShareButtonState(socialNetworkEnum));
-            socialButton.setOnCheckedChangeListener(onCheckedChangedListener);
-        }
-    }
-
-    protected boolean initialShareButtonState(@NotNull SocialNetworkEnum socialNetworkEnum)
-    {
-        return socialSharePreferenceHelperNew.isShareEnabled(
-                socialNetworkEnum,
-                isSocialLinkedOr(socialNetworkEnum, false));
-    }
-
-    public void askToLinkAccountToSocial(final SocialNetworkEnum socialNetwork)
-    {
-        mSocialLinkingDialog = alertDialogUtil.popWithOkCancelButton(
-                getActivity(),
-                getActivity().getApplicationContext().getString(R.string.link, socialNetwork.getName()),
-                getActivity().getApplicationContext().getString(R.string.link_description, socialNetwork.getName()),
-                R.string.link_now,
-                R.string.later,
-                new DialogInterface.OnClickListener()//Ok
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        linkSocialNetwork(socialNetwork);
-                    }
-                },
-                new DialogInterface.OnClickListener()//Cancel
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        alertDialogUtil.dismissProgressDialog();
-                    }
-                },
-                new DialogInterface.OnDismissListener()
-                {
-                    @Override public void onDismiss(DialogInterface dialogInterface)
-                    {
-                        destroySocialLinkDialog();
-                    }
-                }
-        );
-    }
-
-    private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
-    {
-        detachSocialLinkHelper();
-        socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
-        socialLinkHelper.link(new SocialLinkingCallback(socialNetworkEnum));
-    }
-
-    private void detachSocialLinkHelper()
-    {
-        if (socialLinkHelper != null)
-        {
-            socialLinkHelper.setSocialLinkingCallback(null);
-            socialLinkHelper = null;
-        }
-    }
-
-    private void linkWith(UserProfileDTO updatedUserProfileDTO)
-    {
-        this.userProfileDTO = updatedUserProfileDTO;
     }
 
     protected void fireBuySellReport()
@@ -884,15 +671,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     }
 
     protected abstract void setBuyEventFor(SharingOptionsEvent.Builder builder);
-
-    private void destroySocialLinkDialog()
-    {
-        if (mSocialLinkingDialog != null && mSocialLinkingDialog.isShowing())
-        {
-            mSocialLinkingDialog.dismiss();
-        }
-        mSocialLinkingDialog = null;
-    }
 
     private void destroyTransactionDialog()
     {
@@ -1010,74 +788,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         };
     }
 
-    private CompoundButton.OnCheckedChangeListener createCheckedChangeListenerForWechat()
-    {
-        return new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
-            {
-                if (!compoundButton.isPressed())
-                {
-                    return;
-                }
-                SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
-                socialSharePreferenceHelperNew.updateSocialSharePreference(networkEnum, isChecked);
-            }
-        };
-    }
-
-    private CompoundButton.OnCheckedChangeListener createCheckedChangeListener()
-    {
-        return new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
-            {
-                if (!compoundButton.isPressed())
-                {
-                    return;
-                }
-                SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
-                Boolean socialLinked = isSocialLinked(networkEnum);
-                if (isChecked && (socialLinked == null || !socialLinked))
-                {
-                    if (socialLinked != null)
-                    {
-                        askToLinkAccountToSocial(networkEnum);
-                    }
-                    isChecked = false;
-                }
-
-                compoundButton.setChecked(isChecked);
-                socialSharePreferenceHelperNew.updateSocialSharePreference(networkEnum, isChecked);
-            }
-        };
-    }
-
     public void populateComment()
     {
         if (transactionCommentFragment != null)
         {
             unSpannedComment = transactionCommentFragment.getComment();
             mCommentsEditText.setText(unSpannedComment);
-        }
-    }
-
-    private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
-    {
-        final SocialNetworkEnum socialNetworkEnum;
-
-        SocialLinkingCallback(final SocialNetworkEnum socialNetworkEnum)
-        {
-            this.socialNetworkEnum = socialNetworkEnum;
-        }
-
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            onSuccessSocialLink(userProfileDTO, socialNetworkEnum);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
         }
     }
 
