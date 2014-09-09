@@ -1,6 +1,6 @@
 package com.tradehero;
 
-import com.tradehero.th.base.TestApplication;
+import com.tradehero.th.base.TestTHApp;
 
 import org.robolectric.AndroidManifest;
 import org.robolectric.res.FsFile;
@@ -29,6 +29,6 @@ public class GradleAndroidManifest extends AndroidManifest
     @Override
     public String getApplicationName()
     {
-        return TestApplication.class.getName();
+        return TestTHApp.class.getName();
     }
 }

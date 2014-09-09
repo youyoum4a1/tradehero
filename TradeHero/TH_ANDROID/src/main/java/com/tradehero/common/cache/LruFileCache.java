@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import com.squareup.picasso.LruCache;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -62,7 +62,7 @@ public class LruFileCache extends LruCache
         super(maxMemSize);
         this.maxFileSize = maxFileSize;
         this.map = new LinkedHashMap<String, String>(0, 0.75f, true);
-        initDir(Application.context(), DEFAULT_DIR_NAME);
+        initDir(THApp.context(), DEFAULT_DIR_NAME);
     }
     //</editor-fold>
 

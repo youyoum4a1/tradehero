@@ -1,6 +1,7 @@
 package com.tradehero.th.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.log.CrashReportingTree;
@@ -45,7 +46,7 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class Application extends PApplication
+public class THApp extends PApplication
     implements ExInjector
 {
     public static boolean timberPlanted = false;
@@ -162,6 +163,11 @@ public class Application extends PApplication
 
     @Override public void inject(Object o)
     {
-        objectGraph.inject(this);
+        objectGraph.inject(o);
+    }
+
+    public static THApp get(Context context)
+    {
+        return (THApp) context.getApplicationContext();
     }
 }

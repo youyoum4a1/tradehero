@@ -24,7 +24,7 @@
   <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
 
   <application
-      android:name=".base.Application"
+      android:name=".base.THApp"
       android:allowBackup="true"
       android:icon="@drawable/launcher"
       android:label="@string/app_name"

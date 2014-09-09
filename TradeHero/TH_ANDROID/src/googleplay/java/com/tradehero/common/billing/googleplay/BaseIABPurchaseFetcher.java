@@ -12,7 +12,7 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +145,7 @@ abstract public class BaseIABPurchaseFetcher<
     {
         // Query purchase
         Timber.d("Querying owned items, item type: %s", itemType);
-        Timber.d("Package name: %s", Application.context().getPackageName());
+        Timber.d("Package name: %s", THApp.context().getPackageName());
         String continueToken = null;
         ArrayList<IABPurchaseType> purchasesList = new ArrayList<>();
 

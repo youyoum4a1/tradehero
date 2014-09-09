@@ -7,6 +7,10 @@ import java.lang.ref.WeakReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * instead of using CurrentActivityHolder, we should be able to inject activity
+ */
+@Deprecated
 public class CurrentActivityHolder
 {
     @NotNull protected WeakReference<Activity> currentActivityWeak = new WeakReference<>(null);

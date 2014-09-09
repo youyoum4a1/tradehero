@@ -5,7 +5,7 @@ import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
@@ -62,7 +62,7 @@ public class MetricsModule
     }
 
     // TapStream
-    @Provides @Singleton Api provideTapStream(Application app, Config config)
+    @Provides @Singleton Api provideTapStream(THApp app, Config config)
     {
         Tapstream.create(app, TAPSTREAM_APP_NAME, TAPSTREAM_KEY, config);
         return Tapstream.getInstance();
