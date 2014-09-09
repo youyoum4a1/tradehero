@@ -28,4 +28,12 @@ public class AmazonPurchaseOrder<AmazonSKUType extends AmazonSKU>
     {
         return quantity;
     }
+
+    @Override public String toString()
+    {
+        return "AmazonPurchaseOrder{" +
+                "sku=" + sku +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

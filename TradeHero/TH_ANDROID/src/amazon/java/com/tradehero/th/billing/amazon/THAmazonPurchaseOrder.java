@@ -44,4 +44,13 @@ public class THAmazonPurchaseOrder extends AmazonPurchaseOrder<AmazonSKU>
     {
         return userToFollow;
     }
+
+    @Override public String toString()
+    {
+        return "THAmazonPurchaseOrder{" +
+                super.toString() +
+                ", applicablePortfolioId=" + applicablePortfolioId +
+                ", userToFollow=" + userToFollow +
+                '}';
+    }
 }
