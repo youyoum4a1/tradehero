@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.education.VideoView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/video_thumbnail_width"
+    android:layout_height="@dimen/video_thumbnail_height"
+    tools:background="@color/black">
+
+  <ImageView
+      android:id="@+id/video_thumbnail"
+      android:layout_width="@dimen/video_thumbnail_width"
+      android:layout_height="@dimen/video_thumbnail_height"
+      android:scaleType="centerCrop"
+      android:layout_centerInParent="true"/>
+
+  <TextView
+      android:id="@+id/video_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:padding="2dp"
+      android:background="@color/video_title_background"/>
+
+  <ImageView
+      android:id="@+id/video_padlock"
+      android:layout_width="@dimen/video_thumbnail_width"
+      android:layout_height="@dimen/video_thumbnail_height"
+      android:scaleType="centerInside"
+      android:background="@color/light_grey_transparent"
+      android:layout_above="@id/video_title"
+      android:src="@drawable/icn_padlock"
+      android:layout_centerInParent="true"
+      android:visibility="gone"/>
+
+</com.tradehero.th.fragments.education.VideoView>

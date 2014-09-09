@@ -55,6 +55,7 @@ import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineMarkerService;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.network.service.VideoService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
@@ -208,6 +209,11 @@ public class RetrofitModule
     @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
     {
         return adapter.create(UserTimelineService.class);
+    }
+
+    @Provides @Singleton VideoService provideVideoService(RestAdapter adapter)
+    {
+        return adapter.create(VideoService.class);
     }
 
     @Provides @Singleton WatchlistService provideWatchlistService(RestAdapter adapter)
