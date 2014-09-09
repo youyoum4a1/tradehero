@@ -328,7 +328,14 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         Intent libraryIntent = new Intent(Intent.ACTION_PICK);
         libraryIntent.setType("image/jpeg");
-        startActivityForResult(libraryIntent, REQUEST_GALLERY);
+        try
+        {
+            startActivityForResult(libraryIntent, REQUEST_GALLERY);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            THToast.show(R.string.error_launch_library);
+        }
     }
 
     protected void askImageFromCamera()
