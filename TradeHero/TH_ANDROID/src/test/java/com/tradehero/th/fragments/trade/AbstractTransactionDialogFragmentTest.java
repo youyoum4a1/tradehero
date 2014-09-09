@@ -60,6 +60,7 @@ public abstract class AbstractTransactionDialogFragmentTest
         UserProfileDTO mockUserProfileDTO = new UserProfileDTO();
         mockUserProfileDTO.fbLinked = true;
         mockUserProfileDTO.twLinked = false;
+        mockUserProfileDTO.displayName = "a display name";
         userProfileCache.put(currentUserId.toUserBaseKey(), mockUserProfileDTO);
 
         //TODO create MockObjects
