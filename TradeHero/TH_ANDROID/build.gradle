@@ -112,6 +112,7 @@ android {
     }
     amazon {
       flavorDimension "marketSegment"
+      proguardFiles 'proguard/proguard-android-amazon.txt'
     }
     amazonFire {
       flavorDimension "marketSegment"
