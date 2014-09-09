@@ -243,6 +243,78 @@ public class QuestBonusDTOListTest
     }
 
     @Test
+    public void testGetPreviousShouldNotCrash() throws Exception
+    {
+        questBonusDTOList.getPrevious(0);
+
+        questBonusDTOList.getPrevious(-2);
+
+        questBonusDTOList.getPrevious(0, 2);
+
+        questBonusDTOList.getPrevious(0, -2);
+
+        questBonusDTOList.getPrevious(0, 0);
+    }
+
+    @Test
+    public void testGetPreviousShouldReturnCorrectNumOfItems() throws Exception
+    {
+        QuestBonusDTO mock1 = new QuestBonusDTO();
+        mock1.level = 1;
+        mock1.id = 1;
+        mock1.bonus = 100;
+
+        QuestBonusDTO mock2 = new QuestBonusDTO();
+        mock2.level = 2;
+        mock2.id = 2;
+        mock2.bonus = 200;
+
+        QuestBonusDTO mock3 = new QuestBonusDTO();
+        mock3.level = 4;
+        mock3.id = 3;
+        mock3.bonus = 300;
+
+        questBonusDTOList.add(mock1);
+        questBonusDTOList.add(mock2);
+        questBonusDTOList.add(mock3);
+
+        List<QuestBonusDTO> questBonusDTO = questBonusDTOList.getPrevious(2, 2);
+        assertThat(questBonusDTO).isNotEmpty();
+        assertThat(questBonusDTO.size()).isEqualTo(1);
+
+        questBonusDTO = questBonusDTOList.getPrevious(2, 1);
+        assertThat(questBonusDTO).isNotEmpty();
+        assertThat(questBonusDTO.size()).isEqualTo(1);
+
+        questBonusDTO = questBonusDTOList.getPrevious(1, 1);
+        assertThat(questBonusDTO).isEmpty();
+
+        questBonusDTO = questBonusDTOList.getPrevious(4, 2);
+        assertThat(questBonusDTO).isNotEmpty();
+        assertThat(questBonusDTO.size()).isEqualTo(2);
+
+        questBonusDTO = questBonusDTOList.getPrevious(4, 1);
+        assertThat(questBonusDTO).isNotEmpty();
+        assertThat(questBonusDTO.size()).isEqualTo(1);
+
+        questBonusDTO = questBonusDTOList.getPrevious(4, 4);
+        assertThat(questBonusDTO).isNotEmpty();
+        assertThat(questBonusDTO.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testGetPreviousShouldAlwaysGetSmallerLevel() throws Exception
+    {
+
+    }
+
+    @Test
+    public void testGetPreviousReturnsAscendingOrder() throws Exception
+    {
+
+    }
+
+    @Test
     public void testGetInclusiveShouldReturn5() throws Exception
     {
         QuestBonusDTO mock1 = new QuestBonusDTO();
@@ -367,6 +439,65 @@ public class QuestBonusDTOListTest
         questBonusDTOList1 = questBonusDTOList.getInclusive(15, 5);
         found = contains(questBonusDTOList1, 15);
         assertThat(found).isTrue();
+    }
+
+    @Test
+    public void testGetInclusiveReturnCurrentLevelInCorrectIndex() throws Exception
+    {
+        QuestBonusDTO mock1 = new QuestBonusDTO();
+        mock1.level = 1;
+        mock1.id = 1;
+        mock1.bonus = 100;
+
+        QuestBonusDTO mock2 = new QuestBonusDTO();
+        mock2.level = 2;
+        mock2.id = 2;
+        mock2.bonus = 200;
+
+        QuestBonusDTO mock3 = new QuestBonusDTO();
+        mock3.level = 4;
+        mock3.id = 3;
+        mock3.bonus = 300;
+
+        QuestBonusDTO mock4 = new QuestBonusDTO();
+        mock4.level = 8;
+        mock4.id = 4;
+        mock4.bonus = 400;
+
+        QuestBonusDTO mock5 = new QuestBonusDTO();
+        mock5.level = 10;
+        mock5.id = 5;
+        mock5.bonus = 500;
+
+        QuestBonusDTO mock6 = new QuestBonusDTO();
+        mock6.level = 15;
+        mock6.id = 5;
+        mock6.bonus = 500;
+
+        questBonusDTOList.add(mock1);
+        questBonusDTOList.add(mock2);
+        questBonusDTOList.add(mock3);
+        questBonusDTOList.add(mock4);
+        questBonusDTOList.add(mock5);
+        questBonusDTOList.add(mock6);
+
+        List<QuestBonusDTO> questBonusDTOList1 = questBonusDTOList.getInclusive(1, 5);
+        assertThat(questBonusDTOList1.get(0).level).isEqualTo(1);
+
+        questBonusDTOList1 = questBonusDTOList.getInclusive(2, 5);
+        assertThat(questBonusDTOList1.get(0).level).isEqualTo(2);
+
+        questBonusDTOList1 = questBonusDTOList.getInclusive(4, 5);
+        assertThat(questBonusDTOList1.get(1).level).isEqualTo(4);
+
+        questBonusDTOList1 = questBonusDTOList.getInclusive(8, 5);
+        assertThat(questBonusDTOList1.get(2).level).isEqualTo(8);
+
+        questBonusDTOList1 = questBonusDTOList.getInclusive(10, 5);
+        assertThat(questBonusDTOList1.get(3).level).isEqualTo(10);
+
+        questBonusDTOList1 = questBonusDTOList.getInclusive(15, 5);
+        assertThat(questBonusDTOList1.get(4).level).isEqualTo(15);
     }
 
     private boolean contains(List<QuestBonusDTO> questBonusDTOs, int level)
