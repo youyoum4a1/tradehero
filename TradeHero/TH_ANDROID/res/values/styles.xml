@@ -422,6 +422,7 @@
   <style name="TH.Achievement.Title" parent="TH.Achievement">
     <item name="android:gravity">center</item>
     <item name="android:textSize">@dimen/text_xlarge</item>
+    <item name="android:textStyle">bold</item>
   </style>
 
   <style name="TH.Achievement.Description" parent="TH.Achievement">
@@ -477,14 +478,9 @@
   </style>
 
   <style name="TH.Level.Current" parent="TH.Level">
-    <item name="android:textColor">@color/user_level_progress_current_text_color</item>
-    <item name="android:background">@drawable/current_level_bg</item>
   </style>
 
   <style name="TH.Level.Next" parent="TH.Level">
-    <item name="android:textSize">@dimen/text_medium</item>
-    <item name="android:background">@drawable/next_level_bg</item>
-    <item name="android:textColor">@color/user_level_progress_next_text_color</item>
   </style>
 
   <style name="TH.ButtonClose" parent="android:Widget.Holo.Button.Small">

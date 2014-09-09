@@ -33,6 +33,7 @@
 
   <color name="achievement_indicator_blue_bg_transparent">#241376FB</color>
   <color name="achievement_dollars_earned_color">#F3A422</color>
+  <color name="achievement_xp_color">#407304</color>
 
   <!-- Cell view -->
   <dimen name="achievement_cell_padding">10dp</dimen>

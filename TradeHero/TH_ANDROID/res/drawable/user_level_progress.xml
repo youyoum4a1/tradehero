@@ -5,14 +5,14 @@
     <shape>
       <corners android:radius="1dip"/>
       <stroke android:color="#fff" android:width="1dp"/>
-      <solid android:color="@color/dark_gray"/>
+      <solid android:color="@color/gray_normal"/>
     </shape>
   </item>
   <item android:id="@android:id/secondaryProgress">
     <clip>
       <shape>
         <corners android:radius="1dip"/>
-        <solid android:color="#ff41fa0e"/>
+        <solid android:color="@color/achievement_xp_color"/>
         <stroke android:color="#fff" android:width="1dp"/>
       </shape>
     </clip>

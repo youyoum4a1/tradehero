@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
-  <TextView
+  <ImageView
       android:id="@+id/user_level_progress_next"
       android:layout_width="@dimen/user_level_next_level_w_h"
       android:layout_height="@dimen/user_level_next_level_w_h"
@@ -26,7 +26,7 @@
       android:layout_marginRight="@dimen/user_level_progress_margin_right"
       style="@style/TH.Level.ProgressBar"/>
 
-  <TextView
+  <ImageView
       android:id="@+id/user_level_progress_current"
       android:layout_width="@dimen/user_level_current_level_w_h"
       android:layout_height="@dimen/user_level_current_level_w_h"
