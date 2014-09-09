@@ -27,6 +27,9 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.tradehero.th.inject.BaseInjector;
+import com.tradehero.th.inject.ExInjector;
+import com.tradehero.th.inject.Injector;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
@@ -34,6 +37,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
+import dagger.ObjectGraph;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,11 +46,13 @@ import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class Application extends PApplication
+    implements ExInjector
 {
     public static boolean timberPlanted = false;
 
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected THRouter thRouter;
+    private ObjectGraph objectGraph;
 
     @Override protected void init()
     {
@@ -62,8 +68,9 @@ public class Application extends PApplication
         KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());
         Timber.d("Available Processors Count: %d", KnownExecutorServices.getCpuThreadCount());
 
-        DaggerUtils.initialize(getModules());
-        DaggerUtils.inject(this);
+        buildObjectGraphAndInject();
+
+        DaggerUtils.setObjectGraph(objectGraph);
 
         THUser.initialize();
 
@@ -96,6 +103,13 @@ public class Application extends PApplication
         thRouter.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
 
         THLog.showDeveloperKeyHash();
+    }
+
+    private void buildObjectGraphAndInject()
+    {
+        objectGraph = ObjectGraph.create(getModules());
+        objectGraph.injectStatics();
+        objectGraph.inject(this);
     }
 
     @NotNull protected Timber.Tree createTimberTree()
@@ -138,7 +152,16 @@ public class Application extends PApplication
         newApp.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(newApp);
 
-        DaggerUtils.initialize(getModules());
-        DaggerUtils.inject(this);
+        buildObjectGraphAndInject();
+    }
+
+    @Override public Injector plus(Object... modules)
+    {
+        return new BaseInjector(objectGraph.plus(modules));
+    }
+
+    @Override public void inject(Object o)
+    {
+        objectGraph.inject(this);
     }
 }
