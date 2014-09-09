@@ -324,7 +324,11 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
             args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
             @Nullable UserAchievementDTO userAchievementDTO = userAchievementCacheInner.get(userAchievementId);
             AbstractAchievementDialogFragment dialogFragment;
-            if (userAchievementDTO.achievementDef.isQuest) // TODO handle case where userAchievementDTO is null
+            if(userAchievementDTO == null)
+            {
+                return null;
+            }
+            else if (userAchievementDTO.achievementDef.isQuest) // TODO handle case where userAchievementDTO is null
             {
                 dialogFragment = new QuestDialogFragment();
             }
