@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_mediumAnimTime">
+
+  <item android:state_pressed="true">
+    <shape android:shape="rectangle">
+      <solid android:color="@color/tradehero_blue_pressed"/>
+      <corners android:radius="5dp"/>
+    </shape>
+  </item>
+
+  <item android:state_focused="true">
+    <shape android:shape="rectangle">
+      <solid android:color="@color/tradehero_blue_focused"/>
+      <corners android:radius="5dp"/>
+    </shape>
+  </item>
+
+  <item>
+    <shape android:shape="rectangle">
+      <solid android:color="@color/tradehero_blue"/>
+      <corners android:radius="5dp"/>
+    </shape>
+  </item>
+
+
+</selector>

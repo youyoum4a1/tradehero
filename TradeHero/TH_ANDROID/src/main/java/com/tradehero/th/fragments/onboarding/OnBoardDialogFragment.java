@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -47,10 +47,12 @@ import timber.log.Timber;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
+    private static long ONE_MONTH = (long)30*24*60*60*1000;
+
     @Inject CurrentUserId currentUserId;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
-    @Inject @FirstShowOnBoardDialog BooleanPreference firstShowOnBoardDialogPreference;
+    @Inject @FirstShowOnBoardDialog LongPreference firstShowOnBoardDialogPreference;
     @Inject UserProfileCache userProfileCache;
     @Inject ExchangeSectorCompactListCache exchangeSectorCompactListCache;
     @Inject LeaderboardUserListCache leaderboardUserListCache;
@@ -78,7 +80,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setStyle(BaseDialogFragment.STYLE_NO_FRAME, getTheme());
+        setStyle(BaseDialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
         //exchange
         exchangeSectorListener = new OnBoardPickExchangeSectorListener();
         exchangeSectorViewHolder = new OnBoardPickExchangeSectorViewHolder(getActivity());
@@ -130,7 +132,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         @Override public void onDTOReceived(@NotNull ExchangeSectorCompactKey key, @NotNull ExchangeSectorCompactListDTO value)
         {
-            Timber.d("lyl exchange " + value.toString());
+            //Timber.d("lyl exchange " + value.toString());
             exchangeSectorViewHolder.setExchangeSector(value);
             mExchangeSwitcher.setDisplayedChild(1);
         }
@@ -150,7 +152,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         @Override public void onDTOReceived(@NotNull SuggestHeroesListType key, @NotNull LeaderboardUserDTOList value)
         {
-            Timber.d("lyl hero " + value.toString());
+            //Timber.d("lyl hero " + value.toString());
             mHeroSwitcher.setDisplayedChild(1);
             heroViewHolder.setUsers(value);
         }
@@ -201,7 +203,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         @Override public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
-            Timber.d("lyl stock "+value.toString());
+            //Timber.d("lyl stock "+value.toString());
             mStockSwitcher.setDisplayedChild(1);
             stockViewHolder.setStocks(value);
             submitHeros();
@@ -229,12 +231,13 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     public void onCloseClicked(/*View view*/)
     {
         dismiss();
+        //firstShowOnBoardDialogPreference.set(System.currentTimeMillis()+60*1000);
+        firstShowOnBoardDialogPreference.set(System.currentTimeMillis()+ONE_MONTH);
     }
 
     @OnClick(R.id.done_button)
     public void onDoneClicked(/*View view*/)
     {
-        //firstShowOnBoardDialogPreference.set(false);
         dismiss();
         submitStockWatchlist();
         userProfileCache.invalidate(currentUserId.toUserBaseKey());
@@ -244,6 +247,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
             activity.getDashboardNavigator().goToTab(RootFragmentType.CONTEST_CENTER);
             activity.getDashboardNavigator().goToTab(RootFragmentType.ME);
         }
+        firstShowOnBoardDialogPreference.set(System.currentTimeMillis()+ONE_MONTH);
     }
 
     public void submitHeros()

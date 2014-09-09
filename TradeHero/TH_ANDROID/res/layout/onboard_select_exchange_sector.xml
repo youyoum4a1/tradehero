@@ -25,14 +25,6 @@
         android:textColor="@color/black"
         />
 
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center"-->
-        <!--android:text="@string/market_on_board_exchange_sector_subtitle"-->
-        <!--android:lineSpacingMultiplier="1.2"-->
-        <!--/>-->
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

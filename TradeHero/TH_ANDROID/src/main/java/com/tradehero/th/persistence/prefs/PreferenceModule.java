@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
@@ -154,9 +155,9 @@ public class PreferenceModule
         return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_INVITE_CODE_FLAG, true);
     }
 
-    @Provides @Singleton @FirstShowOnBoardDialog BooleanPreference provideFirstShowOnBoardDialogPreference(
+    @Provides @Singleton @FirstShowOnBoardDialog LongPreference provideFirstShowOnBoardDialogPreference(
             @ForApp SharedPreferences sharedPreferences)
     {
-        return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_ON_BOARD_FLAG, true);
+        return new LongPreference(sharedPreferences, PREF_FIRST_SHOW_ON_BOARD_FLAG, 0);
     }
 }

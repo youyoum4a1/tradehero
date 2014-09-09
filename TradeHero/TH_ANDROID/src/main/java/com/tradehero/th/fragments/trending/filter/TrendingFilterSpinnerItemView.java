@@ -12,7 +12,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class TrendingFilterSpinnerItemView extends RelativeLayout
     implements DTOView<ExchangeCompactSpinnerDTO>
@@ -53,7 +52,7 @@ public class TrendingFilterSpinnerItemView extends RelativeLayout
     public void linkWith(@Nullable ExchangeCompactSpinnerDTO dto, boolean andDisplay)
     {
         this.exchangeCompactSpinnerDTO = dto;
-        Timber.d("lyl "+dto.toString());
+        //Timber.d("lyl "+dto.toString());
         if (andDisplay)
         {
             displayText();

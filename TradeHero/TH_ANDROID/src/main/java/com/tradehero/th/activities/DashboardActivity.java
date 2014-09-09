@@ -20,6 +20,7 @@ import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -34,7 +35,6 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
@@ -98,7 +98,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<NotificationCache> notificationCache;
     @Inject DeviceTokenHelper deviceTokenHelper;
     @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
-    @Inject @FirstShowOnBoardDialog BooleanPreference firstShowOnBoardDialogPreference;
+    @Inject @FirstShowOnBoardDialog LongPreference firstShowOnBoardDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
 
     @Inject AppContainer appContainer;
@@ -377,15 +377,14 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private void showInviteCodeDialog()
     {
-        if (shouldShowInviteCode())
-        {
-            firstShowInviteCodeDialogPreference.set(false);
-            InviteCodeDialogFragment dialogFragment = InviteCodeDialogFragment.showInviteCodeDialog(getSupportFragmentManager());
-            dialogFragment.setDismissedListener(new DashboardOnInviteCodeDismissed());
-        }
-        else
+        if (shouldShowOnBoard())
         {
             showOnboard();
+        }
+        else if (shouldShowInviteCode())
+        {
+            firstShowInviteCodeDialogPreference.set(false);
+            InviteCodeDialogFragment.showInviteCodeDialog(getSupportFragmentManager());
         }
     }
 
@@ -397,18 +396,35 @@ public class DashboardActivity extends SherlockFragmentActivity
                 && (userProfileDTO == null || userProfileDTO.inviteCode == null || userProfileDTO.inviteCode.isEmpty());
     }
 
-    protected class DashboardOnInviteCodeDismissed implements BaseDialogFragment.OnDismissedListener
+    protected boolean shouldShowOnBoard()
     {
-        @Override public void onDismissed(DialogInterface dialog)
+        if (firstShowOnBoardDialogPreference.get() < 1)
         {
-            showOnboard();
+            return true;
+        }
+        if (System.currentTimeMillis() > firstShowOnBoardDialogPreference.get())
+        {
+            UserProfileDTO currentUserProfile =
+                    userProfileCache.get().get(currentUserId.toUserBaseKey());
+            if (currentUserProfile != null)
+            {
+                if (currentUserProfile.heroIds != null && currentUserProfile.heroIds.size() > 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
     protected void showOnboard()
     {
         THToast.show("Activate OnBoardDialogFragment when merged in");
-        if (firstShowOnBoardDialogPreference.get())
+        if (shouldShowOnBoard())
         {
             // OnBoardDialogFragment handles setting the preference to false when done
             new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());

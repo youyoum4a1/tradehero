@@ -75,6 +75,7 @@ public class OnBoardPickExchangeSectorViewHolder
                 context.getResources(),
                 exchangeSectorCompactListDTO.exchanges));
         exchangeAdapter.notifyDataSetChanged();
+        exchangeSpinner.setSelection(4);
 
         sectorAdapter.clear();
         sectorAdapter.addAll(exchangeSectorCompactListDTO.sectors);
@@ -90,10 +91,4 @@ public class OnBoardPickExchangeSectorViewHolder
                 (Country) countrySpinner.getSelectedItem());
     }
 
-    public boolean canGetPrefs()
-    {
-        return exchangeSpinner.getSelectedItem() != null
-                && sectorSpinner.getSelectedItem() != null
-                && countrySpinner.getSelectedItem() != null;
-    }
 }
