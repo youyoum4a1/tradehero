@@ -9,18 +9,20 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.google.common.annotations.VisibleForTesting;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class UserLevelProgressBar extends RelativeLayout
@@ -31,10 +33,12 @@ public class UserLevelProgressBar extends RelativeLayout
     private static final String PROPERTY_PROGRESS = "progress";
     private static final String PROPERTY_SECONDARY_PROGRESS = "secondaryProgress";
 
-    @InjectView(R.id.user_level_progress_next) protected TextView nextLevelLabel;
-    @InjectView(R.id.user_level_progress_current) protected TextView currentLevelLabel;
+    @InjectView(R.id.user_level_progress_next) protected ImageView nextLevelLabel;
+    @InjectView(R.id.user_level_progress_current) protected ImageView currentLevelLabel;
 
     @InjectView(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
+
+    @Inject Picasso picasso;
 
     private int mCurrentXP = -1;
     private UserLevelProgressBarListener userLevelProgressBarListener;
@@ -102,7 +106,6 @@ public class UserLevelProgressBar extends RelativeLayout
             xpProgressBar.setMax(getMaxProgress(mCurrentLevelDTO));
             xpProgressBar.setProgress(currentXpToProgress());
             updateLevelDisplay();
-            updateXPIndicator(mCurrentXP);
             if (mCurrentLevelDTO.equals(mMaxLevelDTO))
             {
                 setBarProgressAtMax();
@@ -123,7 +126,7 @@ public class UserLevelProgressBar extends RelativeLayout
     {
         if (mCurrentLevelDTO != null)
         {
-            currentLevelLabel.setText(String.valueOf(mCurrentLevelDTO.level));
+            picasso.load(mCurrentLevelDTO.badge).into(currentLevelLabel);
             if (mCurrentLevelDTO.equals(mMaxLevelDTO))
             {
                 hideNextLevel();
@@ -133,7 +136,7 @@ public class UserLevelProgressBar extends RelativeLayout
                 LevelDefDTO nextLevel = mLevelDefDTOList.getNextLevelDTO(mCurrentLevelDTO.level);
                 if (nextLevel != null)
                 {
-                    nextLevelLabel.setText(String.valueOf(nextLevel.level));
+                    picasso.load(nextLevel.badge).into(nextLevelLabel);
                 }
                 else
                 {
@@ -199,13 +202,13 @@ public class UserLevelProgressBar extends RelativeLayout
         {
             @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
             {
-                Integer xp = mCurrentLevelDTO.xpFrom + (Integer) valueAnimator.getAnimatedValue("secondaryProgress");
-                updateXPIndicator(xp);
+                Integer xp = mCurrentLevelDTO.xpFrom + (Integer) valueAnimator.getAnimatedValue(PROPERTY_SECONDARY_PROGRESS);
+                setCurrentXp(xp);
             }
         };
     }
 
-    private void updateXPIndicator(int xp)
+    private void setCurrentXp(int xp)
     {
         mCurrentXP = xp;
     }
@@ -329,12 +332,12 @@ public class UserLevelProgressBar extends RelativeLayout
 
     public String getCurrentLevel()
     {
-        return currentLevelLabel.getText().toString();
+        return String.valueOf(mCurrentLevelDTO.level);
     }
 
     public String getNextLevel()
     {
-        return nextLevelLabel.getText().toString();
+        return String.valueOf(mLevelDefDTOList.getNextLevelDTO(mCurrentLevelDTO.level).level);
     }
 
     public interface UserLevelProgressBarListener
