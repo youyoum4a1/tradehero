@@ -105,6 +105,7 @@ public class UserLevelProgressBar extends RelativeLayout
             mCurrentLevelDTO = mLevelDefDTOList.findCurrentLevel(mCurrentXP);
             xpProgressBar.setMax(getMaxProgress(mCurrentLevelDTO));
             xpProgressBar.setProgress(currentXpToProgress());
+            xpProgressBar.setSecondaryProgress(currentXpToProgress());
             updateLevelDisplay();
             if (mCurrentLevelDTO.equals(mMaxLevelDTO))
             {
@@ -174,6 +175,7 @@ public class UserLevelProgressBar extends RelativeLayout
         mAnimatorSet = new AnimatorSet();
         mAnimatorSet.setInterpolator(new LinearInterpolator());
         mAnimatorSet.playSequentially(animators);
+        mAnimatorSet.setStartDelay(1000l);
         mAnimatorSet.start();
     }
 
@@ -218,15 +220,17 @@ public class UserLevelProgressBar extends RelativeLayout
     {
         List<Animator> aList = new ArrayList<>();
 
-        PropertyValuesHolder p0Progress = PropertyValuesHolder.ofInt(PROPERTY_PROGRESS, currentXpToProgress(), currentXpToProgress());
-        PropertyValuesHolder p0SecondaryProgress = PropertyValuesHolder.ofInt(PROPERTY_SECONDARY_PROGRESS, currentXpToProgress(),
+        int currentXPProgress = currentXpToProgress();
+
+        PropertyValuesHolder p0Progress = PropertyValuesHolder.ofInt(PROPERTY_PROGRESS, currentXPProgress, currentXPProgress);
+        PropertyValuesHolder p0SecondaryProgress = PropertyValuesHolder.ofInt(PROPERTY_SECONDARY_PROGRESS, currentXPProgress,
                 gainedXpToEndProgress(mCurrentXP, xpGained, mCurrentLevelDTO));
         PropertyValuesHolder p0Max = PropertyValuesHolder.ofInt(PROPERTY_MAX, getMaxProgress(mCurrentLevelDTO), getMaxProgress(mCurrentLevelDTO));
 
         ValueAnimator v0 =
                 ObjectAnimator.ofPropertyValuesHolder(xpProgressBar, p0Progress, p0SecondaryProgress, p0Max);
         v0.addUpdateListener(createUpdateListener());
-        v0.setDuration(getAnimationDuration(currentXpToProgress(), gainedXpToEndProgress(mCurrentXP, xpGained, mCurrentLevelDTO)));
+        v0.setDuration(getAnimationDuration(currentXPProgress, gainedXpToEndProgress(mCurrentXP, xpGained, mCurrentLevelDTO)));
         aList.add(v0);
 
         int targetXp = mCurrentXP + xpGained;

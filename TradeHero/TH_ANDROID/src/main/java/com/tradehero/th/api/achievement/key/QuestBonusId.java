@@ -5,7 +5,7 @@ import com.tradehero.th.api.achievement.QuestBonusDTO;
 
 public class QuestBonusId extends AbstractIntegerDTOKey
 {
-    private static final String key = QuestBonusDTO.class.getName() + ".key";
+    private static final String BUNDLE_KEY = QuestBonusDTO.class.getName() + ".key";
 
     public QuestBonusId(Integer key)
     {
@@ -14,6 +14,6 @@ public class QuestBonusId extends AbstractIntegerDTOKey
 
     @Override public String getBundleKey()
     {
-        return key;
+        return BUNDLE_KEY;
     }
 }

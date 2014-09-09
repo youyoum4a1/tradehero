@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -193,7 +195,9 @@ public class AchievementProgressIndicator extends LinearLayout
         {
             indicatorImageView.setImageResource(R.drawable.ic_achivement_star_animate);
             AnimationDrawable animationDrawable = (AnimationDrawable) indicatorImageView.getDrawable();
+            Animation a = AnimationUtils.loadAnimation(indicatorImageView.getContext(), R.anim.quest_indicator_zoom_in);
             animationDrawable.start();
+            indicatorTextView.startAnimation(a);
         }
     }
 }

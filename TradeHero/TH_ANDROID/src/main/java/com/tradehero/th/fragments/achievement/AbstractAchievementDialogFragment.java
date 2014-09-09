@@ -2,8 +2,11 @@ package com.tradehero.th.fragments.achievement;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -12,64 +15,88 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.chrisbanes.colorfinder.ColorScheme;
 import com.chrisbanes.colorfinder.DominantColorCalculator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.api.level.key.LevelDefListId;
+import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
+import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
+import com.tradehero.th.widget.UserLevelProgressBar;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractAchievementDialogFragment extends BaseDialogFragment
+public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
 {
     public static final String TAG = AbstractAchievementDialogFragment.class.getName();
     private static final String BUNDLE_KEY_USER_ACHIEVEMENT_ID = AbstractAchievementDialogFragment.class.getName() + ".UserAchievementDTOKey";
+
+    private static final String PROPERTY_XP_EARNED = "xpEarned";
+    private static final String PROPERTY_BTN_COLOR = "btnColor";
 
     private static final int DEFAULT_FILTER_COLOR = Color.BLACK;
 
     @InjectView(R.id.achievement_content_container) ViewGroup contentContainer;
 
     @InjectView(R.id.achievement_header) TextView header;
+
+    @InjectView(R.id.achievement_share_flipper) ViewFlipper shareFlipper;
+
     @InjectView(R.id.achievement_title) TextView title;
     @InjectView(R.id.achievement_description) TextView description;
     @InjectView(R.id.achievement_more_description) TextView moreDescription;
-
     @InjectView(R.id.achievement_badge) ImageView badge;
+
     @InjectView(R.id.achievement_pulse) ImageView pulseEffect;
     @InjectView(R.id.achievement_pulse2) ImageView pulseEffect2;
     @InjectView(R.id.achievement_pulse3) ImageView pulseEffect3;
-
     @InjectView(R.id.achievement_starburst) ImageView starBurst;
 
-    @InjectView(R.id.btn_achievement_dismiss) Button btnDismiss;
+    @InjectView(R.id.user_level_progress_xp_earned) TextView xpEarned;
+
+    @InjectView(R.id.btn_achievement_share) Button btnShare;
+    @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
     @Inject UserAchievementCache userAchievementCache;
     @Inject Picasso picasso;
     @Inject GraphicUtil graphicUtil;
+    @Inject LevelDefListCache levelDefListCache;
 
     protected UserAchievementId userAchievementId;
     protected UserAchievementDTO userAchievementDTO;
     protected int mCurrentColor = DEFAULT_FILTER_COLOR;
     private ValueAnimator colorValueAnimator;
+    private ObjectAnimator btnColorAnimation;
+    private ValueAnimator mAnim;
+    private LevelDefListId mLevelDefListId = new LevelDefListId();
+    private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> levelDefListCacheListener;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -92,6 +119,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
     {
         userAchievementId = new UserAchievementId(getArguments().getBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID));
         userAchievementDTO = userAchievementCache.pop(userAchievementId);
+        levelDefListCacheListener = createLevelDefCacheListener();
         initView();
     }
 
@@ -104,6 +132,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         displaySubText();
         setColor(DEFAULT_FILTER_COLOR);
         playRotatingAnimation();
+        displayXpEarned(0);
+        startAnimation();
     }
 
     private void displayStarburst()
@@ -195,10 +225,45 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         }
     }
 
+    private void showShareIsInProcess()
+    {
+        shareFlipper.setDisplayedChild(1);
+    }
+
+    private void showShareSuccess()
+    {
+        shareFlipper.setDisplayedChild(0);
+    }
+
     private void playRotatingAnimation()
     {
         displayPulse();
         displayStarburst();
+    }
+
+    private void startAnimation()
+    {
+        List<PropertyValuesHolder> propertyValuesHolders = new ArrayList<>();
+        this.onCreatePropertyValuesHolder(propertyValuesHolders);
+
+        PropertyValuesHolder[] array = new PropertyValuesHolder[propertyValuesHolders.size()];
+
+        mAnim = ValueAnimator.ofPropertyValuesHolder(propertyValuesHolders.toArray(array));
+
+        mAnim.setStartDelay(getResources().getInteger(R.integer.achievement_animation_start_delay));
+        mAnim.setDuration(getResources().getInteger(R.integer.achievement_earned_duration));
+        mAnim.setInterpolator(new AccelerateInterpolator());
+
+        mAnim.addListener(createAnimatorListenerAdapter());
+        mAnim.addUpdateListener(createEarnedAnimatorUpdateListener());
+
+        mAnim.start();
+    }
+
+    protected void onCreatePropertyValuesHolder(List<PropertyValuesHolder> propertyValuesHolders)
+    {
+        PropertyValuesHolder xp = PropertyValuesHolder.ofInt(PROPERTY_XP_EARNED, 0, userAchievementDTO.xpEarned);
+        propertyValuesHolders.add(xp);
     }
 
     private void displayPulse()
@@ -242,6 +307,43 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         }
     }
 
+    private void displayXpEarned(int xp)
+    {
+        xpEarned.setText(getString(R.string.achievement_xp_earned_format, xp));
+    }
+
+    private void setShareButtonColor()
+    {
+        List<PropertyValuesHolder> propertyValuesHolders = graphicUtil.wiggleWiggle(1f);
+
+        PropertyValuesHolder pvhColor = PropertyValuesHolder.ofObject(PROPERTY_BTN_COLOR,
+                new ArgbEvaluator(),
+                getResources().getColor(R.color.tradehero_blue),
+                Color.WHITE,
+                mCurrentColor);
+
+        propertyValuesHolders.add(pvhColor);
+
+        PropertyValuesHolder[] array = new PropertyValuesHolder[propertyValuesHolders.size()];
+
+        btnColorAnimation = ObjectAnimator.ofPropertyValuesHolder(btnShare, propertyValuesHolders.toArray(array));
+        btnColorAnimation.setDuration(getResources().getInteger(R.integer.achievement_share_button_animation_duration));
+        btnColorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+            {
+                int color = (Integer) valueAnimator.getAnimatedValue(PROPERTY_BTN_COLOR);
+                StateListDrawable drawable = graphicUtil.createStateListDrawable(getActivity(), color);
+                int textColor = graphicUtil.getContrastingColor(color);
+                graphicUtil.setBackground(btnShare, drawable);
+                btnShare.setTextColor(textColor);
+            }
+        });
+        btnColorAnimation.setStartDelay(getResources().getInteger(R.integer.achievement_share_button_animation_delay));
+        btnColorAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        btnColorAnimation.start();
+    }
+
     @Override public void onResume()
     {
         super.onResume();
@@ -260,6 +362,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
                                 getDialog().dismiss();
                             }
                         }));
+        levelDefListCache.register(mLevelDefListId, levelDefListCacheListener);
+        levelDefListCache.getOrFetchAsync(mLevelDefListId);
     }
 
     private void removeDialogAnimation()
@@ -267,14 +371,22 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
         getDialog().getWindow().setWindowAnimations(R.style.TH_Achievement_Dialog_NoAnimation);
     }
 
+    @OnClick(R.id.btn_achievement_share)
+    public void shareButtonClicked()
+    {
+        showShareIsInProcess();
+    }
+
     @Override public void onPause()
     {
         contentContainer.setOnTouchListener(null);
+        levelDefListCache.unregister(levelDefListCacheListener);
         super.onPause();
     }
 
     @Override public void onDestroy()
     {
+        levelDefListCacheListener = null;
         super.onDestroy();
     }
 
@@ -287,20 +399,75 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
             colorValueAnimator.removeAllListeners();
             colorValueAnimator = null;
         }
+        if (mAnim != null)
+        {
+            mAnim.cancel();
+            mAnim.removeAllUpdateListeners();
+            mAnim.removeAllListeners();
+            mAnim = null;
+        }
+        if (btnColorAnimation != null)
+        {
+            btnColorAnimation.cancel();
+            btnColorAnimation.removeAllListeners();
+            btnColorAnimation.removeAllUpdateListeners();
+            btnColorAnimation = null;
+        }
         picasso.cancelRequest(badge);
         super.onDestroyView();
-    }
-
-    @OnClick(R.id.btn_achievement_dismiss)
-    public void onDismissBtnClicked()
-    {
-        getDialog().dismiss();
     }
 
     @OnClick(R.id.achievement_dummy_container)
     public void onOutsideContentClicked()
     {
         getDialog().dismiss();
+    }
+
+    protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
+    {
+        return new AbstractAchievementValueAnimatorUpdateListener();
+    }
+
+    protected AnimatorListenerAdapter createAnimatorListenerAdapter()
+    {
+        return new AnimatorListenerAdapter()
+        {
+            @Override public void onAnimationEnd(Animator animation)
+            {
+                super.onAnimationEnd(animation);
+                setShareButtonColor();
+            }
+        };
+    }
+
+    protected class AbstractAchievementValueAnimatorUpdateListener implements ValueAnimator.AnimatorUpdateListener
+    {
+        @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+        {
+            int xp = (Integer) valueAnimator.getAnimatedValue(PROPERTY_XP_EARNED);
+            displayXpEarned(xp);
+        }
+    }
+
+    private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> createLevelDefCacheListener()
+    {
+        return new LevelDefListListener();
+    }
+
+    protected class LevelDefListListener implements DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList>
+    {
+
+        @Override public void onDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        {
+            userLevelProgressBar.setLevelDefDTOList(value);
+            userLevelProgressBar.startsWith(userAchievementDTO.getBaseExp());
+            userLevelProgressBar.increment(userAchievementDTO.xpEarned);
+        }
+
+        @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
+        {
+
+        }
     }
 
     public static class Creator
@@ -324,11 +491,11 @@ public abstract class AbstractAchievementDialogFragment extends BaseDialogFragme
             args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
             @Nullable UserAchievementDTO userAchievementDTO = userAchievementCacheInner.get(userAchievementId);
             AbstractAchievementDialogFragment dialogFragment;
-            if(userAchievementDTO == null)
+            if (userAchievementDTO == null)
             {
                 return null;
             }
-            else if (userAchievementDTO.achievementDef.isQuest) // TODO handle case where userAchievementDTO is null
+            else if (userAchievementDTO.achievementDef.isQuest)
             {
                 dialogFragment = new QuestDialogFragment();
             }

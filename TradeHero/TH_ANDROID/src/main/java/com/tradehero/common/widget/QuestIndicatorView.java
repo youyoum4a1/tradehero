@@ -1,6 +1,7 @@
 package com.tradehero.common.widget;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -44,15 +45,35 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
         ButterKnife.inject(this);
     }
 
+    private void defaultStyle()
+    {
+        logo.clearAnimation();
+        unBoldText();
+    }
+
+    private void boldText()
+    {
+        topIndicator.setTypeface(topIndicator.getTypeface(), Typeface.BOLD);
+        botIndicator.setTypeface(botIndicator.getTypeface(), Typeface.BOLD);
+    }
+
+    private void unBoldText()
+    {
+        topIndicator.setTypeface(topIndicator.getTypeface(), Typeface.NORMAL);
+        botIndicator.setTypeface(botIndicator.getTypeface(), Typeface.NORMAL);
+    }
+
     public void on()
     {
         logo.setImageResource(R.drawable.ic_achievement_star_on);
+        defaultStyle();
     }
 
     public void off()
     {
         logo.setImageResource(R.drawable.ic_achievement_star_off);
         updateIndicatorTextColor(R.color.text_gray_normal);
+        defaultStyle();
     }
 
     public void animateOn()
@@ -65,6 +86,7 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
 
         Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.quest_indicator_zoom_in);
         startAnimation(a);
+        boldText();
     }
 
     private void updateIndicatorTextColor(int colorResId)

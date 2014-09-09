@@ -1,48 +1,62 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.key.MockQuestBonusId;
+import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.persistence.achievement.QuestBonusListCache;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
+import com.tradehero.th.utils.ProgressDialogUtil;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 public class QuestListTestingFragment extends DashboardFragment
 {
-    @InjectView(android.R.id.list) protected AbsListView listView;
+    @InjectView(android.R.id.list) protected ListView listView;
     @InjectView(android.R.id.empty) protected ProgressBar emptyView;
 
     @Inject QuestBonusListCache questBonusListCache;
     @Inject AbstractAchievementDialogFragment.Creator creator;
 
     @Inject UserAchievementCache userAchievementCache;
+    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
+
+    @Inject AchievementServiceWrapper achievementServiceWrapper;
 
     protected DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList> questBonusListIdQuestBonusDTOListListener;
     private List<QuestBonusDTO> list = new ArrayList<>();
     private ArrayAdapter<QuestBonusDTO> arrayAdapter;
 
     private QuestBonusListId questBonusListId = new QuestBonusListId();
+    private EditText mXPFrom;
+    private EditText mXPEarned;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -53,6 +67,7 @@ public class QuestListTestingFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+
         questBonusListIdQuestBonusDTOListListener = createAchievementCategoryListCacheListener();
 
         initAdapter();
@@ -60,31 +75,53 @@ public class QuestListTestingFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
-                QuestBonusDTO questBonusDTO = list.get(i);
-                AchievementDefDTO achievementDefDTO = new AchievementDefDTO();
+                QuestBonusDTO questBonusDTO = list.get(i - listView.getHeaderViewsCount());
 
-                achievementDefDTO.header = "Your Daily Salary!";
-                achievementDefDTO.thName = "Day " + questBonusDTO.level;
-                achievementDefDTO.text = "You have earned " + THSignedMoney.builder(questBonusDTO.bonus).currency("TH$").withOutSign().build().toString();
-                achievementDefDTO.subText = "Come back tomorrow to earn another " + (i + 1 >= list.size() ? "surprise " : THSignedMoney.builder(list.get(i + 1).bonus).currency("TH$").withOutSign().build().toString());
-                achievementDefDTO.virtualDollars = questBonusDTO.bonus;
-                achievementDefDTO.visual =
-                        "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/achievements/levels/daily_bonus.png";
-                achievementDefDTO.isQuest = true;
+                MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()), (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));
+                achievementServiceWrapper.getMockBonusDTO(mockQuestBonusId, new Callback<DTO>()
+                {
+                    @Override public void success(DTO dto, Response response)
+                    {
+                        progressDialogUtilLazy.get().dismiss(getActivity());
+                    }
 
-                UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
+                    @Override public void failure(RetrofitError error)
+                    {
+                        progressDialogUtilLazy.get().dismiss(getActivity());
+                    }
+                });
 
-                userAchievementDTO.id = i;
-                userAchievementDTO.contiguousCount = questBonusDTO.level;
-                userAchievementDTO.achievementDef = achievementDefDTO;
-
-                userAchievementDTO.isReset = false;
-                userAchievementDTO.xpEarned = 400;
-                userAchievementDTO.xpTotal = 1030;
-
-                userAchievementCache.putAndBroadcast(userAchievementDTO);
+                progressDialogUtilLazy.get().show(getActivity(), "Fetching Mock Quest", "Loading...");
             }
         });
+
+        listView.addHeaderView(createHeaderView());
+    }
+
+    private View createHeaderView()
+    {
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
+        linearLayout.setLayoutParams(lp);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        mXPFrom = getEditText();
+        mXPEarned = getEditText();
+
+        mXPFrom.setHint("Start XP");
+        mXPEarned.setHint("XP Earned");
+
+        linearLayout.addView(mXPFrom);
+        linearLayout.addView(mXPEarned);
+
+        return linearLayout;
+    }
+
+    private EditText getEditText()
+    {
+        EditText editText = new EditText(getActivity());
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        return editText;
     }
 
     private void initAdapter()

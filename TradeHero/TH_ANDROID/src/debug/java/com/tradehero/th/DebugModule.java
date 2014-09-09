@@ -7,7 +7,6 @@ import dagger.Module;
 @Module(
         includes = {
                 NetworkDebugModule.class,
-                PersistenceDebugModule.class,
         },
 
         complete = false,
