@@ -13,6 +13,9 @@ import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTOList;
 import com.tradehero.th.fragments.BasePagedListFragment;
 import com.tradehero.th.persistence.education.PaginatedVideoCategoryCache;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +30,7 @@ public class VideoCategoriesFragment extends BasePagedListFragment<
 {
     @Inject PaginatedVideoCategoryCache paginatedVideoCategoryCache;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject Analytics analytics;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -44,6 +48,12 @@ public class VideoCategoriesFragment extends BasePagedListFragment<
     {
         super.onActivityCreated(savedInstanceState);
         resideMenuLazy.get().addIgnoredView(listView);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Academy));
     }
 
     @Override protected int getFragmentLayoutResId()
