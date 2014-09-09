@@ -11,7 +11,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -39,6 +38,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCache;
 import com.tradehero.th.persistence.market.ExchangeSectorCompactListCache;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -47,12 +47,10 @@ import timber.log.Timber;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
-    private static long ONE_MONTH = (long)30*24*60*60*1000;
-
     @Inject CurrentUserId currentUserId;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
-    @Inject @FirstShowOnBoardDialog LongPreference firstShowOnBoardDialogPreference;
+    @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject UserProfileCache userProfileCache;
     @Inject ExchangeSectorCompactListCache exchangeSectorCompactListCache;
     @Inject LeaderboardUserListCache leaderboardUserListCache;
@@ -231,8 +229,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     public void onCloseClicked(/*View view*/)
     {
         dismiss();
-        //firstShowOnBoardDialogPreference.set(System.currentTimeMillis()+60*1000);
-        firstShowOnBoardDialogPreference.set(System.currentTimeMillis()+ONE_MONTH);
+        firstShowOnBoardDialogPreference.justHandled();
     }
 
     @OnClick(R.id.done_button)
@@ -247,7 +244,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
             activity.getDashboardNavigator().goToTab(RootFragmentType.CONTEST_CENTER);
             activity.getDashboardNavigator().goToTab(RootFragmentType.ME);
         }
-        firstShowOnBoardDialogPreference.set(System.currentTimeMillis()+ONE_MONTH);
+        firstShowOnBoardDialogPreference.justHandled();
     }
 
     public void submitHeros()

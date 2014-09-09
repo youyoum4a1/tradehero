@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
@@ -17,6 +16,7 @@ import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import dagger.Module;
 import dagger.Provides;
@@ -155,9 +155,12 @@ public class PreferenceModule
         return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_INVITE_CODE_FLAG, true);
     }
 
-    @Provides @Singleton @FirstShowOnBoardDialog LongPreference provideFirstShowOnBoardDialogPreference(
+    @Provides @Singleton @FirstShowOnBoardDialog TimingIntervalPreference provideFirstShowOnBoardDialogTimingPreference(
             @ForApp SharedPreferences sharedPreferences)
     {
-        return new LongPreference(sharedPreferences, PREF_FIRST_SHOW_ON_BOARD_FLAG, 0);
+        return new TimingIntervalPreference(
+                sharedPreferences,
+                PREF_FIRST_SHOW_ON_BOARD_FLAG,
+                1 * TimingIntervalPreference.MONTH);
     }
 }

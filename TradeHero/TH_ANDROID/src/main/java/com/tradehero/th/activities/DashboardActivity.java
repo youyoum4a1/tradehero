@@ -20,7 +20,6 @@ import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -51,6 +50,7 @@ import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.FirstShowInviteCodeDialog;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.ui.ViewWrapper;
@@ -98,7 +98,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<NotificationCache> notificationCache;
     @Inject DeviceTokenHelper deviceTokenHelper;
     @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
-    @Inject @FirstShowOnBoardDialog LongPreference firstShowOnBoardDialogPreference;
+    @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
 
     @Inject AppContainer appContainer;
@@ -398,11 +398,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     protected boolean shouldShowOnBoard()
     {
-        if (firstShowOnBoardDialogPreference.get() < 1)
-        {
-            return true;
-        }
-        if (System.currentTimeMillis() > firstShowOnBoardDialogPreference.get())
+        if (firstShowOnBoardDialogPreference.isItTime())
         {
             UserProfileDTO currentUserProfile =
                     userProfileCache.get().get(currentUserId.toUserBaseKey());
