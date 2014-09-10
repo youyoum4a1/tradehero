@@ -1,12 +1,12 @@
 package com.tradehero.common.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -84,8 +84,10 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
         AnimationDrawable animationDrawable = (AnimationDrawable) logo.getDrawable();
         animationDrawable.start();
 
-        Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.quest_indicator_zoom_in);
-        startAnimation(a);
+        Animator a = AnimatorInflater.loadAnimator(getContext(), R.animator.quest_indicator_scale);
+        a.setTarget(this);
+        a.start();
+
         boldText();
     }
 

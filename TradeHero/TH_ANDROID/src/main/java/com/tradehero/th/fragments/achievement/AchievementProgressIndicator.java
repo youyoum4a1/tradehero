@@ -1,13 +1,13 @@
 package com.tradehero.th.fragments.achievement;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -195,9 +195,16 @@ public class AchievementProgressIndicator extends LinearLayout
         {
             indicatorImageView.setImageResource(R.drawable.ic_achivement_star_animate);
             AnimationDrawable animationDrawable = (AnimationDrawable) indicatorImageView.getDrawable();
-            Animation a = AnimationUtils.loadAnimation(indicatorImageView.getContext(), R.anim.quest_indicator_zoom_in);
             animationDrawable.start();
-            indicatorTextView.startAnimation(a);
+
+            Animator animator = AnimatorInflater.loadAnimator(indicatorImageView.getContext(), R.animator.quest_indicator_scale);
+            Animator animatorCopy = animator.clone();
+
+            animator.setTarget(indicatorImageView);
+            animatorCopy.setTarget(indicatorTextView);
+
+            animator.start();
+            animatorCopy.start();
         }
     }
 }
