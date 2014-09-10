@@ -10,6 +10,7 @@ import com.amazon.device.iap.model.PurchaseResponse;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserDataResponse;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -125,11 +126,11 @@ import org.jetbrains.annotations.NotNull;
         for (@NotNull Map.Entry<RequestId, Object> requestEntry : new HashSet<>(waitingResponses.snapshot().entrySet()))
         {
             listener = purchasingListeners.get(requestEntry.getKey());
+            response = requestEntry.getValue();
             if (listener != null)
             {
                 purchasingListeners.remove(requestEntry.getKey());
                 waitingResponses.remove(requestEntry.getKey());
-                response = requestEntry.getValue();
                 if (response instanceof UserDataResponse)
                 {
                     listener.onUserDataResponse((UserDataResponse) response);
@@ -145,6 +146,23 @@ import org.jetbrains.annotations.NotNull;
                 else
                 {
                     listener.onPurchaseUpdatesResponse((PurchaseUpdatesResponse) response);
+                }
+            }
+
+            // HACK because RequestId seems messed up on App Tester
+            {
+                if (response instanceof PurchaseUpdatesResponse)
+                {
+                    for (RequestId listenerId : new ArrayList<>(purchasingListeners.snapshot().keySet()))
+                    {
+                        listener = purchasingListeners.get(listenerId);
+                        if (BaseAmazonPurchaseFetcher.class.isAssignableFrom(listener.getClass()))
+                        {
+                            purchasingListeners.remove(listenerId);
+                            waitingResponses.remove(requestEntry.getKey());
+                            listener.onPurchaseUpdatesResponse((PurchaseUpdatesResponse) response);
+                        }
+                    }
                 }
             }
         }
