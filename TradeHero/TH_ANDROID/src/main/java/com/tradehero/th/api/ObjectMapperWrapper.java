@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
+import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
+import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import dagger.Lazy;
 import java.io.IOException;
@@ -23,12 +25,19 @@ import org.jetbrains.annotations.NotNull;
 public class ObjectMapperWrapper extends ObjectMapper
 {
     @NotNull protected final Lazy<UserAchievementCache> userAchievementCacheLazy;
+    @NotNull protected final Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy;
+    @NotNull protected final Lazy<AchievementCategoryCache> achievementCategoryCacheLazy;
 
     //<editor-fold desc="Constructors">
-    @Inject public ObjectMapperWrapper(@NotNull Lazy<UserAchievementCache> userAchievementCacheLazy)
+    @Inject public ObjectMapperWrapper(
+            @NotNull Lazy<UserAchievementCache> userAchievementCacheLazy,
+            @NotNull Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy,
+            @NotNull Lazy<AchievementCategoryCache> achievementCategoryCacheLazy)
     {
         super();
         this.userAchievementCacheLazy = userAchievementCacheLazy;
+        this.achievementCategoryListCacheLazy = achievementCategoryListCacheLazy;
+        this.achievementCategoryCacheLazy = achievementCategoryCacheLazy;
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
     //</editor-fold>
@@ -79,5 +88,7 @@ public class ObjectMapperWrapper extends ObjectMapper
                 {
                 });
         userAchievementCacheLazy.get().put(userAchievementDTOs);
+        achievementCategoryListCacheLazy.get().invalidateAll();
+        achievementCategoryCacheLazy.get().invalidateAll();
     }
 }
