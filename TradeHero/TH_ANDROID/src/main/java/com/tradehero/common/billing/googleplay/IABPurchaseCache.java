@@ -1,6 +1,7 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.ProductPurchaseCache;
+import org.jetbrains.annotations.NotNull;
 
 public class IABPurchaseCache<
             IABSKUType extends IABSKU,
@@ -11,12 +12,14 @@ public class IABPurchaseCache<
             IABOrderIdType,
             IABPurchaseType>
 {
+    //<editor-fold desc="Constructors">
     public IABPurchaseCache(int maxSize)
     {
         super(maxSize);
     }
+    //</editor-fold>
 
-    @Override protected IABPurchaseType fetch(IABOrderIdType key) throws Throwable
+    @Override @NotNull public IABPurchaseType fetch(@NotNull IABOrderIdType key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch on this cache");
     }

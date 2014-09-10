@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung;
 
+import com.sec.android.iap.lib.listener.OnGetItemListener;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 
@@ -12,6 +13,7 @@ public interface SamsungProductIdentifierFetcher<
         SamsungSKUListKeyType,
         SamsungSKUType,
         SamsungSKUListType,
-        SamsungExceptionType>
+        SamsungExceptionType>,
+        OnGetItemListener
 {
 }

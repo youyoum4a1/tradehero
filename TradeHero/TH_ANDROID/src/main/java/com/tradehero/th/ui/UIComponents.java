@@ -8,7 +8,7 @@ import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module(
-        addsTo = UIModule.class,
+        //addsTo = UIModule.class,
         injects = {
                 DashboardActivity.class
         },

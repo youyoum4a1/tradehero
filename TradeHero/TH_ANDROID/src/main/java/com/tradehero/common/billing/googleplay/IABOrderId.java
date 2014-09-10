@@ -12,10 +12,12 @@ public class IABOrderId implements OrderId
     public String developerPayload;
     public String purchaseToken;
 
+    //<editor-fold desc="Constructors">
     public IABOrderId(String orderId)
     {
         this.orderId = orderId;
     }
+    //</editor-fold>
 
     @Override public boolean equals(Object other)
     {

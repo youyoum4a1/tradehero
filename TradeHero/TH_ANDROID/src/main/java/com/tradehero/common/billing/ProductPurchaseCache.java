@@ -1,42 +1,21 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 abstract public class ProductPurchaseCache<
         ProductIdentifierType extends ProductIdentifier,
             OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>>
-        extends StraightDTOCache<OrderIdType, ProductPurchaseType>
+        extends StraightDTOCacheNew<OrderIdType, ProductPurchaseType>
 {
-    protected final ArrayList<OrderIdType> keys;
-
+    //<editor-fold desc="Constructors">
     public ProductPurchaseCache(int maxSize)
     {
         super(maxSize);
-        keys = new ArrayList<>();
     }
-
-    @Override public ProductPurchaseType put(OrderIdType key, ProductPurchaseType value)
-    {
-        ProductPurchaseType previous = super.put(key, value);
-        keys.add(key);
-        return previous;
-    }
-
-    @Override public void invalidate(OrderIdType key)
-    {
-        super.invalidate(key);
-        keys.remove(key);
-    }
-
-    @Override public void invalidateAll()
-    {
-        super.invalidateAll();
-        keys.clear();
-    }
+    //</editor-fold>
 
     public void put(List<ProductPurchaseType> values)
     {
@@ -54,6 +33,16 @@ abstract public class ProductPurchaseCache<
 
     public ArrayList<ProductPurchaseType> getValues()
     {
-        return new ArrayList<>(snapshot().values());
+        ArrayList<ProductPurchaseType> values = new ArrayList<>();
+        ProductPurchaseType value;
+        for (OrderIdType key : new ArrayList<>(snapshot().keySet()))
+        {
+            value = get(key);
+            if (value != null)
+            {
+                values.add(value);
+            }
+        }
+        return values;
     }
 }

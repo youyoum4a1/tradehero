@@ -20,7 +20,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     private final THUIBillingRequest billingRequest;
     private UIBillingRequest.OnErrorListener errorListener;
     private final ProductIdentifierDomain productIdentifierDomain;
-    private PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
+    private THPurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
     private Callback<UserProfileDTO> freeFollowedListener;
 
     private final boolean alertsAreFree;
@@ -50,7 +50,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             ProductIdentifierDomain productIdentifierDomain,
             @Nullable UserBaseKey userToFollow,
             OwnedPortfolioId purchaseApplicableOwnedPortfolioId,
-            PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener,
+            THPurchaseReporter.OnPurchaseReportedListener purchaseReportedListener,
             Callback<UserProfileDTO> freeFollowedListener,
             PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener,
             boolean alertsAreFree)
@@ -161,7 +161,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         private boolean popIfPurchaseFailed = true;
         private UIBillingRequest.OnErrorListener errorListener;
         private ProductIdentifierDomain productIdentifierDomain;
-        private PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
+        private THPurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
         private boolean alertsAreFree = alertsAreFree();
 
         private THUIBillingRequest billingRequest;
@@ -240,7 +240,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             return self();
         }
 
-        public Builder setPurchaseReportedListener(PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener)
+        public Builder setPurchaseReportedListener(THPurchaseReporter.OnPurchaseReportedListener purchaseReportedListener)
         {
             this.purchaseReportedListener = purchaseReportedListener;
             return self();

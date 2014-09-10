@@ -12,20 +12,32 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
+import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.ServerEndpoint;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,8 +46,19 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
 
-    // TODO something belong to Google Play should not be here, generic util class for all store is expected
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject THBillingInteractor billingInteractor;
+    @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
+    private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
+    private Integer restoreRequestCode;
+
+    @Inject UserServiceWrapper userServiceWrapper;
+    @Inject SocialServiceWrapper socialServiceWrapper;
+    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    private MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject PushNotificationManager pushNotificationManager;
+    @Inject THIABAlertDialogUtil thiabAlertDialogUtil;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
     @Inject Analytics analytics;
     @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;

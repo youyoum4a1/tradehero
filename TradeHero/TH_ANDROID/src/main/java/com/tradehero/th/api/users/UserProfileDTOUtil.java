@@ -4,7 +4,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
+import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -16,16 +16,16 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     public final static int IS_FREE_FOLLOWER = 1;
     public final static int IS_PREMIUM_FOLLOWER = 2;
 
-    @NotNull protected SecurityAlertKnowledge securityAlertKnowledge;
-    @NotNull protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @Inject protected THIABSecurityAlertKnowledge THIABSecurityAlertKnowledge;
+    @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileDTOUtil(
-            @NotNull SecurityAlertKnowledge securityAlertKnowledge,
+            @NotNull THIABSecurityAlertKnowledge securityAlertKnowledge,
             @NotNull PortfolioCompactDTOUtil portfolioCompactDTOUtil)
     {
         super();
-        this.securityAlertKnowledge = securityAlertKnowledge;
+        this.THIABSecurityAlertKnowledge = securityAlertKnowledge;
         this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
     }
     //</editor-fold>
@@ -70,7 +70,7 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
                     localSKU = new IABSKU(userAlertPlanDTO.alertPlan.productIdentifier);
                     subscribedAlerts.add(localSKU);
 
-                    serverEquivalent = securityAlertKnowledge.getServerEquivalentSKU(localSKU);
+                    serverEquivalent = THIABSecurityAlertKnowledge.getServerEquivalentSKU(localSKU);
                     if (serverEquivalent != null)
                     {
                         subscribedAlerts.add(serverEquivalent);

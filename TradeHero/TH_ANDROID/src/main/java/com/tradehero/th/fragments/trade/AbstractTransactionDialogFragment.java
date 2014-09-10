@@ -23,13 +23,16 @@ import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -40,11 +43,12 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
@@ -60,6 +64,7 @@ import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -111,6 +116,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     @Inject UserProfileCache userProfileCache;
     @Inject SecurityCompactCache securityCompactCache;
+    @Inject PortfolioCompactListCache portfolioCompactListCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject CurrentUserId currentUserId;
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
@@ -118,7 +124,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
-    @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @Inject PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialLinkHelperFactory socialLinkHelperFactory;
     @Inject Analytics analytics;
@@ -132,6 +138,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
+    @Nullable protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListCacheListener;
+    @Nullable protected PortfolioCompactDTOList portfolioCompactDTOs;
     private PortfolioId portfolioId;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
@@ -147,14 +155,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private TextWatcher mQuantityTextWatcher;
     private TransactionEditCommentFragment transactionCommentFragment;
     Editable unSpannedComment;
-
-    protected abstract String getLabel();
-
-    @Nullable protected abstract Double getProfitOrLossUsd();  // TODO do a getProfitOrLossPortfolioCcy
-
-    protected abstract int getCashLeftLabelResId();
-
-    public abstract String getCashShareLeft();
 
     protected abstract Integer getMaxValue();
 
@@ -197,7 +197,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return securityId;
     }
 
-    protected PortfolioId getPortfolioId()
+    @NotNull protected PortfolioId getPortfolioId()
     {
         if (this.portfolioId == null)
         {
@@ -215,6 +215,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
+        portfolioCompactListCacheListener = createPortfolioCompactListCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -238,12 +239,36 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         {
             getDialog().hide();
         }
+
+        fetchPortfolioCompactList();
     }
 
     @Override public void onDetach()
     {
         transactionCommentFragment = null;
         super.onDetach();
+    }
+
+    @Override public void onDestroyView()
+    {
+        mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
+        mQuantityTextWatcher = null;
+        detachPortfolioCompactListCache();
+        destroyTransactionDialog();
+        destroySocialLinkDialog();
+        detachBuySellMiddleCallback();
+        detachSocialLinkHelper();
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        portfolioCompactListCacheListener = null;
+        securityCompactDTO = null;
+        portfolioCompactDTO = null;
+        quoteDTO = null;
+        positionDTOCompactList = null;
+        super.onDestroy();
     }
 
     private void init()
@@ -313,6 +338,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         initSocialButtons();
         updateTransactionDialog();
     }
+
+    protected abstract String getLabel();
+    protected abstract int getCashLeftLabelResId();
 
     public String getTitle()
     {
@@ -432,6 +460,53 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         getDialog().hide();
     }
 
+    protected void detachPortfolioCompactListCache()
+    {
+        portfolioCompactListCache.unregister(portfolioCompactListCacheListener);
+    }
+
+    protected void fetchPortfolioCompactList()
+    {
+        detachPortfolioCompactListCache();
+        portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListCacheListener);
+        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListCacheListener()
+    {
+        return new TransactionDialogPortfolioCompactListCacheListener();
+    }
+
+    protected class TransactionDialogPortfolioCompactListCacheListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
+    {
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        {
+            Timber.d("Received %s", value);
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_portfolio_list_info);
+        }
+    }
+
+    protected void linkWith(PortfolioCompactDTOList value, boolean andDisplay)
+    {
+        this.portfolioCompactDTOs = value;
+        portfolioCompactDTO = value.findFirstWhere(new Predicate<PortfolioCompactDTO>()
+        {
+            @Override public boolean apply(PortfolioCompactDTO portfolioCompactDTO)
+            {
+                return portfolioCompactDTO.getPortfolioId().equals(getPortfolioId());
+            }
+        });
+        if (andDisplay)
+        {
+            updateTransactionDialog();
+        }
+    }
+
     public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
     {
         this.buySellTransactionListener = buySellTransactionListener;
@@ -517,11 +592,15 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         }
     }
 
+    @Nullable protected abstract Double getProfitOrLossUsd();  // TODO do a getProfitOrLossPortfolioCcy
+
     private void updateTradeValueAndCashShareLeft()
     {
         mCashShareLeftTextView.setText(getCashShareLeft());
         mTradeValueTextView.setText(getTradeValueText());
     }
+
+    public abstract String getCashShareLeft();
 
     private void updateConfirmButton()
     {
@@ -799,26 +878,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     protected abstract void setBuyEventFor(SharingOptionsEvent.Builder builder);
 
-    @Override public void onDestroy()
-    {
-        securityCompactDTO = null;
-        portfolioCompactDTO = null;
-        quoteDTO = null;
-        positionDTOCompactList = null;
-        super.onDestroy();
-    }
-
-    @Override public void onDestroyView()
-    {
-        mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
-        mQuantityTextWatcher = null;
-        destroyTransactionDialog();
-        destroySocialLinkDialog();
-        detachBuySellMiddleCallback();
-        detachSocialLinkHelper();
-        super.onDestroyView();
-    }
-
     private void destroySocialLinkDialog()
     {
         if (mSocialLinkingDialog != null && mSocialLinkingDialog.isShowing())
@@ -987,11 +1046,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         };
     }
 
-    private BuySellPurchaseReportedListener createPurchaseReportedListener()
-    {
-        return new BuySellPurchaseReportedListener();
-    }
-
     public void populateComment()
     {
         if (transactionCommentFragment != null)
@@ -1110,14 +1164,19 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         }
     }
 
+    private BuySellPurchaseReportedListener createPurchaseReportedListener()
+    {
+        return new BuySellPurchaseReportedListener();
+    }
+
     protected class BuySellPurchaseReportedListener
-            implements PurchaseReporter.OnPurchaseReportedListener
+            implements THPurchaseReporter.OnPurchaseReportedListener
     {
         @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
                 UserProfileDTO updatedUserProfile)
         {
             linkWith(updatedUserProfile);
-            updateTransactionDialog();
+            fetchPortfolioCompactList();
         }
 
         @Override

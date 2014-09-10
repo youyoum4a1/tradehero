@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseBillingLogicHolder<
@@ -41,33 +43,40 @@ abstract public class BaseBillingLogicHolder<
 {
     public static final int MAX_RANDOM_RETRIES = 50;
 
-    protected Map<Integer, BillingRequestType> billingRequests;
+    @NotNull protected final ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache;
+    @NotNull protected final ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache;
+    @NotNull protected final BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder;
+    @NotNull protected final ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder;
+    @NotNull protected final BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder;
+    @NotNull protected final BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder;
+    @NotNull protected final BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder;
 
-    protected BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder;
-    protected ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder;
-    protected BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder;
-    protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder;
-    protected BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder;
+    @NotNull protected final Map<Integer, BillingRequestType> billingRequests;
 
-    public BaseBillingLogicHolder()
+    //<editor-fold desc="Constructors">
+    public BaseBillingLogicHolder(
+            @NotNull ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
+            @NotNull ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache,
+            @NotNull BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder,
+            @NotNull ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder,
+            @NotNull BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder,
+            @NotNull BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder,
+            @NotNull BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder)
     {
         super();
-        billingRequests = new HashMap<>();
+        this.productIdentifierCache = productIdentifierCache;
+        this.productDetailCache = productDetailCache;
+        this.billingAvailableTesterHolder= billingAvailableTesterHolder;
+        this.productIdentifierFetcherHolder = productIdentifierFetcherHolder;
+        this.inventoryFetcherHolder = inventoryFetcherHolder;
+        this.purchaseFetcherHolder = purchaseFetcherHolder;
+        this.purchaserHolder = purchaserHolder;
 
-        billingAvailableTesterHolder= createBillingAvailableTesterHolder();
-        productIdentifierFetcherHolder = createProductIdentifierFetcherHolder();
-        inventoryFetcherHolder = createInventoryFetcherHolder();
-        purchaseFetcherHolder = createPurchaseFetcherHolder();
-        purchaserHolder = createPurchaserHolder();
+        this.billingRequests = new HashMap<>();
     }
+    //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
-    abstract protected BillingAvailableTesterHolder<BillingExceptionType> createBillingAvailableTesterHolder();
-    abstract protected ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> createProductIdentifierFetcherHolder();
-    abstract protected BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> createInventoryFetcherHolder();
-    abstract protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaseFetcherHolder();
-    abstract protected BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> createPurchaserHolder();
-
     @Override public void onDestroy()
     {
         for (BillingRequestType billingRequest : billingRequests.values())
@@ -119,7 +128,7 @@ abstract public class BaseBillingLogicHolder<
     }
     //</editor-fold>
 
-    @Override public void registerListeners(int requestCode, BillingRequestType billingRequest)
+    @Override public void registerListeners(int requestCode, @NotNull BillingRequestType billingRequest)
     {
         registerBillingAvailableListener(requestCode, billingRequest.billingAvailableListener);
         registerProductIdentifierFetchedListener(requestCode, billingRequest.productIdentifierFetchedListener);
@@ -136,7 +145,7 @@ abstract public class BaseBillingLogicHolder<
      * @param billingRequest
      * @return true if sequence launched, false otherwise
      */
-    @Override public boolean run(int requestCode, BillingRequestType billingRequest)
+    @Override public boolean run(int requestCode, @NotNull BillingRequestType billingRequest)
     {
         billingRequests.put(requestCode, billingRequest);
         registerListeners(requestCode, billingRequest);
@@ -146,7 +155,7 @@ abstract public class BaseBillingLogicHolder<
     protected boolean runInternal(int requestCode)
     {
         boolean launched = false;
-        BillingRequestType billingRequest = billingRequests.get(requestCode);
+        @Nullable BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
             if (billingRequest.testBillingAvailable)
@@ -159,7 +168,7 @@ abstract public class BaseBillingLogicHolder<
                 launchProductIdentifierFetchSequence(requestCode);
                 launched = true;
             }
-            else if (billingRequest.fetchInventory && billingRequest.productIdentifiersForInventory != null)
+            else if (billingRequest.fetchInventory)
             {
                 launchInventoryFetchSequence(requestCode, billingRequest.productIdentifiersForInventory);
                 launched = true;
@@ -205,11 +214,6 @@ abstract public class BaseBillingLogicHolder<
         purchaseFetcherHolder.launchFetchPurchaseSequence(requestCode);
     }
 
-    @Override public void launchRestorePurchaseSequence(int requestCode)
-    {
-        throw new IllegalArgumentException("Do not call this method");
-    }
-
     @Override public void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder)
     {
         purchaserHolder.launchPurchaseSequence(requestCode, purchaseOrder);
@@ -253,7 +257,7 @@ abstract public class BaseBillingLogicHolder<
 
     protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
     {
-        getProductIdentifierCache().put(availableProductIdentifiers);
+        productIdentifierCache.put(availableProductIdentifiers);
         notifyProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
         prepareRequestForNextRunAfterProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
         runInternal(requestCode);
@@ -292,7 +296,7 @@ abstract public class BaseBillingLogicHolder<
 
     protected void handleInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
     {
-        getProductDetailCache().put(inventory);
+        productDetailCache.put(inventory);
         notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
         prepareRequestForNextRunAfterInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
         runInternal(requestCode);
@@ -397,7 +401,7 @@ abstract public class BaseBillingLogicHolder<
     //</editor-fold>
 
     //<editor-fold desc="Billing Available">
-    @Override public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode)
+    @Override @Nullable public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest == null)
@@ -465,8 +469,6 @@ abstract public class BaseBillingLogicHolder<
     //</editor-fold>
 
     //<editor-fold desc="Fetch Product Identifier">
-    abstract protected ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> getProductIdentifierCache();
-
     @Override
     public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> getProductIdentifierFetchedListener(int requestCode)
     {
@@ -536,8 +538,6 @@ abstract public class BaseBillingLogicHolder<
     //</editor-fold>
 
     //<editor-fold desc="Fetch Inventory">
-    abstract protected ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> getProductDetailCache();
-
     @Override public BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode)
     {
         BillingRequestType billingRequest = billingRequests.get(requestCode);
@@ -778,6 +778,10 @@ abstract public class BaseBillingLogicHolder<
         if (purchaseFinishedListener != null)
         {
             purchaseFinishedListener.onPurchaseFailed(requestCode, purchaseOrder, billingException);
+        }
+        else
+        {
+            Timber.d("No purchase finished listener for failed");
         }
         unregisterPurchaseFinishedListener(requestCode);
     }

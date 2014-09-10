@@ -5,28 +5,37 @@ import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class BaseIABPurchaseFetcherHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
         IABPurchaseFetcherType extends IABPurchaseFetcher<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType>>
+                        IABSKUType,
+                        IABOrderIdType,
+                        IABPurchaseType,
+                        IABException>>
     extends BaseBillingPurchaseFetcherHolder<
         IABSKUType,
         IABOrderIdType,
         IABPurchaseType,
         IABException>
+    implements IABPurchaseFetcherHolder<
+        IABSKUType,
+        IABOrderIdType,
+        IABPurchaseType,
+        IABException>
 {
-    protected Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
+    @NotNull protected final Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
 
+    //<editor-fold desc="Constructors">
     public BaseIABPurchaseFetcherHolder()
     {
         super();
         purchaseFetchers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {

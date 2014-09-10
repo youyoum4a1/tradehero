@@ -119,10 +119,12 @@ public class UIBillingRequest<
             ProductPurchaseType,
             BillingExceptionType> purchaseFinishedListener;
 
+    //<editor-fold desc="Constructors">
     public UIBillingRequest()
     {
         super();
     }
+    //</editor-fold>
 
     public static interface OnErrorListener<BillingExceptionType extends BillingException>
     {

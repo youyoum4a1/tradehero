@@ -6,21 +6,20 @@ import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaserHolder<
         IABSKUType extends IABSKU,
-        IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
         IABPurchaserType extends IABPurchaser<
-                IABSKUType,
-                IABProductDetailType,
-                IABOrderIdType,
-                IABPurchaseOrderType,
-                IABPurchaseType,
-                IABExceptionType>,
+                        IABSKUType,
+                        IABPurchaseOrderType,
+                        IABOrderIdType,
+                        IABPurchaseType,
+                        IABExceptionType>,
         IABExceptionType extends IABException>
     extends BaseBillingPurchaserHolder<
         IABSKUType,
@@ -35,13 +34,15 @@ abstract public class BaseIABPurchaserHolder<
         IABPurchaseType,
         IABExceptionType>
 {
-    protected Map<Integer /*requestCode*/, IABPurchaserType> iabPurchasers;
+    @NotNull protected final Map<Integer /*requestCode*/, IABPurchaserType> iabPurchasers;
 
+    //<editor-fold desc="Constructors">
     public BaseIABPurchaserHolder()
     {
         super();
         iabPurchasers = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
@@ -71,7 +72,7 @@ abstract public class BaseIABPurchaserHolder<
         iabPurchaser.purchase(requestCode, purchaseOrder);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Timber.d("onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
         IABPurchaser iabPurchaser = iabPurchasers.get(requestCode);

@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
+import com.tradehero.common.billing.RequestCodeHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
 public interface IABPurchaseConsumerHolder<
@@ -7,9 +8,8 @@ public interface IABPurchaseConsumerHolder<
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
         IABExceptionType extends IABException>
+    extends RequestCodeHolder
 {
-    boolean isUnusedRequestCode(int requestCode);
-    void forgetRequestCode(int requestCode);
     IABPurchaseConsumer.OnIABConsumptionFinishedListener<
             IABSKUType,
             IABOrderIdType,

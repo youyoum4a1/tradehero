@@ -32,21 +32,21 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
+import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -282,7 +282,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
         return super.createPurchaseActionInteractorBuilder()
-                .setPurchaseReportedListener(new PurchaseReporter.OnPurchaseReportedListener()
+                .setPurchaseReportedListener(new THPurchaseReporter.OnPurchaseReportedListener()
                 {
                     @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
                     {

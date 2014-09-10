@@ -8,8 +8,8 @@ public interface BillingPurchaser<
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingExceptionType extends BillingException>
+        extends RequestCodeActor
 {
-    int getRequestCode();
     OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseFinishedListener();
     void setPurchaseFinishedListener(OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener);
     void purchase(int requestCode, PurchaseOrderType purchaseOrder);

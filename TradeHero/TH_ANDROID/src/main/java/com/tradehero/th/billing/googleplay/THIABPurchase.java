@@ -19,10 +19,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.utils.THJsonAdapter;
+import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THProductPurchase;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
+import timber.log.Timber;
 
 public class THIABPurchase
         extends BaseIABPurchase<IABSKU, THIABOrderId>
@@ -35,6 +38,31 @@ public class THIABPurchase
         super(itemType, jsonPurchaseInfo, signature);
     }
 
+    public GooglePlayPurchaseReportDTO getGooglePlayPurchaseDTO()
+    {
+        String signature = this.signature;
+        if (signature != null)
+        {
+            // Test its length is a multiple of 4
+            int remainderFour = this.signature.length() % 4;
+            if (remainderFour != 0)
+            {
+                Timber.e(new IllegalArgumentException(
+                        "Patching Google purchase signature that was not of the right length "
+                                + signature.length()
+                                + " "
+                                + this.originalJson
+                                + " "
+                                + signature), "");
+                for (int i = 0; i < 4 - remainderFour; i++)
+                {
+                    signature += "=";
+                }
+            }
+        }
+        return new GooglePlayPurchaseReportDTO(this.originalJson, signature);
+    }
+
     @Override protected IABSKU createIABSKU(String skuString)
     {
         return new IABSKU(skuString);
@@ -45,7 +73,7 @@ public class THIABPurchase
         return new THIABOrderId(orderIdString);
     }
 
-    @JsonIgnore
+    @JsonIgnore @Nullable
     @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
         if (developerPayload != null)

@@ -2,14 +2,10 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import com.tradehero.common.billing.BillingAvailableTesterHolder;
-import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
-import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
-import com.tradehero.common.billing.googleplay.IABPurchaseConsumerHolder;
 import com.tradehero.common.billing.googleplay.IABPurchaserHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
@@ -21,6 +17,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
+import com.tradehero.th.billing.samsung.THProductDetailDomainPredicate;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -28,6 +25,7 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 class THIABLogicHolderFull
@@ -44,60 +42,44 @@ class THIABLogicHolderFull
                 IABException>
     implements THIABLogicHolder
 {
-    private IABSKUListCache iabskuListCache;
-    private THIABProductDetailCache thskuDetailCache;
+    @NotNull private final THIABPurchaseConsumerHolder thBaseIABPurchaseConsumerHolder;
 
-    protected IABPurchaseConsumerHolder<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseConsumerHolder;
-
-    @Inject public THIABLogicHolderFull(UserProfileCache userProfileCache, UserServiceWrapper userServiceWrapper,
-            HeroListCache heroListCache, IABSKUListCache iabskuListCache, THIABProductDetailCache thskuDetailCache)
+    //<editor-fold desc="Constructors">
+    @Inject public THIABLogicHolderFull(
+            @NotNull IABSKUListCache iabskuListCache,
+            @NotNull THIABProductDetailCache thskuDetailCache,
+            @NotNull THIABBillingAvailableTesterHolder thiabBillingAvailableTesterHolder,
+            @NotNull THIABProductIdentifierFetcherHolder thBaseIABProductIdentifierFetcherHolder,
+            @NotNull THIABInventoryFetcherHolder thiabInventoryFetcherHolder,
+            @NotNull THIABPurchaseFetcherHolder thiabPurchaseFetcherHolder,
+            @NotNull THIABPurchaserHolder thiabPurchaserHolder,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull HeroListCache heroListCache,
+            @NotNull THIABPurchaseReporterHolder thiabPurchaseReporterHolder,
+            @NotNull THIABPurchaseConsumerHolder thiabPurchaseConsumerHolder)
     {
-        super(userProfileCache, userServiceWrapper, heroListCache);
-        this.iabskuListCache = iabskuListCache;
-        this.thskuDetailCache = thskuDetailCache;
-        purchaseConsumerHolder = createPurchaseConsumeHolder();
+        super(
+                iabskuListCache,
+                thskuDetailCache,
+                thiabBillingAvailableTesterHolder,
+                thBaseIABProductIdentifierFetcherHolder,
+                thiabInventoryFetcherHolder,
+                thiabPurchaseFetcherHolder,
+                thiabPurchaserHolder,
+                userProfileCache,
+                userServiceWrapper,
+                heroListCache,
+                thiabPurchaseReporterHolder);
+        this.thBaseIABPurchaseConsumerHolder = thiabPurchaseConsumerHolder;
     }
+    //</editor-fold>
 
      //<editor-fold desc="Life Cycle">
     @Override public void onDestroy()
     {
-        purchaseConsumerHolder.onDestroy();
+        thBaseIABPurchaseConsumerHolder.onDestroy();
         super.onDestroy();
-    }
-
-    @Override protected THIABProductIdentifierFetcherHolder createProductIdentifierFetcherHolder()
-    {
-        return new THBaseIABProductIdentifierFetcherHolder();
-    }
-
-    @Override protected THIABInventoryFetcherHolder createInventoryFetcherHolder()
-    {
-        return new THBaseIABInventoryFetcherHolder();
-    }
-
-    @Override protected THIABPurchaseFetcherHolder createPurchaseFetcherHolder()
-    {
-        return new THBaseIABPurchaseFetcherHolder();
-    }
-
-    @Override protected THIABPurchaserHolder createPurchaserHolder()
-    {
-        return new THBaseIABPurchaserHolder();
-    }
-
-    @Override protected BillingAvailableTesterHolder<IABException> createBillingAvailableTesterHolder()
-    {
-        return new BaseIABBillingAvailableTesterHolder();
-    }
-
-    protected THIABPurchaseConsumerHolder createPurchaseConsumeHolder()
-    {
-        return new THBaseIABPurchaseConsumerHolder();
-    }
-
-    @Override protected THIABPurchaseReporterHolder createPurchaseReporterHolder()
-    {
-        return new THBaseIABPurchaseReporterHolder();
     }
     //</editor-fold>
 
@@ -110,17 +92,17 @@ class THIABLogicHolderFull
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
         return super.isUnusedRequestCode(requestCode)
-                && purchaseConsumerHolder.isUnusedRequestCode(requestCode);
+                && thBaseIABPurchaseConsumerHolder.isUnusedRequestCode(requestCode);
     }
 
     @Override public void forgetRequestCode(int requestCode)
     {
         super.forgetRequestCode(requestCode);
-        purchaseConsumerHolder.forgetRequestCode(requestCode);
+        thBaseIABPurchaseConsumerHolder.forgetRequestCode(requestCode);
     }
     //</editor-fold>
 
-    @Override public void registerListeners(int requestCode, THIABBillingRequestFull billingRequest)
+    @Override public void registerListeners(int requestCode, @NotNull THIABBillingRequestFull billingRequest)
     {
         super.registerListeners(requestCode, billingRequest);
         registerConsumptionFinishedListener(requestCode, billingRequest.consumptionFinishedListener);
@@ -128,18 +110,18 @@ class THIABLogicHolderFull
 
     @Override public List<THIABProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
-        List<THIABProductDetail> details = thskuDetailCache.get(getAllSkus());
+        List<THIABProductDetail> details = productDetailCache.get(getAllSkus());
         if (details == null)
         {
             return null;
         }
-        return ArrayUtils.filter(details, THIABProductDetail.getPredicateIsOfCertainDomain(domain));
+        return ArrayUtils.filter(details, new THProductDetailDomainPredicate<IABSKU, THIABProductDetail>(domain));
     }
 
     protected BaseIABSKUList<IABSKU> getAllSkus()
     {
-        BaseIABSKUList<IABSKU> mixed = iabskuListCache.get(IABSKUListKey.getInApp());
-        BaseIABSKUList<IABSKU> subs = iabskuListCache.get(IABSKUListKey.getSubs());
+        BaseIABSKUList<IABSKU> mixed = productIdentifierCache.get(IABSKUListKey.getInApp());
+        BaseIABSKUList<IABSKU> subs = productIdentifierCache.get(IABSKUListKey.getSubs());
         if (subs != null)
         {
             mixed.addAll(subs);
@@ -182,7 +164,6 @@ class THIABLogicHolderFull
         if (prepared && billingRequest != null)
         {
             billingRequest.consumePurchase = true;
-            prepared = true;
         }
         return prepared;
     }
@@ -283,20 +264,6 @@ class THIABLogicHolderFull
     }
     //</editor-fold>
 
-    //<editor-fold desc="Fetch Product Identifier">
-    @Override protected ProductIdentifierListCache<IABSKU, IABSKUListKey, IABSKUList> getProductIdentifierCache()
-    {
-        return iabskuListCache;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Fetch Inventory">
-    @Override protected ProductDetailCache<IABSKU, THIABProductDetail, THIABProductDetailTuner> getProductDetailCache()
-    {
-        return thskuDetailCache;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Consume Purchase">
     @Override public IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException> getConsumptionFinishedListener(int requestCode)
     {
@@ -315,7 +282,7 @@ class THIABLogicHolderFull
         if (billingRequest != null)
         {
             billingRequest.consumptionFinishedListener = consumptionFinishedListener;
-            purchaseConsumerHolder.registerConsumptionFinishedListener(requestCode, createPurchaseConsumptionListener());
+            thBaseIABPurchaseConsumerHolder.registerConsumptionFinishedListener(requestCode, createPurchaseConsumptionListener());
         }
     }
 
@@ -337,7 +304,7 @@ class THIABLogicHolderFull
 
     @Override public void unregisterPurchaseConsumptionListener(int requestCode)
     {
-        purchaseConsumerHolder.forgetRequestCode(requestCode);
+        thBaseIABPurchaseConsumerHolder.forgetRequestCode(requestCode);
         THIABBillingRequestFull billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
@@ -373,7 +340,7 @@ class THIABLogicHolderFull
                 && purchase.getType() != null
                 && purchase.getType().equals(IABConstants.ITEM_TYPE_INAPP))
         {
-            purchaseConsumerHolder.launchConsumeSequence(requestCode, purchase);
+            thBaseIABPurchaseConsumerHolder.launchConsumeSequence(requestCode, purchase);
         }
         else
         {
@@ -386,17 +353,5 @@ class THIABLogicHolderFull
     {
         ((IABPurchaserHolder<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException>) purchaserHolder).onActivityResult(
                 requestCode, resultCode, data);
-    }
-
-    @Deprecated
-    @Override public boolean isInventoryReady()
-    {
-        return inventoryFetcherHolder.isInventoryReady();
-    }
-
-    @Deprecated
-    @Override public boolean hadErrorLoadingInventory()
-    {
-        return inventoryFetcherHolder.hadErrorLoadingInventory();
     }
 }

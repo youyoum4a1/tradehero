@@ -1,23 +1,14 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.IABPurchaseCache;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import javax.inject.Inject;
+import com.tradehero.common.billing.googleplay.exception.IABException;
 
-class THIABPurchaseConsumer extends IABPurchaseConsumer<IABSKU, THIABOrderId, THIABPurchase>
+interface THIABPurchaseConsumer
+    extends IABPurchaseConsumer<
+        IABSKU,
+        THIABOrderId,
+        THIABPurchase,
+        IABException>
 {
-    @Inject protected THIABPurchaseCache thiabPurchaseCache;
-
-    //<editor-fold desc="Constructors">
-    public THIABPurchaseConsumer()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Override protected IABPurchaseCache<IABSKU, THIABOrderId, THIABPurchase> getPurchaseCache()
-    {
-        return thiabPurchaseCache;
-    }
 }

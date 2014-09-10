@@ -3,11 +3,13 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaserHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 
 class THBaseIABPurchaserHolder
     extends BaseIABPurchaserHolder<
         IABSKU,
-        THIABProductDetail,
         THIABPurchaseOrder,
         THIABOrderId,
         THIABPurchase,
@@ -15,13 +17,19 @@ class THBaseIABPurchaserHolder
         IABException>
     implements THIABPurchaserHolder
 {
-    public THBaseIABPurchaserHolder()
+    @NotNull protected final Provider<THIABPurchaser> thiabPurchaserProvider;
+
+    //<editor-fold desc="Constructors">
+    @Inject THBaseIABPurchaserHolder(
+            @NotNull Provider<THIABPurchaser> thiabPurchaserProvider)
     {
         super();
+        this.thiabPurchaserProvider = thiabPurchaserProvider;
     }
+    //</editor-fold>
 
-    @Override protected THIABPurchaser createPurchaser()
+    @Override @NotNull protected THIABPurchaser createPurchaser()
     {
-        return new THIABPurchaser();
+        return thiabPurchaserProvider.get();
     }
 }

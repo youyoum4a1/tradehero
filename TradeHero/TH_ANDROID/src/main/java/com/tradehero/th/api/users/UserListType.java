@@ -13,7 +13,7 @@ abstract public class UserListType implements Comparable<UserListType>, DTOKey
 
     public boolean equalClass(Object other)
     {
-        return other != null && other.getClass().equals(getClass());
+        return other != null && other.getClass().equals(((Object) this).getClass());
     }
 
     abstract public boolean equalFields(UserListType other);

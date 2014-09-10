@@ -84,7 +84,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(R.string.store_option_menu_title);
+        setActionBarTitle(R.string.store_option_menu_title);  // Add the changing cute icon
+        setActionBarSubtitle(userInteractor.getName());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -106,6 +107,12 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                     .build()
                     .showProductsList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
         }
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        setActionBarSubtitle(null);
+        super.onDestroyOptionsMenu();
     }
 
     @Override public void onDestroyView()

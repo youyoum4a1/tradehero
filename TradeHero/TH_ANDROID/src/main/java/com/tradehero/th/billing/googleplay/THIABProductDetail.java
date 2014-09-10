@@ -1,16 +1,18 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 
-public class THIABProductDetail extends BaseIABProductDetail
-    implements THProductDetail<IABSKU>
+public class THIABProductDetail
+        extends BaseIABProductDetail
+        implements THProductDetail<IABSKU>
 {
     int iconResId;
     boolean hasFurtherDetails = false;
@@ -20,17 +22,17 @@ public class THIABProductDetail extends BaseIABProductDetail
     ProductIdentifierDomain domain;
 
     //<editor-fold desc="Constructors">
-    public THIABProductDetail(IABSKUListKey itemType, String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(@NotNull IABSKUListKey itemType, @NotNull String jsonSkuDetails) throws JSONException
     {
         super(itemType.key, jsonSkuDetails);
     }
 
-    public THIABProductDetail(String itemType, String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(@NotNull String itemType, @NotNull String jsonSkuDetails) throws JSONException
     {
         super(itemType, jsonSkuDetails);
     }
 
-    public THIABProductDetail(String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(@NotNull String jsonSkuDetails) throws JSONException
     {
         super(jsonSkuDetails);
     }
@@ -71,6 +73,15 @@ public class THIABProductDetail extends BaseIABProductDetail
         return "THIABProductDetail:" + json;
     }
 
+    @Override @Nullable public Double getPrice()
+    {
+        if (priceAmountMicros == null)
+        {
+            return null;
+        }
+        return (double) priceAmountMicros;
+    }
+
     @Override public String getPriceText()
     {
         return price;
@@ -79,16 +90,5 @@ public class THIABProductDetail extends BaseIABProductDetail
     @Override public String getDescription()
     {
         return description;
-    }
-
-    public static Predicate<THIABProductDetail> getPredicateIsOfCertainDomain(final ProductIdentifierDomain domain)
-    {
-        return new Predicate<THIABProductDetail>()
-        {
-            @Override public boolean apply(THIABProductDetail thIABProductDetail)
-            {
-                return thIABProductDetail != null && (thIABProductDetail.domain == null ? domain == null : thIABProductDetail.domain.equals(domain));
-            }
-        };
     }
 }

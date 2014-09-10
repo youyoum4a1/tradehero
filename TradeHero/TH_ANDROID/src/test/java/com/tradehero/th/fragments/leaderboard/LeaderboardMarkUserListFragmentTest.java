@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
@@ -14,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 @RunWith(THRobolectricTestRunner.class)
-public class LeaderboardMarkUserListFragmentTest extends AbstractTestBase
+public class LeaderboardMarkUserListFragmentTest
 {
     private DashboardNavigator dashboardNavigator;
     private LeaderboardMarkUserListFragment leaderboardMarkUserListFragment;

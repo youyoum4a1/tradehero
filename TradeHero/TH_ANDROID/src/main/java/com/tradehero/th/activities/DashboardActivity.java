@@ -32,7 +32,6 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
@@ -91,7 +90,6 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
@@ -318,7 +316,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (currentUserProfile != null)
         {
-            if (currentUserProfile.isAdmin)
+            if (currentUserProfile.isAdmin || !Constants.RELEASE)
             {
                 menuInflater.inflate(R.menu.admin_menu, menu);
             }

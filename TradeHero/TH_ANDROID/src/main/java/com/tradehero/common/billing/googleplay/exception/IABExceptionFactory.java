@@ -7,10 +7,12 @@ import javax.inject.Singleton;
 
 public class IABExceptionFactory implements BillingExceptionFactory
 {
+    //<editor-fold desc="Constructors">
     public IABExceptionFactory()
     {
         super();
     }
+    //</editor-fold>
 
     public IABException create(int responseStatus)
     {
