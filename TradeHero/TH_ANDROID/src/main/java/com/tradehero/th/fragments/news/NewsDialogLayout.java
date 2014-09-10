@@ -39,19 +39,9 @@ public class NewsDialogLayout extends ShareDialogLayout
     protected ProgressDialog dialog;
 
     //<editor-fold desc="Constructors">
-    public NewsDialogLayout(Context context)
-    {
-        super(context);
-    }
-
     public NewsDialogLayout(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public NewsDialogLayout(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
     //</editor-fold>
 
@@ -61,8 +51,7 @@ public class NewsDialogLayout extends ShareDialogLayout
         String[] dataForFirst = {getContext().getString(R.string.sharing),
                 getContext().getString(R.string.translation)};
         MyListAdapter adapterForFirst =
-                new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,
-                        dataForFirst);
+                new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text, dataForFirst);
         listViewOptions.setAdapter(adapterForFirst);
         listViewOptions.setDividerHeight(1);
         setNewsTitle();
