@@ -6,7 +6,6 @@ import android.content.Intent;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.share.BaseResponseSocialShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
@@ -20,6 +19,7 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
@@ -29,7 +29,7 @@ import timber.log.Timber;
 
 public class SocialSharerImpl implements SocialSharer
 {
-    @NotNull private final CurrentActivityHolder currentActivityHolder;
+    @NotNull private final Provider<Activity> activityProvider;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
@@ -41,13 +41,13 @@ public class SocialSharerImpl implements SocialSharer
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharerImpl(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull DiscussionServiceWrapper discussionServiceWrapper,
             @NotNull SocialShareVerifier socialShareVerifier)
     {
-        this.currentActivityHolder = currentActivityHolder;
+        this.activityProvider = activityProvider;
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
         this.discussionServiceWrapper = discussionServiceWrapper;
@@ -167,7 +167,7 @@ public class SocialSharerImpl implements SocialSharer
 
     public void share(@NotNull WeChatDTO weChatDTO)
     {
-        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        Activity currentActivity = activityProvider.get();
         if (currentActivity != null)
         {
             currentActivity.startActivity(createWeChatIntent(currentActivity, weChatDTO));

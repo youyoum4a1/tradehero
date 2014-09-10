@@ -1,5 +1,6 @@
 package com.tradehero.th.billing;
 
+import android.app.Activity;
 import com.tradehero.common.billing.request.BaseUIBillingRequest;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -45,6 +46,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
      * @param alertsAreFree
      */
     protected THBasePurchaseActionInteractor(
+            Activity activity,
             THBillingInteractor billingInteractor,
             THUIBillingRequest billingRequest,
             BaseUIBillingRequest.OnErrorListener errorListener,
@@ -66,7 +68,8 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 
         if (userToFollow != null)
         {
-            this.premiumFollowUserAssistant = new FollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
+            this.premiumFollowUserAssistant = new FollowUserAssistant(activity, userToFollow, premiumFollowedListener,
+                    purchaseApplicableOwnedPortfolioId);
         }
         else
         {
@@ -166,8 +169,15 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         private boolean alertsAreFree = alertsAreFree();
 
         private BaseTHUIBillingRequest.Builder billingRequestBuilder;
+        private Activity activity;
 
         protected abstract T self();
+
+        public Builder setActivity(Activity activity)
+        {
+            this.activity = activity;
+            return this;
+        }
 
         public Builder setBillingInteractor(THBillingInteractor billingInteractor)
         {
@@ -271,6 +281,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             ensureSaneDefaults();
             populateBillingRequestBuilder();
             return new THBasePurchaseActionInteractor(
+                    activity,
                     billingInteractor,
                     billingRequestBuilder.build(),
                     errorListener,

@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.news;
 
+import android.content.Context;
 import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,10 +21,12 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
     @InjectView(R.id.news_item_placeholder) @Optional ImageView newsItemPlaceholder;
 
     //<editor-fold desc="Constructors">
-    public NewsItemCompactViewHolder()
+
+    public NewsItemCompactViewHolder(Context context)
     {
-        super();
+        super(context);
     }
+
     //</editor-fold>
 
     @Override public void linkWith(DiscussionType discussionDTO, boolean andDisplay)

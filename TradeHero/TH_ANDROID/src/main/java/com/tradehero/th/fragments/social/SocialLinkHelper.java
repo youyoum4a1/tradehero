@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -18,6 +17,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -28,7 +28,7 @@ public abstract class SocialLinkHelper
     @NotNull protected final CurrentUserId currentUserId;
     @NotNull protected final ProgressDialogUtil progressDialogUtil;
     @NotNull protected final SocialServiceWrapper socialServiceWrapper;
-    @NotNull protected final CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final Provider<Activity> activityProvider;
 
     protected Callback<UserProfileDTO> socialLinkingCallback;
     protected MiddleCallback<UserProfileDTO> middleCallbackSocialLinking;
@@ -39,12 +39,12 @@ public abstract class SocialLinkHelper
             @NotNull CurrentUserId currentUserId,
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper,
-            @NotNull CurrentActivityHolder currentActivityHolder)
+            @NotNull Provider<Activity> activityProvider)
     {
         this.currentUserId = currentUserId;
         this.progressDialogUtil = progressDialogUtil;
         this.socialServiceWrapper = socialServiceWrapper;
-        this.currentActivityHolder = currentActivityHolder;
+        this.activityProvider = activityProvider;
     }
 
     public void onDestroyView()
@@ -81,7 +81,7 @@ public abstract class SocialLinkHelper
     public void link(Callback<UserProfileDTO> socialLinkingCallback)
     {
         this.socialLinkingCallback = socialLinkingCallback;
-        doLoginAction(currentActivityHolder.getCurrentActivity(), createSocialConnectLogInCallback());
+        doLoginAction(activityProvider.get(), createSocialConnectLogInCallback());
     }
 
     protected abstract void doLoginAction(Activity context, LogInCallback logInCallback);
@@ -104,7 +104,7 @@ public abstract class SocialLinkHelper
         public void onStart()
         {
             progressDialog = progressDialogUtil.show(
-                    currentActivityHolder.getCurrentContext(),
+                    activityProvider.get(),
                     getLinkDialogTitle(),
                     getLinkDialogMessage());
         }
@@ -121,7 +121,7 @@ public abstract class SocialLinkHelper
             if (progressDialog != null)
             {
                 progressDialog.setMessage(
-                        String.format(currentActivityHolder.getCurrentContext().getString(R.string.authentication_connecting_tradehero),
+                        String.format(activityProvider.get().getString(R.string.authentication_connecting_tradehero),
                                 getSocialNetwork().getName()));
             }
             return false;

@@ -8,36 +8,14 @@ import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.fragments.billing.StoreScreenFragment;
-import com.tradehero.th.fragments.competition.CompetitionModule;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
-import com.tradehero.th.fragments.home.HomeFragment;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.inject.Injector;
-import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.dagger.AppModule;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.ObjectGraph;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +30,6 @@ public class THApp extends PApplication
     public static boolean timberPlanted = false;
 
     @Inject protected PushNotificationManager pushNotificationManager;
-    @Inject protected THRouter thRouter;
     private ObjectGraph objectGraph;
 
     @Override protected void init()
@@ -78,30 +55,6 @@ public class THApp extends PApplication
         EmailSignUtils.initialize();
 
         pushNotificationManager.initialise();
-
-        thRouter.registerRoutes(
-                PushableTimelineFragment.class,
-                MeTimelineFragment.class,
-                NotificationsCenterFragment.class,
-                MessagesCenterFragment.class,
-                UpdateCenterFragment.class,
-                TrendingFragment.class,
-                FriendsInvitationFragment.class,
-                SettingsFragment.class,
-                MainCompetitionFragment.class,
-                ProviderVideoListFragment.class,
-                BuySellFragment.class,
-                StoreScreenFragment.class,
-                LeaderboardCommunityFragment.class,
-                CompetitionWebViewFragment.class,
-                PositionListFragment.class,
-                TradeListFragment.class,
-                HomeFragment.class
-        );
-        thRouter.registerAlias("messages", "updatecenter/0");
-        thRouter.registerAlias("notifications", "updatecenter/1");
-        thRouter.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
-        thRouter.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
 
         THLog.showDeveloperKeyHash();
     }
@@ -132,10 +85,7 @@ public class THApp extends PApplication
     {
         Object[] modules = new Object[]
                 {
-                        new AppModule(this),
-                        new IntentDaggerModule(),
-                        new CompetitionModule(),
-                        new FilterModule()
+                        new AppModule(this)
                 };
 
         if (!Constants.RELEASE)

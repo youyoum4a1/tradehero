@@ -9,7 +9,6 @@ import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
-import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.localytics.ForLocalytics;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsAdapter;
@@ -26,8 +25,7 @@ import javax.inject.Singleton;
         injects = {
                 SignInFragment.class,
                 SignUpFragment.class,
-                EmailSignUpFragment.class,
-                LeaderboardFilterSliderContainer.class
+                EmailSignUpFragment.class
         },
         library = true,
         complete = false

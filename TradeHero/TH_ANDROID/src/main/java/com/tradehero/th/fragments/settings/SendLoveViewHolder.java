@@ -3,20 +3,20 @@ package com.tradehero.th.fragments.settings;
 import android.app.Activity;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 
 public class SendLoveViewHolder extends OneSettingViewHolder
 {
-    @NotNull private final CurrentActivityHolder currentActivityHolder;
+    @NotNull private final Provider<Activity> activityHolder;
 
     //<editor-fold desc="Constructors">
     @Inject public SendLoveViewHolder(
-            @NotNull CurrentActivityHolder currentActivityHolder)
+            @NotNull Provider<Activity> activityHolder)
     {
         super();
-        this.currentActivityHolder = currentActivityHolder;
+        this.activityHolder = activityHolder;
     }
     //</editor-fold>
 
@@ -27,7 +27,7 @@ public class SendLoveViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        Activity currentActivity = activityHolder.get();
         if (currentActivity != null)
         {
             AskForReviewDialogFragment.showReviewDialog(

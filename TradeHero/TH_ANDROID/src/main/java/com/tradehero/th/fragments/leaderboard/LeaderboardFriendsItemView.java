@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -19,7 +20,6 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormUserDTO;
@@ -36,6 +36,7 @@ import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.MiddleLogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
@@ -47,7 +48,6 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -56,6 +56,7 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -81,7 +82,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
+    @Inject Provider<Activity> activityProvider;
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
@@ -91,27 +92,15 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject THRouter thRouter;
     @Inject Analytics analytics;
 
-    //<editor-fold desc="Constructors">
-    public LeaderboardFriendsItemView(Context context)
-    {
-        super(context);
-    }
-
     public LeaderboardFriendsItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        HierarchyInjector.inject(this);
     }
-
-    public LeaderboardFriendsItemView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-    }
-    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         ButterKnife.inject(this);
         loadDefaultPicture();
         if (lbmuFollowUser != null)
@@ -297,7 +286,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             {
                 detachTrackbackFacebook();
                 middleTrackbackFacebook = new MiddleLogInCallback(new TrackFacebookCallback());
-                facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
+                facebookUtils.get().logIn(activityProvider.get(),
                         middleTrackbackFacebook);
             }
             else
@@ -327,7 +316,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             params.putString("to", stringBuilder.toString());
 
             WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                    currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
+                    activityProvider.get(), Session.getActiveSession(),
                     params))
                     .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
@@ -425,7 +414,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             return progressDialog;
         }
         progressDialog = progressDialogUtilLazy.get().show(
-                currentActivityHolderLazy.get().getCurrentContext(),
+                activityProvider.get(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();

@@ -15,8 +15,8 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.intent.THIntentFactory;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
@@ -29,26 +29,16 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     @Inject THRouter thRouter;
 
     //<editor-fold desc="Constructors">
-    public MarkdownTextView(Context context)
-    {
-        super(context);
-    }
-
     public MarkdownTextView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public MarkdownTextView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
     }
 
     @Override protected void onAttachedToWindow()

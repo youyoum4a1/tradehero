@@ -16,7 +16,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
@@ -48,7 +47,6 @@ public class LocationListFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject ListedLocationDTOFactory listedLocationDTOFactory;
     @Inject UserProfileCache userProfileCache;
 
@@ -234,7 +232,7 @@ public class LocationListFragment extends DashboardFragment
         {
             return progressDialog;
         }
-        progressDialog = progressDialogUtilLazy.get().show(currentActivityHolderLazy.get().getCurrentActivity(), R.string.loading_loading,
+        progressDialog = progressDialogUtilLazy.get().show(getActivity(), R.string.loading_loading,
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();
         return progressDialog;

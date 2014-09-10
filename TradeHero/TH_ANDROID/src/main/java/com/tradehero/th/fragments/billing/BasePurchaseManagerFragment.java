@@ -162,6 +162,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
         return THBasePurchaseActionInteractor.builder()
+                .setActivity(getActivity())
                 .setBillingInteractor(userInteractor)
                 .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
                 .setBillingRequestBuilder(uiBillingRequestBuilderProvider.get())

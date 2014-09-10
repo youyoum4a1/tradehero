@@ -8,8 +8,8 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import dagger.Lazy;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
@@ -32,10 +32,10 @@ abstract public class BaseIABPurchaseConsumer<
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaseConsumer(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(currentActivityHolder, iabExceptionFactory);
+        super(activityProvider, iabExceptionFactory);
     }
     //</editor-fold>
 
@@ -52,7 +52,7 @@ abstract public class BaseIABPurchaseConsumer<
 
     @Nullable protected Activity getActivity()
     {
-        return currentActivityHolder.getCurrentActivity();
+        return activityProvider.get();
     }
 
     @NotNull abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
@@ -235,7 +235,7 @@ abstract public class BaseIABPurchaseConsumer<
         String sku = this.purchase.getProductIdentifier().identifier;
         String token = this.purchase.getToken();
         Timber.d("Consuming sku: %s, token: %s", sku, token);
-        int response = this.billingService.consumePurchase(3, currentActivityHolder.getCurrentActivity().getPackageName(), token);
+        int response = this.billingService.consumePurchase(3, activityProvider.get().getPackageName(), token);
         if (response != IABConstants.BILLING_RESPONSE_RESULT_OK)
         {
             throw iabExceptionFactory.get().create(response);

@@ -7,7 +7,6 @@ import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.api.form.FacebookUserFormDTO;
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
@@ -72,7 +71,6 @@ public class THUser
     @Inject static Lazy<UserProfileCache> userProfileCache;
     @Inject static Lazy<DTOCacheUtil> dtoCacheUtil;
     @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
-    @Inject static Lazy<CurrentActivityHolder> currentActivityHolder;
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
     @Inject static LoginSignUpFormDTOFactory loginSignUpFormDTOFactory;
     @Inject static DeviceTokenHelper deviceTokenHelper;
@@ -282,28 +280,29 @@ public class THUser
 
     private static void checkNeedForUpgrade(THException error)
     {
-        if (error.getCode() == ExceptionCode.DoNotRunBelow)
-        {
-            final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
-            alertDialogUtil.get().popWithOkCancelButton(
-                    currentActivity,
-                    R.string.upgrade_needed,
-                    R.string.please_update,
-                    R.string.update_now,
-                    R.string.later,
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialog, int which)
-                        {
-                            THToast.show(R.string.update_guide);
-                            if (currentActivity != null)
-                            {
-                                marketUtilLazy.get().showAppOnMarket(currentActivity);
-                                currentActivity.finish();
-                            }
-                        }
-                    });
-        }
+        // FIXME CurrentActivityHolder has been removed, refactor THUser!!!
+        //if (error.getCode() == ExceptionCode.DoNotRunBelow)
+        //{
+        //    final Activity currentActivity = activityProvider.get();
+        //    alertDialogUtil.get().popWithOkCancelButton(
+        //            currentActivity,
+        //            R.string.upgrade_needed,
+        //            R.string.please_update,
+        //            R.string.update_now,
+        //            R.string.later,
+        //            new DialogInterface.OnClickListener()
+        //            {
+        //                @Override public void onClick(DialogInterface dialog, int which)
+        //                {
+        //                    THToast.show(R.string.update_guide);
+        //                    if (currentActivity != null)
+        //                    {
+        //                        marketUtilLazy.get().showAppOnMarket(currentActivity);
+        //                        currentActivity.finish();
+        //                    }
+        //                }
+        //            });
+        //}
     }
 
     private static void checkNeedToRenewSocialToken(THException error, CredentialsDTO credentialsDTO)
@@ -311,7 +310,9 @@ public class THUser
         if (error.getCode() == ExceptionCode.RenewSocialToken)
         {
             mainCredentialsPreference.delete();
-            final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
+
+            // FIXME since currentActivityHolder has been removed, refactor THUser
+            final Activity currentActivity = null; // activityProvider.get();
 
             if (currentActivity instanceof AuthenticationActivity)
             {

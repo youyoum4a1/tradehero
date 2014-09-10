@@ -35,29 +35,15 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Analytics analytics;
 
-    //<editor-fold desc="Constructors">
-    @SuppressWarnings("UnusedDeclaration")
-    public TimelineItemViewLinear(Context context)
-    {
-        super(context);
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     public TimelineItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public TimelineItemViewLinear(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-    }
-    //</editor-fold>
-
     @Override protected TimelineItemViewHolder createViewHolder()
     {
-        return new TimelineItemViewHolder<TimelineItemDTO>();
+        return new TimelineItemViewHolder<TimelineItemDTO>(getContext());
     }
 
     protected PopupMenu.OnMenuItemClickListener createMonitorPopupMenuItemClickListener()

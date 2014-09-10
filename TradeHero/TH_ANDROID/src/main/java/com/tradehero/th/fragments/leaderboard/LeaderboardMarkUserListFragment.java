@@ -541,6 +541,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         detachChoiceFollowAssistant();
         choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
+                getActivity(),
                 userBaseDTO.getBaseKey(),
                 createUserFollowedListener(),
                 getApplicablePortfolioId());

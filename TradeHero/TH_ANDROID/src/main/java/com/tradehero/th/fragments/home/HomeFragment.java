@@ -19,7 +19,6 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
@@ -72,7 +71,7 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
+    @Inject Provider<Activity> activityProvider;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -235,7 +234,7 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             if (Session.getActiveSession() == null)
             {
-                facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
+                facebookUtils.get().logIn(activityProvider.get(),
                         new TrackFacebookCallback());
             }
             else
@@ -276,7 +275,7 @@ public final class HomeFragment extends BaseWebViewFragment
             params.putString("to", stringBuilder.toString());
 
             WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                    currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
+                    activityProvider.get(), Session.getActiveSession(),
                     params))
                     .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
@@ -366,7 +365,7 @@ public final class HomeFragment extends BaseWebViewFragment
             return progressDialog;
         }
         progressDialog = progressDialogUtilLazy.get().show(
-                currentActivityHolderLazy.get().getCurrentContext(),
+                activityProvider.get(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();

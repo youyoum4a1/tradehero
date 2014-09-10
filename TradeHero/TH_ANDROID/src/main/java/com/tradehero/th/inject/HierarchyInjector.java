@@ -33,10 +33,16 @@ public class HierarchyInjector
             Activity activity = ((Fragment) o).getActivity();
             return inject(activity, o) || inject(activity.getApplicationContext(), o);
         }
+
+        if (o instanceof Activity)
+        {
+            Activity activity = (Activity) o;
+            return inject(activity, o) || inject(activity.getApplicationContext(), o);
+        }
         return false;
     }
 
-    private static boolean inject(Context context, Object o)
+    public static boolean inject(Context context, Object o)
     {
         return (context instanceof Injector) && inject((Injector) context, o);
     }

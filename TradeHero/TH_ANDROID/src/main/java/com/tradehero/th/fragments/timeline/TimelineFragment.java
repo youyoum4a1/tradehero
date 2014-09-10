@@ -508,7 +508,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         fetchUserProfile(false);
 
         destroyInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(new FollowerSummaryListener());
+        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), new FollowerSummaryListener());
         infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
 
         if (andDisplay)
@@ -862,6 +862,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         detachChoiceFollowAssistant();
         choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
+                getActivity(),
                 heroDTO.getBaseKey(),
                 createPremiumUserFollowedListener(),
                 getApplicablePortfolioId());

@@ -1,11 +1,9 @@
-package com.tradehero.th.utils.dagger;
+package com.tradehero.th.network.share;
 
 import android.content.Context;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.auth.operator.ConsumerKey;
 import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.FacebookAppId;
@@ -17,8 +15,6 @@ import com.tradehero.th.models.share.ShareDestinationFactory;
 import com.tradehero.th.models.share.ShareDestinationFactoryByResources;
 import com.tradehero.th.models.share.ShareDestinationId;
 import com.tradehero.th.models.share.ShareDestinationIndexResComparator;
-import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.network.share.SocialSharerImpl;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Collection;
@@ -30,8 +26,6 @@ import timber.log.Timber;
 
 @Module(
         injects = {
-                AuthenticationActivity.class,
-                DashboardActivity.class,
         },
         complete = false,
         library = true

@@ -20,10 +20,10 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import java.util.Date;
@@ -62,7 +62,7 @@ public class AlertItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 

@@ -13,10 +13,12 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.UIModule;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.AuthenticationFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -25,24 +27,26 @@ import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
+import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
+import dagger.Module;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,16 +74,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<QQUtils> qqUtils;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject CurrentActivityHolder currentActivityHolder;
     @Inject CredentialsDTOFactory credentialsDTOFactory;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        DaggerUtils.inject(this);
-
-        currentActivityHolder.setCurrentActivity(this);
+        THApp thApp = THApp.get(this);
+        Injector newInjector = thApp.plus(new AuthenticationActivityModule());
+        newInjector.inject(this);
 
         // check if there is a saved fragment, restore it
         if (savedInstanceState != null)
@@ -492,5 +495,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             return false;
         }
+    }
+
+    @Module(
+            addsTo = AppModule.class,
+            includes = UIModule.class,
+            library = true,
+            complete = false
+    )
+    public class AuthenticationActivityModule
+    {
     }
 }

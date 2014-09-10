@@ -21,9 +21,6 @@ import com.tradehero.th.api.position.PositionDTOJacksonModule;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTODeserialiser;
 import com.tradehero.th.api.social.UserFriendsDTOJacksonModule;
-import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
-import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
-import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.FriendlyUrlConnectionClient;
@@ -60,12 +57,9 @@ import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.utils.RetrofitConstants;
-import com.tradehero.th.widget.VotePair;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Singleton;
 import retrofit.Endpoint;
 import retrofit.Endpoints;
 import retrofit.RestAdapter;
@@ -77,12 +71,7 @@ import retrofit.converter.Converter;
                 RetrofitProtectedModule.class,
         },
         injects = {
-                SettingsTransactionHistoryFragment.class,
-                SettingsPayPalFragment.class,
-                SettingsAlipayFragment.class,
-                ProviderPageIntent.class,
-
-                VotePair.class,
+                ProviderPageIntent.class
         },
         complete = false,
         library = true
