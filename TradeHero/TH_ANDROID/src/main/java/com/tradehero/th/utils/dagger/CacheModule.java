@@ -9,14 +9,12 @@ import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
-import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module(
         injects = {
-                UserProfileFetchAssistant.class
         },
         complete = false,
         library = true
