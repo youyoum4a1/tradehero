@@ -105,6 +105,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private ValueAnimator mAnim;
     private LevelDefListId mLevelDefListId = new LevelDefListId();
     private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> levelDefListCacheListener;
+    private Callback mBadgeCallback;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -180,6 +181,14 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                     setColor(color);
                 }
             });
+            colorValueAnimator.addListener(new AnimatorListenerAdapter()
+            {
+                @Override public void onAnimationEnd(Animator animation)
+                {
+                    super.onAnimationEnd(animation);
+                    setColor(mCurrentColor);
+                }
+            });
             colorValueAnimator.start();
             mCurrentColor = color;
         }
@@ -198,7 +207,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         Drawable d = imageView.getDrawable();
         d.clearColorFilter();
-        d.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        d.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
 
     private void displayHeader()
@@ -210,25 +219,30 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         if (!StringUtils.isNullOrEmpty(userAchievementDTO.achievementDef.visual))
         {
+            if (mBadgeCallback == null)
+            {
+                mBadgeCallback = new Callback()
+                {
+                    @Override public void onSuccess()
+                    {
+                        DominantColorCalculator dominantColorCalculator =
+                                new DominantColorCalculator(((BitmapDrawable) badge.getDrawable()).getBitmap());
+                        ColorScheme colorScheme = dominantColorCalculator.getColorScheme();
+                        updateColor(colorScheme);
+                    }
+
+                    @Override public void onError()
+                    {
+
+                    }
+                };
+            }
+
             picasso.load(userAchievementDTO.achievementDef.visual)
                     .placeholder(R.drawable.achievement_unlocked_placeholder)
                     .fit()
                     .centerInside()
-                    .into(badge, new Callback()
-                    {
-                        @Override public void onSuccess()
-                        {
-                            DominantColorCalculator dominantColorCalculator =
-                                    new DominantColorCalculator(((BitmapDrawable) badge.getDrawable()).getBitmap());
-                            ColorScheme colorScheme = dominantColorCalculator.getColorScheme();
-                            updateColor(colorScheme);
-                        }
-
-                        @Override public void onError()
-                        {
-
-                        }
-                    });
+                    .into(badge, mBadgeCallback);
         }
         else
         {
@@ -411,28 +425,34 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         if (colorValueAnimator != null)
         {
-            colorValueAnimator.cancel();
-            colorValueAnimator.removeAllUpdateListeners();
-            colorValueAnimator.removeAllListeners();
+            cleanupAnimation(colorValueAnimator);
             colorValueAnimator = null;
         }
         if (mAnim != null)
         {
-            mAnim.cancel();
-            mAnim.removeAllUpdateListeners();
-            mAnim.removeAllListeners();
+            cleanupAnimation(mAnim);
             mAnim = null;
         }
         if (btnColorAnimation != null)
         {
-            btnColorAnimation.cancel();
-            btnColorAnimation.removeAllListeners();
-            btnColorAnimation.removeAllUpdateListeners();
+            cleanupAnimation(btnColorAnimation);
             btnColorAnimation = null;
         }
         picasso.cancelRequest(badge);
+        mBadgeCallback = null;
         levelDefListCache.unregister(levelDefListCacheListener);
         super.onDestroyView();
+    }
+
+    private void cleanupAnimation(ValueAnimator animator)
+    {
+        if (animator.isRunning())
+        {
+            animator.end();
+        }
+        animator.cancel();
+        animator.removeAllUpdateListeners();
+        animator.removeAllListeners();
     }
 
     @OnClick(R.id.achievement_dummy_container)
