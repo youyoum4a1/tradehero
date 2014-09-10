@@ -11,10 +11,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -35,15 +35,21 @@ import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -70,6 +76,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
+    @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
 
     @NotNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
@@ -90,6 +97,9 @@ public class FriendsInvitationFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         socialFriendHandler = socialFriendHandlerProvider.get();
         socialFriendHandlerFacebook = facebookSocialFriendHandlerProvider.get();
+        //TODO will refactor this later by alex
+        long year = (long)365*24*60*60*1000;
+        mShowAskForInviteDialogPreference.set(System.currentTimeMillis()+year);
     }
 
     @Override

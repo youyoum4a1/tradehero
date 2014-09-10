@@ -1,16 +1,15 @@
 package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TabHost;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -61,13 +60,17 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
@@ -398,7 +401,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     protected void showOnboard()
     {
-        THToast.show("Activate OnBoardDialogFragment when merged in");
+//        THToast.show("Activate OnBoardDialogFragment when merged in");
         if (firstShowOnBoardDialogPreference.get())
         {
             firstShowOnBoardDialogPreference.set(false);
