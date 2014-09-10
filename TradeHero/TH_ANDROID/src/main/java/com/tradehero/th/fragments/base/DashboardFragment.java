@@ -5,10 +5,12 @@ import android.support.v4.app.Fragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
+import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -17,6 +19,7 @@ abstract public class DashboardFragment extends BaseFragment
 {
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject DashboardNavigator navigator;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -45,7 +48,7 @@ abstract public class DashboardFragment extends BaseFragment
                 }
                 else
                 {
-                    //resideMenuLazy.get().openMenu();
+                    resideMenuLazy.get().openMenu();
                 }
                 return true;
 

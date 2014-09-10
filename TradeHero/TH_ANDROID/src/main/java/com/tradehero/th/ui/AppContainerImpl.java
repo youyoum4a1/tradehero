@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.utils.DeviceUtil;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -22,13 +23,13 @@ import static butterknife.ButterKnife.findById;
 public class AppContainerImpl implements AppContainer
 {
     private final ResideMenu resideMenu;
+    private final Lazy<DashboardNavigator> navigatorLazy;
     private Activity activity;
-    private final DashboardNavigator navigator;
 
-    @Inject public AppContainerImpl(ResideMenu resideMenu, DashboardNavigator navigator)
+    @Inject public AppContainerImpl(ResideMenu resideMenu, Lazy<DashboardNavigator> navigatorLazy)
     {
         this.resideMenu = resideMenu;
-        this.navigator = navigator;
+        this.navigatorLazy = navigatorLazy;
     }
 
     @Override public ViewGroup get(final Activity activity)
@@ -45,6 +46,7 @@ public class AppContainerImpl implements AppContainer
             @Override public void onClick(View v)
             {
                 super.onClick(v);
+                DashboardNavigator navigator = navigatorLazy.get();
                 if (navigator != null && !activity.isFinishing())
                 {
                     Object tag = v.getTag();
