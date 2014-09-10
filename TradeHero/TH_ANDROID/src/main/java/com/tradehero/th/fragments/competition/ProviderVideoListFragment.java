@@ -20,6 +20,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.WebViewActivity;
 import com.tradehero.th.api.competition.HelpVideoDTO;
@@ -33,6 +34,9 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
+@Routable(
+        "providers/:providerId/helpVideos"
+)
 public class ProviderVideoListFragment extends CompetitionFragment
 {
     @Inject HelpVideoListCache helpVideoListCache;
