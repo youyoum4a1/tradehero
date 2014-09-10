@@ -17,6 +17,7 @@ import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -184,6 +185,11 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     protected void saveShareSettings()
     {
         socialSharePreferenceHelperNew.save();
+    }
+
+    protected List<SocialNetworkEnum> getEnabledSharePreferences()
+    {
+        return socialSharePreferenceHelperNew.getAllEnabledSharePreferences();
     }
 
     public AlertDialog getSocialLinkingDialog()
