@@ -57,7 +57,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public class AuthenticationActivity extends SherlockFragmentActivity
-        implements View.OnClickListener
+        implements View.OnClickListener, Injector
 {
     private static final String M_FRAGMENT = "M_CURRENT_FRAGMENT";
 
@@ -75,13 +75,14 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CredentialsDTOFactory credentialsDTOFactory;
+    private Injector newInjector;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         THApp thApp = THApp.get(this);
-        Injector newInjector = thApp.plus(new AuthenticationActivityModule());
+        newInjector = thApp.plus(new AuthenticationActivityModule());
         newInjector.inject(this);
 
         // check if there is a saved fragment, restore it
@@ -435,6 +436,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         twitterJson = json;
     }
     //</editor-fold>
+
+    @Override public void inject(Object o)
+    {
+        newInjector.inject(o);
+    }
 
     private class SocialAuthenticationCallback extends LogInCallback
     {
