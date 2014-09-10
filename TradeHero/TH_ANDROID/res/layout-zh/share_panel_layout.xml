@@ -5,11 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+  <Space android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"/>
+
   <ToggleButton
       android:id="@+id/btn_share_wechat"
       android:layout_width="@dimen/share_button_w_h"
       android:layout_height="@dimen/share_button_w_h"
-      android:layout_marginLeft="@dimen/share_button_horizontal_margin"
       android:contentDescription="@null"
       android:scaleType="fitCenter"
       android:background="@drawable/ic_wechat"
@@ -18,11 +21,14 @@
       android:textOn=""
       />
 
+  <Space android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"/>
+
   <ToggleButton
       android:id="@+id/btn_share_li"
       android:layout_width="@dimen/share_button_w_h"
       android:layout_height="@dimen/share_button_w_h"
-      android:layout_marginLeft="@dimen/share_button_horizontal_margin"
       android:contentDescription="@null"
       android:scaleType="fitCenter"
       android:background="@drawable/ic_share_li"
@@ -31,11 +37,14 @@
       android:textOn=""
       />
 
+  <Space android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"/>
+
   <ToggleButton
       android:id="@+id/btn_share_wb"
       android:layout_width="@dimen/share_button_w_h"
       android:layout_height="@dimen/share_button_w_h"
-      android:layout_marginLeft="@dimen/share_button_horizontal_margin"
       android:contentDescription="@null"
       android:scaleType="fitCenter"
       android:background="@drawable/ic_share_wb"
@@ -43,5 +52,9 @@
       android:textOff=""
       android:textOn=""
       />
+
+  <Space android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"/>
 
 </merge>
