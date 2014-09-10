@@ -6,12 +6,12 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
     public FriendListLoader(Context context)
     {
         super(context);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     @Override public List<UserFriendsDTO> loadInBackground()
