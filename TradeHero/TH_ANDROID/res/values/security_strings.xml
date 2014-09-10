@@ -56,7 +56,7 @@
   <string name="market_on_board_exchange_interested">Which exchange are you most interested in?</string>
   <string name="market_on_board_sector_interested">Which sector are you most interested in?</string>
   <string name="market_on_board_country_from">What country are you from?</string>
-  <string name="security_on_board_select_invitation_title">Recommended for you ...</string>
-  <string name="security_on_board_select_invitation_come_on">Add these to your watch list!</string>
+  <string name="security_on_board_select_invitation_title">建议您 ...</string>
+  <string name="security_on_board_select_invitation_come_on">关注这些股票 !</string>
 
 </resources>

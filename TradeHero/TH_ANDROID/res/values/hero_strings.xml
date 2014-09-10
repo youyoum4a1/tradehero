@@ -4,7 +4,7 @@
   <string name="relation_following">Following</string>
   <string name="error_fetch_hero">There was an error when fetching the hero information</string>
 
-  <string name="onboard_invitation_follow_hero_header">Recommended for you ...</string>
-  <string name="onboard_invitation_follow_hero_come_on">Follow these Heroes!</string>
+  <string name="onboard_invitation_follow_hero_header">建议您 ...</string>
+  <string name="onboard_invitation_follow_hero_come_on">关注这些英雄 !</string>
   
 </resources>

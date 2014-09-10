@@ -109,6 +109,6 @@
 
   <string name="mark_as_all_read">全部已读</string>
   <string name="onboard_exchange_title">帮助您开始</string>
-  <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
-  <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>
+  <string name="onboard_exchange_summary1">哪个市场您感兴趣呢 ?</string>
+  <string name="onboard_exchange_summary2">哪个行业您感兴趣呢 ?</string>
 </resources>
