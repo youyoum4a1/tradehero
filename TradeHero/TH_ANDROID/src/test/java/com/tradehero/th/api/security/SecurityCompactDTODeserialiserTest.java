@@ -6,12 +6,15 @@ import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.BaseApiTestClass;
 import com.tradehero.th.api.security.compact.EquityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 

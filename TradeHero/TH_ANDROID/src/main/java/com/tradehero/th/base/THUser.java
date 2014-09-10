@@ -3,6 +3,7 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -42,12 +43,16 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
+
+import org.json.JSONException;
+
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.inject.Inject;
-import org.json.JSONException;
+
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

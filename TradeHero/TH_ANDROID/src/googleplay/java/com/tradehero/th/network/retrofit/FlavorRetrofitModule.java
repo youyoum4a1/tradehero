@@ -2,9 +2,11 @@ package com.tradehero.th.network.retrofit;
 
 import com.tradehero.th.network.service.AlertPlanCheckService;
 import com.tradehero.th.network.service.FlavorRetrofitProtectedModule;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 import retrofit.RestAdapter;
 
 @Module(

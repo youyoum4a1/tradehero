@@ -21,9 +21,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.Optional;
+
 import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
@@ -76,11 +74,17 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
-import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Provider;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
+import dagger.Lazy;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;

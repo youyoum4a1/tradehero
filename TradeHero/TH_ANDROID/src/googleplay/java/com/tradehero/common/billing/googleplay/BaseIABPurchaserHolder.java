@@ -1,12 +1,16 @@
 package com.tradehero.common.billing.googleplay;
 
 import android.content.Intent;
+
 import com.tradehero.common.billing.BaseBillingPurchaserHolder;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaserHolder<

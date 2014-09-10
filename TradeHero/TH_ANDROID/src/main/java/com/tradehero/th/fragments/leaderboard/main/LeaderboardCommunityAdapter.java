@@ -5,12 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
+
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class LeaderboardCommunityAdapter extends ArrayAdapter<LeaderboardDefDTO>

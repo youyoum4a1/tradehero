@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
 import android.support.v4.preference.PreferenceFragment;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -9,8 +10,10 @@ import com.special.residemenu.ResideMenu;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import dagger.Lazy;
+
 import javax.inject.Inject;
+
+import dagger.Lazy;
 
 public class DashboardPreferenceFragment extends PreferenceFragment
 {

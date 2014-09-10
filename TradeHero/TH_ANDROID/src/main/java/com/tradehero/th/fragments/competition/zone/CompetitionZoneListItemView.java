@@ -4,16 +4,19 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.utils.DaggerUtils;
+
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItemView
 {

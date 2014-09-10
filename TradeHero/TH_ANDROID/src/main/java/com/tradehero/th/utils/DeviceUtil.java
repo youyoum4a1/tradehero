@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import java.lang.ref.WeakReference;
+
 import org.jetbrains.annotations.Nullable;
+
+import java.lang.ref.WeakReference;
 
 public final class DeviceUtil
 {

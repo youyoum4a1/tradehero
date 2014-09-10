@@ -33,7 +33,6 @@ import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
@@ -417,8 +416,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         if (shouldShowOnBoard())
         {
-            // OnBoardDialogFragment handles setting the preference to false when done
-            new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());
+            OnBoardDialogFragment.showOnBoardDialog(getSupportFragmentManager());
         }
     }
 

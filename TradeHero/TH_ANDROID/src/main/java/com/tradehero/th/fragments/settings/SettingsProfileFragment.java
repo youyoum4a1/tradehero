@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -41,14 +42,18 @@ import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener

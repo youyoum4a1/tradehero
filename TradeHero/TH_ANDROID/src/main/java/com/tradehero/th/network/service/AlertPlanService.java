@@ -1,16 +1,16 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.alert.AlertPlanDTO;
-import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserProfileDTO;
+
 import java.util.List;
+
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
-import retrofit.http.Query;
 
 public interface AlertPlanService
 {

@@ -1,11 +1,14 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Activity;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class SendLoveViewHolder extends OneSettingViewHolder
 {

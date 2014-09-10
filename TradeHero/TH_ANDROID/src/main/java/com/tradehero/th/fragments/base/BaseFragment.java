@@ -2,13 +2,16 @@ package com.tradehero.th.fragments.base;
 
 import android.app.Activity;
 import android.os.Bundle;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.utils.DaggerUtils;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import timber.log.Timber;
 
 public class BaseFragment extends SherlockFragment

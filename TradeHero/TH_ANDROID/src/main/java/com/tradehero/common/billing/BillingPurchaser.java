@@ -1,6 +1,7 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+
 import org.jetbrains.annotations.NotNull;
 
 public interface BillingPurchaser<

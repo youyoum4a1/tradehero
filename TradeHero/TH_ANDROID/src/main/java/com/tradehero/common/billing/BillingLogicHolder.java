@@ -2,8 +2,10 @@ package com.tradehero.common.billing;
 
 import android.content.Intent;
 import android.content.res.Resources;
+
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
+
 import org.jetbrains.annotations.NotNull;
 
 public interface BillingLogicHolder<

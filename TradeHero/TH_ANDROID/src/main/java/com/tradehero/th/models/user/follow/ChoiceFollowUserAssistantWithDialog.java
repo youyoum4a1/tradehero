@@ -1,6 +1,7 @@
 package com.tradehero.th.models.user.follow;
 
 import android.content.Context;
+
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -13,10 +14,13 @@ import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 
 public class ChoiceFollowUserAssistantWithDialog
     implements OnFollowRequestedListener,

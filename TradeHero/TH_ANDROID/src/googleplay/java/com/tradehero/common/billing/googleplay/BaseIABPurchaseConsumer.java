@@ -3,15 +3,18 @@ package com.tradehero.common.billing.googleplay;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.RemoteException;
+
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import dagger.Lazy;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaseConsumer<

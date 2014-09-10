@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.OnClick;
+
 import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
@@ -16,7 +16,10 @@ import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.utils.AlertDialogUtil;
+
 import javax.inject.Inject;
+
+import butterknife.OnClick;
 
 public class AskForInviteDialogFragment extends BaseDialogFragment
 {

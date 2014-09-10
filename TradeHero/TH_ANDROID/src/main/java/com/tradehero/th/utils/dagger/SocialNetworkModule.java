@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
+
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tradehero.th.R;
@@ -19,13 +20,16 @@ import com.tradehero.th.models.share.ShareDestinationId;
 import com.tradehero.th.models.share.ShareDestinationIndexResComparator;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.network.share.SocialSharerImpl;
-import dagger.Module;
-import dagger.Provides;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
 import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 import timber.log.Timber;
 
 @Module(

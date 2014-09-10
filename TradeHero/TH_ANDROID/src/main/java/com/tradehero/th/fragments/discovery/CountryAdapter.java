@@ -3,14 +3,17 @@ package com.tradehero.th.fragments.discovery;
 import android.content.Context;
 import android.widget.Filter;
 import android.widget.Filterable;
+
 import com.android.internal.util.Predicate;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.utils.CollectionUtils;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 public class CountryAdapter extends ArrayDTOAdapterNew<CountryLanguagePairDTO, CountryItemView>
         implements Filterable

@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.BaseApiTestClass;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 

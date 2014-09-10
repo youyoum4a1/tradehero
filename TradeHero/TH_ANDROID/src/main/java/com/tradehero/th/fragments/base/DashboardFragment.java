@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -11,10 +12,13 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment

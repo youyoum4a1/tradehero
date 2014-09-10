@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
+
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.api.security.SecurityId;
@@ -18,8 +19,10 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {

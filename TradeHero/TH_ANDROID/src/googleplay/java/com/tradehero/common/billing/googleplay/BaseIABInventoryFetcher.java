@@ -3,6 +3,7 @@ package com.tradehero.common.billing.googleplay;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
+
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -10,15 +11,18 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.base.Application;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.json.JSONException;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 abstract public class BaseIABInventoryFetcher<

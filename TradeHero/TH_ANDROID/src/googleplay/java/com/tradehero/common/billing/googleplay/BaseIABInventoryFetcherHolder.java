@@ -3,10 +3,12 @@ package com.tradehero.common.billing.googleplay;
 import com.tradehero.common.billing.BaseBillingInventoryFetcherHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 
 abstract public class BaseIABInventoryFetcherHolder<
         IABSKUType extends IABSKU,

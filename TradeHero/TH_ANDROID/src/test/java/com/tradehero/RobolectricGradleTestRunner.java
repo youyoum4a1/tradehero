@@ -1,12 +1,14 @@
 package com.tradehero;
 
 import com.tradehero.th.BuildConfig;
-import java.io.File;
+
 import org.junit.runners.model.InitializationError;
 import org.robolectric.AndroidManifest;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.Fs;
+
+import java.io.File;
 
 /**
  * Created by tho on 8/14/2014.

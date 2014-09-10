@@ -1,10 +1,13 @@
 package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.quote.QuoteDTO;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 public class PortfolioCompactDTOUtil
 {

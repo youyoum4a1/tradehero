@@ -2,14 +2,13 @@ package com.tradehero.th.fragments.onboarding;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ViewSwitcher;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -40,9 +39,15 @@ import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
@@ -73,6 +78,13 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject SecurityCompactListCache securityCompactListCache;
     @NotNull OnBoardPickStockViewHolder stockViewHolder;
     @Nullable DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListCacheListener;
+
+    public static OnBoardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
+    {
+        OnBoardDialogFragment dialogFragment = new OnBoardDialogFragment();
+        dialogFragment.show(fragmentManager, OnBoardDialogFragment.class.getName());
+        return dialogFragment;
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

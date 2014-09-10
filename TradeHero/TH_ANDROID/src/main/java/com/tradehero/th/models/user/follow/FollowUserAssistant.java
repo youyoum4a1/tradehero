@@ -13,10 +13,13 @@ import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import javax.inject.Inject;
-import javax.inject.Provider;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import timber.log.Timber;
 
 public class FollowUserAssistant extends SimpleFollowUserAssistant

@@ -7,12 +7,16 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import dagger.Lazy;
-import java.util.HashMap;
-import java.util.Map;
-import javax.inject.Provider;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Provider;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 abstract public class THBasePurchaseReporterHolder<

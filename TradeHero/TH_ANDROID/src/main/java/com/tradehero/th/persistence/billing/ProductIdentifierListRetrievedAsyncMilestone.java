@@ -6,6 +6,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.persistence.DTORetrievedAsyncMilestone;
 import com.tradehero.th.utils.DaggerUtils;
+
 import java.util.ArrayList;
 
 abstract public class ProductIdentifierListRetrievedAsyncMilestone<

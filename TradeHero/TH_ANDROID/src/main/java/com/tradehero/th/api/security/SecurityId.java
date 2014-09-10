@@ -1,9 +1,10 @@
 package com.tradehero.th.api.security;
 
 import android.os.Bundle;
-import com.tradehero.route.RouteProperty;
+
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
+import com.tradehero.route.RouteProperty;
 
 @RouteProperty
 public class SecurityId implements Comparable, DTOKey, DTO

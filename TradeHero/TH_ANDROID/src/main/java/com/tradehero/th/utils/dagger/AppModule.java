@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
+
 import com.tradehero.FlavorModule;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
@@ -176,10 +177,13 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
+
+import java.util.Locale;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import java.util.Locale;
-import javax.inject.Singleton;
 
 @Module(
         includes = {

@@ -1,10 +1,13 @@
 package com.tradehero.th.models.push.urbanairship;
 
 import android.app.Notification;
+
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.THNotificationBuilder;
 import com.urbanairship.push.PushNotificationBuilder;
+
 import java.util.Map;
+
 import javax.inject.Inject;
 
 public class RichNotificationBuilder implements PushNotificationBuilder

@@ -2,9 +2,11 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.BaseIABPurchaseFetcherHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
+
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
 
 public class THBaseIABPurchaseFetcherHolder
     extends BaseIABPurchaseFetcherHolder<

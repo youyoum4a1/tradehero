@@ -1,8 +1,10 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
-import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public interface BillingInventoryFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,

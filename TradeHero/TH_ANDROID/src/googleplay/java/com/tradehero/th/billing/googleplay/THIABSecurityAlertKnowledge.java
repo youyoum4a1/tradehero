@@ -5,10 +5,12 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBillingConstants;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class THIABSecurityAlertKnowledge extends SecurityAlertKnowledge
 {

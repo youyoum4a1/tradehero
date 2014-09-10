@@ -23,6 +23,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
+
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;

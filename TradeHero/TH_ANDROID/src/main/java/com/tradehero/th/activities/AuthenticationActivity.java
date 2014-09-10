@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.utils.THToast;
@@ -42,12 +43,16 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
+
+import org.json.JSONException;
+
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.inject.Inject;
-import org.json.JSONException;
+
+import dagger.Lazy;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;

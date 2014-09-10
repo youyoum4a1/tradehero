@@ -6,10 +6,13 @@ import com.tradehero.th.billing.THBasePurchaseReporterHolder;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+
+import dagger.Lazy;
 
 public class THBaseIABPurchaseReporterHolder
     extends THBasePurchaseReporterHolder<

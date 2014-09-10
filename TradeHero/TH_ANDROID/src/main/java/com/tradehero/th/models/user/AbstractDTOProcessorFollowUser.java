@@ -6,6 +6,7 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+
 import org.jetbrains.annotations.NotNull;
 
 abstract public class AbstractDTOProcessorFollowUser extends DTOProcessorUpdateUserProfile

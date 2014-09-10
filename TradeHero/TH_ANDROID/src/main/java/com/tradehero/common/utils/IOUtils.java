@@ -2,11 +2,12 @@ package com.tradehero.common.utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.RetrofitError;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import retrofit.RetrofitError;
 
 public class IOUtils
 {

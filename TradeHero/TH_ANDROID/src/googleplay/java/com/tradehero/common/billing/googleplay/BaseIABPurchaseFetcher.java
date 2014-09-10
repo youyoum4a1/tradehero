@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
+
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -13,12 +14,15 @@ import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedEx
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.base.Application;
-import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaseFetcher<

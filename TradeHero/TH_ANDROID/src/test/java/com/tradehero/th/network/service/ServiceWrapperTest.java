@@ -5,13 +5,17 @@ import com.tradehero.th.api.ValidMocker;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import retrofit.Callback;
 import timber.log.Timber;
 

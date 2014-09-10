@@ -3,9 +3,11 @@ package com.tradehero.th.api.watchlist;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import java.util.ArrayList;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 
 public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionDTO>
 {

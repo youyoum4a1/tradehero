@@ -3,6 +3,7 @@ package com.tradehero.th.api.watchlist;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,6 +1,7 @@
 package com.tradehero.th.api.i18n;
 
 import android.content.Context;
+
 import com.tradehero.th.api.i18n.lang.LanguageChineseSimplifiedDTO;
 import com.tradehero.th.api.i18n.lang.LanguageChineseTraditionalDTO;
 import com.tradehero.th.api.i18n.lang.LanguageHaitianCreoleDTO;
@@ -10,10 +11,13 @@ import com.tradehero.th.api.i18n.lang.LanguageIndonesianDTO;
 import com.tradehero.th.api.i18n.lang.LanguageKlingonDTO;
 import com.tradehero.th.api.i18n.lang.LanguageKlingonQaakDTO;
 import com.tradehero.th.api.i18n.lang.LanguageNorwegianDTO;
-import java.util.Locale;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
+
+import javax.inject.Inject;
 
 public class LanguageDTOFactory
 {

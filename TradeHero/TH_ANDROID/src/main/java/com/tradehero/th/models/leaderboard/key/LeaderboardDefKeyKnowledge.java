@@ -2,9 +2,11 @@ package com.tradehero.th.models.leaderboard.key;
 
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 public class LeaderboardDefKeyKnowledge
 {

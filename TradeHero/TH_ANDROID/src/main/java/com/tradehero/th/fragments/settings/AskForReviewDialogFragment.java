@@ -1,23 +1,22 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Dialog;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.OnClick;
+
 import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.Constants;
+
 import javax.inject.Inject;
-import timber.log.Timber;
+
+import butterknife.OnClick;
 
 public class AskForReviewDialogFragment extends BaseDialogFragment
 {

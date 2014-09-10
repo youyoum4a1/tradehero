@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -19,11 +20,15 @@ import com.tradehero.th.models.user.auth.CredentialsSetPreference;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashSet;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import java.util.HashSet;
-import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
 
 @Module(
         injects = {

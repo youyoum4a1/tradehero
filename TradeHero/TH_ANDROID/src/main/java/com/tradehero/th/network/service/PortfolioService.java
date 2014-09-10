@@ -4,6 +4,7 @@ import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;

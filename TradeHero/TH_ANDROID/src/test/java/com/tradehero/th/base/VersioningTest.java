@@ -2,10 +2,14 @@ package com.tradehero.th.base;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+
 import com.tradehero.THRobolectricTestRunner;
-import javax.inject.Inject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 import static org.fest.assertions.api.Assertions.assertThat;

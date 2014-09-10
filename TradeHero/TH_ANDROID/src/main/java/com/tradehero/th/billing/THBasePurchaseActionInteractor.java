@@ -7,8 +7,10 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

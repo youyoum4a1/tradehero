@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
+
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;

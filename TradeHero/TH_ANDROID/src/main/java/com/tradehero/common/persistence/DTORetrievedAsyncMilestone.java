@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import com.tradehero.common.milestone.BaseAsyncTaskMilestone;
+
 import timber.log.Timber;
 
 abstract public class DTORetrievedAsyncMilestone<

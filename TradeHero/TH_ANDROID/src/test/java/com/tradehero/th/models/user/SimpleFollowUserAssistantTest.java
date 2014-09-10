@@ -3,10 +3,12 @@ package com.tradehero.th.models.user;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import retrofit.RetrofitError;
 
 import static org.mockito.Mockito.mock;

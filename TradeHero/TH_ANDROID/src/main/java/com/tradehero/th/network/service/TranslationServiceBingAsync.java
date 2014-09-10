@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.translation.bing.BingTranslationResult;
+
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Header;

@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TabHost;
+
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+
 import java.util.Collection;
 
 public class DashboardTabHost extends TabHost

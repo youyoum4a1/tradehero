@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
 import android.view.LayoutInflater;
+
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
@@ -17,11 +18,13 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 
 abstract public class BillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,

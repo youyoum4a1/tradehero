@@ -2,9 +2,11 @@ package com.tradehero.th.api.provider;
 
 import com.tradehero.th.api.BaseApiTestClass;
 import com.tradehero.th.api.competition.ProviderCompactDTO;
+
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
-import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;

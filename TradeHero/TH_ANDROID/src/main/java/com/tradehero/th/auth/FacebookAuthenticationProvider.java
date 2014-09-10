@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
@@ -12,11 +13,13 @@ import com.facebook.SessionState;
 import com.facebook.SharedPreferencesTokenCachingStrategy;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
-import com.facebook.android.FacebookError;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
+
+import org.json.JSONException;
+
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,9 +28,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.json.JSONException;
+
 import timber.log.Timber;
 
 @Singleton

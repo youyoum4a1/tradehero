@@ -2,6 +2,7 @@ package com.tradehero.th.base;
 
 import android.app.Activity;
 import android.content.Intent;
+
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
@@ -33,11 +34,15 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+
 import timber.log.Timber;
 
 public class Application extends PApplication

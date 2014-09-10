@@ -5,8 +5,10 @@ import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.th.persistence.billing.ProductIdentifierListRetrievedAsyncMilestone;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
+
 import javax.inject.Inject;
+
+import dagger.Lazy;
 
 public class IABSKUListRetrievedAsyncMilestone
         extends ProductIdentifierListRetrievedAsyncMilestone<
