@@ -35,6 +35,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
@@ -73,6 +74,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     @Inject DiscussionCache discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
+    @Inject DashboardNavigator navigator;
 
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
@@ -160,7 +162,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
-        selectionFragment = getDashboardNavigator().pushFragment(SecuritySearchFragment.class, bundle);
+        selectionFragment = navigator.pushFragment(SecuritySearchFragment.class, bundle);
     }
 
     @OnClick(R.id.btn_mention)
@@ -168,7 +170,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
-        selectionFragment = getDashboardNavigator().pushFragment(PeopleSearchFragment.class, bundle);
+        selectionFragment = navigator.pushFragment(PeopleSearchFragment.class, bundle);
     }
     //</editor-fold>
 
@@ -368,7 +370,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             isPosted = true;
 
             DeviceUtil.dismissKeyboard(getActivity());
-            getDashboardNavigator().popFragment();
+            navigator.popFragment();
         }
 
         @Override public void failure(RetrofitError error)

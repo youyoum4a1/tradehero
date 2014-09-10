@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
@@ -99,6 +97,6 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
             CompetitionLeaderboardPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
         }
 
-        getNavigator().pushFragment(CompetitionLeaderboardPositionListFragment.class, bundle);
+        navigator.pushFragment(CompetitionLeaderboardPositionListFragment.class, bundle);
     }
 }

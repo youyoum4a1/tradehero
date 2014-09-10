@@ -22,6 +22,7 @@ import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -51,6 +52,7 @@ public class LocationListFragment extends DashboardFragment
     @Inject UserProfileCache userProfileCache;
 
     @InjectView(android.R.id.list) ListView listView;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -223,7 +225,7 @@ public class LocationListFragment extends DashboardFragment
     private void backToSettings()
     {
         getProgressDialog().hide();
-        getDashboardNavigator().popFragment();
+        navigator.popFragment();
     }
 
     private ProgressDialog getProgressDialog()

@@ -14,6 +14,6 @@ public class SecuritySearchWatchlistFragment extends SecuritySearchFragment
         args.putString(
                 Navigator.BUNDLE_KEY_RETURN_FRAGMENT,
                 WatchlistPositionFragment.class.getName());
-        getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
+        navigator.pushFragment(WatchlistEditFragment.class, args);
     }
 }

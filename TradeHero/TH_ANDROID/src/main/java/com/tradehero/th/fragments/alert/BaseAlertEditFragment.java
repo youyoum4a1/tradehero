@@ -33,9 +33,9 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -87,6 +87,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject ResideMenu resideMenu;
+    @Inject DashboardNavigator navigator;
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
@@ -654,7 +655,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
-            getDashboardNavigator().popFragment();
+            navigator.popFragment();
         }
 
         @Override protected void failure(THException ex)

@@ -421,7 +421,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected void prepareFreshQuoteHolder()
     {
         destroyFreshQuoteHolder();
-        freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
+        freshQuoteHolder = new FreshQuoteHolder(getActivity(), securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
         freshQuoteHolder.setListener(createFreshQuoteListener());
         freshQuoteHolder.start();
     }

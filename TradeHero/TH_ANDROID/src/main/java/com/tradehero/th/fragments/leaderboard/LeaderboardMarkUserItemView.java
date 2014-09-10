@@ -32,7 +32,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -46,7 +45,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -75,6 +74,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject DashboardNavigator navigator;
 
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
@@ -137,7 +137,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         super.onFinishInflate();
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         initViews();
         leaderboardOwnUserRankingListener = createLeaderboardUserRankingListener();
     }
@@ -148,7 +148,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // top part
         if (lbmuFoF != null)
         {
-            DaggerUtils.inject(lbmuFoF);
+            HierarchyInjector.inject(lbmuFoF);
         }
 
         lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
@@ -583,7 +583,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             LeaderboardPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
         }
 
-        getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
+        navigator.pushFragment(LeaderboardPositionListFragment.class, bundle);
     }
 
     protected void pushPositionListFragment(GetPositionsDTOKey getPositionsDTOKey)
@@ -597,12 +597,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             PositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
         }
 
-        getNavigator().pushFragment(PositionListFragment.class, bundle);
-    }
-
-    protected DashboardNavigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        navigator.pushFragment(PositionListFragment.class, bundle);
     }
 
     protected void handleOpenProfileButtonClicked()
@@ -624,11 +619,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         thRouter.save(bundle, userToSee);
         if (currentUserId.toUserBaseKey().equals(userToSee))
         {
-            getNavigator().pushFragment(MeTimelineFragment.class, bundle);
+            navigator.pushFragment(MeTimelineFragment.class, bundle);
         }
         else
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+            navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
 

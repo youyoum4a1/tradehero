@@ -30,7 +30,6 @@ import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
@@ -46,7 +45,7 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
@@ -86,6 +85,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Nullable private MiddleCallback<Response> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
     @Nullable private BroadcastReceiver broadcastReceiver;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -298,8 +298,6 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             int currentUser = currentUserId.toUserBaseKey().key;
             Bundle bundle = new Bundle();
-            DashboardNavigator navigator =
-                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
             int targetUser = messageHeaderDTO.recipientUserId;
             if (currentUser == messageHeaderDTO.recipientUserId)
             {
@@ -326,12 +324,12 @@ public class MessagesCenterFragment extends DashboardFragment
         // TODO separate between Private and Broadcast
         ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKey);
         ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, correspondentId);
-        getDashboardNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);
+        navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
     }
 
     private void initViews(View view)
     {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this, view);
         this.messagesView = (MessagesView) view;
         SwipeListView listView = messagesView.getListView();

@@ -15,7 +15,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.models.graphics.ForSearchPeopleItemBackground;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DateUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +62,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSea
 
     protected void init()
     {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         userName = (TextView) findViewById(R.id.user_name);
         profitIndicator = (TextView) findViewById(R.id.profit_indicator);
         stockPercentage = (TextView) findViewById(R.id.stock_percentage);

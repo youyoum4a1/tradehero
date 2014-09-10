@@ -28,7 +28,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -92,7 +92,7 @@ public class PostCommentView extends RelativeLayout
         super.onFinishInflate();
 
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         postCommentMiddleCallbacks = new MiddleCallbackWeakList<>();
         DeviceUtil.showKeyboardDelayed(commentText);
         keypadIsShowing = true;

@@ -17,13 +17,12 @@ import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -44,6 +43,7 @@ public class FollowerListItemView extends RelativeLayout
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject PrettyTime prettyTime;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
     public FollowerListItemView(Context context)
@@ -66,7 +66,7 @@ public class FollowerListItemView extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         if (userIcon != null)
         {
             picasso.get().load(R.drawable.superman_facebook)
@@ -114,7 +114,6 @@ public class FollowerListItemView extends RelativeLayout
     private void pushTimelineFragment()
     {
         Bundle bundle = new Bundle();
-        DashboardNavigator navigator = ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
         thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }

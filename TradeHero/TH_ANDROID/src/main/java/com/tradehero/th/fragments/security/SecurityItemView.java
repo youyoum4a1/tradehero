@@ -23,7 +23,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground2;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.utils.ColorUtils;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
@@ -85,7 +85,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     protected void init()
     {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
         stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
     }

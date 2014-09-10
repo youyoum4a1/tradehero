@@ -14,12 +14,12 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -42,11 +42,12 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     @Inject protected ProviderCache providerCache;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -309,11 +310,11 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     private void handleVideoLinkClicked()
     {
         Activity activity = getActivity();
-        if (activity instanceof DashboardNavigatorActivity)
+        if (navigator != null)
         {
             Bundle args = new Bundle();
             ProviderVideoListFragment.putProviderId(args, providerId);
-            ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
+            navigator.pushFragment(ProviderVideoListFragment.class, args);
         }
     }
 }

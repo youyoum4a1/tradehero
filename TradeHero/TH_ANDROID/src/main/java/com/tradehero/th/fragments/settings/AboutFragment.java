@@ -15,6 +15,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.staff.StaffDTO;
 import com.tradehero.th.models.staff.StaffDTOFactory;
@@ -30,6 +31,7 @@ public class AboutFragment extends DashboardFragment
 
     @Inject Analytics analytics;
     @Inject StaffDTOFactory staffDTOFactory;
+    @Inject DashboardNavigator navigator;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -104,7 +106,7 @@ public class AboutFragment extends DashboardFragment
 
             @Override public void onAnimationEnd(Animation animation)
             {
-                getDashboardNavigator().popFragment();
+                navigator.popFragment();
             }
 
             @Override public void onAnimationRepeat(Animation animation)

@@ -28,7 +28,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -114,7 +114,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         setHasOptionsMenu(true);
         addPreferencesFromResource(R.xml.settings);
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
 
         this.socialNetworkToConnectTo = getSocialNetworkToConnect(getArguments());
     }

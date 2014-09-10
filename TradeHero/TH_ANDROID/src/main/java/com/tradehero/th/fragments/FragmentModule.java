@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments;
 
 import com.tradehero.th.fragments.alert.FragmentAlertModule;
+import com.tradehero.th.fragments.authentication.FragmentAuthenticationModule;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.FragmentBillingModule;
 import com.tradehero.th.fragments.competition.FragmentCompetitionModule;
@@ -19,6 +20,7 @@ import com.tradehero.th.fragments.settings.FragmentSettingModule;
 import com.tradehero.th.fragments.social.FragmentSocialModule;
 import com.tradehero.th.fragments.timeline.FragmentTimelineModule;
 import com.tradehero.th.fragments.trade.FragmentTradeModule;
+import com.tradehero.th.fragments.translation.FragmentTranslationModule;
 import com.tradehero.th.fragments.trending.FragmentTrendingModule;
 import com.tradehero.th.fragments.updatecenter.FragmentUpdateCenterModule;
 import com.tradehero.th.fragments.watchlist.FragmentWatchlistModule;
@@ -48,7 +50,9 @@ import dagger.Module;
                 FragmentBillingModule.class,
                 FragmentLocationModule.class,
                 FragmentWebModule.class,
-                FragmentEducationModule.class
+                FragmentEducationModule.class,
+                FragmentTranslationModule.class,
+                FragmentAuthenticationModule.class
         },
         injects = {
                 DashboardFragment.class,

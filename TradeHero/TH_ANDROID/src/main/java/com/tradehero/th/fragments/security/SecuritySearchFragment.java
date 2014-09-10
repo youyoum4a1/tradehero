@@ -15,6 +15,7 @@ import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.BaseSearchFragment;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
@@ -36,6 +37,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
 {
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
+    @Inject DashboardNavigator navigator;
 
     protected void initViews(View view)
     {
@@ -94,7 +96,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         if (getArguments() != null && getArguments().containsKey(
                 Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
         {
-            getDashboardNavigator().popFragment();
+            navigator.popFragment();
             return;
         }
 
@@ -117,7 +119,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         {
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
+        navigator.pushFragment(BuySellFragment.class, args);
     }
 
     private DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityIdListCacheListener()

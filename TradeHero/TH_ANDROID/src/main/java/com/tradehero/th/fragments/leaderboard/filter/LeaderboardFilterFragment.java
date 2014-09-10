@@ -12,6 +12,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -31,6 +32,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
 
     @NotNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
     @Nullable protected LeaderboardDTO leaderboardDTO;
+    @Inject DashboardNavigator navigator;
 
     public static void putPerPagedFilteredLeaderboardKey(@NotNull Bundle args, @NotNull PerPagedFilteredLeaderboardKey key)
     {
@@ -146,6 +148,6 @@ public class LeaderboardFilterFragment extends DashboardFragment
     protected void returnToLeaderboard()
     {
         collectPagedFilteredLeaderboardKey();
-        getDashboardNavigator().popFragment();
+        navigator.popFragment();
     }
 }

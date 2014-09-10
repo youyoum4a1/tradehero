@@ -6,7 +6,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdAsc;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,7 +31,7 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
         super(context);
         this.mineResId = mineResId;
         this.otherResId = otherResId;
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 

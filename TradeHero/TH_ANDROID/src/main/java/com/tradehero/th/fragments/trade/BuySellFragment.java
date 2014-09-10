@@ -51,6 +51,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -175,6 +176,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject Analytics analytics;
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -1016,12 +1018,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (alertId != null)
             {
                 AlertEditFragment.putAlertId(args, alertId);
-                getDashboardNavigator().pushFragment(AlertEditFragment.class, args);
+                navigator.pushFragment(AlertEditFragment.class, args);
             }
             else
             {
                 AlertCreateFragment.putSecurityId(args, securityId);
-                getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
+                navigator.pushFragment(AlertCreateFragment.class, args);
             }
         }
         else if (securityAlertAssistant.isFailed())
@@ -1041,7 +1043,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Bundle args = new Bundle();
             WatchlistEditFragment.putSecurityId(args, securityId);
-            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
+            navigator.pushFragment(WatchlistEditFragment.class, args);
         }
         else
         {
@@ -1316,7 +1318,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         shareToWeChat();
         if (isResumed())
         {
-            DashboardNavigator navigator = getDashboardNavigator();
             // TODO find a better way to remove this fragment from the stack
             navigator.popFragment();
 
@@ -1346,7 +1347,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
                     providerId.getArgs());
         }
-        getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
+        navigator.pushFragment(StockInfoFragment.class, args);
     }
 
     private BroadcastReceiver createImageButtonClickBroadcastReceiver()

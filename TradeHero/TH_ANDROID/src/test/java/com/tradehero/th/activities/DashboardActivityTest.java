@@ -56,7 +56,7 @@ public class DashboardActivityTest
         intent.putExtras(mockNotificationKey.getArgs());
         activity.onNewIntent(intent);
 
-        assertThat(activity.getDashboardNavigator().getCurrentFragment())
+        assertThat(activity.navigator.getCurrentFragment())
                 .isInstanceOf(ReplyPrivateMessageFragment.class);
     }
 

@@ -6,9 +6,6 @@ import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
-import com.tradehero.th.fragments.authentication.SignInFragment;
-import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.localytics.ForLocalytics;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsAdapter;
@@ -22,11 +19,6 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 @Module(
-        injects = {
-                SignInFragment.class,
-                SignUpFragment.class,
-                EmailSignUpFragment.class
-        },
         library = true,
         complete = false
 )

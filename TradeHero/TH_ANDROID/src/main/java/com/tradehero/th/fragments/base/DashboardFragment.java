@@ -5,30 +5,22 @@ import android.support.v4.app.Fragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.residemenu.ResideMenu;
 import com.tradehero.th.R;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment
 {
     @Inject protected AlertDialogUtil alertDialogUtil;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        if (!(getActivity() instanceof DashboardNavigatorActivity))
-        {
-            throw new IllegalArgumentException("DashboardActivity needs to implement DashboardNavigator");
-        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -49,11 +41,7 @@ abstract public class DashboardFragment extends BaseFragment
             case android.R.id.home:
                 if (actionBarOwnerMixin.shouldShowHomeAsUp())
                 {
-                    DashboardNavigator navigator = getDashboardNavigator();
-                    if (navigator != null)
-                    {
-                        navigator.popFragment();
-                    }
+                    navigator.popFragment();
                 }
                 else
                 {
@@ -78,16 +66,6 @@ abstract public class DashboardFragment extends BaseFragment
         {
             Timber.d("%s is not implementing WithTutorial interface, but has info menu", getClass().getName());
         }
-    }
-
-    @Nullable protected DashboardNavigator getDashboardNavigator()
-    {
-        @Nullable DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
-        if (activity != null)
-        {
-            return activity.getDashboardNavigator();
-        }
-        return null;
     }
 
     public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args)

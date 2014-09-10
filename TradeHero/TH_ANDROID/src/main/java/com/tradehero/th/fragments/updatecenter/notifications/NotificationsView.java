@@ -32,7 +32,7 @@ import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import dagger.Lazy;
 import java.util.List;
@@ -91,7 +91,7 @@ public class NotificationsView extends BetterViewAnimator
         super.onFinishInflate();
 
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
 
         notificationListFetchListener = createNotificationFetchListener();
         notificationListRefreshListener = createNotificationRefreshListener();

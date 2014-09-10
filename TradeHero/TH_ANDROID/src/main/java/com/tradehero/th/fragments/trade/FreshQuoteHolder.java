@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THToast;
@@ -7,9 +8,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,17 +41,17 @@ public class FreshQuoteHolder
     private MiddleCallback<Response> quoteMiddleCallback;
 
     //<editor-fold desc="Constructors">
-    public FreshQuoteHolder(SecurityId securityId)
+    public FreshQuoteHolder(Context context, SecurityId securityId)
     {
-        this(securityId, DEFAULT_MILLI_SEC_QUOTE_REFRESH, DEFAULT_MILLI_SEC_QUOTE_COUNTDOWN_PRECISION);
+        this(context, securityId, DEFAULT_MILLI_SEC_QUOTE_REFRESH, DEFAULT_MILLI_SEC_QUOTE_COUNTDOWN_PRECISION);
     }
 
-    public FreshQuoteHolder(SecurityId securityId, long milliSecQuoteRefresh, long millisecQuoteCountdownPrecision)
+    public FreshQuoteHolder(Context context, SecurityId securityId, long milliSecQuoteRefresh, long millisecQuoteCountdownPrecision)
     {
         this.securityId = securityId;
         this.milliSecQuoteRefresh = milliSecQuoteRefresh;
         this.millisecQuoteCountdownPrecision = millisecQuoteCountdownPrecision;
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 

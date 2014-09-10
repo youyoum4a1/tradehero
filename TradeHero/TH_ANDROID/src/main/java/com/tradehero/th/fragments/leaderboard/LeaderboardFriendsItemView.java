@@ -31,7 +31,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -93,6 +92,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
     @Inject Analytics analytics;
+    @Inject DashboardNavigator dashboardNavigator;
 
     public LeaderboardFriendsItemView(Context context, AttributeSet attrs)
     {
@@ -321,8 +321,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             Bundle bundle = new Bundle();
             thRouter.save(bundle, new UserBaseKey(userFriendsDTO.thUserId));
-            DashboardNavigator dashboardNavigator =
-                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
             if (dashboardNavigator != null)
             {
                 if (currentUserId.get() == userFriendsDTO.thUserId)

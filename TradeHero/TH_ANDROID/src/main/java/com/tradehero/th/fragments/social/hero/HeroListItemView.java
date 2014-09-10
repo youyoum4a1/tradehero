@@ -19,13 +19,12 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -52,6 +51,7 @@ public class HeroListItemView extends RelativeLayout
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     private OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
 
@@ -76,7 +76,7 @@ public class HeroListItemView extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
@@ -127,7 +127,6 @@ public class HeroListItemView extends RelativeLayout
         if (heroDTO != null)
         {
             Bundle bundle = new Bundle();
-            DashboardNavigator navigator = ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
             thRouter.save(bundle, new UserBaseKey(heroDTO.id));
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }

@@ -8,16 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class ExtraTileAdapter extends BaseAdapter
         this.inflater = LayoutInflater.from(context);
         this.wrappedAdapter = wrappedAdapter;
         wrappedAdapter.registerDataSetObserver(wrappedAdapterDataSetObserver);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
 
         mPref = context.getSharedPreferences("trade_hero", Context.MODE_PRIVATE);
     }

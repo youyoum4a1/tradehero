@@ -40,6 +40,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected LeaderboardDefDTO leaderboardDefDTO;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfileDTO;
+    @Inject DashboardNavigator navigator;
 
     public static void putLeaderboardDefKey(@NotNull Bundle args, @NotNull LeaderboardDefKey leaderboardDefKey)
     {
@@ -139,7 +140,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+                navigator.pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }
@@ -148,7 +149,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         Bundle args = new Bundle();
         FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
-        getDashboardNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
+        navigator.pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
     }
 
     protected void pushHeroFragment()
@@ -160,7 +161,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getDashboardNavigator().pushFragment(HeroManagerFragment.class, bundle);
+        navigator.pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -172,12 +173,11 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+        navigator.pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     private void pushInvitationFragment()
     {
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(FriendsInvitationFragment.class);

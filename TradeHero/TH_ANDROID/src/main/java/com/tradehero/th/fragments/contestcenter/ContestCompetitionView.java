@@ -10,7 +10,7 @@ import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -39,7 +39,7 @@ public class ContestCompetitionView extends AspectRatioImageView
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
