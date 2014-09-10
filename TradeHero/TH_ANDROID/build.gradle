@@ -21,9 +21,6 @@ project.ext.versionMinor = Integer.parseInt((String) versionProps['VERSION_MINOR
 project.ext.versionPatch = Integer.parseInt((String) versionProps['VERSION_PATCH'])
 project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD'])
 
-project.ext.currentDate = (int) (System.currentTimeMillis() / (1000 * 60 * 60 * 24))
-project.ext.moduloDate = project.ext.currentDate % 1000
-
 apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
 apply plugin: 'robolectric'
@@ -61,7 +58,7 @@ android {
     minSdkVersion 14
     targetSdkVersion 19
 
-    versionCode project.ext.moduloDate * 1000 + project.ext.versionPatch * 100 + project.ext.versionBuild
+    versionCode project.ext.versionBuild
     versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
 
     buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
