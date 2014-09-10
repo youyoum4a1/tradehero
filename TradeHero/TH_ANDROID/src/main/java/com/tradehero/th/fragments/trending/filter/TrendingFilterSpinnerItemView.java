@@ -52,7 +52,6 @@ public class TrendingFilterSpinnerItemView extends RelativeLayout
     public void linkWith(@Nullable ExchangeCompactSpinnerDTO dto, boolean andDisplay)
     {
         this.exchangeCompactSpinnerDTO = dto;
-        //Timber.d("lyl "+dto.toString());
         if (andDisplay)
         {
             displayText();
@@ -92,16 +91,10 @@ public class TrendingFilterSpinnerItemView extends RelativeLayout
                 if (flagDrawable != null)
                 {
                     icon.setImageDrawable(flagDrawable);
-                }
-                else
-                {
-                    icon.setImageResource(R.drawable.default_image);
+                    return;
                 }
             }
-            else
-            {
-                icon.setImageResource(R.drawable.default_image);
-            }
+            icon.setImageResource(R.drawable.default_image);
         }
     }
 }

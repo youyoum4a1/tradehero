@@ -43,7 +43,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
@@ -130,7 +129,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         @Override public void onDTOReceived(@NotNull ExchangeSectorCompactKey key, @NotNull ExchangeSectorCompactListDTO value)
         {
-            //Timber.d("lyl exchange " + value.toString());
             exchangeSectorViewHolder.setExchangeSector(value);
             mExchangeSwitcher.setDisplayedChild(1);
         }
@@ -150,7 +148,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         @Override public void onDTOReceived(@NotNull SuggestHeroesListType key, @NotNull LeaderboardUserDTOList value)
         {
-            //Timber.d("lyl hero " + value.toString());
             mHeroSwitcher.setDisplayedChild(1);
             heroViewHolder.setUsers(value);
         }
@@ -272,7 +269,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @OnClick(R.id.next_button)
     public void onNextClicked()
     {
-        Timber.d("lyl next");
         if (mHeroSwitcher.getDisplayedChild() == 1)
         {
             mHeroSwitcher.setVisibility(View.GONE);

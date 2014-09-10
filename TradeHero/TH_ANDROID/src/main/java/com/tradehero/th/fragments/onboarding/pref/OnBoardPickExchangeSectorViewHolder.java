@@ -75,7 +75,7 @@ public class OnBoardPickExchangeSectorViewHolder
                 context.getResources(),
                 exchangeSectorCompactListDTO.exchanges));
         exchangeAdapter.notifyDataSetChanged();
-        exchangeSpinner.setSelection(4);
+        exchangeSpinner.setSelection(3);
 
         sectorAdapter.clear();
         sectorAdapter.addAll(exchangeSectorCompactListDTO.sectors);
