@@ -12,10 +12,14 @@ buildscript {
 }
 
 // Manifest version information!
-project.ext.versionMajor = 2
-project.ext.versionMinor = 4
-project.ext.versionPatch = 0
-project.ext.versionBuild = 180 // bump for dogfood builds, public betas, etc.
+File versionFile = file('version.properties');
+def Properties versionProps = new Properties()
+versionProps.load(new FileInputStream(versionFile))
+
+project.ext.versionMajor = Integer.parseInt((String) versionProps['VERSION_MAJOR'])
+project.ext.versionMinor = Integer.parseInt((String) versionProps['VERSION_MINOR'])
+project.ext.versionPatch = Integer.parseInt((String) versionProps['VERSION_PATCH'])
+project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD'])
 
 project.ext.currentDate = (int) (System.currentTimeMillis() / (1000 * 60 * 60 * 24))
 project.ext.moduloDate = project.ext.currentDate % 1000
@@ -441,11 +445,34 @@ preBuild.dependsOn(reorderDependencyToFixJunit4Issue)
 
 project.afterEvaluate {
   println("afterEvaluate")
-  tasks.each { task ->
-    if (task.name.matches("compileGoogle.*"))
+  tasks.each { theTask ->
+    if (theTask.name.matches("assemble.+Debug")
+    || theTask.name.matches("assemble.+Release"))
     {
-      println("adding depend task " + task.name)
+      println("Adding a version build bump to task " + theTask.name)
+      theTask.doLast {
+        // Bump version Build
+        versionProps.setProperty('VERSION_BUILD', (project.ext.versionBuild + 1).toString())
+        def map = versionProps.sort(new Comparator<Object>() {
+          @Override int compare(Object left, Object right) {
+            // TODO this does not appear to save the properties in the desired order
+            return versionPropIndex(left.toString()).compareTo(versionPropIndex(right.toString()))
+          }
+        })
+        versionProps = new Properties()
+        versionProps.putAll(map)
+        versionProps.store(versionFile.newWriter(), null)
+      }
     }
   }
+}
+
+Integer versionPropIndex(String key)
+{
+  if (key.equals("VERSION_MAJOR")) return 0
+  if (key.equals("VERSION_MINOR")) return 1
+  if (key.equals("VERSION_PATCH")) return 2
+  if (key.equals("VERSION_BUILD")) return 3
+  throw new IllegalStateException("Unknown key " + key)
 }
 
