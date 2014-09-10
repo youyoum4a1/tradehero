@@ -47,21 +47,11 @@
   <Button
       android:id="@+id/authentication_email_sign_in_link"
       style="@style/TradeHero.SocialAuthenticationButton"
-      android:background="@drawable/btn_background_social_email"
+      android:background="@drawable/btn_background_email"
       android:text="@string/email_login_in"
       android:textColor="@color/black"
       android:shadowColor="@color/white"
       android:drawableLeft="@drawable/settings_email_noti"
-      />
-
-  <Button
-      android:id="@+id/authentication_email_sign_up_link"
-      style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_email_noti"
-      android:background="@drawable/btn_background_social_email"
-      android:text="@string/email_register"
-      android:textColor="@color/black"
-      android:shadowColor="@color/white"
       />
 
 </merge>

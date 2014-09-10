@@ -18,6 +18,7 @@
       android:paddingRight="@dimen/authentication_horizontal_padding"
       android:layout_alignParentLeft="true"
       android:layout_alignParentTop="true"
+      android:layout_above="@+id/authentication_by_sign_up_button"
       >
 
     <LinearLayout
@@ -66,5 +67,37 @@
     </LinearLayout>
 
   </ScrollView>
+
+  <LinearLayout
+      android:id="@+id/authentication_by_sign_up_button"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/clickable_element_min_dimen"
+      android:layout_alignParentBottom="true"
+      android:orientation="horizontal"
+      android:gravity="center"
+      android:background="@drawable/basic_light_grey_selector"
+      android:addStatesFromChildren="true"
+      android:layout_alignParentLeft="true">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:text="@string/new_to_tradehero"
+        android:textSize="@dimen/authentication_page_text_size"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/common_margin_4"
+        android:gravity="center_vertical"
+        android:text="@string/register_now"
+        android:textColor="@color/timeline_action_button_text_color_pressed"
+        android:textStyle="bold"
+        android:textSize="@dimen/authentication_page_text_size"/>
+
+  </LinearLayout>
 
 </RelativeLayout>

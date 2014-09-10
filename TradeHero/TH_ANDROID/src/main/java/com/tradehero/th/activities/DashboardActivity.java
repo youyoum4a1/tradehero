@@ -371,6 +371,10 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private void showInviteCodeDialog()
     {
+        if (true)
+        {
+            return;
+        }
         if (shouldShowInviteCode())
         {
             firstShowInviteCodeDialogPreference.set(false);

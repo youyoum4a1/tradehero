@@ -90,7 +90,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, TRENDING, COMMUNITY, REFERRAL, CONTEST_CENTER, STORE, SETTING
+                TIMELINE, HOME, TRENDING, COMMUNITY, UPDATE_CENTER, REFERRAL, CONTEST_CENTER, STORE, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);
@@ -114,6 +114,6 @@ public enum RootFragmentType
 
     public static RootFragmentType getInitialTab()
     {
-        return RootFragmentType.ME;
+        return RootFragmentType.HOME;
     }
 }
