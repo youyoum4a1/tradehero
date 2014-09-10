@@ -1,11 +1,14 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
 import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -36,6 +39,18 @@ public interface AchievementServiceAsync
 
     //<editor-fold desc="Get Mock Quest Bonus">
     @GET("/achievements/mockdaily/{contiguousCount}")
-    void getMockQuestBonus(@Path("contiguousCount") int contiguousCount, @Query("xpEarned") int xpEarned, @Query("xpTotal") int xpTotal, Callback<DTO> middleCallback);
+    void getMockQuestBonus(
+            @Path("contiguousCount") int contiguousCount,
+            @Query("xpEarned") int xpEarned,
+            @Query("xpTotal") int xpTotal,
+            Callback<ExtendedDTO> middleCallback);
     //</editor-fold>
+
+    @POST("/achievements/share/{userAchievementId}")
+    void shareUserAchievement(
+            @Path("userAchievementId") int userAchievementId,
+            @Body AchievementShareFormDTO achievementShareFormDTO,
+            Callback<ExtendedDTO> middleCallback);
+
+    void shareDailyQuest(int contiguousCount);
 }

@@ -3,7 +3,9 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
   <View
       android:id="@+id/achievement_horizontal_divider"
@@ -17,6 +19,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@+id/achievement_horizontal_divider"
+      android:clipToPadding="false"
+      android:clipChildren="false"
       android:inAnimation="@anim/achievement_share_flip_in"
       android:outAnimation="@anim/achievement_share_flip_out"
       >
@@ -24,7 +28,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center_vertical"
+        android:clipToPadding="false"
+        android:clipChildren="false">
+
       <Button
           android:id="@+id/btn_achievement_share"
           android:layout_width="wrap_content"
@@ -50,10 +57,14 @@
       </LinearLayout>
     </RelativeLayout>
 
-    <ProgressBar
-        android:id="@+id/achievement_share_progress"
+    <TextView
+        android:id="@+id/achievement_shared"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/achievement_shared"
+        android:textSize="@dimen/text_xlarge"
+        android:gravity="center"
+        android:layout_gravity="center"
         />
 
   </ViewFlipper>

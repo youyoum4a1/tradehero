@@ -5,4 +5,5 @@
   <string name="error_fetch_achievements">There was an error when fetching the list of achievements</string>
   <string name="achievements">Achievements</string>
   <string name="achievement_share">Share!</string>
+  <string name="achievement_shared">Shared!</string>
 </resources>

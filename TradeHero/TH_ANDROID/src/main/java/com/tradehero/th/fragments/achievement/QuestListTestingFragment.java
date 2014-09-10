@@ -14,10 +14,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
@@ -77,10 +77,11 @@ public class QuestListTestingFragment extends DashboardFragment
             {
                 QuestBonusDTO questBonusDTO = list.get(i - listView.getHeaderViewsCount());
 
-                MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()), (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));
-                achievementServiceWrapper.getMockBonusDTO(mockQuestBonusId, new Callback<DTO>()
+                MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()),
+                        (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));
+                achievementServiceWrapper.getMockBonusDTO(mockQuestBonusId, new Callback<ExtendedDTO>()
                 {
-                    @Override public void success(DTO dto, Response response)
+                    @Override public void success(ExtendedDTO dto, Response response)
                     {
                         progressDialogUtilLazy.get().dismiss(getActivity());
                     }

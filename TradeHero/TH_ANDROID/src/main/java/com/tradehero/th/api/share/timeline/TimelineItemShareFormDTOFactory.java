@@ -5,7 +5,6 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;

@@ -1,16 +1,18 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
-import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.key.MockQuestBonusId;
+import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.key.MockQuestBonusId;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
@@ -91,10 +93,17 @@ public class AchievementServiceWrapper
         return achievementService.getMockQuestBonus(mockQuestBonusId.key, mockQuestBonusId.xpEarned, mockQuestBonusId.xpTotal);
     }
 
-    public MiddleCallback<DTO> getMockBonusDTO(MockQuestBonusId mockQuestBonusId, Callback<DTO> callback)
+    public MiddleCallback<ExtendedDTO> getMockBonusDTO(MockQuestBonusId mockQuestBonusId, Callback<ExtendedDTO> callback)
     {
-        MiddleCallback<DTO> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<ExtendedDTO> middleCallback = new BaseMiddleCallback<>(callback);
         achievementServiceAsync.getMockQuestBonus(mockQuestBonusId.key, mockQuestBonusId.xpEarned, mockQuestBonusId.xpTotal, middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<ExtendedDTO> shareAchievement(AchievementShareFormDTO achievementShareFormDTO, Callback<ExtendedDTO> callback)
+    {
+        MiddleCallback<ExtendedDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        achievementServiceAsync.shareUserAchievement(achievementShareFormDTO.userAchievementId.key, achievementShareFormDTO, middleCallback);
         return middleCallback;
     }
 }

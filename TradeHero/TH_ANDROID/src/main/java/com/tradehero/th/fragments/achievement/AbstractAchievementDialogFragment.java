@@ -37,11 +37,14 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
+import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
+import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.utils.GraphicUtil;
@@ -52,6 +55,8 @@ import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
 {
@@ -88,6 +93,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Inject Picasso picasso;
     @Inject GraphicUtil graphicUtil;
     @Inject LevelDefListCache levelDefListCache;
+
+    @Inject AchievementServiceWrapper achievementServiceWrapper;
+    @Inject AchievementShareFormDTOFactory achievementShareFormDTOFactory;
 
     protected UserAchievementId userAchievementId;
     protected UserAchievementDTO userAchievementDTO;
@@ -134,6 +142,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         playRotatingAnimation();
         displayXpEarned(0);
         startAnimation();
+
+        levelDefListCache.register(mLevelDefListId, levelDefListCacheListener);
+        levelDefListCache.getOrFetchAsync(mLevelDefListId);
     }
 
     private void displayStarburst()
@@ -225,14 +236,23 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
     }
 
-    private void showShareIsInProcess()
-    {
-        shareFlipper.setDisplayedChild(1);
-    }
-
     private void showShareSuccess()
     {
-        shareFlipper.setDisplayedChild(0);
+        //No need to hold reference to middle callback since we never listen to the response
+        achievementServiceWrapper.shareAchievement(achievementShareFormDTOFactory.createFrom(getEnabledSharePreferences(), userAchievementDTO),
+                new retrofit.Callback<ExtendedDTO>()
+                {
+                    @Override public void success(ExtendedDTO extendedDTO, Response response)
+                    {
+
+                    }
+
+                    @Override public void failure(RetrofitError error)
+                    {
+
+                    }
+                });
+        shareFlipper.setDisplayedChild(1);
     }
 
     private void playRotatingAnimation()
@@ -362,8 +382,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                                 getDialog().dismiss();
                             }
                         }));
-        levelDefListCache.register(mLevelDefListId, levelDefListCacheListener);
-        levelDefListCache.getOrFetchAsync(mLevelDefListId);
     }
 
     private void removeDialogAnimation()
@@ -374,13 +392,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @OnClick(R.id.btn_achievement_share)
     public void shareButtonClicked()
     {
-        showShareIsInProcess();
+        showShareSuccess();
     }
 
     @Override public void onPause()
     {
         contentContainer.setOnTouchListener(null);
-        levelDefListCache.unregister(levelDefListCacheListener);
         super.onPause();
     }
 
@@ -414,6 +431,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             btnColorAnimation = null;
         }
         picasso.cancelRequest(badge);
+        levelDefListCache.unregister(levelDefListCacheListener);
         super.onDestroyView();
     }
 
