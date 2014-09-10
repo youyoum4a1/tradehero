@@ -21,7 +21,7 @@ public abstract class AuthenticationFragment extends SherlockFragment
 
     @Override public void onDetach()
     {
-       onClickListener = null;
+        onClickListener = null;
         super.onDetach();
     }
 
