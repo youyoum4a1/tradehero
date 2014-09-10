@@ -216,7 +216,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     protected THUIBillingRequest createRestoreRequest()
     {
         BaseTHUIBillingRequest.Builder builder = thUiBillingRequestBuilderProvider.get();
-        //noinspection unchecked
+        //noinspection unchecked,PointlessBooleanExpression
         builder.restorePurchase(true)
                 .startWithProgressDialog(!Constants.RELEASE)
                 .popRestorePurchaseOutcome(true)
