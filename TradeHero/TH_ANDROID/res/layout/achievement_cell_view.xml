@@ -31,6 +31,7 @@
       android:layout_below="@id/achievement_title"
       style="@style/TH.Achievement.Description"
       android:layout_marginLeft="@dimen/achievement_cell_content_margin_left"
+      android:textColor="@color/gray_normal"
       android:singleLine="false"
       android:maxLines="2"
       android:gravity="top|left"
