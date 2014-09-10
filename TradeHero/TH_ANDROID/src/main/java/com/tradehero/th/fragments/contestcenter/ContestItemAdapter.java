@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -32,7 +32,7 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
         typeToResIds[TYPE_HEADER] = R.layout.leaderboard_separator;
         typeToResIds[TYPE_VIP] = vipViewResourceId;
         typeToResIds[TYPE_NORMAL] = normalViewResourceId;
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 

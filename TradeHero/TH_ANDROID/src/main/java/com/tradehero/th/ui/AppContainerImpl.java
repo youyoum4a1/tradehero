@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.widget.reside.THResideMenuItemImpl;
 import com.tradehero.th.R;
-import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -23,10 +23,12 @@ public class AppContainerImpl implements AppContainer
 {
     private final ResideMenu resideMenu;
     private Activity activity;
+    private final DashboardNavigator navigator;
 
-    @Inject public AppContainerImpl(ResideMenu resideMenu)
+    @Inject public AppContainerImpl(ResideMenu resideMenu, DashboardNavigator navigator)
     {
         this.resideMenu = resideMenu;
+        this.navigator = navigator;
     }
 
     @Override public ViewGroup get(final Activity activity)
@@ -37,13 +39,13 @@ public class AppContainerImpl implements AppContainer
         resideMenu.setBackground(R.drawable.parallax_bg);
         resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());
 
-        // hAcK to make the menu works while waiting for a injectable navigator
+        // hAcK to make the menu works while waiting for a injectable navigatorProvider
         ResideMenuItemClickListener menuItemClickListener = new ResideMenuItemClickListener()
         {
             @Override public void onClick(View v)
             {
                 super.onClick(v);
-                if (activity instanceof DashboardNavigatorActivity && !activity.isFinishing())
+                if (navigator != null && !activity.isFinishing())
                 {
                     Object tag = v.getTag();
                     if (tag instanceof RootFragmentType)
@@ -52,17 +54,17 @@ public class AppContainerImpl implements AppContainer
                         //store and setting in reside menu belongs to ME tab
                         if (tabType == RootFragmentType.STORE)
                         {
-                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(RootFragmentType.ME);
-                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(StoreScreenFragment.class);
+                            navigator.goToTab(RootFragmentType.ME);
+                            navigator.pushFragment(StoreScreenFragment.class);
                             return;
                         }
                         if (tabType == RootFragmentType.SETTING)
                         {
-                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(RootFragmentType.ME);
-                            ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(SettingsFragment.class);
+                            navigator.goToTab(RootFragmentType.ME);
+                            navigator.pushFragment(SettingsFragment.class);
                             return;
                         }
-                        ((DashboardNavigatorActivity) activity).getDashboardNavigator().goToTab(tabType);
+                        navigator.goToTab(tabType);
                     }
                 }
             }

@@ -17,9 +17,9 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.timeline.SubTimelineAdapter;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -87,7 +87,7 @@ public class DiscoveryDiscussionFragment extends SherlockFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override public void onResume()

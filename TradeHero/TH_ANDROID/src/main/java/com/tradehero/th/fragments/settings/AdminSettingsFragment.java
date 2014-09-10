@@ -26,7 +26,7 @@ import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -48,7 +48,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         addPreferencesFromResource(R.xml.admin_settings);
     }
 

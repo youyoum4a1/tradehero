@@ -22,9 +22,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -70,6 +69,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject DashboardNavigator navigator;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -306,7 +306,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             {
                 profileView.progressDialog.hide(); // Before otherwise it is reset
                 THToast.show(R.string.settings_update_profile_successful);
-                Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                 navigator.popFragment();
                 if (emailCredentialsDTO != null && mainCredentialsPreference.getCredentials() instanceof EmailCredentialsDTO)
                 {

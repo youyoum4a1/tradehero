@@ -19,7 +19,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -114,6 +113,7 @@ public class PositionListFragment
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Nullable protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NotNull Bundle args, @NotNull GetPositionsDTOKey getPositionsDTOKey)
@@ -329,7 +329,6 @@ public class PositionListFragment
             {
                 TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
             }
-            DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)
             {
                 navigator.pushFragment(TradeListFragment.class, args);
@@ -348,7 +347,7 @@ public class PositionListFragment
             TrendingFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        getDashboardNavigator().pushFragment(TrendingFragment.class, args);
+        navigator.pushFragment(TrendingFragment.class, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
@@ -629,13 +628,11 @@ public class PositionListFragment
         thRouter.save(args, userBaseKey);
         if (currentUserId.toUserBaseKey().equals(userBaseKey))
         {
-            ((DashboardActivity) getActivity())
-                    .getDashboardNavigator().pushFragment(MeTimelineFragment.class, args);
+            navigator.pushFragment(MeTimelineFragment.class, args);
         }
         else
         {
-            ((DashboardActivity) getActivity())
-                    .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+            navigator.pushFragment(PushableTimelineFragment.class, args);
         }
     }
     //</editor-fold>

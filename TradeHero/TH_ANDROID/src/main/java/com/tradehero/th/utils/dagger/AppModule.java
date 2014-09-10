@@ -9,7 +9,6 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
-import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -50,7 +49,6 @@ import javax.inject.Singleton;
                 {
                         THApp.class,
                         ChoiceFollowUserAssistantWithDialog.class,
-                        TranslatableLanguageListFragment.class,
                         EmailSignInFragment.class,
                         SecurityListPagedLoader.class,
                         MacquarieSecurityListPagedLoader.class,

@@ -85,6 +85,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject ProviderUtil providerUtil;
     @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
+    @Inject DashboardNavigator navigator;
 
     protected UserProfileCompactDTO portfolioUserCompactDTO;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
@@ -368,11 +369,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             Bundle args = new Bundle();
             String url = providerUtil.appendUserId(adDTO.redirectUrl, '&');
             CompetitionWebViewFragment.putUrl(args, url);
-            DashboardNavigator navigator = getDashboardNavigator();
-            if (navigator != null)
-            {
-                navigator.pushFragment(CompetitionWebViewFragment.class, args);
-            }
+            navigator.pushFragment(CompetitionWebViewFragment.class, args);
         }
     }
 
@@ -385,11 +382,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             ProviderSecurityListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null)
-        {
-            navigator.pushFragment(ProviderSecurityListFragment.class, args);
-        }
+
+        navigator.pushFragment(ProviderSecurityListFragment.class, args);
     }
 
     private void pushPortfolioElement(@NotNull CompetitionZonePortfolioDTO competitionZoneDTO)
@@ -403,11 +397,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
             PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
             CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
-            DashboardNavigator navigator = getDashboardNavigator();
-            if (navigator != null)
-            {
-                navigator.pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
-            }
+            navigator.pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
         }
     }
 
@@ -420,11 +410,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             ProviderVideoListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null)
-        {
-            navigator.pushFragment(ProviderVideoListFragment.class, args);
-        }
+        navigator.pushFragment(ProviderVideoListFragment.class, args);
     }
 
     private void pushWizardElement(@NotNull CompetitionZoneWizardDTO competitionZoneDTO)
@@ -439,12 +425,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
 
         CompetitionWebViewFragment.putUrl(args, competitionUrl);
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null)
-        {
-            this.webViewFragment = navigator.pushFragment(CompetitionWebViewFragment.class, args);
-            this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
-        }
+        this.webViewFragment = navigator.pushFragment(CompetitionWebViewFragment.class, args);
+        this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
     private void pushLeaderboardElement(@NotNull CompetitionZoneLeaderboardDTO competitionZoneDTO)
@@ -460,7 +442,6 @@ public class MainCompetitionFragment extends CompetitionFragment
             CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null && leaderboardDefDTO.isWithinUtcRestricted())
         {
             navigator.pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class, args);
@@ -482,7 +463,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
         }
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(CompetitionWebViewFragment.class, args);
@@ -506,7 +486,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                         Timber.d("Opening this page: %s", url);
                         Bundle bundle = new Bundle();
                         CompetitionWebViewFragment.putUrl(bundle, url);
-                        this.webViewFragment = getDashboardNavigator().pushFragment(WebViewFragment.class, bundle);
+                        this.webViewFragment = navigator.pushFragment(WebViewFragment.class, bundle);
                         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
                     }
                 }
@@ -601,7 +581,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
         @Override protected Navigator getNavigator()
         {
-            return MainCompetitionFragment.this.getDashboardNavigator();
+            return navigator;
         }
 
         @Override protected Class<?> getClassToPop()

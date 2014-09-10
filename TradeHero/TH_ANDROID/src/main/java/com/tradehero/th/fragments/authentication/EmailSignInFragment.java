@@ -21,7 +21,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -51,7 +51,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         analytics.tagScreen(AnalyticsConstants.Login_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
     }

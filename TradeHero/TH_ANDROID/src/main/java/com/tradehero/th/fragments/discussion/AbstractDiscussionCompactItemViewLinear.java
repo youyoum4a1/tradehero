@@ -12,7 +12,6 @@ import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
@@ -27,6 +26,8 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
 {
     @Inject protected DiscussionCache discussionCache;
     @Inject protected SocialShareTranslationHelper socialShareHelper;
+    @Inject DashboardNavigator dashboardNavigator;
+
     protected AbstractDiscussionCompactItemViewHolder viewHolder;
     protected T discussionKey;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
@@ -117,6 +118,11 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         }
     }
 
+    protected DashboardNavigator getNavigator()
+    {
+        return dashboardNavigator;
+    }
+
     protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
     {
         return new DiscussionFetchListener();
@@ -136,13 +142,6 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
             THToast.show(new THException(error));
         }
     }
-
-    //<editor-fold desc="Navigation">
-    protected DashboardNavigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-    }
-    //</editor-fold>
 
     protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {

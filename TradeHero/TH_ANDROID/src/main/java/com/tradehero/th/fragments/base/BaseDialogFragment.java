@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import butterknife.ButterKnife;
 import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 
 public abstract class BaseDialogFragment extends SherlockDialogFragment
 {
@@ -15,7 +15,7 @@ public abstract class BaseDialogFragment extends SherlockDialogFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)

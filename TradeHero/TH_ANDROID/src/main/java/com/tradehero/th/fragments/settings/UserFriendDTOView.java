@@ -16,7 +16,7 @@ import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -58,7 +58,7 @@ public class UserFriendDTOView extends RelativeLayout
 
     private void init()
     {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
 
         userFriendAvatar = (ImageView) findViewById(R.id.user_friend_avatar);
         userFriendName = (TextView) findViewById(R.id.user_friend_name);

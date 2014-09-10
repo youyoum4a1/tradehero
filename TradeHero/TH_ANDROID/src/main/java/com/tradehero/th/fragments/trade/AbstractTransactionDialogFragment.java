@@ -46,7 +46,6 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
@@ -132,6 +131,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Inject Analytics analytics;
 
     @Inject THBillingInteractor userInteractor;
+    @Inject DashboardNavigator navigator;
     @Inject Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
 
     SocialLinkHelper socialLinkHelper;
@@ -245,7 +245,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         super.onResume();
 
         /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
-        if (!(getDashboardNavigator().getCurrentFragment() instanceof BuySellFragment))
+        if (!(navigator.getCurrentFragment() instanceof BuySellFragment))
         {
             getDialog().hide();
         }
@@ -434,7 +434,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         Bundle bundle = new Bundle();
         SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
-        transactionCommentFragment = getDashboardNavigator().pushFragment(TransactionEditCommentFragment.class, bundle);
+        transactionCommentFragment = navigator.pushFragment(TransactionEditCommentFragment.class, bundle);
 
         getDialog().hide();
     }
@@ -1183,15 +1183,5 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         void onTransactionSuccessful(boolean isBuy);
 
         void onTransactionFailed(boolean isBuy, THException error);
-    }
-
-    protected DashboardNavigator getDashboardNavigator()
-    {
-        DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
-        if (activity != null)
-        {
-            return activity.getDashboardNavigator();
-        }
-        return null;
     }
 }

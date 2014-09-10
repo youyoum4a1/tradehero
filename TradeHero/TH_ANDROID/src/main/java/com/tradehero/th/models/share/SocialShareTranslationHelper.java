@@ -8,6 +8,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTOFactory;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.NewsDialogFactory;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.network.share.SocialSharer;
@@ -45,6 +46,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     @Inject public SocialShareTranslationHelper(
             @NotNull Context applicationContext,
             @NotNull Provider<Activity> activityProvider,
+            @NotNull Provider<DashboardNavigator> navigatorProvider,
             @NotNull NewsDialogFactory newsDialogFactory,
             @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull Provider<SocialSharer> socialSharerProvider,
@@ -54,7 +56,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             @NotNull TranslationCache translationCache,
             @NotNull UserTranslationSettingPreference userTranslationSettingPreference)
     {
-        super(applicationContext, activityProvider, newsDialogFactory, alertDialogUtil, socialSharerProvider);
+        super(applicationContext, activityProvider, navigatorProvider, newsDialogFactory, alertDialogUtil, socialSharerProvider);
         this.translationKeyFactory = translationKeyFactory;
         this.abstractDiscussionCompactDTOFactory = abstractDiscussionCompactDTOFactory;
         this.translationTokenCache = translationTokenCache;

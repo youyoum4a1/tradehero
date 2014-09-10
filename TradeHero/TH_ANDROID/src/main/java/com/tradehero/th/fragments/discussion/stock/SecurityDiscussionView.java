@@ -24,7 +24,7 @@ import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import java.util.Collection;
 import javax.inject.Inject;
@@ -67,7 +67,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
         super.onFinishInflate();
 
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
 
         securityDiscussionListScrollListener = new SecurityDiscussionListScrollListener();
         securityCompactCacheFetchListener = createSecurityCompactCacheListener();

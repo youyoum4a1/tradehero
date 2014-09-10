@@ -13,6 +13,7 @@ import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.BaseSearchFragment;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trending.PeopleItemViewAdapter;
@@ -35,6 +36,7 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         implements HasSelectedItem
 {
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
+    @Inject DashboardNavigator navigator;
 
     protected void initViews(View view)
     {
@@ -93,7 +95,7 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         if (getArguments() != null && getArguments().containsKey(
                 Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
         {
-            getDashboardNavigator().popFragment();
+            navigator.popFragment();
             return;
         }
 
@@ -113,11 +115,11 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         thRouter.save(args, userSearchResultDTO.getUserBaseKey());
         if (currentUserId.toUserBaseKey().equals(userSearchResultDTO.getUserBaseKey()))
         {
-            getDashboardNavigator().pushFragment(MeTimelineFragment.class, args);
+            navigator.pushFragment(MeTimelineFragment.class, args);
         }
         else
         {
-            getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+            navigator.pushFragment(PushableTimelineFragment.class, args);
         }
     }
 

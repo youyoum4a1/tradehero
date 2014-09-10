@@ -27,6 +27,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -70,6 +71,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Inject protected ProgressDialogUtil progressDialogUtil;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserId currentUserId;
+    @Inject DashboardNavigator navigator;
 
     private View headerView;
     protected AlertDTO alertDTO;
@@ -168,7 +170,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                     AlertEditFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
                 }
                 AlertEditFragment.putAlertId(bundle, alertId);
-                getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, null);
+                navigator.pushFragment(AlertEditFragment.class, bundle, null);
                 return true;
         }
         return super.onOptionsItemSelected(item);

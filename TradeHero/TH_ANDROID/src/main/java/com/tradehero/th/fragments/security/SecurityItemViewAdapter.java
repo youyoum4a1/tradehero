@@ -10,7 +10,7 @@ import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.filter.security.SecurityCompactDTOFilter;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.util.List;
 
 abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends SecurityCompactDTO>
@@ -24,7 +24,7 @@ abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends Sec
     public SecurityItemViewAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 

@@ -28,8 +28,6 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -93,7 +91,7 @@ import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements Injector, DashboardNavigatorActivity, ResideMenu.OnMenuListener
+        implements Injector, ResideMenu.OnMenuListener
 {
     private DashboardNavigator navigator;
     @Inject Set<DashboardNavigator.DashboardFragmentWatcher> dashboardFragmentWatchers;
@@ -240,7 +238,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onBackPressed()
     {
-        getNavigator().popFragment();
+        navigator.popFragment();
     }
 
     private void suggestUpgradeIfNecessary()
@@ -285,7 +283,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         switch (item.getItemId())
         {
             case R.id.admin_settings:
-                getDashboardNavigator().pushFragment(AdminSettingsFragment.class);
+                navigator.pushFragment(AdminSettingsFragment.class);
                 return true;
             case R.id.hardware_menu_settings:
                 pushFragmentIfNecessary(SettingsFragment.class);
@@ -302,7 +300,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         Fragment currentDashboardFragment = navigator.getCurrentFragment();
         if (!(fragmentClass.isInstance(currentDashboardFragment)))
         {
-            getNavigator().pushFragment(fragmentClass);
+            navigator.pushFragment(fragmentClass);
         }
     }
 
@@ -442,18 +440,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         Timber.d(getIntent().getAction());
         Timber.e(new Exception("thIntentFactory"), "Was handled by thIntentFactory");
     }
-
-    //<editor-fold desc="DashboardNavigatorActivity">
-    @Override public Navigator getNavigator()
-    {
-        return navigator;
-    }
-
-    @Override public DashboardNavigator getDashboardNavigator()
-    {
-        return navigator;
-    }
-    //</editor-fold>
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {

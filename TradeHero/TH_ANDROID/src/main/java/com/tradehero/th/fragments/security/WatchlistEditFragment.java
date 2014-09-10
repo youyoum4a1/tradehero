@@ -71,6 +71,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
+    @Inject DashboardNavigator navigator;
 
     public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
@@ -395,7 +396,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             if (isResumed())
             {
-                getDashboardNavigator().popFragment();
+                navigator.popFragment();
             }
             else
             {
@@ -413,7 +414,6 @@ public class WatchlistEditFragment extends DashboardFragment
 
         @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO, THResponse response)
         {
-            DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)
             {
                 navigator.popFragment();

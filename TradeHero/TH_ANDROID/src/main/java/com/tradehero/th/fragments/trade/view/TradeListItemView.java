@@ -23,7 +23,7 @@ import com.tradehero.th.models.trade.TradeDTOUtils;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -89,7 +89,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 

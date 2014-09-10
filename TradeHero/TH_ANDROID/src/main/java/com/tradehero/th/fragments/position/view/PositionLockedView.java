@@ -10,7 +10,7 @@ import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class PositionLockedView extends LinearLayout
@@ -47,7 +47,7 @@ public class PositionLockedView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 

@@ -13,8 +13,9 @@ import android.view.View;
  *                                                       |                    v
  * An Android family tree looks like: Application -> Activity -> Fragment -> |View     |
  *                                                                           |Adapter  |
+ *                                                                           |Loader   | ...
  *
- * so that children are the subjects for its parents to inject.
+ * so that children are the subjects for their parents to inject.
  */
 public class HierarchyInjector
 {
@@ -39,7 +40,8 @@ public class HierarchyInjector
             Activity activity = (Activity) o;
             return inject(activity, o) || inject(activity.getApplicationContext(), o);
         }
-        return false;
+
+        throw new IllegalArgumentException("Hierarchy can only auto-inject (single argument) View, Fragment or Activity");
     }
 
     public static boolean inject(Context context, Object o)

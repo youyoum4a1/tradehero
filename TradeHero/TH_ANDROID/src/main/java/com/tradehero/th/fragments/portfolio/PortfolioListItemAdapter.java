@@ -12,7 +12,7 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparato
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
         this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         orderedTypes = new ArrayList<>();
         orderedItems = new ArrayList<>();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     @Override public boolean hasStableIds()

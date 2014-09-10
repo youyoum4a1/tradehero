@@ -7,7 +7,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.models.graphics.ForExtraTileBackground;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -36,7 +36,7 @@ public class ExtraCashTileView extends ImageView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onAttachedToWindow()

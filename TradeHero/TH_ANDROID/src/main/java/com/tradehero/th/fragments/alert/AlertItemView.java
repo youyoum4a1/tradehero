@@ -17,8 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -39,30 +38,21 @@ public class AlertItemView extends RelativeLayout
     @InjectView(R.id.alert_status) TextView alertStatus;
 
     @Inject protected Lazy<Picasso> picasso;
+    @Inject DashboardNavigator navigator;
 
     private AlertCompactDTO alertCompactDTO;
 
     //<editor-fold desc="Constructors">
-    public AlertItemView(Context context)
-    {
-        super(context);
-    }
-
     public AlertItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public AlertItemView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 
@@ -221,12 +211,7 @@ public class AlertItemView extends RelativeLayout
         {
             Bundle args = new Bundle();
             BuySellFragment.putSecurityId(args, alertCompactDTO.security.getSecurityId());
-            getNavigator().pushFragment(BuySellFragment.class, args);
+            navigator.pushFragment(BuySellFragment.class, args);
         }
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((NavigatorActivity) getContext()).getNavigator();
     }
 }

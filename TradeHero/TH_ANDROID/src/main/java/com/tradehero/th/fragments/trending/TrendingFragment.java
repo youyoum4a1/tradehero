@@ -36,6 +36,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
@@ -105,6 +106,7 @@ public class TrendingFragment extends SecurityListFragment
     private THIntentPassedListener thIntentPassedListener;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private Runnable handleCompetitionRunnable;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -332,7 +334,7 @@ public class TrendingFragment extends SecurityListFragment
     public void pushSearchIn()
     {
         Bundle args = new Bundle();
-        getDashboardNavigator().pushFragment(SecuritySearchFragment.class, args);
+        navigator.pushFragment(SecuritySearchFragment.class, args);
     }
 
     //<editor-fold desc="Listeners">
@@ -405,7 +407,7 @@ public class TrendingFragment extends SecurityListFragment
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
             MainCompetitionFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId());
-            getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
+            navigator.pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
         {
@@ -414,7 +416,7 @@ public class TrendingFragment extends SecurityListFragment
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
-            webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment = navigator.pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }
@@ -426,7 +428,7 @@ public class TrendingFragment extends SecurityListFragment
         {
             Bundle bundle = new Bundle();
             WebViewFragment.putUrl(bundle, userProfileDTO.activeSurveyURL);
-            getDashboardNavigator().pushFragment(WebViewFragment.class, bundle, null);
+            navigator.pushFragment(WebViewFragment.class, bundle, null);
         }
     }
 
@@ -456,7 +458,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleEarnCreditItemOnClick()
     {
-        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
+        navigator.pushFragment(FriendsInvitationFragment.class);
     }
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
@@ -473,7 +475,7 @@ public class TrendingFragment extends SecurityListFragment
             BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
+        navigator.pushFragment(BuySellFragment.class, args);
     }
 
     protected TrendingFilterSelectorView.OnFilterTypeChangedListener createTrendingFilterChangedListener()

@@ -27,7 +27,7 @@ import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
@@ -88,7 +88,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         chartDTO = chartDTOFactory.createChartDTO();
     }
 

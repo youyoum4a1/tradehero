@@ -92,6 +92,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
     private Dialog securityActionDialog;
+    @Inject DashboardNavigator navigator;
 
     public static void putPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKey positionDTOKey)
     {
@@ -427,7 +428,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
             }
-            DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)
             {
                 navigator.pushFragment(WatchlistEditFragment.class, args);
@@ -444,7 +444,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
             }
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
-            DashboardNavigator navigator = getDashboardNavigator();
             if (alertId != null)
             {
                 AlertEditFragment.putAlertId(args, alertId);
@@ -473,7 +472,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
             }
             BuySellFragment.putSecurityId(args, securityId);
-            DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)
             {
                 navigator.pushFragment(BuySellFragment.class, args);

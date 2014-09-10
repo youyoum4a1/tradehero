@@ -7,12 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareFormDTOWithEnum;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.ShareDialogFactory;
 import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -27,6 +27,7 @@ public class SocialShareHelper
 {
     @NotNull protected final Context applicationContext;
     @NotNull protected final Provider<Activity> activityHolder;
+    @NotNull protected final Provider<DashboardNavigator> navigatorProvider;
     @NotNull protected final ShareDialogFactory shareDialogFactory;
     @NotNull protected final AlertDialogUtil alertDialogUtil;
     @NotNull protected final Provider<SocialSharer> socialSharerProvider;
@@ -43,12 +44,14 @@ public class SocialShareHelper
     @Inject public SocialShareHelper(
             @NotNull Context applicationContext,
             @NotNull Provider<Activity> activityHolder,
+            @NotNull Provider<DashboardNavigator> navigatorProvider,
             @NotNull ShareDialogFactory shareDialogFactory,
             @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull Provider<SocialSharer> socialSharerProvider)
     {
         this.applicationContext = applicationContext;
         this.activityHolder = activityHolder;
+        this.navigatorProvider = navigatorProvider;
         this.shareDialogFactory = shareDialogFactory;
         this.alertDialogUtil = alertDialogUtil;
         this.socialSharerProvider = socialSharerProvider;
@@ -265,8 +268,7 @@ public class SocialShareHelper
             detachOfferConnectDialog();
             Bundle args = new Bundle();
             SettingsFragment.putSocialNetworkToConnect(args, socialNetwork);
-            ((DashboardActivity) activityHolder.get()).getDashboardNavigator()
-                    .pushFragment(SettingsFragment.class, args);
+            navigatorProvider.get().pushFragment(SettingsFragment.class, args);
         }
     }
 

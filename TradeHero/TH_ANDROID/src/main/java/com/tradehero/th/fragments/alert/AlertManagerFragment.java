@@ -55,6 +55,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
+    @Inject DashboardNavigator navigator;
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfile;
@@ -253,11 +254,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         AlertViewFragment.putAlertId(bundle, alertCompactDTO.getAlertId(currentUserId.toUserBaseKey()));
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null)
-        {
-            navigator.pushFragment(AlertViewFragment.class, bundle);
-        }
+        navigator.pushFragment(AlertViewFragment.class, bundle);
     }
 
     private void handleManageSubscriptionClicked()

@@ -38,7 +38,7 @@ import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.BitmapForProfileFactory;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
@@ -95,7 +95,7 @@ public class ProfileInfoView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 

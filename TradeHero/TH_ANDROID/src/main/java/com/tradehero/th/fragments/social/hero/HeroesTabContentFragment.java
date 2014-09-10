@@ -23,6 +23,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
@@ -62,6 +63,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Argument Passing">
     public static void putFollowerId(Bundle args, UserBaseKey followerId)
@@ -367,16 +369,16 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     {
         Bundle args = new Bundle();
         thRouter.save(args, userBaseKey);
-        getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+        navigator.pushFragment(PushableTimelineFragment.class, args);
     }
 
     private void handleGoMostSkilled()
     {
         // TODO this feels HACKy
-        //getDashboardNavigator().popFragment();
+        //navigator.popFragment();
 
         // TODO make it go to most skilled
-        //getDashboardNavigator().goToTab(DashboardTabType.COMMUNITY);
+        //navigator.goToTab(DashboardTabType.COMMUNITY);
 
         LeaderboardDefKey key =
                 new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
@@ -390,7 +392,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         {
             LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID));
         }
-        getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+        navigator.pushFragment(LeaderboardMarkUserListFragment.class, bundle);
     }
 
     public void display(UserProfileDTO userProfileDTO)

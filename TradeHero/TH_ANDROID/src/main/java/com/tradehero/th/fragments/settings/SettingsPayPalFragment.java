@@ -16,8 +16,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -49,6 +48,7 @@ public class SettingsPayPalFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject DashboardNavigator navigator;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -140,7 +140,6 @@ public class SettingsPayPalFragment extends DashboardFragment
                 {
                     THToast.show(getString(R.string.settings_paypal_successful_update));
                     progressDialog.hide();
-                    Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                     navigator.popFragment();
                 }
             }

@@ -11,7 +11,7 @@ import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +36,7 @@ public final class HomeWebView extends WebView
     {
         super.onFinishInflate();
         
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override public void reload()

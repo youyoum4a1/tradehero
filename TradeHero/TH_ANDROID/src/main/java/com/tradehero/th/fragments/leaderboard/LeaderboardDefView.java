@@ -14,7 +14,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -54,7 +54,7 @@ public class LeaderboardDefView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 
