@@ -42,17 +42,13 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
     {
         super.init();
         mQuestBonusListCacheListener = new QuestBonusCacheListener();
-    }
-
-    @Override protected void initView()
-    {
-        super.initView();
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
         attachQuestBonusCacheListener();
+    }
+
+    @Override public void onDestroyView()
+    {
+        detachQuestBonusListener();
+        super.onDestroyView();
     }
 
     private void attachQuestBonusCacheListener()
@@ -64,12 +60,6 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
     private void detachQuestBonusListener()
     {
         questBonusListCache.unregister(mQuestBonusListCacheListener);
-    }
-
-    @Override public void onStop()
-    {
-        detachQuestBonusListener();
-        super.onStop();
     }
 
     @Override public void onDestroy()
