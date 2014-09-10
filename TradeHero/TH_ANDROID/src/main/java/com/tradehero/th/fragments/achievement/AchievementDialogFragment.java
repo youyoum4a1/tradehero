@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
@@ -117,12 +116,6 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
     private void detachCategoryCacheListener()
     {
         achievementCategoryCache.unregister(mCategoryCacheListener);
-    }
-
-    @OnClick(R.id.btn_achievement_share)
-    public void onShareClicked()
-    {
-
     }
 
     private void displayDollarsEarned(float dollars)
