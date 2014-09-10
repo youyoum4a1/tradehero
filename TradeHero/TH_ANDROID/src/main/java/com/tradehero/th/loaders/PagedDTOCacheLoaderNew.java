@@ -27,7 +27,7 @@ abstract public class PagedDTOCacheLoaderNew<
     public PagedDTOCacheLoaderNew(Context context)
     {
         super(context);
-        HierarchyInjector.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     abstract protected DTOCacheNew<DTOKeyType, DTOType> getCache();
