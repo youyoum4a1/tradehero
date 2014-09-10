@@ -2,8 +2,9 @@
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:shareInterpolator="true"
-    android:interpolator="@android:interpolator/accelerate_quad"
-    android:duration="@android:integer/config_mediumAnimTime">
+    android:interpolator="@android:interpolator/accelerate_quint"
+    android:duration="@android:integer/config_mediumAnimTime"
+    android:startOffset="@android:integer/config_shortAnimTime">
   <scale
       android:fromXScale="0"
       android:fromYScale="1"
