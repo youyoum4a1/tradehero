@@ -5,7 +5,7 @@ import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Query;
 
-public interface YahooNewsServiceAsync
+interface YahooNewsServiceAsync
 {
     @GET("/rss/headline")
     void getNews(

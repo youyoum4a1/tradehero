@@ -1,6 +1,6 @@
 package com.tradehero.th.ui;
 
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
 import javax.inject.Inject;
 

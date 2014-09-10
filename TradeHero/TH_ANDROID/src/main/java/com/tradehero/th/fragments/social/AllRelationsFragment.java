@@ -24,7 +24,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCompactCache;
@@ -60,7 +60,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     }
 
     @Override
-    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new AllRelationsPremiumUserFollowedListener();
     }
@@ -196,15 +196,16 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     }
 
     protected class AllRelationsPremiumUserFollowedListener
-            implements PremiumFollowUserAssistant.OnUserFollowedListener
+            implements FollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
-                UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(
+                @NotNull UserBaseKey userFollowed,
+                @NotNull UserProfileDTO currentUserProfileDTO)
         {
             forceUpdateLook(userFollowed);
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
             // nothing for now
         }

@@ -1,7 +1,5 @@
 package com.tradehero.th.fragments.alert;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +12,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.BillingConstants;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -26,9 +24,11 @@ import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
-import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
+import com.tradehero.th.billing.THPurchaseReporter;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -61,7 +61,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private AlertListItemAdapter alertListItemAdapter;
     private DTOCacheNew.Listener<UserBaseKey, AlertCompactDTOList> alertCompactListListener;
-    private int currentDisplayLayoutId;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -116,9 +115,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                createPurchaseActionInteractorBuilder()
-                        .build()
-                        .buyStockAlertSubscription();
+                detachRequestCode();
+                //noinspection unchecked
+                requestCode = userInteractor.run((THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                        .domainToPresent(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
+                        .build());
             }
         });
 
@@ -135,18 +136,9 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        if (currentDisplayLayoutId != 0)
-        {
-            progressAnimator.setDisplayedChildByLayoutId(currentDisplayLayoutId);
-        }
+        progressAnimator.setDisplayedChildByLayoutId(0);
         fetchUserProfile();
         fetchAlertCompactList();
-    }
-
-    @Override public void onPause()
-    {
-        currentDisplayLayoutId = progressAnimator.getDisplayedChildLayoutId();
-        super.onPause();
     }
 
     @Override public void onDestroyView()
@@ -210,7 +202,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
         return super.createPurchaseActionInteractorBuilder()
-                .setPurchaseReportedListener(new PurchaseReporter.OnPurchaseReportedListener()
+                .setPurchaseReportedListener(new THPurchaseReporter.OnPurchaseReportedListener()
                 {
                     @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
                     {
@@ -234,7 +226,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                 alertPlanCount.setText(R.string.stock_alerts_no_alerts);
                 btnPlanUpgrade.setVisibility(View.VISIBLE);
             }
-            else if (count < IABConstants.ALERT_PLAN_UNLIMITED)
+            else if (count < BillingConstants.ALERT_PLAN_UNLIMITED)
             {
                 alertPlanCount.setText(String.format(getString(R.string.stock_alert_count_alert_format), count));
                 btnPlanUpgrade.setVisibility(View.VISIBLE);
@@ -270,8 +262,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private void handleManageSubscriptionClicked()
     {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(IABConstants.GOOGLE_PLAY_ACCOUNT_URL));
-        getActivity().startActivity(intent);
+        detachRequestCode();
+        //noinspection unchecked
+        requestCode = userInteractor.run(uiBillingRequestBuilderProvider.get()
+                .manageSubscriptions(true)
+                .build());
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()

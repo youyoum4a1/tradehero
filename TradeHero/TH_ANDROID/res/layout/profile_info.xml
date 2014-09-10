@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <com.tradehero.th.fragments.settings.ProfileInfoView
       android:orientation="vertical"
@@ -76,9 +76,6 @@
         android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
         />
-    <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
-    <!--app:invalidDrawable="@drawable/accounts_glyph_password_error"-->
-    <!--app:validDrawable="@drawable/accounts_glyph_password_ok"-->
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -145,14 +142,13 @@
           android:gravity="center"
           android:src="@drawable/avatar"
           android:contentDescription="@string/empty"/>
-      <!--android:background="@drawable/image_selector"-->
 
       <LinearLayout
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
           android:layout_toRightOf="@id/image_optional"
-          android:layout_marginLeft="@dimen/common_margin_10"
+          android:layout_marginLeft="@dimen/margin_medium"
           android:orientation="vertical">
 
         <EditText

@@ -134,7 +134,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             @Override public void onClick(View v)
             {
-                DeviceUtil.dismissKeyboard(getActivity(), getView());
+                DeviceUtil.dismissKeyboard(getView());
                 handleWatchButtonClicked();
             }
         };
@@ -201,7 +201,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             @Override public void onClick(View v)
             {
-                DeviceUtil.dismissKeyboard(getActivity(), getView());
+                DeviceUtil.dismissKeyboard(getView());
                 handleButtonDeleteClicked();
             }
         };
@@ -366,7 +366,7 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 watchPrice.setText(
                         watchListItem != null ?
-                                "" + watchListItem.watchlistPrice :
+                                "" + watchListItem.watchlistPriceRefCcy :
                                 securityCompactDTO.lastPrice != null ? securityCompactDTO.lastPrice.toString() : "");
             }
 

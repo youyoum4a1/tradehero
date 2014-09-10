@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -191,6 +191,8 @@ public interface UserService
             @Query("q") String query);
     //</editor-fold>
 
+    @POST("/users/batchFollow/free") UserProfileDTO followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
+
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends") Response inviteFriends(
             @Path("userId") int userId,
@@ -200,7 +202,7 @@ public interface UserService
     //<editor-fold desc="Add Follow Credit">
     @POST("/users/{userId}/addCredit") UserProfileDTO addCredit(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
+            @Body PurchaseReportDTO purchaseReportDTO);
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
@@ -212,9 +214,7 @@ public interface UserService
 
     @POST("/users/{userId}/follow") UserProfileDTO follow(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
-
-    @POST("/users/batchFollow/free") Response followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
+            @Body PurchaseReportDTO purchaseReportDTO);
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">

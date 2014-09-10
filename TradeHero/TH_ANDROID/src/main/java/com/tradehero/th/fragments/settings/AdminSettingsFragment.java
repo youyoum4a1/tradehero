@@ -11,13 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -43,6 +43,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject AlertDialogUtil alertDialogUtil;
+    @Inject CurrentActivityHolder currentActivityHolder;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -111,6 +112,28 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 return askForNotificationId();
+            }
+        });
+
+        Preference showReviewDialog = findPreference("show_review_dialog");
+        showReviewDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolder.getCurrentActivity();
+                AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
+                return true;
+            }
+        });
+
+        Preference showInviteDialog = findPreference("show_invite_dialog");
+        showInviteDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolder.getCurrentActivity();
+                AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
+                return true;
             }
         });
     }

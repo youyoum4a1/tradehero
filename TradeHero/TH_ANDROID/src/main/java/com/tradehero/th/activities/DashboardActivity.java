@@ -1,22 +1,21 @@
 package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TabHost;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -30,10 +29,11 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
@@ -62,13 +62,17 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
@@ -81,7 +85,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
     @Inject Lazy<THBillingInteractor> billingInteractor;
-    @Inject Provider<THUIBillingRequest> emptyBillingRequestProvider;
+    @Inject Provider<BaseTHUIBillingRequest.Builder> thUiBillingRequestBuilderProvider;
 
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
     private Integer restoreRequestCode;
@@ -91,7 +95,6 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
@@ -100,6 +103,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
     @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
+    @Inject Lazy<MarketUtil> marketUtilLazy;
 
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
@@ -213,13 +217,14 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     protected THUIBillingRequest createRestoreRequest()
     {
-        THUIBillingRequest request = emptyBillingRequestProvider.get();
-        request.restorePurchase = true;
-        request.startWithProgressDialog = false;
-        request.popRestorePurchaseOutcome = true;
-        request.popRestorePurchaseOutcomeVerbose = false;
-        request.purchaseRestorerListener = purchaseRestorerFinishedListener;
-        return request;
+        BaseTHUIBillingRequest.Builder builder = thUiBillingRequestBuilderProvider.get();
+        //noinspection unchecked
+        builder.restorePurchase(true)
+                .startWithProgressDialog(!Constants.RELEASE)
+                .popRestorePurchaseOutcome(true)
+                .popRestorePurchaseOutcomeVerbose(false)
+                .purchaseRestorerListener(purchaseRestorerFinishedListener);
+        return builder.build();
     }
 
     @Override public void onBackPressed()
@@ -238,17 +243,8 @@ public class DashboardActivity extends SherlockFragmentActivity
                 {
                     @Override public void onClick(DialogInterface dialog, int which)
                     {
-                        try
-                        {
-                            THToast.show(R.string.update_guide);
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
-                                            "market://details?id=" + Constants.PLAYSTORE_APP_ID)));
-                        } catch (ActivityNotFoundException ex)
-                        {
-                            startActivity(new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse("https://play.google.com/store/apps/details?id="
-                                                            + Constants.PLAYSTORE_APP_ID)));
-                        }
+                        THToast.show(R.string.update_guide);
+                        marketUtilLazy.get().showAppOnMarket(DashboardActivity.this);
                     }
                 });
         }
@@ -264,7 +260,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (currentUserProfile != null)
         {
-            if (currentUserProfile.isAdmin)
+            if (currentUserProfile.isAdmin || !Constants.RELEASE)
             {
                 menuInflater.inflate(R.menu.admin_menu, menu);
             }
@@ -419,7 +415,6 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     protected void showOnboard()
     {
-        THToast.show("Activate OnBoardDialogFragment when merged in");
         if (shouldShowOnBoard())
         {
             // OnBoardDialogFragment handles setting the preference to false when done

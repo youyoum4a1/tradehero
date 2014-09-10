@@ -11,7 +11,7 @@
   <string name="watchlist_quantity_header">数量</string>
   <string name="watchlist_quantity_initial">1</string>
   <string name="watchlist_view_graph">查看图表</string>
-  <string name="watchlist_number_of_shares"><![CDATA[<b>%1$d</b> 股 @ <b>%2$s</b>]]></string>
+  <string name="watchlist_number_of_shares"><![CDATA[<b>%1$s</b> 股 @ <b>%2$s</b>]]></string>
   <string name="watchlist_pl_percentage_format">%s %%</string>
   <string name="watchlist_last_price_format"><![CDATA[%1$s <b>%2$s</b>]]></string>
   <string name="watchlist_current_value">当前值</string>

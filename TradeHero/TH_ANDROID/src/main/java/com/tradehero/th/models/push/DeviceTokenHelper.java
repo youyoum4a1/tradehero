@@ -13,7 +13,7 @@ import timber.log.Timber;
 
 public class DeviceTokenHelper
 {
-    @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
+    @NotNull StringPreference savedPushDeviceIdentifier;
     @NotNull Context context;
 
     //<editor-fold desc="Constructors">

@@ -102,10 +102,15 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         //signupButton.setOnTouchListener(this);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachMiddleCallbackUpdateUserProfile();
         detachUserProfileCache();
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         if (profileView != null)
         {
             profileView.setOnTouchListenerOnFields(null);
@@ -121,6 +126,13 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         updateButton = null;
         referralCodeEditText = null;
         super.onDestroyView();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        detachMiddleCallbackUpdateUserProfile();
+        detachUserProfileCache();
     }
 
     private void detachMiddleCallbackUpdateUserProfile()
@@ -251,7 +263,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private void updateProfile(View view)
     {
-        DeviceUtil.dismissKeyboard(getActivity(), view);
+        DeviceUtil.dismissKeyboard(view);
         forceValidateFields();
 
         if (!NetworkUtils.isConnected(getActivity()))
@@ -323,7 +335,14 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         Intent libraryIntent = new Intent(Intent.ACTION_PICK);
         libraryIntent.setType("image/jpeg");
-        startActivityForResult(libraryIntent, REQUEST_GALLERY);
+        try
+        {
+            startActivityForResult(libraryIntent, REQUEST_GALLERY);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            THToast.show(R.string.error_launch_photo_library);
+        }
     }
 
     protected void askImageFromCamera()

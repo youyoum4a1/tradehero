@@ -20,9 +20,15 @@ public class DTOProcessorUnfollowUser extends AbstractDTOProcessorFollowUser
             @NotNull GetPositionsCache getPositionsCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
             @NotNull AllowableRecipientPaginatedCache allowableRecipientPaginatedCache,
-            @NotNull UserBaseKey userToFollow)
+            @NotNull UserBaseKey followerId,
+            @NotNull UserBaseKey heroId)
     {
-        super(userProfileCache, heroListCache, getPositionsCache, userMessagingRelationshipCache, userToFollow);
+        super(userProfileCache,
+                heroListCache,
+                getPositionsCache,
+                userMessagingRelationshipCache,
+                followerId,
+                heroId);
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
     }
     //</editor-fold>
@@ -30,7 +36,7 @@ public class DTOProcessorUnfollowUser extends AbstractDTOProcessorFollowUser
     @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
-        userMessagingRelationshipCache.markNotHero(userToFollow);
+        userMessagingRelationshipCache.markNotHero(heroId);
         allowableRecipientPaginatedCache.invalidateAll();
         return processed;
     }

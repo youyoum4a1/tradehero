@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -50,6 +50,7 @@ public class MeTimelineFragment extends TimelineFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.timeline_menu, menu);
         displayActionBarTitle();
+        setActionBarSubtitle(null);
 
         MenuItem updateCenterItem = menu.findItem(R.id.action_bar_update_center_icon);
         View updateCenterIcon = updateCenterItem.getActionView();

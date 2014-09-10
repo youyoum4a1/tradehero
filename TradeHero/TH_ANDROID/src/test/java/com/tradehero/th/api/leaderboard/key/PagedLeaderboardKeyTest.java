@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class PagedLeaderboardKeyTest extends BasePagedLeaderboardKeyTest
+public class PagedLeaderboardKeyTest extends PagedLeaderboardKeyTestBase
 {
     @Before public void setUp()
     {

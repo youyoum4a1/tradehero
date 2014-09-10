@@ -15,6 +15,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
@@ -193,12 +194,12 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             if (watchlistPositionCache.get().get(securityId) != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
-                WatchlistEditFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
+                ActionBarOwnerMixin.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
             }
             else
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
-                WatchlistEditFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
+                ActionBarOwnerMixin.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
             }
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, null);

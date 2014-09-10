@@ -10,6 +10,7 @@ import com.tradehero.th.api.purchase.UserCreditPlanDTO;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class UserProfileDTO extends UserProfileCompactDTO
 {
@@ -86,6 +87,11 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public boolean isFollowingUser(UserBaseDTO userBaseDTO)
     {
         return userBaseDTO != null && isFollowingUser(userBaseDTO.id);
+    }
+
+    public boolean isPremiumFollowingUser(@NotNull UserBaseKey userBaseKey)
+    {
+        return this.premiumHeroIds != null && this.premiumHeroIds.contains(userBaseKey.key);
     }
 
     public int getFollowType(UserBaseKey userBaseKey)

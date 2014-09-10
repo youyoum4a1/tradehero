@@ -8,11 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -29,7 +27,6 @@ import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,14 +49,11 @@ public class StockInfoFragment extends DashboardFragment
     private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
 
     protected PaginatedDTO<NewsItemDTO> newsHeadlineList;
-    private DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
 
     private MenuItem marketCloseIcon;
 
     private ViewPager topPager;
     private InfoTopStockPagerAdapter topViewPagerAdapter;
-    private PageIndicator topPagerIndicator;
     private NewsHeadlineAdapter newsHeadlineAdapter;
     private ListView yahooNewsListView;
 
@@ -101,12 +95,6 @@ public class StockInfoFragment extends DashboardFragment
         if (topPager != null)
         {
             topPager.setAdapter(topViewPagerAdapter);
-        }
-
-        topPagerIndicator = (PageIndicator) view.findViewById(R.id.top_pager_indicator);
-        if (topPagerIndicator != null && topPager != null)
-        {
-            topPagerIndicator.setViewPager(topPager, 0);
         }
     }
 
@@ -156,12 +144,6 @@ public class StockInfoFragment extends DashboardFragment
     {
         detachSecurityCompactCache();
 
-        if (yahooNewsCacheFetchTask != null)
-        {
-            yahooNewsCacheFetchTask.setListener(null);
-            yahooNewsCacheFetchTask.cancel(false);
-        }
-        yahooNewsCacheFetchTask = null;
         super.onPause();
     }
 
@@ -175,7 +157,6 @@ public class StockInfoFragment extends DashboardFragment
         newsHeadlineAdapter = null;
         topViewPagerAdapter = null;
         topPager = null;
-        topPagerIndicator = null;
         super.onDestroyView();
     }
 

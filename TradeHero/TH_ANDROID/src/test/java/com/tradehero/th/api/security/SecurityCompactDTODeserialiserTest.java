@@ -3,7 +3,7 @@ package com.tradehero.th.api.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.api.BaseApiTest;
+import com.tradehero.th.api.BaseApiTestClass;
 import com.tradehero.th.api.security.compact.EquityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(THRobolectricTestRunner.class)
-public class SecurityCompactDTODeserialiserTest extends BaseApiTest
+public class SecurityCompactDTODeserialiserTest extends BaseApiTestClass
 {
     @Inject @ForApp ObjectMapper normalMapper;
 

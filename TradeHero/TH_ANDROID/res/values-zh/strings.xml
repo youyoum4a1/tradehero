@@ -36,6 +36,7 @@
   <string name="discussion_loaded">已全部读取</string>
   <string name="discussion_loading">读取中…</string>
   <string name="discussion_empty">成为第一个发布评论的人吧</string>
+  <string name="trade_list_action">操作</string>
   <string name="news_view_on_web">在网页中查看</string>
   <string name="add_a_comment">发布评论…</string>
   <string name="start_new_discussion">开始新的讨论</string>
@@ -102,7 +103,6 @@
 
   <string name="friends_can_be_invite">%s 个好友可邀请</string>
   <string name="friends_can_be_follow">%s 个好友可关注</string>
-  <string name="weibo_message_text_limit">[%d/140]</string>
   <string name="weibo_message_length_error">不能超过140字</string>
   <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！使用我的邀请码 %1$s 更有额外奖励哦！</string>
   <string name="referral_dollars_claimed">已成功提交邀请码</string>
@@ -111,4 +111,11 @@
   <string name="onboard_exchange_title">帮助您开始</string>
   <string name="onboard_exchange_summary1">哪个市场您感兴趣呢 ?</string>
   <string name="onboard_exchange_summary2">哪个行业您感兴趣呢 ?</string>
+  <string name="ask_for_review_title">喜爱 全民股神 ？</string>
+  <string name="ask_for_review_summary">请给我们评分，让我们知您所想。</string>
+  <string name="ask_for_review_rate">给 全民股神 投票</string>
+  <string name="maybe_later">稍后</string>
+  <string name="ask_for_invite_title">同朋友分享快乐 !</string>
+  <string name="ask_for_invite_summary1">邀请你的好友，并获得</string>
+  <string name="ask_for_invite">现在就去邀请好友 !</string>
 </resources>

@@ -14,7 +14,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class LanguageDTOFactory
 {

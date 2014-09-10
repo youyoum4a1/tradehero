@@ -1,6 +1,6 @@
 package com.tradehero.th.api.provider;
 
-import com.tradehero.th.api.BaseApiTest;
+import com.tradehero.th.api.BaseApiTestClass;
 import com.tradehero.th.api.competition.ProviderCompactDTO;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +10,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 abstract public class ProviderCompactDTODeserialiserTestBase<ProviderCompactDTOType extends ProviderCompactDTO>
-        extends BaseApiTest
+        extends BaseApiTestClass
 {
     protected InputStream providerDTOBody1Stream;
     protected InputStream providerDTOBody1WithFakeStream;

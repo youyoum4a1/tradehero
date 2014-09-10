@@ -23,6 +23,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -224,17 +225,29 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         Bundle args = new Bundle();
         CompetitionWebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         CompetitionWebViewFragment.putIsOptionMenuVisible(args, false);
-        this.webViewFragment = getDashboardNavigator().pushFragment(
-                CompetitionWebViewFragment.class, args);
-        this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            this.webViewFragment = navigator.pushFragment(
+                    CompetitionWebViewFragment.class, args);
+            this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
+        }
     }
 
     private void pushSearchFragment()
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
-        SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        getDashboardNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
+        {
+            SecuritySearchProviderFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+        }
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(SecuritySearchProviderFragment.class, args);
+        }
     }
 
     protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()

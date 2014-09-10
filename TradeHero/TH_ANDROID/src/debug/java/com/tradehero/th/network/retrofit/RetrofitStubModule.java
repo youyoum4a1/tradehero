@@ -1,14 +1,6 @@
 package com.tradehero.th.network.retrofit;
 
-import com.tradehero.th.network.service.MarketServiceWrapper;
-import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.network.service.SecurityServiceWrapperStub;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.network.service.MarketServiceWrapperStub;
-import com.tradehero.th.network.service.UserServiceWrapperStub;
 import dagger.Module;
-import dagger.Provides;
-import javax.inject.Singleton;
 
 @Module(
         includes = {
@@ -35,19 +27,4 @@ public class RetrofitStubModule
     //{
     //    return discussionService;
     //}
-
-    @Provides @Singleton MarketServiceWrapper provideMarketServiceWrapper(MarketServiceWrapperStub marketServiceWrapperStub)
-    {
-        return marketServiceWrapperStub;
-    }
-
-    @Provides @Singleton SecurityServiceWrapper provideSecurityServiceWrapper(SecurityServiceWrapperStub securityServiceWrapperStub)
-    {
-        return securityServiceWrapperStub;
-    }
-
-    @Provides @Singleton UserServiceWrapper provideUserServiceWrapper(UserServiceWrapperStub userServiceWrapperStub)
-    {
-        return userServiceWrapperStub;
-    }
 }

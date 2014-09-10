@@ -73,7 +73,6 @@
       android:textColor="@color/white"
       android:textSize="@dimen/common_text_size_30"
       android:textStyle="bold"/>
-      <!--android:layout_height="@dimen/common_margin_60"-->
 
   <TextView
       android:id="@+id/authentication_sign_in_forgot_password"

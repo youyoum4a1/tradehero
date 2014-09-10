@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
@@ -124,11 +125,11 @@ public class Navigator<ActivityType extends Activity>
         {
             if (DashboardFragment.class.isAssignableFrom(fragmentClass))
             {
-                DashboardFragment.putKeyShowHomeAsUp(args, showHomeAsUp);
+                ActionBarOwnerMixin.putKeyShowHomeAsUp(args, showHomeAsUp);
             }
             else if (DashboardPreferenceFragment.class.isAssignableFrom(fragmentClass))
             {
-                DashboardPreferenceFragment.putKeyShowHomeAsUp(args, showHomeAsUp);
+                ActionBarOwnerMixin.putKeyShowHomeAsUp(args, showHomeAsUp);
             }
         }
     }

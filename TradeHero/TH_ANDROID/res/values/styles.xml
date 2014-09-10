@@ -420,4 +420,12 @@
     <item name="android:windowIsTranslucent">true</item>
     <item name="android:windowNoTitle">true</item>
   </style>
+
+  <style name="TradeHero.CarouselNavigationButton">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_centerVertical">true</item>
+    <item name="android:scaleType">fitCenter</item>
+    <item name="android:background">@drawable/basic_transparent_selector</item>
+  </style>
 </resources>
