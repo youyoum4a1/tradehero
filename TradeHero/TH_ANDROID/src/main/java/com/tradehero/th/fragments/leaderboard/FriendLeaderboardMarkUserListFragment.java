@@ -160,7 +160,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         {
             leaderboardMarkUserListView.setAdapter(null);
             leaderboardMarkUserListView.setOnItemClickListener(null);
-            leaderboardMarkUserListView.setEmptyView(null);
             leaderboardMarkUserListView = null;
         }
         if (leaderboardFriendsUserListAdapter != null)

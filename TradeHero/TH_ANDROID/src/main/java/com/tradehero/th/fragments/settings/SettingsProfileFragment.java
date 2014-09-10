@@ -128,6 +128,13 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         super.onDestroyView();
     }
 
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        detachMiddleCallbackUpdateUserProfile();
+        detachUserProfileCache();
+    }
+
     private void detachMiddleCallbackUpdateUserProfile()
     {
         if (middleCallbackUpdateUserProfile != null)
@@ -334,7 +341,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         }
         catch (ActivityNotFoundException e)
         {
-            THToast.show(R.string.error_launch_library);
+            THToast.show(R.string.error_launch_photo_library);
         }
     }
 
