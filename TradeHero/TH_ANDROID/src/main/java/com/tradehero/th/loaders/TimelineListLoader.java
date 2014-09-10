@@ -4,9 +4,9 @@ import android.content.Context;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
-import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
@@ -25,7 +25,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
     {
         super(context);
         this.userBaseKey = userBaseKey;
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     @Override public List<TimelineItemDTOKey> loadInBackground()

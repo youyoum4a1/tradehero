@@ -10,8 +10,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import javax.inject.Inject;
 
@@ -38,7 +38,7 @@ public class PositionPartialBottomInPeriodViewHolder
         super();
         this.context = context;
         ButterKnife.inject(this, container);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     public boolean isShowingInPeriod()

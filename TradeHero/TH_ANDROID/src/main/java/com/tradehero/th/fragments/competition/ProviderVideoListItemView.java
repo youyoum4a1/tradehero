@@ -11,10 +11,11 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
-public class ProviderVideoListItem extends RelativeLayout implements DTOView<HelpVideoDTO>
+public class ProviderVideoListItemView extends RelativeLayout
+        implements DTOView<HelpVideoDTO>
 {
     private HelpVideoDTO videoDTO;
     @Inject Picasso picasso;
@@ -24,26 +25,16 @@ public class ProviderVideoListItem extends RelativeLayout implements DTOView<Hel
     @InjectView(R.id.help_video_description) protected TextView description;
 
     //<editor-fold desc="Constructors">
-    public ProviderVideoListItem(Context context)
-    {
-        super(context);
-    }
-
-    public ProviderVideoListItem(Context context, AttributeSet attrs)
+    public ProviderVideoListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public ProviderVideoListItem(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         ButterKnife.inject(this);
     }
 

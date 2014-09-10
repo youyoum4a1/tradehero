@@ -15,9 +15,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareFormDTOFactory;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationFactory;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,19 +35,10 @@ public class ShareDialogLayout extends LinearLayout
     @Nullable protected AbstractDiscussionCompactDTO discussionToShare;
 
     //<editor-fold desc="Constructors">
-    public ShareDialogLayout(Context context)
-    {
-        super(context);
-    }
-
     public ShareDialogLayout(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public ShareDialogLayout(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
@@ -55,7 +46,6 @@ public class ShareDialogLayout extends LinearLayout
     protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         ButterKnife.inject(this);
     }
 
