@@ -1,13 +1,12 @@
 package com.tradehero.th.models.user.follow;
 
-import android.content.Context;
+import android.app.Activity;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -20,20 +19,22 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
 {
     @Inject protected Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject protected UserServiceWrapper userServiceWrapper;
-    @Inject protected Lazy<CurrentActivityHolder> currentActivityHolderLazy;
 
+    @NotNull private final Activity activity;
     @NotNull protected final UserBaseKey heroId;
     @Nullable private OnUserFollowedListener userFollowedListener;
 
     //<editor-fold desc="Constructors">
     public SimpleFollowUserAssistant(
+            @NotNull Activity activity,
             @NotNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener)
     {
         super();
+        this.activity = activity;
         this.heroId = heroId;
         this.userFollowedListener = userFollowedListener;
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(activity, this);
     }
     //</editor-fold>
 
@@ -67,13 +68,9 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
 
     protected void showProgress(int contentResId)
     {
-        Context currentContext = currentActivityHolderLazy.get().getCurrentContext();
-        if (currentContext != null)
-        {
-            alertDialogUtilLazy.get().showProgressDialog(
-                    currentContext,
-                    currentContext.getString(contentResId));
-        }
+        alertDialogUtilLazy.get().showProgressDialog(
+                activity,
+                activity.getString(contentResId));
     }
 
     @Override public void success(UserProfileDTO userProfileDTO, Response response)

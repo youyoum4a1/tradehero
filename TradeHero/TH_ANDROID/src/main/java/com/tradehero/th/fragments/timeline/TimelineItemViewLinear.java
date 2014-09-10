@@ -38,25 +38,15 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     @Inject THRouter thRouter;
 
     //<editor-fold desc="Constructors">
-    public TimelineItemViewLinear(Context context)
-    {
-        super(context);
-    }
-
     public TimelineItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public TimelineItemViewLinear(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
     //</editor-fold>
 
     @Override protected TimelineItemViewHolder createViewHolder()
     {
-        return new TimelineItemViewHolder<TimelineItemDTO>();
+        return new TimelineItemViewHolder<TimelineItemDTO>(getContext());
     }
 
     protected PopupMenu.OnMenuItemClickListener createMonitorPopupMenuItemClickListener()

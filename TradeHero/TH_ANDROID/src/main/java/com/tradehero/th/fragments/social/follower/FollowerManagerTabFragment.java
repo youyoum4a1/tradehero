@@ -167,7 +167,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     protected void fetchFollowers()
     {
         detachInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
+        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), createFollowerSummaryCacheListener());
         infoFetcher.fetch(this.heroId);
     }
 
@@ -296,7 +296,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             heroId = getHeroId(getArguments());
         }
         detachInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheRefreshListener());
+        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), createFollowerSummaryCacheRefreshListener());
         infoFetcher.fetch(this.heroId,true);
     }
 

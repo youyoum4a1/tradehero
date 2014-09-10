@@ -20,7 +20,6 @@ import timber.log.Timber;
 abstract public class DashboardFragment extends BaseFragment
 {
     @Inject protected AlertDialogUtil alertDialogUtil;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -58,7 +57,7 @@ abstract public class DashboardFragment extends BaseFragment
                 }
                 else
                 {
-                    resideMenuLazy.get().openMenu();
+                    //resideMenuLazy.get().openMenu();
                 }
                 return true;
 

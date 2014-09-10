@@ -10,7 +10,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -20,7 +19,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -89,7 +87,6 @@ public class PositionListFragment
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCache portfolioCache;
     @Inject UserProfileCache userProfileCache;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject @ShowAskForReviewDialog LongPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
 
@@ -764,20 +761,19 @@ public class PositionListFragment
         Double profit = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey).roiSinceInception;
         if (profit != null)
         {
-            SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolderLazy.get().getCurrentActivity();
-            if (profit > 0 && activity != null)
+            if (profit > 0)
             {
                 long lastReviewLimitTime = mShowAskForReviewDialogPreference.get();
                 if (System.currentTimeMillis() > lastReviewLimitTime)
                 {
-                    AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
+                    AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
                     mShowAskForInviteDialogPreference.set(System.currentTimeMillis()+AskForReviewDialogFragment.ONE_DAY);
                     return;
                 }
                 long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();
                 if (System.currentTimeMillis() > lastInviteLimitTime)
                 {
-                    AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
+                    AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
                 }
             }
         }

@@ -16,9 +16,9 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -50,26 +50,22 @@ public class VotePair extends LinearLayout
     }
 
     //<editor-fold desc="Constructors">
-    public VotePair(Context context)
-    {
-        super(context);
-    }
-
     public VotePair(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init(attrs);
+        init(context, attrs);
     }
 
     public VotePair(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init(attrs);
+        init(context, attrs);
     }
     //</editor-fold>
 
-    private void init(AttributeSet attrs)
+    private void init(Context context, AttributeSet attrs)
     {
+        HierarchyInjector.inject(context, this);
         if (attrs != null)
         {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.VotePair);
@@ -90,7 +86,6 @@ public class VotePair extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
     }
 
     @Override protected void onAttachedToWindow()

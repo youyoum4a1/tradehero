@@ -1,5 +1,6 @@
 package com.tradehero.th.models.user.follow;
 
+import android.app.Activity;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -33,11 +34,12 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
 
     //<editor-fold desc="Constructors">
     public FollowUserAssistant(
+            @NotNull Activity activity,
             @NotNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener,
             @NotNull OwnedPortfolioId applicablePortfolioId)
     {
-        super(heroId, userFollowedListener);
+        super(activity, heroId, userFollowedListener);
         this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>

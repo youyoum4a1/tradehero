@@ -11,7 +11,6 @@ import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.billing.samsung.exception.SamsungPaymentCancelledException;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
@@ -57,7 +56,7 @@ public class THSamsungBillingInteractor
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungBillingInteractor(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull PortfolioCompactListCache portfolioCompactListCache,
@@ -70,7 +69,7 @@ public class THSamsungBillingInteractor
     {
         super(
                 billingActor,
-                currentActivityHolder,
+                activityProvider,
                 currentUserId,
                 userProfileCache,
                 portfolioCompactListCache,
@@ -145,7 +144,7 @@ public class THSamsungBillingInteractor
     public AlertDialog popErrorWhenLoading()
     {
         AlertDialog alertDialog = null;
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(currentContext);
@@ -186,7 +185,7 @@ public class THSamsungBillingInteractor
 
     protected void showProgressFollow()
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             dismissProgressDialog();
@@ -203,7 +202,7 @@ public class THSamsungBillingInteractor
 
     protected void showProgressUnfollow()
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             progressDialog = ProgressDialog.show(
@@ -223,7 +222,7 @@ public class THSamsungBillingInteractor
         AlertDialog dialog = super.popInventoryFetchFail(requestCode, productIdentifiers, exception);
         if (dialog == null)
         {
-            Context currentContext = currentActivityHolder.getCurrentContext();
+            Context currentContext = activityProvider.get();
             if (currentContext != null)
             {
                 if (exception instanceof SamsungPaymentCancelledException)
@@ -280,7 +279,7 @@ public class THSamsungBillingInteractor
         AlertDialog dialog = super.popPurchaseFailed(requestCode, purchaseOrder, exception, restoreClickListener);
         if (dialog == null)
         {
-            Context currentContext = currentActivityHolder.getCurrentContext();
+            Context currentContext = activityProvider.get();
             if (currentContext != null)
             {
                 // TODO finer dialog
@@ -303,7 +302,7 @@ public class THSamsungBillingInteractor
             dismissProgressDialog();
             if (billingRequest.getPopRestorePurchaseOutcome())
             {
-                Context currentContext = currentActivityHolder.getCurrentContext();
+                Context currentContext = activityProvider.get();
                 Exception exception;
                 if (failExceptions != null && failExceptions.size() > 0)
                 {

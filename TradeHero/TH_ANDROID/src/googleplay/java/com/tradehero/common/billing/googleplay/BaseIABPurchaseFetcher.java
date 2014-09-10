@@ -11,11 +11,11 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.base.THApp;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -41,11 +41,11 @@ abstract public class BaseIABPurchaseFetcher<
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaseFetcher(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory,
             @NotNull IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache)
     {
-        super(currentActivityHolder, iabExceptionFactory);
+        super(activityProvider, iabExceptionFactory);
         this.purchaseCache = purchaseCache;
         purchases = new ArrayList<>();
     }
@@ -211,7 +211,7 @@ abstract public class BaseIABPurchaseFetcher<
     {
         Timber.d("Calling getPurchases with continuation token: %s", continueToken);
         IInAppBillingService billingServiceCopy = billingService;
-        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        Activity currentActivity = activityProvider.get();
         if (currentActivity == null || billingServiceCopy == null)
         {
             return null;

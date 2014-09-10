@@ -13,7 +13,7 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         thRouter.inject(this);
     }
 

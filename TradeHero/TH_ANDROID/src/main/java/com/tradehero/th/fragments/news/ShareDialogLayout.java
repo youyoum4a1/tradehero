@@ -15,7 +15,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareFormDTOFactory;
-import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationFactory;
 import com.tradehero.th.utils.DaggerUtils;

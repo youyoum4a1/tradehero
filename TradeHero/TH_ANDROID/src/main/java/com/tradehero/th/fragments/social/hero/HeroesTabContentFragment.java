@@ -359,7 +359,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     protected void unfollow(@NotNull UserBaseKey userBaseKey)
     {
         detachFollowAssistant();
-        simpleFollowUserAssistant = new SimpleFollowUserAssistant(userBaseKey, createPremiumUserFollowedListener());
+        simpleFollowUserAssistant = new SimpleFollowUserAssistant(getActivity(), userBaseKey, createPremiumUserFollowedListener());
         simpleFollowUserAssistant.launchUnFollow();
     }
 

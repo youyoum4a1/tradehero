@@ -9,7 +9,6 @@ import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -31,6 +30,7 @@ import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.client.Response;
@@ -45,7 +45,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     @NotNull final FacebookUtils facebookUtils;
     @NotNull final SocialServiceWrapper socialServiceWrapper;
     @NotNull final UserProfileCache userProfileCache;
-    @NotNull private final CurrentActivityHolder currentActivityHolder;
+    @NotNull private final Provider<Activity> activityProvider;
 
     private ProgressDialog progressDialog;
     private UserBaseKey userBaseKey;
@@ -59,14 +59,14 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
             @NotNull FacebookUtils facebookUtils,
             @NotNull SocialServiceWrapper socialServiceWrapper,
             @NotNull UserProfileCache userProfileCache,
-            @NotNull CurrentActivityHolder currentActivityHolder)
+            @NotNull Provider<Activity> activityProvider)
     {
         super(userServiceWrapper);
         this.dialogUtil = dialogUtil;
         this.facebookUtils = facebookUtils;
         this.socialServiceWrapper = socialServiceWrapper;
         this.userProfileCache = userProfileCache;
-        this.currentActivityHolder = currentActivityHolder;
+        this.activityProvider = activityProvider;
     }
     //</editor-fold>
 
@@ -88,7 +88,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         }
         else
         {
-            sendRequestDialog(currentActivityHolder.getCurrentActivity(), users);
+            sendRequestDialog(activityProvider.get(), users);
         }
         return null;
     }
@@ -100,7 +100,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
             @Override public void done(UserLoginDTO user, THException ex)
             {
                 Timber.d("login done");
-                dialogUtil.dismiss(currentActivityHolder.getCurrentContext());
+                dialogUtil.dismiss(activityProvider.get());
             }
 
             @Override public boolean onSocialAuthDone(JSONCredentials json)
@@ -112,7 +112,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                         UserFormFactory.create(json),
                         new SocialLinkingCallback());
 
-                progressDialog.setMessage(currentActivityHolder.getCurrentActivity().getString(
+                progressDialog.setMessage(activityProvider.get().getString(
                         R.string.authentication_connecting_tradehero,
                         SocialNetworkEnum.FB.getName()));
                 return false;
@@ -121,10 +121,10 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
             @Override public void onStart()
             {
                 Timber.d("login onStart");
-                progressDialog = dialogUtil.show(currentActivityHolder.getCurrentContext(), null, null);
+                progressDialog = dialogUtil.show(activityProvider.get(), null, null);
             }
         };
-        facebookUtils.logIn(currentActivityHolder.getCurrentActivity(), socialNetworkCallback);
+        facebookUtils.logIn(activityProvider.get(), socialNetworkCallback);
     }
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
@@ -134,7 +134,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
             userProfileCache.put(userBaseKey, userProfileDTO);
             if(Session.getActiveSession()!=null)
             {
-                sendRequestDialog(currentActivityHolder.getCurrentActivity(), users);
+                sendRequestDialog(activityProvider.get(), users);
             }
         }
 

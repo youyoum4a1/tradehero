@@ -18,25 +18,15 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemDTOKey>
 {
     //<editor-fold desc="Constructors">
-    public NewsViewLinear(Context context)
-    {
-        super(context);
-    }
-
     public NewsViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public NewsViewLinear(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
     //</editor-fold>
 
     @Override protected NewsItemViewHolder createViewHolder()
     {
-        return new NewsItemViewHolder<NewsItemDTO>();
+        return new NewsItemViewHolder<NewsItemDTO>(getContext());
     }
 
     public void setTitleBackground(int resId)

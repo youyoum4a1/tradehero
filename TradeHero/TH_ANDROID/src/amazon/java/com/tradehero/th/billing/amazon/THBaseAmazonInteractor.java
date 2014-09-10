@@ -17,7 +17,6 @@ import com.tradehero.common.billing.amazon.exception.AmazonPurchaseCanceledExcep
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedException;
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
@@ -63,7 +62,7 @@ public class THBaseAmazonInteractor
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonInteractor(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull PortfolioCompactListCache portfolioCompactListCache,
@@ -76,7 +75,7 @@ public class THBaseAmazonInteractor
     {
         super(
                 billingActor,
-                currentActivityHolder,
+                activityProvider,
                 currentUserId,
                 userProfileCache,
                 portfolioCompactListCache,
@@ -154,7 +153,7 @@ public class THBaseAmazonInteractor
     public AlertDialog popErrorWhenLoading()
     {
         AlertDialog alertDialog = null;
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(currentContext);
@@ -195,7 +194,7 @@ public class THBaseAmazonInteractor
 
     protected void showProgressFollow()
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             dismissProgressDialog();
@@ -212,7 +211,7 @@ public class THBaseAmazonInteractor
 
     protected void showProgressUnfollow()
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             progressDialog = ProgressDialog.show(
@@ -232,7 +231,7 @@ public class THBaseAmazonInteractor
         AlertDialog dialog = super.popInventoryFetchFail(requestCode, productIdentifiers, exception);
         if (dialog == null)
         {
-            Context currentContext = currentActivityHolder.getCurrentContext();
+            Context currentContext = activityProvider.get();
             if (currentContext != null)
             {
                 if (exception instanceof AmazonFetchInventoryFailedException)
@@ -299,7 +298,7 @@ public class THBaseAmazonInteractor
         AlertDialog dialog = super.popPurchaseFailed(requestCode, purchaseOrder, exception, restoreClickListener);
         if (dialog == null)
         {
-            Context currentContext = currentActivityHolder.getCurrentContext();
+            Context currentContext = activityProvider.get();
             if (currentContext != null)
             {
                 if (exception instanceof AmazonPurchaseCanceledException)
@@ -351,7 +350,7 @@ public class THBaseAmazonInteractor
             dismissProgressDialog();
             if (billingRequest.getPopRestorePurchaseOutcome())
             {
-                Context currentContext = currentActivityHolder.getCurrentContext();
+                Context currentContext = activityProvider.get();
                 Exception exception;
                 if (failExceptions != null && failExceptions.size() > 0)
                 {

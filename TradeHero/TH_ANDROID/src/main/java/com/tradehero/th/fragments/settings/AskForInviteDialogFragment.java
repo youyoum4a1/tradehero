@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import butterknife.OnClick;
 import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
@@ -25,7 +24,6 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
     static public long ONE_MIN = 60*1000;
 
     @Inject AlertDialogUtil alertDialogUtil;
-    @Inject CurrentActivityHolder currentActivityHolder;
     @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
 
     public static AskForInviteDialogFragment showInviteDialog(FragmentManager fragmentManager)
@@ -72,7 +70,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
 
     private void pushInvitationFragment()
     {
-        DashboardNavigatorActivity activity = (DashboardNavigatorActivity)currentActivityHolder.getCurrentActivity();
+        DashboardNavigatorActivity activity = (DashboardNavigatorActivity) getActivity();
         if (activity != null)
         {
             DashboardNavigator navigator = activity.getDashboardNavigator();

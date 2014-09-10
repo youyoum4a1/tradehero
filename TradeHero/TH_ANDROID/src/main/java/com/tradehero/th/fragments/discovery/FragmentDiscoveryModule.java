@@ -17,6 +17,6 @@ import dagger.Module;
         library = true,
         complete = false
 )
-public class DiscoveryModule
+public class FragmentDiscoveryModule
 {
 }

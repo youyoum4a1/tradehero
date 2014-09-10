@@ -1,13 +1,14 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.app.Activity;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaser;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -26,11 +27,11 @@ public class THBaseIABPurchaser
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABPurchaser(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory,
             @NotNull Lazy<THIABProductDetailCache> skuDetailCache)
     {
-        super(currentActivityHolder,
+        super(activityProvider,
                 iabExceptionFactory);
         this.skuDetailCache = skuDetailCache;
     }

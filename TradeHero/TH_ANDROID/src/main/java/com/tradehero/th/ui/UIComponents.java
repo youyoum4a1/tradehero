@@ -1,7 +1,6 @@
 package com.tradehero.th.ui;
 
 import com.special.residemenu.ResideMenu;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardResideMenu;
 import dagger.Module;
 import dagger.Provides;
@@ -9,7 +8,6 @@ import javax.inject.Singleton;
 
 @Module(
         injects = {
-                DashboardActivity.class
         },
         complete = false,
         library = true

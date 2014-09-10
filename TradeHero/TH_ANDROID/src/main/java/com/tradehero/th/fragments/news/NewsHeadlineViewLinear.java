@@ -26,25 +26,15 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     private int backgroundResourceId = -1;
 
     //<editor-fold desc="Constructors">
-    public NewsHeadlineViewLinear(Context context)
-    {
-        super(context);
-    }
-
     public NewsHeadlineViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public NewsHeadlineViewLinear(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
     //</editor-fold>
 
     @Override protected NewsItemCompactViewHolder createViewHolder()
     {
-        return new NewsItemCompactViewHolder<NewsItemCompactDTO>();
+        return new NewsItemCompactViewHolder<NewsItemCompactDTO>(getContext());
     }
 
     @Override public void display(NewsItemDTOKey discussionKey)

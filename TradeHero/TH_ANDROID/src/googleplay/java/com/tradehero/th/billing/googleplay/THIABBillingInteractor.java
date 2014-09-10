@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Handler;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
@@ -23,7 +22,6 @@ import com.tradehero.common.billing.googleplay.exception.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exception.IABUserCancelledException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
@@ -42,6 +40,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -74,7 +73,7 @@ import timber.log.Timber;
     //<editor-fold desc="Constructors">
     @Inject public THIABBillingInteractor(
             @NotNull THIABLogicHolder billingActor,
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull PortfolioCompactListCache portfolioCompactListCache,
@@ -87,7 +86,7 @@ import timber.log.Timber;
     {
         super(
                 billingActor,
-                currentActivityHolder,
+                activityProvider,
                 currentUserId,
                 userProfileCache,
                 portfolioCompactListCache,
@@ -160,7 +159,7 @@ import timber.log.Timber;
     public AlertDialog popErrorWhenLoading()
     {
         AlertDialog alertDialog = null;
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(currentContext);
@@ -201,7 +200,7 @@ import timber.log.Timber;
 
     protected void showProgressFollow()
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             dismissProgressDialog();
@@ -218,7 +217,7 @@ import timber.log.Timber;
 
     protected void showProgressUnfollow()
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             progressDialog = ProgressDialog.show(
@@ -238,7 +237,7 @@ import timber.log.Timber;
         {
             if (uiBillingRequest.getManageSubscriptions())
             {
-                Activity currentActivity = currentActivityHolder.getCurrentActivity();
+                Activity currentActivity = activityProvider.get();
                 if (currentActivity != null)
                 {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(IABConstants.GOOGLE_PLAY_ACCOUNT_URL));
@@ -260,7 +259,7 @@ import timber.log.Timber;
         AlertDialog dialog = super.popInventoryFetchFail(requestCode, productIdentifiers, exception);
         if (dialog == null)
         {
-            Context currentContext = currentActivityHolder.getCurrentContext();
+            Context currentContext = activityProvider.get();
             if (currentContext != null)
             {
                 if (exception instanceof IABUserCancelledException)
@@ -327,7 +326,7 @@ import timber.log.Timber;
         AlertDialog dialog = super.popPurchaseFailed(requestCode, purchaseOrder, exception, restoreClickListener);
         if (dialog == null)
         {
-            Context currentContext = currentActivityHolder.getCurrentContext();
+            Context currentContext = activityProvider.get();
             if (currentContext != null)
             {
                 if (exception instanceof IABVerificationFailedException)
@@ -384,7 +383,7 @@ import timber.log.Timber;
             dismissProgressDialog();
             if (billingRequest.getPopRestorePurchaseOutcome())
             {
-                Context currentContext = currentActivityHolder.getCurrentContext();
+                Context currentContext = activityProvider.get();
                 Exception exception;
                 if (failExceptions != null && failExceptions.size() > 0)
                 {
@@ -435,32 +434,25 @@ import timber.log.Timber;
         if (dialog != null)
         {
             dialog.setTitle(R.string.store_billing_report_api_finishing_window_title);
-            Context currentContext = currentActivityHolder.getCurrentContext();
+            Context currentContext = activityProvider.get();
             if (currentContext != null)
             {
                 dialog.setMessage(currentContext.getString(R.string.store_billing_report_api_finishing_window_title));
             }
         }
 
-        Handler handler = currentActivityHolder.getCurrentHandler();
-        if (handler != null)
+        // TODO post delay 1.5s?
+        activityProvider.get().runOnUiThread(new Runnable()
         {
-            handler.postDelayed(new Runnable()
+            @Override public void run()
             {
-                @Override public void run()
+                ProgressDialog dialog = progressDialog;
+                if (dialog != null)
                 {
-                    ProgressDialog dialog = progressDialog;
-                    if (dialog != null)
-                    {
-                        dialog.hide();
-                    }
+                    dialog.hide();
                 }
-            }, 1500);
-        }
-        else
-        {
-            Timber.w("Handler is null");
-        }
+            }
+        });
     }
 
     protected void notifyPurchaseConsumed(int requestCode, THIABPurchase purchase)
@@ -515,7 +507,7 @@ import timber.log.Timber;
 
     protected AlertDialog popPurchaseConsumeFailed(int requestCode, THIABPurchase purchase, IABException exception)
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             return ((THIABAlertDialogUtil) billingAlertDialogUtil).popOfferSendEmailSupportConsumeFailed(currentContext, exception);

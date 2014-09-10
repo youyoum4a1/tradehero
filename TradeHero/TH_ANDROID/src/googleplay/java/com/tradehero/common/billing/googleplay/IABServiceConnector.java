@@ -11,10 +11,10 @@ import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
@@ -25,7 +25,7 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
     public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
     public final static int TARGET_BILLING_API_VERSION3 = 3;
 
-    @NotNull protected final CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final Provider<Activity> activityProvider;
     @NotNull protected final Lazy<IABExceptionFactory> iabExceptionFactory;
 
     @Nullable protected IInAppBillingService billingService;
@@ -38,10 +38,10 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
 
     //<editor-fold desc="Constructors">
     @Inject public IABServiceConnector(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        this.currentActivityHolder = currentActivityHolder;
+        this.activityProvider = activityProvider;
         this.iabExceptionFactory = iabExceptionFactory;
     }
     //</editor-fold>
@@ -63,8 +63,8 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
         if (isServiceAvailable(serviceIntent))
         {
             // service available to handle that Intent
-            ComponentName myService = currentActivityHolder.getCurrentActivity().startService(serviceIntent);
-            currentActivityHolder.getCurrentActivity().bindService(serviceIntent, this, Context.BIND_AUTO_CREATE);
+            ComponentName myService = activityProvider.get().startService(serviceIntent);
+            activityProvider.get().bindService(serviceIntent, this, Context.BIND_AUTO_CREATE);
         }
         else
         {
@@ -83,7 +83,7 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
 
     protected boolean isServiceAvailable(Intent serviceIntent)
     {
-        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        Activity currentActivity = activityProvider.get();
         if (currentActivity == null)
         {
             Timber.e(new NullPointerException("Activity was null"), "When testing if Service is Available");
@@ -101,21 +101,17 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
     {
         Timber.d("Disposing this %s", ((Object) this).getClass().getSimpleName());
         setupDone = false;
-        CurrentActivityHolder holderCopy = currentActivityHolder;
-        if (holderCopy != null)
+        try
         {
-            try
+            Activity currentActivity = activityProvider.get();
+            if (currentActivity != null)
             {
-                Activity currentActivity = holderCopy.getCurrentActivity();
-                if (currentActivity != null)
-                {
-                    currentActivity.unbindService(this);
-                }
+                currentActivity.unbindService(this);
             }
-            catch (IllegalArgumentException e)
-            {
-                Timber.d("It happened that we had not bound the service yet. Not to worry");
-            }
+        }
+        catch (IllegalArgumentException e)
+        {
+            Timber.d("It happened that we had not bound the service yet. Not to worry");
         }
         disposed = true;
         billingService = null;
@@ -166,7 +162,7 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
             subscriptionSupported = false;
             throw iabExceptionFactory.get().create(responseStatus, "Error checking for billing v3 support.");
         }
-        Timber.d("In-app billing version 3 supported for " + currentActivityHolder.getCurrentActivity().getPackageName());
+        Timber.d("In-app billing version 3 supported for " + activityProvider.get().getPackageName());
 
         // check for v3 subscriptions support
         responseStatus = purchaseTypeSupportStatus(IABConstants.ITEM_TYPE_SUBS);
@@ -193,7 +189,7 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
     protected int purchaseTypeSupportStatus(String itemType) throws RemoteException
     {
         return billingService.isBillingSupported(TARGET_BILLING_API_VERSION3,
-                currentActivityHolder.getCurrentActivity().getPackageName(), itemType);
+                activityProvider.get().getPackageName(), itemType);
     }
 
     protected void checkNotDisposed()

@@ -14,10 +14,10 @@ import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,27 +34,16 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     private DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchListener;
 
     //<editor-fold desc="Constructors">
-    public AbstractDiscussionCompactItemViewLinear(Context context)
-    {
-        super(context);
-    }
-
     public AbstractDiscussionCompactItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public AbstractDiscussionCompactItemViewLinear(Context context, AttributeSet attrs,
-            int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         if (!isInEditMode())
         {
             discussionFetchListener = createDiscussionFetchListener();
@@ -92,7 +81,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
 
     protected AbstractDiscussionCompactItemViewHolder createViewHolder()
     {
-        return new AbstractDiscussionCompactItemViewHolder<AbstractDiscussionCompactDTO>();
+        return new AbstractDiscussionCompactItemViewHolder<AbstractDiscussionCompactDTO>(getContext());
     }
 
     @Override public void display(T discussionKey)

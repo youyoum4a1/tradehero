@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.news;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +48,10 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     protected SecurityMultiFetchAssistant.OnInfoFetchedListener<SecurityIntegerId, SecurityCompactDTO> multiFetchListener;
 
     //<editor-fold desc="Constructors">
-    public NewsItemViewHolder()
+
+    public NewsItemViewHolder(Context context)
     {
-        super();
+        super(context);
     }
     //</editor-fold>
 
