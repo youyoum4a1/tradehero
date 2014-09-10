@@ -59,7 +59,7 @@ android {
     targetSdkVersion 19
 
     versionCode project.ext.versionBuild
-    versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
+    versionName "${project.ext.versionMajor}.${project.ext.versionMinor}"//.${project.ext.versionPatch}"
 
     buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
     buildConfigField "String", "BUILD_TIME", "\"${project.ext.buildTime}\""
