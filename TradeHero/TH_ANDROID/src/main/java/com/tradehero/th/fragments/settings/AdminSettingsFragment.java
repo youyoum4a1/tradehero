@@ -145,7 +145,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-//                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolder.getCurrentActivity();
+//                SherlockFragmentActivity activityversion.properties = (SherlockFragmentActivity) currentActivityHolder.getCurrentActivity();
                 OnBoardDialogFragment.showOnBoardDialog(getActivity().getSupportFragmentManager());
                 return true;
             }
