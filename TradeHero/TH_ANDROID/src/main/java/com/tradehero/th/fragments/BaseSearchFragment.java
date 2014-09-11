@@ -10,6 +10,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.R;
@@ -21,11 +22,13 @@ abstract public class BaseSearchFragment<
         PagedDTOKeyType extends DTOKey, // But it also needs to be a PagedDTOKey
         DTOType extends DTO,
         DTOListType extends DTO & List<DTOType>,
+        ContainerDTOType extends DTO & ContainerDTO<DTOType, DTOListType>,
         ViewType extends View & DTOView<DTOType>>
         extends BasePagedListFragment<
         PagedDTOKeyType,
         DTOType,
         DTOListType,
+        ContainerDTOType,
         ViewType>
 {
     private final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = BaseSearchFragment.class.getName() + ".currentSearchString";

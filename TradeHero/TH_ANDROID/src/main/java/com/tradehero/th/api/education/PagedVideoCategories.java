@@ -16,7 +16,6 @@ public class PagedVideoCategories implements DTOKey, PagedDTOKey
 
     //<editor-fold desc="Constructors">
     public PagedVideoCategories(
-            @NotNull Integer id,
             @Nullable Integer page,
             @Nullable Integer perPage)
     {

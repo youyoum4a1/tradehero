@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.education;
 
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
-import com.tradehero.th.api.education.PagedVideoCategoryId;
 import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.network.service.VideoServiceWrapper;
@@ -12,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Singleton public class PaginatedVideoCache extends StraightCutDTOCacheNew<VideoCategoryId, PaginatedVideoDTO, PaginatedVideoId>
 {
-    private static final int DEFAULT_MAX_SIZE = 20;
+    private static final int DEFAULT_MAX_SIZE = 50;
 
     @NotNull private final VideoCache videoCache;
     @NotNull private final VideoServiceWrapper videoServiceWrapper;
@@ -50,5 +49,10 @@ import org.jetbrains.annotations.Nullable;
             return null;
         }
         return inflated;
+    }
+
+    @Nullable @Override public PaginatedVideoDTO get(@NotNull VideoCategoryId key)
+    {
+        return super.get(key);
     }
 }

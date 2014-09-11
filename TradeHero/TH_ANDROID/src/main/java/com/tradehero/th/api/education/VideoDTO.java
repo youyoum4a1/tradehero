@@ -8,6 +8,8 @@ public class VideoDTO implements DTO
     public int id;
     public String name;
     public String url;
+    public String thumbnail;
+    public boolean locked;
 
     @NotNull public VideoId getVideoId()
     {

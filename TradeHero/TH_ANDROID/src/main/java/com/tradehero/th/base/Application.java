@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -80,6 +81,7 @@ public class Application extends PApplication
                 FriendsInvitationFragment.class,
                 SettingsFragment.class,
                 MainCompetitionFragment.class,
+                ProviderVideoListFragment.class,
                 BuySellFragment.class,
                 StoreScreenFragment.class,
                 LeaderboardCommunityFragment.class,

@@ -33,6 +33,9 @@ import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
+import com.tradehero.th.fragments.education.VideoCategoriesFragment;
+import com.tradehero.th.fragments.education.VideoCategoryView;
+import com.tradehero.th.fragments.education.VideoView;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.home.HomeWebView;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
@@ -386,6 +389,9 @@ import javax.inject.Singleton;
                         HomeFragment.class,
                         HomeWebView.class,
                         GuideActivity.class,
+                        VideoCategoriesFragment.class,
+                        VideoCategoryView.class,
+                        VideoView.class,
                 },
         staticInjections =
                 {

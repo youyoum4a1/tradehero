@@ -1,9 +1,8 @@
 package com.tradehero.th.fragments.competition;
 
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,19 +19,23 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.WebViewActivity;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.competition.HelpVideoCache;
 import com.tradehero.th.persistence.competition.HelpVideoListCache;
-import java.net.URLEncoder;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
+@Routable(
+        "providers/:providerId/helpVideos"
+)
 public class ProviderVideoListFragment extends CompetitionFragment
 {
     @Inject HelpVideoListCache helpVideoListCache;
@@ -171,60 +174,25 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private void launchVideo(@NotNull HelpVideoDTO videoDTO)
     {
-        try
-        {
-            openVideoInChromeBrowser(videoDTO);
-        }
-        catch (ActivityNotFoundException e)
-        {
-            Timber.e("Failed to start Chrome Browser", e);
-            // TODO In the vague hope it will work
-            openVideoWithInApp(videoDTO);
-        }
-
-        // openVideoWithInApp(videoDTO);
+        openWithDefaultApp(videoDTO);
     }
 
-    /**
-     * We have problem outOfMemory with this way, don't use it
-     * @param cachedHelpVideo
-     */
-    private void openVideoWithInApp(HelpVideoDTO cachedHelpVideo)
+    private void openWithDefaultApp(HelpVideoDTO helpVideoDTO)
     {
-        Intent intent = new Intent(getActivity(), WebViewActivity.class);
-        intent.putExtra(WebViewActivity.HTML_DATA, cachedHelpVideo.embedCode);
-        startActivity(intent);
-    }
-
-    private void openVideoInChromeBrowser(HelpVideoDTO cachedHelpVideo) throws ActivityNotFoundException
-    {
-        Intent i = new Intent();
-
-        i.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
-        i.setAction(Intent.ACTION_VIEW);
-
-        String dataUri = "data:text/html," + URLEncoder.encode(cachedHelpVideo.embedCode).replaceAll("\\+","%20");
-        i.setData(Uri.parse(dataUri));
-
-        startActivity(i);
-    }
-
-    private void openVideoInExternalPlayer(HelpVideoDTO cachedHelpVideo)
-    {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, cachedHelpVideo.embedCode);
-        intent.putExtra(Intent.EXTRA_HTML_TEXT, cachedHelpVideo.embedCode);
-        intent.setType("text/html");
-
-        if (getActivity().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
+        Uri url = Uri.parse(helpVideoDTO.videoUrl);
+        Intent videoIntent = new Intent(Intent.ACTION_VIEW, url);
+        PackageManager packageManager = getActivity().getPackageManager();
+        List<ResolveInfo> handlerActivities = packageManager.queryIntentActivities(videoIntent, 0);
+        if (handlerActivities.size() > 0)
         {
-            Timber.d("There is no package that can play the video for id %d, dto %s", cachedHelpVideo.getHelpVideoId(), cachedHelpVideo);
-            THToast.show(R.string.error_help_video_no_package_available_to_play);
-            return;
+            getActivity().startActivity(videoIntent);
         }
-
-        Timber.d("Launching video intent on %s", cachedHelpVideo.embedCode);
-        startActivity(intent);
+        else
+        {
+            Bundle bundle = new Bundle();
+            WebViewFragment.putUrl(bundle, helpVideoDTO.videoUrl);
+            getDashboardNavigator().pushFragment(WebViewFragment.class, bundle);
+        }
     }
 
     protected DTOCacheNew.Listener<HelpVideoListKey, HelpVideoDTOList> createVideoListCacheListener()

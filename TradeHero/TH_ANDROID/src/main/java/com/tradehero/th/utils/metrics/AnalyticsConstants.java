@@ -7,6 +7,7 @@ public class AnalyticsConstants
     public static final String TabBar_Trade = "TabBar/Trade";
     public static final String TabBar_Trending = "TabBar/Trending";
     public static final String TabBar_Community = "TabBar/Community";
+    public static final String TabBar_Academy = "TabBar/Academy";
     public static final String TabBar_Portfolio = "TabBar/Portfolio";
     public static final String TabBar_Store = "TabBar/Store";
     public static final String TabBar_Settings = "TabBar/Settings";

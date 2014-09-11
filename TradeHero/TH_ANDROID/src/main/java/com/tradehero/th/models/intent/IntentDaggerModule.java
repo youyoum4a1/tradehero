@@ -29,7 +29,7 @@ public class IntentDaggerModule
     @Provides(type = Provides.Type.SET)
     THIntentFactory provideTrendingIntentFactory(ProviderIntentFactory factory)
     {
-        return factory;
+        return null;
     }
     @Provides(type = Provides.Type.SET)
     THIntentFactory provideTrendingIntentFactory(SecurityIntentFactory factory)
