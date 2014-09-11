@@ -26,6 +26,7 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
 
     protected UserProfileDTO currentUserProfileDTO;
     protected LeaderboardFriendsItemView.OnFollowRequestedListener followRequestedListener;
+    protected LeaderboardMarkUserItemView.OnFollowRequestedListener markFollowRequestedListener;
 
     public LeaderboardFriendsListAdapter(Context context, int markedLayoutResId, int socialLayoutResId)
     {
@@ -106,6 +107,7 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
             ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK
             ((LeaderboardMarkUserItemView) convertView).display(((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO);
             ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
+            ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(markFollowRequestedListener);
             final View expandingLayout = convertView.findViewById(R.id.expanding_layout);
             if (expandingLayout != null)
             {
@@ -150,5 +152,10 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
     public void setFollowRequestedListener(LeaderboardFriendsItemView.OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
+    }
+
+    public void setMarkFollowRequestedListener(LeaderboardMarkUserItemView.OnFollowRequestedListener markFollowRequestedListener)
+    {
+        this.markFollowRequestedListener = markFollowRequestedListener;
     }
 }
