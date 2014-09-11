@@ -141,7 +141,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onDetach()
     {
-        setActionBarSubtitle(null);
         super.onDetach();
     }
 
@@ -153,6 +152,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onDestroyView()
     {
+        setActionBarSubtitle(null);
         detachMessageHeaderFetchTask();
         detachUserProfileTask();
         ButterKnife.reset(this);
