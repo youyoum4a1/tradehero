@@ -43,6 +43,7 @@ public class UserLevelProgressBar extends RelativeLayout
     private int mCurrentXP = -1;
     private UserLevelProgressBarListener userLevelProgressBarListener;
 
+    private float mMsPerXP = MS_PER_XP;
     private AnimatorSet mAnimatorSet;
     private long mMsDelay;
     private LevelDefDTO mCurrentLevelDTO;
@@ -152,7 +153,15 @@ public class UserLevelProgressBar extends RelativeLayout
         nextLevelLabel.setVisibility(View.GONE);
     }
 
-    public void setStartDelayOnLevelUp(long msDelay)
+    public void setMsPerXp(float mMsPerXP)
+    {
+        if (mMsPerXP > 0)
+        {
+            this.mMsPerXP = mMsPerXP;
+        }
+    }
+
+    public void setPauseDurationWhenLevelUp(long msDelay)
     {
         if (msDelay > 0)
         {
@@ -166,6 +175,10 @@ public class UserLevelProgressBar extends RelativeLayout
         {
             throw new RuntimeException("Must call startsWith before calling increment!");
         }
+
+        int duration = getResources().getInteger(R.integer.user_level_progress_bar_xp_increase_duration);
+        float msPerXP = ((float) duration / (float) xpGained);
+        setMsPerXp(msPerXP);
 
         List<Animator> animators = getAnimatorQueue(xpGained);
         if (mAnimatorSet != null)
@@ -321,7 +334,7 @@ public class UserLevelProgressBar extends RelativeLayout
 
     private long getAnimationDuration(long startProgress, long endProgress)
     {
-        long diff = (endProgress - startProgress) * MS_PER_XP;
+        long diff = ((long) ((endProgress - startProgress) * mMsPerXP));
         if (diff < 0)
         {
             diff = 0;
