@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
@@ -152,10 +151,10 @@ public class PreferenceModule
         return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, true);
     }
 
-    @Provides @Singleton @ShowAskForReviewDialog LongPreference provideAskForReviewDialogPreference(
+    @Provides @Singleton @ShowAskForReviewDialog TimingIntervalPreference provideAskForReviewDialogPreference(
             @ForApp SharedPreferences sharedPreferences)
     {
-        return new LongPreference(sharedPreferences, PREF_SHOW_ASK_FOR_REVIEW_FLAG, 0);
+        return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_ASK_FOR_REVIEW_FLAG, TimingIntervalPreference.YEAR);
     }
 
     @Provides @Singleton @FirstShowInviteCodeDialog BooleanPreference provideFirstShowInviteCodeDialogPreference(
@@ -166,15 +165,12 @@ public class PreferenceModule
 
     @Provides @Singleton @FirstShowOnBoardDialog TimingIntervalPreference provideFirstShowOnBoardDialogTimingPreference(
             @ForApp SharedPreferences sharedPreferences) {
-        return new TimingIntervalPreference(
-                sharedPreferences,
-                PREF_FIRST_SHOW_ON_BOARD_FLAG,
-                1 * TimingIntervalPreference.MONTH);
+        return new TimingIntervalPreference(sharedPreferences, PREF_FIRST_SHOW_ON_BOARD_FLAG, TimingIntervalPreference.MONTH);
     }
 
-    @Provides @Singleton @ShowAskForInviteDialog LongPreference provideAskForInviteDialogPreference(
+    @Provides @Singleton @ShowAskForInviteDialog TimingIntervalPreference provideAskForInviteDialogPreference(
             @ForApp SharedPreferences sharedPreferences)
     {
-        return new LongPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_FLAG, 0);
+        return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_FLAG, TimingIntervalPreference.WEEK);
     }
 }

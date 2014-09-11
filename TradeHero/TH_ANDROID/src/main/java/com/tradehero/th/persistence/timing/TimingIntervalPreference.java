@@ -1,7 +1,9 @@
 package com.tradehero.th.persistence.timing;
 
 import android.content.SharedPreferences;
+
 import com.tradehero.common.persistence.prefs.LongPreference;
+
 import org.jetbrains.annotations.NotNull;
 
 public class TimingIntervalPreference extends LongPreference
@@ -41,5 +43,10 @@ public class TimingIntervalPreference extends LongPreference
     public void pushInFuture(long byDuration)
     {
         set(System.currentTimeMillis() + byDuration);
+    }
+
+    public void addInFuture(long byDuration)
+    {
+        set(get() + byDuration);
     }
 }

@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -36,6 +35,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 
 import org.jetbrains.annotations.NotNull;
@@ -76,7 +76,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
-    @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
+    @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
 
     @NotNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
@@ -97,9 +97,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         socialFriendHandler = socialFriendHandlerProvider.get();
         socialFriendHandlerFacebook = facebookSocialFriendHandlerProvider.get();
-        //TODO will refactor this later by alex
-        long year = (long)365*24*60*60*1000;
-        mShowAskForInviteDialogPreference.set(System.currentTimeMillis()+year);
+        mShowAskForInviteDialogPreference.pushInFuture(TimingIntervalPreference.YEAR);
     }
 
     @Override

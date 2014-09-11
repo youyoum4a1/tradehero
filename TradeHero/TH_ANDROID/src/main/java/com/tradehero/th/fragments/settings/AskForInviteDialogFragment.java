@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -15,7 +14,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 
 import javax.inject.Inject;
 
@@ -23,13 +22,8 @@ import butterknife.OnClick;
 
 public class AskForInviteDialogFragment extends BaseDialogFragment
 {
-    static public long ONE_YEAR = (long)365*24*60*60*1000;
-    static public long ONE_MONTH = (long)30*24*60*60*1000;
-    static public long ONE_MIN = 60*1000;
-
-    @Inject AlertDialogUtil alertDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
-    @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
+    @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
 
     public static AskForInviteDialogFragment showInviteDialog(FragmentManager fragmentManager)
     {
@@ -43,7 +37,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
         setCancelable(false);
-        mShowAskForInviteDialogPreference.set(System.currentTimeMillis() + ONE_MIN);
+        mShowAskForInviteDialogPreference.pushInFuture(TimingIntervalPreference.MINUTE);
     }
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -62,7 +56,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
     public void onCancel()
     {
         dismiss();
-        mShowAskForInviteDialogPreference.set((long)System.currentTimeMillis() + ONE_MONTH);
+        mShowAskForInviteDialogPreference.pushInFuture(TimingIntervalPreference.MONTH);
     }
 
     @OnClick(R.id.btn_invite)
@@ -70,7 +64,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
     {
         pushInvitationFragment();
         dismiss();
-        mShowAskForInviteDialogPreference.set((long)System.currentTimeMillis() + ONE_YEAR);
+        mShowAskForInviteDialogPreference.pushInFuture(TimingIntervalPreference.YEAR);
     }
 
     private void pushInvitationFragment()
