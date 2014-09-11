@@ -26,8 +26,8 @@ public class QuoteDTO
     public int securityId;
 
     @Nullable public Date asOfUtc;
-    public Double bid;
-    public Double ask;
+    @Nullable public Double bid;
+    @Nullable public Double ask;
 
     public String currencyISO;
     public String currencyDisplay;
