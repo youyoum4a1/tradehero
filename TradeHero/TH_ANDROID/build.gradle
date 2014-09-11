@@ -443,8 +443,9 @@ preBuild.dependsOn(reorderDependencyToFixJunit4Issue)
 project.afterEvaluate {
   println("afterEvaluate")
   tasks.each { theTask ->
-    if (theTask.name.matches("assemble.+Debug")
-    || theTask.name.matches("assemble.+Release"))
+    if (project.ext.isIntelliJ
+      && (theTask.name.matches("assemble.+Debug")
+        || theTask.name.matches("assemble.+Release")))
     {
       println("Adding a version build bump to task " + theTask.name)
       theTask.doLast {
