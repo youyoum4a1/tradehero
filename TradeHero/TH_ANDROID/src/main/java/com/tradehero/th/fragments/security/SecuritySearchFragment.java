@@ -13,7 +13,6 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.BaseSearchFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -93,8 +92,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
     {
         super.handleDtoClicked(clicked);
 
-        if (getArguments() != null && getArguments().containsKey(
-                Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
+        if (getArguments() != null && getArguments().containsKey(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT))
         {
             navigator.popFragment();
             return;

@@ -21,7 +21,6 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
@@ -316,7 +315,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             return providerId;
         }
 
-        @Override protected Navigator getNavigator()
+        @Override protected DashboardNavigator getNavigator()
         {
             return navigator;
         }

@@ -11,7 +11,6 @@ import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.BaseSearchFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -93,7 +92,7 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         super.handleDtoClicked(clicked);
 
         if (getArguments() != null && getArguments().containsKey(
-                Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
+                DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT))
         {
             navigator.popFragment();
             return;
