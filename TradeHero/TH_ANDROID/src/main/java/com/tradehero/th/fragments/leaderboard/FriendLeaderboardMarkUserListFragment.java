@@ -1,10 +1,10 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -12,6 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import com.actionbarsherlock.view.MenuItem;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -20,14 +21,21 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.social.FollowDialogCombo;
+import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
+import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
+import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -49,6 +57,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCache leaderboardFriendsCache;
+    @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
+
+    protected FollowDialogCombo followDialogCombo;
+    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -66,7 +78,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                     R.layout.lbmu_item_roi_mode,
                     R.layout.leaderboard_friends_social_item_view);
             leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
-            leaderboardFriendsUserListAdapter.setMarkFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
+            leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
             leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
             leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
         }
@@ -152,6 +164,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public void onStop()
     {
         detachLeaderboardFriendsCacheListener();
+        detachFollowDialogCombo();
+        detachChoiceFollowAssistant();
         super.onStop();
     }
 
@@ -187,6 +201,26 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     private void detachLeaderboardFriendsCacheListener()
     {
         leaderboardFriendsCache.unregister(leaderboardFriendsKeyDTOListener);
+    }
+
+    protected void detachFollowDialogCombo()
+    {
+        FollowDialogCombo followDialogComboCopy = followDialogCombo;
+        if (followDialogComboCopy != null)
+        {
+            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
+        }
+        followDialogCombo = null;
+    }
+
+    protected void detachChoiceFollowAssistant()
+    {
+        ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
+        if (copy != null)
+        {
+            copy.onDestroy();
+        }
+        choiceFollowUserAssistantWithDialog = null;
     }
 
     protected View inflateEmptyView(@NotNull LayoutInflater inflater, ViewGroup container)
@@ -230,18 +264,12 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     }
 
     protected class LeaderboardMarkUserListFollowRequestedListener
-            implements LeaderboardFriendsItemView.OnFollowRequestedListener,
-                LeaderboardMarkUserItemView.OnFollowRequestedListener
+            implements LeaderboardMarkUserItemView.OnFollowRequestedListener
 
     {
-        @Override public void onFollowRequested(UserBaseKey userBaseKey)
-        {
-            handleFollowRequested(userBaseKey);
-        }
-
         @Override public void onFollowRequested(UserBaseDTO userBaseDTO)
         {
-            onFollowRequested(userBaseDTO.getBaseKey());
+            handleFollowRequested(userBaseDTO);
         }
     }
 
@@ -263,21 +291,55 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         }
     }
 
-    protected void handleFollowRequested(@NotNull final UserBaseKey userBaseKey)
+    protected void handleFollowRequested(@NotNull final UserBaseDTO userBaseDTO)
     {
-        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
-        {
-            @Override public void onClick(DialogInterface dialog, int which)
-            {
-                premiumFollowUser(userBaseKey);
-            }
-        });
+        detachChoiceFollowAssistant();
+        choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
+                userBaseDTO.getBaseKey(),
+                createUserFollowedListener(),
+                getApplicablePortfolioId());
+        choiceFollowUserAssistantWithDialog.setHeroBaseInfo(userBaseDTO);
+        choiceFollowUserAssistantWithDialog.launchChoice();
     }
 
-    protected void premiumFollow(@NotNull UserBaseKey userBaseKey)
+    @NotNull protected SimpleFollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {
-        detachRequestCode();
-        //userInteractor.run()
+        return new LeaderboardMarkUserListOnUserFollowedListener();
+    }
+
+    protected class LeaderboardMarkUserListOnUserFollowedListener implements SimpleFollowUserAssistant.OnUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
+        {
+            setCurrentUserProfileDTO(currentUserProfileDTO);
+            int followType = currentUserProfileDTO.getFollowType(userFollowed);
+            if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+            {
+                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
+            }
+            else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+            {
+                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
+            }
+            updateListViewRow(userFollowed);
+        }
+
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
+        {
+            THToast.show(new THException(error));
+        }
+    }
+
+    private void updateListViewRow(final UserBaseKey heroId)
+    {
+        AdapterView list = leaderboardMarkUserListView;
+        adapterViewUtilsLazy.get().updateSingleRowWhere(list, FriendLeaderboardMarkedUserDTO.class, new Predicate<FriendLeaderboardMarkedUserDTO>()
+        {
+            @Override public boolean apply(FriendLeaderboardMarkedUserDTO friendLeaderboardMarkedUserDTO)
+            {
+                return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
+            }
+        });
     }
 
     protected void handleFollowSuccess(@NotNull UserProfileDTO userProfileDTO)
