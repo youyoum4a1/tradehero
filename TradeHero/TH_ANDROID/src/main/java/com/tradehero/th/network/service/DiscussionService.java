@@ -1,12 +1,11 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.pagination.RangedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import java.util.Map;
 import retrofit.http.Body;
@@ -74,7 +73,7 @@ public interface DiscussionService
 
     //<editor-fold desc="Share">
     @POST("/discussions/{inReplyToType}/{inReplyToId}/share")
-    DiscussionDTO share(
+    BaseResponseDTO share(
             @Path("inReplyToType") DiscussionType inReplyToType,
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
