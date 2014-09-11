@@ -34,7 +34,7 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
         setCancelable(false);
-        mShowAskForReviewDialogPreference.pushInFuture(TimingIntervalPreference.MINUTE);
+        mShowAskForReviewDialogPreference.addInFuture(TimingIntervalPreference.MINUTE);
     }
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)

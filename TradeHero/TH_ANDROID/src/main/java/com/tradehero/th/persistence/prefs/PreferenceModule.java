@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
@@ -54,6 +55,7 @@ public class PreferenceModule
     private static final String PREF_FIRST_SHOW_ON_BOARD_FLAG = "PREF_FIRST_SHOW_ON_BOARD_FLAG";
     private static final String PREF_SHOW_ASK_FOR_REVIEW_FLAG = "PREF_SHOW_ASK_FOR_REVIEW_FLAG";
     private static final String PREF_SHOW_ASK_FOR_INVITE_FLAG = "PREF_SHOW_ASK_FOR_INVITE_FLAG";
+    private static final String PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG = "PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
     private static final String PREF_SAVED_TRANSLATION_SETTING_KEY = "PREF_SAVED_TRANSLATION_SETTING_KEY";
@@ -172,5 +174,11 @@ public class PreferenceModule
             @ForApp SharedPreferences sharedPreferences)
     {
         return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_FLAG, TimingIntervalPreference.WEEK);
+    }
+
+    @Provides @Singleton @ShowAskForInviteDialogCloseTimes IntPreference provideAskForInviteDialogCloseTimesPreference(
+            @ForApp SharedPreferences sharedPreferences)
+    {
+        return new IntPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG, 1);
     }
 }

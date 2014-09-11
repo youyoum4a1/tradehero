@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -14,6 +15,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
+import com.tradehero.th.persistence.prefs.ShowAskForInviteDialogCloseTimes;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 
 import javax.inject.Inject;
@@ -24,6 +26,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
 {
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
+    @Inject @ShowAskForInviteDialogCloseTimes IntPreference mShowAskForInviteDialogCloseTimesPreference;
 
     public static AskForInviteDialogFragment showInviteDialog(FragmentManager fragmentManager)
     {
@@ -37,7 +40,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
         setCancelable(false);
-        mShowAskForInviteDialogPreference.pushInFuture(TimingIntervalPreference.MINUTE);
+        mShowAskForInviteDialogPreference.addInFuture(TimingIntervalPreference.MINUTE);
     }
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -56,7 +59,9 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
     public void onCancel()
     {
         dismiss();
-        mShowAskForInviteDialogPreference.pushInFuture(TimingIntervalPreference.MONTH);
+        mShowAskForInviteDialogPreference.pushInFuture(TimingIntervalPreference.WEEK * mShowAskForInviteDialogCloseTimesPreference.get());
+        mShowAskForInviteDialogCloseTimesPreference.set(mShowAskForInviteDialogCloseTimesPreference.get()+1);
+
     }
 
     @OnClick(R.id.btn_invite)
