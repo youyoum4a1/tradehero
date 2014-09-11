@@ -12,6 +12,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class QuestIndicatorGroupView extends LinearLayout
 {
@@ -19,6 +20,7 @@ public class QuestIndicatorGroupView extends LinearLayout
     private ValueAnimator revealNextAnimator;
     private QuestBonusDTO mNextBonusDTO;
     private int mCurrentCount;
+    private int mCurrentColor;
 
     public QuestIndicatorGroupView(Context context)
     {
@@ -170,7 +172,16 @@ public class QuestIndicatorGroupView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    private void updateDisplay(List<QuestBonusDTO> questBonusDTOs)
+    public void delayedColorUpdate(int updateColor)
+    {
+        this.mCurrentColor = updateColor;
+        for (QuestIndicatorView questIndicatorView : questIndicatorViews)
+        {
+            questIndicatorView.shouldShowColor(mCurrentColor);
+        }
+    }
+
+    private void updateDisplay(@NotNull List<QuestBonusDTO> questBonusDTOs)
     {
         for (int i = 0; i < questBonusDTOs.size() && i < questIndicatorViews.size(); i++)
         {

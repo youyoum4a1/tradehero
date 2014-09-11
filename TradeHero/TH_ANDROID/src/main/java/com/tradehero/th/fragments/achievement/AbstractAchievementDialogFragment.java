@@ -66,7 +66,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private static final String PROPERTY_XP_EARNED = "xpEarned";
     private static final String PROPERTY_BTN_COLOR = "btnColor";
 
-    private static final int DEFAULT_FILTER_COLOR = Color.BLACK;
+    private static final int DEFAULT_FILTER_COLOR = Color.GRAY;
 
     @InjectView(R.id.achievement_content_container) ViewGroup contentContainer;
 
@@ -225,10 +225,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                 {
                     @Override public void onSuccess()
                     {
-                        DominantColorCalculator dominantColorCalculator =
-                                new DominantColorCalculator(((BitmapDrawable) badge.getDrawable()).getBitmap());
-                        ColorScheme colorScheme = dominantColorCalculator.getColorScheme();
-                        updateColor(colorScheme);
+                        handleBadgeSuccess();
                     }
 
                     @Override public void onError()
@@ -248,6 +245,14 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         {
             badge.setImageResource(R.drawable.achievement_unlocked_placeholder);
         }
+    }
+
+    protected void handleBadgeSuccess()
+    {
+        DominantColorCalculator dominantColorCalculator =
+                new DominantColorCalculator(((BitmapDrawable) badge.getDrawable()).getBitmap());
+        ColorScheme colorScheme = dominantColorCalculator.getColorScheme();
+        updateColor(colorScheme);
     }
 
     private void showShareSuccess()

@@ -3,6 +3,7 @@ package com.tradehero.common.widget;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
@@ -22,6 +23,9 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
     @InjectView(R.id.quest_logo_indicator) ImageView logo;
     @InjectView(R.id.quest_top_indicator) TextView topIndicator;
     @InjectView(R.id.quest_bottom_indicator) TextView botIndicator;
+    private int mCurrentColor = Color.BLACK;
+    private int mCurrentLevel;
+    private QuestBonusDTO mQuestBonusDTO;
 
     public QuestIndicatorView(Context context)
     {
@@ -63,22 +67,22 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
         botIndicator.setTypeface(botIndicator.getTypeface(), Typeface.NORMAL);
     }
 
-    public void on()
+    private void on()
     {
         logo.setImageResource(R.drawable.ic_achievement_star_on);
         defaultStyle();
     }
 
-    public void off()
+    private void off()
     {
         logo.setImageResource(R.drawable.ic_achievement_star_off);
-        updateIndicatorTextColor(R.color.text_gray_normal);
+        updateTextColor(getResources().getColor(R.color.text_gray_normal));
         defaultStyle();
     }
 
-    public void animateOn()
+    private void animateOn()
     {
-        updateIndicatorTextColor(R.color.achievement_dollars_earned_color);
+        updateTextColor(mCurrentColor);
 
         logo.setImageResource(R.drawable.ic_achivement_star_animate);
         AnimationDrawable animationDrawable = (AnimationDrawable) logo.getDrawable();
@@ -91,9 +95,8 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
         boldText();
     }
 
-    private void updateIndicatorTextColor(int colorResId)
+    private void updateTextColor(int col)
     {
-        int col = getResources().getColor(colorResId);
         topIndicator.setTextColor(col);
         botIndicator.setTextColor(col);
     }
@@ -104,25 +107,43 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
         botIndicator.setText(bot);
     }
 
-    @Override public void display(@NotNull QuestBonusDTO dto)
-    {
-        setText(dto.levelStr, dto.bonusStr);
-    }
-
     public void display(@NotNull QuestBonusDTO dto, int currentLevel)
     {
+        this.mCurrentLevel = currentLevel;
         display(dto);
-        if (dto.level < currentLevel)
+    }
+
+    @Override public void display(@NotNull QuestBonusDTO dto)
+    {
+        this.mQuestBonusDTO = dto;
+        display();
+    }
+
+    private void display()
+    {
+        QuestBonusDTO dto = mQuestBonusDTO;
+        setText(dto.levelStr, dto.bonusStr);
+
+        if (dto.level < mCurrentLevel)
         {
             on();
         }
-        else if (dto.level == currentLevel)
+        else if (dto.level == mCurrentLevel)
         {
             animateOn();
         }
         else
         {
             off();
+        }
+    }
+
+    public void shouldShowColor(int mCurrentColor)
+    {
+        this.mCurrentColor = mCurrentColor;
+        if(this.mQuestBonusDTO != null && mCurrentLevel > 0)
+        {
+            display();
         }
     }
 }

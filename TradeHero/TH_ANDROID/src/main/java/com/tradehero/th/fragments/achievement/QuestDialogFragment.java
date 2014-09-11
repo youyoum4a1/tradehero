@@ -68,6 +68,12 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
         super.onDestroy();
     }
 
+    @Override protected void handleBadgeSuccess()
+    {
+        super.handleBadgeSuccess();
+        questIndicatorGroupView.delayedColorUpdate(mCurrentColor);
+    }
+
     private class QuestBonusCacheListener implements DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList>
     {
         @Override public void onDTOReceived(@NotNull QuestBonusListId key, @NotNull QuestBonusDTOList value)
