@@ -25,8 +25,8 @@ import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.persistence.competition.HelpVideoCache;
 import com.tradehero.th.persistence.competition.HelpVideoListCache;
 import java.util.List;
 import javax.inject.Inject;
@@ -39,7 +39,7 @@ import timber.log.Timber;
 public class ProviderVideoListFragment extends CompetitionFragment
 {
     @Inject HelpVideoListCache helpVideoListCache;
-    @Inject HelpVideoCache helpVideoCache;
+    @Inject DashboardNavigator navigator;
 
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) View emptyView;
@@ -191,7 +191,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         {
             Bundle bundle = new Bundle();
             WebViewFragment.putUrl(bundle, helpVideoDTO.videoUrl);
-            getDashboardNavigator().pushFragment(WebViewFragment.class, bundle);
+            navigator.pushFragment(WebViewFragment.class, bundle);
         }
     }
 
