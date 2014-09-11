@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class DiscussionDTOFactory
 {
@@ -30,6 +31,10 @@ public class DiscussionDTOFactory
 
         // TODO remove this temporary HACK
         {
+            if (unidentified.type == null)
+            {
+                Timber.e(new NullPointerException(), "Null type on %s", unidentified);
+            }
             if (unidentified.type.equals(DiscussionType.COMMENT))
             {
                 unidentified.type = DiscussionType.PRIVATE_MESSAGE;
