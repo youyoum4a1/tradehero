@@ -17,9 +17,9 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
@@ -66,6 +66,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                     R.layout.lbmu_item_roi_mode,
                     R.layout.leaderboard_friends_social_item_view);
             leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
+            leaderboardFriendsUserListAdapter.setMarkFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
             leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
             leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
         }
@@ -228,12 +229,19 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     }
 
+    protected class LeaderboardMarkUserListFollowRequestedListener
+            implements LeaderboardFriendsItemView.OnFollowRequestedListener,
+                LeaderboardMarkUserItemView.OnFollowRequestedListener
 
-    protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardFriendsItemView.OnFollowRequestedListener
     {
         @Override public void onFollowRequested(UserBaseKey userBaseKey)
         {
             handleFollowRequested(userBaseKey);
+        }
+
+        @Override public void onFollowRequested(UserBaseDTO userBaseDTO)
+        {
+            onFollowRequested(userBaseDTO.getBaseKey());
         }
     }
 
