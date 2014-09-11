@@ -56,7 +56,6 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -77,7 +76,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     private MiddleLogInCallback middleTrackbackFacebook;
-    protected OnFollowRequestedListener followRequestedListener;
     private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfileDTO;
     @Inject CurrentUserId currentUserId;
@@ -93,6 +91,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject THRouter thRouter;
     @Inject Analytics analytics;
 
+    //<editor-fold desc="Constructors">
     public LeaderboardFriendsItemView(Context context)
     {
         super(context);
@@ -107,6 +106,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -212,83 +212,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 break;
             case R.id.leaderboard_user_item_follow:
                 THToast.show("TODO");
-                //heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), userFriendsDTO,
-                //        UserProfileDTOUtil.IS_NOT_FOLLOWER,
-                //        new LeaderBoardFollowRequestedListener());
                 break;
-        }
-    }
-
-    public class LeaderBoardFollowRequestedListener
-            implements com.tradehero.th.models.social.OnFollowRequestedListener
-    {
-        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            freeFollow(heroId);
-        }
-
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            follow(heroId);
-        }
-    }
-
-    protected void freeFollow(@NotNull UserBaseKey heroId)
-    {
-        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
-                R.string.following_this_hero));
-        detachFreeFollowMiddleCallback();
-        freeFollowMiddleCallback =
-                userServiceWrapperLazy.get()
-                        .freeFollow(heroId, new FreeFollowCallback());
-    }
-
-    protected void follow(@NotNull UserBaseKey heroId)
-    {
-        notifyFollowRequested(heroId);
-    }
-
-    protected void notifyFollowRequested(@NotNull UserBaseKey heroId)
-    {
-        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
-        if (followRequestedListenerCopy != null)
-        {
-            followRequestedListenerCopy.onFollowRequested(heroId);
-        }
-    }
-
-    public static interface OnFollowRequestedListener
-    {
-        void onFollowRequested(UserBaseKey userBaseKey);
-    }
-
-    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
-    {
-        this.followRequestedListener = followRequestedListener;
-    }
-
-    private void detachFreeFollowMiddleCallback()
-    {
-        if (freeFollowMiddleCallback != null)
-        {
-            freeFollowMiddleCallback.setPrimaryCallback(null);
-        }
-        freeFollowMiddleCallback = null;
-    }
-
-    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
-    {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            alertDialogUtilLazy.get().dismissProgressDialog();
-            linkWith(userProfileDTO, true);
-            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            THToast.show(new THException(retrofitError));
-            alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
