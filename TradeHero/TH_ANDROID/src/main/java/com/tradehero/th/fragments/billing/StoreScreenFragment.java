@@ -60,7 +60,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
     @Inject protected THBillingInteractor userInteractor;
-    @Inject protected Provider<BaseTHUIBillingRequest.Builder> thuiBillingRequestBuilderProvider;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
