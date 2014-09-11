@@ -133,6 +133,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        setActionBarSubtitle(null);
         unsetDiscussionEditMiddleCallback();
         discussionPostContent.removeTextChangedListener(discussionEditTextWatcher);
 
@@ -149,7 +150,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public void onDetach()
     {
         selectionFragment = null;
-        setActionBarSubtitle(null);
         super.onDetach();
     }
 
