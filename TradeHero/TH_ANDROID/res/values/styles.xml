@@ -419,7 +419,12 @@
     <item name="android:backgroundDimEnabled">true</item>
     <item name="android:windowIsTranslucent">true</item>
     <item name="android:windowNoTitle">true</item>
+    <item name="android:windowCloseOnTouchOutside">true</item>
   </style>
+
+    <style name="TH.onBoardDialog" parent="TH.Dialog">
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
 
   <style name="TradeHero.CarouselNavigationButton">
     <item name="android:layout_width">wrap_content</item>

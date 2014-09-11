@@ -10,9 +10,9 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="20dp"
+      android:layout_margin="@dimen/margin_medium"
       android:orientation="vertical"
-      android:background="@color/white">
+      android:background="@drawable/rectangle_round_corner_white_bg">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-20dp"
-        android:layout_marginBottom="@dimen/common_margin_10"
+        android:layout_marginBottom="@dimen/margin_small"
         android:gravity="center_horizontal"
         android:text="@string/ask_for_invite_title"
         android:textStyle="bold"
@@ -42,7 +42,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_10"
+        android:layout_marginTop="@dimen/margin_small"
         android:gravity="center_horizontal"
         android:text="@string/ask_for_invite_summary1"
         android:textSize="@dimen/text_small"
@@ -51,7 +51,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/common_margin_20"
+        android:layout_marginBottom="@dimen/margin_medium"
         android:gravity="center_horizontal"
         android:text="@string/ask_for_invite_summary2"
         android:textSize="@dimen/text_large"
@@ -71,7 +71,7 @@
         android:textSize="@dimen/text_large"
         android:textColor="@color/button_blue"
         android:textStyle="bold"
-        android:background="@drawable/basic_white_selector"/>
+        android:background="@drawable/basic_white_selector_round_corner"/>
 
   </LinearLayout>
 
@@ -81,5 +81,6 @@
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
       android:layout_alignParentTop="true"
+      android:background="@drawable/basic_transparent_selector"
       android:src="@drawable/ic_btn_popup_close"/>
 </RelativeLayout>
