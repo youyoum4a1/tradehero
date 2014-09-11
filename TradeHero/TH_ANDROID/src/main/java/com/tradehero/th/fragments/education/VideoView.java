@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.education.VideoDTO;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
@@ -23,25 +23,15 @@ public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
 
     @Inject Picasso picasso;
 
-    public VideoView(Context context)
-    {
-        super(context);
-    }
-
     public VideoView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public VideoView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         ButterKnife.inject(this);
     }
 
