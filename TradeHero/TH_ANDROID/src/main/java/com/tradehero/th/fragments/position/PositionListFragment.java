@@ -10,17 +10,14 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -40,9 +37,6 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
-import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
-import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
@@ -52,9 +46,6 @@ import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
-import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
-import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -81,17 +72,12 @@ public class PositionListFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
-    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
-    @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Analytics analytics;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCache portfolioCache;
     @Inject UserProfileCache userProfileCache;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
-    @Inject @ShowAskForReviewDialog LongPreference mShowAskForReviewDialogPreference;
-    @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
 
     @InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
@@ -459,11 +445,6 @@ public class PositionListFragment
         userProfileCache.getOrFetchAsync(shownUser);
     }
 
-    public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
-    {
-        return ownedPortfolioId != null && ownedPortfolioId.portfolioId <= 0;
-    }
-
     protected void fetchSimplePage()
     {
         fetchSimplePage(false);
@@ -739,7 +720,6 @@ public class PositionListFragment
         {
             linkWith(value, true);
             showResultIfNecessary();
-            showPrettyReviewAndInvite();
         }
 
         @Override public void onErrorThrown(
@@ -749,37 +729,6 @@ public class PositionListFragment
             THToast.show(R.string.error_fetch_user_profile);
             //TODO not just toast
             showErrorView();
-        }
-    }
-
-    private void showPrettyReviewAndInvite()
-    {
-        if (shownUser != null)
-        {
-            if (shownUser.getUserId().intValue() != currentUserId.get().intValue())
-            {
-                return;
-            }
-        }
-        Double profit = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey).roiSinceInception;
-        if (profit != null)
-        {
-            SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolderLazy.get().getCurrentActivity();
-            if (profit > 0 && activity != null)
-            {
-                long lastReviewLimitTime = mShowAskForReviewDialogPreference.get();
-                if (System.currentTimeMillis() > lastReviewLimitTime)
-                {
-                    AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
-                    mShowAskForInviteDialogPreference.set(System.currentTimeMillis()+AskForReviewDialogFragment.ONE_DAY);
-                    return;
-                }
-                long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();
-                if (System.currentTimeMillis() > lastInviteLimitTime)
-                {
-                    AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
-                }
-            }
         }
     }
 
