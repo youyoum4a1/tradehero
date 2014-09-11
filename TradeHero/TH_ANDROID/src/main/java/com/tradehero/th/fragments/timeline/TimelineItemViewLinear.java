@@ -14,7 +14,6 @@ import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;

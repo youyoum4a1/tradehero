@@ -34,7 +34,6 @@ import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
@@ -161,7 +160,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     void onSecurityButtonClicked(View clickedButton)
     {
         Bundle bundle = new Bundle();
-        bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
+        bundle.putString(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
         selectionFragment = navigator.pushFragment(SecuritySearchFragment.class, bundle);
     }
 
@@ -169,7 +168,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     void onMentionButtonClicked(View clickedButton)
     {
         Bundle bundle = new Bundle();
-        bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
+        bundle.putString(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
         selectionFragment = navigator.pushFragment(PeopleSearchFragment.class, bundle);
     }
     //</editor-fold>

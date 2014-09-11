@@ -34,7 +34,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
@@ -579,7 +578,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             return providerId;
         }
 
-        @Override protected Navigator getNavigator()
+        @Override protected DashboardNavigator getNavigator()
         {
             return navigator;
         }
