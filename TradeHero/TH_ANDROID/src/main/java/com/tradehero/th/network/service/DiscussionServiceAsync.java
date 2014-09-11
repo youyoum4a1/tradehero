@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
@@ -77,6 +78,6 @@ interface DiscussionServiceAsync
             @Path("inReplyToType") DiscussionType inReplytoType,
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
-            Callback<DiscussionDTO> callback);
+            Callback<BaseResponseDTO> callback);
     //</editor-fold>
 }
