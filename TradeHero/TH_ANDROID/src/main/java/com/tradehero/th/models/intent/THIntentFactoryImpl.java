@@ -59,7 +59,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
                 Timber.d("Something wrong with old THIntent" + ex.getMessage());
             }
         }
-        else
+        if (thIntent == null)
         {
             handleUrlByRouter(intent, host);
         }
