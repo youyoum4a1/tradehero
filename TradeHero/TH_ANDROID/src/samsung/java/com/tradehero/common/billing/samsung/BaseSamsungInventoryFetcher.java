@@ -137,7 +137,7 @@ abstract public class BaseSamsungInventoryFetcher<
             SamsungSKUType samsungSKU;
             for (ItemVo itemVo : itemList)
             {
-                Timber.d("Adding %s", itemVo.dump());
+                Timber.d("Adding %s", itemVo.getJsonString());
                 samsungSKU = createSamsungSku(groupId, itemVo.getItemId());
                 inventory.put(
                         samsungSKU,
