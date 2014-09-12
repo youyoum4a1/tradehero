@@ -4,7 +4,7 @@ import android.content.Context;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
@@ -37,13 +37,14 @@ public class ShowUnreadPreference extends Preference
     protected void onBindView(View view) {
         super.onBindView(view);
         DaggerUtils.inject(this);
-        TextView title = (TextView)view.findViewById(android.R.id.title);
-        if (title != null)
+        if (!mIsVisitedSettingsPreference.get())
         {
-            if (!mIsVisitedSettingsPreference.get())
+            ImageView icon = (ImageView)view.findViewById(android.R.id.icon);
+            if (icon != null)
             {
-                title.setCompoundDrawablesWithIntrinsicBounds(null, null, view.getContext().getResources().getDrawable(R.drawable.red_circle), null);
-                title.setCompoundDrawablePadding((int)view.getContext().getResources().getDimension(R.dimen.margin_small));
+                icon.setBackgroundResource(R.drawable.refer_friend);
+                icon.setImageResource(R.drawable.red_circle);
+                icon.setPadding(80, 0, 0, 80);
             }
         }
     }

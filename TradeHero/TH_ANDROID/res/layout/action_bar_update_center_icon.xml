@@ -8,6 +8,7 @@
     android:background="@drawable/basic_transparent_selector">
 
   <ImageView
+      android:id="@+id/icon"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
@@ -15,7 +16,15 @@
 
   <TextView
       android:id="@+id/action_bar_message_count"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"/>
+      android:layout_width="18dp"
+      android:layout_height="18dp"
+      android:layout_toRightOf="@+id/icon"
+      android:layout_marginTop="5dp"
+      android:layout_marginRight="5dp"
+      android:gravity="center"
+      android:text="13"
+      android:textSize="13sp"
+      android:textColor="@color/white"
+      android:background="@drawable/red_circle"/>
 
 </RelativeLayout>
