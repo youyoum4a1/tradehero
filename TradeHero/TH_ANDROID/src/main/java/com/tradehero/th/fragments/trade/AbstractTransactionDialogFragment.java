@@ -937,7 +937,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             Integer maxValue = getMaxValue();
             if (maxValue != null && val > maxValue)
             {
-                val = getMaxValue();
+                val = maxValue;
             }
             else if (val < 0)
             {

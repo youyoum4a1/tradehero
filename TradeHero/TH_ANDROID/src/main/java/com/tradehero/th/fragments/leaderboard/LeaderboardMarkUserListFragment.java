@@ -465,12 +465,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         //invalidateCachedItemView();
     }
 
-    private void updateListViewRow(final UserBaseKey heroId)
+    private void updateListViewRow(@NotNull final UserBaseKey heroId)
     {
         AdapterView list = leaderboardMarkUserListView.getRefreshableView();
         adapterViewUtilsLazy.get().updateSingleRowWhere(list, UserBaseDTO.class, new Predicate<UserBaseDTO>()
         {
-            @Override public boolean apply(UserBaseDTO userBaseDTO)
+            @Override public boolean apply(@NotNull UserBaseDTO userBaseDTO)
             {
                 return userBaseDTO.getBaseKey().equals(heroId);
             }
