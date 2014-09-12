@@ -6,7 +6,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    tools:background="@color/red">
 
   <ImageView
       android:id="@+id/user_level_progress_next"
@@ -21,7 +22,7 @@
       android:id="@+id/user_level_main_progress_bar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/user_level_progress_margin_top"
+      android:layout_centerVertical="true"
       android:layout_marginLeft="@dimen/user_level_progress_margin_left"
       android:layout_marginRight="@dimen/user_level_progress_margin_right"
       style="@style/TH.Level.ProgressBar"/>

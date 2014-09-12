@@ -16,9 +16,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.google.common.annotations.VisibleForTesting;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.models.graphics.ForUserNextLevelBadge;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ public class UserLevelProgressBar extends RelativeLayout
     @InjectView(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
 
     @Inject Picasso picasso;
+    @Inject @ForUserNextLevelBadge Transformation nextLevelBadgeTransformation;
 
     private int mCurrentXP = -1;
     private UserLevelProgressBarListener userLevelProgressBarListener;
@@ -138,7 +141,7 @@ public class UserLevelProgressBar extends RelativeLayout
                 LevelDefDTO nextLevel = mLevelDefDTOList.getNextLevelDTO(mCurrentLevelDTO.level);
                 if (nextLevel != null)
                 {
-                    picasso.load(nextLevel.badge).into(nextLevelLabel);
+                    picasso.load(nextLevel.badge).transform(nextLevelBadgeTransformation).into(nextLevelLabel);
                 }
                 else
                 {

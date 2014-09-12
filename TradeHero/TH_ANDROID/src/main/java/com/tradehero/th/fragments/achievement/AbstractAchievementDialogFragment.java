@@ -307,6 +307,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void displayPulse()
     {
+        setDrawingCacheEnabled(pulseEffect, pulseEffect2, pulseEffect3);
+
         AnimatorSet animatorSet = new AnimatorSet();
 
         Animator animator = AnimatorInflater.loadAnimator(getActivity(), R.animator.achievement_pulse);
@@ -322,6 +324,15 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
         animatorSet.playTogether(animator, animator1, animator2);
         animatorSet.start();
+    }
+
+    private void setDrawingCacheEnabled(View... views)
+    {
+        for (int i = 0; i < views.length; i++)
+        {
+            View v = views[i];
+            v.setDrawingCacheEnabled(true);
+        }
     }
 
     private void displayTitle()
