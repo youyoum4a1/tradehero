@@ -2,6 +2,7 @@ package com.tradehero.th.billing;
 
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
+import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
@@ -10,10 +11,8 @@ import com.tradehero.common.billing.amazon.exception.AmazonExceptionFactory;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.billing.amazon.ProcessingPurchase;
-import com.tradehero.th.billing.amazon.THAmazonAlertDialogUtil;
 import com.tradehero.th.billing.amazon.THAmazonBillingAvailableTester;
 import com.tradehero.th.billing.amazon.THAmazonBillingAvailableTesterHolder;
-import com.tradehero.th.billing.amazon.THAmazonInteractor;
 import com.tradehero.th.billing.amazon.THAmazonInventoryFetcher;
 import com.tradehero.th.billing.amazon.THAmazonInventoryFetcherHolder;
 import com.tradehero.th.billing.amazon.THAmazonLogicHolder;
@@ -31,7 +30,6 @@ import com.tradehero.th.billing.amazon.THAmazonPurchaserHolder;
 import com.tradehero.th.billing.amazon.THAmazonSecurityAlertKnowledge;
 import com.tradehero.th.billing.amazon.THBaseAmazonBillingAvailableTester;
 import com.tradehero.th.billing.amazon.THBaseAmazonBillingAvailableTesterHolder;
-import com.tradehero.th.billing.amazon.THBaseAmazonInteractor;
 import com.tradehero.th.billing.amazon.THBaseAmazonInventoryFetcher;
 import com.tradehero.th.billing.amazon.THBaseAmazonInventoryFetcherHolder;
 import com.tradehero.th.billing.amazon.THBaseAmazonProductIdentifierFetcher;
@@ -45,9 +43,7 @@ import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseReporterHolder;
 import com.tradehero.th.billing.amazon.THBaseAmazonPurchaser;
 import com.tradehero.th.billing.amazon.THBaseAmazonPurchaserHolder;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
-import com.tradehero.th.billing.amazon.request.BaseTHUIAmazonRequest;
 import com.tradehero.th.billing.amazon.request.THAmazonRequestFull;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.persistence.billing.AmazonSKUListCache;
 import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
@@ -58,11 +54,6 @@ import java.util.HashSet;
 import javax.inject.Singleton;
 
 @Module(
-        injects = {
-                //IABSKUListRetrievedAsyncMilestone.class,
-        },
-        staticInjections = {
-        },
         complete = false,
         library = true,
         overrides = true
@@ -70,6 +61,38 @@ import javax.inject.Singleton;
 public class BillingModule
 {
     public static final String PREF_PROCESSING_PURCHASES = "AMAZON_PROCESSING_PURCHASES";
+
+    //<editor-fold desc="Caches">
+    @Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(AmazonSKUListCache amazonSkuListCache)
+    {
+        return amazonSkuListCache;
+    }
+
+    @Provides @Singleton ProductDetailCache provideProductDetailCache(THAmazonProductDetailCache productDetailCache)
+    {
+        return productDetailCache;
+    }
+
+    @Provides @Singleton ProductPurchaseCache provideProductPurchaseCache(AmazonPurchaseCache purchaseCache)
+    {
+        return purchaseCache;
+    }
+
+    @Provides @Singleton AmazonPurchaseCache provideIABPurchaseCache(THAmazonPurchaseCache purchaseCache)
+    {
+        return purchaseCache;
+    }
+    //</editor-fold>
+
+    @Provides BillingExceptionFactory provideBillingExceptionFactory(AmazonExceptionFactory exceptionFactory)
+    {
+        return exceptionFactory;
+    }
+
+    @Provides AmazonExceptionFactory provideAmazonExceptionFactory(THAmazonExceptionFactory exceptionFactory)
+    {
+        return exceptionFactory;
+    }
 
     //<editor-fold desc="Actors and Action Holders">
     @Provides THAmazonBillingAvailableTester provideBillingAvailableTest(THBaseAmazonBillingAvailableTester thBaseAmazonBillingAvailableTester)
@@ -148,41 +171,9 @@ public class BillingModule
         return thAmazonSecurityAlertKnowledge;
     }
 
-    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THAmazonAlertDialogUtil thAmazonAlertDialogUtil)
+    @Provides @Singleton BillingLogicHolder provideBillingActor(THBillingLogicHolder logicHolder)
     {
-        return thAmazonAlertDialogUtil;
-    }
-
-    //<editor-fold desc="Caches">
-    @Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(AmazonSKUListCache amazonSkuListCache)
-    {
-        return amazonSkuListCache;
-    }
-
-    @Provides @Singleton ProductDetailCache provideProductDetailCache(THAmazonProductDetailCache productDetailCache)
-    {
-        return productDetailCache;
-    }
-
-    @Provides @Singleton ProductPurchaseCache provideProductPurchaseCache(AmazonPurchaseCache purchaseCache)
-    {
-        return purchaseCache;
-    }
-
-    @Provides @Singleton AmazonPurchaseCache provideIABPurchaseCache(THAmazonPurchaseCache purchaseCache)
-    {
-        return purchaseCache;
-    }
-    //</editor-fold>
-
-    @Provides BillingExceptionFactory provideBillingExceptionFactory(AmazonExceptionFactory exceptionFactory)
-    {
-        return exceptionFactory;
-    }
-
-    @Provides AmazonExceptionFactory provideIABExceptionFactory(THAmazonExceptionFactory exceptionFactory)
-    {
-        return exceptionFactory;
+        return logicHolder;
     }
 
     @Provides @Singleton THBillingLogicHolder provideTHBillingActor(THAmazonLogicHolder logicHolder)
@@ -195,24 +186,9 @@ public class BillingModule
         return thAmazonLogicHolderFull;
     }
 
-    @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THAmazonInteractor thAmazonInteractor)
-    {
-        return thAmazonInteractor;
-    }
-
-    @Provides @Singleton THAmazonInteractor provideTHIABInteractor(THBaseAmazonInteractor thBaseAmazonInteractor)
-    {
-        return thBaseAmazonInteractor;
-    }
-
     @Provides THBillingRequest.Builder provideTHBillingRequestBuilder()
     {
         return THAmazonRequestFull.builder();
-    }
-
-    @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestTestAvailableBuilder()
-    {
-        return BaseTHUIAmazonRequest.builder();
     }
 
     @Provides @Singleton @ProcessingPurchase StringSetPreference provideProcessingPurchasePreference(@ForApp SharedPreferences sharedPreferences)
