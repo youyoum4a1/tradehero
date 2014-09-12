@@ -16,5 +16,5 @@
       android:layout_width="fill_parent"
       android:gravity="center"
       android:textColor="@color/white"
-      android:text="@string/mark_as_all_read"/>
+      android:text="@string/mark_all_as_read"/>
 </LinearLayout>
