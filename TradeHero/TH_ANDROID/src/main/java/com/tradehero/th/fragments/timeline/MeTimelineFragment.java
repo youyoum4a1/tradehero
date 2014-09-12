@@ -8,17 +8,16 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.residemenu.ResideMenu;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 @Routable({
@@ -29,7 +28,6 @@ public class MeTimelineFragment extends TimelineFragment
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private TextView updateCenterCountTextView;
 
@@ -86,7 +84,15 @@ public class MeTimelineFragment extends TimelineFragment
         super.updateView();
         if (updateCenterCountTextView != null && shownProfile != null)
         {
-            updateCenterCountTextView.setText(String.valueOf(shownProfile.unreadMessageThreadsCount));
+            int unreadCount = shownProfile.unreadMessageThreadsCount;
+            if (unreadCount == 0)
+            {
+                updateCenterCountTextView.setText("");
+            }
+            else
+            {
+                updateCenterCountTextView.setText(THSignedNumber.builder(unreadCount).build().toString());
+            }
         }
     }
 
