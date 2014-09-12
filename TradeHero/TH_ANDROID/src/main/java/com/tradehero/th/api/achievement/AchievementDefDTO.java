@@ -33,17 +33,12 @@ public class AchievementDefDTO implements DTO
         return new AchievementDefId(id);
     }
 
-    @Override
-    public String toString()
+    @Override public String toString()
     {
-        try
-        {
-            return THJsonAdapter.getInstance().toStringBody(this);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return "Failed to json";
-        }
+        return "AchievementDefDTO{" +
+                "thName='" + thName + '\'' +
+                ", text='" + text + '\'' +
+                ", achievementLevel=" + achievementLevel +
+                '}';
     }
 }
