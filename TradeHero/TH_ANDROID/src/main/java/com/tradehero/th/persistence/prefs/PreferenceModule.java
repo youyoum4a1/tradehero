@@ -56,6 +56,7 @@ public class PreferenceModule
     private static final String PREF_SHOW_ASK_FOR_REVIEW_FLAG = "PREF_SHOW_ASK_FOR_REVIEW_FLAG";
     private static final String PREF_SHOW_ASK_FOR_INVITE_FLAG = "PREF_SHOW_ASK_FOR_INVITE_FLAG";
     private static final String PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG = "PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG";
+    private static final String PREF_IS_VISITED_SETTINGS_FLAG = "PREF_IS_VISITED_SETTINGS_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
     private static final String PREF_SAVED_TRANSLATION_SETTING_KEY = "PREF_SAVED_TRANSLATION_SETTING_KEY";
@@ -180,5 +181,11 @@ public class PreferenceModule
             @ForApp SharedPreferences sharedPreferences)
     {
         return new IntPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG, 1);
+    }
+
+    @Provides @Singleton @IsVisitedSettings BooleanPreference provideIsVisitedSettingsPreference(
+            @ForApp SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_IS_VISITED_SETTINGS_FLAG, false);
     }
 }

@@ -51,7 +51,7 @@ public enum RootFragmentType
     STORE(R.layout.tab_indicator_holo,
             R.string.dashboard_store, R.string.dashboard_store_key,
             R.drawable.icn_menu_store, StoreScreenFragment.class),
-    SETTING(R.layout.tab_indicator_holo,
+    SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings, R.string.dashboard_menu_settings_key,
             R.drawable.icn_menu_settings, SettingsFragment.class),
     ADMIN_SETTINGS(R.layout.tab_indicator_holo,

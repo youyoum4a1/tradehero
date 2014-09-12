@@ -14,6 +14,8 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFrag
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
+import com.tradehero.th.fragments.settings.SettingsResideMenuItem;
+import com.tradehero.th.fragments.settings.ShowUnreadPreference;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.fragments.social.friend.SocialFriendUserView;
@@ -29,13 +31,17 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHa
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationItemView;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsView;
-import dagger.Module;
-import dagger.Provides;
+
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.inject.Singleton;
-import org.ocpsoft.prettytime.PrettyTime;
+
+import dagger.Module;
+import dagger.Provides;
 
 @Module(
         includes = {
@@ -50,6 +56,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 MessagesCenterFragment.class,
                 NotificationsCenterFragment.class,
                 UpdateCenterResideMenuItem.class,
+                SettingsResideMenuItem.class,
 
                 MessagesView.class,
                 MessageItemView.class,
@@ -76,7 +83,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 NotificationClickHandler.class,
                 SocialFriendUserView.class,
-                UserStatisticView.class
+                UserStatisticView.class,
+                ShowUnreadPreference.class,
         },
         complete = false,
         library = true

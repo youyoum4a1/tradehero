@@ -6,10 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -17,10 +16,17 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.prefs.IsVisitedSettings;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 public class SettingsReferralCodeFragment extends DashboardFragment
@@ -30,6 +36,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
+    @Inject @IsVisitedSettings BooleanPreference mIsVisitedSettingsPreference;
 
     @InjectView(R.id.invite_code_claimed_switcher) ViewSwitcher alreadyClaimedSwitcher;
     @InjectView(R.id.settings_referral_code) TextView mReferralCode;
@@ -40,6 +47,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         userProfileCacheListener = createProfileCacheListener();
+        mIsVisitedSettingsPreference.set(true);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
