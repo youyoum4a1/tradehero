@@ -16,7 +16,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 
 public class NewsPagerFragment extends SherlockFragment
 {
@@ -73,7 +73,7 @@ public class NewsPagerFragment extends SherlockFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     private class DiscoveryNewsFragmentAdapter extends DiscoveryNewsAdapter

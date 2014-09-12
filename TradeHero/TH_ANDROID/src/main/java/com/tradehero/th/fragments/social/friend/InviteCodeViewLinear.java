@@ -12,8 +12,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,29 +33,12 @@ public class InviteCodeViewLinear extends LinearLayout
     @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     //<editor-fold desc="Constructors">
-    @SuppressWarnings("UnusedDeclaration") public InviteCodeViewLinear(Context context)
-    {
-        super(context);
-        init();
-    }
-
     @SuppressWarnings("UnusedDeclaration") public InviteCodeViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
-    }
-
-    @SuppressWarnings("UnusedDeclaration") public InviteCodeViewLinear(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        init();
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
-
-    private void init()
-    {
-        DaggerUtils.inject(this);
-    }
 
     @Override protected void onFinishInflate()
     {

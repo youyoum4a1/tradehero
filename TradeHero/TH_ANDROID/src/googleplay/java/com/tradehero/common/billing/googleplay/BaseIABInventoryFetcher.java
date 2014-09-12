@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -8,14 +9,14 @@ import com.tradehero.common.billing.googleplay.exception.IABBadResponseException
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
-import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -38,10 +39,10 @@ abstract public class BaseIABInventoryFetcher<
 
     //<editor-fold desc="Constructors">
     public BaseIABInventoryFetcher(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(currentActivityHolder, iabExceptionFactory);
+        super(activityProvider, iabExceptionFactory);
         this.inventory = new HashMap<>();
     }
     //</editor-fold>
@@ -199,7 +200,7 @@ abstract public class BaseIABInventoryFetcher<
         else
         {
             Bundle querySkus = getQuerySKUBundle();
-            Bundle productDetails = billingServiceCopy.getSkuDetails(TARGET_BILLING_API_VERSION3, Application.context().getPackageName(), itemType.key,
+            Bundle productDetails = billingServiceCopy.getSkuDetails(TARGET_BILLING_API_VERSION3, THApp.context().getPackageName(), itemType.key,
                     querySkus);
             if (!productDetails.containsKey(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST))
             {

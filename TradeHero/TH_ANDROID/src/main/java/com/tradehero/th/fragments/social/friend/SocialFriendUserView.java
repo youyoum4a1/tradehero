@@ -17,7 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsWeiboDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +53,7 @@ public class SocialFriendUserView extends SocialFriendItemView
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onAttachedToWindow()

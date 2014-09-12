@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.base;
 import android.app.Activity;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 
 public class BaseListFragment extends SherlockListFragment
 {
@@ -18,6 +18,6 @@ public class BaseListFragment extends SherlockListFragment
     {
         super.onAttach(activity);
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 }

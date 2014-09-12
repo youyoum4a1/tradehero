@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -49,14 +49,14 @@ public class VisitedFriendListPrefs
             }
         }
 
-        SharedPreferences.Editor pref = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor pref = THApp.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE).edit();
         pref.putStringSet(KEY_VISITED_ID_SET, userKeys);
         pref.commit();
     }
 
     public static List<UserBaseKey> getVisitedIdList()
     {
-        final SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
+        final SharedPreferences preferences = THApp.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
         final Set<String> userKeys = preferences.getStringSet(KEY_VISITED_ID_SET, new TreeSet<String>());
 
         final List<UserBaseKey> userBaseKeys = new ArrayList<>();
@@ -92,7 +92,7 @@ public class VisitedFriendListPrefs
 
     public static void clearVisitedIdList()
     {
-        SharedPreferences.Editor pref = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor pref = THApp.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE).edit();
         pref.putStringSet(KEY_VISITED_ID_SET, new TreeSet<String>());
         pref.commit();
     }

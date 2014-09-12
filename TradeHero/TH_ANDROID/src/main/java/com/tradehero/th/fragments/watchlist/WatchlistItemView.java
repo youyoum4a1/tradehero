@@ -25,14 +25,13 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -41,7 +40,6 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -60,6 +58,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
+    @Inject DashboardNavigator navigator;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
@@ -91,26 +90,16 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     }
 
     //<editor-fold desc="Constructors">
-    public WatchlistItemView(Context context)
-    {
-        super(context);
-    }
-
     public WatchlistItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public WatchlistItemView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         ButterKnife.inject(this);
         middleCallbackWatchlistDeletes = new MiddleCallbackWeakList<>();
     }
@@ -504,14 +493,14 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         Bundle args = new Bundle();
         //args.putBundle(AlertCreateFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
         AlertCreateFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-        getNavigator().pushFragment(AlertCreateFragment.class, args);
+        navigator.pushFragment(AlertCreateFragment.class, args);
     }
 
     private void openSecurityProfile()
     {
         Bundle args = new Bundle();
         BuySellFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-        getNavigator().pushFragment(BuySellFragment.class, args);
+        navigator.pushFragment(BuySellFragment.class, args);
     }
 
     private void openSecurityGraph()
@@ -521,7 +510,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         {
             args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, watchlistPositionDTO.securityDTO.getSecurityId().getArgs());
         }
-        getNavigator().pushFragment(StockInfoFragment.class, args);
+        navigator.pushFragment(StockInfoFragment.class, args);
     }
 
     private void openWatchlistEditor()
@@ -532,11 +521,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             WatchlistEditFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
             ActionBarOwnerMixin.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, null);
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((NavigatorActivity) getContext()).getNavigator();
+        navigator.pushFragment(WatchlistEditFragment.class, args, null);
     }
 }

@@ -16,13 +16,13 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -48,11 +48,11 @@ public class LocationListFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject ListedLocationDTOFactory listedLocationDTOFactory;
     @Inject UserProfileCache userProfileCache;
 
     @InjectView(android.R.id.list) ListView listView;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -225,7 +225,7 @@ public class LocationListFragment extends DashboardFragment
     private void backToSettings()
     {
         getProgressDialog().hide();
-        getDashboardNavigator().popFragment();
+        navigator.popFragment();
     }
 
     private ProgressDialog getProgressDialog()
@@ -234,7 +234,7 @@ public class LocationListFragment extends DashboardFragment
         {
             return progressDialog;
         }
-        progressDialog = progressDialogUtilLazy.get().show(currentActivityHolderLazy.get().getCurrentActivity(), R.string.loading_loading,
+        progressDialog = progressDialogUtilLazy.get().show(getActivity(), R.string.loading_loading,
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();
         return progressDialog;

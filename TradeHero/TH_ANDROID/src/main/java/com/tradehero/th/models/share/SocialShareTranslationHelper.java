@@ -1,13 +1,14 @@
 package com.tradehero.th.models.share;
 
+import android.app.Activity;
 import android.content.Context;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTOFactory;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.NewsDialogFactory;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.network.share.SocialSharer;
@@ -44,7 +45,8 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     //<editor-fold desc="Constructors">
     @Inject public SocialShareTranslationHelper(
             @NotNull Context applicationContext,
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
+            @NotNull Provider<DashboardNavigator> navigatorProvider,
             @NotNull NewsDialogFactory newsDialogFactory,
             @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull Provider<SocialSharer> socialSharerProvider,
@@ -54,7 +56,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             @NotNull TranslationCache translationCache,
             @NotNull UserTranslationSettingPreference userTranslationSettingPreference)
     {
-        super(applicationContext, currentActivityHolder, newsDialogFactory, alertDialogUtil, socialSharerProvider);
+        super(applicationContext, activityProvider, navigatorProvider, newsDialogFactory, alertDialogUtil, socialSharerProvider);
         this.translationKeyFactory = translationKeyFactory;
         this.abstractDiscussionCompactDTOFactory = abstractDiscussionCompactDTOFactory;
         this.translationTokenCache = translationTokenCache;
@@ -150,7 +152,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         {
             cancelFormWaiting();
             dismissShareDialog();
-            Context currentActivityContext = currentActivityHolder.getCurrentContext();
+            Context currentActivityContext = activityHolder.get();
             if (currentActivityContext != null)
             {
                 shareDialog = ((NewsDialogFactory) shareDialogFactory).createNewsDialog(

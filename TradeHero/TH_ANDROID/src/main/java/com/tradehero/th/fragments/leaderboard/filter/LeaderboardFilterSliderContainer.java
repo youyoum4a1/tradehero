@@ -10,7 +10,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -33,19 +33,10 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     @Nullable protected LeaderboardDTO leaderboardDTO;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardFilterSliderContainer(Context context)
-    {
-        super(context);
-    }
-
     public LeaderboardFilterSliderContainer(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public LeaderboardFilterSliderContainer(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
@@ -53,7 +44,6 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
     }
 
     @Override protected void onAttachedToWindow()

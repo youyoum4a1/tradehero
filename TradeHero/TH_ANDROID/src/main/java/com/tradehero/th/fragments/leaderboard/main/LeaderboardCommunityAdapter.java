@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
@@ -27,7 +27,7 @@ public class LeaderboardCommunityAdapter extends ArrayAdapter<LeaderboardDefDTO>
     {
         super(context, 0);
         this.leaderboardDefViewResourceId = leaderboardDefViewResourceId;
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 

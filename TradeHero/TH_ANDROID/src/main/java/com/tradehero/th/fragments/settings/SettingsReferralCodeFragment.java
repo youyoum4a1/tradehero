@@ -35,6 +35,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @InjectView(R.id.settings_referral_code) TextView mReferralCode;
 
     @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -108,7 +109,6 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @OnClick({R.id.btn_cancel, R.id.btn_cancel_submit, R.id.btn_done})
     protected void popFragment(/*View view*/)
     {
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.popFragment();

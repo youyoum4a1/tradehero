@@ -1,19 +1,17 @@
 package com.tradehero.th.models.user.follow;
 
-import android.content.Context;
+import android.app.Activity;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,10 +21,10 @@ public class ChoiceFollowUserAssistantWithDialog
         DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
 {
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject protected UserProfileCache userProfileCache;
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
+    @NotNull private final Activity activity;
     @NotNull protected final UserBaseKey heroId;
     @NotNull protected final FollowUserAssistant followUserAssistant;
     @Nullable protected FollowDialogCombo followDialogCombo;
@@ -35,14 +33,16 @@ public class ChoiceFollowUserAssistantWithDialog
 
     //<editor-fold desc="Constructors">
     public ChoiceFollowUserAssistantWithDialog(
+            @NotNull Activity activity,
             @NotNull UserBaseKey heroId,
             @Nullable SimpleFollowUserAssistant.OnUserFollowedListener userFollowedListener,
             @NotNull OwnedPortfolioId applicablePortfolioId)
     {
         super();
+        this.activity = activity;
         this.heroId = heroId;
-        this.followUserAssistant = new FollowUserAssistant(heroId, userFollowedListener, applicablePortfolioId);
-        DaggerUtils.inject(this);
+        this.followUserAssistant = new FollowUserAssistant(activity, heroId, userFollowedListener, applicablePortfolioId);
+        HierarchyInjector.inject(activity, this);
     }
     //</editor-fold>
 
@@ -105,14 +105,11 @@ public class ChoiceFollowUserAssistantWithDialog
 
     protected void launchFollowChoice()
     {
-        Context activityContext = currentActivityHolderLazy.get().getCurrentActivity();
-        if (activityContext != null
-                && heroBaseInfo != null
-                && currentUserProfile != null)
+        if (heroBaseInfo != null && currentUserProfile != null)
         {
             detachFollowDialogCombo();
             followDialogCombo = heroAlertDialogUtil.showFollowDialog(
-                    activityContext,
+                    activity,
                     heroBaseInfo,
                     currentUserProfile.getFollowType(heroId),
                     this);

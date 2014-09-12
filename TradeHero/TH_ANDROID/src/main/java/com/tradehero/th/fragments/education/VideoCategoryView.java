@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.education;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,27 +15,25 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.education.PagedVideoCategoryId;
 import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.api.education.VideoDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.education.PaginatedVideoCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.StringUtils;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class VideoCategoryView extends RelativeLayout implements DTOView<VideoCategoryDTO>
+public class VideoCategoryView extends RelativeLayout
+        implements DTOView<VideoCategoryDTO>
 {
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 50; //No pagination for now
@@ -45,40 +42,31 @@ public class VideoCategoryView extends RelativeLayout implements DTOView<VideoCa
     @InjectView(R.id.video_gallery) Gallery gallery;
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(android.R.id.progress) View progress;
-    private VideoAdapter galleryAdapter;
+    private final VideoAdapter galleryAdapter;
 
     @Inject PaginatedVideoCache paginatedVideoCache;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
+    @Inject DashboardNavigator navigator;
 
-    private DTOCacheNew.Listener<VideoCategoryId, PaginatedVideoDTO> cacheListener;
+    private final DTOCacheNew.Listener<VideoCategoryId, PaginatedVideoDTO> cacheListener;
 
     private VideoCategoryDTO mCategoryDTO;
 
     private int page = FIRST_PAGE;
     private int perPage = DEFAULT_PER_PAGE;
 
-    public VideoCategoryView(Context context)
-    {
-        super(context);
-    }
-
     public VideoCategoryView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public VideoCategoryView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
+        galleryAdapter = new VideoAdapter(getContext(), R.layout.video_view);
+        cacheListener = new PaginatedVideoCacheListener();
     }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
-        galleryAdapter = new VideoAdapter(getContext(), R.layout.video_view);
-        cacheListener = new PaginatedVideoCacheListener();
+
         gallery.setAdapter(galleryAdapter);
 
         gallery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -121,20 +109,11 @@ public class VideoCategoryView extends RelativeLayout implements DTOView<VideoCa
             {
                 getContext().startActivity(videoIntent);
             }
-            else
+            else if (navigator != null)
             {
-
-                Activity activity = currentActivityHolderLazy.get().getCurrentActivity();
-                if (activity instanceof DashboardActivity)
-                {
-                    Bundle bundle = new Bundle();
-                    WebViewFragment.putUrl(bundle, videoDTO.url);
-                    ((DashboardActivity) activity).getDashboardNavigator().pushFragment(WebViewFragment.class, bundle);
-                }
-                else
-                {
-                    THToast.show(R.string.unable_to_play_videos);
-                }
+                Bundle bundle = new Bundle();
+                WebViewFragment.putUrl(bundle, videoDTO.url);
+                navigator.pushFragment(WebViewFragment.class, bundle);
             }
         }
     }

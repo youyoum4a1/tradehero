@@ -13,11 +13,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class VersioningTest
 {
-    @Inject Application application;
+    @Inject THApp THApp;
 
     @Test public void testVersionFollowsProperConventionOfForceUpgrade() throws PackageManager.NameNotFoundException
     {
-        PackageInfo pInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+        PackageInfo pInfo = THApp.getPackageManager().getPackageInfo(THApp.getPackageName(), 0);
         String versionName = pInfo.versionName;
         int versionCode = pInfo.versionCode;
 

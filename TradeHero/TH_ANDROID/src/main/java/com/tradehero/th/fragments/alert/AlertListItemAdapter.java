@@ -8,7 +8,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Set;
@@ -34,7 +34,7 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
         super(context);
         this.alertResId = alertResId;
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 

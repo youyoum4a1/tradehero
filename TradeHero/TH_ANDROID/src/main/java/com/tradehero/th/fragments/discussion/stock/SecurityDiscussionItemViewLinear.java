@@ -12,19 +12,9 @@ public class SecurityDiscussionItemViewLinear
         extends DiscussionItemViewLinear<DiscussionKey>
 {
     //<editor-fold desc="Constructors">
-    public SecurityDiscussionItemViewLinear(Context context)
-    {
-        super(context);
-    }
-
     public SecurityDiscussionItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public SecurityDiscussionItemViewLinear(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
     //</editor-fold>
 

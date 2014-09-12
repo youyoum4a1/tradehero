@@ -13,9 +13,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
 import javax.inject.Inject;
@@ -36,30 +36,13 @@ public class TrendingFilterSelectorView extends RelativeLayout
     private OnFilterTypeChangedListener changedListener;
 
     //<editor-fold desc="Constructors">
-    public TrendingFilterSelectorView(Context context)
-    {
-        super(context);
-        init();
-    }
-
     public TrendingFilterSelectorView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
-    }
-
-    public TrendingFilterSelectorView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        init();
-    }
-    //</editor-fold>
-
-    protected void init()
-    {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {

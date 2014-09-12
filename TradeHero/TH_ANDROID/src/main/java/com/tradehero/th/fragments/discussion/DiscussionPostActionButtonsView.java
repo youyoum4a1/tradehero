@@ -16,13 +16,12 @@ import com.tradehero.th.api.timeline.form.PublishableFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
@@ -42,6 +41,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Inject CurrentUserId currentUserId;
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
+    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
     public DiscussionPostActionButtonsView(Context context)
@@ -64,7 +64,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         initSocialBtnStatus();
     }
 
@@ -188,12 +188,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     private void openSettingScreen()
     {
-        getNavigator().pushFragment(SettingsFragment.class);
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((NavigatorActivity) getContext()).getNavigator();
+        navigator.pushFragment(SettingsFragment.class);
     }
 
     public void populate(PublishableFormDTO publishableFormDTO)

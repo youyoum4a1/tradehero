@@ -1,4 +1,4 @@
-package com.tradehero.th.base;
+package com.tradehero.th.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,10 +17,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class Navigator<ActivityType extends Activity>
+class Navigator<ActivityType extends Activity>
 {
-    public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
-
     private static final boolean DEFAULT_ADD_TO_BACK_STACK = true;
     private static final boolean DEFAULT_SHOW_HOME_KEY_AS_UP = true;
 
@@ -178,19 +176,6 @@ public class Navigator<ActivityType extends Activity>
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
-    }
-
-    public void popFragment()
-    {
-        Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
-
-        String backStackName = null;
-        if (currentDashboardFragment != null && currentDashboardFragment.getArguments() != null)
-        {
-            Bundle args = currentDashboardFragment.getArguments();
-            backStackName = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
-        }
-        popFragment(backStackName);
     }
 
     public boolean isBackStackEmpty()

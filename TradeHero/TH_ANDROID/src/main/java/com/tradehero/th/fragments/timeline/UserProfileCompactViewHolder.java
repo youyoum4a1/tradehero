@@ -13,11 +13,11 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
 public class UserProfileCompactViewHolder
@@ -43,7 +43,7 @@ public class UserProfileCompactViewHolder
     public UserProfileCompactViewHolder(View view)
     {
         super();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(view.getContext(), this);
         initViews(view);
     }
 

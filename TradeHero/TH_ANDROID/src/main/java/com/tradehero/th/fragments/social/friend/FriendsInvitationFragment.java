@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.prefs.LongPreference;
@@ -37,19 +36,16 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.user.UserProfileCache;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -77,6 +73,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
+    @Inject DashboardNavigator navigator;
 
     @NotNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
@@ -338,7 +335,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         Class<? extends SocialFriendsFragment> target = socialNetworkFactory.findProperTargetFragment(socialNetwork);
         Bundle bundle = new Bundle();
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(target, bundle);

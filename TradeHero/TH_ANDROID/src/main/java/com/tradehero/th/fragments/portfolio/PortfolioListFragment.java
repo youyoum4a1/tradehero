@@ -12,6 +12,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -39,6 +40,7 @@ public class PortfolioListFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -165,13 +167,13 @@ public class PortfolioListFragment extends DashboardFragment
             if (displayablePortfolioDTO.portfolioDTO != null && displayablePortfolioDTO.portfolioDTO.isWatchlist)
             {
                 WatchlistPositionFragment.putOwnedPortfolioId(args, displayablePortfolioDTO.ownedPortfolioId);
-                getDashboardNavigator().pushFragment(WatchlistPositionFragment.class, args);
+                navigator.pushFragment(WatchlistPositionFragment.class, args);
             }
             else
             {
                 PositionListFragment.putGetPositionsDTOKey(args, displayablePortfolioDTO.ownedPortfolioId);
                 PositionListFragment.putShownUser(args, displayablePortfolioDTO.ownedPortfolioId.getUserBaseKey());
-                getDashboardNavigator().pushFragment(PositionListFragment.class, args);
+                navigator.pushFragment(PositionListFragment.class, args);
             }
         }
         else

@@ -4,7 +4,7 @@ import android.content.Context;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 
-public class ProviderVideoAdapter extends ArrayDTOAdapterNew<HelpVideoDTO, ProviderVideoListItem>
+public class ProviderVideoAdapter extends ArrayDTOAdapterNew<HelpVideoDTO, ProviderVideoListItemView>
 {
     //<editor-fold desc="Constructors">
     public ProviderVideoAdapter(Context context, int layoutResourceId)

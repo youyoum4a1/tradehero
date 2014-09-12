@@ -23,7 +23,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.residemenu.ResideMenu;
@@ -36,7 +35,6 @@ import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -123,7 +121,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.news) protected TextView mNewsTextView;
 
     @Inject ResideMenu resideMenu;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject @ShowAskForReviewDialog LongPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
 
@@ -178,6 +175,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject Analytics analytics;
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -1019,12 +1017,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (alertId != null)
             {
                 AlertEditFragment.putAlertId(args, alertId);
-                getDashboardNavigator().pushFragment(AlertEditFragment.class, args);
+                navigator.pushFragment(AlertEditFragment.class, args);
             }
             else
             {
                 AlertCreateFragment.putSecurityId(args, securityId);
-                getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
+                navigator.pushFragment(AlertCreateFragment.class, args);
             }
         }
         else if (securityAlertAssistant.isFailed())
@@ -1044,7 +1042,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Bundle args = new Bundle();
             WatchlistEditFragment.putSecurityId(args, securityId);
-            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
+            navigator.pushFragment(WatchlistEditFragment.class, args);
         }
         else
         {
@@ -1235,19 +1233,18 @@ public class BuySellFragment extends AbstractBuySellFragment
             Double profit = abstractTransactionDialogFragment.getProfitOrLossUsd();
             if (profit != null)
             {
-                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolderLazy.get().getCurrentActivity();
-                if (profit > 0 && activity != null)
+                if (profit > 0)
                 {
                     long lastReviewLimitTime = mShowAskForReviewDialogPreference.get();
                     if (System.currentTimeMillis() > lastReviewLimitTime)
                     {
-                        AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
+                        AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
                         return;
                     }
                     long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();
                     if (System.currentTimeMillis() > lastInviteLimitTime)
                     {
-                        AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
+                        AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
                     }
                 }
             }
@@ -1320,7 +1317,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         shareToWeChat();
         if (isResumed())
         {
-            DashboardNavigator navigator = getDashboardNavigator();
             // TODO find a better way to remove this fragment from the stack
             navigator.popFragment();
 
@@ -1350,7 +1346,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
                     providerId.getArgs());
         }
-        getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
+        navigator.pushFragment(StockInfoFragment.class, args);
     }
 
     private BroadcastReceiver createImageButtonClickBroadcastReceiver()

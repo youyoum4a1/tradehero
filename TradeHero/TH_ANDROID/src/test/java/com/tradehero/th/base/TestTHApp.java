@@ -25,7 +25,7 @@ import timber.log.Timber;
 
 import static org.robolectric.Robolectric.shadowOf;
 
-public class TestApplication extends Application
+public class TestTHApp extends THApp
         implements TestLifecycleApplication
 {
     @Override protected void init()

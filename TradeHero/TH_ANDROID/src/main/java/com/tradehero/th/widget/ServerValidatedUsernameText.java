@@ -6,8 +6,8 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.DisplayNameDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.user.UserAvailabilityCache;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,26 +21,16 @@ public class ServerValidatedUsernameText extends ServerValidatedText
     private String originalUsernameValue;
 
     //<editor-fold desc="Constructors">
-    public ServerValidatedUsernameText(Context context)
-    {
-        this(context, null);
-    }
-
     public ServerValidatedUsernameText(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
-    }
-
-    public ServerValidatedUsernameText(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        super(context, attrs);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         userAvailabilityListener = createValidatedUserNameListener();
     }
 

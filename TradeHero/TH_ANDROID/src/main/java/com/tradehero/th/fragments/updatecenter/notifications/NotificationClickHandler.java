@@ -13,8 +13,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
@@ -22,7 +21,7 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -30,26 +29,21 @@ import timber.log.Timber;
 public class NotificationClickHandler
 {
     private final NotificationDTO notificationDTO;
-    private final Navigator navigator;
     private final Context context;
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
     @Inject CurrentUserId currentUserId;
+    @Inject DashboardNavigator navigator;
 
     public NotificationClickHandler(
             Context context,
             NotificationDTO notificationDTO)
     {
-        if (!(context instanceof NavigatorActivity))
-        {
-            throw new IllegalArgumentException("Context needed to be NavigatorActivity");
-        }
         this.context = context;
         this.notificationDTO = notificationDTO;
-        this.navigator = ((NavigatorActivity) context).getNavigator();
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     /**

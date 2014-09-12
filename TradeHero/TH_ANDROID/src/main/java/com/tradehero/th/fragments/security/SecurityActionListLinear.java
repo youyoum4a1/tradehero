@@ -16,7 +16,7 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,26 +30,16 @@ public class SecurityActionListLinear extends LinearLayout
     @Nullable protected OnActionMenuClickedListener menuClickedListener;
 
     //<editor-fold desc="Constructors">
-    public SecurityActionListLinear(Context context)
-    {
-        super(context);
-    }
-
     public SecurityActionListLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public SecurityActionListLinear(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         ButterKnife.inject(this);
         adapter = new SecurityActionListAdapter(getContext());
     }

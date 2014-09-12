@@ -21,9 +21,9 @@ import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -93,7 +93,7 @@ public class NewsHeadlineFragment extends SherlockFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

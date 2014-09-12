@@ -1,18 +1,18 @@
 package com.tradehero.th.models.share;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareFormDTOWithEnum;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.ShareDialogFactory;
 import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -26,7 +26,8 @@ import org.jetbrains.annotations.Nullable;
 public class SocialShareHelper
 {
     @NotNull protected final Context applicationContext;
-    @NotNull protected final CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final Provider<Activity> activityHolder;
+    @NotNull protected final Provider<DashboardNavigator> navigatorProvider;
     @NotNull protected final ShareDialogFactory shareDialogFactory;
     @NotNull protected final AlertDialogUtil alertDialogUtil;
     @NotNull protected final Provider<SocialSharer> socialSharerProvider;
@@ -42,13 +43,15 @@ public class SocialShareHelper
     //<editor-fold desc="Constructors">
     @Inject public SocialShareHelper(
             @NotNull Context applicationContext,
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityHolder,
+            @NotNull Provider<DashboardNavigator> navigatorProvider,
             @NotNull ShareDialogFactory shareDialogFactory,
             @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull Provider<SocialSharer> socialSharerProvider)
     {
         this.applicationContext = applicationContext;
-        this.currentActivityHolder = currentActivityHolder;
+        this.activityHolder = activityHolder;
+        this.navigatorProvider = navigatorProvider;
         this.shareDialogFactory = shareDialogFactory;
         this.alertDialogUtil = alertDialogUtil;
         this.socialSharerProvider = socialSharerProvider;
@@ -155,7 +158,7 @@ public class SocialShareHelper
         cancelFormWaiting();
         dismissShareDialog();
         shareDialog = shareDialogFactory.createShareDialog(
-                currentActivityHolder.getCurrentContext(),
+                activityHolder.get(),
                 discussionToShare,
                 createShareMenuClickedListener());
     }
@@ -222,9 +225,9 @@ public class SocialShareHelper
         detachOfferConnectDialog();
         final SocialNetworkEnum socialNetwork = shareFormDTO.getSocialNetworkEnum();
         alertDialogUtil.popWithOkCancelButton(
-                currentActivityHolder.getCurrentContext(),
-                currentActivityHolder.getCurrentActivity().getString(R.string.link, socialNetwork.getName()),
-                currentActivityHolder.getCurrentActivity().getString(R.string.link_description, socialNetwork.getName()),
+                activityHolder.get(),
+                activityHolder.get().getString(R.string.link, socialNetwork.getName()),
+                activityHolder.get().getString(R.string.link_description, socialNetwork.getName()),
                 R.string.link_now,
                 R.string.later,
                 createConnectDialogListener(socialNetwork),
@@ -265,8 +268,7 @@ public class SocialShareHelper
             detachOfferConnectDialog();
             Bundle args = new Bundle();
             SettingsFragment.putSocialNetworkToConnect(args, socialNetwork);
-            ((DashboardActivity) currentActivityHolder.getCurrentActivity()).getDashboardNavigator()
-                    .pushFragment(SettingsFragment.class, args);
+            navigatorProvider.get().pushFragment(SettingsFragment.class, args);
         }
     }
 

@@ -6,8 +6,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.residemenu.ResideMenu;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -15,6 +14,7 @@ import javax.inject.Inject;
 public class DashboardPreferenceFragment extends PreferenceFragment
 {
     @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject DashboardNavigator navigator;
     private ActionBarOwnerMixin actionBarOwnerMixin;
 
     @Override public void onCreate(Bundle paramBundle)
@@ -45,7 +45,7 @@ public class DashboardPreferenceFragment extends PreferenceFragment
             case android.R.id.home:
                 if (actionBarOwnerMixin.shouldShowHomeAsUp())
                 {
-                    getNavigator().popFragment();
+                    navigator.popFragment();
                 }
                 else
                 {
@@ -56,8 +56,8 @@ public class DashboardPreferenceFragment extends PreferenceFragment
         return super.onOptionsItemSelected(item);
     }
 
-    protected Navigator getNavigator()
+    public DashboardNavigator getNavigator()
     {
-        return ((NavigatorActivity) getActivity()).getNavigator();
+        return navigator;
     }
 }

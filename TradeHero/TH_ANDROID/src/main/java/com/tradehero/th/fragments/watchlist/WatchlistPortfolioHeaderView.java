@@ -11,7 +11,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.text.SimpleDateFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +50,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
 
     private void init()
     {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         markingDateFormat = new SimpleDateFormat(getResources().getString(R.string.watchlist_marking_date_format));
     }
 

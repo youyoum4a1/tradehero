@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.widget.TabHost;
 import com.tradehero.th.R;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -19,6 +18,8 @@ import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator<FragmentActivity>
 {
+    public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
+
     private static final boolean TAB_SHOULD_ADD_TO_BACKSTACK = false;
     private static final boolean TAB_SHOW_HOME_AS_UP = false;
 
@@ -158,6 +159,20 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         }
         onFragmentChanged(activity, getCurrentFragment().getClass(), null);
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
+    }
+
+
+    public void popFragment()
+    {
+        Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
+
+        String backStackName = null;
+        if (currentDashboardFragment != null && currentDashboardFragment.getArguments() != null)
+        {
+            Bundle args = currentDashboardFragment.getArguments();
+            backStackName = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+        }
+        popFragment(backStackName);
     }
 
     private void updateTabBarOnTabChanged(String tabId)

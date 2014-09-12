@@ -24,8 +24,6 @@ public class AlertDialogUtil
 {
     private ProgressDialog mProgressDialog;
 
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-
     //<editor-fold desc="Constructors">
     @Inject public AlertDialogUtil()
     {

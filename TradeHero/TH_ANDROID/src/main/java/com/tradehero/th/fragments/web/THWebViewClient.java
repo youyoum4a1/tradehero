@@ -10,14 +10,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -25,17 +24,18 @@ import timber.log.Timber;
 public class THWebViewClient extends WebViewClient
 {
     @Inject THIntentFactory thIntentFactory;
+    @Inject Lazy<ProviderListCache> providerListCache;
+    @Inject DashboardNavigator navigator;
     private final Context context;
     private THIntentPassedListener thIntentPassedListener;
 
-    @Inject Lazy<ProviderListCache> providerListCache;
     private boolean clearCacheAfterFinishRequest = true;
 
     public THWebViewClient(Context context)
     {
         super();
         this.context = context;
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     public void setClearCacheAfterFinishRequest(boolean should)
@@ -87,10 +87,9 @@ public class THWebViewClient extends WebViewClient
                     {
                         redirectUrl = android.net.Uri.decode(redirectUrl);
                     }
-                    if (redirectUrl != null && context instanceof DashboardNavigatorActivity)
+                    if (navigator != null)
                     {
                         Timber.d("Opening this page: %s", redirectUrl);
-                        DashboardNavigator navigator = ((DashboardNavigatorActivity) context).getDashboardNavigator();
                         Bundle bundle = new Bundle();
                         WebViewFragment.putUrl(bundle, redirectUrl);
                         navigator.pushFragment(WebViewFragment.class, bundle);

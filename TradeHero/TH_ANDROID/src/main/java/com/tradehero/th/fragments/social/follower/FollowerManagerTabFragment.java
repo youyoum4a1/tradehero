@@ -13,13 +13,11 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
@@ -47,6 +45,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     private FollowerSummaryDTO followerSummaryDTO;
     private FollowerManagerInfoFetcher infoFetcher;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     public static void putHeroId(Bundle args, UserBaseKey followerId)
     {
@@ -167,7 +166,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     protected void fetchFollowers()
     {
         detachInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
+        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), createFollowerSummaryCacheListener());
         infoFetcher.fetch(this.heroId);
     }
 
@@ -296,14 +295,12 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             heroId = getHeroId(getArguments());
         }
         detachInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheRefreshListener());
+        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), createFollowerSummaryCacheRefreshListener());
         infoFetcher.fetch(this.heroId,true);
     }
 
     private void pushTimelineFragment(int followerId)
     {
-        DashboardNavigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-
         Bundle bundle = new Bundle();
         thRouter.save(bundle, new UserBaseKey(followerId));
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
@@ -317,8 +314,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         Bundle args = new Bundle();
         args.putBundle(FollowerPayoutManagerFragment.BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
                 followerHeroRelationId.getArgs());
-        ((DashboardActivity) getActivity()).getDashboardNavigator()
-                .pushFragment(FollowerPayoutManagerFragment.class, args);
+        navigator.pushFragment(FollowerPayoutManagerFragment.class, args);
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)

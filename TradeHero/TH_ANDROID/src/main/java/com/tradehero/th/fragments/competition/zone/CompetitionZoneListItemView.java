@@ -12,7 +12,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCel
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItemView
@@ -44,7 +44,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
     {
         super.onFinishInflate();
         initViews();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()

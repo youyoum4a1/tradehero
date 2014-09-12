@@ -14,12 +14,14 @@ public class DTOAdapterNew<DTOType>
     protected static final int DEFAULT_VIEW_TYPE = 0;
 
     protected int layoutResourceId;
+    private LayoutInflater inflater;
 
     //<editor-fold desc="Constructors">
     public DTOAdapterNew(@NotNull Context context, int layoutResourceId)
     {
         super(context, layoutResourceId);
         this.layoutResourceId = layoutResourceId;
+        this.inflater = LayoutInflater.from(context);
     }
     //</editor-fold>
 
@@ -27,7 +29,7 @@ public class DTOAdapterNew<DTOType>
     {
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(getContext()).inflate(getViewResId(position), viewGroup, false);
+            convertView = inflater.inflate(getViewResId(position), viewGroup, false);
         }
 
         //noinspection unchecked

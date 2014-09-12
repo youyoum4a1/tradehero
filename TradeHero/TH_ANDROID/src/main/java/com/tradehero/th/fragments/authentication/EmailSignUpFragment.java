@@ -14,12 +14,11 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -45,12 +44,13 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private ImageView backButton;
 
     @Inject Analytics analytics;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         analytics.tagScreen(AnalyticsConstants.Register_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.RegisterFormScreen));
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
@@ -90,14 +90,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         switch (item.getItemId())
         {
             case android.R.id.home:
-                if (getActivity() instanceof DashboardNavigatorActivity)
-                {
-                    ((NavigatorActivity) getActivity()).getNavigator().popFragment();
-                }
-                else
-                {
-                    Timber.e("Activity is not a DashboardNavigatorActivity", new Exception());
-                }
+                navigator.popFragment();
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.competition;
 import android.os.Bundle;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -22,7 +22,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
     abstract protected BaseWebViewFragment getApplicableWebViewFragment();
     abstract protected OwnedPortfolioId getApplicablePortfolioId();
     abstract protected ProviderId getProviderId();
-    abstract protected Navigator getNavigator();
+    abstract protected DashboardNavigator getNavigator();
     abstract protected Class<?> getClassToPop();
 
     @Override public void onIntentPassed(THIntent thIntent)

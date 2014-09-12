@@ -1,6 +1,8 @@
 package com.tradehero.th.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TabHost;
-
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -21,27 +22,44 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.UIModule;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.THApp;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
+import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.home.HomeFragment;
+import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.friend.InviteCodeDialogFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.TradeListFragment;
+import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
@@ -54,28 +72,26 @@ import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.ui.ViewWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
-
-import org.jetbrains.annotations.NotNull;
-
+import dagger.Lazy;
+import dagger.Module;
+import dagger.Provides;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import dagger.Lazy;
+import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements DashboardNavigatorActivity,
-        ResideMenu.OnMenuListener
+        implements Injector, ResideMenu.OnMenuListener
 {
     private DashboardNavigator navigator;
     @Inject Set<DashboardNavigator.DashboardFragmentWatcher> dashboardFragmentWatchers;
@@ -92,8 +108,6 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject Lazy<THIntentFactory> thIntentFactory;
-    @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
@@ -114,21 +128,18 @@ public class DashboardActivity extends SherlockFragmentActivity
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
 
     private ProgressDialog progressDialog;
+    private Injector newInjector;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         AppTiming.dashboardCreate = System.currentTimeMillis();
-
-        // this need tobe early than super.onCreate or it will crash
-        // when device scroll into landscape.
-        // request the progress-bar feature for the activity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         super.onCreate(savedInstanceState);
 
-        DaggerUtils.inject(this);
-
-        currentActivityHolder.setCurrentActivity(this);
+        THApp app = THApp.get(this);
+        newInjector = app.plus(new DashboardActivityModule());
+        newInjector.inject(this);
 
         if (Constants.RELEASE)
         {
@@ -227,7 +238,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onBackPressed()
     {
-        getNavigator().popFragment();
+        navigator.popFragment();
     }
 
     private void suggestUpgradeIfNecessary()
@@ -272,7 +283,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         switch (item.getItemId())
         {
             case R.id.admin_settings:
-                getDashboardNavigator().pushFragment(AdminSettingsFragment.class);
+                navigator.pushFragment(AdminSettingsFragment.class);
                 return true;
             case R.id.hardware_menu_settings:
                 pushFragmentIfNecessary(SettingsFragment.class);
@@ -289,7 +300,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         Fragment currentDashboardFragment = navigator.getCurrentFragment();
         if (!(fragmentClass.isInstance(currentDashboardFragment)))
         {
-            getNavigator().pushFragment(fragmentClass);
+            navigator.pushFragment(fragmentClass);
         }
     }
 
@@ -359,10 +370,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
         navigator = null;
 
-        if (currentActivityHolder != null)
-        {
-            currentActivityHolder.unsetActivity(this);
-        }
         purchaseRestorerFinishedListener = null;
         notificationFetchListener = null;
 
@@ -389,6 +396,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         return firstShowInviteCodeDialogPreference.get()
                 //&& !(THUser.getTHAuthenticationProvider() instanceof EmailAuthenticationProvider)
                 && (userProfileDTO == null || userProfileDTO.inviteCode == null || userProfileDTO.inviteCode.isEmpty());
+    }
+
+    @Override public void inject(Object o)
+    {
+        newInjector.inject(o);
     }
 
     protected class DashboardOnInviteCodeDismissed implements BaseDialogFragment.OnDismissedListener
@@ -425,30 +437,9 @@ public class DashboardActivity extends SherlockFragmentActivity
             return;
         }
 
-        switch (intent.getAction())
-        {
-            case Intent.ACTION_VIEW:
-            case Intent.ACTION_MAIN:
-                if (thIntentFactory.get().isHandlableIntent(intent))
-                {
-                    getDashboardNavigator().goToPage(thIntentFactory.get().create(intent));
-                }
-                break;
-        }
         Timber.d(getIntent().getAction());
+        Timber.e(new Exception("thIntentFactory"), "Was handled by thIntentFactory");
     }
-
-    //<editor-fold desc="DashboardNavigatorActivity">
-    @Override public Navigator getNavigator()
-    {
-        return navigator;
-    }
-
-    @Override public DashboardNavigator getDashboardNavigator()
-    {
-        return navigator;
-    }
-    //</editor-fold>
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -529,5 +520,56 @@ public class DashboardActivity extends SherlockFragmentActivity
         Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s",
                 currentFragmentName);
         Crashlytics.setString("LowMemoryAt", new Date().toString());
+    }
+
+    @Module(
+            addsTo = AppModule.class,
+            includes = {
+                    UIModule.class
+            },
+            library = true,
+            complete = false,
+            overrides = true
+    )
+    public class DashboardActivityModule
+    {
+        @Provides Activity provideActivity()
+        {
+            return DashboardActivity.this;
+        }
+
+        @Provides DashboardNavigator provideDashboardNavigator()
+        {
+            return navigator;
+        }
+
+        @Provides @Singleton THRouter provideTHRouter(Context context, Provider<DashboardNavigator> navigatorProvider)
+        {
+            THRouter router = new THRouter(context, navigatorProvider);
+            router.registerRoutes(
+                    PushableTimelineFragment.class,
+                    MeTimelineFragment.class,
+                    NotificationsCenterFragment.class,
+                    MessagesCenterFragment.class,
+                    UpdateCenterFragment.class,
+                    TrendingFragment.class,
+                    FriendsInvitationFragment.class,
+                    SettingsFragment.class,
+                    MainCompetitionFragment.class,
+                    BuySellFragment.class,
+                    StoreScreenFragment.class,
+                    LeaderboardCommunityFragment.class,
+                    CompetitionWebViewFragment.class,
+                    PositionListFragment.class,
+                    TradeListFragment.class,
+                    HomeFragment.class,
+                    ProviderVideoListFragment.class
+            );
+            router.registerAlias("messages", "updatecenter/0");
+            router.registerAlias("notifications", "updatecenter/1");
+            router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+            router.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+            return router;
+        }
     }
 }

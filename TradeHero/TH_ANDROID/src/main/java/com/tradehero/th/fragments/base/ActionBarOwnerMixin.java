@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class ActionBarOwnerMixin
 {
-    private static final String BUNDLE_KEY_TITLE = DashboardFragment.class.getName() + ".title";
-    private static final String BUNDLE_KEY_SHOW_HOME_AS_UP = DashboardFragment.class.getName() + ".show_home_as_up";
+    private static final String BUNDLE_KEY_TITLE = ActionBarOwnerMixin.class.getName() + ".title";
+    private static final String BUNDLE_KEY_SHOW_HOME_AS_UP = ActionBarOwnerMixin.class.getName() + ".show_home_as_up";
     private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
 
     private final SherlockFragment fragment;

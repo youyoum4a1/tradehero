@@ -37,7 +37,6 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -115,6 +114,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
     @Inject protected THRouter thRouter;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
+    @Inject DashboardNavigator navigator;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -243,7 +243,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onEditProfileClicked()
     {
-        getDashboardNavigator().pushFragment(SettingsProfileFragment.class);
+        navigator.pushFragment(SettingsProfileFragment.class);
     }
 
     protected void pushHeroFragment()
@@ -257,7 +257,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getDashboardNavigator().pushFragment(HeroManagerFragment.class, bundle);
+        navigator.pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -271,7 +271,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+        navigator.pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -508,7 +508,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         fetchUserProfile(false);
 
         destroyInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(new FollowerSummaryListener());
+        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), new FollowerSummaryListener());
         infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
 
         if (andDisplay)
@@ -544,7 +544,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
-        getDashboardNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
+        navigator.pushFragment(TimelineDiscussionFragment.class, bundle);
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -720,8 +720,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
         PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-        DashboardNavigator navigator =
-                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
 
         if (portfolioDTO != null && portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
         {
@@ -742,8 +740,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         Bundle args = new Bundle();
         WatchlistPositionFragment.putOwnedPortfolioId(args, ownedPortfolioId);
-        DashboardNavigator navigator =
-                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         navigator.pushFragment(WatchlistPositionFragment.class, args);
     }
 
@@ -862,6 +858,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         detachChoiceFollowAssistant();
         choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
+                getActivity(),
                 heroDTO.getBaseKey(),
                 createPremiumUserFollowedListener(),
                 getApplicablePortfolioId());
@@ -871,7 +868,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void pushPrivateMessageFragment()
     {
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator == null)
         {
             return;

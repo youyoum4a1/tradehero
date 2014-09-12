@@ -8,7 +8,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 import android.widget.TabHost;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import java.util.Collection;
@@ -19,6 +22,7 @@ public class DashboardTabHost extends TabHost
     private final Collection<RootFragmentType> bottomBarFragmentTypes = RootFragmentType.forBottomBar();
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
+    private QuickReturnListViewOnScrollListener quickReturnScrollListener;
 
     public DashboardTabHost(Context context, AttributeSet attrs)
     {
@@ -28,9 +32,16 @@ public class DashboardTabHost extends TabHost
     @Override public void setup()
     {
         super.setup();
+
+        // slide in and out animation
         slideInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in);
         slideOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out);
 
+        int tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
+        quickReturnScrollListener = new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER,
+                null, 0, this, tabHostHeight);
+
+        // Populate tabs for the button bar
         for (RootFragmentType tabType: bottomBarFragmentTypes)
         {
             addNewTab(tabType);
@@ -79,6 +90,11 @@ public class DashboardTabHost extends TabHost
             setVisibility(View.VISIBLE);
             startAnimation(slideInAnimation);
         }
+    }
+
+    public final void registerAutoHide(AbsListView listView)
+    {
+        listView.setOnScrollListener(quickReturnScrollListener);
     }
 
     private class DummyTabContentFactory implements TabContentFactory

@@ -84,7 +84,7 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     {
         Bundle args = new Bundle();
         CompetitionWebViewFragment.putUrl(args, getRules());
-        getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+        navigator.pushFragment(CompetitionWebViewFragment.class, args);
     }
 
     public String getRules()

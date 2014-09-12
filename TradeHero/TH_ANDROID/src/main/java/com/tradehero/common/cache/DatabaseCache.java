@@ -20,6 +20,8 @@ import timber.log.Timber;
 {
     @Inject Lazy<CacheHelper> helperProvider;
 
+    @Inject public DatabaseCache() {}
+
     /**
      * Get writable database
      *

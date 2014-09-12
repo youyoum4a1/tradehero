@@ -20,6 +20,7 @@ import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -52,6 +53,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -146,7 +148,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         Bundle args = new Bundle();
         NewPrivateMessageFragment.putCorrespondentUserBaseKey(args,
                 mRelationsList.get(position).user.getBaseKey());
-        getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+        navigator.pushFragment(NewPrivateMessageFragment.class, args);
     }
 
     protected void handleFollowRequested(UserBaseKey userBaseKey)

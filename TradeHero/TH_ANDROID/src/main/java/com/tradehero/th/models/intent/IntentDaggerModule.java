@@ -1,6 +1,7 @@
 package com.tradehero.th.models.intent;
 
 import com.tradehero.th.models.intent.competition.ProviderIntentFactory;
+import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.security.SecurityIntentFactory;
 import dagger.Module;
 import dagger.Provides;
@@ -10,13 +11,11 @@ import javax.inject.Singleton;
 @Module(
         staticInjections =
                 {
-                        com.tradehero.th.models.intent.THIntent.class,
+                        THIntent.class,
                 },
-        injects =
-                {
-                        com.tradehero.th.activities.DashboardActivity.class,
-                        com.tradehero.th.fragments.web.THWebViewClient.class,
-                },
+        injects = {
+                ProviderPageIntent.class
+        },
         complete = false,
         library = true
 )

@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import com.tradehero.th.R;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import javax.inject.Inject;
 
@@ -23,7 +23,7 @@ public class TopBannerSettingViewHolder extends OneSettingViewHolder
         DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
         if (preferenceFragmentCopy != null)
         {
-            Navigator navigator = preferenceFragmentCopy.getNavigator();
+            DashboardNavigator navigator = preferenceFragmentCopy.getNavigator();
             if (navigator != null)
             {
                 navigator.pushFragment(FriendsInvitationFragment.class, null, null);

@@ -1,10 +1,11 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.app.Activity;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 
 public class THBaseIABBillingAvailableTester
@@ -13,10 +14,10 @@ public class THBaseIABBillingAvailableTester
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABBillingAvailableTester(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(currentActivityHolder, iabExceptionFactory);
+        super(activityProvider, iabExceptionFactory);
     }
     //</editor-fold>
 }

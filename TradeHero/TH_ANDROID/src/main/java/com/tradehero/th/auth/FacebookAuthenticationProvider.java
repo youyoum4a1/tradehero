@@ -49,7 +49,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     private String userId;
 
     // TODO not use injection of Context as this instance is a singleton.
-    // Use CurrentActivityHolder instead
+    // Use Provider<Activity> instead
     @Inject public FacebookAuthenticationProvider(
             Context context,
             @FacebookAppId String applicationId,

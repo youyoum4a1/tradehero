@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.AdapterView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
 
@@ -42,7 +42,7 @@ public class LeaderboardMarkUserListView extends PullToRefreshListView
 
     private void init()
     {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         super.setOnItemClickListener(singleExpandingListViewListener);
     }
 

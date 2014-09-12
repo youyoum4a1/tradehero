@@ -13,9 +13,9 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -32,19 +32,10 @@ public class UpdateCenterResideMenuItem extends LinearLayout
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     //<editor-fold desc="Constructors">
-    public UpdateCenterResideMenuItem(Context context)
-    {
-        super(context);
-    }
-
     public UpdateCenterResideMenuItem(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public UpdateCenterResideMenuItem(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
@@ -53,7 +44,6 @@ public class UpdateCenterResideMenuItem extends LinearLayout
         super.onFinishInflate();
 
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
     }
 
     private void fetchAndDisplayUserProfile()

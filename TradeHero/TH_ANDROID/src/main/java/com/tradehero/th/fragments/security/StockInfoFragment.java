@@ -20,8 +20,7 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
@@ -40,6 +39,7 @@ public class StockInfoFragment extends DashboardFragment
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = StockInfoFragment.class.getName() + ".providerId";
 
     @Inject protected AlertDialogUtil alertDialogUtil;
+    @Inject DashboardNavigator navigator;
 
     protected ProviderId providerId;
 
@@ -334,7 +334,6 @@ public class StockInfoFragment extends DashboardFragment
 
     protected void handleNewsClicked(int position, NewsItemDTOKey newsItemDTOKey)
     {
-        Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         Bundle bundle = new Bundle();
         NewsDiscussionFragment.putDiscussionKey(bundle, newsItemDTOKey);
         int resId = newsHeadlineAdapter.getBackgroundRes(position);

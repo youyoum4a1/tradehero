@@ -27,7 +27,7 @@ import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -95,7 +95,7 @@ public class DiscussionView extends FrameLayout
         inflateDiscussionTopic();
         inflateDiscussionStatus();
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
 
         discussionListAdapter = createDiscussionListAdapter();
     }

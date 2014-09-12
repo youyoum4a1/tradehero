@@ -10,24 +10,14 @@ import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
 public class PrivateMessageBubbleViewLinear extends DiscussionItemViewLinear<PrivateMessageKey>
 {
     //<editor-fold desc="Constructors">
-    public PrivateMessageBubbleViewLinear(Context context)
-    {
-        super(context);
-    }
-
     public PrivateMessageBubbleViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public PrivateMessageBubbleViewLinear(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
     //</editor-fold>
 
     @Override protected DiscussionItemViewHolder createViewHolder()
     {
-        return new DiscussionItemViewHolder<PrivateDiscussionDTO>();
+        return new DiscussionItemViewHolder<PrivateDiscussionDTO>(getContext());
     }
 }

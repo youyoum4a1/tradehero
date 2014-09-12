@@ -17,7 +17,6 @@ import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.THBillingRequest;
@@ -30,6 +29,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
@@ -106,7 +106,7 @@ abstract public class THBaseBillingInteractor<
 {
     public static final int ACTION_RESET_PORTFOLIO = 1;
 
-    @NotNull protected final CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final Provider<Activity> activityProvider;
     @NotNull protected final CurrentUserId currentUserId;
     @NotNull protected final UserProfileCache userProfileCache;
     @NotNull protected final PortfolioCompactListCache portfolioCompactListCache;
@@ -120,7 +120,7 @@ abstract public class THBaseBillingInteractor<
     //<editor-fold desc="Constructors">
     protected THBaseBillingInteractor(
             @NotNull THBillingLogicHolderType billingLogicHolder,
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull PortfolioCompactListCache portfolioCompactListCache,
@@ -133,7 +133,7 @@ abstract public class THBaseBillingInteractor<
                     ProductDetailAdapterType> billingAlertDialogUtil)
     {
         super(billingLogicHolder);
-        this.currentActivityHolder = currentActivityHolder;
+        this.activityProvider = activityProvider;
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
         this.portfolioCompactListCache = portfolioCompactListCache;
@@ -229,7 +229,7 @@ abstract public class THBaseBillingInteractor<
 
     protected AlertDialog popBuyDialog(int requestCode, ProductIdentifierDomain productIdentifierDomain, int titleResId)
     {
-        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        Activity currentActivity = activityProvider.get();
         if (currentActivity != null)
         {
             dismissProgressDialog();
@@ -336,11 +336,11 @@ abstract public class THBaseBillingInteractor<
 
     @Override public AlertDialog popBillingUnavailable(BillingExceptionType billingException)
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             return billingAlertDialogUtil.popBillingUnavailable(
-                    currentActivityHolder.getCurrentContext(),
+                    currentContext,
                     billingLogicHolder.getBillingHolderName(
                             currentContext.getResources()));
         }
@@ -677,7 +677,7 @@ abstract public class THBaseBillingInteractor<
 
     protected AlertDialog popPurchaseReportFailed(int requestCode, THProductPurchaseType reportedPurchase, BillingExceptionType error)
     {
-        Context currentContext = currentActivityHolder.getCurrentActivity();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             return billingAlertDialogUtil.popFailedToReport(currentContext);
@@ -701,7 +701,7 @@ abstract public class THBaseBillingInteractor<
 
     protected void popProgressDialogLoadingInfo()
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             dismissProgressDialog();
@@ -716,7 +716,7 @@ abstract public class THBaseBillingInteractor<
 
     protected void popRestorePurchaseProgress()
     {
-        Context currentContext = currentActivityHolder.getCurrentContext();
+        Context currentContext = activityProvider.get();
         if (currentContext != null)
         {
             dismissProgressDialog();

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.share;
+package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.view.LayoutInflater;

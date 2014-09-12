@@ -25,17 +25,16 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -63,6 +62,7 @@ public class PortfolioListItemView extends RelativeLayout
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DisplayablePortfolioUtil displayablePortfolioUtil;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> currentUserProfileCacheListener;
     private DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> getPositionsListener;
@@ -89,7 +89,7 @@ public class PortfolioListItemView extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         if (userIcon != null && picasso != null)
         {
             displayDefaultUserIcon();
@@ -141,8 +141,6 @@ public class PortfolioListItemView extends RelativeLayout
         if (displayablePortfolioDTO != null && displayablePortfolioDTO.userBaseDTO != null)
         {
             Bundle bundle = new Bundle();
-            DashboardNavigator navigator =
-                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
             UserBaseKey userToSee = new UserBaseKey(displayablePortfolioDTO.userBaseDTO.id);
             thRouter.save(bundle, userToSee);
             if (currentUserId.toUserBaseKey().equals(userToSee))

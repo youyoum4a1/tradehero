@@ -7,12 +7,20 @@ import dagger.Lazy;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import timber.log.Timber;
 
+@Singleton
 public class TimelineManager
 {
-    @Inject DatabaseCache dbCache;
-    @Inject Lazy<TimelineStore.Factory> allTimelineStores;
+    private final DatabaseCache dbCache;
+    private final Lazy<TimelineStore.Factory> allTimelineStores;
+
+    @Inject TimelineManager(DatabaseCache dbCache, Lazy<TimelineStore.Factory> allTimelineStores)
+    {
+        this.dbCache = dbCache;
+        this.allTimelineStores = allTimelineStores;
+    }
 
     public List<TimelineItemDTOKey> getTimeline(Query query, boolean forceReload) throws IOException
     {

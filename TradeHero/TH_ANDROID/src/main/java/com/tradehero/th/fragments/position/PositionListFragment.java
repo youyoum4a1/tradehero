@@ -10,7 +10,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -20,8 +19,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -89,7 +86,6 @@ public class PositionListFragment
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCache portfolioCache;
     @Inject UserProfileCache userProfileCache;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject @ShowAskForReviewDialog LongPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
 
@@ -117,6 +113,7 @@ public class PositionListFragment
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Nullable protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NotNull Bundle args, @NotNull GetPositionsDTOKey getPositionsDTOKey)
@@ -332,7 +329,6 @@ public class PositionListFragment
             {
                 TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
             }
-            DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)
             {
                 navigator.pushFragment(TradeListFragment.class, args);
@@ -351,7 +347,7 @@ public class PositionListFragment
             TrendingFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        getDashboardNavigator().pushFragment(TrendingFragment.class, args);
+        navigator.pushFragment(TrendingFragment.class, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
@@ -632,13 +628,11 @@ public class PositionListFragment
         thRouter.save(args, userBaseKey);
         if (currentUserId.toUserBaseKey().equals(userBaseKey))
         {
-            ((DashboardActivity) getActivity())
-                    .getDashboardNavigator().pushFragment(MeTimelineFragment.class, args);
+            navigator.pushFragment(MeTimelineFragment.class, args);
         }
         else
         {
-            ((DashboardActivity) getActivity())
-                    .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+            navigator.pushFragment(PushableTimelineFragment.class, args);
         }
     }
     //</editor-fold>
@@ -764,20 +758,19 @@ public class PositionListFragment
         Double profit = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey).roiSinceInception;
         if (profit != null)
         {
-            SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolderLazy.get().getCurrentActivity();
-            if (profit > 0 && activity != null)
+            if (profit > 0)
             {
                 long lastReviewLimitTime = mShowAskForReviewDialogPreference.get();
                 if (System.currentTimeMillis() > lastReviewLimitTime)
                 {
-                    AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
+                    AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
                     mShowAskForInviteDialogPreference.set(System.currentTimeMillis()+AskForReviewDialogFragment.ONE_DAY);
                     return;
                 }
                 long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();
                 if (System.currentTimeMillis() > lastInviteLimitTime)
                 {
-                    AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
+                    AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
                 }
             }
         }

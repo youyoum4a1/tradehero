@@ -14,8 +14,8 @@ import com.tradehero.common.billing.googleplay.exception.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exception.IABSubscriptionUnavailableException;
 import com.tradehero.common.billing.googleplay.exception.IABUnknownErrorException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import dagger.Lazy;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -43,10 +43,10 @@ abstract public class BaseIABPurchaser<
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaser(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(currentActivityHolder, iabExceptionFactory);
+        super(activityProvider, iabExceptionFactory);
     }
     //</editor-fold>
 
@@ -61,7 +61,7 @@ abstract public class BaseIABPurchaser<
 
     protected Activity getActivity()
     {
-        return currentActivityHolder.getCurrentActivity();
+        return activityProvider.get();
     }
 
     @Override public int getRequestCode()
@@ -201,7 +201,7 @@ abstract public class BaseIABPurchaser<
                 getProductDetails(purchaseOrder.getProductIdentifier()).getType());
         Bundle buyIntentBundle = billingService.getBuyIntent(
                 TARGET_BILLING_API_VERSION3,
-                currentActivityHolder.getCurrentActivity().getPackageName(),
+                activityProvider.get().getPackageName(),
                 purchaseOrder.getProductIdentifier().identifier,
                 getProductDetails(purchaseOrder.getProductIdentifier()).getType(),
                 purchaseOrder.getDeveloperPayload());

@@ -3,7 +3,6 @@ package com.tradehero.th.billing.amazon;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaserHolder;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
@@ -18,15 +17,15 @@ public class THBaseAmazonPurchaserHolder
         AmazonException>
     implements THAmazonPurchaserHolder
 {
-    @NotNull protected final CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final Provider<Activity> activityProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaserHolder(
             @NotNull Provider<THAmazonPurchaser> thAmazonPurchaserProvider,
-            @NotNull CurrentActivityHolder currentActivityHolder)
+            @NotNull Provider<Activity> activityProvider)
     {
         super(thAmazonPurchaserProvider);
-        this.currentActivityHolder = currentActivityHolder;
+        this.activityProvider = activityProvider;
     }
     //</editor-fold>
 }

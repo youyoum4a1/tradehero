@@ -17,7 +17,6 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -26,6 +25,7 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
@@ -60,6 +60,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
     @Inject protected THBillingInteractor userInteractor;
+    @Inject DashboardNavigator navigator;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
@@ -287,7 +288,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
     {
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(fragmentClass, bundle);
+        navigator.pushFragment(fragmentClass, bundle);
     }
 
     @Override public int getTutorialLayout()

@@ -8,7 +8,7 @@ import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
 import com.tradehero.th.fragments.timeline.MainTimelineAdapter;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -25,7 +25,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         super(context, inflater, portfolioLayoutResourceId);
         this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         orderedItems = new ArrayList<>();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     @Override public boolean hasStableIds()

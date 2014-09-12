@@ -11,19 +11,18 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
@@ -60,6 +59,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
+    @Inject DashboardNavigator navigator;
 
     public static void putHeroId(Bundle args, UserBaseKey heroId)
     {
@@ -371,7 +371,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, messageType.typeId);
         Timber.d("goToMessagePage index:%d, tabIndex:%d, followerType:%s, discussionType:%s", page,
                 page, followerType, discussionType);
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
-                SendMessageFragment.class, args);
+        navigator.pushFragment(SendMessageFragment.class, args);
     }
 }

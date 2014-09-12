@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,17 +18,15 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -38,19 +37,18 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private static final CharSequence KEY_SEND_FAKE_PUSH = "send_fake_push";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
-    @Inject Application app;
+    @Inject THApp app;
     @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject AlertDialogUtil alertDialogUtil;
-    @Inject CurrentActivityHolder currentActivityHolder;
+    @Inject Provider<Activity> currentActivity;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         addPreferencesFromResource(R.xml.admin_settings);
     }
 
@@ -120,7 +118,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolder.getCurrentActivity();
+                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivity.get();
                 AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
                 return true;
             }
@@ -131,7 +129,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivityHolder.getCurrentActivity();
+                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivity.get();
                 AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
                 return true;
             }

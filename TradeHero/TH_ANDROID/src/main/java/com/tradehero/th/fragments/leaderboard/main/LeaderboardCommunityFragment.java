@@ -79,6 +79,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListFetchListener;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfileDTO;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -380,7 +381,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+                navigator.pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }
@@ -389,7 +390,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         Bundle args = new Bundle();
         FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
@@ -405,7 +405,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getDashboardNavigator().pushFragment(HeroManagerFragment.class, bundle);
+        navigator.pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -417,7 +417,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+        navigator.pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     private void pushLeaderboardDefSector(LeaderboardDefDTO leaderboardDefDTOSector)
@@ -425,7 +425,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         Bundle bundle = new Bundle(getArguments());
         (new SectorLeaderboardDefListKey()).putParameters(bundle);
         LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOSector.getLeaderboardDefKey());
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
@@ -437,7 +436,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         Bundle bundle = new Bundle(getArguments());
         (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
         LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
@@ -446,7 +444,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private void pushSearchFragment()
     {
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(PeopleSearchFragment.class, null);
@@ -455,7 +452,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private void pushInvitationFragment()
     {
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(FriendsInvitationFragment.class);

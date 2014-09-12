@@ -6,51 +6,15 @@ import com.squareup.picasso.LruCache;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.LongPreference;
-import com.tradehero.th.fragments.alert.AlertItemView;
-import com.tradehero.th.fragments.alert.AlertListItemAdapter;
-import com.tradehero.th.fragments.alert.AlertViewFragment;
-import com.tradehero.th.fragments.contestcenter.ContestCompetitionView;
-import com.tradehero.th.fragments.contestcenter.ContestContentView;
-import com.tradehero.th.fragments.contestcenter.ContestItemAdapter;
-import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityAdapter;
-import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
-import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
-import com.tradehero.th.fragments.timeline.UserProfileResideMenuItem;
-import com.tradehero.th.fragments.trending.ExtraTileAdapter;
-import com.tradehero.th.fragments.trending.ProviderTileView;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
-import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module(
         injects = {
-                UserProfileFetchAssistant.class,
-                SettingsPayPalFragment.class,
-                SettingsAlipayFragment.class,
-
-                AlertListItemAdapter.class,
-                AlertItemView.class,
-                AlertViewFragment.class,
-
-                LeaderboardCommunityAdapter.class,
-
-                // Extra Tile needs to know about userProfile data for survey tile element
-                ExtraTileAdapter.class,
-                ProviderTileView.class,
-
-                UserProfileResideMenuItem.class,
-                TimelineDiscussionFragment.class,
-                NewsDiscussionFragment.class,
-
-                ContestItemAdapter.class,
-                ContestContentView.class,
-                ContestCompetitionView.class,
         },
         complete = false,
         library = true

@@ -32,7 +32,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.CollectionUtils;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,7 +87,7 @@ public class RegionalNewsSelectorView extends LinearLayout
     public RegionalNewsSelectorView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         userProfileFetchListener = new UserProfileFetchListener();
         mCountryAdapter = new CountryAdapter(getContext(), R.layout.country_item_view);
     }

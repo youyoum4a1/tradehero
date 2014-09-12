@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.content.Context;
 import android.view.View;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -11,10 +12,12 @@ public class DiscussionItemViewHolder<DiscussionDTOType extends DiscussionDTO>
     extends AbstractDiscussionItemViewHolder<DiscussionDTOType>
 {
     //<editor-fold desc="Constructors">
-    public DiscussionItemViewHolder()
+
+    public DiscussionItemViewHolder(Context context)
     {
-        super();
+        super(context);
     }
+
     //</editor-fold>
 
     @Override public void linkWith(DiscussionDTOType discussionDTO, boolean andDisplay)
