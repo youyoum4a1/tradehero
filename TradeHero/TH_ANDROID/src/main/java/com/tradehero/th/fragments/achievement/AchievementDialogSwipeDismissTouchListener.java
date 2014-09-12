@@ -18,12 +18,10 @@ package com.tradehero.th.fragments.achievement;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import timber.log.Timber;
 
 /**
@@ -46,12 +44,12 @@ import timber.log.Timber;
  *
  * <p>This class Requires API level 12 or later due to use of {@link android.view.ViewPropertyAnimator}.</p>
  *
- * Adapted from SwipeDismissTouchListener with minor adjustments: + Add rotation to the animation
+ * Adapted from SwipeDismissTouchListener with minor adjustments: + Add scaling to the animation
  */
 public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchListener
 {
 
-    private static final float MAX_ROTATION = 30f;
+    private static final float MAX_SCALE = 0.6f;
 
     // Cached ViewConfiguration and system-wide constant values
     private int mSlop;
@@ -72,7 +70,7 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
     private Object mToken;
     private VelocityTracker mVelocityTracker;
     private float mTranslationX;
-    private float mRotationX;
+    private float mScale;
 
     /**
      * The callback interface used by {@link AchievementDialogSwipeDismissTouchListener} to inform its client about a successful dismissal of the view
@@ -123,7 +121,7 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
         {
             mViewWidth = mView.getWidth();
             View parent = (View) mView.getParent();
-            mView.setPivotY(parent.getHeight());
+            mView.setPivotY(parent.getHeight() * 0.5f);
             mView.setPivotX(mViewWidth * 0.5f);
         }
 
@@ -177,7 +175,8 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
                     mView.animate()
                             .translationX(dismissRight ? mViewWidth : -mViewWidth)
                             .alpha(0)
-                            .rotation(dismissRight ? MAX_ROTATION : -MAX_ROTATION)
+                            .scaleX(MAX_SCALE)
+                            .scaleY(MAX_SCALE)
                             .setDuration(mAnimationTime)
                             .setListener(new AnimatorListenerAdapter()
                             {
@@ -194,7 +193,8 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
                     mView.animate()
                             .translationX(0)
                             .alpha(1)
-                            .rotation(0)
+                            .scaleY(1)
+                            .scaleX(1)
                             .setDuration(mAnimationTime)
                             .setListener(null);
                 }
@@ -203,7 +203,7 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
                 mTranslationX = 0;
                 mDownX = 0;
                 mDownY = 0;
-                mRotationX = 0;
+                mScale = 0;
                 mSwiping = false;
                 break;
             }
@@ -218,7 +218,8 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
                 mView.animate()
                         .translationX(0)
                         .alpha(1)
-                        .rotation(0)
+                        .scaleY(0)
+                        .scaleX(0)
                         .setDuration(mAnimationTime)
                         .setListener(null);
                 mVelocityTracker.recycle();
@@ -226,7 +227,7 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
                 mTranslationX = 0;
                 mDownX = 0;
                 mDownY = 0;
-                mRotationX = 0;
+                mScale = 0;
                 mSwiping = false;
                 break;
             }
@@ -259,10 +260,10 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
                 if (mSwiping)
                 {
                     mTranslationX = deltaX;
-                    mRotationX = MAX_ROTATION * deltaX / mViewWidth;
-                    Timber.d("Rotating %f", mRotationX);
+                    mScale = Math.max(MAX_SCALE, (1f - ((1f - MAX_SCALE) * (Math.abs(deltaX) / (float)mViewWidth))));
+                    mView.setScaleY(mScale);
+                    mView.setScaleX(mScale);
                     mView.setTranslationX(deltaX - mSwipingSlop);
-                    mView.setRotation(mRotationX);
                     // TODO: use an ease-out interpolator or such
                     mView.setAlpha(Math.max(0f, Math.min(1f,
                             1f - 2f * Math.abs(deltaX) / mViewWidth)));
