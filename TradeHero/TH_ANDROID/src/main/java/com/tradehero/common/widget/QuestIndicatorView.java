@@ -26,6 +26,7 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
     private int mCurrentColor = Color.BLACK;
     private int mCurrentLevel;
     private QuestBonusDTO mQuestBonusDTO;
+    private Animator scaleUpAnimator;
 
     public QuestIndicatorView(Context context)
     {
@@ -88,9 +89,12 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
         AnimationDrawable animationDrawable = (AnimationDrawable) logo.getDrawable();
         animationDrawable.start();
 
-        Animator a = AnimatorInflater.loadAnimator(getContext(), R.animator.quest_indicator_scale);
-        a.setTarget(this);
-        a.start();
+        if (scaleUpAnimator == null)
+        {
+            scaleUpAnimator = AnimatorInflater.loadAnimator(getContext(), R.animator.quest_indicator_scale);
+            scaleUpAnimator.setTarget(this);
+            scaleUpAnimator.start();
+        }
 
         boldText();
     }
@@ -141,7 +145,7 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
     public void shouldShowColor(int mCurrentColor)
     {
         this.mCurrentColor = mCurrentColor;
-        if(this.mQuestBonusDTO != null && mCurrentLevel > 0)
+        if (this.mQuestBonusDTO != null && mCurrentLevel > 0)
         {
             display();
         }
