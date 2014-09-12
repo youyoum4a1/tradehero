@@ -29,16 +29,19 @@ public class DiscussionActionButtonsView extends LinearLayout
     protected AbstractDiscussionCompactDTO discussionDTO;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -136,6 +139,7 @@ public class DiscussionActionButtonsView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.discussion_action_button_comment_count) @Optional
     protected void handleCommentButtonClicked(View view)
     {
@@ -151,6 +155,7 @@ public class DiscussionActionButtonsView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.discussion_action_button_share) @Optional
     protected void handleShareButtonClicked(View view)
     {
@@ -166,6 +171,7 @@ public class DiscussionActionButtonsView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.discussion_action_button_more) @Optional
     protected void handleMoreButtonClicked(View view)
     {

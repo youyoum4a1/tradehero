@@ -3,22 +3,24 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.CommentKey;
 
 public class CommentItemViewLinear extends DiscussionItemViewLinear<CommentKey>
 {
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public CommentItemViewLinear(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CommentItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CommentItemViewLinear(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);

@@ -26,7 +26,6 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -35,19 +34,21 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Analytics analytics;
-    @Inject THRouter thRouter;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public TimelineItemViewLinear(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public TimelineItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public TimelineItemViewLinear(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
