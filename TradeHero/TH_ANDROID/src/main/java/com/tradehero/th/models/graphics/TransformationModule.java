@@ -69,12 +69,8 @@ public class TransformationModule
                 return "toGaussianGrayscale11";
             }
         };
-        transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new StackBlurTransformation(30));
-        transformation.add(new GradientTransformation(
-                context.getResources().getColor(R.color.profile_view_gradient_top),
-                context.getResources().getColor(R.color.profile_view_gradient_bottom)));
-        transformation.add(new AlphaTransformation(0.5f));
+        transformation.add(new StackBlurTransformation(25));
+        transformation.add(new AlphaTransformation(0.3f));
         return transformation;
     }
 
