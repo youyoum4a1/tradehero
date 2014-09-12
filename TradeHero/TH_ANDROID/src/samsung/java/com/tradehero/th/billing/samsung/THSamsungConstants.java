@@ -12,7 +12,9 @@ public class THSamsungConstants
         extends SamsungConstants
         implements THBillingConstants
 {
-    public static final int PURCHASE_MODE = Constants.RELEASE ? SamsungIapHelper.IAP_MODE_COMMERCIAL : SamsungIapHelper.IAP_MODE_TEST_SUCCESS;
+    public static final int PURCHASE_MODE = Constants.RELEASE && !Constants.DOGFOOD_BUILD
+            ? SamsungIapHelper.IAP_MODE_COMMERCIAL
+            : SamsungIapHelper.IAP_MODE_TEST_SUCCESS;
 
     public static String INBOX_SIMPLE_DATE_FORMAT = "yyyyMMdd";
     public static String getTodayStringForInbox()
