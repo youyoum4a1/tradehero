@@ -14,9 +14,9 @@ public interface VideoService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
-    @GET("videos/{videoCategoryId}")
+    @GET("/videos")
     PaginatedVideoDTO getVideos(
-            @Path("videoCategoryId") int videoCategoryId,
+            @Query("videoCategoryId") int videoCategoryId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 }

@@ -4,6 +4,7 @@ import com.tradehero.common.billing.exception.BillingException;
 
 abstract public class SamsungException extends BillingException
 {
+    //<editor-fold desc="Constructors">
     public SamsungException()
     {
         super();
@@ -23,4 +24,5 @@ abstract public class SamsungException extends BillingException
     {
         super(cause);
     }
+    //</editor-fold>
 }

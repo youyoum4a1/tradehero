@@ -31,17 +31,13 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -72,9 +68,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Inject Analytics analytics;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject @ForUser SharedPreferences preferences;
-    @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
 
     @InjectView(R.id.leaderboard_mark_user_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
@@ -96,8 +89,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected PerPagedLeaderboardKey currentLeaderboardKey;
 
     protected FollowDialogCombo followDialogCombo;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
-
     protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -343,15 +334,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         followDialogCombo = null;
     }
 
-    protected void detachFreeFollowMiddleCallback()
-    {
-        if (freeFollowMiddleCallback != null)
-        {
-            freeFollowMiddleCallback.setPrimaryCallback(null);
-        }
-        freeFollowMiddleCallback = null;
-    }
-
     protected void detachChoiceFollowAssistant()
     {
         ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
@@ -580,7 +562,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
         {
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
             setCurrentUserProfileDTO(currentUserProfileDTO);
             int followType = currentUserProfileDTO.getFollowType(userFollowed);
             if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
@@ -596,7 +577,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
         @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
             THToast.show(new THException(error));
         }
     }

@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.samsung;
 
-import com.sec.android.iap.lib.vo.InboxVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
@@ -31,12 +30,6 @@ public class THSamsungPurchase
     }
 
     public THSamsungPurchase(String groupId, PurchaseVo toCopyFrom, @NotNull OwnedPortfolioId applicablePortfolioId)
-    {
-        super(groupId, toCopyFrom);
-        this.applicablePortfolioId = applicablePortfolioId;
-    }
-
-    public THSamsungPurchase(String groupId, InboxVo toCopyFrom, @NotNull OwnedPortfolioId applicablePortfolioId)
     {
         super(groupId, toCopyFrom);
         this.applicablePortfolioId = applicablePortfolioId;
@@ -92,6 +85,6 @@ public class THSamsungPurchase
         setPurchaseId(purchaseInProcessDTO.purchaseId);
         setApplicablePortfolioId(purchaseInProcessDTO.applicablePortfolioId);
         setUserToFollow(purchaseInProcessDTO.userToFollow);
-        setProductCode(purchaseInProcessDTO.productCode);
+        setItemId(purchaseInProcessDTO.productCode);
     }
 }

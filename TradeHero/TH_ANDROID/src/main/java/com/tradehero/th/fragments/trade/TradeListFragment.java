@@ -173,14 +173,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         securityAlertAssistant.populate();
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        setActionBarSubtitle(null);
-        super.onDestroyOptionsMenu();
-    }
-
     @Override public void onDestroyView()
     {
+        setActionBarSubtitle(null);
         detachFetchPosition();
         detachFetchTrades();
         detachSecurityActionDialog();

@@ -11,7 +11,7 @@ import javax.inject.Singleton;
 
 @Singleton public class VideoCache extends StraightDTOCacheNew<VideoId, VideoDTO>
 {
-    private static final int DEFAULT_MAX_SIZE = 100;
+    private static final int DEFAULT_MAX_SIZE = 300;
 
     //<editor-fold desc="Constructors">
     @Inject public VideoCache()

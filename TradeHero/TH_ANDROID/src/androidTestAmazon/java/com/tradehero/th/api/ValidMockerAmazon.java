@@ -16,7 +16,7 @@ public class ValidMockerAmazon extends ValidMocker
     {
         if (type.equals(PurchaseReportDTO.class))
         {
-            return new AmazonPurchaseReportDTO("purchaseToken", "userId");
+            return new AmazonPurchaseReportDTO("sku", "purchaseToken", "userId");
         }
         return super.mockValidParameter(type);
     }

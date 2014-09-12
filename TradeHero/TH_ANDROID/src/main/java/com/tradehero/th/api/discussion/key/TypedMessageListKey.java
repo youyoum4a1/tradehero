@@ -65,4 +65,12 @@ public class TypedMessageListKey extends MessageListKey
     {
         return new TypedMessageListKey(page + 1, perPage, discussionType);
     }
+
+    @Override public String toString()
+    {
+        return "TypedMessageListKey{" +
+                super.toString() +
+                ", discussionType=" + discussionType +
+                '}';
+    }
 }

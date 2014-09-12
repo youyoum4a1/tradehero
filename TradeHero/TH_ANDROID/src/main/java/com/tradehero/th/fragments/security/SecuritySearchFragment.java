@@ -30,6 +30,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         SecurityListType,
         SecurityCompactDTO,
         SecurityCompactDTOList,
+        SecurityCompactDTOList,
         SecurityItemView<SecurityCompactDTO>>
         implements HasSelectedItem
 {
@@ -66,9 +67,19 @@ public class SecuritySearchFragment extends BaseSearchFragment<
                 R.layout.search_security_item);
     }
 
-    @Override protected DTOCacheNew<SecurityListType, SecurityCompactDTOList> getListCache()
+    @Override protected void unregisterCache(DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener)
     {
-        return securityCompactListCache.get();
+        securityCompactListCache.get().unregister(listener);
+    }
+
+    @Override protected void registerCache(SecurityListType key, DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener)
+    {
+        securityCompactListCache.get().register(key, listener);
+    }
+
+    @Override protected void requestCache(SecurityListType key)
+    {
+        securityCompactListCache.get().getOrFetchAsync(key);
     }
 
     @NotNull @Override public SecurityListType makePagedDtoKey(int page)

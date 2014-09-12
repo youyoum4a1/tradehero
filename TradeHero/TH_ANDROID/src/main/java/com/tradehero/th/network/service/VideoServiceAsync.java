@@ -5,7 +5,6 @@ import com.tradehero.th.api.education.PaginatedVideoDTO;
 
 import retrofit.Callback;
 import retrofit.http.GET;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 interface VideoServiceAsync
@@ -16,9 +15,9 @@ interface VideoServiceAsync
             @Query("perPage") Integer perPage,
             Callback<PaginatedVideoCategoryDTO> callback);
 
-    @GET("videos/{videoCategoryId}")
+    @GET("/videos")
     void getVideos(
-            @Path("videoCategoryId") int videoCategoryId,
+            @Query("videoCategoryId") int videoCategoryId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             Callback<PaginatedVideoDTO> callback);

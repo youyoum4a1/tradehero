@@ -13,7 +13,7 @@ import javax.inject.Singleton;
 
 @Singleton public class PaginatedVideoCache extends StraightCutDTOCacheNew<VideoCategoryId, PaginatedVideoDTO, PaginatedVideoId>
 {
-    private static final int DEFAULT_MAX_SIZE = 20;
+    private static final int DEFAULT_MAX_SIZE = 50;
 
     @NotNull private final VideoCache videoCache;
     @NotNull private final VideoServiceWrapper videoServiceWrapper;
@@ -51,5 +51,10 @@ import javax.inject.Singleton;
             return null;
         }
         return inflated;
+    }
+
+    @Nullable @Override public PaginatedVideoDTO get(@NotNull VideoCategoryId key)
+    {
+        return super.get(key);
     }
 }

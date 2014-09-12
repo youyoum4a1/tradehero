@@ -30,6 +30,7 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         UserListType,
         UserSearchResultDTO,
         UserSearchResultDTOList,
+        UserSearchResultDTOList,
         SearchPeopleItemView>
         implements HasSelectedItem
 {
@@ -65,9 +66,19 @@ public class PeopleSearchFragment extends BaseSearchFragment<
                 R.layout.search_people_item);
     }
 
-    @Override protected DTOCacheNew<UserListType, UserSearchResultDTOList> getListCache()
+    @Override protected void unregisterCache(DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> listener)
     {
-        return userBaseKeyListCache.get();
+        userBaseKeyListCache.get().unregister(listener);
+    }
+
+    @Override protected void registerCache(UserListType key, DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> listener)
+    {
+        userBaseKeyListCache.get().register(key, listener);
+    }
+
+    @Override protected void requestCache(UserListType key)
+    {
+        userBaseKeyListCache.get().getOrFetchAsync(key);
     }
 
     @NotNull @Override public SearchUserListType makePagedDtoKey(int page)

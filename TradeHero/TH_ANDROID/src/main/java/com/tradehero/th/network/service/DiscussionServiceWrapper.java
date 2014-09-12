@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
@@ -192,28 +193,22 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Share">
-    @NotNull public DiscussionDTO share(
+    @NotNull public BaseResponseDTO share(
             @NotNull DiscussionListKey discussionKey,
             @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
-        return createDiscussionReplyProcessor(
-                discussionKeyFactory.create(discussionKey.inReplyToType, discussionKey.inReplyToId),
-                null).process(
-                discussionService.share(
-                        discussionKey.inReplyToType,
-                        discussionKey.inReplyToId,
-                        timelineItemShareRequestDTO));
+        return discussionService.share(
+                discussionKey.inReplyToType,
+                discussionKey.inReplyToId,
+                timelineItemShareRequestDTO);
     }
 
-    @NotNull public MiddleCallback<DiscussionDTO> share(
+    @NotNull public MiddleCallback<BaseResponseDTO> share(
             @NotNull DiscussionListKey discussionKey,
             @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO,
-            @Nullable Callback<DiscussionDTO> callback)
+            @Nullable Callback<BaseResponseDTO> callback)
     {
-        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
-                callback, createDiscussionReplyProcessor(
-                discussionKeyFactory.create(discussionKey.inReplyToType, discussionKey.inReplyToId),
-                null));
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
         discussionServiceAsync.share(
                 discussionKey.inReplyToType,
                 discussionKey.inReplyToId,

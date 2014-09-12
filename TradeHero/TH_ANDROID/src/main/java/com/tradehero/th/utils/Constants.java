@@ -51,8 +51,8 @@ public class Constants
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 
     // Localytics
-    public static final String LOCALYTICS_APP_KEY_RELEASE = "f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207";
-    public static final String LOCALYTICS_APP_KEY_DEBUG = "731adfbe0df8a59ff8e1117-4a8d02de-01d4-11e4-9d24-005cf8cbabd8";
+    public static final String LOCALYTICS_APP_KEY_RELEASE = "731adfbe0df8a59ff8e1117-4a8d02de-01d4-11e4-9d24-005cf8cbabd8";
+    public static final String LOCALYTICS_APP_KEY_DEBUG = "eeace06a24de5f8f52697c5-c32afe1e-1eb1-11e4-234f-004a77f8b47f";
 
     // GCM
     public static final String GCM_STAGING_SENDER = "927417497470";

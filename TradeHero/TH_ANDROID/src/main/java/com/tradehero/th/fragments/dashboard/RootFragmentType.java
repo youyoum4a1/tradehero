@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
+import com.tradehero.th.fragments.education.VideoCategoriesFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
@@ -39,6 +40,9 @@ public enum RootFragmentType
     COMMUNITY(R.layout.tab_indicator_holo,
             R.string.dashboard_community, R.string.dashboard_community_key,
             R.drawable.icn_menu_leaderboards, LeaderboardCommunityFragment.class),
+    ACADEMY(R.layout.tab_indicator_holo,
+            R.string.dashboard_education, R.string.dashboard_education_key,
+            R.drawable.icn_menu_compass_white, VideoCategoriesFragment.class),
     UPDATE_CENTER(R.layout.update_center_selector,
             R.string.dashboard_message_center, R.string.dashboard_message_center_key,
             R.color.transparent, UpdateCenterFragment.class),
@@ -92,7 +96,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, TRENDING, COMMUNITY, REFERRAL, CONTEST_CENTER, STORE, SETTING
+                TIMELINE, TRENDING, COMMUNITY, ACADEMY, REFERRAL, CONTEST_CENTER, STORE, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);

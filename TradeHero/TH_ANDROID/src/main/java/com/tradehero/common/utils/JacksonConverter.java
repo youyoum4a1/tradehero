@@ -36,14 +36,7 @@ public class JacksonConverter implements Converter
         }
         catch (final JsonParseException|JsonMappingException e)
         {
-            try
-            {
-                Timber.e(e, "With body %s", new String(IOUtils.streamToBytes(body.in())));
-            }
-            catch (IOException e1)
-            {
-                // Do nothing
-            }
+            Timber.e(e, "For Type %s", type);
             throw new ConversionException(e);
         }
         catch (final IOException e)

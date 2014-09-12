@@ -129,7 +129,7 @@ public class MessageListKey implements Comparable<MessageListKey>, PagedDTOKey
 
     @Override public String toString()
     {
-        return "SecurityListType{" +
+        return "MessageListKey{" +
                 "page=" + page +
                 ", perPage=" + perPage +
                 '}';

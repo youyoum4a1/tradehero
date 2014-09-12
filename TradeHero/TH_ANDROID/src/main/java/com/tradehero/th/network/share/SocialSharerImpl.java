@@ -7,8 +7,8 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.share.DiscussionShareResultDTO;
+import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.share.BaseResponseSocialShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
@@ -181,12 +181,12 @@ public class SocialSharerImpl implements SocialSharer
         return intent;
     }
 
-    protected Callback<DiscussionDTO> createDiscussionCallback(SocialShareFormDTO shareFormDTO)
+    protected Callback<BaseResponseDTO> createDiscussionCallback(SocialShareFormDTO shareFormDTO)
     {
         return new SocialSharerImplDiscussionCallback(shareFormDTO);
     }
 
-    protected class SocialSharerImplDiscussionCallback implements Callback<DiscussionDTO>
+    protected class SocialSharerImplDiscussionCallback implements Callback<BaseResponseDTO>
     {
         private final SocialShareFormDTO shareFormDTO;
 
@@ -195,9 +195,9 @@ public class SocialSharerImpl implements SocialSharer
             this.shareFormDTO = shareFormDTO;
         }
 
-        @Override public void success(DiscussionDTO discussionDTO, Response response)
+        @Override public void success(BaseResponseDTO responseDTO, Response response)
         {
-            notifySharedListener(shareFormDTO, new DiscussionShareResultDTO(discussionDTO));
+            notifySharedListener(shareFormDTO, new BaseResponseSocialShareResultDTO(responseDTO));
         }
 
         @Override public void failure(RetrofitError retrofitError)

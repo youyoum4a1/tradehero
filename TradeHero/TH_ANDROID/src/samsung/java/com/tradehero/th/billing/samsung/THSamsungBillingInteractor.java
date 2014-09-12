@@ -283,8 +283,15 @@ public class THSamsungBillingInteractor
             Context currentContext = currentActivityHolder.getCurrentContext();
             if (currentContext != null)
             {
+                if (exception instanceof SamsungPaymentCancelledException)
+                {
+                    dialog = billingAlertDialogUtil.popUserCancelled(currentContext);
+                }
+                else
+                {
+                    dialog = billingAlertDialogUtil.popUnknownError(currentContext, exception);
+                }
                 // TODO finer dialog
-                dialog = billingAlertDialogUtil.popUnknownError(currentContext, exception);
             }
         }
         return dialog;
