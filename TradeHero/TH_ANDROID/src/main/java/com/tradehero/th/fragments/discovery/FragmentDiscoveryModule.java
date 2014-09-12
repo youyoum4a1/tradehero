@@ -9,7 +9,6 @@ import dagger.Module;
 
                 NewsHeadlineFragment.class,
                 RegionalNewsHeadlineFragment.class,
-                WhatsHotFragment.class,
                 DiscoveryDiscussionFragment.class,
                 LearningFragment.class,
 
