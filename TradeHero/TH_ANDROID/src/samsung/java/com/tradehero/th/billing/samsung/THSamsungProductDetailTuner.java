@@ -21,7 +21,7 @@ public class THSamsungProductDetailTuner implements THProductDetailTuner<Samsung
     {
         if (productDetails.getProductIdentifier().groupId.equals(THSamsungConstants.IAP_ITEM_GROUP_ID))
         {
-            switch (productDetails.getProductCode())
+            switch (productDetails.getItemId())
             {
                 case THSamsungConstants.EXTRA_CASH_T0_DATA_1:
                     productDetails.iconResId = R.drawable.cash_1;
@@ -86,7 +86,7 @@ public class THSamsungProductDetailTuner implements THProductDetailTuner<Samsung
                     break;
 
                 default:
-                    Timber.e(new IllegalArgumentException(String.format("Unhandled productDetails key %s", productDetails.getProductCode())), "");
+                    Timber.e(new IllegalArgumentException(String.format("Unhandled productDetails key %s", productDetails.getItemId())), "");
             }
         }
         else

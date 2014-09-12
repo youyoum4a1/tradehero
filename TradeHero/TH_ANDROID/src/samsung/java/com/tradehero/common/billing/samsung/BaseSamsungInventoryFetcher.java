@@ -133,6 +133,7 @@ abstract public class BaseSamsungInventoryFetcher<
     {
         if (itemList != null)
         {
+            SamsungItemGroup samsungItemGroup = new SamsungItemGroup(groupId);
             SamsungSKUType samsungSKU;
             for (ItemVo itemVo : itemList)
             {
@@ -140,13 +141,13 @@ abstract public class BaseSamsungInventoryFetcher<
                 samsungSKU = createSamsungSku(groupId, itemVo.getItemId());
                 inventory.put(
                         samsungSKU,
-                        createSamsungProductDetail(samsungSKU, itemVo));
+                        createSamsungProductDetail(samsungItemGroup, itemVo));
             }
         }
     }
 
     abstract protected SamsungSKUType createSamsungSku(String groupId, String itemId);
-    abstract protected SamsungProductDetailType createSamsungProductDetail(SamsungSKUType samsungSKU, ItemVo itemVo);
+    abstract protected SamsungProductDetailType createSamsungProductDetail(SamsungItemGroup samsungItemGroup, ItemVo itemVo);
     abstract protected SamsungExceptionType createException(ErrorVo errorVo);
 
     protected void notifyListenerFetched()
