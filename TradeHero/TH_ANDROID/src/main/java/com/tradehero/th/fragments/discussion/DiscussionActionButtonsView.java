@@ -86,6 +86,7 @@ public class DiscussionActionButtonsView extends LinearLayout
     public void setShowMore(boolean showMore)
     {
         this.showMore = showMore;
+        displayMoreButton();
     }
 
     public void linkWith(AbstractDiscussionCompactDTO discussionDTO, boolean andDisplay)
