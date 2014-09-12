@@ -444,8 +444,7 @@ project.afterEvaluate {
   println("afterEvaluate")
   tasks.each { theTask ->
     if (project.ext.isIntelliJ
-      && (theTask.name.matches("assemble.+Debug")
-        || theTask.name.matches("assemble.+Release")))
+      && theTask.name.matches("assemble.+Release"))
     {
       println("Adding a version build bump to task " + theTask.name)
       theTask.doLast {
