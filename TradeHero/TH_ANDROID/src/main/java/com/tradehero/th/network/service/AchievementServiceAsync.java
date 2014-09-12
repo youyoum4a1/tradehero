@@ -2,9 +2,9 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
+import com.tradehero.th.api.achievement.AchievementShareRequestDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -49,8 +49,6 @@ public interface AchievementServiceAsync
     @POST("/achievements/share/{userAchievementId}")
     void shareUserAchievement(
             @Path("userAchievementId") int userAchievementId,
-            @Body AchievementShareFormDTO achievementShareFormDTO,
+            @Body AchievementShareRequestDTO achievementShareFormDTO,
             Callback<ExtendedDTO> middleCallback);
-
-    void shareDailyQuest(int contiguousCount);
 }

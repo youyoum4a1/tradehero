@@ -46,7 +46,11 @@ public class SocialSharePreferenceHelperNew
         {
             return socialSharePreferenceDTO.isShareEnabled();
         }
-        return defaultValue;
+        else
+        {
+            sharePreferencesMap.put(socialNetworkEnum, socialSharePreferenceFactory.create(socialNetworkEnum, defaultValue));
+            return defaultValue;
+        }
     }
 
     public void updateSocialSharePreference(@NotNull SocialNetworkEnum networkEnum, boolean isShareEnabled)

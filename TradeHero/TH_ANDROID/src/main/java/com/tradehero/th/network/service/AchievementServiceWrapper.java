@@ -103,7 +103,7 @@ public class AchievementServiceWrapper
     public MiddleCallback<ExtendedDTO> shareAchievement(AchievementShareFormDTO achievementShareFormDTO, Callback<ExtendedDTO> callback)
     {
         MiddleCallback<ExtendedDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        achievementServiceAsync.shareUserAchievement(achievementShareFormDTO.userAchievementId.key, achievementShareFormDTO, middleCallback);
+        achievementServiceAsync.shareUserAchievement(achievementShareFormDTO.userAchievementId.key, achievementShareFormDTO.achievementShareRequestDTO, middleCallback);
         return middleCallback;
     }
 }

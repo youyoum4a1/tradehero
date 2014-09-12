@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class AchievementShareRequestDTO
 {
-    @NotNull public final List<SocialNetworkEnum> socialNetworks;
+    @NotNull public final List<SocialNetworkEnum> networks;
 
-    public AchievementShareRequestDTO(@NotNull List<SocialNetworkEnum> socialNetworks)
+    public AchievementShareRequestDTO(@NotNull List<SocialNetworkEnum> networks)
     {
-        this.socialNetworks = socialNetworks;
+        this.networks = networks;
     }
 }
