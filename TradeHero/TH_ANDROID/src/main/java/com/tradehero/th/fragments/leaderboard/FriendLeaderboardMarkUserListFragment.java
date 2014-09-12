@@ -295,6 +295,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         detachChoiceFollowAssistant();
         choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
+                getActivity(),
                 userBaseDTO.getBaseKey(),
                 createUserFollowedListener(),
                 getApplicablePortfolioId());
