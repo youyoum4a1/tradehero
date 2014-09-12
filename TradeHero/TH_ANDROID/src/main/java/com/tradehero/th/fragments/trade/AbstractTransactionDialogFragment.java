@@ -156,6 +156,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private TextWatcher mQuantityTextWatcher;
     private TransactionEditCommentFragment transactionCommentFragment;
     Editable unSpannedComment;
+    private PortfolioFetchListener portfolioFetchListener;
 
     protected abstract Integer getMaxValue();
 
@@ -266,6 +267,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         destroySocialLinkDialog();
         detachBuySellMiddleCallback();
         detachSocialLinkHelper();
+        detachPortfolioFetchTask();
         super.onDestroyView();
     }
 
@@ -282,7 +284,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private void init()
     {
         securityCompactDTO = securityCompactCache.get(getSecurityId());
-        portfolioCompactDTO = portfolioCompactCache.get(getPortfolioId());
         quoteDTO = getBundledQuoteDTO();
         SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
         if (detailDTO != null)
@@ -292,6 +293,21 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         clampQuantity(true);
         linkWith(userProfileCache.get(currentUserId.toUserBaseKey()));
         setPublishToShareBySetting();
+
+        portfolioId = getPortfolioId();
+
+        detachPortfolioFetchTask();
+        portfolioFetchListener = new PortfolioFetchListener();
+        portfolioCompactCache.register(portfolioId, portfolioFetchListener);
+        portfolioCompactCache.getOrFetchAsync(portfolioId);
+    }
+
+    private void detachPortfolioFetchTask()
+    {
+        if (portfolioFetchListener != null)
+        {
+            portfolioCompactCache.unregister(portfolioFetchListener);
+        }
     }
 
     private void initViews()
@@ -319,13 +335,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
         mSeekBar.setOnSeekBarChangeListener(createSeekBarListener());
-
-        Integer maxValue = getMaxValue();
-        if (maxValue != null)
-        {
-            mSeekBar.setMax(maxValue);
-            mSeekBar.setEnabled(maxValue > 0);
-        }
 
         mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
         mQuickPriceButtonSet.addButton(R.id.toggle5k);
@@ -502,13 +511,16 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected void linkWith(PortfolioCompactDTOList value, boolean andDisplay)
     {
         this.portfolioCompactDTOs = value;
-        portfolioCompactDTO = value.findFirstWhere(new Predicate<PortfolioCompactDTO>()
+        if (portfolioCompactDTO == null)
         {
-            @Override public boolean apply(PortfolioCompactDTO portfolioCompactDTO)
+            portfolioCompactDTO = value.findFirstWhere(new Predicate<PortfolioCompactDTO>()
             {
-                return portfolioCompactDTO.getPortfolioId().equals(getPortfolioId());
-            }
-        });
+                @Override public boolean apply(PortfolioCompactDTO portfolioCompactDTO)
+                {
+                    return portfolioCompactDTO.getPortfolioId().equals(getPortfolioId());
+                }
+            });
+        }
         if (andDisplay)
         {
             updateTransactionDialog();
@@ -949,19 +961,23 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
                 @Override public void afterTextChanged(Editable editable)
                 {
-
-                    int val = getTradeQuantityFrom(editable.toString());
-
-                    mTransactionQuantity = val;
-
-                    mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
-                    mQuantityEditText.setText(String.valueOf(val));
-                    updateTransactionDialog();
-                    mQuantityEditText.addTextChangedListener(mQuantityTextWatcher);
+                    updateOnTextChanged(editable.toString());
                 }
             };
         }
         return mQuantityTextWatcher;
+    }
+
+    private void updateOnTextChanged(String text)
+    {
+        int val = getTradeQuantityFrom(text);
+
+        mTransactionQuantity = val;
+
+        mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
+        mQuantityEditText.setText(String.valueOf(val));
+        updateTransactionDialog();
+        mQuantityEditText.addTextChangedListener(mQuantityTextWatcher);
     }
 
     private int getTradeQuantityFrom(@NotNull String string)
@@ -970,15 +986,21 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         try
         {
             val = Integer.parseInt(string.trim());
-            if (val > getMaxValue())
+            Integer maxValue = getMaxValue();
+            if (maxValue == null)
             {
-                val = getMaxValue();
+                maxValue = 0;
+            }
+            if (val > maxValue)
+            {
+                val = maxValue;
             }
             else if (val < 0)
             {
                 val = 0;
             }
-        } catch (NumberFormatException e)
+        }
+        catch (NumberFormatException e)
         {
             e.printStackTrace();
         }
@@ -1209,5 +1231,43 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             return activity.getDashboardNavigator();
         }
         return null;
+    }
+
+    private class PortfolioFetchListener implements DTOCacheNew.HurriedListener<PortfolioId,PortfolioCompactDTO>
+    {
+        @Override public void onPreCachedDTOReceived(@NotNull PortfolioId key, @NotNull PortfolioCompactDTO value)
+        {
+            onDTOReceived(key, value);
+        }
+
+        @Override public void onDTOReceived(@NotNull PortfolioId key, @NotNull PortfolioCompactDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull PortfolioId key, @NotNull Throwable error)
+        {
+            THToast.show(new THException(error));
+        }
+    }
+
+    private void linkWith(PortfolioCompactDTO value, boolean andDisplay)
+    {
+        portfolioCompactDTO = value;
+
+        if (andDisplay)
+        {
+            displaySeekBar();
+        }
+    }
+
+    private void displaySeekBar()
+    {
+        Integer maxValue = getMaxValue();
+        if (maxValue != null)
+        {
+            mSeekBar.setMax(maxValue);
+            mSeekBar.setEnabled(maxValue > 0);
+        }
     }
 }
