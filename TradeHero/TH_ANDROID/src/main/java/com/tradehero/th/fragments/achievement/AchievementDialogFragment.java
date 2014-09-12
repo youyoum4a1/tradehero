@@ -60,26 +60,18 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         attachCategoryCacheListener();
     }
 
-    private void animateCurrentProgress()
-    {
-        getView().post(
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        achievementProgressIndicator.animateCurrentLevel();
-                    }
-                }
-        );
-    }
-
     @Override protected void onCreatePropertyValuesHolder(List<PropertyValuesHolder> propertyValuesHolders)
     {
         super.onCreatePropertyValuesHolder(propertyValuesHolders);
         PropertyValuesHolder dollar =
                 PropertyValuesHolder.ofFloat(PROPERTY_DOLLARS_EARNED, 0f, (float) userAchievementDTO.achievementDef.virtualDollars);
         propertyValuesHolders.add(dollar);
+    }
+
+    @Override protected void handleBadgeSuccess()
+    {
+        super.handleBadgeSuccess();
+        achievementProgressIndicator.delayedColorUpdate(mCurrentColor);
     }
 
     @Override public void onStop()
@@ -130,7 +122,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         @Override public void onDTOReceived(@NotNull AchievementCategoryId key, @NotNull AchievementCategoryDTO value)
         {
             achievementProgressIndicator.setAchievementDef(value.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
-            animateCurrentProgress();
+            achievementProgressIndicator.animateCurrentLevel();
         }
 
         @Override public void onErrorThrown(@NotNull AchievementCategoryId key, @NotNull Throwable error)

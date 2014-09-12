@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.achievement;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -23,7 +24,7 @@ public class AchievementProgressIndicator extends LinearLayout
     @InjectView(R.id.achievement_indicator_text_container) ViewGroup textContainer;
 
     SparseArray<ViewHolder> indicatorLists = new SparseArray<>();
-    private int mCurrentLevel = 0;
+    private int mCurrentLevel;
 
     public AchievementProgressIndicator(Context context)
     {
@@ -72,6 +73,11 @@ public class AchievementProgressIndicator extends LinearLayout
         }
     }
 
+    public void animateCurrentProgress()
+    {
+
+    }
+
     private void addImageIndicator(int index, ImageView view)
     {
         ViewHolder viewHolder = getViewHolder(index);
@@ -103,28 +109,19 @@ public class AchievementProgressIndicator extends LinearLayout
 
     public void setAchievementDef(List<AchievementDefDTO> achievementDefs, int currentUserLevel)
     {
-        mCurrentLevel = currentUserLevel;
-        updateDisplay(achievementDefs, currentUserLevel);
+        this.mCurrentLevel = currentUserLevel;
+        updateDisplay(achievementDefs);
         hideUndefinedIndicators(achievementDefs);
     }
 
-    private void updateDisplay(List<AchievementDefDTO> achievementDefs, int currentUserLevel)
+    private void updateDisplay(List<AchievementDefDTO> achievementDefs)
     {
         for (int i = 0; i < achievementDefs.size() && i < indicatorLists.size(); i++)
         {
             ViewHolder viewHolder = indicatorLists.get(i);
             AchievementDefDTO achievementDefDTO = achievementDefs.get(i);
 
-            viewHolder.display(achievementDefDTO);
-
-            if (achievementDefDTO.achievementLevel <= currentUserLevel)
-            {
-                viewHolder.on();
-            }
-            else
-            {
-                viewHolder.off();
-            }
+            viewHolder.display(achievementDefDTO, mCurrentLevel);
         }
     }
 
@@ -152,31 +149,60 @@ public class AchievementProgressIndicator extends LinearLayout
         }
     }
 
+    public void delayedColorUpdate(int updateColor)
+    {
+        for (int i = 0; i < indicatorLists.size(); i++)
+        {
+            ViewHolder indicator = indicatorLists.valueAt(i);
+            indicator.shouldShowColor(updateColor);
+        }
+    }
+
     protected static class ViewHolder
     {
         TextView indicatorTextView;
         ImageView indicatorImageView;
+        int mCurrentColor;
+        int mLevel;
+        AchievementDefDTO mAchievementDefDTO;
 
         public ViewHolder()
         {
             super();
         }
 
-        public void display(AchievementDefDTO achievementDefDTO)
+        public void display(AchievementDefDTO achievementDefDTO, int currentLevel)
         {
-            indicatorTextView.setText(achievementDefDTO.triggerStr);
+            this.mAchievementDefDTO = achievementDefDTO;
+            this.mLevel = currentLevel;
+            display();
         }
 
-        public void on()
+        private void display()
+        {
+            indicatorTextView.setText(mAchievementDefDTO.triggerStr);
+            if (mAchievementDefDTO.achievementLevel <= mLevel)
+            {
+                on();
+            }
+            else
+            {
+                off();
+            }
+        }
+
+        private void on()
         {
             indicatorImageView.setImageResource(R.drawable.ic_achievement_star_on);
             show();
+            unBoldText();
         }
 
-        public void off()
+        private void off()
         {
             indicatorImageView.setImageResource(R.drawable.ic_achievement_star_off);
             show();
+            unBoldText();
         }
 
         private void show()
@@ -191,7 +217,7 @@ public class AchievementProgressIndicator extends LinearLayout
             indicatorTextView.setVisibility(View.GONE);
         }
 
-        public void animateOn()
+        private void animateOn()
         {
             indicatorImageView.setImageResource(R.drawable.ic_achivement_star_animate);
             AnimationDrawable animationDrawable = (AnimationDrawable) indicatorImageView.getDrawable();
@@ -205,6 +231,32 @@ public class AchievementProgressIndicator extends LinearLayout
 
             animator.start();
             animatorCopy.start();
+            colorText();
+            boldText();
+        }
+
+        private void colorText()
+        {
+            indicatorTextView.setTextColor(mCurrentColor);
+        }
+
+        private void boldText()
+        {
+            indicatorTextView.setTypeface(indicatorTextView.getTypeface(), Typeface.BOLD);
+        }
+
+        private void unBoldText()
+        {
+            indicatorTextView.setTypeface(indicatorTextView.getTypeface(), Typeface.NORMAL);
+        }
+
+        public void shouldShowColor(int mCurrentColor)
+        {
+            this.mCurrentColor = mCurrentColor;
+            if (mAchievementDefDTO != null && mLevel > 0)
+            {
+                display();
+            }
         }
     }
 }
