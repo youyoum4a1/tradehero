@@ -22,7 +22,7 @@ import retrofit.RetrofitError;
 public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 {
     public static final String PER_PAGE = "perpage";
-    private Query query;
+    private TimelineQuery query;
 
     private final UserTimelineServiceWrapper timelineServiceWrapper;
     private final DiscussionCache discussionCache;
@@ -40,7 +40,8 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
             TimelineDTO timelineDTO = null;
             try
             {
-                timelineDTO = timelineServiceWrapper.getTimeline(
+                timelineDTO = timelineServiceWrapper.getTimelineBySection(
+                        query.getSection(),
                         new UserBaseKey((Integer) query.getId()),
                         (Integer) query.getProperty(PER_PAGE),
                         query.getUpper(),
@@ -92,7 +93,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
     @Override
     public void setQuery(Query query)
     {
-        this.query = query;
+        this.query = (TimelineQuery) query;
     }
 
     // TODO guice has very nice feature that inject a factory using annotation @Factory
