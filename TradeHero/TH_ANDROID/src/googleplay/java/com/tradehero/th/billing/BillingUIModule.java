@@ -11,34 +11,34 @@ import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module(
-    complete = false,
-    library = true,
-    overrides = true
+        complete = false,
+        library = true,
+        overrides = true
 )
 public class BillingUIModule
 {
-  @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
-  {
-    return THIABAlertDialogUtil;
-  }
+    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
+    {
+        return THIABAlertDialogUtil;
+    }
 
-  @Provides @Singleton BillingInteractor provideBillingInteractor(THBillingInteractor billingInteractor)
-  {
-    return billingInteractor;
-  }
+    @Provides @Singleton BillingInteractor provideBillingInteractor(THBillingInteractor billingInteractor)
+    {
+        return billingInteractor;
+    }
 
-  @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THIABInteractor thiabInteractor)
-  {
-    return thiabInteractor;
-  }
+    @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THIABInteractor thiabInteractor)
+    {
+        return thiabInteractor;
+    }
 
-  @Provides @Singleton THIABInteractor provideTHIABInteractor(THIABBillingInteractor thiabInteractor)
-  {
-    return thiabInteractor;
-  }
+    @Provides @Singleton THIABInteractor provideTHIABInteractor(THIABBillingInteractor thiabInteractor)
+    {
+        return thiabInteractor;
+    }
 
-  @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestBuilder()
-  {
-    return BaseTHUIIABRequest.builder();
-  }
+    @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestBuilder()
+    {
+        return BaseTHUIIABRequest.builder();
+    }
 }
