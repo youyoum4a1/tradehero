@@ -7,24 +7,9 @@ public class SamsungCommonException extends SamsungOneCodeException
     public static final int VALID_ERROR_CODE = SamsungIapHelper.IAP_ERROR_COMMON;
 
     //<editor-fold desc="Constructors">
-    public SamsungCommonException()
-    {
-        super(VALID_ERROR_CODE);
-    }
-
     public SamsungCommonException(String message)
     {
         super(VALID_ERROR_CODE, message);
-    }
-
-    public SamsungCommonException(String message, Exception cause)
-    {
-        super(VALID_ERROR_CODE, message, cause);
-    }
-
-    public SamsungCommonException(Exception cause)
-    {
-        super(VALID_ERROR_CODE, cause);
     }
     //</editor-fold>
 

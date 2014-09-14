@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service.stub;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -139,7 +140,7 @@ public class DiscussionServiceStub implements DiscussionService
         return null;
     }
 
-    @Override public DiscussionDTO share(
+    @Override public BaseResponseDTO share(
             DiscussionType inReplyToType,
             int inReplyToId,
             TimelineItemShareRequestDTO timelineItemShareRequestDTO)

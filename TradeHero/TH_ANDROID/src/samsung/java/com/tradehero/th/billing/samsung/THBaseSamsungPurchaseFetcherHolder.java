@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.samsung;
 
+import android.app.Activity;
 import com.tradehero.common.billing.samsung.BaseSamsungPurchaseFetcherHolder;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;

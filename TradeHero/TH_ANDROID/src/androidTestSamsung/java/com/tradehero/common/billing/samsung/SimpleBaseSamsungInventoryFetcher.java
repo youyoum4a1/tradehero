@@ -7,10 +7,8 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import java.util.Arrays;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by xavier on 3/28/14.
- */
 public class SimpleBaseSamsungInventoryFetcher
     extends BaseSamsungInventoryFetcher<
             SamsungSKU,
@@ -27,10 +25,15 @@ public class SimpleBaseSamsungInventoryFetcher
         return new SamsungSKU(groupId, itemId);
     }
 
-    @Override protected BaseSamsungProductDetail<SamsungSKU> createSamsungProductDetail(SamsungSKU samsungSKU,
-            ItemVo itemVo)
+    @Override protected BaseSamsungProductDetail<SamsungSKU> createSamsungProductDetail(SamsungItemGroup samsungItemGroup, final ItemVo itemVo)
     {
-        return new BaseSamsungProductDetail<>(samsungSKU, itemVo);
+        return new BaseSamsungProductDetail<SamsungSKU>(samsungItemGroup, itemVo)
+        {
+            @NotNull @Override public SamsungSKU getProductIdentifier()
+            {
+                return new SamsungSKU(samsungItemGroup.groupId, itemVo.getItemId());
+            }
+        };
     }
 
     @Override protected SamsungException createException(ErrorVo errorVo)
@@ -40,6 +43,6 @@ public class SimpleBaseSamsungInventoryFetcher
 
     @Override protected List<String> getKnownItemGroups()
     {
-        return Arrays.asList("100000103210d");
+        return Arrays.asList("100000104349");
     }
 }

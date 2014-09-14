@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.samsung;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -27,6 +28,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
@@ -282,8 +284,15 @@ public class THSamsungBillingInteractor
             Context currentContext = activityProvider.get();
             if (currentContext != null)
             {
+                if (exception instanceof SamsungPaymentCancelledException)
+                {
+                    dialog = billingAlertDialogUtil.popUserCancelled(currentContext);
+                }
+                else
+                {
+                    dialog = billingAlertDialogUtil.popUnknownError(currentContext, exception);
+                }
                 // TODO finer dialog
-                dialog = billingAlertDialogUtil.popUnknownError(currentContext, exception);
             }
         }
         return dialog;

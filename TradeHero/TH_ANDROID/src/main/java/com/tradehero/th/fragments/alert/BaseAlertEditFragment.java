@@ -377,16 +377,17 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void displayTargetPriceHandler()
     {
-        if (alertDTO == null)
+        if (alertDTO == null || securityCompactDTO == null)
         {
             return; // TODO better than that
         }
         THSignedNumber thTargetPrice = THSignedMoney.builder(alertDTO.targetPrice)
                 .withOutSign()
+                .currency(securityCompactDTO.currencyDisplay)
                 .build();
         targetPrice.setText(thTargetPrice.toString());
 
-        if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
+        if (securityCompactDTO.lastPrice != null)
         {
             targetPriceSeekBar.setProgress((int) (50.0 * alertDTO.targetPrice / securityCompactDTO.lastPrice));
         }
@@ -433,7 +434,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void displayTargetPrice()
     {
-        if (alertDTO == null)
+        if (alertDTO == null || securityCompactDTO == null)
         {
             // TODO decide what to do
         }
@@ -441,6 +442,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THSignedNumber thTargetPrice = THSignedMoney.builder(alertDTO.targetPrice)
                     .withOutSign()
+                    .currency(securityCompactDTO.currencyDisplay)
                     .build();
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
@@ -621,10 +623,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected void updateTargetPriceChangeValues(boolean handlerEnabled)
     {
         Double seekingTargetPrice = getSeekingTargetPrice();
-        if (seekingTargetPrice != null)
+        if (seekingTargetPrice != null && securityCompactDTO != null)
         {
             THSignedNumber thSignedNumber = THSignedMoney.builder(seekingTargetPrice)
                     .withOutSign()
+                    .currency(securityCompactDTO.currencyDisplay)
                     .build();
             targetPriceChange.setText(getFormattedTargetPriceChange(handlerEnabled ? thSignedNumber.toString() : "-"));
             targetPriceSeekBar.setEnabled(targetPriceToggle.isChecked());

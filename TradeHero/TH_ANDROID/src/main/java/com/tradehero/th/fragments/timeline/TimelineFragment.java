@@ -25,7 +25,6 @@ import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -557,23 +556,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void linkWith(List<PortfolioCompactDTO> portfolioCompactDTOs, boolean andDisplay)
-    {
-        this.portfolioCompactDTOs = portfolioCompactDTOs;
-        if (portfolioCompactDTOs != null)
-        {
-            for(PortfolioCompactDTO portfolioCompactDTO: portfolioCompactDTOs)
-            {
-                portfolioCache.get().getOrFetchAsync(new OwnedPortfolioId(shownUserBaseKey.key, portfolioCompactDTO.id));
-            }
-        }
-
-        if (andDisplay)
-        {
-            // Nothing to do
-        }
-    }
-
     protected void linkWith(TabType tabType, boolean andDisplay)
     {
         currentTab = tabType;
@@ -772,20 +754,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_user_profile));
-        }
-    }
-
-    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
-    {
-        return new TimelineFragmentPortfolioCompactListFetchListener();
-    }
-
-    protected class TimelineFragmentPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
-        {
-            super.onDTOReceived(key, value);
-            linkWith(value, true);
         }
     }
 

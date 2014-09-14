@@ -4,6 +4,7 @@ abstract public class SamsungOneCodeException extends SamsungException
 {
     public final int errorCode;
 
+    //<editor-fold desc="Constructors">
     public SamsungOneCodeException(int errorCode)
     {
         super();
@@ -27,6 +28,7 @@ abstract public class SamsungOneCodeException extends SamsungException
         super(cause);
         this.errorCode = errorCode;
     }
+    //</editor-fold>
 
     abstract protected int getOnlyValidErrorCode();
 }

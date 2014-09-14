@@ -27,15 +27,6 @@ public class DiscussionDTOFactory
         {
             return null;
         }
-
-        // TODO remove this temporary HACK
-        {
-            if (unidentified.type.equals(DiscussionType.COMMENT))
-            {
-                unidentified.type = DiscussionType.PRIVATE_MESSAGE;
-            }
-        }
-
         return createChildClass(unidentified.type, unidentified);
     }
 

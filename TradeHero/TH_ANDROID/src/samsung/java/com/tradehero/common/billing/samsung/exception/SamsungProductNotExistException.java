@@ -7,24 +7,9 @@ public class SamsungProductNotExistException extends SamsungOneCodeException
     public static final int VALID_ERROR_CODE = SamsungIapHelper.IAP_ERROR_PRODUCT_DOES_NOT_EXIST;
 
     //<editor-fold desc="Constructors">
-    public SamsungProductNotExistException()
-    {
-        super(VALID_ERROR_CODE);
-    }
-
     public SamsungProductNotExistException(String message)
     {
         super(VALID_ERROR_CODE, message);
-    }
-
-    public SamsungProductNotExistException(String message, Exception cause)
-    {
-        super(VALID_ERROR_CODE, message, cause);
-    }
-
-    public SamsungProductNotExistException(Exception cause)
-    {
-        super(VALID_ERROR_CODE, cause);
     }
     //</editor-fold>
 
