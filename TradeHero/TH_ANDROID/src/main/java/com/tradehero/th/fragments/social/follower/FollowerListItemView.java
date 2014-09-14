@@ -26,7 +26,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
 
 public class FollowerListItemView extends RelativeLayout
         implements DTOView<UserFollowerDTO>, View.OnClickListener
@@ -34,28 +33,29 @@ public class FollowerListItemView extends RelativeLayout
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.follower_title) TextView title;
     @InjectView(R.id.follower_revenue) TextView revenueInfo;
-    //@InjectView(R.id.follower_time) TextView followTime;
     @InjectView(R.id.hint_open_follower_info) ImageView country;
 
     private UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
-    @Inject PrettyTime prettyTime;
     @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public FollowerListItemView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public FollowerListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public FollowerListItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);

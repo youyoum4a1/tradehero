@@ -16,8 +16,11 @@ public class SamsungPurchaseReportDTO implements PurchaseReportDTO
     @JsonProperty(PRODUCT_CODE_JSON_KEY)
     public String productCode;
 
-    public SamsungPurchaseReportDTO()
+    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
+    SamsungPurchaseReportDTO()
     {
+        // Necessary for Json deserialisation
         super();
     }
 
@@ -34,6 +37,7 @@ public class SamsungPurchaseReportDTO implements PurchaseReportDTO
         super();
         paymentId = samsungPurchase.getPaymentId();
         purchaseId = samsungPurchase.getPurchaseId();
-        productCode = samsungPurchase.getProductCode();
+        productCode = samsungPurchase.getItemId();
     }
+    //</editor-fold>
 }

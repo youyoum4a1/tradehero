@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.amazon;
 
+import android.app.Activity;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseFetcherHolder;
 import com.tradehero.common.billing.amazon.exception.AmazonException;

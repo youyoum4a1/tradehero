@@ -9,16 +9,19 @@ import com.tradehero.th.api.discussion.VoteDirection;
 public class VoteUpView extends VoteView
 {
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public VoteUpView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public VoteUpView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public VoteUpView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);

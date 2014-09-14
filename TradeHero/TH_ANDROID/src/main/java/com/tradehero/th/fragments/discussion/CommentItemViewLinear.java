@@ -7,12 +7,11 @@ import com.tradehero.th.api.discussion.key.CommentKey;
 
 public class CommentItemViewLinear extends DiscussionItemViewLinear<CommentKey>
 {
-    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public CommentItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
-    //</editor-fold>
 
     protected void openDiscussion()
     {

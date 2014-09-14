@@ -49,19 +49,12 @@ public class VotePair extends LinearLayout
         this.onVoteListener = onVoteListener;
     }
 
-    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public VotePair(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         init(context, attrs);
     }
-
-    public VotePair(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        init(context, attrs);
-    }
-    //</editor-fold>
 
     private void init(Context context, AttributeSet attrs)
     {
@@ -113,7 +106,7 @@ public class VotePair extends LinearLayout
         voteCallback = null;
     }
 
-    @OnClick({
+    @SuppressWarnings("UnusedDeclaration") @OnClick({
             R.id.timeline_action_button_vote_up,
             R.id.timeline_action_button_vote_down
     })

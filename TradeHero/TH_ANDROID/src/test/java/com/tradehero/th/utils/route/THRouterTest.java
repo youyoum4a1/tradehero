@@ -17,6 +17,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -212,6 +213,12 @@ public class THRouterTest
         thRouter.open("providers/23");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(MainCompetitionFragment.class);
+    }
+
+    @Test public void shouldOpenProviderVideoListFragment()
+    {
+        thRouter.open("providers/23/helpVideos");
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(ProviderVideoListFragment.class);
     }
 
     @Test public void shouldOpenProviderEnrollmentScreen()

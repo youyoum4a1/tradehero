@@ -23,11 +23,18 @@ public class SamsungPurchaseInProcessDTO extends SamsungPurchaseReportDTO
     public String purchaseVoJsonString;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
+    SamsungPurchaseInProcessDTO()
+    {
+        // Necessary for Json deserialisation
+        super();
+    }
+
     public SamsungPurchaseInProcessDTO(@NotNull THSamsungPurchase samsungPurchase)
     {
         super(samsungPurchase);
         this.groupId = samsungPurchase.getGroupId();
-        this.productCode = samsungPurchase.getProductCode();
+        this.productCode = samsungPurchase.getItemId();
         this.userToFollow = samsungPurchase.getUserToFollow();
         this.applicablePortfolioId = samsungPurchase.getApplicableOwnedPortfolioId();
         this.purchaseVoJsonString = samsungPurchase.getJsonString();

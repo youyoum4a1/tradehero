@@ -31,11 +31,6 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         HierarchyInjector.inject(context, this);
     }
 
-    public TimelineListLoader(Context context, UserBaseKey userBaseKey)
-    {
-        this(context, userBaseKey, UserTimelineService.TimelineSection.Timeline);
-    }
-
     @Override public List<TimelineItemDTOKey> loadInBackground()
     {
         if (lowerItemId != null)

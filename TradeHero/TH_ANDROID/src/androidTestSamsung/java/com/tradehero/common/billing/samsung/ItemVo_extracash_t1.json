@@ -1,15 +1,15 @@
 {
 "mType": "00",
 "mSubscriptionDurationMultiplier": "",
-"mItemDesc": "TH$ 100K",
-"mItemPrice": 6.33,
+"mItemDesc": "50,000 Additional Virtual Dollars",
+"mItemPrice": 3.73,
 "mCurrencyUnit": "$",
 "mItemImageUrl": "http:\/\/img.samsungapps.com\/appsitem\/itemDefaultImage.jpg",
-"mItemName": "TH$ 100K",
+"mItemName": "TH Dollars 50K",
 "mSubscriptionDurationUnit": "",
-"mReserved1": "com.myhero.th.extracash.t2",
+"mReserved1": "",
 "mItemDownloadUrl": "",
 "mReserved2": "",
-"mItemId": "000001016743",
-"mItemPriceString": "$6.33"
+"mItemId": "com.myhero.th.extracash.t1",
+"mItemPriceString": "$3.73"
 }

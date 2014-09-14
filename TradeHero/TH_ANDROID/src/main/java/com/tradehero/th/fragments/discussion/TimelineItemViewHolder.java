@@ -159,6 +159,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
 
     //</editor-fold>
 
+    @SuppressWarnings("UnusedDeclaration")
     @Optional @OnClick({R.id.discussion_user_picture, R.id.user_profile_name})
     protected void handleUserClicked(View view)
     {
@@ -168,6 +169,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @Optional @OnClick(R.id.timeline_vendor_picture)
     protected void handleSecurityClicked(View view)
     {
