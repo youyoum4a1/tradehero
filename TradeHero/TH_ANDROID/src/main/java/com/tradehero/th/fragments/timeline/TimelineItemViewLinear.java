@@ -35,7 +35,6 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Analytics analytics;
 
-    @SuppressWarnings("UnusedDeclaration")
     public TimelineItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);

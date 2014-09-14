@@ -20,6 +20,7 @@ import com.tradehero.th.fragments.timeline.SubTimelineAdapter;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
+import com.tradehero.th.network.service.UserTimelineService;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -58,7 +59,7 @@ public class DiscoveryDiscussionFragment extends SherlockFragment
 
             @Override protected ListLoader<TimelineItemDTOKey> onCreateLoader(Bundle args)
             {
-                return new TimelineListLoader(getActivity(), currentUserId.toUserBaseKey());
+                return new TimelineListLoader(getActivity(), currentUserId.toUserBaseKey(), UserTimelineService.TimelineSection.Hot);
             }
         });
 

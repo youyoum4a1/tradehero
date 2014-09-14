@@ -314,8 +314,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             params.putString("to", stringBuilder.toString());
 
             WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                    activityProvider.get(), Session.getActiveSession(),
-                    params))
+                activityProvider.get(), Session.getActiveSession(), params))
                     .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
                         @Override

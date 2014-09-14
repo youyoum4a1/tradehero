@@ -98,8 +98,8 @@ public class BillingModule
         return thBaseIABBillingAvailableTester;
     }
 
-    @Provides
-    THIABBillingAvailableTesterHolder provideBillingAvailableTesterHolder(THBaseIABBillingAvailableTesterHolder thBaseIABBillingAvailableTesterHolder)
+    @Provides THIABBillingAvailableTesterHolder provideBillingAvailableTesterHolder(
+            THBaseIABBillingAvailableTesterHolder thBaseIABBillingAvailableTesterHolder)
     {
         return thBaseIABBillingAvailableTesterHolder;
     }
@@ -109,8 +109,8 @@ public class BillingModule
         return thBaseIABProductIdentifierFetcher;
     }
 
-    @Provides
-    THIABProductIdentifierFetcherHolder provideProductIdentifierFetcherHolder(THBaseIABProductIdentifierFetcherHolder thBaseIABProductIdentifierFetcherHolder)
+    @Provides THIABProductIdentifierFetcherHolder provideProductIdentifierFetcherHolder(
+            THBaseIABProductIdentifierFetcherHolder thBaseIABProductIdentifierFetcherHolder)
     {
         return thBaseIABProductIdentifierFetcherHolder;
     }

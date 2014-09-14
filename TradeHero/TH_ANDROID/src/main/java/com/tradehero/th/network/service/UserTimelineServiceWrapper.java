@@ -58,11 +58,17 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
-    public TimelineDTO getTimeline(
+    public TimelineDTO getDefaultTimeline(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
+    {
+        // Make a key that contains all info.
+        return userTimelineService.getTimeline(UserTimelineService.TimelineSection.Timeline, userId.key, maxCount, maxId, minId);
+    }
+
+    public TimelineDTO getTimelineBySection(UserTimelineService.TimelineSection section,
             @NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
-        return userTimelineService.getTimeline(userId.key, maxCount, maxId, minId);
+        return userTimelineService.getTimeline(section, userId.key, maxCount, maxId, minId);
     }
 
     @NotNull MiddleCallback<TimelineDTO> getTimeline(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,

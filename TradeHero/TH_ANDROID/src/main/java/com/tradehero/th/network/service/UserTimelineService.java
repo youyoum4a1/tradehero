@@ -25,8 +25,9 @@ public interface UserTimelineService
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
-    @GET("/users/{userId}/timeline")
+    @GET("/users/{userId}/{section}")
     TimelineDTO getTimeline(
+            @Path("section") TimelineSection section,
             @Path("userId") int userId,
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
@@ -46,5 +47,22 @@ public interface UserTimelineService
     Response deleteTimelineItem(
             @Path("userId") int userId,
             @Path("timelineItemId") int timelineItemId);
+
+    public enum TimelineSection
+    {
+        Timeline("timeline"),
+        Hot("whatshot");
+        private final String name;
+
+        TimelineSection(String name)
+        {
+            this.name = name;
+        }
+
+        @Override public String toString()
+        {
+            return name;
+        }
+    }
     //</editor-fold>
 }
