@@ -3,11 +3,12 @@ package com.tradehero.common.billing.amazon;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-abstract public class BaseAmazonPurchaseConsumerHolder<
+public class BaseAmazonPurchaseConsumerHolder<
         AmazonSKUType extends AmazonSKU,
         AmazonOrderIdType extends AmazonOrderId,
         AmazonPurchaseType extends AmazonPurchase<AmazonSKUType, AmazonOrderIdType>,
@@ -22,6 +23,7 @@ abstract public class BaseAmazonPurchaseConsumerHolder<
         AmazonPurchaseType,
         AmazonException>
 {
+    @NotNull protected final Provider<AmazonPurchaseConsumerType> purchaseConsumerTypeProvider;
     @NotNull protected Map<Integer /*requestCode*/, AmazonPurchaseConsumerType> amazonPurchaseConsumers;
     @NotNull protected Map<Integer /*requestCode*/, AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<
             AmazonSKUType,
@@ -30,9 +32,10 @@ abstract public class BaseAmazonPurchaseConsumerHolder<
             AmazonException>> parentConsumeFinishedHandlers;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonPurchaseConsumerHolder()
+    public BaseAmazonPurchaseConsumerHolder(@NotNull Provider<AmazonPurchaseConsumerType> purchaseConsumerTypeProvider)
     {
         super();
+        this.purchaseConsumerTypeProvider = purchaseConsumerTypeProvider;
         amazonPurchaseConsumers = new HashMap<>();
         parentConsumeFinishedHandlers = new HashMap<>();
     }
@@ -78,7 +81,7 @@ abstract public class BaseAmazonPurchaseConsumerHolder<
     @Override public void launchConsumeSequence(int requestCode, AmazonPurchaseType purchase)
     {
         AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException> consumeListener = createConsumptionFinishedListener();
-        AmazonPurchaseConsumerType iabPurchaseConsumer = createPurchaseConsumer();
+        AmazonPurchaseConsumerType iabPurchaseConsumer = purchaseConsumerTypeProvider.get();
         iabPurchaseConsumer.setConsumptionFinishedListener(consumeListener);
         amazonPurchaseConsumers.put(requestCode, iabPurchaseConsumer);
         iabPurchaseConsumer.consume(requestCode, purchase);
@@ -151,6 +154,4 @@ abstract public class BaseAmazonPurchaseConsumerHolder<
         amazonPurchaseConsumers.clear();
         parentConsumeFinishedHandlers.clear();
     }
-
-    abstract protected AmazonPurchaseConsumerType createPurchaseConsumer();
 }
