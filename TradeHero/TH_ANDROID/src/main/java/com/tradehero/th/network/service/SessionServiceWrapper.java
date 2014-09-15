@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import android.app.NotificationManager;
 import android.content.Context;
+
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -19,14 +20,15 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.POST;
 
 @Singleton public class SessionServiceWrapper
 {

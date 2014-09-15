@@ -43,6 +43,7 @@ import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -67,6 +68,7 @@ import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.FirstShowInviteCodeDialog;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.ui.ViewWrapper;
@@ -113,7 +115,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<NotificationCache> notificationCache;
     @Inject DeviceTokenHelper deviceTokenHelper;
     @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
-    @Inject @FirstShowOnBoardDialog BooleanPreference firstShowOnBoardDialogPreference;
+    @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
     @Inject Lazy<MarketUtil> marketUtilLazy;
 
@@ -378,15 +380,15 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private void showInviteCodeDialog()
     {
-        if (shouldShowInviteCode())
+        if (shouldShowOnBoard())
+        {
+            showOnboard();
+        }
+        else if (shouldShowInviteCode())
         {
             firstShowInviteCodeDialogPreference.set(false);
             InviteCodeDialogFragment dialogFragment = InviteCodeDialogFragment.showInviteCodeDialog(getSupportFragmentManager());
             dialogFragment.setDismissedListener(new DashboardOnInviteCodeDismissed());
-        }
-        else
-        {
-            showOnboard();
         }
     }
 
@@ -407,17 +409,36 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         @Override public void onDismissed(DialogInterface dialog)
         {
-            showOnboard();
+            shouldShowOnBoard();
+        }
+    }
+
+    protected boolean shouldShowOnBoard()
+    {
+        if (firstShowOnBoardDialogPreference.isItTime())
+        {
+            UserProfileDTO currentUserProfile =
+                    userProfileCache.get().get(currentUserId.toUserBaseKey());
+            if (currentUserProfile != null)
+            {
+                if (currentUserProfile.heroIds != null && currentUserProfile.heroIds.size() > 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
     protected void showOnboard()
     {
-//        THToast.show("Activate OnBoardDialogFragment when merged in");
-        if (firstShowOnBoardDialogPreference.get())
+        if (shouldShowOnBoard())
         {
-            firstShowOnBoardDialogPreference.set(false);
-            //new OnBoardDialogFragment().show(getSupportFragmentManager(), OnBoardDialogFragment.class.getName());
+            OnBoardDialogFragment.showOnBoardDialog(getSupportFragmentManager());
         }
     }
 

@@ -8,6 +8,7 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorFollowFreeUserBatch extends DTOProcessorUpdateUserProfile

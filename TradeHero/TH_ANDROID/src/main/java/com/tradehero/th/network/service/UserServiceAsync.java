@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -22,6 +23,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
+
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -223,9 +225,6 @@ interface UserServiceAsync
             Callback<UserFriendsDTOList> callback);
     //</editor-fold>
 
-    @POST("/users/batchFollow/free")
-    void followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO, Callback<UserProfileDTO> callback);
-
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends")
     void inviteFriends(
@@ -258,6 +257,9 @@ interface UserServiceAsync
             @Path("userId") int userId,
             @Body PurchaseReportDTO purchaseReportDTO,
             Callback<UserProfileDTO> callback);
+
+    @POST("/users/batchFollow/free")
+    void followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO, Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
@@ -272,6 +274,16 @@ interface UserServiceAsync
     void getHeroes(
             @Path("userId") int userId,
             Callback<HeroDTOList> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Suggest Heroes">
+    @GET("/users/heroes/bySectorAndExchange")
+    void suggestHeroes(
+            @Query("exchange") Integer exchangeId,
+            @Query("sector") Integer sectorId,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            Callback<LeaderboardUserDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">

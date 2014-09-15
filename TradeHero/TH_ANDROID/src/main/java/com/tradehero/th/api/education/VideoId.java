@@ -1,7 +1,9 @@
 package com.tradehero.th.api.education;
 
 import android.os.Bundle;
+
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+
 import org.jetbrains.annotations.NotNull;
 
 public class VideoId extends AbstractIntegerDTOKey

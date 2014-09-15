@@ -1,6 +1,7 @@
 package com.tradehero.th.utils;
 
 import com.android.internal.util.Predicate;
+
 import java.util.Collection;
 import java.util.Iterator;
 

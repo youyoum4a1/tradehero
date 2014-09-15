@@ -2,9 +2,11 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
 
 public class THBaseIABBillingAvailableTesterHolder
     extends BaseIABBillingAvailableTesterHolder<THIABBillingAvailableTester, IABException>

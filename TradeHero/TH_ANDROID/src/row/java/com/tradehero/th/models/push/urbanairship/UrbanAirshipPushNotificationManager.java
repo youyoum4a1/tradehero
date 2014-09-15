@@ -6,9 +6,11 @@ import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushNotificationBuilder;
-import dagger.Lazy;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 @Singleton public final class UrbanAirshipPushNotificationManager implements PushNotificationManager

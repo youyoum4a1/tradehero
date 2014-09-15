@@ -2,9 +2,11 @@ package com.tradehero.th.api.news;
 
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
 
 public class NewsItemDTO extends NewsItemCompactDTO
 {

@@ -1,9 +1,11 @@
 package com.tradehero.th.models.push;
 
+import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.mock;
 

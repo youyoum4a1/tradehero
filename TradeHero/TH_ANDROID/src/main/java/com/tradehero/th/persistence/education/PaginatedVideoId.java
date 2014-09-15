@@ -4,9 +4,11 @@ import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.api.education.VideoId;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 class PaginatedVideoId extends PaginatedDTO<VideoId>
 {

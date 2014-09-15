@@ -1,8 +1,9 @@
 package com.tradehero.th.network.service;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 import retrofit.RestAdapter;
 
 @Module(

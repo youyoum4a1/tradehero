@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.support.v4.app.Fragment;
+
 import com.tradehero.th.R;
 
 enum DiscoveryTabType

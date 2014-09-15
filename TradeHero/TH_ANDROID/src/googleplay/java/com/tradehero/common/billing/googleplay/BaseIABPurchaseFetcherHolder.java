@@ -3,9 +3,11 @@ package com.tradehero.common.billing.googleplay;
 import com.tradehero.common.billing.BaseBillingPurchaseFetcherHolder;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 
 abstract public class BaseIABPurchaseFetcherHolder<
         IABSKUType extends IABSKU,

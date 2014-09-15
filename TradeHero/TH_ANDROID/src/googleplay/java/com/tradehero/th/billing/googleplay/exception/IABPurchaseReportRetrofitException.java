@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay.exception;
 
-import com.tradehero.common.billing.googleplay.IABResult;
 import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueException;
 
 public class IABPurchaseReportRetrofitException extends IABOneResponseValueException

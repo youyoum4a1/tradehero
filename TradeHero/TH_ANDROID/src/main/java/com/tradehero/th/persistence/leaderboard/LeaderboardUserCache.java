@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
         throw new IllegalStateException("There is no fetch on LeaderboardUserCache");
     }
 
-    @Contract("null -> null; !null -> !null")
     public void put(@Nullable Map<LeaderboardUserId, LeaderboardUserDTO> leaderboardUserDTOs)
     {
         if (leaderboardUserDTOs == null)
@@ -49,7 +48,7 @@ import org.jetbrains.annotations.Nullable;
             return null;
         }
 
-        LeaderboardUserDTOList  returned = new LeaderboardUserDTOList();
+        LeaderboardUserDTOList returned = new LeaderboardUserDTOList();
         for (@NotNull LeaderboardUserId leaderboardUserId: leaderboardUserIds)
         {
             returned.add(get(leaderboardUserId));
@@ -57,8 +56,23 @@ import org.jetbrains.annotations.Nullable;
         return returned;
     }
 
+    @Contract("null -> null; !null -> !null") @Nullable
+    public LeaderboardUserDTOList put(@Nullable List<? extends LeaderboardUserDTO> leaderboardUserDTOs)
+    {
+        if (leaderboardUserDTOs == null)
+        {
+            return null;
+        }
+        LeaderboardUserDTOList previous = new LeaderboardUserDTOList();
+        for (@NotNull LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
+        {
+            previous.add(put(leaderboardUserDTO.getLeaderboardUserId(), leaderboardUserDTO));
+        }
+        return previous;
+    }
+
     public LeaderboardUserIdList getAllKeys()
     {
-        return new LeaderboardUserIdList(snapshot().keySet());
+        return new LeaderboardUserIdList(snapshot().keySet(), (LeaderboardUserId) null);
     }
 }

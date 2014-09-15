@@ -2,6 +2,7 @@ package com.tradehero.th.api.education;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
+
 import org.jetbrains.annotations.NotNull;
 
 public class VideoCategoryDTO implements DTO

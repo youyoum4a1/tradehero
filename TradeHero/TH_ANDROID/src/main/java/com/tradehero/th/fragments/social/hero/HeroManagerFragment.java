@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.billing.ProductPurchase;
@@ -27,11 +28,15 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.utils.GraphicUtil;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+
 import timber.log.Timber;
 
 public class HeroManagerFragment extends BasePurchaseManagerFragment

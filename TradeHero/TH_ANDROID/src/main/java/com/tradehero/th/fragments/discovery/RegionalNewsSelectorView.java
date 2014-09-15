@@ -12,10 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnFocusChanged;
+
 import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -34,11 +31,19 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.CollectionUtils;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnFocusChanged;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

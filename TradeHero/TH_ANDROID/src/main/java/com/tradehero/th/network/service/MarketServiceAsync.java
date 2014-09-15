@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -21,5 +22,10 @@ interface MarketServiceAsync
     void getExchange(
             @Path("exchangeId") int exchangeId,
             Callback<ExchangeDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Get All Exchange And Sectors Compact">
+    @GET("/allExchangesAndSectors")
+    void getAllExchangeSectorCompact(Callback<ExchangeSectorCompactListDTO> callback);
     //</editor-fold>
 }

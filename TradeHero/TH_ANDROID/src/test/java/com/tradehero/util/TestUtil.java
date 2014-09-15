@@ -2,6 +2,9 @@ package com.tradehero.util;
 
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.IOUtils;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import org.jetbrains.annotations.NotNull;
 
 public class TestUtil
 {

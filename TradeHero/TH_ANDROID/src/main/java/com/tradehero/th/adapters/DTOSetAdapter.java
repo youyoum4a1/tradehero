@@ -50,10 +50,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         {
             return new LinkedHashSet<>();
         }
-        else
-        {
-            return new LinkedHashSet<>(objects);
-        }
+        return new LinkedHashSet<>(objects);
     }
 
     public void remove(T element)
@@ -112,5 +109,10 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     @Override public long getItemId(int position)
     {
         return getItem(position).hashCode();
+    }
+
+    public int getPositionOf(@NotNull T item)
+    {
+        return items.indexOf(item);
     }
 }

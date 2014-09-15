@@ -409,6 +409,23 @@
     <item name="android:background">@android:color/white</item>
   </style>
 
+  <style name="TH.Dialog" parent="@android:Theme">
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:colorBackgroundCacheHint">@null</item>
+    <item name="android:windowFrame">@null</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:windowIsFloating">true</item>
+    <item name="android:backgroundDimEnabled">true</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowCloseOnTouchOutside">true</item>
+  </style>
+
+    <style name="TH.onBoardDialog" parent="TH.Dialog">
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
   <style name="TradeHero.CarouselNavigationButton">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>

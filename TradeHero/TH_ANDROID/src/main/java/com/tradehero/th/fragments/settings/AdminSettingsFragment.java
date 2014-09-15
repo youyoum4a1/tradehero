@@ -22,11 +22,12 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
+import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -131,6 +132,17 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             {
                 SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivity.get();
                 AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
+                return true;
+            }
+        });
+
+        Preference showOnBoardDialog = findPreference("show_onBoard_dialog");
+        showOnBoardDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+//                SherlockFragmentActivity activityversion.properties = (SherlockFragmentActivity) currentActivityHolder.getCurrentActivity();
+                OnBoardDialogFragment.showOnBoardDialog(getActivity().getSupportFragmentManager());
                 return true;
             }
         });

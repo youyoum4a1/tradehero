@@ -2,6 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Intent;
 import android.content.res.Resources;
+
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
@@ -15,13 +16,17 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
-import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.THProductDetailDomainPredicate;
+import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
-import java.util.List;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class THIABLogicHolderFull

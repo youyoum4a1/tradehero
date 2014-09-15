@@ -3,6 +3,7 @@ package com.tradehero.th.api.discussion.key;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.users.UserBaseKey;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;

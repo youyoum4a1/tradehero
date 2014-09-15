@@ -8,9 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+
 import com.actionbarsherlock.view.MenuItem;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -35,13 +33,20 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
-import dagger.Lazy;
-import java.util.Date;
-import javax.inject.Inject;
-import javax.inject.Provider;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.Date;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
+import dagger.Lazy;
 import retrofit.RetrofitError;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment

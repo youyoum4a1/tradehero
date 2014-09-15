@@ -5,13 +5,16 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.BaseApiTestClass;
 import com.tradehero.th.api.translation.TranslationToken;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.inject.Inject;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 

@@ -3,9 +3,11 @@ package com.tradehero.th.persistence.discussion;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.NewsItemMediaDTO;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 class NewsItemCutDTO extends NewsItemCompactCutDTO
 {

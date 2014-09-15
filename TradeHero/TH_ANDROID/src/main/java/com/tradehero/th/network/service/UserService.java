@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -23,6 +24,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
+
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -224,6 +226,15 @@ public interface UserService
     //<editor-fold desc="Get Heroes">
     @GET("/users/{userId}/heroes") HeroDTOList getHeroes(
             @Path("userId") int userId);
+    //</editor-fold>
+
+    //<editor-fold desc="Suggest Heroes">
+    @GET("/users/heroes/bySectorAndExchange")
+    LeaderboardUserDTOList suggestHeroes(
+            @Query("exchange") Integer exchangeId,
+            @Query("sector") Integer sectorId,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">

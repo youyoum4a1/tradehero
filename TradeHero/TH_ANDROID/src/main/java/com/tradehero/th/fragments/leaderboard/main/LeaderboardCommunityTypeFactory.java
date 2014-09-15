@@ -3,8 +3,10 @@ package com.tradehero.th.fragments.leaderboard.main;
 import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 class LeaderboardCommunityTypeFactory
 {

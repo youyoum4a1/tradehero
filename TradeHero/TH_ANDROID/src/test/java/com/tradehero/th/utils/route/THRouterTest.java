@@ -3,6 +3,7 @@ package com.tradehero.th.utils.route;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.webkit.WebView;
+
 import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
@@ -34,7 +35,7 @@ import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
@@ -48,6 +49,8 @@ import org.robolectric.shadows.ShadowHandler;
 import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
+
+import javax.inject.Inject;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;

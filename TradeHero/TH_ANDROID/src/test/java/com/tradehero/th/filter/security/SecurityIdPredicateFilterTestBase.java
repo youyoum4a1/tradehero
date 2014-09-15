@@ -4,10 +4,12 @@ import com.tradehero.common.widget.filter.BaseListCharSequencePredicateFilter;
 import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.api.security.SecurityId;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
+
+import java.util.ArrayList;
+import java.util.List;
 
 abstract public class SecurityIdPredicateFilterTestBase
 {

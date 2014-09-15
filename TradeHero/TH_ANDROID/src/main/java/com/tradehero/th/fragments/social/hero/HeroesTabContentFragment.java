@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -36,10 +37,14 @@ import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragment

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/common_margin_15"
+    >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/onboard_invitation_follow_hero_header"
+        android:textSize="@dimen/text_large"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_10"
+        android:gravity="center"
+        android:text="@string/onboard_invitation_follow_hero_come_on"
+        android:lineSpacingMultiplier="1.2"
+        android:textColor="@color/black"
+        />
+
+  </LinearLayout>
+
+  <ViewSwitcher
+      android:id="@+id/switcher_hero"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_gravity="center"
+        />
+
+    <ListView
+        android:id="@+id/heros_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/common_margin_10"
+        />
+
+  </ViewSwitcher>
+
+</LinearLayout>

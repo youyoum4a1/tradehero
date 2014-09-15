@@ -4,10 +4,12 @@ import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.education.PagedVideoCategories;
 import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.network.service.VideoServiceWrapper;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class PaginatedVideoCategoryCache extends StraightCutDTOCacheNew<PagedVideoCategories, PaginatedVideoCategoryDTO, PaginatedVideoCategoryId>
 {

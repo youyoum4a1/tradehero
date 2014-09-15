@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.timeline.TimelineReadDTO;
+
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.POST;

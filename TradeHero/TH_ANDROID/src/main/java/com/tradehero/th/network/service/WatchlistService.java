@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
@@ -24,6 +25,12 @@ public interface WatchlistService
     WatchlistPositionDTO updateWatchlistEntry(
             @Path("position") int position,
             @Body WatchlistPositionFormDTO watchlistPositionFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Batch Create Watchlist Positions">
+    @POST("/batchCreateWatchlistPositions")
+    WatchlistPositionDTOList batchCreate(
+            @Body SecurityIntegerIdListForm securityIntegerIds);
     //</editor-fold>
 
     //<editor-fold desc="Query for watchlist">

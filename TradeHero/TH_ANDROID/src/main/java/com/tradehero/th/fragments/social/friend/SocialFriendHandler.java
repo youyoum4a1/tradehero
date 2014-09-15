@@ -31,7 +31,7 @@ import retrofit.client.Response;
         {
             callback.onRequestStart();
         }
-        return userServiceWrapper.followBatchFree(new BatchFollowFormDTO(users), callback);
+        return userServiceWrapper.followBatchFree(new BatchFollowFormDTO(users, (UserFriendsDTO) null), callback);
     }
 
     public MiddleCallback<Response> inviteFriends(

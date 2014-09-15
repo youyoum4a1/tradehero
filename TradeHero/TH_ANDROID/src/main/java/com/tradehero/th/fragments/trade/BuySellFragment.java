@@ -31,7 +31,6 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -81,6 +80,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
@@ -121,8 +121,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.news) protected TextView mNewsTextView;
 
     @Inject ResideMenu resideMenu;
-    @Inject @ShowAskForReviewDialog LongPreference mShowAskForReviewDialogPreference;
-    @Inject @ShowAskForInviteDialog LongPreference mShowAskForInviteDialogPreference;
+    @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
+    @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
 
     //for dialog
     private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
@@ -1235,14 +1235,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 if (profit > 0)
                 {
-                    long lastReviewLimitTime = mShowAskForReviewDialogPreference.get();
-                    if (System.currentTimeMillis() > lastReviewLimitTime)
+                    if (mShowAskForReviewDialogPreference.isItTime())
                     {
                         AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
                         return;
                     }
-                    long lastInviteLimitTime = mShowAskForInviteDialogPreference.get();
-                    if (System.currentTimeMillis() > lastInviteLimitTime)
+                    if (mShowAskForInviteDialogPreference.isItTime())
                     {
                         AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
                     }

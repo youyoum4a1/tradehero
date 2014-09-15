@@ -15,7 +15,7 @@
 
   <string-array name="server_values" translatable="false">
     <item>https://www.tradehero.mobi/api/</item>
-    <item>https://966e65227ab24d18a2a75e4530770153.cloudapp.net/api/</item>
+    <item>https://e2f849bb5592421b998bf47a50ac5b62.cloudapp.net/api/</item>
     <item>https://th-paas-test-dev1.cloudapp.net/api/</item>
     <item>http://truongtho.noip.me/api/</item>
     <item>http://192.168.20.8/api/</item>

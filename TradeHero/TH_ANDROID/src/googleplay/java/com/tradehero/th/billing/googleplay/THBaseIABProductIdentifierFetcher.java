@@ -5,11 +5,14 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 
 public class THBaseIABProductIdentifierFetcher
     extends BaseProductIdentifierFetcher<

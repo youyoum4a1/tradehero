@@ -3,11 +3,13 @@ package com.tradehero.common.billing.googleplay;
 import com.tradehero.common.billing.BaseBillingAvailableTesterHolder;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.googleplay.exception.IABException;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Inject;
+
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
 
 public class BaseIABBillingAvailableTesterHolder<
         IABBillingAvailableTesterType extends  IABBillingAvailableTester<IABExceptionType>,

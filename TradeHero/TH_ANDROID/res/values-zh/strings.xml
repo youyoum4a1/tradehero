@@ -108,6 +108,9 @@
   <string name="referral_dollars_claimed">已成功提交邀请码</string>
 
   <string name="mark_all_as_read">全部已读</string>
+  <string name="onboard_exchange_title">帮助您开始</string>
+  <string name="onboard_exchange_summary1">哪个市场您感兴趣呢 ?</string>
+  <string name="onboard_exchange_summary2">哪个行业您感兴趣呢 ?</string>
   <string name="ask_for_review_title">喜爱 全民股神 ？</string>
   <string name="ask_for_review_summary">请给我们评分，让我们知您所想。</string>
   <string name="ask_for_review_rate">给 全民股神 投票</string>

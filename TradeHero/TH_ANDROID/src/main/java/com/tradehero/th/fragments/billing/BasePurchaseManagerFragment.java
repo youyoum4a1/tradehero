@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.view.View;
+
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BaseUIBillingRequest;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -25,10 +26,13 @@ import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.system.SystemStatusCache;
-import javax.inject.Inject;
-import javax.inject.Provider;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import retrofit.Callback;
 import timber.log.Timber;
 

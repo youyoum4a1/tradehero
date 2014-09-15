@@ -8,8 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.billing.BillingConstants;
@@ -35,9 +34,14 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.list.BaseListHeaderView;
-import dagger.Lazy;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class AlertManagerFragment extends BasePurchaseManagerFragment

@@ -1,4 +1,4 @@
-package com.tradehero.th.network.service.stub;
+package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -7,7 +7,6 @@ import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
-import com.tradehero.th.network.service.MessageService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,10 +16,12 @@ import timber.log.Timber;
 
 public class MessageServiceStub implements MessageService
 {
+    //<editor-fold desc="Constructors">
     @Inject public MessageServiceStub()
     {
         super();
     }
+    //</editor-fold>
 
     @Override
     public ReadablePaginatedMessageHeaderDTO getMessageHeaders(Integer page, Integer perPage)

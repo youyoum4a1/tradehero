@@ -1,6 +1,7 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+
 import org.jetbrains.annotations.Nullable;
 
 public interface BillingAvailableTesterHolder<BillingExceptionType extends BillingException>

@@ -2,12 +2,14 @@ package com.tradehero.th.billing;
 
 import android.content.Context;
 import android.content.Intent;
+
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.VersionUtils;
+
 import java.util.List;
 
 abstract public class BillingUtils<

@@ -1,12 +1,14 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.THRobolectricTestRunner;
-import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertNull;
 

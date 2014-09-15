@@ -7,8 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -24,8 +23,12 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
+
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>, View.OnClickListener

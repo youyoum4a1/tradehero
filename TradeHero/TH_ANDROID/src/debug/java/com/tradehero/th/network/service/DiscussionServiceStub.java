@@ -1,4 +1,4 @@
-package com.tradehero.th.network.service.stub;
+package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -11,7 +11,6 @@ import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.pagination.RangeSequenceDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.network.service.DiscussionService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -8,7 +8,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -65,12 +65,17 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
-import dagger.Lazy;
-import java.util.HashSet;
-import java.util.Set;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import butterknife.InjectView;
+import dagger.Lazy;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -283,12 +288,14 @@ public class TrendingFragment extends SecurityListFragment
 
     private void linkWith(@NotNull ExchangeCompactDTOList exchangeDTOs, boolean andDisplay)
     {
-        linkWith(new ExchangeCompactSpinnerDTOList(
-                        getResources(),
-                        exchangeCompactDTOUtil.filterAndOrderForTrending(
-                                exchangeDTOs,
-                                new ExchangeCompactDTODescriptionNameComparator<>())),
-                andDisplay);
+        ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
+                getResources(),
+                exchangeCompactDTOUtil.filterAndOrderForTrending(
+                        exchangeDTOs,
+                        new ExchangeCompactDTODescriptionNameComparator<>()));
+        // Adding the "All" choice
+        spinnerList.add(0, new ExchangeCompactSpinnerDTO(getResources()));
+        linkWith(spinnerList, andDisplay);
     }
 
     private void linkWith(@NotNull ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs, boolean andDisplay)

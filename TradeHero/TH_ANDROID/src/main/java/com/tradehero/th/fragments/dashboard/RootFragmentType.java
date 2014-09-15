@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.dashboard;
 
 import android.support.v4.app.Fragment;
+
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
@@ -15,6 +16,7 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.utils.Constants;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,7 +55,7 @@ public enum RootFragmentType
     STORE(R.layout.tab_indicator_holo,
             R.string.dashboard_store, R.string.dashboard_store_key,
             R.drawable.icn_menu_store, StoreScreenFragment.class),
-    SETTING(R.layout.tab_indicator_holo,
+    SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings, R.string.dashboard_menu_settings_key,
             R.drawable.icn_menu_settings, SettingsFragment.class),
     ADMIN_SETTINGS(R.layout.tab_indicator_holo,

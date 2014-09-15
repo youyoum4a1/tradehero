@@ -1,9 +1,11 @@
 package com.tradehero.common.billing;
 
 import android.content.Intent;
+
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
+
 import org.jetbrains.annotations.NotNull;
 
 public interface BillingInteractor<

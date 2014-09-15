@@ -5,9 +5,12 @@ import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
-import java.util.ArrayList;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 public class UserProfileDTOUtil extends UserBaseDTOUtil
 {

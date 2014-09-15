@@ -16,8 +16,8 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsWeiboDTO;
-import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,11 +37,13 @@ public class SocialFriendUserView extends SocialFriendItemView
     @Nullable private OnElementClickListener onElementClickListener;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public SocialFriendUserView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public SocialFriendUserView(Context context, AttributeSet attrs)
     {
         super(context, attrs);

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+  >
+
+  <LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:orientation="vertical"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/common_margin_10"
+      >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_15"
+        android:gravity="center"
+        android:text="@string/onboard_exchange_title"
+        android:textSize="@dimen/text_large"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_10"
+        android:text="@string/onboard_exchange_summary1"
+        android:textColor="@color/black"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_exchange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:dropDownSelector="@drawable/basic_transparent_selector"
+        style="@style/TH.Spinner"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_10"
+        android:text="@string/onboard_exchange_summary2"
+        android:textColor="@color/black"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_sector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:dropDownSelector="@drawable/basic_transparent_selector"
+        style="@style/TH.Spinner"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/market_on_board_country_from"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_country"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
+
+  </LinearLayout>
+
+</ScrollView>

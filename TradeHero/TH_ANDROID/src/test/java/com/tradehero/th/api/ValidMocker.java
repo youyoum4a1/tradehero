@@ -44,9 +44,12 @@ import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import java.util.Random;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Random;
+
+import javax.inject.Inject;
 
 import static org.mockito.Mockito.mock;
 

@@ -1,9 +1,11 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.Context;
+
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
+
 import org.jetbrains.annotations.NotNull;
 
 public class NewsHeadlineAdapter extends ArrayDTOAdapterNew<NewsItemDTOKey, NewsHeadlineViewLinear>

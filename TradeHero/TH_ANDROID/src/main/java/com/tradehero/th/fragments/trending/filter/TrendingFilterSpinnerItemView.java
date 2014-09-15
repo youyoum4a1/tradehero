@@ -65,7 +65,14 @@ public class TrendingFilterSpinnerItemView extends RelativeLayout
         {
             if (exchangeCompactSpinnerDTO != null)
             {
-                label.setText(exchangeCompactSpinnerDTO.toString());
+                if (exchangeCompactSpinnerDTO.desc != null)
+                {
+                    label.setText(exchangeCompactSpinnerDTO.desc);
+                }
+                else
+                {
+                    label.setText(exchangeCompactSpinnerDTO.toString());
+                }
             }
             else
             {
@@ -84,16 +91,10 @@ public class TrendingFilterSpinnerItemView extends RelativeLayout
                 if (flagDrawable != null)
                 {
                     icon.setImageDrawable(flagDrawable);
-                }
-                else
-                {
-                    icon.setImageResource(R.drawable.default_image);
+                    return;
                 }
             }
-            else
-            {
-                icon.setImageResource(R.drawable.default_image);
-            }
+            icon.setImageResource(R.drawable.default_image);
         }
     }
 }

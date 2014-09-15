@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+
 import javax.inject.Inject;
 
 public class SignInFragment extends SignInOrUpFragment

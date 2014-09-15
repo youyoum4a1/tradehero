@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.leaderboard.filter.MinConsistencyLeaderboardFilterValueSlider
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.tradehero.th.fragments.leaderboard.filter.MinConsistencyLeaderboardFilterValueSlider xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/leaderboard_filter_consistency_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:valueMin="@integer/leaderboard_filter_consistency_min"
     app:valueMax="@integer/leaderboard_filter_consistency_max"
-    app:valueDefault="@integer/leaderboard_filter_consistency_default"
-    >
+    app:valueDefault="@integer/leaderboard_filter_consistency_default">
 
   <LinearLayout
       android:id="@+id/leaderboard_filter_header_value_container"

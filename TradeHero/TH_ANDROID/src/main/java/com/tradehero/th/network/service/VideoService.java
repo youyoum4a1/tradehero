@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.api.education.PaginatedVideoDTO;
+
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;

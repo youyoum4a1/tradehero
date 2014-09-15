@@ -58,8 +58,6 @@ import javax.inject.Singleton;
 
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
-                        PortfolioCompactListRetrievedMilestone.class,
-                        UserProfileRetrievedMilestone.class,
 
                         UserWatchlistPositionCache.class,
 

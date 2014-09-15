@@ -3,9 +3,11 @@ package com.tradehero.th.persistence.education;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
+
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
 
 @Singleton public class VideoCategoryCache extends StraightDTOCacheNew<VideoCategoryId, VideoCategoryDTO>
 {

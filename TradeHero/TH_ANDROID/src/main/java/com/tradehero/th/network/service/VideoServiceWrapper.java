@@ -7,10 +7,13 @@ import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import retrofit.Callback;
 
 @Singleton public class VideoServiceWrapper

@@ -1,9 +1,11 @@
 package com.tradehero.th.api.security;
 
 import com.tradehero.common.persistence.DTOKey;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
 
 public class SecurityIntegerIdList extends ArrayList<SecurityIntegerId>
     implements DTOKey

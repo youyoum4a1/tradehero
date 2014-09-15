@@ -2,12 +2,12 @@ package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class StringSetPreference extends AbstractPreference<Set<String>>
 {

@@ -66,6 +66,16 @@ interface SecurityServiceAsync
             Callback<SecurityCompactDTOList> callback);
     //</editor-fold>
 
+    //<editor-fold desc="Get List By Sector and Exchange">
+    @GET("/securities/bySectorAndExchange")
+    void getBySectorAndExchange(
+            @Query("exchange") Integer exchangeId,
+            @Query("sector") Integer sectorId,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            Callback<SecurityCompactDTOList> callback);
+    //</editor-fold>
+
     //<editor-fold desc="Get Security">
     @GET("/securities/{exchange}/{pathSafeSecuritySymbol}")
     void getSecurity(
