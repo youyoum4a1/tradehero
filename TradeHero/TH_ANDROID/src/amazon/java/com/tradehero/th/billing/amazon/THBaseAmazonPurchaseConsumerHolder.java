@@ -14,18 +14,18 @@ public class THBaseAmazonPurchaseConsumerHolder
             THAmazonPurchaseConsumer>
     implements THAmazonPurchaseConsumerHolder
 {
-    @NotNull protected final Provider<THAmazonPurchaseConsumer> thiabPurchaseConsumerProvider;
+    @NotNull protected final Provider<THAmazonPurchaseConsumer> thAmazonPurchaseConsumerProvider;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonPurchaseConsumerHolder(@NotNull Provider<THAmazonPurchaseConsumer> thiabPurchaseConsumerProvider)
+    @Inject public THBaseAmazonPurchaseConsumerHolder(@NotNull Provider<THAmazonPurchaseConsumer> thAmazonPurchaseConsumerProvider)
     {
         super();
-        this.thiabPurchaseConsumerProvider = thiabPurchaseConsumerProvider;
+        this.thAmazonPurchaseConsumerProvider = thAmazonPurchaseConsumerProvider;
     }
     //</editor-fold>
 
     @Override protected THAmazonPurchaseConsumer createPurchaseConsumer()
     {
-        return thiabPurchaseConsumerProvider.get();
+        return thAmazonPurchaseConsumerProvider.get();
     }
 }

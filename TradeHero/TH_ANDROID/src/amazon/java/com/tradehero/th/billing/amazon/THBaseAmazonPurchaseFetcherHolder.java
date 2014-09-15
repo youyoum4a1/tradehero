@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.amazon;
 
-import android.app.Activity;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseFetcherHolder;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
@@ -17,15 +16,11 @@ public class THBaseAmazonPurchaseFetcherHolder
             AmazonException>
     implements THAmazonPurchaseFetcherHolder
 {
-    @NotNull protected final Provider<Activity> activityProvider;
-
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseFetcherHolder(
-            @NotNull Provider<THAmazonPurchaseFetcher> thAmazonPurchaseFetcherProvider,
-            @NotNull Provider<Activity> activityProvider)
+            @NotNull Provider<THAmazonPurchaseFetcher> thAmazonPurchaseFetcherProvider)
     {
         super(thAmazonPurchaseFetcherProvider);
-        this.activityProvider = activityProvider;
     }
     //</editor-fold>
 }

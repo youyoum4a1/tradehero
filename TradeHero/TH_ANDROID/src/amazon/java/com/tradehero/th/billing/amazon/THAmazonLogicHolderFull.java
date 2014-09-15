@@ -2,7 +2,6 @@ package com.tradehero.th.billing.amazon;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Handler;
 import com.tradehero.common.billing.amazon.AmazonPurchaseConsumer;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
@@ -18,7 +17,6 @@ import com.tradehero.th.billing.amazon.request.THAmazonRequest;
 import com.tradehero.th.billing.amazon.request.THAmazonRequestFull;
 import com.tradehero.th.persistence.billing.AmazonSKUListCache;
 import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
-import com.tradehero.th.utils.dagger.ForUIThread;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -40,7 +38,6 @@ public class THAmazonLogicHolderFull
     implements THAmazonLogicHolder
 {
     @NotNull private final THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder;
-    @NotNull protected final Handler uiHandler;
 
     //<editor-fold desc="Constructors">
     @Inject public THAmazonLogicHolderFull(
@@ -52,8 +49,7 @@ public class THAmazonLogicHolderFull
             @NotNull THAmazonPurchaseFetcherHolder thAmazonPurchaseFetcherHolder,
             @NotNull THAmazonPurchaserHolder thAmazonPurchaserHolder,
             @NotNull THAmazonPurchaseReporterHolder thAmazonPurchaseReporterHolder,
-            @NotNull THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder,
-            @NotNull @ForUIThread Handler uiHandler)
+            @NotNull THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder)
     {
         super(
                 amazonSKUListCache,
@@ -65,7 +61,6 @@ public class THAmazonLogicHolderFull
                 thAmazonPurchaserHolder,
                 thAmazonPurchaseReporterHolder);
         this.thAmazonPurchaseConsumerHolder = thAmazonPurchaseConsumerHolder;
-        this.uiHandler = uiHandler;
     }
     //</editor-fold>
 
