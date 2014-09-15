@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import javax.inject.Inject;
 
 public class TransactionHistoryViewHolder extends OneSettingViewHolder

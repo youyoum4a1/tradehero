@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.preference.PreferenceFragment;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.utils.SlowedAsyncTask;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.dagger.ForPicasso;
 import javax.inject.Inject;

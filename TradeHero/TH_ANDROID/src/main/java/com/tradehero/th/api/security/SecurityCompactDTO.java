@@ -17,6 +17,7 @@ import com.tradehero.th.api.security.compact.TradableRightsIssueDTO;
 import com.tradehero.th.api.security.compact.UnitCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.utils.SecurityUtils;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -77,6 +78,7 @@ public class SecurityCompactDTO extends ExtendedDTO
     public Double low;
     public Double pe;
     public Double eps;
+    public Double risePercent;
 
     public Boolean marketOpen;
 
@@ -90,6 +92,11 @@ public class SecurityCompactDTO extends ExtendedDTO
     public String exchangeClosingTimeLocal;
     //
     public String secTypeDesc;
+
+    public double marketCapRefUSD;
+    public int watchCount;
+    public int holdCount;
+    public int searchCount;
 
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
@@ -157,16 +164,21 @@ public class SecurityCompactDTO extends ExtendedDTO
         try
         {
             return Exchange.valueOf(exchange).logoId;
-        }
-        catch (IllegalArgumentException ex)
+        } catch (IllegalArgumentException ex)
         {
             return defaultResId;
-        }
-        catch (NullPointerException ex) // there isn't any client Exchange resource with the given value exchange
+        } catch (NullPointerException ex) // there isn't any client Exchange resource with the given value exchange
         {
             Timber.e("Missing exchange resource for %s", exchange);
             return defaultResId;
         }
+    }
+
+    public String getPriceDifferent()
+    {
+        double d1 = lastPrice - previousClose;
+        DecimalFormat df = new DecimalFormat("#0.00");
+        return df.format(d1);
     }
 
     public boolean isLastPriceNotNullOrZero()
@@ -192,7 +204,7 @@ public class SecurityCompactDTO extends ExtendedDTO
         }
 
         List<SecurityId> securityIds = new ArrayList<>();
-        for (SecurityCompactDTO value: values)
+        for (SecurityCompactDTO value : values)
         {
             securityIds.add(value.getSecurityId());
         }

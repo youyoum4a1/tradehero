@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;

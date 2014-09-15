@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.form.PublishableFormDTO;
@@ -71,8 +71,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     private void initSocialBtnStatus()
     {
         socialSharePreferenceHelperNew.load();
-        initSocialButton(mFacebookShareButton, SocialNetworkEnum.FB);
-        initSocialButton(mTwitterShareButton, SocialNetworkEnum.TW);
+        //initSocialButton(mFacebookShareButton, SocialNetworkEnum.FB);
+        //initSocialButton(mTwitterShareButton, SocialNetworkEnum.TW);
         initSocialButton(mLinkedInShareButton, SocialNetworkEnum.LN);
         initSocialButton(mWechatShareButton, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
         initSocialButton(mWeiboShareButton, SocialNetworkEnum.WB);
@@ -103,10 +103,10 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         {
             switch (socialNetworkEnum)
             {
-                case FB:
-                    return userProfileDTO.fbLinked;
-                case TW:
-                    return userProfileDTO.twLinked;
+                //case FB:
+                //    return userProfileDTO.fbLinked;
+                //case TW:
+                //    return userProfileDTO.twLinked;
                 case LN:
                     return userProfileDTO.liLinked;
                 case WB:

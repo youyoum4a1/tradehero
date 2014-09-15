@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -29,11 +29,11 @@ import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
-import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
+//import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.models.user.auth.QQCredentialsDTO;
-import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
+//import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -241,7 +241,7 @@ public class THUser
             @Override public void failure(THException error)
             {
                 checkNeedForUpgrade(error);
-                checkNeedToRenewSocialToken(error, credentialsDTO);
+                //checkNeedToRenewSocialToken(error, credentialsDTO);
                 callback.done(null, error);
             }
         };
@@ -282,55 +282,55 @@ public class THUser
         }
     }
 
-    private static void checkNeedToRenewSocialToken(THException error, CredentialsDTO credentialsDTO)
-    {
-        if (error.getCode() == ExceptionCode.RenewSocialToken)
-        {
-            mainCredentialsPreference.delete();
-            final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
-
-            if (currentActivity instanceof AuthenticationActivity)
-            {
-                if (credentialsDTO instanceof FacebookCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithFacebook();
-                    return;
-                }
-                if (credentialsDTO instanceof LinkedinCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithLinkedIn();
-                    return;
-                }
-                if (credentialsDTO instanceof QQCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithQQ();
-                    return;
-                }
-                if (credentialsDTO instanceof TwitterCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithTwitter();
-                    return;
-                }
-                if (credentialsDTO instanceof WeiboCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithWeibo();
-                    return;
-                }
-            }
-
-            alertDialogUtil.get().popWithOkCancelButton(currentActivity,
-                    R.string.please_update_token_title,
-                    R.string.please_update_token_description,
-                    R.string.ok,
-                    R.string.later,
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialog, int which)
-                        {
-                        }
-                    });
-        }
-    }
+    //private static void checkNeedToRenewSocialToken(THException error, CredentialsDTO credentialsDTO)
+    //{
+    //    if (error.getCode() == ExceptionCode.RenewSocialToken)
+    //    {
+    //        mainCredentialsPreference.delete();
+    //        final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
+    //
+    //        if (currentActivity instanceof AuthenticationActivity)
+    //        {
+    //            if (credentialsDTO instanceof FacebookCredentialsDTO)
+    //            {
+    //                ((AuthenticationActivity) currentActivity).authenticateWithFacebook();
+    //                return;
+    //            }
+    //            if (credentialsDTO instanceof LinkedinCredentialsDTO)
+    //            {
+    //                ((AuthenticationActivity) currentActivity).authenticateWithLinkedIn();
+    //                return;
+    //            }
+    //            if (credentialsDTO instanceof QQCredentialsDTO)
+    //            {
+    //                ((AuthenticationActivity) currentActivity).authenticateWithQQ();
+    //                return;
+    //            }
+    //            if (credentialsDTO instanceof TwitterCredentialsDTO)
+    //            {
+    //                ((AuthenticationActivity) currentActivity).authenticateWithTwitter();
+    //                return;
+    //            }
+    //            if (credentialsDTO instanceof WeiboCredentialsDTO)
+    //            {
+    //                ((AuthenticationActivity) currentActivity).authenticateWithWeibo();
+    //                return;
+    //            }
+    //        }
+    //
+    //        alertDialogUtil.get().popWithOkCancelButton(currentActivity,
+    //                R.string.please_update_token_title,
+    //                R.string.please_update_token_description,
+    //                R.string.ok,
+    //                R.string.later,
+    //                new DialogInterface.OnClickListener()
+    //                {
+    //                    @Override public void onClick(DialogInterface dialog, int which)
+    //                    {
+    //                    }
+    //                });
+    //    }
+    //}
 
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
     {

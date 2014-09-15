@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import java.util.regex.Pattern;
 
 public class SelfValidatedText extends ValidatedText

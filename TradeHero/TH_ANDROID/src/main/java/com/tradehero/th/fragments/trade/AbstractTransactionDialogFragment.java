@@ -27,7 +27,7 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
@@ -586,8 +586,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         //        isBuy ? mBuyQuantity : mSellQuantity);
 
         return new TransactionFormDTO(
-                shareForTransaction(SocialNetworkEnum.FB),
-                shareForTransaction(SocialNetworkEnum.TW),
+                null,
+                null,
                 shareForTransaction(SocialNetworkEnum.LN),
                 shareForTransaction(SocialNetworkEnum.WB),
                 //shareLocation ? null : null, // TODO implement location
@@ -635,12 +635,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetwork, true);
         switch (socialNetwork)
         {
-            case FB:
-                mBtnShareFb.setChecked(true);
-                break;
-            case TW:
-                mBtnShareTw.setChecked(true);
-                break;
+            //case FB:
+            //    mBtnShareFb.setChecked(true);
+            //    break;
+            //case TW:
+            //    mBtnShareTw.setChecked(true);
+            //    break;
             case LN:
                 mBtnShareLn.setChecked(true);
                 break;
@@ -657,10 +657,10 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         {
             switch (socialNetwork)
             {
-                case FB:
-                    return userProfileCopy.fbLinked;
-                case TW:
-                    return userProfileCopy.twLinked;
+                //case FB:
+                //    return userProfileCopy.fbLinked;
+                //case TW:
+                //    return userProfileCopy.twLinked;
                 case LN:
                     return userProfileCopy.liLinked;
                 case WB:
@@ -683,8 +683,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     private void initSocialButtons()
     {
-        initSocialButton(mBtnShareFb, SocialNetworkEnum.FB);
-        initSocialButton(mBtnShareTw, SocialNetworkEnum.TW);
+        //initSocialButton(mBtnShareFb, SocialNetworkEnum.FB);
+        //initSocialButton(mBtnShareTw, SocialNetworkEnum.TW);
         initSocialButton(mBtnShareLn, SocialNetworkEnum.LN);
         initSocialButton(mBtnShareWeChat, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
         initSocialButton(mBtnShareWb, SocialNetworkEnum.WB);
@@ -778,8 +778,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                 .setProviderId(portfolioCompactDTO == null ? null : portfolioCompactDTO.getProviderIdKey())
                 .setPriceSelectionMethod(mPriceSelectionMethod)
                 .hasComment(!mCommentsEditText.getText().toString().isEmpty())
-                .facebookEnabled(shareForTransaction(SocialNetworkEnum.FB))
-                .twitterEnabled(shareForTransaction(SocialNetworkEnum.TW))
+                //.facebookEnabled(shareForTransaction(SocialNetworkEnum.FB))
+                //.twitterEnabled(shareForTransaction(SocialNetworkEnum.TW))
                 .linkedInEnabled(shareForTransaction(SocialNetworkEnum.LN))
                 .wechatEnabled(shareForTransaction(SocialNetworkEnum.WECHAT))
                 .weiboEnabled(shareForTransaction(SocialNetworkEnum.WB));

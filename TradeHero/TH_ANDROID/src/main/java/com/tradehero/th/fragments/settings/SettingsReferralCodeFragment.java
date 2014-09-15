@@ -14,7 +14,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;

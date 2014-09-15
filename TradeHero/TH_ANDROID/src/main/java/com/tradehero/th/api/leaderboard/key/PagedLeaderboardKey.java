@@ -14,6 +14,8 @@ public class PagedLeaderboardKey extends LeaderboardKey
 
     @Nullable public final Integer page;
 
+    public int perPage = 50;
+
     //<editor-fold desc="Constructors">
     public PagedLeaderboardKey(Integer leaderboardKey, Integer page)
     {

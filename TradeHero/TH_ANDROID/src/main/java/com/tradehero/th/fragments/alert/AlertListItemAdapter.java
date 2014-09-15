@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;

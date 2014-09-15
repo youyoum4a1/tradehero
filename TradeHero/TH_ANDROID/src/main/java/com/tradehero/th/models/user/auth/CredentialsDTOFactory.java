@@ -39,9 +39,9 @@ public class CredentialsDTOFactory
                 }
                 break;
 
-            case FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE:
-                created = new FacebookCredentialsDTO(object);
-                break;
+            //case FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE:
+            //    created = new FacebookCredentialsDTO(object);
+            //    break;
 
             case LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE:
                 created = new LinkedinCredentialsDTO(object);

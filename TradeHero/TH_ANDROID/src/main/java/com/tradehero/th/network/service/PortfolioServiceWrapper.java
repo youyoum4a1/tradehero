@@ -5,8 +5,10 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.chinabuild.cache.PortfolioDTOKey;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioListReceived;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioMarked;
@@ -74,6 +76,8 @@ import retrofit.Callback;
         return createPortfolioCompactListReceivedProcessor(userBaseKey).process(
                 portfolioService.getPortfolios(userBaseKey.key, includeWatchList));
     }
+
+
 
     @NotNull public MiddleCallback<PortfolioCompactDTOList> getPortfolios(
             @NotNull UserBaseKey userBaseKey,
@@ -193,4 +197,11 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
+
+
+    @NotNull public PortfolioCompactDTO getPortfolioCompact(
+            @NotNull PortfolioId key)
+    {
+        return portfolioService.getPortfolioCompact(key.competitionId);
+    }
 }

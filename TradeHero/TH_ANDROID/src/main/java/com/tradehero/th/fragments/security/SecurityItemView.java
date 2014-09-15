@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;

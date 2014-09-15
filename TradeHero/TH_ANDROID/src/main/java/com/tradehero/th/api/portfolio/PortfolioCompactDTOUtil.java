@@ -1,7 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.quote.QuoteDTO;
 import javax.inject.Inject;
 

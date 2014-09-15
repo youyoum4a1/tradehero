@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
@@ -151,8 +151,8 @@ public class Navigator
 
         if (isBackStackEmpty())
         {
-            if (backPressedCount > 0)
-            {
+            //if (backPressedCount > 0)
+            //{
                 resetBackPressCount();
 
                 if (context instanceof Activity)
@@ -164,12 +164,12 @@ public class Navigator
                     // Question: do we really need this?
                     sendAppToBackground();
                 }
-            }
-            else
-            {
-                ++backPressedCount;
-                THToast.show(R.string.press_back_again_to_exit);
-            }
+            //}
+            //else
+            //{
+            //    ++backPressedCount;
+            //    THToast.show(R.string.press_back_again_to_exit);
+            //}
             return;
         }
 

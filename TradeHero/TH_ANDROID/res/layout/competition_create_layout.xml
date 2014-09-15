@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contest_center_content_screen"
+    android:background="@color/bg_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:orientation="vertical"
+    >
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="40dp">
+    <TextView
+        style="@style/competition_create"
+        android:text="创建比赛："
+        android:layout_gravity="center"
+        />
+    <EditText
+        android:id="@+id/edtCreateCompetitionName"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:maxLength="12"
+        android:hint="4-12位字符"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_marginTop="10dp"
+      android:layout_height="120dp">
+    <TextView
+        style="@style/competition_create"
+        android:text="比赛说明："
+        android:layout_gravity="center"
+        />
+    <EditText
+        android:id="@+id/edtCreateCompetitionIntro"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:maxLength="30"
+        android:hint="4-30位字符"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_marginTop="10dp"
+      android:layout_height="wrap_content">
+    <TextView
+        style="@style/competition_create"
+        android:text="    时间段："
+        android:layout_gravity="center"
+        />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+      <Spinner
+          android:id="@+id/spCreateCompetitionPeriod"
+          android:layout_width="fill_parent"
+          android:layout_height="45dp"
+          android:layout_marginTop="5dp"
+          />
+      <TextView
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:textColor="@color/text_gray_normal"
+          android:layout_marginTop="5dp"
+          android:text="创建后第二天开始比赛"/>
+    </LinearLayout>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_marginTop="10dp"
+      android:layout_height="wrap_content">
+    <TextView
+        style="@style/competition_create"
+        android:text="    交易所："
+        android:layout_gravity="center"
+        />
+    <!--<Spinner-->
+    <!--android:id="@+id/spCreateCompetitionExchange"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="fill_parent"-->
+    <!--/>-->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+      <CheckBox
+          android:id="@+id/cbExchangeCH"
+          style="@style/CustomCheckboxTheme"
+          android:layout_marginTop="5dp"
+          android:text="  沪深-沪市，深市"/>
+      <CheckBox
+          android:id="@+id/cbExchangeHK"
+          style="@style/CustomCheckboxTheme"
+          android:layout_marginTop="5dp"
+          android:text="  港股-港交所"/>
+      <CheckBox
+          android:id="@+id/cbExchangeAM"
+          style="@style/CustomCheckboxTheme"
+          android:layout_marginTop="5dp"
+          android:text="  美股-纳斯达克，纽交所，美国证券交易所"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_marginTop="20dp"
+      android:gravity="center_horizontal"
+      android:layout_height="40dp">
+    <CheckBox
+        android:id="@+id/cbCreateCompetitionInvite"
+        style="@style/CustomCheckboxTheme"
+        android:text="  邀请好友参加比赛"
+        />
+  </LinearLayout>
+
+</LinearLayout>
+

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contest_center_content_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+  <TextView
+      android:id="@+id/tvTest00"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="MeTimelineFragment">
+  </TextView>
+
+  <TextView
+      android:id="@+id/tvTest01"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="HomeFragment">
+  </TextView>
+
+  <TextView
+      android:id="@+id/tvTest02"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="TrendingFragment">
+  </TextView>
+
+  <TextView
+      android:id="@+id/tvTest03"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="LeaderboardCommunityFragment">
+  </TextView>
+
+  <TextView
+      android:id="@+id/tvTest04"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="UpdateCenterFragment">
+  </TextView>
+
+  <TextView
+      android:id="@+id/tvTest05"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="FriendsInvitationFragment">
+  </TextView>
+
+  <TextView
+      android:id="@+id/tvTest06"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="ContestCenterFragment">
+  </TextView>
+
+  <TextView
+      android:id="@+id/tvTest07"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="StoreScreenFragment">
+  </TextView>
+
+  <TextView
+      android:id="@+id/tvTest08"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="SettingsFragment">
+  </TextView>
+
+  <TextView
+      android:id="@+id/tvTest09"
+      android:layout_width="fill_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="20dp"
+      android:gravity="center_vertical"
+      android:text="AdminSettingsFragment">
+  </TextView>
+
+</LinearLayout>
+

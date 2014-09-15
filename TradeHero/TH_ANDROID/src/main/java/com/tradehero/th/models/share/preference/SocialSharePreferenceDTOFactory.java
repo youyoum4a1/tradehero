@@ -34,15 +34,15 @@ public class SocialSharePreferenceDTOFactory
 
         switch (socialNetworkEnum)
         {
-            case FB:
-                socialSharePreferenceDTO = new FacebookSharePreferenceDTO(isShareEnabled);
-                break;
+            //case FB:
+            //    socialSharePreferenceDTO = new FacebookSharePreferenceDTO(isShareEnabled);
+            //    break;
             case LN:
                 socialSharePreferenceDTO = new LinkedInSharePreferenceDTO(isShareEnabled);
                 break;
-            case TW:
-                socialSharePreferenceDTO = new TwitterSharePreferenceDTO(isShareEnabled);
-                break;
+            //case TW:
+            //    socialSharePreferenceDTO = new TwitterSharePreferenceDTO(isShareEnabled);
+            //    break;
             case WB:
                 socialSharePreferenceDTO = new WeiBoSharePreferenceDTO(isShareEnabled);
                 break;

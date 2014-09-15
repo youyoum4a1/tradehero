@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 
 public class TrendingFilterSpinnerIconAdapter extends SpinnerIconAdapter
 {

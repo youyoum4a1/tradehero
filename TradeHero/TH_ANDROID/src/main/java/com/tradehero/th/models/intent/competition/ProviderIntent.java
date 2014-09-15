@@ -1,6 +1,6 @@
 package com.tradehero.th.models.intent.competition;
 
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
 

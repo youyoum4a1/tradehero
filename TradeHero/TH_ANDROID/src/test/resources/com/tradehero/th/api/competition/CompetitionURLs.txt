@@ -1,8 +1,0 @@
-tradehero://providers-enroll/3 // go to competition enrollment screen
-tradehero://providers/3 // go to competition screen
-
-// tradehero://providers/3/pages/<double-encoded-path> --> opens a web view that opens the url
-// this is for handling completed form inputs on the web
-// for example: opening tradehero://providers/3/pages/something opens a web view that opens https://www.tradehero.mobi/api/something
-
-// when you open enrollment page, please pass authorization=<user-authorization-header> as query string.

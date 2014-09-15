@@ -23,6 +23,12 @@
     <item name="android:background">@color/splash_background_solid</item>
   </style>
 
+  <style name="AppBaseTheme.NoActionBarTrans" parent="TradeHero">
+    <item name="android:windowActionBar">false</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:background">@color/transparent</item>
+  </style>
+
   <style name="AppBaseTheme.NoActionBar2" parent="TradeHero">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
@@ -131,6 +137,7 @@
   </style>
 
   <style name="TradeHero.Dashboard" parent="TradeHero">
+    <!--  <item name="android:homeAsUpIndicator">@drawable/button_back</item>  -->
     <item name="android:windowActionBarOverlay">false</item>
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
     <item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>
@@ -155,23 +162,22 @@
 
   <style name="TradeHero.Dashboard.ActionBar" parent="Widget.Sherlock.ActionBar">
     <item name="android:titleTextStyle">@style/TradeHero.Dashboard.ActionBar.TitleTextStyle</item>
-    <item name="android:actionMenuTextColor">@color/tradehero_blue</item>
+    <item name="android:background">@color/tradehero_blue</item>//定义ActionBar背景颜色
   </style>
 
-    <style name="TradeHero.Dashboard.ActionBarButton" parent="Widget.Sherlock.Light.ActionButton">
-        <item name="android:background">@drawable/basic_transparent_selector</item>
-    </style>
+  <style name="TradeHero.Dashboard.ActionBarButton" parent="Widget.Sherlock.Light.ActionButton">
+    <item name="android:background">@drawable/basic_transparent_selector</item>
+
+  </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TitleTextStyle"
       parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
-    <item name="android:textColor">@color/black</item>
+    <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.Menu"
       parent="TextAppearance.Sherlock.Widget.ActionBar.Menu">
     <item name="android:textSize">@dimen/text_medium</item>
-    <!--<item name="android:textStyle">bold</item>-->
-    <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:textAllCaps">false</item>
   </style>
 
@@ -375,6 +381,97 @@
 
   <style name="TH.Spinner" parent="android:Widget.Holo.Light.Spinner">
     <item name="android:background">@drawable/tradehero_spinner_background_holo_light</item>
+  </style>
+
+
+  <style name="MMTabButton">
+    <item name="android:textSize">12.0dip</item>
+    <item name="android:gravity">bottom</item>
+    <!--<item name="android:background">@drawable/bg_checkbox_menus</item>-->
+    <item name="android:layout_width">25dp</item>
+    <item name="android:layout_height">25dp</item>
+    <item name="android:button">@null</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:layout_weight">1.0</item>
+    <item name="android:paddingBottom">2.0dip</item>
+    <item name="android:paddingTop">2.0dip</item>
+  </style>
+
+  <style name="navigation_icon">
+    <!--<item name="android:background">@drawable/style_navigation_radio</item>-->
+    <item name="android:layout_width">24dp</item>
+    <item name="android:layout_height">24dp</item>
+    <item name="android:layout_marginTop">2.0dip</item>
+    <item name="android:layout_marginBottom">2.0dip</item>
+    <!--<item name="android:duplicateParentState">true</item>-->
+  </style>
+
+  <style name="navigation_text">
+    <!--<item name="android:background">@drawable/style_navigation_radio</item>-->
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/tab_main_text_selector</item>
+    <item name="android:textSize">11dip</item>
+    <!--<item name="android:duplicateParentState">true</item>-->
+  </style>
+
+
+  <style name="trade_of_me_title_text">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">28dp</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:textColor">@color/text_gray_normal</item>
+    <item name="android:textSize">16dip</item>
+    <item name="android:gravity">bottom</item>
+    <item name="android:layout_alignParentRight">true</item>
+  </style>
+
+  <style name="trade_of_me_value_text">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">28dp</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:textColor">@color/text_gray_normal</item>
+    <item name="android:textSize">16dip</item>
+    <item name="android:gravity">bottom</item>
+    <item name="android:layout_alignParentLeft">true</item>
+  </style>
+
+  <style name="security_data_info">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:singleLine">true</item>
+  </style>
+
+  <style name="buy_sale_title">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:textSize">18sp</item>
+    <item name="android:textColor">@color/text_gray_normal</item>
+  </style>
+
+  <style name="CustomCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
+    <item name="android:button">@drawable/checkbox_xml</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:textSize">18sp</item>
+    <item name="android:textColor">@color/text_gray_normal</item>
+  </style>
+
+  <style name="buy_sale_item">
+    <item name="android:layout_width">fill_parent</item>
+    <item name="android:layout_height">40dp</item>
+    <item name="android:paddingLeft">20dp</item>
+    <item name="android:paddingRight">20dp</item>
+  </style>
+
+  <style name="competition_create">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:textSize">16sp</item>
+
   </style>
 
 </resources>

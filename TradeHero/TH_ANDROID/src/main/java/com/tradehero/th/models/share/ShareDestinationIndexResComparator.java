@@ -2,7 +2,7 @@ package com.tradehero.th.models.share;
 
 import android.content.Context;
 import android.content.res.Resources;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

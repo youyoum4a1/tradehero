@@ -64,6 +64,9 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public String currencyDisplay;
     public String currencyISO;
 
+    public int followerCount;
+    public double totalWealth;
+
     public LeaderboardUserDTO()
     {
         super();

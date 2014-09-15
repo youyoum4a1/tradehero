@@ -45,14 +45,14 @@ public class SocialShareVerifier
             }
             switch (tiShareDTO.timelineItemShareRequestDTO.socialNetwork)
             {
-                case FB:
-                    return currentUserProfile.fbLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
+                //case FB:
+                //    return currentUserProfile.fbLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
 
                 case LN:
                     return currentUserProfile.liLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
 
-                case TW:
-                    return currentUserProfile.twLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
+                //case TW:
+                //    return currentUserProfile.twLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
 
                 case WECHAT:
                     throw new IllegalStateException("WeChat is not shared like this");

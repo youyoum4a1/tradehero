@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.contestcenter;
 
 import android.support.v4.app.Fragment;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 
 public enum ContestCenterTabType
 {

@@ -17,13 +17,11 @@ public class SocialTypeItemFactory
     @NotNull public List<SocialTypeItem> getSocialTypeList()
     {
         List<SocialTypeItem> socialList = new ArrayList<>();
-
-        socialList.add(new SocialTypeItemFacebook());
-        socialList.add(new SocialTypeItemTwitter());
+        //socialList.add(new SocialTypeItemFacebook());
+        //socialList.add(new SocialTypeItemTwitter());
         socialList.add(new SocialTypeItemLinkedin());
         socialList.add(new SocialTypeItemWeibo());
         socialList.add(new SocialTypeItemWechat());
-
         return socialList;
     }
 }

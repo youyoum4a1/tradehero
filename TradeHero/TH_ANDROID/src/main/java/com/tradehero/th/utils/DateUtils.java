@@ -1,7 +1,7 @@
 package com.tradehero.th.utils;
 
 import android.content.res.Resources;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -39,7 +39,7 @@ public class DateUtils
         SimpleDateFormat sdfStart = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm));
         sdfStart.setTimeZone(TimeZone.getDefault());
 
-        SimpleDateFormat sdfEnd = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm_yyyy));
+        SimpleDateFormat sdfEnd = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm));
         sdfEnd.setTimeZone(TimeZone.getDefault());
 
         return sdfStart.format(dStart) + " - " + sdfEnd.format(dEnd);

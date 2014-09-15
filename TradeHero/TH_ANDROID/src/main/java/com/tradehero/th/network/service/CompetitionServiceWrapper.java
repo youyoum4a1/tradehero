@@ -7,7 +7,19 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
+import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListType;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeMine;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeOffical;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeSearch;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeUser;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeVip;
+import com.tradehero.th.fragments.chinabuild.cache.PositionDTOKey;
+import com.tradehero.th.fragments.chinabuild.data.UGCFromDTO;
+import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -117,7 +129,7 @@ import retrofit.Callback;
     //<editor-fold desc="Outbound">
     public UserProfileDTO outbound(@NotNull CompetitionFormDTO form)
     {
-       return createDTOProcessorUserProfile().process(this.competitionService.outbound(form));
+        return createDTOProcessorUserProfile().process(this.competitionService.outbound(form));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> outbound(
@@ -129,4 +141,55 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
+
+    //用户创建UGC比赛
+    @NotNull public MiddleCallback<UserCompetitionDTO> creatUGC(
+            @NotNull String name, @NotNull String description, @NotNull int durationDays, @NotNull int[] exchangeIds,
+            @Nullable Callback<UserCompetitionDTO> callback)
+    {
+        MiddleCallback<UserCompetitionDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        this.competitionServiceAsync.creatUGC(new UGCFromDTO(name, description, durationDays, exchangeIds), middleCallback);
+        return middleCallback;
+    }
+
+    //用户报名参加UGC比赛
+    @NotNull public MiddleCallback<UserCompetitionDTO> enrollUGCompetition(
+            int competitionId,
+            @Nullable Callback<UserCompetitionDTO> callback)
+    {
+        MiddleCallback<UserCompetitionDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        this.competitionServiceAsync.enrollUGCompetition(competitionId, middleCallback);
+        return middleCallback;
+    }
+
+    @NotNull public UserCompetitionDTOList getCompetition(CompetitionListType key)
+    {
+        if (key instanceof CompetitionListTypeOffical)
+        {
+            return competitionService.getOfficalCompetitions(key.page, key.PER_PAGE);
+        }
+        else if (key instanceof CompetitionListTypeUser)
+        {
+            return competitionService.getUserCompetitions(key.page, key.PER_PAGE);
+        }
+        else if (key instanceof CompetitionListTypeVip)
+        {
+            return competitionService.getVipCompetitions(key.page, key.PER_PAGE);
+        }
+        else if (key instanceof CompetitionListTypeMine)
+        {
+            return competitionService.getMyCompetitions(key.page, key.PER_PAGE);
+        }
+        else if (key instanceof CompetitionListTypeSearch)
+        {
+            return competitionService.getSearchCompetitions(((CompetitionListTypeSearch) key).name, key.page, key.PER_PAGE);
+        }
+
+        return null;
+    }
+
+    @NotNull public PositionDTOCompact getPositionCompactDTO(PositionDTOKey key)
+    {
+        return competitionService.getPositionCompactDTO(key.competitionId, key.securityId.getExchange(),key.securityId.getSecuritySymbol());
+    }
 }

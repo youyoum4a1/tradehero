@@ -13,7 +13,7 @@ import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsWeiboDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;

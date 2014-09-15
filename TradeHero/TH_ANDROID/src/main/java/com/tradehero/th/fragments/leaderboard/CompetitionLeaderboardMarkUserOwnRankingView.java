@@ -11,7 +11,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.View;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;

@@ -14,7 +14,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
@@ -302,41 +302,41 @@ public class AlertDialogUtil
         }
     }
 
-    public AlertDialog getReferralCodeDialog(@NotNull final Context context, final UserBaseKey userBaseKey, final DashboardActivity.TrackCallback trackCallback)
-    {
-        if (mReferralCodeDialog != null)
-        {
-            mReferralCodeDialog.dismiss();
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.referral_code_dialog_layout, null);
-        builder.setView(view);
-        builder.setCancelable(false);
-        mReferralCodeDialog = builder.create();
-
-        final EditText editText = (EditText)view.findViewById(R.id.referral_code);
-        Button cancelButton = (Button)view.findViewById(R.id.btn_cancel);
-        cancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                mReferralCodeDialog.dismiss();
-            }
-        });
-        Button okButton = (Button)view.findViewById(R.id.btn_ok);
-        okButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                showProgressDialog(context);
-                UpdateReferralCodeDTO updateReferralCodeDTO = new UpdateReferralCodeDTO(editText.getText().toString());
-                userServiceWrapperLazy.get().updateReferralCode(userBaseKey, updateReferralCodeDTO, trackCallback);
-            }
-        });
-
-        return mReferralCodeDialog;
-    }
+    //public AlertDialog getReferralCodeDialog(@NotNull final Context context, final UserBaseKey userBaseKey, final DashboardActivity.TrackCallback trackCallback)
+    //{
+    //    if (mReferralCodeDialog != null)
+    //    {
+    //        mReferralCodeDialog.dismiss();
+    //    }
+    //    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    //    LayoutInflater inflater = LayoutInflater.from(context);
+    //    View view = inflater.inflate(R.layout.referral_code_dialog_layout, null);
+    //    builder.setView(view);
+    //    builder.setCancelable(false);
+    //    mReferralCodeDialog = builder.create();
+    //
+    //    final EditText editText = (EditText)view.findViewById(R.id.referral_code);
+    //    Button cancelButton = (Button)view.findViewById(R.id.btn_cancel);
+    //    cancelButton.setOnClickListener(new View.OnClickListener()
+    //    {
+    //        @Override public void onClick(View view)
+    //        {
+    //            mReferralCodeDialog.dismiss();
+    //        }
+    //    });
+    //    Button okButton = (Button)view.findViewById(R.id.btn_ok);
+    //    okButton.setOnClickListener(new View.OnClickListener()
+    //    {
+    //        @Override public void onClick(View view)
+    //        {
+    //            showProgressDialog(context);
+    //            UpdateReferralCodeDTO updateReferralCodeDTO = new UpdateReferralCodeDTO(editText.getText().toString());
+    //            userServiceWrapperLazy.get().updateReferralCode(userBaseKey, updateReferralCodeDTO, trackCallback);
+    //        }
+    //    });
+    //
+    //    return mReferralCodeDialog;
+    //}
 
     public static interface OnClickListener<DTOType>
     {

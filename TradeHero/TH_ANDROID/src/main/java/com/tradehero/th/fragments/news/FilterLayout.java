@@ -8,7 +8,7 @@ import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.*;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import timber.log.Timber;

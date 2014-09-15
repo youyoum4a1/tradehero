@@ -8,6 +8,7 @@ public class PortfolioId extends AbstractIntegerDTOKey
 {
     public static final String BUNDLE_KEY_KEY = PortfolioId.class.getName() + ".key";
 
+    public int competitionId;
     //<editor-fold desc="Constructors">
     public PortfolioId()
     {
@@ -21,6 +22,12 @@ public class PortfolioId extends AbstractIntegerDTOKey
     public PortfolioId(Integer key)
     {
         super(key);
+        competitionId = key;
+    }
+
+    public void setCompetitionId(int competitionId)
+    {
+        this.competitionId = competitionId;
     }
     //</editor-fold>
 

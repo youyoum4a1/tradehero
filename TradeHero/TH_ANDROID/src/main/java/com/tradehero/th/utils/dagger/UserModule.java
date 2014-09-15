@@ -3,6 +3,7 @@ package com.tradehero.th.utils.dagger;
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
@@ -14,10 +15,9 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 DashboardActivity.class,
-
+                MainActivity.class,
                 FriendListLoader.class,
-
-                DashboardActivity.class,
+                MainActivity.class,
                 WXEntryActivity.class
         },
         staticInjections = {

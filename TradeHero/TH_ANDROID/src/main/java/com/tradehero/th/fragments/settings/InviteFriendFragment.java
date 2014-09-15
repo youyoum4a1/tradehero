@@ -18,12 +18,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.facebook.FacebookException;
-import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Session;
-import com.facebook.widget.WebDialog;
+//import com.facebook.FacebookException;
+//import com.facebook.FacebookOperationCanceledException;
+//import com.facebook.Session;
+//import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteContactEntryDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
@@ -46,7 +46,7 @@ import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.FacebookUtils;
+//import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -74,7 +74,7 @@ public class InviteFriendFragment extends DashboardFragment
     @Inject Lazy<SocialService> socialService;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
-    @Inject Lazy<FacebookUtils> facebookUtils;
+    //@Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
@@ -545,11 +545,11 @@ public class InviteFriendFragment extends DashboardFragment
                 getProgressDialog().show();
                 linkedInUtils.get().logIn(getActivity(), socialNetworkCallback);
             }
-            else if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
-            {
-                currentSocialNetworkConnect = SocialNetworkEnum.FB;
-                facebookUtils.get().logIn(getActivity(), socialNetworkCallback);
-            }
+            //else if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
+            //{
+            //    currentSocialNetworkConnect = SocialNetworkEnum.FB;
+            //    facebookUtils.get().logIn(getActivity(), socialNetworkCallback);
+            //}
         }
     }
 
@@ -577,8 +577,8 @@ public class InviteFriendFragment extends DashboardFragment
             progressDialog.dismiss();
         }
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Sending actions">
     private void sendInvitation()
     {
@@ -603,84 +603,84 @@ public class InviteFriendFragment extends DashboardFragment
                                 inviteFriendForm,
                                 inviteFriendCallback);
                     }
-                case FB:
-                    if (Session.getActiveSession() == null)
-                    {
-                        conditionalSendInvitations();
-                        return;
-                    }
-                    if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
-                    {
-                        sendRequestDialog();
-                    }
+                //case FB:
+                //    if (Session.getActiveSession() == null)
+                //    {
+                //        conditionalSendInvitations();
+                //        return;
+                //    }
+                //    if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
+                //    {
+                //        sendRequestDialog();
+                //    }
             }
         }
     }
 
-    private void sendRequestDialog()
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
-        {
-            Collections.shuffle(selectedFacebookFriends);
-            for (int i = 0; i < selectedFacebookFriends.size() && i < MAX_FACEBOOK_FRIENDS_RECEIVERS; ++i)
-            {
-                stringBuilder.append(selectedFacebookFriends.get(i).fbId).append(',');
-            }
-        }
-        // disable loop
-        selectedFacebookFriends = null;
-        // remove the last comma
-        if (stringBuilder.length() > 0)
-        {
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        }
-        Timber.d("list of fbIds: %s", stringBuilder.toString());
-
-        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
-        {
-            Bundle params = new Bundle();
-            String messageToFacebookFriends = getString(R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
-            if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
-            {
-                messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
-            }
-
-            params.putString("message", messageToFacebookFriends);
-            params.putString("to", stringBuilder.toString());
-
-            WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(getActivity(), Session.getActiveSession(), params))
-                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
-                    {
-
-                        @Override
-                        public void onComplete(Bundle values, FacebookException error)
-                        {
-                            if (error != null)
-                            {
-                                if (error instanceof FacebookOperationCanceledException)
-                                {
-                                    THToast.show(R.string.invite_friend_request_canceled);
-                                }
-                            }
-                            else
-                            {
-                                final String requestId = values.getString("request");
-                                if (requestId != null)
-                                {
-                                    THToast.show(R.string.invite_friend_request_sent);
-                                }
-                                else
-                                {
-                                    THToast.show(R.string.invite_friend_request_canceled);
-                                }
-                            }
-                        }
-                    })
-                    .build();
-            requestsDialog.show();
-        }
-    }
+    //private void sendRequestDialog()
+    //{
+    //    StringBuilder stringBuilder = new StringBuilder();
+    //    if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
+    //    {
+    //        Collections.shuffle(selectedFacebookFriends);
+    //        for (int i = 0; i < selectedFacebookFriends.size() && i < MAX_FACEBOOK_FRIENDS_RECEIVERS; ++i)
+    //        {
+    //            stringBuilder.append(selectedFacebookFriends.get(i).fbId).append(',');
+    //        }
+    //    }
+    //    // disable loop
+    //    selectedFacebookFriends = null;
+    //    // remove the last comma
+    //    if (stringBuilder.length() > 0)
+    //    {
+    //        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+    //    }
+    //    Timber.d("list of fbIds: %s", stringBuilder.toString());
+    //
+    //    UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
+    //    if (userProfileDTO != null)
+    //    {
+    //        Bundle params = new Bundle();
+    //        String messageToFacebookFriends = getString(R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
+    //        if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
+    //        {
+    //            messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
+    //        }
+    //
+    //        params.putString("message", messageToFacebookFriends);
+    //        params.putString("to", stringBuilder.toString());
+    //
+    //        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(getActivity(), Session.getActiveSession(), params))
+    //                .setOnCompleteListener(new WebDialog.OnCompleteListener()
+    //                {
+    //
+    //                    @Override
+    //                    public void onComplete(Bundle values, FacebookException error)
+    //                    {
+    //                        if (error != null)
+    //                        {
+    //                            if (error instanceof FacebookOperationCanceledException)
+    //                            {
+    //                                THToast.show(R.string.invite_friend_request_canceled);
+    //                            }
+    //                        }
+    //                        else
+    //                        {
+    //                            final String requestId = values.getString("request");
+    //                            if (requestId != null)
+    //                            {
+    //                                THToast.show(R.string.invite_friend_request_sent);
+    //                            }
+    //                            else
+    //                            {
+    //                                THToast.show(R.string.invite_friend_request_canceled);
+    //                            }
+    //                        }
+    //                    }
+    //                })
+    //                .build();
+    //        requestsDialog.show();
+    //    }
+    //}
     //</editor-fold>
 }

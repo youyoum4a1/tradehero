@@ -15,7 +15,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;

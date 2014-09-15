@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
-import com.facebook.AppEventsLogger;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
 import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
@@ -100,8 +99,6 @@ public class SplashActivity extends SherlockActivity
         analytics.openSession();
         analytics.tagScreen(AnalyticsConstants.Loading);
 
-        AppEventsLogger.activateApp(this, facebookAppId);
-
         tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
 
         mobileAppTracker.setReferralSources(this);
@@ -139,7 +136,7 @@ public class SplashActivity extends SherlockActivity
             boolean canLoad = canLoadApp();
             if (canLoad)
             {
-                ActivityHelper.launchDashboard(SplashActivity.this);
+                ActivityHelper.launchMainActivity(SplashActivity.this);
                 finish();
             }
             else

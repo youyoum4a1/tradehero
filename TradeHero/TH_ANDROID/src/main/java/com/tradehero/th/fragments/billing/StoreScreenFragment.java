@@ -17,7 +17,7 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -227,7 +227,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         pushFragment(FollowerManagerFragment.class, bundle);
     }
 
-    private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
+    private void enterFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
     {
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(fragmentClass, bundle);
     }

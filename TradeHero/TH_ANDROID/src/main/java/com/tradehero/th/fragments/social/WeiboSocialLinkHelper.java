@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.social;
 
 import android.app.Activity;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;

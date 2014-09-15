@@ -14,7 +14,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import com.tradehero.common.graphics.RotateTransformation;
 import com.tradehero.common.utils.SDKUtils;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

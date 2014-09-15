@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 

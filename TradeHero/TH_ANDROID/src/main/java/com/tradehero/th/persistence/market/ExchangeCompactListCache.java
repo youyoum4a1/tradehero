@@ -41,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
     {
         exchangeIdCache.get().put(value);
         ExchangeCompactDTOList previous = super.put(key, value);
-        dtoCacheUtil.get().preFetchTrending();
+        //dtoCacheUtil.get().preFetchTrending();
         return previous;
     }
 }

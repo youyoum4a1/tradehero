@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.widget.TabHost;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -84,6 +84,20 @@ public class DashboardNavigator extends Navigator
     public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack)
     {
         this.goToTab(tabType, shouldAddToBackStack, TAB_SHOW_HOME_AS_UP);
+    }
+
+    public void goToFragment(Class fragment,Bundle args)
+    {
+        this.goToFragment(fragment,args,TAB_SHOULD_ADD_TO_BACKSTACK,TAB_SHOW_HOME_AS_UP);
+    }
+
+    public void goToFragment(Class fragment, Bundle args,Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
+    {
+
+        manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        manager.executePendingTransactions();
+
+        updateTabBarOnTabChanged(((Object) pushFragment(fragment, args, null, null, shouldAddToBackStack, showHomeKeyAsUp)).getClass().getName());
     }
 
     public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)

@@ -6,7 +6,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOUtil;
 import com.tradehero.th.api.competition.ProviderDTO;

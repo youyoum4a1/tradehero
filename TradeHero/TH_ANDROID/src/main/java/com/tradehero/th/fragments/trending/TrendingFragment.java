@@ -15,7 +15,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;

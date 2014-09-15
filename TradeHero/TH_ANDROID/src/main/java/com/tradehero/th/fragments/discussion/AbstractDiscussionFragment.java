@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;

@@ -8,6 +8,10 @@ import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.activities.GuideActivity;
+import com.tradehero.th.adapters.CompetitionListAdapter;
+import com.tradehero.th.adapters.LeaderboardListAdapter;
+import com.tradehero.th.adapters.MyTradePositionListAdapter;
+import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
@@ -18,6 +22,42 @@ import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentCompetition;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentDiscovery;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
+import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
+import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryHotTopicFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryRecentNewsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryStockGodNewsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCreateFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionDetailFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionMineFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSearchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfChinaConceptFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfHotHoldFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfHotWatchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfMineFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfTypeBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.AbsLeaderboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.LeaderboardFromExchangeFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.LeaderboardFromIndustryFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.security.BuySaleSecurityFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest01;
+import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest02;
+import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest03;
+import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.contestcenter.ContestCenterActiveFragment;
@@ -109,9 +149,7 @@ import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentFacebook;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentLinkedIn;
-import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentTwitter;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
@@ -372,14 +410,69 @@ import javax.inject.Singleton;
                         ContestCenterBaseFragment.class,
                         ContestCenterActiveFragment.class,
                         ContestCenterJoinedFragment.class,
-                        SocialFriendsFragmentFacebook.class,
-                        SocialFriendsFragmentTwitter.class,
+                        //SocialFriendsFragmentFacebook.class,
+                        //SocialFriendsFragmentTwitter.class,
                         SocialFriendsFragmentLinkedIn.class,
                         SocialFriendsFragmentWeibo.class,
-
                         HomeFragment.class,
                         HomeWebView.class,
                         GuideActivity.class,
+
+                        //China Build Start
+                        MainTabFragmentTrade.class,
+                        MainTabFragmentMe.class,
+                        MainTabFragmentDiscovery.class,
+                        MainTabFragmentStockGod.class,
+                        MainTabFragmentCompetition.class,
+
+                        StockGodListMoreFragment.class,
+                        StockGodListBaseFragment.class,
+
+                        TradeOfMineFragment.class,
+                        TradeOfTypeBaseFragment.class,
+                        TradeOfChinaConceptFragment.class,
+                        TradeOfHotWatchFragment.class,
+                        TradeOfHotHoldFragment.class,
+
+                        DiscoveryHotTopicFragment.class,
+                        DiscoveryStockGodNewsFragment.class,
+                        DiscoveryRecentNewsFragment.class,
+
+                        SearchFragment.class,
+                        SettingFragment.class,
+
+                        FragmentTest01.class,
+                        FragmentTest02.class,
+                        FragmentTest03.class,
+
+                        SecurityListView.class,
+
+                        LeaderboardListAdapter.class,
+                        SecurityListAdapter.class,
+                        MyTradePositionListAdapter.class,
+
+                        AbsLeaderboardFragment.class,
+                        LeaderboardFromExchangeFragment.class,
+                        LeaderboardFromIndustryFragment.class,
+
+                        SecurityDetailFragment.class,
+                        DiscussSendFragment.class,
+                        BuySaleSecurityFragment.class,
+
+                        SecurityDetailDialogLayout.class,
+
+                        CompetitionAllFragment.class,
+                        CompetitionMineFragment.class,
+                        CompetitionCreateFragment.class,
+                        CompetitionSearchFragment.class,
+                        CompetitionBaseFragment.class,
+                        CompetitionDetailFragment.class,
+
+                        CompetitionListAdapter.class,
+                        CompetitionSecuritySearchFragment.class,
+
+                        PortfolioFragment.class,
+                        //China Build End
                 },
         staticInjections =
                 {

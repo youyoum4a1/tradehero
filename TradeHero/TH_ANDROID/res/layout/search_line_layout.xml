@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="48dp"
+    android:background="@color/tradehero_blue">
+
+  <TextView
+      android:id="@+id/tvSearch"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:textColor="@color/white"
+      android:textSize="16sp"
+      android:layout_marginRight="15sp"
+      android:layout_centerInParent="true"
+      android:layout_marginLeft="10dp"
+      android:text="搜索"/>
+
+  <RelativeLayout
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:layout_toLeftOf="@id/tvSearch"
+      android:layout_margin="5dp"
+      android:background="@drawable/bg_search">
+
+    <ImageView
+        android:id="@+id/imgSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/icon_search"/>
+
+    <Button
+        android:id="@+id/btn_search_x"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/btn_search_x_xml"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"/>
+
+    <EditText
+        android:id="@+id/edtSearchInput"
+        android:singleLine="true"
+        android:maxLength="16"
+        android:layout_toRightOf="@id/imgSearch"
+        android:layout_toLeftOf="@id/btn_search_x"
+        android:layout_width="fill_parent"
+        android:layout_marginLeft="3dp"
+        android:layout_height="fill_parent"
+        android:textSize="12sp"
+        android:background="@color/transparent"
+        android:hint="股票代码／拼音／简称"/>
+  </RelativeLayout>
+</RelativeLayout>

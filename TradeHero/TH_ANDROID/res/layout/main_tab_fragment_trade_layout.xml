@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/bg_fragment"
+    android:orientation="vertical"
+    >
+
+  <RelativeLayout
+      android:background="@color/tab_head_bg"
+      android:layout_width="fill_parent"
+      android:layout_height="@dimen/tab_main_indicator_height">
+    <ImageView
+        android:id="@+id/imgSearch"
+        android:layout_alignParentRight="true"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/btn_search_xml"
+        ></ImageView>
+    <com.viewpagerindicator.TabPageIndicator
+        android:layout_toLeftOf="@id/imgSearch"
+        android:id="@+id/indicator"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        />
+  </RelativeLayout>
+
+  <android.support.v4.view.ViewPager
+      android:id="@+id/pager"
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+</LinearLayout>

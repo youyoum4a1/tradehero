@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import org.jetbrains.annotations.NotNull;
 

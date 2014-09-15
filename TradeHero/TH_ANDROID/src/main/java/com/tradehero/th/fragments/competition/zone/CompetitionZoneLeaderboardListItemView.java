@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.InjectView;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;

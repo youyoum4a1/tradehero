@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_fragment"
+    android:orientation="vertical"
+    >
+
+  <!--<include-->
+      <!--android:id="@+id/head_layout"-->
+      <!--layout="@layout/custom_head_layout"/>-->
+
+  <LinearLayout
+      style="@style/buy_sale_item"
+      android:layout_marginTop="20dp"
+      android:id="@+id/llBuySaleLine0">
+    <TextView
+        android:id="@+id/buy_sell_item_title0"
+        style="@style/buy_sale_title"
+        android:text="卖出价格："/>
+
+    <TextView
+        style="@style/buy_sale_title"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:id="@+id/tvBuySalePrice"
+        android:text="$2.69"/>
+
+    <TextView
+        style="@style/buy_sale_title"
+        android:id="@+id/tvBuySaleRate"
+        android:layout_marginLeft="10dp"
+        android:text="+1.38%"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine1"
+      android:layout_below="@id/llBuySaleLine0"
+      style="@style/buy_sale_item">
+    <TextView
+        style="@style/buy_sale_title"
+        android:id="@+id/buy_sell_item_title1"
+        android:text="卖出数量："/>
+    <com.tradehero.th.fragments.trade.view.TradeQuantityEditText
+        android:id="@+id/vquantity"
+        style="@style/TH.SmallValue"
+        android:background="@drawable/security_dialog_comment_bg"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/tradehero_blue"
+        android:inputType="number"
+        android:numeric="integer"
+        android:textIsSelectable="false"
+        tools:text="0"
+        />
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine2"
+      android:layout_below="@id/llBuySaleLine1"
+      android:orientation="vertical"
+      style="@style/buy_sale_item"
+      android:layout_height="wrap_content">
+
+    <SeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:progressDrawable="@drawable/seekbar_xml"
+        android:thumb="@drawable/seekbar_thumb"
+        style="@style/TH.SeekBar"
+        />
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine3"
+      android:layout_below="@id/llBuySaleLine2"
+      style="@style/buy_sale_item">
+
+    <TextView
+        android:id="@+id/buy_sell_item_title3"
+        style="@style/buy_sale_title"
+        android:text="股票总价："/>
+
+    <TextView
+        android:id="@+id/tvBuySaleTotalValue"
+        style="@style/buy_sale_title"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:text="$299000"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine4"
+      style="@style/buy_sale_item"
+      android:layout_below="@id/llBuySaleLine3"
+      >
+
+    <TextView
+        style="@style/buy_sale_title"
+        android:id="@+id/buy_sell_item_title4"
+        android:text="    手续费："/>
+
+    <TextView
+        android:id="@+id/tvBuySaleCost"
+        style="@style/buy_sale_title"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:text="$5"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine5"
+      style="@style/buy_sale_item"
+      android:layout_below="@id/llBuySaleLine4"
+      >
+
+    <TextView
+        style="@style/buy_sale_title"
+        android:id="@+id/buy_sell_item_title5"
+        android:text="预估盈利："/>
+
+    <TextView
+        android:id="@+id/tvBuySaleMayProfit"
+        style="@style/buy_sale_title"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:text="$3000"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine6"
+      style="@style/buy_sale_item"
+      android:layout_below="@id/llBuySaleLine5"
+      >
+
+    <TextView
+        style="@style/buy_sale_title"
+        android:id="@+id/buy_sell_item_title6"
+        android:text="资产余额："/>
+
+    <TextView
+        android:id="@+id/tvBuySaleCashLeft"
+        style="@style/buy_sale_title"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:text="$9232.2"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine7"
+      style="@style/buy_sale_item"
+      android:layout_below="@id/llBuySaleLine6"
+      >
+
+    <CheckBox style="@style/CustomCheckboxTheme"
+
+        android:text="  分享到社交网络"/>
+  </LinearLayout>
+
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLineBottom"
+      android:layout_width="fill_parent"
+      android:layout_alignParentBottom="true"
+      android:orientation="vertical"
+      android:layout_height="48dp">
+    <View
+        android:layout_height="1px"
+        android:layout_width="fill_parent"
+        android:background="@color/gray_1"/>
+    <TextView
+        android:id="@+id/buy_sell_item_title_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:textColor="#1789d5"
+        android:text="确定出售"/>
+  </LinearLayout>
+
+</RelativeLayout>
+

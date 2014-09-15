@@ -1,6 +1,6 @@
 package com.tradehero.th.api.translation.bing;
 
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import org.jetbrains.annotations.NotNull;

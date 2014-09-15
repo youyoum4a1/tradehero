@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.*;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import dagger.Module;
 import dagger.Provides;
 

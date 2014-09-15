@@ -31,6 +31,9 @@ public class LeaderboardDTO extends BaseHasExpiration
     @JsonProperty("avg_stddev_positionRoiInPeriod")
     public double avgStdDevPositionRoiInPeriod;
 
+
+
+
     //<editor-fold desc="Constructors">
     public LeaderboardDTO()
     {

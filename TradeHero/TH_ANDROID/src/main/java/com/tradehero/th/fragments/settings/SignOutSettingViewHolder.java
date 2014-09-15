@@ -6,7 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.preference.PreferenceFragment;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;

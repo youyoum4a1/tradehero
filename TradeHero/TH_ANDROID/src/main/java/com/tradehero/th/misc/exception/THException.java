@@ -1,8 +1,7 @@
 package com.tradehero.th.misc.exception;
 
-import com.facebook.FacebookOperationCanceledException;
 import com.tradehero.common.utils.RetrofitHelper;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.ErrorMessageDTO;
 import com.tradehero.th.api.http.ResponseErrorCode;
 import com.tradehero.th.base.Application;
@@ -87,10 +86,10 @@ public class THException extends Exception
                 }
             }
         }
-        else if (throwable instanceof FacebookOperationCanceledException)
-        {
-            this.code = ExceptionCode.UserCanceled;
-        }
+        //else if (throwable instanceof FacebookOperationCanceledException)
+        //{
+        //    this.code = ExceptionCode.UserCanceled;
+        //}
         return super.initCause(throwable);
     }
 

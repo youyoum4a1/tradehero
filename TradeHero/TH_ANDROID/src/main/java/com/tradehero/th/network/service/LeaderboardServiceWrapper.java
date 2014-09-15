@@ -1,6 +1,8 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
@@ -15,9 +17,12 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.fragments.chinabuild.data.UserTrendingDTO;
+import com.tradehero.th.fragments.chinabuild.data.UserTrendingDTOList;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -118,13 +123,56 @@ import retrofit.Callback;
         }
         else if (leaderboardKey instanceof PagedLeaderboardKey)
         {
-            PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
-            return leaderboardService.getLeaderboard(
-                    pagedLeaderboardKey.id,
-                    pagedLeaderboardKey.page,
-                    null);
+            if (leaderboardKey.id == LeaderboardDefKeyKnowledge.DAYS_30)//返回月盈利榜
+            {
+                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+                return leaderboardService.getLeaderboard(
+                        pagedLeaderboardKey.id,
+                        pagedLeaderboardKey.page,
+                        pagedLeaderboardKey.perPage);
+            }
+            else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.POPULAR)//返回人气榜
+            {
+                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+                UserTrendingDTOList data = leaderboardService.getLeaderboardPopular(
+                        pagedLeaderboardKey.page,
+                        pagedLeaderboardKey.perPage);
+                return processFromExtraData(data);
+            }
+            else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.WEALTH)//返回土豪榜
+            {
+                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+                UserTrendingDTOList data = leaderboardService.getLeaderboardWealth(
+                        pagedLeaderboardKey.page,
+                        pagedLeaderboardKey.perPage);
+                return processFromExtraData(data);
+            }
         }
         return leaderboardService.getLeaderboard(leaderboardKey.id, null, null);
+    }
+
+    public LeaderboardDTO processFromExtraData(UserTrendingDTOList data)
+    {
+        if (data != null && data.size() > 0)
+        {
+            LeaderboardDTO leaderboardDTO = new LeaderboardDTO();
+            leaderboardDTO.users = new LeaderboardUserDTOList();
+            int sizeData = data.size();
+            for (int i = 0; i < sizeData; i++)
+            {
+                UserTrendingDTO dataDTO = data.get(i);
+                LeaderboardUserDTO userDTO = new LeaderboardUserDTO();
+                userDTO.id = dataDTO.userId;
+                userDTO.followerCount = dataDTO.followerCount;
+                userDTO.displayName = dataDTO.name;
+                userDTO.picture = dataDTO.pictureUrl;
+                userDTO.totalWealth = dataDTO.totalWealth;
+                userDTO.roiInPeriod = dataDTO.winRatio;
+                leaderboardDTO.users.add(userDTO);
+            }
+            return leaderboardDTO;
+        }
+        return null;
     }
 
     @NotNull public MiddleCallback<LeaderboardDTO> getLeaderboard(

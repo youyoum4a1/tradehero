@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.news;
 
 import android.text.TextUtils;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import org.json.JSONArray;

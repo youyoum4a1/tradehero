@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    >
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1px"
+      android:background="#999"/>
+
+  <ListView
+      android:layout_gravity="center"
+      android:id="@+id/action_list_items"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:listSelector="@drawable/common_dialog_item_bg"
+      android:cacheColorHint="@color/transparent"
+      />
+
+</com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout>

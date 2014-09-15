@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;

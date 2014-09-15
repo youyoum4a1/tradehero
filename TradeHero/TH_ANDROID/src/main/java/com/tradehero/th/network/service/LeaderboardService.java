@@ -4,6 +4,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.fragments.chinabuild.data.UserTrendingDTOList;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -15,10 +16,25 @@ public interface LeaderboardService
     LeaderboardDefDTOList getLeaderboardDefinitions();
     //</editor-fold>
 
+    //月盈利榜
     //<editor-fold desc="Get Leaderboard">
     @GET("/leaderboards/{leaderboardId}")
     LeaderboardDTO getLeaderboard(
             @Path("leaderboardId") int leaderboardId,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+
+    //人气榜
+    //<editor-fold desc="Get Leaderboard">
+    @GET("/users/trendingFollow?countryCode=CN")
+    UserTrendingDTOList getLeaderboardPopular(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+
+    //土豪榜
+    //<editor-fold desc="Get Leaderboard">
+    @GET("/users/trendingWealth?countryCode=CN")
+    UserTrendingDTOList getLeaderboardWealth(
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 

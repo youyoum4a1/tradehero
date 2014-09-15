@@ -15,11 +15,11 @@ public class SocialNetworkFactory
     {
         switch (socialNetworkEnum)
         {
-            case FB:
-                return SocialFriendsFragmentFacebook.class;
-
-            case TW:
-                return SocialFriendsFragmentTwitter.class;
+            //case FB:
+            //    return SocialFriendsFragmentFacebook.class;
+            //
+            //case TW:
+            //    return SocialFriendsFragmentTwitter.class;
 
             case LN:
                 return SocialFriendsFragmentLinkedIn.class;

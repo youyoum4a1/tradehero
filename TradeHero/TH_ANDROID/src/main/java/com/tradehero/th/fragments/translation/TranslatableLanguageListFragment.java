@@ -12,7 +12,7 @@ import butterknife.OnItemClick;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.TranslatableLanguageDTOFactory;
 import com.tradehero.th.api.translation.TranslatableLanguageDTOFactoryFactory;

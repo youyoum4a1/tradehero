@@ -1,12 +1,12 @@
 package com.tradehero.th.api.form;
 
-import com.tradehero.th.auth.FacebookAuthenticationProvider;
+//import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
-import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
+//import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import com.tradehero.th.models.user.auth.QQCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
@@ -47,10 +47,10 @@ public class UserFormFactory
 
     private static UserFormDTO createEmptyForType(String type)
     {
-        if (type.equals(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE))
-        {
-            return new FacebookUserFormDTO();
-        }
+        //if (type.equals(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE))
+        //{
+        //    return new FacebookUserFormDTO();
+        //}
         if (type.equals(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE))
         {
             return new LinkedinUserFormDTO();
@@ -114,12 +114,12 @@ public class UserFormFactory
     private static void populatePerType(UserFormDTO userFormDTO, String type, JSONObject json)
             throws JSONException
     {
-        if (type.equals(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE))
-        {
-            ((FacebookUserFormDTO) userFormDTO).accessToken =
-                    json.getString(FacebookAuthenticationProvider.ACCESS_TOKEN_KEY);
-        }
-        else if (type.equals(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE))
+        //if (type.equals(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE))
+        //{
+        //    ((FacebookUserFormDTO) userFormDTO).accessToken =
+        //            json.getString(FacebookAuthenticationProvider.ACCESS_TOKEN_KEY);
+        //}
+        if (type.equals(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE))
         {
             ((LinkedinUserFormDTO) userFormDTO).accessToken =
                     json.getString(SocialAuthenticationProvider.AUTH_TOKEN_KEY);

@@ -12,7 +12,7 @@ import android.widget.EditText;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
@@ -32,7 +32,7 @@ import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.FacebookUtils;
+//import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
@@ -63,8 +63,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private ProgressDialog progressDialog;
     private TwitterCredentialsDTO twitterJson;
 
-    @Inject Lazy<FacebookUtils> facebookUtils;
-    @Inject Lazy<TwitterUtils> twitterUtils;
+    //@Inject Lazy<FacebookUtils> facebookUtils;
+    //@Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
@@ -160,7 +160,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
-        facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
+        //facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
@@ -196,13 +196,13 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 authenticateWithEmail();
                 break;
 
-            case R.id.btn_facebook_signin:
-                authenticateWithFacebook();
-                break;
-
-            case R.id.btn_twitter_signin:
-                authenticateWithTwitter();
-                break;
+            //case R.id.btn_facebook_signin:
+            //    authenticateWithFacebook();
+            //    break;
+            //
+            //case R.id.btn_twitter_signin:
+            //    authenticateWithTwitter();
+            //    break;
 
             case R.id.authentication_twitter_email_button:
                 complementEmailForTwitterAuthentication();
@@ -334,19 +334,19 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Linkedin));
     }
 
-    public void authenticateWithFacebook()
-    {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Facebook));
-        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
-        facebookUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Facebook));
-    }
-
-    public void authenticateWithTwitter()
-    {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Twitter));
-        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
-        twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
-    }
+    //public void authenticateWithFacebook()
+    //{
+    //    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Facebook));
+    //    progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
+    //    facebookUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Facebook));
+    //}
+    //
+    //public void authenticateWithTwitter()
+    //{
+    //    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Twitter));
+    //    progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
+    //    twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
+    //}
 
     private SocialAuthenticationCallback createTwitterAuthenticationCallback()
     {
@@ -416,7 +416,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
     private void launchDashboard(UserLoginDTO userLoginDTO)
     {
-        Intent intent = new Intent(this, DashboardActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         intent.putExtra(UserLoginDTO.SUGGEST_UPGRADE, userLoginDTO.suggestUpgrade);

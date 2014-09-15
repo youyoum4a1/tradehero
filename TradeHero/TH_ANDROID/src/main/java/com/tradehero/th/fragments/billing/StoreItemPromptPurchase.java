@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import butterknife.InjectView;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import timber.log.Timber;

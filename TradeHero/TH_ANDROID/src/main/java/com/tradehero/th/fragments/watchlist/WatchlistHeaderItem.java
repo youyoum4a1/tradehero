@@ -6,7 +6,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.widget.TwoStateView;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 
 public class WatchlistHeaderItem extends TwoStateView
 {

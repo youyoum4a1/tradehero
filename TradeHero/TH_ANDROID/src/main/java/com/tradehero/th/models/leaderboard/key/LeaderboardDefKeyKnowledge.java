@@ -1,6 +1,6 @@
 package com.tradehero.th.models.leaderboard.key;
 
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -39,12 +39,37 @@ public class LeaderboardDefKeyKnowledge
     public static final int MOST_SKILLED_ID = 49;
     public static final int MONTHS_6 = 285;
 
+    public static final int POPULAR = 6666;//人气榜
+    public static final int WEALTH = 8888;//土豪榜
+    public static final int COMPETITION = 9999;//比赛榜
+
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefKeyKnowledge()
     {
         super();
     }
     //</editor-fold>
+
+    public static String getLeaderboardName(LeaderboardDefKey leaderboardDefKey)
+    {
+        if (leaderboardDefKey == null) return "";
+        switch (leaderboardDefKey.key)
+        {
+            case POPULAR:
+                return "人气榜";
+            case WEALTH:
+                return "土豪榜";
+            case DAYS_30:
+                return "月盈利榜";
+            case DAYS_90:
+                return "季度榜";
+            case MONTHS_6:
+                return "半年榜";
+            case MOST_SKILLED_ID:
+                return "总盈利榜";
+        }
+        return "";
+    }
 
     @Nullable public Integer getLeaderboardDefIcon(@NotNull LeaderboardDefKey leaderboardDefKey)
     {

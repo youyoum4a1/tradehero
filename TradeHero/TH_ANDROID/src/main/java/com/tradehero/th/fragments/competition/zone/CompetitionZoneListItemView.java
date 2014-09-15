@@ -7,7 +7,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;

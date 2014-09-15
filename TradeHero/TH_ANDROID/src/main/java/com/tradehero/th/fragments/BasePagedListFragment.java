@@ -16,7 +16,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;

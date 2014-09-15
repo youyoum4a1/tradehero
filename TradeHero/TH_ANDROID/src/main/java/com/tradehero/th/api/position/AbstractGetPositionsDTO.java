@@ -3,6 +3,7 @@ package com.tradehero.th.api.position;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,20 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
         this.openPositionsCount = openPositionsCount;
         this.closedPositionsCount = closedPositionsCount;
     }
+
+
+    public SecurityCompactDTO getSecurityCompactDTO(PositionDTO positionDTO)
+    {
+        for(int i = 0;i<securities.size();i++)
+        {
+            if(securities.get(i).id == positionDTO.securityId)
+            {
+                return securities.get(i);
+            }
+        }
+        return null;
+    }
+
     //</editor-fold>
 
     public List<PositionDTOType> getOpenPositions()

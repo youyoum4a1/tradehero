@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.leaderboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import java.util.Set;

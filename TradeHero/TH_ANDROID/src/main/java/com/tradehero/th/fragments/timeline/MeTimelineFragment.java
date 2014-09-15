@@ -9,7 +9,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -19,9 +19,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-@Routable({
-        "user/me", "profiles/me"
-})
+
 public class MeTimelineFragment extends TimelineFragment
     implements WithTutorial
 {
@@ -32,13 +30,12 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        thRouter.save(getArguments(), currentUserId.toUserBaseKey());
+        //thRouter.save(getArguments(), currentUserId.toUserBaseKey());
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,

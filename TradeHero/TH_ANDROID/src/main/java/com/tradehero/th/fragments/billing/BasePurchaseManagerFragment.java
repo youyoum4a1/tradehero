@@ -2,11 +2,17 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
+import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
+import com.tradehero.th.fragments.chinabuild.cache.PortfolioDTOKey;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -36,14 +42,17 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
+    private DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> portfolioCompactNewFetchListener;
     protected THPurchaseActionInteractor thPurchaseActionInteractor;
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    @Inject protected PortfolioCompactNewCache portfolioCompactNewCache;
     @Inject protected THBillingInteractor userInteractor;
     @Inject SystemStatusCache systemStatusCache;
+
 
     public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -68,13 +77,22 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
+        portfolioCompactNewFetchListener = createPortfolioCompactNewFetchListener();
     }
 
     @Override public void onResume()
     {
         super.onResume();
 
-        fetchPortfolioCompactList();
+        if(getCompetitionID()==0)
+        {
+            fetchPortfolioCompactList();
+        }
+        else//如果是非0则说明是 比赛相关的 股票详情页
+        {
+            fetchPortfolioCompactNew();
+        }
+
     }
 
     @Override public void onStop()
@@ -95,6 +113,11 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
     }
 
+    private void detachPortfolioCompactNewCache()
+    {
+        portfolioCompactNewCache.unregister(portfolioCompactNewFetchListener);
+    }
+
     private void detachPurchaseActionInteractor()
     {
         if (thPurchaseActionInteractor != null)
@@ -109,6 +132,19 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         detachPortfolioCompactListCache();
         portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
         portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    public int getCompetitionID()
+    {
+        return 0;
+    }
+
+    private void fetchPortfolioCompactNew()
+    {
+        detachPortfolioCompactNewCache();
+        PortfolioId key = new PortfolioId(getCompetitionID());
+        portfolioCompactNewCache.register(key, portfolioCompactNewFetchListener);
+        portfolioCompactNewCache.getOrFetchAsync(key);
     }
 
     protected void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs)
@@ -215,6 +251,29 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
+    protected DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> createPortfolioCompactNewFetchListener()
+    {
+        return new BasePurchaseManagementPortfolioCompactNewFetchListener();
+    }
+
+    protected class BasePurchaseManagementPortfolioCompactNewFetchListener implements DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO>
+    {
+        protected BasePurchaseManagementPortfolioCompactNewFetchListener()
+        {
+            // no unexpected creation
+        }
+
+        @Override public void onDTOReceived(@NotNull PortfolioId key, @NotNull PortfolioCompactDTO value)
+        {
+            prepareApplicableOwnedPortolioId(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull PortfolioId key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_portfolio_list_info);
+        }
+    }
+
     //region Creation and Listener
     @Deprecated
     protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
@@ -229,4 +288,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return null;
     }
     //endregion
+
+
+
 }

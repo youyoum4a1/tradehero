@@ -13,6 +13,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionNewCache;
+import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
+import com.tradehero.th.fragments.chinabuild.cache.PositionCompactNewCache;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
@@ -74,6 +77,9 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<AlertCompactListCache> alertCompactListCache;
     protected final Lazy<CompetitionListCache> competitionListCache;
     protected final Lazy<CompetitionCache> competitionCache;
+    protected final Lazy<CompetitionNewCache> competitionNewCache;
+    protected final Lazy<PortfolioCompactNewCache> portfolioCompactNewCache;
+    protected final Lazy<PositionCompactNewCache> positionCompactNewCache;
     protected final Lazy<DiscussionCache> discussionCache;
     protected final Lazy<DiscussionListCacheNew> discussionListCache;
     protected final Lazy<ExchangeCompactListCache> exchangeCompactListCache;
@@ -123,6 +129,9 @@ import org.jetbrains.annotations.Nullable;
             Lazy<AlertCompactListCache> alertCompactListCache,
             Lazy<CompetitionListCache> competitionListCache,
             Lazy<CompetitionCache> competitionCache,
+            Lazy<CompetitionNewCache> competitionNewCache,
+            Lazy<PortfolioCompactNewCache> portfolioCompactNewCache,
+            Lazy<PositionCompactNewCache> positionCompactNewCache,
             Lazy<DiscussionCache> discussionCache,
             Lazy<DiscussionListCacheNew> discussionListCache,
             Lazy<ExchangeCompactListCache> exchangeCompactListCache,
@@ -167,6 +176,9 @@ import org.jetbrains.annotations.Nullable;
         this.alertCompactListCache = alertCompactListCache;
         this.competitionListCache = competitionListCache;
         this.competitionCache = competitionCache;
+        this.competitionNewCache = competitionNewCache;
+        this.portfolioCompactNewCache = portfolioCompactNewCache;
+        this.positionCompactNewCache = positionCompactNewCache;
         this.discussionCache = discussionCache;
         this.discussionListCache = discussionListCache;
         this.exchangeCompactListCache = exchangeCompactListCache;
@@ -215,6 +227,7 @@ import org.jetbrains.annotations.Nullable;
         alertCompactListCache.get().invalidateAll();
         competitionListCache.get().invalidateAll();
         competitionCache.get().invalidateAll();
+        competitionNewCache.get().invalidateAll();
         discussionCache.get().invalidateAll();
         discussionListCache.get().invalidateAll();
         followerSummaryCache.get().invalidateAll();
@@ -234,6 +247,8 @@ import org.jetbrains.annotations.Nullable;
         positionCache.get().invalidateAll();
         positionCompactCache.get().invalidateAll();
         positionCompactIdCache.get().invalidateAll();
+        portfolioCompactNewCache.get().invalidateAll();
+        positionCompactNewCache.get().invalidateAll();
         productPurchaseCache.get().invalidateAll();
         providerCache.get().invalidateAll();
         providerListCache.get().invalidateAll();

@@ -8,7 +8,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.utils.DaggerUtils;

@@ -3,9 +3,10 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.auth.operator.ConsumerKey;
 import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.FacebookAppId;
@@ -32,6 +33,7 @@ import timber.log.Timber;
         injects = {
                 AuthenticationActivity.class,
                 DashboardActivity.class,
+                MainActivity.class
         },
         complete = false,
         library = true

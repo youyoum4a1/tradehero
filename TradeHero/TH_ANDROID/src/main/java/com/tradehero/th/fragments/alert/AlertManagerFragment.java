@@ -20,7 +20,7 @@ import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;

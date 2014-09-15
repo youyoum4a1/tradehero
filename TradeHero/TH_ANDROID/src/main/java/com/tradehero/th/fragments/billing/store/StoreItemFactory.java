@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.billing.store;
 
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;

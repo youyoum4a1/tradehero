@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/security_detail_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/bg_fragment"
+    >
+
+  <!--<include-->
+      <!--android:id="@+id/head_layout"-->
+      <!--layout="@layout/custom_head_layout"/>-->
+
+  <include
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:id="@+id/ic_info_data"
+      android:layout_marginTop="10dp"
+      android:layout_width="fill_parent"
+      android:layout_height="72dp"
+      layout="@layout/security_info_data"/>
+
+  <include
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_marginTop="10dp"
+      android:id="@+id/ic_info_chart"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/ic_info_data"
+      layout="@layout/security_info_chart"/>
+
+  <include
+      android:id="@+id/ic_info_buy_sale_btns"
+      android:layout_width="fill_parent"
+      android:layout_height="48dp"
+      android:layout_alignParentBottom="true"
+      layout="@layout/security_info_buy_sale_discuss"/>
+
+
+</RelativeLayout>
+

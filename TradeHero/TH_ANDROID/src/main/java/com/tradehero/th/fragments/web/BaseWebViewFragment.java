@@ -8,7 +8,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.common.utils.SDKUtils;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;

@@ -18,7 +18,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -64,11 +64,11 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
     SocialFriendHandler socialFriendHandler;
-    SocialFriendHandlerFacebook socialFriendHandlerFacebook;
+    //SocialFriendHandlerFacebook socialFriendHandlerFacebook;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
-    @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
+    //@Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
 
     private UserFriendsDTOList userFriendsDTOs;
@@ -89,7 +89,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         socialFriendHandler = socialFriendHandlerProvider.get();
-        socialFriendHandlerFacebook = facebookSocialFriendHandlerProvider.get();
+        //socialFriendHandlerFacebook = facebookSocialFriendHandlerProvider.get();
     }
 
     @Override
@@ -347,12 +347,12 @@ public class FriendsInvitationFragment extends DashboardFragment
         {
             switch (socialNetwork)
             {
-                case FB:
-                    return updatedUserProfileDTO.fbLinked;
+                //case FB:
+                //    return updatedUserProfileDTO.fbLinked;
                 case LN:
                     return updatedUserProfileDTO.liLinked;
-                case TW:
-                    return updatedUserProfileDTO.twLinked;
+                //case TW:
+                //    return updatedUserProfileDTO.twLinked;
                 case WB:
                     return updatedUserProfileDTO.wbLinked;
                 case QQ:
@@ -395,11 +395,11 @@ public class FriendsInvitationFragment extends DashboardFragment
         {
             socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
         }
-        else if (userToInvite instanceof UserFriendsFacebookDTO)
-        {
-            //TODO do invite on the client side.
-            socialFriendHandlerFacebook.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
-        }
+        //else if (userToInvite instanceof UserFriendsFacebookDTO)
+        //{
+        //    //TODO do invite on the client side.
+        //    socialFriendHandlerFacebook.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
+        //}
         else
         {
             //if all ids are empty or only wbId is not empty, how to do?

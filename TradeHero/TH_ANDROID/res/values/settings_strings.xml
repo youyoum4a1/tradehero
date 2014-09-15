@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="settings">Settings</string>
-
   <string name="settings_sharing">Sharing</string>
   <string name="settings_sharing_facebook">Facebook</string>
   <string name="settings_sharing_twitter">Twitter</string>

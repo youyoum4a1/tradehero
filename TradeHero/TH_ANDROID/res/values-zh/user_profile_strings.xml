@@ -36,4 +36,6 @@
   <string name="error_fetch_your_user_profile">获取个人资料信息发生错误</string>
   <string name="error_fetch_people_list_info">获取人员列表信息发生错误</string>
 
+
+
 </resources>

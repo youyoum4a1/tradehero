@@ -4,6 +4,9 @@ import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.key.CompetitionId;
+import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserCache;
@@ -14,6 +17,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit.Callback;
 
 @Singleton public class CompetitionCache extends StraightCutDTOCacheNew<CompetitionId, CompetitionDTO, CompetitionCutDTO>
 {
@@ -73,7 +77,7 @@ import org.jetbrains.annotations.Nullable;
         }
 
         CompetitionDTOList fleshedValues = new CompetitionDTOList();
-        for (@NotNull CompetitionId competitionId: competitionIds)
+        for (@NotNull CompetitionId competitionId : competitionIds)
         {
             fleshedValues.add(get(competitionId));
         }
@@ -89,10 +93,49 @@ import org.jetbrains.annotations.Nullable;
         }
 
         CompetitionDTOList previousValues = new CompetitionDTOList();
-        for (@NotNull CompetitionDTO competitionDTO: values)
+        for (@NotNull CompetitionDTO competitionDTO : values)
         {
             previousValues.add(put(competitionDTO.getCompetitionId(), competitionDTO));
         }
         return previousValues;
     }
+
+    public MiddleCallback<UserCompetitionDTO> creatUGCompetition(@NotNull String name, @NotNull String description, @NotNull int durationDays,
+            @NotNull int[] exchangeIds, @Nullable
+    Callback<UserCompetitionDTO> callback)
+    {
+        return competitionServiceWrapper.creatUGC(name, description, durationDays, exchangeIds, callback);
+    }
+
+    public MiddleCallback<UserCompetitionDTO> enrollUGCompetition(int competitionId, @Nullable
+    Callback<UserCompetitionDTO> callback)
+    {
+        return competitionServiceWrapper.enrollUGCompetition(competitionId, callback);
+    }
+
+
+
+    //public MiddleCallback<UserCompetitionDTOList> getUserCompetitions(@NotNull int page, @NotNull int perpage,
+    //        Callback<UserCompetitionDTOList> callback)
+    //{
+    //    return competitionServiceWrapper.getUserCompetitions(page, perpage, callback);
+    //}
+    //
+    //public MiddleCallback<UserCompetitionDTOList> getOfficalCompetitions(
+    //        Callback<UserCompetitionDTOList> callback)
+    //{
+    //    return competitionServiceWrapper.getOfficalCompetitions(callback);
+    //}
+    //
+    //public MiddleCallback<UserCompetitionDTOList> getMyCompetitions(@NotNull int page, @NotNull int perpage,
+    //        Callback<UserCompetitionDTOList> callback)
+    //{
+    //    return competitionServiceWrapper.getMyCompetitions(page, perpage, callback);
+    //}
+    //
+    //public MiddleCallback<UserCompetitionDTOList> getVipCompetitions(
+    //        Callback<UserCompetitionDTOList> callback)
+    //{
+    //    return competitionServiceWrapper.getVipCompetitions(callback);
+    //}
 }

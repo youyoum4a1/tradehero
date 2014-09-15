@@ -8,7 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.billing.THProductDetail;
 

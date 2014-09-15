@@ -1,7 +1,7 @@
 package com.tradehero.th.api.i18n.lang;
 
 import android.content.res.Resources;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import org.jetbrains.annotations.NotNull;
 

@@ -4,6 +4,8 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.SecurityCompactExtraDTO;
+import com.tradehero.th.api.security.SecurityCompactExtraDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
@@ -25,11 +27,13 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.Map;
+import java.util.Timer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import timber.log.Timber;
 
 @Singleton public class SecurityServiceWrapper
 {
@@ -86,6 +90,24 @@ import retrofit.Callback;
     }
     //</editor-fold>
 
+    public SecurityCompactDTOList processFromExtraData(SecurityCompactExtraDTOList received)
+    {
+        SecurityCompactDTOList retList = new SecurityCompactDTOList();
+        if (received != null)
+        {
+            for (int i = 0; i < received.size(); i++)
+            {
+                SecurityCompactDTO security = received.get(i).security;
+                security.marketCapRefUSD = received.get(i).marketCapRefUSD;
+                security.watchCount = received.get(i).watchCount;
+                security.holdCount = received.get(i).holdCount;
+                security.searchCount = received.get(i).searchCount;
+                retList.add(security);
+            }
+        }
+        return retList;
+    }
+
     //<editor-fold desc="Get Securities">
     public SecurityCompactDTOList getSecurities(@NotNull SecurityListType key)
     {
@@ -102,24 +124,61 @@ import retrofit.Callback;
             }
             else if (trendingKey instanceof TrendingPriceSecurityListType)
             {
-                received =  this.securityService.getTrendingSecuritiesByPrice(
+                received = this.securityService.getTrendingSecuritiesByPrice(
                         trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingVolumeSecurityListType)
             {
-                received =  this.securityService.getTrendingSecuritiesByVolume(
+                received = this.securityService.getTrendingSecuritiesByVolume(
                         trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingAllSecurityListType)
             {
-                received =  this.securityService.getTrendingSecuritiesAllInExchange(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage);
+                SecurityCompactExtraDTOList data = null;
+                if (((TrendingAllSecurityListType) trendingKey).type == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_WATCH)
+                {
+                    data = this.securityService.getTrendingSecuritiesAllInExchangeWatch(
+                            trendingKey.exchange,
+                            trendingKey.getPage(),
+                            trendingKey.perPage);
+                }
+                else if (((TrendingAllSecurityListType) trendingKey).type == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD)
+                {
+                    data = this.securityService.getTrendingSecuritiesAllInExchangeHold(
+                            trendingKey.exchange,
+                            trendingKey.getPage(),
+                            trendingKey.perPage);
+                }
+                else if (((TrendingAllSecurityListType) trendingKey).type == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT)
+                {
+                    data = this.securityService.getTrendingSecuritiesAllInExchangeChinaConcept(
+                            trendingKey.exchange,
+                            trendingKey.getPage(),
+                            trendingKey.perPage);
+                }
+                else if (((TrendingAllSecurityListType) trendingKey).type == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION)
+                {
+                    SecurityCompactDTOList dataCompetition = this.securityService.getTrendingSecuritiesAllInCompetition(
+                            ((TrendingAllSecurityListType) trendingKey).competitionId,
+                            trendingKey.getPage(),
+                            trendingKey.perPage);
+                    return dataCompetition;
+                }
+
+                else if (((TrendingAllSecurityListType) trendingKey).type == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH)
+                {
+                    SecurityCompactDTOList dataCompetition = this.securityService.getTrendingSecuritiesAllInCompetitionSearch(
+                            ((TrendingAllSecurityListType) trendingKey).competitionId,
+                            ((TrendingAllSecurityListType) trendingKey).q,
+                            trendingKey.getPage(),
+                            trendingKey.perPage);
+                    return dataCompetition;
+                }
+                received = processFromExtraData(data);
             }
             else
             {
@@ -129,14 +188,14 @@ import retrofit.Callback;
         else if (key instanceof SearchSecurityListType)
         {
             SearchSecurityListType searchKey = (SearchSecurityListType) key;
-            received =  this.securityService.searchSecurities(
+            received = this.securityService.searchSecurities(
                     searchKey.searchString,
                     searchKey.getPage(),
                     searchKey.perPage);
         }
         else if (key instanceof ProviderSecurityListType)
         {
-            received =  providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key);
+            received = providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key);
         }
         else
         {

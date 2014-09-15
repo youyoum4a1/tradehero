@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contest_center_content_screen"
+    android:background="@color/bg_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <RelativeLayout
+      android:layout_width="fill_parent"
+      android:layout_height="96dp"
+      android:background="@drawable/bg_competition_banner">
+    <TextView
+        android:id="@+id/tvCompetitionIntro"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="40dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:textColor="@color/black"
+        android:text="一起来比一比谁才是真正的大神，一起来比一比谁才是真正的大神，一起来比一比谁才是真正的大神。">
+    </TextView>
+
+    <TextView
+        android:id="@+id/tvCompetitionPeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
+        android:textColor="@color/black"
+        android:text="09/20-10/19">
+    </TextView>
+
+    <TextView
+        android:id="@+id/tvCompetitionExchange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_above="@id/tvCompetitionPeriod"
+        android:textColor="@color/black"
+        android:text="沪深">
+    </TextView>
+  </RelativeLayout>
+
+  <RelativeLayout
+      android:layout_width="fill_parent"
+      android:layout_height="48dp"
+      >
+
+    <TextView
+        android:id="@+id/tvCompetitionDetailMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="#1789d5"
+        android:text="比赛详情>>"/>
+
+
+    <TextView
+        android:id="@+id/tvTitleCreator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_centerVertical="true"
+        android:text="创建人："/>
+
+    <TextView
+        android:id="@+id/tvCompetitionCreator"
+        android:layout_toRightOf="@id/tvTitleCreator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/tvCompetitionDetailMore"
+        android:layout_marginRight="2dp"
+        android:textColor="#1789d5"
+        android:layout_centerVertical="true"
+        android:singleLine="true"
+        android:text="杜淳杰"/>
+
+
+
+    <TextView
+        android:id="@+id/tvGotoCompetition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="@drawable/icon_goto_competition_xml"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        android:text="去比赛"/>
+  </RelativeLayout>
+
+  <View
+      android:id="@+id/viewLine"
+      android:layout_width="fill_parent"
+      android:layout_height="1px"
+      android:background="@color/separate_line_color"/>
+
+  <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+      android:id="@+id/listRanks"
+      android:layout_below="@id/viewLine"
+      android:scrollingCache="false"
+      android:fadingEdge="none"
+      android:divider="@color/transparent"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+  </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+
+</LinearLayout>
+

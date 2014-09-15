@@ -11,14 +11,14 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.facebook.FacebookException;
-import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Session;
-import com.facebook.widget.WebDialog;
+//import com.facebook.FacebookException;
+//import com.facebook.FacebookOperationCanceledException;
+//import com.facebook.Session;
+//import com.facebook.widget.WebDialog;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -48,7 +48,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.FacebookUtils;
+//import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -84,7 +84,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Picasso picasso;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
-    @Inject Lazy<FacebookUtils> facebookUtils;
+    //@Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
@@ -368,73 +368,73 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
         {
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
-            if (Session.getActiveSession() == null)
-            {
-                detachTrackbackFacebook();
-                middleTrackbackFacebook = new MiddleLogInCallback(new TrackFacebookCallback());
-                facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
-                        middleTrackbackFacebook);
-            }
-            else
-            {
-                sendRequestDialogFacebook();
-            }
+            //analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
+            //if (Session.getActiveSession() == null)
+            //{
+            //    detachTrackbackFacebook();
+            //    middleTrackbackFacebook = new MiddleLogInCallback(new TrackFacebookCallback());
+            //    facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
+            //            middleTrackbackFacebook);
+            //}
+            //else
+            //{
+            //    sendRequestDialogFacebook();
+            //}
         }
     }
 
-    private void sendRequestDialogFacebook()
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(((UserFriendsFacebookDTO) userFriendsDTO).fbId);
-
-        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
-        {
-            Bundle params = new Bundle();
-            String messageToFacebookFriends = getContext().getString(
-                    R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
-            if (messageToFacebookFriends.length() > 60)
-            {
-                messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-            }
-
-            params.putString("message", messageToFacebookFriends);
-            params.putString("to", stringBuilder.toString());
-
-            WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                    currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
-                    params))
-                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
-                    {
-                        @Override
-                        public void onComplete(Bundle values, FacebookException error)
-                        {
-                            if (error != null)
-                            {
-                                if (error instanceof FacebookOperationCanceledException)
-                                {
-                                    THToast.show(R.string.invite_friend_request_canceled);
-                                }
-                            }
-                            else
-                            {
-                                final String requestId = values.getString("request");
-                                if (requestId != null)
-                                {
-                                    THToast.show(R.string.invite_friend_request_sent);
-                                }
-                                else
-                                {
-                                    THToast.show(R.string.invite_friend_request_canceled);
-                                }
-                            }
-                        }
-                    })
-                    .build();
-            requestsDialog.show();
-        }
-    }
+    //private void sendRequestDialogFacebook()
+    //{
+    //    StringBuilder stringBuilder = new StringBuilder();
+    //    stringBuilder.append(((UserFriendsFacebookDTO) userFriendsDTO).fbId);
+    //
+    //    UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
+    //    if (userProfileDTO != null)
+    //    {
+    //        Bundle params = new Bundle();
+    //        String messageToFacebookFriends = getContext().getString(
+    //                R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
+    //        if (messageToFacebookFriends.length() > 60)
+    //        {
+    //            messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+    //        }
+    //
+    //        params.putString("message", messageToFacebookFriends);
+    //        params.putString("to", stringBuilder.toString());
+    //
+    //        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
+    //                currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
+    //                params))
+    //                .setOnCompleteListener(new WebDialog.OnCompleteListener()
+    //                {
+    //                    @Override
+    //                    public void onComplete(Bundle values, FacebookException error)
+    //                    {
+    //                        if (error != null)
+    //                        {
+    //                            if (error instanceof FacebookOperationCanceledException)
+    //                            {
+    //                                THToast.show(R.string.invite_friend_request_canceled);
+    //                            }
+    //                        }
+    //                        else
+    //                        {
+    //                            final String requestId = values.getString("request");
+    //                            if (requestId != null)
+    //                            {
+    //                                THToast.show(R.string.invite_friend_request_sent);
+    //                            }
+    //                            else
+    //                            {
+    //                                THToast.show(R.string.invite_friend_request_canceled);
+    //                            }
+    //                        }
+    //                    }
+    //                })
+    //                .build();
+    //        requestsDialog.show();
+    //    }
+    //}
 
     private void detachMiddleCallbackInvite()
     {

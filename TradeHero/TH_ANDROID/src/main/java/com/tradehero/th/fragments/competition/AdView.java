@@ -10,7 +10,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.analytics.AnalyticsEventForm;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;

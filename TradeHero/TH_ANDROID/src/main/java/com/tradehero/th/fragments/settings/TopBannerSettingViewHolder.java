@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import javax.inject.Inject;

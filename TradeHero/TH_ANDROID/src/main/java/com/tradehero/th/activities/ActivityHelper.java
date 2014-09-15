@@ -3,7 +3,10 @@ package com.tradehero.th.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import com.tradehero.th.R;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import com.tradehero.th2.R;
+import com.tradehero.th.fragments.base.DashboardFragment;
 
 public class ActivityHelper
 {
@@ -22,14 +25,21 @@ public class ActivityHelper
         ((Activity) activity).finish();
     }
 
-    public static void launchDashboard(Activity activity)
+    public static void launchDashboard(Activity activity,Bundle args)
     {
-        presentFromActivity(activity, DashboardActivity.class, /* Intent.FLAG_ACTIVITY_NO_HISTORY*/ Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        presentFromActivity(activity, DashboardActivity.class, /* Intent.FLAG_ACTIVITY_NO_HISTORY*/ Intent.FLAG_ACTIVITY_CLEAR_TOP,args);
     }
 
-    public static void presentFromActivity(Activity fromActivity, Class toActivityClass, int flags)
+
+    public static void launchMainActivity(Activity activity)
+    {
+        presentFromActivity(activity, MainActivity.class, /* Intent.FLAG_ACTIVITY_NO_HISTORY*/ Intent.FLAG_ACTIVITY_CLEAR_TOP,new Bundle());
+    }
+
+    public static void presentFromActivity(Activity fromActivity, Class toActivityClass, int flags,Bundle args)
     {
         Intent localIntent = new Intent(fromActivity.getApplicationContext(), toActivityClass);
+        localIntent.putExtras(args);
         localIntent.addFlags(flags);
         fromActivity.startActivity(localIntent);
         fromActivity.overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);

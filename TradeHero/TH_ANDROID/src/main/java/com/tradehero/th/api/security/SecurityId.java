@@ -17,7 +17,9 @@ public class SecurityId implements Comparable, DTOKey, DTO
     String securitySymbol;
 
     //<editor-fold desc="Constructors">
-    public SecurityId() {}
+    public SecurityId()
+    {
+    }
 
     public SecurityId(final String exchange, final String securitySymbol)
     {
@@ -44,7 +46,6 @@ public class SecurityId implements Comparable, DTOKey, DTO
 
     /**
      * Parse security raw info, follow this form: id_exchangeName_securitySymbol into securityId
-     * @param securityRawInfo
      */
     @RouteProperty("securityRawInfo")
     public void setSecurityRawInfo(String securityRawInfo)
@@ -54,8 +55,8 @@ public class SecurityId implements Comparable, DTOKey, DTO
             String[] parts = securityRawInfo.split("_");
             if (parts.length >= 2)
             {
-                securitySymbol = parts[parts.length-1].trim();
-                exchange = parts[parts.length-2].trim();
+                securitySymbol = parts[parts.length - 1].trim();
+                exchange = parts[parts.length - 2].trim();
             }
         }
     }
@@ -150,6 +151,11 @@ public class SecurityId implements Comparable, DTOKey, DTO
         Bundle args = new Bundle();
         putParameters(args);
         return args;
+    }
+
+    public String getDisplayName()
+    {
+        return exchange + ":" + securitySymbol;
     }
 
     @Override public String toString()

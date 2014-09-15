@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTONameComparator;

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+  <TextView
+      android:id="@+id/tvSecurityDetailPrice"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      android:textColor="@color/number_red"
+      android:gravity="center_vertical"
+      android:textSize="25sp"
+      android:text="15.4"/>
+
+  <LinearLayout
+      android:layout_marginLeft="3dp"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      android:orientation="vertical"
+      android:gravity="center_vertical">
+    <TextView
+        android:id="@+id/tvSecurityDetailRate"
+        style="@style/security_data_info"
+        android:textSize="15sp"
+        android:text="+2.06%"/>
+
+    <TextView
+        android:id="@+id/tvSecurityDetailNum"
+        style="@style/security_data_info"
+        android:textSize="15sp"
+        android:text="+2.06"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+
+    <RelativeLayout android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical|center_horizontal"
+        >
+      <TextView
+          android:id="@+id/tvInfo0Title"
+          style="@style/security_data_info"
+          android:textSize="@dimen/sucurity_detail_info"
+          android:textColor="@color/text_gray_normal"
+          android:text="最高："/>
+
+      <TextView
+          android:layout_below="@id/tvInfo0Title"
+          android:id="@+id/tvInfo1Title"
+          style="@style/security_data_info"
+          android:layout_marginTop="8dp"
+          android:textColor="@color/text_gray_normal"
+          android:textSize="@dimen/sucurity_detail_info"
+          android:text="最低："/>
+
+      <TextView
+          android:id="@+id/tvInfo0Value"
+          style="@style/security_data_info"
+          android:layout_toRightOf="@id/tvInfo0Title"
+          android:textSize="@dimen/sucurity_detail_info"
+          android:textColor="@color/black"
+          android:text="$15.74"/>
+
+      <TextView
+          android:id="@+id/tvInfo1Value"
+          style="@style/security_data_info"
+          android:layout_toRightOf="@id/tvInfo1Title"
+          android:layout_marginTop="8dp"
+          android:layout_below="@id/tvInfo0Title"
+          android:textSize="@dimen/sucurity_detail_info"
+          android:textColor="@color/black"
+          android:text="$15.74"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+      <TextView
+          android:id="@+id/tvInfo2Title"
+          style="@style/security_data_info"
+          android:textSize="@dimen/sucurity_detail_info"
+          android:textColor="@color/text_gray_normal"
+          android:singleLine="true"
+          android:text="成交量："/>
+      <TextView
+          android:layout_marginTop="8dp"
+          android:layout_below="@id/tvInfo2Title"
+          android:id="@+id/tvInfo3Title"
+          style="@style/security_data_info"
+          android:textSize="@dimen/sucurity_detail_info"
+          android:textColor="@color/text_gray_normal"
+          android:singleLine="true"
+          android:text="平均量："/>
+
+      <TextView
+          android:id="@+id/tvInfo2Value"
+          style="@style/security_data_info"
+          android:layout_toRightOf="@id/tvInfo2Title"
+          android:textSize="@dimen/sucurity_detail_info"
+          android:textColor="@color/black"
+          android:singleLine="true"
+          android:text="29.04万"/>
+
+      <TextView
+          android:id="@+id/tvInfo3Value"
+          style="@style/security_data_info"
+          android:layout_toRightOf="@id/tvInfo3Title"
+          android:layout_marginTop="8dp"
+          android:layout_below="@id/tvInfo2Title"
+          android:textSize="@dimen/sucurity_detail_info"
+          android:textColor="@color/black"
+          android:singleLine="true"
+          android:text="2.46万"/>
+    </RelativeLayout>
+  </LinearLayout>
+</LinearLayout>
+

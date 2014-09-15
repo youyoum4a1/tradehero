@@ -1,7 +1,7 @@
 package com.tradehero.th.models.user.auth;
 
 import android.content.Context;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,12 +33,12 @@ public class DisplayableCredentialsDTO
                     context.getString(R.string.email),
                     ((EmailCredentialsDTO) credentialsDTO).email);
         }
-        else if (credentialsDTO instanceof FacebookCredentialsDTO)
-        {
-            return context.getString(R.string.settings_misc_sign_out_summary,
-                context.getString(R.string.facebook),
-                ((FacebookCredentialsDTO) credentialsDTO).id);
-        }
+        //else if (credentialsDTO instanceof FacebookCredentialsDTO)
+        //{
+        //    return context.getString(R.string.settings_misc_sign_out_summary,
+        //        context.getString(R.string.facebook),
+        //        ((FacebookCredentialsDTO) credentialsDTO).id);
+        //}
         else if (credentialsDTO instanceof LinkedinCredentialsDTO)
         {
             return context.getString(R.string.settings_misc_sign_out_summary,

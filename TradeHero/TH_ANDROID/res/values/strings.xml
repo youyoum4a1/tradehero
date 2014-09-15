@@ -28,7 +28,7 @@
   <string name="please_update_token_title">Social authentication expired</string>
   <string name="please_update_token_description">Please reauthenticate with your preferred social network</string>
 
-  <string name="press_back_again_to_exit">Press back again to exit</string>
+
   <string name="discussion">Discussion</string>
   <string name="more_character">…</string>
   <string name="buy_sell">Buy/Sell</string>
@@ -238,4 +238,40 @@
   <string name="trade_comment">Trade Comment</string>
 
   <string name="mark_as_all_read">Mark as all Read</string>
+
+  <string name="tab_main_trade">交易</string>
+  <string name="tab_main_stock_god">股神</string>
+  <string name="tab_main_descovery">发现</string>
+  <string name="tab_main_competition">竞赛</string>
+  <string name="tab_main_me">我的</string>
+
+  <string name="stockgod_leaderboard_all">总盈利榜</string>
+  <string name="stockgod_leaderboard_season">季度榜</string>
+  <string name="stockgod_leaderboard_6month">半年榜</string>
+  <string name="stockgod_leaderboard_exchange">根据交易所</string>
+  <string name="stockgod_leaderboard_industry">根据行业类别</string>
+
+  <string name="press_back_again_to_exit">再按一次返回退出应用</string>
+  <string name="settings">设置</string>
+  <string name="error_fetch_exchange_list">获取交易所列表错误</string>
+
+  <string name="my_dynamic">我的动态</string>
+  <string name="my_message_center">消息中心</string>
+  <string name="my_invite_friends">邀请好友</string>
+  <string name="my_setting">设置</string>
+
+  <string name="security_position">持仓（%d）</string>
+  <string name="watch_position">自选股（%d）</string>
+  <string name="people_watched">%d人关注</string>
+  <string name="people_holded">%d人持有</string>
+  <string name="security_market_cap_usd">总市值%s</string>
+
+
+  <string name="user_tatal_roi_day_30">收益率：</string>
+  <string name="user_tatal_fans">粉丝：</string>
+  <string name="user_tatal_wealth">总资产：</string>
+
+  <string name="chart_loading_image_">正在载入...</string>
+
+  <string name="fetch_error">获取数据失败</string>
 </resources>

@@ -5,6 +5,17 @@ import org.jetbrains.annotations.Nullable;
 
 public class TrendingAllSecurityListType extends TrendingSecurityListType
 {
+    public static final int ALL_SECURITY_LIST_TYPE_WATCH = 0;
+    public static final int ALL_SECURITY_LIST_TYPE_HOLD = 1;
+    public static final int ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT = 2;
+    public static final int ALL_SECURITY_LIST_TYPE_COMPETITION = 3;//比赛专属股票列表，根据competitionId获取
+    public static final int ALL_SECURITY_LIST_TYPE_SEARCH = 4;//主动搜索出来的股票列表
+
+
+    public int type = ALL_SECURITY_LIST_TYPE_WATCH;
+    public int competitionId = 0;
+    public String q = "";
+
     //<editor-fold desc="Constructors">
     public TrendingAllSecurityListType(@NotNull TrendingSecurityListType other)
     {
@@ -14,6 +25,27 @@ public class TrendingAllSecurityListType extends TrendingSecurityListType
     public TrendingAllSecurityListType(@Nullable String exchange, @Nullable Integer page, @Nullable Integer perPage)
     {
         super(exchange, page, perPage);
+    }
+
+    public TrendingAllSecurityListType(@Nullable int securityType,@Nullable String exchange, @Nullable Integer page, @Nullable Integer perPage)
+    {
+        super(exchange, page, perPage);
+        type = securityType;
+    }
+
+    public TrendingAllSecurityListType(@Nullable int securityType,@Nullable int competitionId, @Nullable Integer page, @Nullable Integer perPage)
+    {
+        super(page, perPage);
+        type = securityType;
+        this.competitionId = competitionId;
+    }
+
+    public TrendingAllSecurityListType(@Nullable int securityType,@Nullable int competitionId,@NotNull String searchWord, @Nullable Integer page, @Nullable Integer perPage)
+    {
+        super(page, perPage);
+        type = securityType;
+        this.q = searchWord;
+        this.competitionId = competitionId;
     }
 
     public TrendingAllSecurityListType(@Nullable String exchange, @Nullable Integer page)
@@ -72,6 +104,8 @@ public class TrendingAllSecurityListType extends TrendingSecurityListType
     {
         return "TrendingAllSecurityListType{" +
                 "exchange='" + exchange + "'" +
+                "competitionId='" + competitionId + "'" +
+                "q='" + q + "'" +
                 ", page=" + getPage() +
                 ", perPage=" + perPage +
                 '}';

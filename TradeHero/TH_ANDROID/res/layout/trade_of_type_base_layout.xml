@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contest_center_content_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <LinearLayout
+      android:id="@+id/llSpinner"
+      android:layout_marginLeft="20dp"
+      android:layout_marginRight="20dp"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content">
+    <Spinner
+        android:id="@+id/spinnerExchange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:dropDownSelector="@drawable/basic_transparent_selector"
+        style="@style/TH.Spinner"
+        />
+  </LinearLayout>
+
+
+  <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+      android:id="@+id/listSecurity"
+      android:scrollingCache="false"
+      android:fadingEdge="none"
+      android:dividerHeight="1px"
+      android:divider="@color/separate_line_color"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+  </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+
+</LinearLayout>
+

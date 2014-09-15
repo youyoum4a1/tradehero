@@ -32,7 +32,8 @@
   <color name="follow_button_background_pressed_not_active">#ffc3f1fb</color>
   <color name="connect_accounts">#1376FB</color>
 
-  <color name="tradehero_blue">#1376FB</color>
+  <!--<color name="tradehero_blue">#1376FB</color>-->
+  <color name="tradehero_blue">#1789d5</color>
 
   <color name="actionbar_menu_text_color">@android:color/darker_gray</color>
   <color name="leaderboard_user_item_text_color">#4C566B</color>
@@ -86,4 +87,6 @@
     <item>#3FFF12</item>
     <item>#16FF11</item>
   </string-array>
+
+  <color name="tab_head_bg">#1789d5</color>
 </resources>

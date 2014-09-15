@@ -20,7 +20,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
+import com.tradehero.th2.R;
 import com.tradehero.th.api.discussion.DirtyNewFirstMessageHeaderDTOComparator;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTOList;
