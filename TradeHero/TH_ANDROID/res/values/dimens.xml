@@ -144,7 +144,12 @@
   <dimen name="text_xxlarge">25sp</dimen>
   <dimen name="text_xxxlarge">30sp</dimen>
 
-  <!--common margin should not change-->
+  <!--please use this instead of common margin-->
+  <dimen name="margin_xsmall">5dp</dimen>
+  <dimen name="margin_small">10dp</dimen>
+  <dimen name="margin_medium">20dp</dimen>
+
+  <!--TODO will be delete, common margin should not change-->
   <dimen name="common_margin_1">1dp</dimen>
   <dimen name="common_margin_2">2dp</dimen>
   <dimen name="common_margin_4">4dp</dimen>
