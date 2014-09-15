@@ -2,12 +2,107 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-  <android.support.v4.view.ViewPager
-      android:id="@+id/viewpager"
+  <RelativeLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
-  </android.support.v4.view.ViewPager>
+      android:layout_height="0dp"
+      android:layout_weight="7"
+      android:orientation="vertical">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v4.view.ViewPager>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/guide_screen_cloud"/>
+  </RelativeLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="3"
+      android:layout_alignParentBottom="true"
+      android:background="@color/white"
+      android:orientation="horizontal">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:orientation="vertical">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/guide_screen_indicator0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/guide_screen_indicator_off"/>
+        <ImageView
+            android:id="@+id/guide_screen_indicator1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:background="@drawable/guide_screen_indicator_off"/>
+        <ImageView
+            android:id="@+id/guide_screen_indicator2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:background="@drawable/guide_screen_indicator_off"/>
+        <ImageView
+            android:id="@+id/guide_screen_indicator3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_medium"
+            android:background="@drawable/guide_screen_indicator_off"/>
+      </LinearLayout>
+      <Button
+          android:id="@+id/guide_screen_fast_login"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_medium"
+          android:padding="@dimen/margin_small"
+          android:text="@string/guide_screen_try"
+          android:textColor="@color/white"
+          android:textSize="@dimen/text_xlarge"
+          android:gravity="center"
+          android:background="@drawable/basic_green_selector_round_corner"/>
+
+      <Button
+          android:id="@+id/guide_screen_login"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_small"
+          android:layout_marginBottom="@dimen/margin_small"
+          android:padding="@dimen/margin_small"
+          android:text="@string/guide_screen_login"
+          android:textColor="@color/white"
+          android:textSize="@dimen/text_xlarge"
+          android:gravity="center"
+          android:background="@drawable/basic_blue_selector_round_corner"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+  </LinearLayout>
 
 </LinearLayout>

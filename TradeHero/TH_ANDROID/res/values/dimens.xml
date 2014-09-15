@@ -148,6 +148,7 @@
   <dimen name="margin_xsmall">5dp</dimen>
   <dimen name="margin_small">10dp</dimen>
   <dimen name="margin_medium">20dp</dimen>
+  <dimen name="margin_large">30dp</dimen>
 
   <!--TODO will be delete, common margin should not change-->
   <dimen name="common_margin_1">1dp</dimen>

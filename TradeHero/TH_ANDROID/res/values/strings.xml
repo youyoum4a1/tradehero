@@ -274,4 +274,6 @@
   <string name="chart_loading_image_">正在载入...</string>
 
   <string name="fetch_error">获取数据失败</string>
+  <string name="guide_screen_login">Login</string>
+  <string name="guide_screen_try">Fast Login</string>
 </resources>

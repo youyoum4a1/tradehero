@@ -14,15 +14,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import com.tradehero.th2.BuildConfig;
-import com.tradehero.th2.R;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th2.BuildConfig;
+import com.tradehero.th2.R;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -33,8 +36,13 @@ public class GuideActivity extends Activity
         ViewPager.OnPageChangeListener,
         View.OnClickListener
 {
-    private static final int CLOSE_IMAGE_ID = 0x88888;
     @Inject Analytics analytics;
+    @InjectView(R.id.guide_screen_indicator0) ImageView mIndicator0;
+    @InjectView(R.id.guide_screen_indicator1) ImageView mIndicator1;
+    @InjectView(R.id.guide_screen_indicator2) ImageView mIndicator2;
+    @InjectView(R.id.guide_screen_indicator3) ImageView mIndicator3;
+    @InjectView(R.id.guide_screen_fast_login) Button mFastLogin;
+    @InjectView(R.id.guide_screen_login) Button mLogin;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -42,13 +50,14 @@ public class GuideActivity extends Activity
         DaggerUtils.inject(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_guide);
+        ButterKnife.inject(this);
         ViewPager viewpager = (ViewPager) findViewById(R.id.viewpager);
         List<Integer> list = new ArrayList<>();
-        list.add(R.drawable.guide1);
-        list.add(R.drawable.guide2);
-        list.add(R.drawable.guide3);
-        //list.add(R.drawable.guide4);
-        //list.add(R.drawable.guide5);
+        list.add(R.drawable.guide_screen1);
+        list.add(R.drawable.guide_screen2);
+        list.add(R.drawable.guide_screen3);
+        list.add(R.drawable.guide_screen4);
+        mIndicator0.setBackgroundResource(R.drawable.guide_screen_indicator_on);
 
         viewpager.setAdapter(new ListViewPagerAdapter(list));
         viewpager.setOnPageChangeListener(this);
@@ -74,6 +83,12 @@ public class GuideActivity extends Activity
     {
         analytics.closeSession();
         super.onPause();
+    }
+
+    @Override protected void onDestroy()
+    {
+        super.onDestroy();
+        ButterKnife.reset(this);
     }
 
     private void createShortcut()
@@ -177,10 +192,18 @@ public class GuideActivity extends Activity
         getApplicationContext().sendBroadcast(addIntent);
     }
 
+    @OnClick({R.id.guide_screen_fast_login, R.id.guide_screen_login})
     @Override public void onClick(View v)
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.SplashScreenCancel));
-        ActivityHelper.launchAuthentication(this);
+        switch (v.getId())
+        {
+            case R.id.guide_screen_fast_login:
+                break;
+            case R.id.guide_screen_login:
+                ActivityHelper.launchAuthentication(this);
+                break;
+        }
     }
 
     class ListViewPagerAdapter extends PagerAdapter
@@ -211,27 +234,7 @@ public class GuideActivity extends Activity
         {
             View view;
             ImageView imageView = (ImageView) LayoutInflater.from(GuideActivity.this).inflate(R.layout.guide_layout, null);
-            if (position == getCount() - 1) {
-                RelativeLayout rl = new RelativeLayout(GuideActivity.this);
-                rl.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                rl.addView(imageView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-
-                ImageView closeIv = new ImageView(GuideActivity.this);
-                closeIv.setId(CLOSE_IMAGE_ID);
-                closeIv.setImageResource(R.drawable.cross_red);
-                closeIv.setOnClickListener(GuideActivity.this);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT | RelativeLayout.ALIGN_PARENT_TOP);
-                lp.rightMargin = (int)GuideActivity.this.getResources().getDimension(R.dimen.guide_close_margin);
-                lp.topMargin = lp.rightMargin;
-                rl.addView(closeIv, lp);
-
-                view = rl;
-            }
-            else
-            {
-                view = imageView;
-            }
+            view = imageView;
             try
             {
                 imageView.setBackgroundResource(drawableIdList.get(position));
@@ -274,6 +277,27 @@ public class GuideActivity extends Activity
 
     @Override public void onPageSelected(int i)
     {
+        switch (i)
+        {
+            case 0:
+                mIndicator1.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                mIndicator0.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                break;
+            case 1:
+                mIndicator0.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                mIndicator2.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                mIndicator1.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                break;
+            case 2:
+                mIndicator1.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                mIndicator3.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                mIndicator2.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                break;
+            case 3:
+                mIndicator2.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                mIndicator3.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                break;
+        }
     }
 
     @Override public void onPageScrollStateChanged(int i)

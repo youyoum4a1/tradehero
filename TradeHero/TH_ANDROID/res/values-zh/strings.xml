@@ -108,4 +108,6 @@
   <string name="referral_dollars_claimed">已成功提交邀请码</string>
 
   <string name="mark_as_all_read">全部已读</string>
+  <string name="guide_screen_login">登陆</string>
+  <string name="guide_screen_try">马上体验</string>
 </resources>
