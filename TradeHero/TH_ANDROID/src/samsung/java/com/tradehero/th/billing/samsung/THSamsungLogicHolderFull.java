@@ -3,6 +3,7 @@ package com.tradehero.th.billing.samsung;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.os.Looper;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
@@ -18,7 +19,6 @@ import com.tradehero.th.billing.samsung.persistence.THSamsungGroupItemCache;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
 import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
-import com.tradehero.th.utils.dagger.ForUIThread;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -52,8 +52,7 @@ public class THSamsungLogicHolderFull
             @NotNull THSamsungPurchaseFetcherHolder thSamsungPurchaseFetcherHolder,
             @NotNull THSamsungPurchaserHolder thSamsungPurchaserHolder,
             @NotNull THSamsungPurchaseReporterHolder thSamsungPurchaseReporterHolder,
-            @NotNull THSamsungGroupItemCache groupItemCache,
-            @NotNull @ForUIThread Handler uiHandler)
+            @NotNull THSamsungGroupItemCache groupItemCache)
     {
         super(
                 samsungSKUListCache,
@@ -65,7 +64,7 @@ public class THSamsungLogicHolderFull
                 thSamsungPurchaserHolder,
                 thSamsungPurchaseReporterHolder);
         this.groupItemCache = groupItemCache;
-        this.uiHandler = uiHandler;
+        this.uiHandler = new Handler(Looper.getMainLooper());
     }
     //</editor-fold>
 
