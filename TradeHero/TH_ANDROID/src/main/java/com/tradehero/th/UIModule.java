@@ -1,6 +1,7 @@
 package com.tradehero.th;
 
 import com.tradehero.th.activities.ActivityModule;
+import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.billing.BillingUIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardResideMenu;
