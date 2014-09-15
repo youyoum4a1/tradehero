@@ -19,6 +19,7 @@ public class AmazonPurchaseInProcessDTO extends AmazonPurchaseReportDTO
     //<editor-fold desc="Constructors">
     protected AmazonPurchaseInProcessDTO()
     {
+        // Needed for deserialisation
         super();
     }
 
