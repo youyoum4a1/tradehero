@@ -5,11 +5,12 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.SecurityUtils;
+import java.io.Serializable;
 import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PortfolioCompactDTO implements DTO
+public class PortfolioCompactDTO implements DTO ,Serializable
 {
     public static final String DEFAULT_TITLE = "Default";
 

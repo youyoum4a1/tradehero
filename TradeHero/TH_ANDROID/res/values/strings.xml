@@ -261,6 +261,7 @@
   <string name="my_setting">设置</string>
 
   <string name="security_position">持仓（%d）</string>
+  <string name="security_position_closed">平仓（%d）</string>
   <string name="watch_position">自选股（%d）</string>
   <string name="people_watched">%d人关注</string>
   <string name="people_holded">%d人持有</string>

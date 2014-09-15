@@ -31,7 +31,7 @@
         android:id="@+id/tvUserRank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1"
+        android:text=" - - "
         android:textColor="@color/text_gray_normal"
         android:textSize="24sp"/>
   </LinearLayout>
@@ -49,7 +49,7 @@
       android:id="@+id/tvUserName"
       android:layout_height="wrap_content"
       android:singleLine="true"
-      android:text="Durex"
+      android:text=""
       android:layout_toLeftOf="@+id/imgRightArrow"
       android:layout_toRightOf="@id/imgUserHead"
       android:layout_alignTop="@id/imgUserHead"
@@ -79,16 +79,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_gray_normal"
-        android:text="9.99%"
+        android:text=""
         android:textSize="14sp"/>
   </LinearLayout>
 
-  <View
-      android:layout_width="fill_parent"
-      android:layout_height="1px"
-      android:layout_alignParentBottom="true"
-      android:layout_toRightOf="@id/llRank"
-      android:background="@color/separate_line_color"/>
+
 
 
 

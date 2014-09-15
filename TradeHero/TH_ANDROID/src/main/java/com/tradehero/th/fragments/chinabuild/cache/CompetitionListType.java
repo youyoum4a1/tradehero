@@ -11,6 +11,7 @@ public class CompetitionListType extends AbstractStringDTOKey
     public int page = 1;
     public int PER_PAGE = 20;
 
+
     //<editor-fold desc="Constructors">
     public CompetitionListType()
     {

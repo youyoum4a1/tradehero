@@ -33,6 +33,8 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.cache.PositionCompactNewCache;
+import com.tradehero.th.fragments.chinabuild.cache.PositionDTOKey;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.trade.AbstractTransactionDialogFragment;
 import com.tradehero.th.fragments.trade.AlertDialogUtilBuySell;
@@ -70,7 +72,9 @@ public class BuySaleSecurityFragment extends DashboardFragment
     protected static final String KEY_PORTFOLIO_ID = BuySaleSecurityFragment.class.getName() + ".portfolio_id";
     protected static final String KEY_QUOTE_DTO = BuySaleSecurityFragment.class.getName() + ".quote_dto";
     protected static final String KEY_SECURITY_NAME = BuySaleSecurityFragment.class.getName() + ".securit_name";
+    protected static final String KEY_COMPETITION_ID = BuySaleSecurityFragment.class.getName() + ".competition_id";
 
+    protected int competitionID = 0;
     protected SecurityCompactDTO securityCompactDTO;
     protected SecurityId securityId;
     protected SecurityPositionDetailDTO securityPositionDetailDTO;
@@ -307,12 +311,25 @@ public class BuySaleSecurityFragment extends DashboardFragment
         securityCompactDTO = securityCompactCache.get(getSecurityId());
         portfolioCompactDTO = portfolioCompactCache.get(getPortfolioId());
         quoteDTO = getBundledQuoteDTO();
+        competitionID = getCompetitionID();
 
-        SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
-        if (detailDTO != null)
+
+        if(competitionID == 0)
         {
-            positionDTOCompactList = detailDTO.positions;
+            SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
+
+            if (detailDTO != null)
+            {
+                positionDTOCompactList = detailDTO.positions;
+            }
         }
+        else
+        {
+            positionDTOCompactList = SecurityDetailFragment.positionDTOCompactList;
+        }
+
+
+
         clampQuantity(true);
         linkWith(userProfileCache.get(currentUserId.toUserBaseKey()));
 
@@ -559,6 +576,15 @@ public class BuySaleSecurityFragment extends DashboardFragment
             this.securityId = new SecurityId(getArguments().getBundle(KEY_SECURITY_ID));
         }
         return securityId;
+    }
+
+    protected int getCompetitionID()
+    {
+        if (this.competitionID == 0)
+        {
+            this.competitionID = getArguments().getInt(KEY_COMPETITION_ID,0);
+        }
+        return competitionID;
     }
 
     protected PortfolioId getPortfolioId()

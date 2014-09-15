@@ -82,6 +82,23 @@ public class CompetitionListAdapter extends BaseAdapter
         doRefreshData();
     }
 
+    public void addUserCompetitionDtoList(ArrayList<UserCompetitionDTO> list)
+    {
+        ArrayList<CompetitionDataItem> listItem = new ArrayList<CompetitionDataItem>();
+        if (list != null)
+        {
+            int sizeList = list.size();
+            for (int i = 0; i < sizeList; i++)
+            {
+                listItem.add(new CompetitionDataItem(list.get(i)));
+            }
+        }
+        UserCompetitionDtoList.addAll(listItem);
+        doRefreshData();
+    }
+
+
+
     public void setMyCompetitionDtoList(ArrayList<UserCompetitionDTO> list)
     {
         ArrayList<CompetitionDataItem> listItem = new ArrayList<CompetitionDataItem>();
@@ -94,6 +111,21 @@ public class CompetitionListAdapter extends BaseAdapter
             }
         }
         MyCompetitionDtoList = listItem;
+        doRefreshData();
+    }
+
+    public void addMyCompetitionDtoList(ArrayList<UserCompetitionDTO> list)
+    {
+        ArrayList<CompetitionDataItem> listItem = new ArrayList<CompetitionDataItem>();
+        if (list != null)
+        {
+            int sizeList = list.size();
+            for (int i = 0; i < sizeList; i++)
+            {
+                listItem.add(new CompetitionDataItem(list.get(i)));
+            }
+        }
+        MyCompetitionDtoList.addAll(listItem);
         doRefreshData();
     }
 

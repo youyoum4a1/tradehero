@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -14,6 +16,7 @@ import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
@@ -24,20 +27,28 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th2.R;
 import dagger.Lazy;
+import java.awt.Image;
 import javax.inject.Inject;
 import javax.sound.sampled.Port;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +64,8 @@ public class CompetitionDetailFragment extends DashboardFragment
 {
     public static final String BUNDLE_COMPETITION_DTO = "bundle_competition_dto";
 
+
+    @Inject Lazy<Picasso> picasso;
     @Inject CompetitionDTOUtil competitionDTOUtil;
     @Inject CompetitionLeaderboardCache competitionLeaderboardCache;
     protected DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardCacheListener;
@@ -60,11 +73,19 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Inject Lazy<CompetitionCache> competitionCacheLazy;
     private Callback<UserCompetitionDTO> callbackEnrollUGC;
 
+    @Inject protected PortfolioCompactNewCache portfolioCompactNewCache;
+    private DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> portfolioCompactNewFetchListener;
+
     public UserCompetitionDTO userCompetitionDTO;
     private ProgressDialog mTransactionDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
 
+    private PortfolioCompactDTO portfolioCompactDTO;
+
     protected CompetitionLeaderboardDTO competitionLeaderboardDTO;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     @InjectView(R.id.listRanks) SecurityListView listRanks;//比赛排名
     private LeaderboardListAdapter adapter;
@@ -78,6 +99,17 @@ public class CompetitionDetailFragment extends DashboardFragment
     @InjectView(R.id.tvCompetitionIntro) TextView tvCompetitionIntro;//比赛介绍
     @InjectView(R.id.tvGotoCompetition) TextView tvGotoCompetition;//去比赛
 
+
+
+    @InjectView(R.id.includeMyPosition) RelativeLayout includeMyPosition;//我的比赛数据行
+
+    @InjectView(R.id.tvUserExtraValue) TextView tvUserExtraValue;//我的收益率
+    @InjectView(R.id.tvUserName) TextView tvUserName;//我的名字
+    @InjectView(R.id.imgUserHead) ImageView imgUserHead;//我的头像
+
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -85,6 +117,8 @@ public class CompetitionDetailFragment extends DashboardFragment
         getBundleCompetitionDTO();
         callbackEnrollUGC = new EnrollUGCCallback();
         competitionLeaderboardCacheListener = createCompetitionLeaderboardListener();
+        portfolioCompactNewFetchListener = createPortfolioCompactNewFetchListener();
+        userProfileCacheListener = createUserProfileFetchListener();
     }
 
     public void getBundleCompetitionDTO()
@@ -121,7 +155,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void initRankList()
     {
-        listRanks.setMode(PullToRefreshBase.Mode.BOTH);
+        listRanks.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         listRanks.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
@@ -150,9 +184,23 @@ public class CompetitionDetailFragment extends DashboardFragment
     private void enterPortfolio(LeaderboardUserDTO userDTO)
     {
         Bundle bundle = new Bundle();
-        bundle.putLong(PortfolioFragment.BUNDLE_LEADERBOARD_USER_MARK_ID,userDTO.lbmuId);
+        bundle.putLong(PortfolioFragment.BUNDLE_LEADERBOARD_USER_MARK_ID, userDTO.lbmuId);
+        bundle.putInt(PortfolioFragment.BUNLDE_COMPETITION_ID,userCompetitionDTO.id);
         pushFragment(PortfolioFragment.class, bundle);
+    }
 
+    /*
+    进入持仓页面
+     */
+    private void enterPortfolio()
+    {
+        if(this.portfolioCompactDTO!=null)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(PortfolioFragment.BUNLDE_PORTFOLIO_DTO, this.portfolioCompactDTO);
+            bundle.putInt(PortfolioFragment.BUNLDE_COMPETITION_ID,userCompetitionDTO.id);
+            pushFragment(PortfolioFragment.class, bundle);
+        }
     }
 
     private void initCompetition()
@@ -177,7 +225,10 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        //ButterKnife.reset(this);
+
+        detachCompetitionLeaderboardCache();
+
         super.onDestroyView();
     }
 
@@ -190,6 +241,20 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
+        fetchPortfolioCompactNew();
+        fetchUserProfile();
+    }
+
+    private void detachUserProfileCache()
+    {
+        userProfileCache.get().unregister(userProfileCacheListener);
+    }
+
+    protected void fetchUserProfile()
+    {
+        detachUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @OnClick(R.id.tvGotoCompetition)
@@ -204,6 +269,13 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             toPlayCompetition();//去比赛
         }
+    }
+
+    @OnClick(R.id.includeMyPosition)
+    public void onClickMyPosition()
+    {
+        Timber.d("进入我的持仓页面");
+        enterPortfolio();
     }
 
     public void toPlayCompetition()
@@ -234,6 +306,7 @@ public class CompetitionDetailFragment extends DashboardFragment
                 //popCurrentFragment();
                 CompetitionDetailFragment.this.userCompetitionDTO = userCompetitionDTO;
                 initCompetition();
+                fetchPortfolioCompactNew();
             }
         }
 
@@ -325,5 +398,90 @@ public class CompetitionDetailFragment extends DashboardFragment
 
         }
         adapter.notifyDataSetChanged();
+    }
+
+    private void detachPortfolioCompactNewCache()
+    {
+        portfolioCompactNewCache.unregister(portfolioCompactNewFetchListener);
+    }
+
+    private void fetchPortfolioCompactNew()
+    {
+        if(userCompetitionDTO.isEnrolled)//只有参加了才去拿portfolio
+        {
+            detachPortfolioCompactNewCache();
+            PortfolioId key = new PortfolioId(userCompetitionDTO.id);
+            portfolioCompactNewCache.register(key, portfolioCompactNewFetchListener);
+            portfolioCompactNewCache.getOrFetchAsync(key);
+        }
+    }
+
+    protected DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> createPortfolioCompactNewFetchListener()
+    {
+        return new BasePurchaseManagementPortfolioCompactNewFetchListener();
+    }
+
+    protected class BasePurchaseManagementPortfolioCompactNewFetchListener implements DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO>
+    {
+        protected BasePurchaseManagementPortfolioCompactNewFetchListener()
+        {
+        }
+
+        @Override public void onDTOReceived(@NotNull PortfolioId key, @NotNull PortfolioCompactDTO value)
+        {
+            linkWith(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull PortfolioId key, @NotNull Throwable error)
+        {
+            //THToast.show(R.string.error_fetch_portfolio_list_info);
+        }
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
+    {
+        return new UserProfileFetchListener();
+    }
+
+    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            linkWith(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+
+        }
+    }
+
+    private void linkWith(UserProfileDTO value)
+    {
+        if (value == null) return;
+        tvUserName.setText(value.displayName);
+
+        picasso.get()
+                .load(value.picture)
+                .placeholder(R.drawable.superman_facebook)
+                .error(R.drawable.superman_facebook)
+                .into(imgUserHead);
+
+    }
+    private void linkWith(PortfolioCompactDTO value)
+    {
+        if (value == null) return;
+        this.portfolioCompactDTO = value;
+        this.portfolioCompactDTO.userId = currentUserId.toUserBaseKey().getUserId();
+        if (value != null && value.roiSinceInception != null)
+        {
+            THSignedNumber roi = THSignedPercentage.builder(value.roiSinceInception * 100)
+                    .withSign()
+                    .signTypeArrow()
+                    .build();
+            tvUserExtraValue.setText(roi.toString());
+            tvUserExtraValue.setTextColor(getResources().getColor(roi.getColorResId()));
+        }
     }
 }

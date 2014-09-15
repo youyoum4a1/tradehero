@@ -200,8 +200,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @Override public void onResume()
     {
         super.onResume();
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        fetchUserProfile();
     }
 
     @OnClick(R.id.tvHeadRight0)
@@ -221,6 +220,14 @@ public class MainTabFragmentMe extends AbsBaseFragment
         tvHeadTitle.setText(R.string.tab_main_me);
         tvHeadRight.setText(R.string.settings);
     }
+
+    protected void fetchUserProfile()
+    {
+        detachPortfolioCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
 
     protected void fetchPortfolio()
     {

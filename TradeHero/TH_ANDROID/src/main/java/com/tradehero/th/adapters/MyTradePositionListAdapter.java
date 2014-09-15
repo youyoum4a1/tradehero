@@ -23,7 +23,8 @@ public class MyTradePositionListAdapter extends BaseAdapter
     private Context context;
     private LayoutInflater inflater;
     private ArrayList<PositionInterface> listData;
-    private ArrayList<SecurityPositionItem> securityPositionList;//持仓
+    private ArrayList<SecurityPositionItem> securityPositionList;//持仓（open）
+    private ArrayList<SecurityPositionItem> securityPositionListClosed;//平仓（Close）
     private ArrayList<WatchPositionItem> watchPositionList;//自选股
 
     public MyTradePositionListAdapter(Context context)
@@ -31,6 +32,12 @@ public class MyTradePositionListAdapter extends BaseAdapter
         DaggerUtils.inject(this);
         this.context = context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public void setSecurityPositionListClosed(ArrayList<SecurityPositionItem> list)
+    {
+        securityPositionListClosed = list;
+        doRefreshData();
     }
 
     public void setSecurityPositionList(ArrayList<SecurityPositionItem> list)
@@ -53,6 +60,11 @@ public class MyTradePositionListAdapter extends BaseAdapter
             listData.add(new PositionHeadItem(getHeadStrOfSecurityPosition()));
             listData.addAll(securityPositionList);
         }
+        if (getSecurityPositionClosedCount() > 0)
+        {
+            listData.add(new PositionHeadItem(getHeadStrOfSecurityClosedPosition()));
+            listData.addAll(securityPositionListClosed);
+        }
 
         if (getWatchPositionCount() > 0)
         {
@@ -67,9 +79,19 @@ public class MyTradePositionListAdapter extends BaseAdapter
         return context.getResources().getString(R.string.security_position, getSecurityPositionCount());
     }
 
+    public String getHeadStrOfSecurityClosedPosition()
+    {
+        return context.getResources().getString(R.string.security_position_closed, getSecurityPositionClosedCount());
+    }
+
     public String getHeadStrOfWatchPosition()
     {
         return context.getResources().getString(R.string.watch_position, getWatchPositionCount());
+    }
+
+    public int getSecurityPositionClosedCount()
+    {
+        return securityPositionListClosed == null ? 0 : securityPositionListClosed.size();
     }
 
     public int getSecurityPositionCount()

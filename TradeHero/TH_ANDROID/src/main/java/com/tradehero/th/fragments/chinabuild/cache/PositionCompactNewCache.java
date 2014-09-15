@@ -1,13 +1,8 @@
 package com.tradehero.th.fragments.chinabuild.cache;
 
 import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompact;
-import com.tradehero.th.network.service.CompetitionService;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
-import com.tradehero.th.network.service.PortfolioServiceWrapper;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;

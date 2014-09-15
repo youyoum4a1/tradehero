@@ -21,7 +21,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
-import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -83,7 +82,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".providerId";
     public final static String BUNDLE_KEY_COMPETITION_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".competitionID";
 
-    public final static long MILLISEC_QUOTE_REFRESH = 30000;
+    public final static long MILLISEC_QUOTE_REFRESH = 10000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
     protected SecurityId securityId;
@@ -117,7 +116,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected Integer mBuyQuantity;
     protected Integer mSellQuantity;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
-    protected PositionDTOCompactList positionDTOCompactList;
+    public static PositionDTOCompactList positionDTOCompactList;
     protected PortfolioCompactDTO portfolioCompactDTO;
     @Inject PortfolioCompactCache portfolioCompactCache;
 
@@ -393,17 +392,22 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             queryCompactCache(securityId);
             prepareFreshQuoteHolder();
 
-            SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
-            if (detailDTO != null)
+            if(competitionID == 0)
             {
-                linkWith(detailDTO, true);
+                SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
+                if (detailDTO != null)
+                {
+                    linkWith(detailDTO, true);
+                }
+                else
+                {
+                    requestPositionDetail();
+                }
             }
             else
             {
-                requestPositionDetail();
+                requestCompetitionPosition();
             }
-
-            requestCompetitionPosition();
         }
     }
 
@@ -580,7 +584,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             PositionDTOKey key = new PositionDTOKey(this.competitionID, this.securityId);
             positionCompactNewCache.get().register(key, positionNewCacheListener);
-            positionCompactNewCache.get().getOrFetchAsync(key);
+            positionCompactNewCache.get().getOrFetchAsync(key, true);
         }
     }
 
@@ -859,6 +863,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
         bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
         bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
+        bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
         pushFragment(BuySaleSecurityFragment.class, bundle);
     }
 
@@ -893,6 +898,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     protected void linkWith(PositionDTOCompact value)
     {
+
         if (value != null)
         {
             PositionDTOCompactList positionDTOCompacts = new PositionDTOCompactList();

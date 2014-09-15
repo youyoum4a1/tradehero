@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -19,10 +20,14 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
+import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
+import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -46,8 +51,12 @@ public class PortfolioFragment extends DashboardFragment
 
     public static final String BUNDLE_LEADERBOARD_USER_MARK_ID = "bundle_leaderboard_user_mark_id";
     public static final String BUNLDE_SHOW_PROFILE_USER_ID = "bundle_show_profile_user_id";
+    public static final String BUNLDE_PORTFOLIO_DTO = "bunlde_portfolio_dto";
+    public static final String BUNLDE_COMPETITION_ID = "bundle_competition_id";
     public long leaderboardUserMarkId = 0;//通过比赛排名进入比赛持仓
     public int portfolioUserKey = 0;//通过查看他人主账户进入持仓，需要知道UserID
+    public PortfolioCompactDTO portfolioCompactDTO;//直接查看portforlioCompactDTO
+    public int competitionId;
 
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
@@ -100,7 +109,38 @@ public class PortfolioFragment extends DashboardFragment
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.DISABLED);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
+            {
+                PositionInterface item = adapter.getItem((int) position);
+                dealSecurityItem(item);
+            }
+        });
+
         return view;
+    }
+
+    public void dealSecurityItem(PositionInterface item)
+    {
+        if (item instanceof SecurityPositionItem)
+        {
+            enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name);
+        }
+        else if (item instanceof WatchPositionItem)
+        {
+            enterSecurity(((WatchPositionItem) item).watchlistPosition.securityDTO.getSecurityId(),
+                    ((WatchPositionItem) item).watchlistPosition.securityDTO.name);
+        }
+    }
+
+    public void enterSecurity(SecurityId securityId, String securityName)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+        bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE,competitionId);
+        pushFragment(SecurityDetailFragment.class, bundle);
     }
 
     @Override public void onStop()
@@ -134,6 +174,8 @@ public class PortfolioFragment extends DashboardFragment
         {
             leaderboardUserMarkId = bundle.getLong(BUNDLE_LEADERBOARD_USER_MARK_ID, 0);
             portfolioUserKey = bundle.getInt(BUNLDE_SHOW_PROFILE_USER_ID, 0);
+            portfolioCompactDTO = (PortfolioCompactDTO) bundle.getSerializable(BUNLDE_PORTFOLIO_DTO);
+            competitionId = bundle.getInt(BUNLDE_COMPETITION_ID);
             if (leaderboardUserMarkId != 0)
             {
                 //THToast.show("leaderboardUserMarkId:  " + leaderboardUserMarkId);
@@ -144,7 +186,17 @@ public class PortfolioFragment extends DashboardFragment
                 showUserBaseKey = new UserBaseKey(portfolioUserKey);
                 getDefaultPortfolio();
             }
+            else if (portfolioCompactDTO != null)
+            {
+                getPositionsFromPortfolio(portfolioCompactDTO);
+            }
         }
+    }
+
+    private void getPositionsFromPortfolio(PortfolioCompactDTO portfolioCompactDTO)
+    {
+        getPositionsDTOKey = new OwnedPortfolioId(portfolioCompactDTO.userId, portfolioCompactDTO.id);
+        fetchSimplePage(true);
     }
 
     private void getDefaultPortfolio()
@@ -265,7 +317,7 @@ public class PortfolioFragment extends DashboardFragment
 
     private void initPositionSecurity(GetPositionsDTO value)
     {
-        //initPositionSecurityOpened(value);
+        initPositionSecurityOpened(value);
         initPositionSecurityClosed(value);
     }
 
@@ -308,7 +360,7 @@ public class PortfolioFragment extends DashboardFragment
             }
             if (adapter != null)
             {
-                adapter.setSecurityPositionList(list);
+                adapter.setSecurityPositionListClosed(list);
             }
         }
     }

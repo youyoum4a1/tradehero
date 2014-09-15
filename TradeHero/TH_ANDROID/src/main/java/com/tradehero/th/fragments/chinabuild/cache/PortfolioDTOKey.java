@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.chinabuild.cache;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import com.tradehero.common.persistence.AbstractStringDTOKey;
 
 public class PortfolioDTOKey extends AbstractIntegerDTOKey
 {

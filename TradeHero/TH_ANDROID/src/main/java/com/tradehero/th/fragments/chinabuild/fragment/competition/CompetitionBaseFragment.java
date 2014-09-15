@@ -21,8 +21,6 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.adapters.CompetitionListAdapter;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.cache.CompetitionListType;
 import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeMine;
@@ -35,8 +33,6 @@ import com.tradehero.th.fragments.chinabuild.data.CompetitionInterface;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th2.R;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
@@ -53,7 +49,6 @@ public class CompetitionBaseFragment extends DashboardFragment
 {
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<CompetitionNewCache> competitionNewCacheLazy;
-    //@Inject Lazy<CompetitionCache> competitionCacheLazy;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerOffical;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerUser;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerVip;
@@ -69,8 +64,8 @@ public class CompetitionBaseFragment extends DashboardFragment
 
     private UserCompetitionDTOList userCompetitionVipDTOs;
 
-    private int page = 1;
-    private int PER_PAGE = 20;
+    CompetitionListTypeMine mineKey = new CompetitionListTypeMine();
+    CompetitionListTypeUser userKey = new CompetitionListTypeUser();
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -94,14 +89,15 @@ public class CompetitionBaseFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.competition_base_layout, container, false);
         ButterKnife.inject(this, view);
         //initCompetitionAdv();
-        fetchCompetition(false);
         initListView();
         return view;
     }
 
     private void initListView()
     {
+
         adapterList = new CompetitionListAdapter(getActivity(), getCompetitionPageType());
+        listCompetitions.setMode(PullToRefreshBase.Mode.BOTH);
         listCompetitions.setAdapter(adapterList);
         listCompetitions.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -126,9 +122,11 @@ public class CompetitionBaseFragment extends DashboardFragment
             @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 Timber.d("上拉加载更多");
-                //fetchSecurityList();
+                fetchCompetitionMore(true);
             }
         });
+
+        fetchCompetition(true);
     }
 
     private void gotoCompetitionDetailFragment(UserCompetitionDTO userCompetitionDTO)
@@ -184,7 +182,6 @@ public class CompetitionBaseFragment extends DashboardFragment
 
     @Override public void onStop()
     {
-
         super.onStop();
     }
 
@@ -215,11 +212,30 @@ public class CompetitionBaseFragment extends DashboardFragment
         if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE)
         {
             //我的比赛页
+            mineKey = new CompetitionListTypeMine();
+            mineKey.page = 1;
             fetchMineCompetition(refresh);
         }
         else if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_ALL)
         {
+            userKey = new CompetitionListTypeUser();
+            userKey.page = 1;
             fetchOfficalCompetition(refresh);
+            fetchUserCompetition(refresh);
+        }
+    }
+
+    public void fetchCompetitionMore(boolean refresh)
+    {
+        //fetchVipCompetition(refresh);//获取官方推荐比赛
+        if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE)
+        {
+            //我的比赛页
+            fetchMineCompetition(refresh);
+        }
+        else if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_ALL)
+        {
+            //fetchOfficalCompetition(refresh);
             fetchUserCompetition(refresh);
         }
     }
@@ -289,7 +305,7 @@ public class CompetitionBaseFragment extends DashboardFragment
     public void fetchUserCompetition(boolean refresh)
     {
         detachUserCompetition();
-        CompetitionListTypeUser userKey = new CompetitionListTypeUser();
+
         competitionNewCacheLazy.get().register(userKey, competitionListCacheListenerUser);
         competitionNewCacheLazy.get().getOrFetchAsync(userKey, refresh);
     }
@@ -305,7 +321,7 @@ public class CompetitionBaseFragment extends DashboardFragment
     public void fetchMineCompetition(boolean refresh)
     {
         detachMineCompetition();
-        CompetitionListTypeMine mineKey = new CompetitionListTypeMine();
+
         competitionNewCacheLazy.get().register(mineKey, competitionListCacheListenerMine);
         competitionNewCacheLazy.get().getOrFetchAsync(mineKey, refresh);
     }
@@ -317,11 +333,22 @@ public class CompetitionBaseFragment extends DashboardFragment
     }
 
     //我的比赛
-    public void initMyCompetition(UserCompetitionDTOList userCompetitionDTOs)
+    public void initMyCompetition(CompetitionListType key, UserCompetitionDTOList userCompetitionDTOs)
     {
         if (adapterList != null)
         {
-            adapterList.setMyCompetitionDtoList(userCompetitionDTOs);
+            if (key.page == 1)
+            {
+                adapterList.setMyCompetitionDtoList(userCompetitionDTOs);
+            }
+            else
+            {
+                adapterList.addMyCompetitionDtoList(userCompetitionDTOs);
+            }
+        }
+        if (userCompetitionDTOs != null && userCompetitionDTOs.size() > 0)
+        {
+            mineKey.page += 1;
         }
     }
 
@@ -335,11 +362,22 @@ public class CompetitionBaseFragment extends DashboardFragment
     }
 
     //用户创建比赛
-    public void initUserCompetition(UserCompetitionDTOList userCompetitionDTOs)
+    public void initUserCompetition(CompetitionListType key, UserCompetitionDTOList userCompetitionDTOs)
     {
         if (adapterList != null)
         {
-            adapterList.setUserCompetitionDtoList(userCompetitionDTOs);
+            if (key.page == 1)
+            {
+                adapterList.setUserCompetitionDtoList(userCompetitionDTOs);
+            }
+            else
+            {
+                adapterList.addUserCompetitionDtoList(userCompetitionDTOs);
+            }
+        }
+        if (userCompetitionDTOs != null && userCompetitionDTOs.size() > 0)
+        {
+            userKey.page += 1;
         }
     }
 
@@ -380,7 +418,7 @@ public class CompetitionBaseFragment extends DashboardFragment
             }
             else if (key instanceof CompetitionListTypeUser)
             {
-                initUserCompetition(value);
+                initUserCompetition(key, value);
             }
             else if (key instanceof CompetitionListTypeVip)
             {
@@ -388,7 +426,7 @@ public class CompetitionBaseFragment extends DashboardFragment
             }
             else if (key instanceof CompetitionListTypeMine)
             {
-                initMyCompetition(value);
+                initMyCompetition(key, value);
             }
             listCompetitions.onRefreshComplete();
         }
