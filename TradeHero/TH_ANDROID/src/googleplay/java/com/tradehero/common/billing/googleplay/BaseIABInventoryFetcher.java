@@ -1,6 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -39,10 +38,10 @@ abstract public class BaseIABInventoryFetcher<
 
     //<editor-fold desc="Constructors">
     public BaseIABInventoryFetcher(
-            @NotNull Provider<Activity> activityProvider,
+            @NotNull Context context,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(activityProvider, iabExceptionFactory);
+        super(context, iabExceptionFactory);
         this.inventory = new HashMap<>();
     }
     //</editor-fold>

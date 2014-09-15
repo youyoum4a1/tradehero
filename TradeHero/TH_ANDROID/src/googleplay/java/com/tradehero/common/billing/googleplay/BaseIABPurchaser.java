@@ -15,7 +15,6 @@ import com.tradehero.common.billing.googleplay.exception.IABSubscriptionUnavaila
 import com.tradehero.common.billing.googleplay.exception.IABUnknownErrorException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import dagger.Lazy;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -43,10 +42,10 @@ abstract public class BaseIABPurchaser<
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaser(
-            @NotNull Provider<Activity> activityProvider,
+            @NotNull Activity activity,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(activityProvider, iabExceptionFactory);
+        super(activity, iabExceptionFactory);
     }
     //</editor-fold>
 
@@ -58,11 +57,6 @@ abstract public class BaseIABPurchaser<
 
     abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException;
     abstract protected IABProductDetailType getProductDetails(IABSKUType iabskuType);
-
-    protected Activity getActivity()
-    {
-        return activityProvider.get();
-    }
 
     @Override public int getRequestCode()
     {
@@ -173,7 +167,7 @@ abstract public class BaseIABPurchaser<
 
                 PendingIntent pendingIntent = buyIntentBundle.getParcelable(IABConstants.RESPONSE_BUY_INTENT);
                 Timber.d("Launching buy intent for %s. Request code: %d", getProductDetails(purchaseOrder.getProductIdentifier()), activityRequestCode);
-                getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
+                ((Activity) context).startIntentSenderForResult(pendingIntent.getIntentSender(),
                         activityRequestCode, new Intent(), 0, 0, 0);
             }
             catch (IntentSender.SendIntentException e)
@@ -201,7 +195,7 @@ abstract public class BaseIABPurchaser<
                 getProductDetails(purchaseOrder.getProductIdentifier()).getType());
         Bundle buyIntentBundle = billingService.getBuyIntent(
                 TARGET_BILLING_API_VERSION3,
-                activityProvider.get().getPackageName(),
+                context.getPackageName(),
                 purchaseOrder.getProductIdentifier().identifier,
                 getProductDetails(purchaseOrder.getProductIdentifier()).getType(),
                 purchaseOrder.getDeveloperPayload());

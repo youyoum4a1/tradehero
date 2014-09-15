@@ -8,7 +8,6 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -27,11 +26,11 @@ public class THBaseIABPurchaser
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABPurchaser(
-            @NotNull Provider<Activity> activityProvider,
+            @NotNull Activity activity,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory,
             @NotNull Lazy<THIABProductDetailCache> skuDetailCache)
     {
-        super(activityProvider,
+        super(activity,
                 iabExceptionFactory);
         this.skuDetailCache = skuDetailCache;
     }

@@ -1,13 +1,12 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.app.Activity;
+import android.content.Context;
 import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
@@ -19,10 +18,10 @@ public class THBaseIABInventoryFetcher
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABInventoryFetcher(
-            @NotNull Provider<Activity> activityProvider,
+            @NotNull Context context,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(activityProvider, iabExceptionFactory);
+        super(context, iabExceptionFactory);
     }
     //</editor-fold>
 

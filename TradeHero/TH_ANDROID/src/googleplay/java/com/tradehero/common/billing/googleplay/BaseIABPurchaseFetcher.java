@@ -1,6 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -15,7 +15,6 @@ import com.tradehero.th.base.THApp;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -41,11 +40,11 @@ abstract public class BaseIABPurchaseFetcher<
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaseFetcher(
-            @NotNull Provider<Activity> activityProvider,
+            @NotNull Context context,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory,
             @NotNull IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache)
     {
-        super(activityProvider, iabExceptionFactory);
+        super(context, iabExceptionFactory);
         this.purchaseCache = purchaseCache;
         purchases = new ArrayList<>();
     }
@@ -211,15 +210,14 @@ abstract public class BaseIABPurchaseFetcher<
     {
         Timber.d("Calling getPurchases with continuation token: %s", continueToken);
         IInAppBillingService billingServiceCopy = billingService;
-        Activity currentActivity = activityProvider.get();
-        if (currentActivity == null || billingServiceCopy == null)
+        if (billingServiceCopy == null)
         {
             return null;
         }
 
         return billingServiceCopy.getPurchases(
                 TARGET_BILLING_API_VERSION3,
-                currentActivity.getPackageName(),
+                context.getPackageName(),
                 itemType,
                 continueToken);
     }

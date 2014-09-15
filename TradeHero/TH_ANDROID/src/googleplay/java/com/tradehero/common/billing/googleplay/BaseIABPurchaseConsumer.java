@@ -1,6 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.RemoteException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -9,7 +9,6 @@ import com.tradehero.common.billing.googleplay.exception.IABMissingTokenExceptio
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
 import dagger.Lazy;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
@@ -32,10 +31,10 @@ abstract public class BaseIABPurchaseConsumer<
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaseConsumer(
-            @NotNull Provider<Activity> activityProvider,
+            @NotNull Context context,
             @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(activityProvider, iabExceptionFactory);
+        super(context, iabExceptionFactory);
     }
     //</editor-fold>
 
@@ -48,11 +47,6 @@ abstract public class BaseIABPurchaseConsumer<
     {
         consumptionFinishedListener = null;
         super.onDestroy();
-    }
-
-    @Nullable protected Activity getActivity()
-    {
-        return activityProvider.get();
     }
 
     @NotNull abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
@@ -235,7 +229,7 @@ abstract public class BaseIABPurchaseConsumer<
         String sku = this.purchase.getProductIdentifier().identifier;
         String token = this.purchase.getToken();
         Timber.d("Consuming sku: %s, token: %s", sku, token);
-        int response = this.billingService.consumePurchase(3, activityProvider.get().getPackageName(), token);
+        int response = this.billingService.consumePurchase(3, context.getPackageName(), token);
         if (response != IABConstants.BILLING_RESPONSE_RESULT_OK)
         {
             throw iabExceptionFactory.get().create(response);
