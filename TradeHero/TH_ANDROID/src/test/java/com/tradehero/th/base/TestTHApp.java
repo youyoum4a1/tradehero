@@ -11,7 +11,6 @@ import com.actionbarsherlock.internal.ActionBarSherlockRobolectric;
 import com.facebook.LoginActivity;
 import com.tradehero.TestModule;
 import com.tradehero.common.log.SystemOutTree;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.internal.loaders.GeneratedAdapters;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class TestTHApp extends THApp
     private void mockFacebookLoginActivity()
     {
         RobolectricPackageManager packageManager = (RobolectricPackageManager) shadowOf(Robolectric.application).getPackageManager();
-        Intent intent = new Intent(thRouter.getContext(), LoginActivity.class);
+        Intent intent = new Intent(context(), LoginActivity.class);
 
         ResolveInfo info = new ResolveInfo();
         info.isDefault = true;
@@ -84,7 +83,7 @@ public class TestTHApp extends THApp
         try
         {
             Class.forName(test.getClass().getName() + GeneratedAdapters.INJECT_ADAPTER_SUFFIX);
-            DaggerUtils.inject(test);
+            //inject(test);
         }
         catch (ClassNotFoundException e)
         {
@@ -94,5 +93,10 @@ public class TestTHApp extends THApp
 
     @Override public void afterTest(Method method)
     {
+    }
+
+    public static void staticInject(Object test)
+    {
+        get(context()).inject(test);
     }
 }

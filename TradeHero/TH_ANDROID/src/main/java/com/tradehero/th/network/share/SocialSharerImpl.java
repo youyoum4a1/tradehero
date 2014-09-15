@@ -19,7 +19,6 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
@@ -29,7 +28,7 @@ import timber.log.Timber;
 
 public class SocialSharerImpl implements SocialSharer
 {
-    @NotNull private final Provider<Activity> activityProvider;
+    @NotNull private final Activity activity;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
@@ -41,13 +40,13 @@ public class SocialSharerImpl implements SocialSharer
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharerImpl(
-            @NotNull Provider<Activity> activityProvider,
+            @NotNull Activity activity,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull DiscussionServiceWrapper discussionServiceWrapper,
             @NotNull SocialShareVerifier socialShareVerifier)
     {
-        this.activityProvider = activityProvider;
+        this.activity = activity;
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
         this.discussionServiceWrapper = discussionServiceWrapper;
@@ -167,11 +166,7 @@ public class SocialSharerImpl implements SocialSharer
 
     public void share(@NotNull WeChatDTO weChatDTO)
     {
-        Activity currentActivity = activityProvider.get();
-        if (currentActivity != null)
-        {
-            currentActivity.startActivity(createWeChatIntent(currentActivity, weChatDTO));
-        }
+        activity.startActivity(createWeChatIntent(activity, weChatDTO));
     }
 
     public Intent createWeChatIntent(@NotNull Context activityContext, @NotNull WeChatDTO weChatDTO)

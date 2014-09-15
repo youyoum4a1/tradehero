@@ -20,12 +20,12 @@ public class PeopleSearchFragmentTest
 {
     @Inject Context context;
     private PublicPeopleSearchFragment peopleSearchFragment;
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
 
     @Before public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
     }
 
     @After public void tearDown()

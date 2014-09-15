@@ -30,8 +30,7 @@ import timber.log.Timber;
         complete = false,
         library = true
 )
-
-public class SocialNetworkModule
+public class SocialNetworkAppModule
 {
     private static final String TWITTER_CONSUMER_KEY = "sJY7n9k29TAhraq4VjDYeg";
     private static final String TWITTER_CONSUMER_SECRET = "gRLhwCd3YgdaKKEH7Gwq9FI75TJuqHfi2TiDRwUHo";
@@ -93,11 +92,6 @@ public class SocialNetworkModule
         IWXAPI weChatApi = WXAPIFactory.createWXAPI(context, WECHAT_APP_ID, false);
         weChatApi.registerApp(WECHAT_APP_ID);
         return weChatApi;
-    }
-
-    @Provides SocialSharer provideSocialSharer(SocialSharerImpl socialSharerImpl)
-    {
-        return socialSharerImpl;
     }
 
     @Provides(type = Provides.Type.SET_VALUES) @ShareDestinationId Set<Integer> providesShareDestinationFromResources(Context context)

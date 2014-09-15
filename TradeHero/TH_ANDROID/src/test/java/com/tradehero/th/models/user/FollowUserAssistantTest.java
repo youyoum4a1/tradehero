@@ -6,6 +6,7 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
@@ -150,7 +151,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followCallsCache()
     {
-        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
         // Prepare cache
         userProfileCache = mock(UserProfileCache.class);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
@@ -163,7 +164,11 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void callingErrorFromCacheNotifiesListener()
     {
-        assistant = new FollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new FollowUserAssistant(
+                THApp.context(),
+                heroId,
+                listener,
+                applicablePortfolioId);
         //noinspection ThrowableInstanceNeverThrown
         Throwable expected = new IllegalArgumentException();
         assistant.onErrorThrown(currentUserId.toUserBaseKey(), expected);
@@ -173,7 +178,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followErrorCacheNotifiesListener()
     {
-        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
         userProfileCache = mock(UserProfileCache.class);
         //noinspection ThrowableInstanceNeverThrown
@@ -188,7 +193,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithEnoughCCWillCallService() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
         // Prepare cache
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
@@ -204,7 +209,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithEnoughCCAndServiceFailedWillNotify() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
@@ -222,7 +227,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithEnoughCCAndServiceSuccessWillNotify() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
@@ -240,7 +245,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithNotEnoughCCWillCallInteractor() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
@@ -263,7 +268,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithNotEnoughCCAndBoughtFailedWillNotify()
     {
-        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
@@ -277,7 +282,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithNotEnoughCCAndBoughtSuccessWillCallService() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
@@ -298,7 +303,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
     // This is very long but here to test that no listener /callback is lost in the process
     @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowFailedWillNotifyListener() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
@@ -321,7 +326,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
     // This is very long but here to test that no listener /callback is lost in the process
     @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowSuccessWillNotifyListener() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);

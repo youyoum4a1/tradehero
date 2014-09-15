@@ -41,7 +41,7 @@ public class MainCompetitionFragmentTest
 {
     private static final String TEST_ADS_WEB_URL = "http://www.google.com";
     private static final String TEST_WIZARD_WEB_URL = "http://www.apple.com";
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
     @Inject ProviderCache providerCache;
     @Inject ProviderDisplayCellListCache providerDisplayCellListCache;
     @Inject CompetitionListCache competitionListCache;
@@ -52,7 +52,7 @@ public class MainCompetitionFragmentTest
     @Before public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
 
         providerId = new ProviderId(3423);
         // creating mock object for providerDTO

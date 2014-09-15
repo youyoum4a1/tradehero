@@ -1,6 +1,6 @@
 package com.tradehero.th.models.user.follow;
 
-import android.app.Activity;
+import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -20,21 +20,21 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
     @Inject protected Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject protected UserServiceWrapper userServiceWrapper;
 
-    @NotNull private final Activity activity;
+    @NotNull private final Context context;
     @NotNull protected final UserBaseKey heroId;
     @Nullable private OnUserFollowedListener userFollowedListener;
 
     //<editor-fold desc="Constructors">
     public SimpleFollowUserAssistant(
-            @NotNull Activity activity,
+            @NotNull Context context,
             @NotNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener)
     {
         super();
-        this.activity = activity;
+        this.context = context;
         this.heroId = heroId;
         this.userFollowedListener = userFollowedListener;
-        HierarchyInjector.inject(activity, this);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 
@@ -69,8 +69,8 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
     protected void showProgress(int contentResId)
     {
         alertDialogUtilLazy.get().showProgressDialog(
-                activity,
-                activity.getString(contentResId));
+                context,
+                context.getString(contentResId));
     }
 
     @Override public void success(UserProfileDTO userProfileDTO, Response response)

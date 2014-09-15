@@ -1,6 +1,7 @@
 package com.tradehero;
 
 import com.tradehero.th.auth.operator.FacebookAppId;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,7 @@ public class SampleTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
     }
 
     @Test public void testFacebookAppId()

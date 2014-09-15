@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.timeline;
 
-import android.content.Context;
 import android.os.Bundle;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
@@ -19,16 +18,15 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class MeTimelineFragmentTest
 {
-    @Inject Context context;
     @Inject CurrentUserId currentUserId;
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
     private MeTimelineFragment meTimelineFragment;
 
     @Before
     public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
     }
 
     @After

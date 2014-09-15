@@ -1,6 +1,6 @@
 package com.tradehero.th.models.user.follow;
 
-import android.app.Activity;
+import android.content.Context;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -14,13 +14,10 @@ import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.user.UserProfileCache;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
-
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class FollowUserAssistant extends SimpleFollowUserAssistant
@@ -37,12 +34,12 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
 
     //<editor-fold desc="Constructors">
     public FollowUserAssistant(
-            @NotNull Activity activity,
+            @NotNull Context context,
             @NotNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener,
             @NotNull OwnedPortfolioId applicablePortfolioId)
     {
-        super(activity, heroId, userFollowedListener);
+        super(context, heroId, userFollowedListener);
         this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>

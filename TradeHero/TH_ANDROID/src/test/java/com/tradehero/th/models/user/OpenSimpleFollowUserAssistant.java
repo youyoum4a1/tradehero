@@ -1,5 +1,6 @@
 package com.tradehero.th.models.user;
 
+import android.content.Context;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
@@ -12,10 +13,11 @@ public class OpenSimpleFollowUserAssistant extends SimpleFollowUserAssistant
 {
     //<editor-fold desc="Constructors">
     public OpenSimpleFollowUserAssistant(
+            @NotNull Context context,
             @NotNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener)
     {
-        super(heroId, userFollowedListener);
+        super(context, heroId, userFollowedListener);
     }
     //</editor-fold>
 

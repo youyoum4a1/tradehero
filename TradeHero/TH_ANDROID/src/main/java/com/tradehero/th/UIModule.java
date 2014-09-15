@@ -1,7 +1,6 @@
 package com.tradehero.th;
 
 import com.tradehero.th.activities.ActivityModule;
-import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.billing.BillingUIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardResideMenu;
@@ -10,7 +9,7 @@ import com.tradehero.th.fragments.settings.SettingsResideMenuItem;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
-import com.tradehero.th.network.share.SocialNetworkModule;
+import com.tradehero.th.network.share.SocialNetworkUIModule;
 import com.tradehero.th.ui.UIComponents;
 import com.tradehero.th.ui.ViewWrapper;
 import com.tradehero.th.widget.WidgetModule;
@@ -29,7 +28,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 ActivityModule.class,
                 WidgetModule.class,
                 // Following modules need injected Activity to work, therefore, it cannot be in AppModule
-                SocialNetworkModule.class,
+                SocialNetworkUIModule.class,
                 BillingUIModule.class,
                 IntentDaggerModule.class
         },

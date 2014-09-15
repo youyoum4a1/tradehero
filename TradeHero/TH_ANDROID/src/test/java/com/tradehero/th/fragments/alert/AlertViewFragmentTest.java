@@ -33,7 +33,7 @@ public class AlertViewFragmentTest
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject AlertCache alertCache;
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
     private AlertDTO cachedAlertDTO;
     private UserProfileDTO cachedProfileDTO;
 
@@ -61,7 +61,7 @@ public class AlertViewFragmentTest
         userProfileCache.put(currentUserId.toUserBaseKey(), cachedProfileDTO);
 
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
     }
 
     @After public void tearDown()

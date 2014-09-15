@@ -18,6 +18,7 @@ import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.network.NetworkModule;
+import com.tradehero.th.network.share.SocialNetworkAppModule;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
@@ -42,7 +43,8 @@ import javax.inject.Singleton;
                 ChartModule.class,
                 FilterModule.class,
                 BillingModule.class,
-                PushModule.class
+                PushModule.class,
+                SocialNetworkAppModule.class,
         },
         injects =
                 {

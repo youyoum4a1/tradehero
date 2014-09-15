@@ -11,7 +11,6 @@ import com.tradehero.th.persistence.PersistenceTestModule;
 import com.tradehero.th.ui.GraphicTestModule;
 import com.tradehero.th.utils.AppUtilsTestModule;
 import com.tradehero.th.utils.metrics.MetricsModule;
-
 import dagger.Module;
 
 @Module(

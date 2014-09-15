@@ -2,6 +2,7 @@ package com.tradehero.th.models.user;
 
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 
 import org.junit.After;
@@ -37,7 +38,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
     //<editor-fold desc="Wired notify methods">
     @Test public void listenerInConstructorWillGetSuccess()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, listener);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, listener);
         UserProfileDTO expected = mock(UserProfileDTO.class);
 
         ((OpenSimpleFollowUserAssistant) assistant).notifyFollowSuccess(heroId, expected);
@@ -47,7 +48,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void listenerSetLaterWillGetSuccess()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, null);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, null);
         assistant.setUserFollowedListener(listener);
         UserProfileDTO expected = mock(UserProfileDTO.class);
 
@@ -58,7 +59,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void listenerUnsetLaterWillNotGetSuccess()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, listener);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, listener);
         assistant.setUserFollowedListener(null);
         UserProfileDTO expected = mock(UserProfileDTO.class);
 
@@ -69,7 +70,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void listenerInConstructorWillGetFail()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, listener);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, listener);
         RetrofitError expected = mock(RetrofitError.class);
 
         ((OpenSimpleFollowUserAssistant) assistant).notifyFollowFailed(heroId, expected);
@@ -79,7 +80,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void listenerSetLaterWillGetFail()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, null);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, null);
         assistant.setUserFollowedListener(listener);
         RetrofitError expected = mock(RetrofitError.class);
 
@@ -90,7 +91,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void listenerUnsetLaterWillNotGetFail()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, listener);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, listener);
         assistant.setUserFollowedListener(null);
         RetrofitError expected = mock(RetrofitError.class);
 
@@ -103,7 +104,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
     //<editor-fold desc="Call forwarding">
     @Test public void unfollowCallsService()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, null);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, null);
         // Prepare user service
         ((OpenSimpleFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
@@ -114,7 +115,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followCallsService()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, null);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, null);
         // Prepare user service
         ((OpenSimpleFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
@@ -127,7 +128,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
     //<editor-fold desc="Error and success forwarding">
     @Test public void unfollowErrorNotifiesListener()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, listener);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, listener);
         // Prepare user service
         final RetrofitError expected = mock(RetrofitError.class);
         prepareUserServiceForFailUnfollow(assistant, expected);
@@ -140,7 +141,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void unfollowSuccessNotifiesListener()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, listener);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, listener);
         // Prepare user service
         UserProfileDTO expected = mock(UserProfileDTO.class);
         prepareUserServiceForSuccessUnfollow(assistant, expected);
@@ -153,7 +154,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followErrorNotifiesListener()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, listener);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, listener);
         // Prepare user service
         final RetrofitError expected = mock(RetrofitError.class);
         prepareUserServiceForFailFollow(assistant, expected);
@@ -166,7 +167,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followSuccessNotifiesListener()
     {
-        assistant = new OpenSimpleFollowUserAssistant(heroId, listener);
+        assistant = new OpenSimpleFollowUserAssistant(THApp.context(), heroId, listener);
         // Prepare user service
         UserProfileDTO expected = mock(UserProfileDTO.class);
         prepareUserServiceForSuccessFollow(assistant, expected);

@@ -59,8 +59,7 @@ import static org.robolectric.Robolectric.shadowOf;
 @Config(shadows = ShadowWebViewNew.class)
 public class THRouterTest
 {
-    private DashboardNavigator dashboardNavigator;
-
+    @Inject DashboardNavigator dashboardNavigator;
     @Inject THRouter thRouter;
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
@@ -71,7 +70,7 @@ public class THRouterTest
     {
         currentUserId.set(34);
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
         thRouter.setContext(activity);
     }
 

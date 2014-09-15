@@ -33,14 +33,14 @@ import static org.mockito.Mockito.when;
 public class TrendingFragmentTest
 {
     @Inject CurrentUserId currentUserId;
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
     private OpenTrendingFragment trendingFragment;
     private OwnedPortfolioId applicablePortfolioId;
 
     @Before public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
         currentUserId.set(23);
         applicablePortfolioId = new OwnedPortfolioId(23, 7);
     }

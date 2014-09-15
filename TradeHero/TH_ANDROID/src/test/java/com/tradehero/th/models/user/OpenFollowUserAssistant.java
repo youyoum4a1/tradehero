@@ -1,5 +1,6 @@
 package com.tradehero.th.models.user;
 
+import android.content.Context;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -14,11 +15,12 @@ public class OpenFollowUserAssistant extends FollowUserAssistant
 {
     //<editor-fold desc="Constructors">
     public OpenFollowUserAssistant(
+            @NotNull Context context,
             @NotNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener,
             @NotNull OwnedPortfolioId applicablePortfolioId)
     {
-        super(heroId, userFollowedListener, applicablePortfolioId);
+        super(context, heroId, userFollowedListener, applicablePortfolioId);
     }
     //</editor-fold>
 
