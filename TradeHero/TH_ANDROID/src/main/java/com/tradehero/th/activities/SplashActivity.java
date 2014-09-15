@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import dagger.Module;
+import dagger.Provides;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
@@ -193,9 +195,14 @@ public class SplashActivity extends SherlockActivity
             addsTo = AppModule.class,
             includes = UIModule.class,
             library = true,
-            complete = false
+            complete = false,
+            overrides = true
     )
     public class SplashActivityModule
     {
+        @Provides Activity provideActivity()
+        {
+            return SplashActivity.this;
+        }
     }
 }

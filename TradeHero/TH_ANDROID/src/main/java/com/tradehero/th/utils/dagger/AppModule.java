@@ -1,5 +1,6 @@
 package com.tradehero.th.utils.dagger;
 
+import android.app.Activity;
 import android.content.Context;
 import com.tradehero.FlavorModule;
 import com.tradehero.th.activities.GuideActivity;
@@ -85,6 +86,12 @@ public class AppModule
     @Provides Context provideContext()
     {
         return THApp;
+    }
+
+    @Provides Activity provideActivity()
+    {
+        // Necessary to avoid injection error in Billing elements.
+        throw new IllegalStateException("You should have another module that provides Activity");
     }
 
     @Provides Locale provideLocale(Context context)
