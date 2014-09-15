@@ -210,6 +210,12 @@ android {
         srcDir 'src/amazon/res'
       }
     }
+
+    amazonFireDebug {
+      java {
+        srcDir 'src/amazonDebug/java'
+      }
+    }
     //endregion
 
     // TODO make sure this is not breaking
@@ -268,6 +274,7 @@ dependencies {
 
   // TODO confirm on a hardware that it is "provided" and not "compile"
   amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
+  amazonFireCompile 'com.amazon:in-app-purchasing:2.0.0'
   androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   androidTestAmazonFireCompile 'com.amazon:in-app-purchasing:2.0.0'
 
