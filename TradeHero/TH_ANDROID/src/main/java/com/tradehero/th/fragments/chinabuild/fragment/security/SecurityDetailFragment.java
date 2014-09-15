@@ -116,7 +116,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected Integer mBuyQuantity;
     protected Integer mSellQuantity;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
-    public static PositionDTOCompactList positionDTOCompactList;
+    public PositionDTOCompactList positionDTOCompactList;
     protected PortfolioCompactDTO portfolioCompactDTO;
     @Inject PortfolioCompactCache portfolioCompactCache;
 
@@ -864,6 +864,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
         bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
         bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
+        bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO,positionDTOCompactList);
         pushFragment(BuySaleSecurityFragment.class, bundle);
     }
 

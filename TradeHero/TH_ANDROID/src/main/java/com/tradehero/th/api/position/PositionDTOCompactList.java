@@ -5,10 +5,11 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.utils.SecurityUtils;
+import java.io.Serializable;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
+public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  implements Serializable
 {
     //<editor-fold desc="Constructors">
     public PositionDTOCompactList()

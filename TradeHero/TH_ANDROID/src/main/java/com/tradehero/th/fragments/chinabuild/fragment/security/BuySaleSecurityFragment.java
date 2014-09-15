@@ -29,35 +29,25 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.chinabuild.cache.PositionCompactNewCache;
-import com.tradehero.th.fragments.chinabuild.cache.PositionDTOKey;
-import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
-import com.tradehero.th.fragments.trade.AbstractTransactionDialogFragment;
 import com.tradehero.th.fragments.trade.AlertDialogUtilBuySell;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th2.R;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -73,6 +63,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     protected static final String KEY_QUOTE_DTO = BuySaleSecurityFragment.class.getName() + ".quote_dto";
     protected static final String KEY_SECURITY_NAME = BuySaleSecurityFragment.class.getName() + ".securit_name";
     protected static final String KEY_COMPETITION_ID = BuySaleSecurityFragment.class.getName() + ".competition_id";
+    protected static final String KEY_POSITION_COMPACT_DTO = BuySaleSecurityFragment.class.getName() + ".position_compact_dto";
 
     protected int competitionID = 0;
     protected SecurityCompactDTO securityCompactDTO;
@@ -325,7 +316,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         }
         else
         {
-            positionDTOCompactList = SecurityDetailFragment.positionDTOCompactList;
+            positionDTOCompactList = getPositionDTOCompactList();
         }
 
 
@@ -594,6 +585,15 @@ public class BuySaleSecurityFragment extends DashboardFragment
             this.portfolioId = new PortfolioId(getArguments().getBundle(KEY_PORTFOLIO_ID));
         }
         return portfolioId;
+    }
+
+    protected PositionDTOCompactList getPositionDTOCompactList()
+    {
+        if (this.positionDTOCompactList == null)
+        {
+            this.positionDTOCompactList = (PositionDTOCompactList)getArguments().getSerializable(KEY_POSITION_COMPACT_DTO);
+        }
+        return positionDTOCompactList;
     }
 
     private QuoteDTO getBundledQuoteDTO()

@@ -3,14 +3,16 @@ package com.tradehero.th.api.position;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.utils.SecurityUtils;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PositionDTOCompact extends ExtendedDTO
+public class PositionDTOCompact extends ExtendedDTO implements Serializable
 {
+
     public int id;
     public Integer shares;
     public int portfolioId;
