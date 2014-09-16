@@ -480,3 +480,6 @@ Integer versionPropIndex(String key)
   throw new IllegalStateException("Unknown key " + key)
 }
 
+task showMeCache << {
+  configurations.compile.each { println it }
+}
