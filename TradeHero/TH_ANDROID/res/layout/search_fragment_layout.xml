@@ -11,5 +11,14 @@
 
   <include layout="@layout/search_line_layout"/>
 
+  <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+      android:id="@+id/listSearch"
+      android:scrollingCache="false"
+      android:fadingEdge="none"
+      android:divider="@color/gray_1"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+  </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+
 </LinearLayout>
 

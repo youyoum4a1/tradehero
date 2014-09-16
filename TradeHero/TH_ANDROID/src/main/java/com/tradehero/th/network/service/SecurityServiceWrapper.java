@@ -4,11 +4,11 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.SecurityCompactExtraDTO;
 import com.tradehero.th.api.security.SecurityCompactExtraDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.api.security.key.SearchHotSecurityListType;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
@@ -27,13 +27,11 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.Map;
-import java.util.Timer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import timber.log.Timber;
 
 @Singleton public class SecurityServiceWrapper
 {
@@ -192,6 +190,15 @@ import timber.log.Timber;
                     searchKey.searchString,
                     searchKey.getPage(),
                     searchKey.perPage);
+        }
+        else if(key instanceof SearchHotSecurityListType)//热门股票搜索
+        {
+            SecurityCompactExtraDTOList data = null;
+            SearchHotSecurityListType searchKey = (SearchHotSecurityListType) key;
+            data = this.securityService.searchHotSecurities(
+                    searchKey.getPage(),
+                    searchKey.perPage);
+            received = processFromExtraData(data);
         }
         else if (key instanceof ProviderSecurityListType)
         {

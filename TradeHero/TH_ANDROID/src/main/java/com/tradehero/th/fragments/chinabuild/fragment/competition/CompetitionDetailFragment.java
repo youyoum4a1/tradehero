@@ -48,9 +48,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th2.R;
 import dagger.Lazy;
-import java.awt.Image;
 import javax.inject.Inject;
-import javax.sound.sampled.Port;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -63,7 +61,6 @@ import timber.log.Timber;
 public class CompetitionDetailFragment extends DashboardFragment
 {
     public static final String BUNDLE_COMPETITION_DTO = "bundle_competition_dto";
-
 
     @Inject Lazy<Picasso> picasso;
     @Inject CompetitionDTOUtil competitionDTOUtil;
@@ -89,7 +86,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     @InjectView(R.id.listRanks) SecurityListView listRanks;//比赛排名
     private LeaderboardListAdapter adapter;
-    private int currentPage = 0;
+    private int currentPage = 1;
     private int PER_PAGE = 20;
 
     @InjectView(R.id.tvCompetitionDetailMore) TextView tvCompetitionDetailMore;//比赛详情
@@ -99,16 +96,11 @@ public class CompetitionDetailFragment extends DashboardFragment
     @InjectView(R.id.tvCompetitionIntro) TextView tvCompetitionIntro;//比赛介绍
     @InjectView(R.id.tvGotoCompetition) TextView tvGotoCompetition;//去比赛
 
-
-
     @InjectView(R.id.includeMyPosition) RelativeLayout includeMyPosition;//我的比赛数据行
 
     @InjectView(R.id.tvUserExtraValue) TextView tvUserExtraValue;//我的收益率
     @InjectView(R.id.tvUserName) TextView tvUserName;//我的名字
     @InjectView(R.id.imgUserHead) ImageView imgUserHead;//我的头像
-
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -119,6 +111,8 @@ public class CompetitionDetailFragment extends DashboardFragment
         competitionLeaderboardCacheListener = createCompetitionLeaderboardListener();
         portfolioCompactNewFetchListener = createPortfolioCompactNewFetchListener();
         userProfileCacheListener = createUserProfileFetchListener();
+
+        adapter = new LeaderboardListAdapter(getActivity());
     }
 
     public void getBundleCompetitionDTO()
@@ -149,12 +143,15 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void initView()
     {
+
+        includeMyPosition.setVisibility(userCompetitionDTO.isEnrolled ? View.VISIBLE : View.GONE);
         initCompetition();
         initRankList();
     }
 
     private void initRankList()
     {
+        listRanks.setAdapter(adapter);
         listRanks.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         listRanks.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
@@ -165,7 +162,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
             @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                //fetchCompetitionLeaderboardMore();
+                fetchCompetitionLeaderboardMore();
             }
         });
         listRanks.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -185,7 +182,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         bundle.putLong(PortfolioFragment.BUNDLE_LEADERBOARD_USER_MARK_ID, userDTO.lbmuId);
-        bundle.putInt(PortfolioFragment.BUNLDE_COMPETITION_ID,userCompetitionDTO.id);
+        bundle.putInt(PortfolioFragment.BUNLDE_COMPETITION_ID, userCompetitionDTO.id);
         pushFragment(PortfolioFragment.class, bundle);
     }
 
@@ -194,11 +191,11 @@ public class CompetitionDetailFragment extends DashboardFragment
      */
     private void enterPortfolio()
     {
-        if(this.portfolioCompactDTO!=null)
+        if (this.portfolioCompactDTO != null)
         {
             Bundle bundle = new Bundle();
             bundle.putSerializable(PortfolioFragment.BUNLDE_PORTFOLIO_DTO, this.portfolioCompactDTO);
-            bundle.putInt(PortfolioFragment.BUNLDE_COMPETITION_ID,userCompetitionDTO.id);
+            bundle.putInt(PortfolioFragment.BUNLDE_COMPETITION_ID, userCompetitionDTO.id);
             pushFragment(PortfolioFragment.class, bundle);
         }
     }
@@ -215,7 +212,10 @@ public class CompetitionDetailFragment extends DashboardFragment
             tvGotoCompetition.setText(userCompetitionDTO.isEnrolled ? "去比赛" : "我要报名");
         }
 
-        fetchCompetitionLeaderboard();
+        if (adapter != null && adapter.getCount() == 0)
+        {
+            fetchCompetitionLeaderboard();
+        }
     }
 
     @Override public void onStop()
@@ -228,6 +228,8 @@ public class CompetitionDetailFragment extends DashboardFragment
         //ButterKnife.reset(this);
 
         detachCompetitionLeaderboardCache();
+        detachPortfolioCompactNewCache();
+        detachUserProfileCache();
 
         super.onDestroyView();
     }
@@ -235,13 +237,19 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Override public void onDestroy()
     {
         competitionLeaderboardCacheListener = null;
+        portfolioCompactNewFetchListener = null;
+        userProfileCacheListener = null;
+        callbackEnrollUGC = null;
         super.onDestroy();
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        fetchPortfolioCompactNew();
+        if (userCompetitionDTO.isEnrolled)//只有参加了才去拿portfolio
+        {
+            fetchPortfolioCompactNew();
+        }
         fetchUserProfile();
     }
 
@@ -364,10 +372,19 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     protected void fetchCompetitionLeaderboard()
     {
-        currentPage = 0;
+        detachCompetitionLeaderboardCache();
+        currentPage = 1;
+        CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(new ProviderId(CompetitionUtils.UGC_PROVIDER_ID),
+                new CompetitionId(userCompetitionDTO.id), currentPage, PER_PAGE);
+        competitionLeaderboardCache.register(key, competitionLeaderboardCacheListener);
+        competitionLeaderboardCache.getOrFetchAsync(key);
+    }
+
+    protected void fetchCompetitionLeaderboardMore()
+    {
         detachCompetitionLeaderboardCache();
         CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(new ProviderId(CompetitionUtils.UGC_PROVIDER_ID),
-                new CompetitionId(userCompetitionDTO.id), currentPage + 1, PER_PAGE);
+                new CompetitionId(userCompetitionDTO.id), currentPage, PER_PAGE);
         competitionLeaderboardCache.register(key, competitionLeaderboardCacheListener);
         competitionLeaderboardCache.getOrFetchAsync(key);
     }
@@ -376,8 +393,9 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         if (key.page == PagedLeaderboardKey.FIRST_PAGE)
         {
-            adapter = new LeaderboardListAdapter(getActivity(), listData, LeaderboardDefKeyKnowledge.COMPETITION);
-            listRanks.setAdapter(adapter);
+            adapter.setListData(listData);
+            adapter.setLeaderboardType(LeaderboardDefKeyKnowledge.COMPETITION);
+
         }
         else
         {
@@ -407,13 +425,11 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void fetchPortfolioCompactNew()
     {
-        if(userCompetitionDTO.isEnrolled)//只有参加了才去拿portfolio
-        {
-            detachPortfolioCompactNewCache();
-            PortfolioId key = new PortfolioId(userCompetitionDTO.id);
-            portfolioCompactNewCache.register(key, portfolioCompactNewFetchListener);
-            portfolioCompactNewCache.getOrFetchAsync(key);
-        }
+
+        detachPortfolioCompactNewCache();
+        PortfolioId key = new PortfolioId(userCompetitionDTO.id);
+        portfolioCompactNewCache.register(key, portfolioCompactNewFetchListener);
+        portfolioCompactNewCache.getOrFetchAsync(key);
     }
 
     protected DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> createPortfolioCompactNewFetchListener()
@@ -467,8 +483,8 @@ public class CompetitionDetailFragment extends DashboardFragment
                 .placeholder(R.drawable.superman_facebook)
                 .error(R.drawable.superman_facebook)
                 .into(imgUserHead);
-
     }
+
     private void linkWith(PortfolioCompactDTO value)
     {
         if (value == null) return;

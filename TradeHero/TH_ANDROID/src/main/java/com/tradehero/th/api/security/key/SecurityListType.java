@@ -5,8 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 abstract public class SecurityListType implements Comparable<SecurityListType>, PagedDTOKey
 {
-    @Nullable public final Integer page;
-    @Nullable public final Integer perPage;
+    @Nullable public Integer page;
+    @Nullable public Integer perPage;
 
     //<editor-fold desc="Constructors">
     protected SecurityListType(SecurityListType other)

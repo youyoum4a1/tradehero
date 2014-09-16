@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -66,6 +67,8 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         getCompetitionId();
         securityListTypeCacheListener = createSecurityListFetchListener();
+
+        adapterSecurity = new SecurityListAdapter(getActivity(), getTradeType());
     }
 
     public void getCompetitionId()
@@ -94,16 +97,31 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.competition_search_layout, container, false);
         ButterKnife.inject(this, view);
-        //if (adapterSecurity == null)
-        //{
-        //mTransactionDialog = progressDialogUtil.show(CompetitionSecuritySearchFragment.this.getActivity(),
-        //        R.string.processing, R.string.alert_dialog_please_wait);
+        initView();
+        return view;
+    }
+
+    private void initView()
+    {
         currentPage = 0;
         fetchSecurityList();
         initListView();
-        //}
 
-        return view;
+        tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override public boolean onEditorAction(TextView textView, int actionId, android.view.KeyEvent keyEvent)
+            {
+                switch (actionId)
+                {
+                    case EditorInfo.IME_ACTION_SEARCH:
+                        toSearchSecurity();
+                        break;
+                    case EditorInfo.IME_ACTION_DONE:
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     private void detachSecurityListCache()
@@ -205,7 +223,6 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         currentPage = 0;
         listSearch.setMode(PullToRefreshBase.Mode.BOTH);
 
-        adapterSecurity = new SecurityListAdapter(getActivity(), getTradeType());
         listSearch.setAdapter(adapterSecurity);
 
         listSearch.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
@@ -267,7 +284,6 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
             {
                 mTransactionDialog.dismiss();
             }
-
         }
     }
 
@@ -287,9 +303,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         if (key.getPage() == PagedLeaderboardKey.FIRST_PAGE)
         {
             currentPage = 0;
-            //adapterSecurity = new SecurityListAdapter(getActivity(), list, getTradeType());
             adapterSecurity.setSecurityList(list);
-            listSearch.setAdapter(adapterSecurity);
             listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
@@ -306,17 +320,14 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         else
         {
             adapterSecurity.addItems(list);
-            adapterSecurity.notifyDataSetChanged();
         }
 
-        if (list.size() > 0)
+        if (list != null && list.size() > 0)
         {
             currentPage += 1;
         }
-        else
-        {
 
-        }
+        adapterSecurity.notifyDataSetChanged();
     }
 
     //进入比赛相关的股票详情，带入competitionID
@@ -325,8 +336,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE,competitionId);
-        //gotoDashboard(SecurityDetailFragment.class.getName(), bundle);
+        bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
         pushFragment(SecurityDetailFragment.class, bundle);
     }
 }

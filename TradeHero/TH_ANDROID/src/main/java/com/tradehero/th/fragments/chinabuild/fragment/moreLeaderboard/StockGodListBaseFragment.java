@@ -6,26 +6,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th2.R;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
+import com.tradehero.th2.R;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -51,25 +50,23 @@ public class StockGodListBaseFragment extends DashboardFragment
     //    this.leaderboard_key = leaderboard_key;
     //}
 
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        adapter = new LeaderboardListAdapter(getActivity());
         Bundle args = getArguments();
         if (args != null)
         {
             leaderboard_key = args.getInt(BUNLDE_LEADERBOARD_KEY);
         }
+        leaderboardCacheListener = createLeaderboardCacheListener();
     }
 
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-
 
         setHeadViewMiddleMain(LeaderboardDefKeyKnowledge.getLeaderboardName(getLeaderboardDTO()));
     }
@@ -98,6 +95,7 @@ public class StockGodListBaseFragment extends DashboardFragment
 
     private void initView()
     {
+        listBang.setAdapter(adapter);
         listBang.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
         listBang.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
@@ -116,7 +114,7 @@ public class StockGodListBaseFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
             {
-                LeaderboardUserDTO dto = (LeaderboardUserDTO)adapter.getItem((int)position);
+                LeaderboardUserDTO dto = (LeaderboardUserDTO) adapter.getItem((int) position);
                 enterPortfolio(dto);
             }
         });
@@ -128,9 +126,8 @@ public class StockGodListBaseFragment extends DashboardFragment
     private void enterPortfolio(LeaderboardUserDTO userDTO)
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID,userDTO.id);
+        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
         gotoDashboard(PortfolioFragment.class, bundle);
-
     }
 
     @Override public void onDestroy()
@@ -141,8 +138,10 @@ public class StockGodListBaseFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        this.leaderboardCacheListener = createLeaderboardCacheListener();
-        fetchLeaderboard();
+        if (adapter != null && adapter.getCount() == 0)
+        {
+            fetchLeaderboard();
+        }
     }
 
     public LeaderboardDefKey getLeaderboardDTO()
@@ -199,15 +198,13 @@ public class StockGodListBaseFragment extends DashboardFragment
         if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE)
         {
             currentPage = 0;
-            adapter = new LeaderboardListAdapter(getActivity(), listData, getLeaderboardDTO().key);
-            listBang.setAdapter(adapter);
+            adapter.setListData(listData);
+            adapter.setLeaderboardType(getLeaderboardDTO().key);
+
         }
         else
         {
-            if (adapter != null)
-            {
-                adapter.addItems(listData);
-            }
+            adapter.addItems(listData);
         }
         listBang.onRefreshComplete();
 

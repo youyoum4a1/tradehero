@@ -14,7 +14,6 @@
 
   <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
       android:id="@+id/listSearch"
-      android:layout_below="@id/viewLine"
       android:scrollingCache="false"
       android:fadingEdge="none"
       android:divider="@color/transparent"

@@ -66,6 +66,7 @@ public interface SecurityService
             @Path("competitionId") int competitionId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
+
     //通过关键字搜索股票列表
     @GET("/usercompetitions/{competitionId}/securities") SecurityCompactDTOList getTrendingSecuritiesAllInCompetitionSearch(
             @Path("competitionId") int competitionId,
@@ -86,6 +87,12 @@ public interface SecurityService
     //<editor-fold desc="Search Securities">
     @GET("/securities/search") SecurityCompactDTOList searchSecurities(
             @Query("q") String searchString,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+    //</editor-fold>
+
+    //<editor-fold desc="Search hot Securities">
+    @GET("/securities/trendingSearch") SecurityCompactExtraDTOList searchHotSecurities(
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
     //</editor-fold>

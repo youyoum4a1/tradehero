@@ -15,9 +15,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.th2.R;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SpinnerExchangeIconAdapter;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
@@ -25,12 +22,15 @@ import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
+import com.tradehero.th2.R;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -110,6 +110,19 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             {
                 Timber.d("上拉加载更多");
                 fetchSecurityList();
+            }
+        });
+
+        listSecurity.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
+            {
+                SecurityCompactDTO dto = (SecurityCompactDTO) adapterSecurity.getItem((int)position);
+                if (dto != null)
+                {
+                    Timber.d("list item clicked %s", dto.name);
+                    enterSecurity(dto.getSecurityId(),dto.name);
+                }
             }
         });
     }
@@ -236,18 +249,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             currentPage = 0;
             adapterSecurity = new SecurityListAdapter(getActivity(), list, getTradeType());
             listSecurity.setAdapter(adapterSecurity);
-            listSecurity.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
-                {
-                    SecurityCompactDTO dto = (SecurityCompactDTO) adapterSecurity.getItem((int)position);
-                    if (dto != null)
-                    {
-                        Timber.d("list item clicked %s", dto.name);
-                        enterSecurity(dto.getSecurityId(),dto.name);
-                    }
-                }
-            });
+
         }
         else
         {

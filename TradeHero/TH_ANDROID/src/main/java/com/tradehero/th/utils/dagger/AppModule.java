@@ -12,6 +12,7 @@ import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.adapters.SecurityListAdapter;
+import com.tradehero.th.adapters.SecuritySearchListAdapter;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
@@ -32,24 +33,24 @@ import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryHotTopicFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryRecentNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryStockGodNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfChinaConceptFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfHotHoldFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfHotWatchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfMineFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.TradeOfTypeBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCreateFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionMineFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSearchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfChinaConceptFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfHotHoldFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfHotWatchFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfMineFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfTypeBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.AbsLeaderboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.LeaderboardFromExchangeFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.LeaderboardFromIndustryFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.BuySaleSecurityFragment;
@@ -82,6 +83,7 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItem
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
@@ -95,7 +97,6 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
@@ -449,6 +450,7 @@ import javax.inject.Singleton;
 
                         LeaderboardListAdapter.class,
                         SecurityListAdapter.class,
+                        SecuritySearchListAdapter.class,
                         MyTradePositionListAdapter.class,
 
                         AbsLeaderboardFragment.class,

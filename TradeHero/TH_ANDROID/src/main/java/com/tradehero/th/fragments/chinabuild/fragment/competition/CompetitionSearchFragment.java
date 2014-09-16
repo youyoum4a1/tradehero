@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -20,11 +21,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.cache.CompetitionListType;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeMine;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeOffical;
 import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeSearch;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeUser;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeVip;
 import com.tradehero.th.fragments.chinabuild.cache.CompetitionNewCache;
 import com.tradehero.th.fragments.chinabuild.data.CompetitionDataItem;
 import com.tradehero.th.fragments.chinabuild.data.CompetitionInterface;
@@ -47,11 +44,13 @@ public class CompetitionSearchFragment extends DashboardFragment
     @Inject Lazy<CompetitionNewCache> competitionNewCacheLazy;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerSearch;
 
-    @InjectView(R.id.listSearch) SecurityListView listCompetitions;//比赛列表
+
     private CompetitionListAdapter adapterList;
     private ProgressDialog mTransactionDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
 
+
+    @InjectView(R.id.listSearch) SecurityListView listCompetitions;//比赛列表
     @InjectView(R.id.tvSearch) TextView tvSearch;
     @InjectView(R.id.edtSearchInput) TextView tvSearchInput;
     @InjectView(R.id.btn_search_x) Button btnSearch_x;
@@ -89,6 +88,21 @@ public class CompetitionSearchFragment extends DashboardFragment
     {
         initListView();
         tvSearchInput.setHint("请输入比赛关键字");
+        tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override public boolean onEditorAction(TextView textView, int actionId, android.view.KeyEvent keyEvent)
+            {
+                switch (actionId)
+                {
+                    case EditorInfo.IME_ACTION_SEARCH:
+                        toSearch();
+                        break;
+                    case EditorInfo.IME_ACTION_DONE:
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     @OnClick(R.id.btn_search_x)

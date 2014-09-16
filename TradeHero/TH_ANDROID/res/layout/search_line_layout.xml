@@ -52,6 +52,7 @@
         android:layout_height="fill_parent"
         android:textSize="12sp"
         android:background="@color/transparent"
+        android:imeOptions="actionSearch"
         android:hint="股票代码／拼音／简称"/>
   </RelativeLayout>
 </RelativeLayout>

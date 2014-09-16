@@ -9,16 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th2.R;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -40,13 +38,21 @@ public class LeaderboardListAdapter extends BaseAdapter
             R.drawable.icon_rank_third_place
     };
 
-    public LeaderboardListAdapter(Context context, LeaderboardUserDTOList list, int leaderboardType)
+    public LeaderboardListAdapter(Context context)
     {
         DaggerUtils.inject(this);
         this.context = context;
-        this.leaderboardUserDTOs = list;
-        this.leaderboardType = leaderboardType;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public void setListData(LeaderboardUserDTOList list)
+    {
+        this.leaderboardUserDTOs = list;
+    }
+
+    public void setLeaderboardType(int leaderboardType)
+    {
+        this.leaderboardType = leaderboardType;
     }
 
     public void addItems(LeaderboardUserDTOList listAdd)
