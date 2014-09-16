@@ -19,7 +19,8 @@ import dagger.Module;
                 UserFriendDTOView.class,
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
-                SettingsAlipayFragment.class
+                SettingsAlipayFragment.class,
+                ShowUnreadPreference.class
         },
         library = true,
         complete = false
