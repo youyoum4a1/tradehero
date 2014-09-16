@@ -58,6 +58,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFra
 import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest01;
 import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest02;
 import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest03;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
@@ -474,6 +475,7 @@ import javax.inject.Singleton;
                         CompetitionSecuritySearchFragment.class,
 
                         PortfolioFragment.class,
+                        UserMainPage.class,
                         //China Build End
                 },
         staticInjections =

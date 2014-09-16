@@ -28,6 +28,7 @@ import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -87,6 +88,23 @@ public class PortfolioFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain("TA的持仓");
+        if (portfolioUserKey != 0)
+        {
+            setHeadViewRight0("TA的主页");
+        }
+    }
+
+    @Override public void onClickHeadRight0()
+    {
+        super.onClickHeadRight0();
+        enterUserMainPage();
+    }
+
+    public void enterUserMainPage()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, portfolioUserKey);
+        pushFragment(UserMainPage.class, bundle);
     }
 
     @Override
@@ -139,7 +157,7 @@ public class PortfolioFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE,competitionId);
+        bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
         pushFragment(SecurityDetailFragment.class, bundle);
     }
 
@@ -177,17 +195,16 @@ public class PortfolioFragment extends DashboardFragment
             portfolioCompactDTO = (PortfolioCompactDTO) bundle.getSerializable(BUNLDE_PORTFOLIO_DTO);
             competitionId = bundle.getInt(BUNLDE_COMPETITION_ID);
             if (leaderboardUserMarkId != 0)
-            {
-                //THToast.show("leaderboardUserMarkId:  " + leaderboardUserMarkId);
+            { //来自比赛的持仓
                 getPositionsDTOKey = new LeaderboardMarkUserId((int) leaderboardUserMarkId);
             }
             else if (portfolioUserKey != 0)
-            {
+            { //来自股神持仓，股神的主账户持仓
                 showUserBaseKey = new UserBaseKey(portfolioUserKey);
                 getDefaultPortfolio();
             }
             else if (portfolioCompactDTO != null)
-            {
+            {//来自比赛的持仓，我的当前比赛持仓
                 getPositionsFromPortfolio(portfolioCompactDTO);
             }
         }

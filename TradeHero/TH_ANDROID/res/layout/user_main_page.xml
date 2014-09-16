@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contest_center_content_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_fragment"
+    android:orientation="vertical"
+    >
+  <include layout="@layout/user_main_page_header"/>
+
+  <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+      android:id="@+id/listTimeLine"
+      android:scrollingCache="false"
+      android:fadingEdge="none"
+      android:divider="@color/gray_1"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+  </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+
+</LinearLayout>
+

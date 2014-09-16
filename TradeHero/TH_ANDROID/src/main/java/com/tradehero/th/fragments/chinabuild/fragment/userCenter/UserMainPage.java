@@ -1,0 +1,389 @@
+package com.tradehero.th.fragments.chinabuild.fragment.userCenter;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.squareup.picasso.Picasso;
+import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.network.service.UserTimelineServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th2.R;
+import dagger.Lazy;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
+
+/**
+ * Created by huhaiping on 14-9-16.
+ */
+public class UserMainPage extends DashboardFragment
+{
+
+    public static final String BUNDLE_USER_BASE_KEY = "bundle_user_base_key";//用户ID
+
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> currentUserProfileCacheListener;
+    @Inject CurrentUserId currentUserId;
+
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    private MiddleCallback<UserProfileDTO> freeUnFollowMiddleCallback;
+    private MiddleCallback<TimelineDTO> timeLineMiddleCallback;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject protected Picasso picasso;
+
+    @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
+
+    @InjectView(R.id.imgMeHead) ImageView imgMeHead;
+    @InjectView(R.id.tvMeName) TextView tvMeName;
+    @InjectView(R.id.tvAllAmount) TextView tvAllAmount;
+    @InjectView(R.id.tvAllHero) TextView tvAllHero;
+    @InjectView(R.id.tvAllFans) TextView tvAllFans;
+    @InjectView(R.id.tvEarning) TextView tvEarning;
+    @InjectView(R.id.imgArrorRight) ImageView imgArrorRight;
+    @InjectView(R.id.tvUserCared) TextView tvUserCared;
+
+    @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
+
+    private int userID;
+    private UserBaseKey userBaseKey;
+    private UserProfileDTO currentUserProfileDTO;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        userID = getUserID();
+        if (userID != 0)
+        {
+            userBaseKey = new UserBaseKey(userID);
+        }
+        Timber.d("UserID = " + userID);
+        userProfileCacheListener = createUserProfileFetchListener();
+        currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain("TA的主页");
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.user_main_page, container, false);
+        ButterKnife.inject(this, view);
+        fetchUserProfile();
+        fetchCurrentUserProfile();
+        fetchTimeLine();
+        initView();
+        return view;
+    }
+
+    public void initView()
+    {
+        imgArrorRight.setVisibility(View.INVISIBLE);
+    }
+
+    public void displayFollow()
+    {
+        tvUserCared.setVisibility(View.VISIBLE);
+        if (isFollowUser())
+        {
+            tvUserCared.setText("已关注");
+            tvUserCared.setBackgroundResource(R.drawable.btn_cared_xml);
+        }
+        else
+        {
+            tvUserCared.setText("关注");
+            tvUserCared.setBackgroundResource(R.drawable.btn_care_action_xml);
+        }
+    }
+
+    @OnClick(R.id.tvUserCared)
+    public void onClickCare()
+    {
+        Timber.d("onClicked!");
+        todoFollowing();
+    }
+
+    public void todoFollowing()
+    {
+        if (isFollowUser())
+        {
+            //去取消关注
+            freeUnFollow(userBaseKey);
+        }
+        else
+        {
+            //去关注
+            freeFollow(userBaseKey);
+        }
+    }
+
+    public boolean isFollowUser()
+    {
+        return currentUserProfileDTO.isFollowingUser(userID);
+    }
+
+    public int getUserID()
+    {
+        Bundle bundle = getArguments();
+        if (bundle != null)
+        {
+            this.userID = getArguments().getInt(BUNDLE_USER_BASE_KEY, 0);
+        }
+        return userID;
+    }
+
+    @Override public void onStop()
+    {
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
+        detachUserProfileCache();
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        userProfileCacheListener = null;
+        timeLineMiddleCallback = null;
+        freeFollowMiddleCallback = null;
+        freeUnFollowMiddleCallback = null;
+        super.onDestroy();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
+    {
+        return new UserProfileFetchListener();
+    }
+
+    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            linkWith(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+
+        }
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createCurrentUserProfileFetchListener()
+    {
+        return new CurrentUserProfileFetchListener();
+    }
+
+    protected class CurrentUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            setCurrentUserDTO(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+
+        }
+    }
+
+    protected void freeFollow(@NotNull UserBaseKey heroId)
+    {
+        alertDialogUtilLazy.get().showProgressDialog(getActivity(), getActivity().getString(
+                R.string.following_this_hero));
+        detachFreeFollowMiddleCallback();
+        freeFollowMiddleCallback =
+                userServiceWrapperLazy.get()
+                        .freeFollow(heroId, new FreeFollowCallback());
+    }
+
+    protected void freeUnFollow(@NotNull UserBaseKey heroId)
+    {
+        alertDialogUtilLazy.get().showProgressDialog(getActivity(), getActivity().getString(
+                R.string.unfollowing_this_hero));
+        detachFreeUnFollowMiddleCallback();
+        freeUnFollowMiddleCallback =
+                userServiceWrapperLazy.get().unfollow(heroId, new FreeUnFollowCallback());
+    }
+
+    public class FreeUnFollowCallback implements retrofit.Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            alertDialogUtilLazy.get().dismissProgressDialog();
+            userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            currentUserProfileDTO = userProfileDTO;
+            displayFollow();
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+            alertDialogUtilLazy.get().dismissProgressDialog();
+        }
+    }
+
+    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            alertDialogUtilLazy.get().dismissProgressDialog();
+            userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            currentUserProfileDTO = userProfileDTO;
+            displayFollow();
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+            alertDialogUtilLazy.get().dismissProgressDialog();
+        }
+    }
+
+    private void detachFreeFollowMiddleCallback()
+    {
+        if (freeFollowMiddleCallback != null)
+        {
+            freeFollowMiddleCallback.setPrimaryCallback(null);
+        }
+        freeFollowMiddleCallback = null;
+    }
+
+    private void detachFreeUnFollowMiddleCallback()
+    {
+        if (freeUnFollowMiddleCallback != null)
+        {
+            freeUnFollowMiddleCallback.setPrimaryCallback(null);
+        }
+        freeUnFollowMiddleCallback = null;
+    }
+
+    private void detachTimeLineMiddleCallback()
+    {
+        if (timeLineMiddleCallback != null)
+        {
+            timeLineMiddleCallback.setPrimaryCallback(null);
+        }
+        timeLineMiddleCallback = null;
+    }
+
+    public void setCurrentUserDTO(UserProfileDTO userDTO)
+    {
+        this.currentUserProfileDTO = userDTO;
+        displayFollow();
+    }
+
+    private void linkWith(UserProfileDTO user)
+    {
+        if (user != null)
+        {
+            if (user.picture != null && imgMeHead != null)
+            {
+                picasso.load(user.picture).placeholder(R.drawable.superman_facebook).fit().error(R.drawable.superman_facebook)
+                        .centerInside().into(imgMeHead);
+            }
+            tvMeName.setText(user.displayName);
+            tvAllFans.setText(String.valueOf(user.allFollowerCount));
+            tvAllHero.setText(String.valueOf(user.heroIds == null ? 0 : user.heroIds.size()));
+        }
+        linkWith(user.portfolio);
+    }
+
+    private void linkWith(PortfolioCompactDTO cached)
+    {
+        if (cached != null)
+        {
+            String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
+            tvAllAmount.setText(valueString);
+
+            THSignedNumber roi = THSignedPercentage.builder(cached.roiSinceInception * 100)
+                    .withSign()
+                    .signTypeArrow()
+                    .build();
+            tvEarning.setText(roi.toString());
+            tvEarning.setTextColor(getResources().getColor(roi.getColorResId()));
+        }
+    }
+
+    private void detachUserProfileCache()
+    {
+        userProfileCache.get().unregister(userProfileCacheListener);
+    }
+
+    private void detachCurrentUserProfileCache()
+    {
+        userProfileCache.get().unregister(currentUserProfileCacheListener);
+    }
+
+    protected void fetchUserProfile()
+    {
+        detachUserProfileCache();
+        userProfileCache.get().register(userBaseKey, userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(userBaseKey);
+    }
+
+    protected void fetchCurrentUserProfile()
+    {
+        detachCurrentUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), currentUserProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    public void fetchTimeLine()
+    {
+        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineNew(userBaseKey, 10, -1, -1, new TimeLineCallback());
+    }
+
+    public class TimeLineCallback implements retrofit.Callback<TimelineDTO>
+    {
+        @Override public void success(TimelineDTO userProfileDTO, Response response)
+        {
+            Timber.d("ddd");
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+        }
+    }
+}

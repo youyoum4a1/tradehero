@@ -71,6 +71,22 @@ import retrofit.client.Response;
         userTimelineServiceAsync.getTimeline(userId.key, maxCount, maxId, minId, middleCallback);
         return middleCallback;
     }
+
+    //<editor-fold desc="Get User Timeline">
+    //china build get Timeline
+    public TimelineDTO getTimelineNew(
+            @NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
+    {
+        return userTimelineService.getTimelineNew(userId.key, maxCount, maxId, minId);
+    }
+
+    public @NotNull MiddleCallback<TimelineDTO> getTimelineNew(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
+            @Nullable Callback<TimelineDTO> callback)
+    {
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userTimelineServiceAsync.getTimelineNew(userId.key, maxCount, maxId, minId, middleCallback);
+        return middleCallback;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">

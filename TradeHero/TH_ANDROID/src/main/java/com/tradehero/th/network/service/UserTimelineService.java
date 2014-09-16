@@ -33,6 +33,17 @@ public interface UserTimelineService
             @Query("minId") Integer minId);
     //</editor-fold>
 
+
+    //<editor-fold desc="Get User Timeline">
+    @GET("/users/{userId}/timeline?type=filtered&includeComment=true&includeTrade=true")
+    TimelineDTO getTimelineNew(
+            @Path("userId") int userId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId);
+    //</editor-fold>
+
+
     //<editor-fold desc="Share Timeline Item">
     @POST("/users/{userId}/timeline/{timelineItemId}/share")
     Response shareTimelineItem( // Appears to return a boolean

@@ -25,7 +25,8 @@
   </string>
   <string name="continue_free_follow">Continue with\nFree Follow</string>
   <string name="upgrade">Upgrade</string>
-  <string name="following_this_hero">Following this hero...</string>
+  <string name="following_this_hero">正在关注这个英雄...</string>
+  <string name="unfollowing_this_hero">正在取消关注这个英雄...</string>
   <string name="free_message_left">%1$s free message left</string>
   <string name="upgrade_to_message_more">Upgrade to message more!</string>
 </resources>

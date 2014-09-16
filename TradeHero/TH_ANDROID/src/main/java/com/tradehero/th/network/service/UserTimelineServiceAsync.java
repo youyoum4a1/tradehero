@@ -37,6 +37,18 @@ interface UserTimelineServiceAsync
             Callback<TimelineDTO> callback);
     //</editor-fold>
 
+    //<editor-fold desc="Get User Timeline">
+    @GET("/users/{userId}/timeline?type=filtered&includeComment=true&includeTrade=true")
+    void getTimelineNew(
+            @Path("userId") int userId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
+            Callback<TimelineDTO> callback);
+    //</editor-fold>
+
+
+
     //<editor-fold desc="Share Timeline Item">
     @POST("/users/{userId}/timeline/{timelineItemId}/share")
     void shareTimelineItem(

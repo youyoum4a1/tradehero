@@ -1,6 +1,8 @@
 package com.tradehero.th.api.timeline;
 
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +12,9 @@ public class TimelineDTO
     private List<UserProfileCompactDTO> users;
     private List<SecurityCompactDTO> securities;
     private List<TimelineItemDTO> enhancedItems;
+    private List<DiscussionDTO> comments;
+    private List<TradeDTO> trades;
+
 
     public UserProfileCompactDTO getUserById(int userId)
     {
@@ -60,4 +65,15 @@ public class TimelineDTO
     {
         this.users = users;
     }
+
+    public List<DiscussionDTO> getComments()
+    {
+        return Collections.unmodifiableList(comments);
+    }
+
+    public List<TradeDTO> getTrades()
+    {
+        return Collections.unmodifiableList(trades);
+    }
+
 }
