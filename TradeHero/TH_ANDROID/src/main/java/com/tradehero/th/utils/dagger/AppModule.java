@@ -1,7 +1,6 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-
 import com.tradehero.FlavorModule;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -9,7 +8,6 @@ import com.tradehero.th.base.THApp;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.fragments.settings.ShowUnreadPreference;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -27,13 +25,10 @@ import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.MetricsModule;
-
-import java.util.Locale;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import java.util.Locale;
+import javax.inject.Singleton;
 
 @Module(
         includes = {
@@ -70,7 +65,6 @@ import dagger.Provides;
                         FriendListLoader.class,
                         MessageHeaderDTO.class,
                         GuideActivity.class,
-                        ShowUnreadPreference.class,
                 },
         staticInjections =
                 {
