@@ -29,18 +29,18 @@ import dagger.Provides;
 )
 public class TestModule
 {
-    @Provides Activity dummyProvideActivity()
-    {
-        throw new IllegalStateException("You should override this provider");
-    }
-
-    @Provides DashboardNavigator dummyProvideDashboardNavigator()
-    {
-        throw new IllegalStateException("You should override this provider");
-    }
-
-    @Provides THRouter dummyProvideTHRouter()
-    {
-        throw new IllegalStateException("You should override this provider");
-    }
+    //@Provides Activity dummyProvideActivity()
+    //{
+    //    throw new IllegalStateException("You should override this provider");
+    //}
+    //
+    //@Provides DashboardNavigator dummyProvideDashboardNavigator()
+    //{
+    //    throw new IllegalStateException("You should override this provider");
+    //}
+    //
+    //@Provides THRouter dummyProvideTHRouter()
+    //{
+    //    throw new IllegalStateException("You should override this provider");
+    //}
 }
