@@ -14,6 +14,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
@@ -24,6 +25,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
+import com.tradehero.th.widget.MultiScrollListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -36,6 +38,7 @@ public class NewsHeadlineFragment extends SherlockFragment
     @InjectView(android.R.id.progress) ProgressBar mProgressBar;
 
     @Inject NewsItemCompactListCacheNew newsItemCompactListCache;
+    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     private int mDisplayedViewId;
     private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> mFeaturedNewsListener;
@@ -82,7 +85,7 @@ public class NewsHeadlineFragment extends SherlockFragment
         paddingHeader.setLayoutParams(new AbsListView.LayoutParams(1, getResources().getDimensionPixelOffset(R.dimen.discovery_news_carousel_height)));
         mNewsListView.addHeaderView(paddingHeader);
         mNewsListView.setAdapter(mFeaturedNewsAdapter);
-        mNewsListView.setOnScrollListener(scrollListener);
+        mNewsListView.setOnScrollListener(new MultiScrollListener(scrollListener, dashboardBottomTabsScrollListener));
     }
 
     public void setScrollListener(AbsListView.OnScrollListener scrollListener)
