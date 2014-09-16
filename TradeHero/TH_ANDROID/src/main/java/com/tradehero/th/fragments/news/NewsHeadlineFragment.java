@@ -26,11 +26,11 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -117,7 +117,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         }
         else
         {
-            handleNewClicked(tempPosition,tempDto);
+            handleNewClicked(tempPosition, tempDto);
         }
     }
 
@@ -232,11 +232,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         displayNewsListView();
 
         showNewsList();
-    }
-
-    @Override public void onErrorThrown(@NotNull SecurityId securityId, @NotNull Throwable error)
-    {
-        super.onErrorThrown(securityId, error);
     }
 
     public void linkWith(PaginatedDTO<NewsItemCompactDTO> news, boolean andDisplay)

@@ -138,20 +138,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         super.onPause();
     }
 
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-    }
-
-    @Override public void onStop()
-    {
-        // It comes at the end, so that the listView does not update the view
-        //DeviceUtil.dismissKeyboard(getActivity());
-
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         securityListView.setOnItemClickListener(null);
@@ -271,10 +257,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     private class SecurityListOnGestureListener extends GestureDetector.SimpleOnGestureListener
     {
-        @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
-        {
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
     }
 
     protected class SecurityListOnTouchListener implements View.OnTouchListener

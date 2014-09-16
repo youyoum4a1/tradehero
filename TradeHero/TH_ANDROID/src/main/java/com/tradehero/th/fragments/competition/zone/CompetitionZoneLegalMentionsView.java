@@ -2,32 +2,35 @@ package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
 import timber.log.Timber;
 
 public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneListItemView
 {
-    private TextView rules;
-    private TextView terms;
-    private ProviderId providerId;
+    @InjectView(R.id.competition_legal_rules) TextView rules;
+    @InjectView(R.id.competition_legal_terms) TextView terms;
     private OnElementClickedListener elementClickedListener;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionZoneLegalMentionsView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionZoneLegalMentionsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionZoneLegalMentionsView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -37,50 +40,18 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
-    }
-
-    private void initViews()
-    {
-        rules = (TextView) findViewById(R.id.competition_legal_rules);
-        terms = (TextView) findViewById(R.id.competition_legal_terms);
+        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (rules != null)
-        {
-            rules.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    pushRulesFragment();
-                }
-            });
-        }
-        if (terms != null)
-        {
-            terms.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    pushTermsFragment();
-                }
-            });
-        }
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        if (rules != null)
-        {
-            rules.setOnClickListener(null);
-        }
-        if (terms != null)
-        {
-            terms.setOnClickListener(null);
-        }
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
@@ -96,15 +67,6 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
         {
             displayRules();
             displayTerms();
-        }
-    }
-
-    public void linkWith(ProviderId providerId, boolean andDisplay)
-    {
-        this.providerId = providerId;
-
-        if (andDisplay)
-        {
         }
     }
 
@@ -145,14 +107,17 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
         this.elementClickedListener = elementClickedListener;
     }
 
-    private void pushRulesFragment()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.competition_legal_rules)
+    void pushRulesFragment()
     {
         Timber.d("pushRulesFragment");
         notifyElementClicked(CompetitionZoneLegalDTO.LinkType.RULES);
         // Rely on item click listener
     }
 
-    private void pushTermsFragment()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.competition_legal_terms) void pushTermsFragment()
     {
         Timber.d("pushTermsFragment");
         notifyElementClicked(CompetitionZoneLegalDTO.LinkType.TERMS);

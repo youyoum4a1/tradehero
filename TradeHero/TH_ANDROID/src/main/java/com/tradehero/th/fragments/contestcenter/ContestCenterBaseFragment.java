@@ -67,12 +67,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.contest_center_content_screen, container, false);

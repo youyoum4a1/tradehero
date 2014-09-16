@@ -34,11 +34,6 @@ public class THRouter extends Router
     }
     //</editor-fold>
 
-    @Override public void map(String format, Class<? extends Activity> klass)
-    {
-        super.map(format, klass);
-    }
-
     @Override public void open(String url, Bundle extras, Context context)
     {
         if (context == null)

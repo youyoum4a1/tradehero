@@ -22,20 +22,25 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
 {
     @Inject ProviderUtil providerUtil;
 
+    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionLeaderboardMarkUserOwnRankingView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionLeaderboardMarkUserOwnRankingView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionLeaderboardMarkUserOwnRankingView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void displayUserIsNotRanked()
     {

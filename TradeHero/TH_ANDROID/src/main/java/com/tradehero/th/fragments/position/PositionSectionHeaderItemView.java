@@ -15,16 +15,19 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     protected SimpleDateFormat sdf;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public PositionSectionHeaderItemView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PositionSectionHeaderItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PositionSectionHeaderItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);

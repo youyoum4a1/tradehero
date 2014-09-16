@@ -39,11 +39,6 @@ public class AlertCreateFragment extends BaseAlertEditFragment
         super.onStop();
     }
 
-    @Override public void onDestroyView()
-    {
-        super.onDestroyView();
-    }
-
     protected void detachMiddleCallbackCreate()
     {
         if (middleCallbackCreateAlertCompactDTO != null)

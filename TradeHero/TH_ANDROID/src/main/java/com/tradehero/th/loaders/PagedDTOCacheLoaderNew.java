@@ -174,11 +174,6 @@ abstract public class PagedDTOCacheLoaderNew<
         }
     }
 
-    @Override
-    protected void onStartLoading() {
-        super.onStartLoading();
-    }
-
     /**
      * Listeners should be strongly referenced elsewhere
      * @param queryingChangedListener

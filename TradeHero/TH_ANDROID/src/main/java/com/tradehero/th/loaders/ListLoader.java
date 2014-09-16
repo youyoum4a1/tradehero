@@ -53,11 +53,6 @@ public abstract class ListLoader<D> extends AsyncTaskLoader<List<D>>
         }
     }
 
-    @Override protected void onStopLoading()
-    {
-        super.onStopLoading();
-    }
-
     @Override public void onCanceled(List<D> data)
     {
         super.onCanceled(data);

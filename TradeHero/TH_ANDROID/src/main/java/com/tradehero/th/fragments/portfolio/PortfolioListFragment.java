@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -32,7 +33,7 @@ public class PortfolioListFragment extends DashboardFragment
     implements WithTutorial
 {
     private ProgressBar progressBar;
-    private PortfolioListView portfolioListView;
+    private ListView portfolioListView;
 
     private PortfolioListItemAdapter portfolioListAdapter;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
@@ -74,7 +75,7 @@ public class PortfolioListFragment extends DashboardFragment
                 portfolioListAdapter = new PortfolioListItemAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_list_item, R.layout.portfolio_list_header);
             }
 
-            portfolioListView = (PortfolioListView) view.findViewById(R.id.own_portfolios_list);
+            portfolioListView = (ListView) view.findViewById(R.id.own_portfolios_list);
             if (portfolioListView != null)
             {
                 portfolioListView.setOnItemClickListener(new AdapterView.OnItemClickListener()

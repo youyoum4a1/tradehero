@@ -43,7 +43,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
+        ButterKnife.inject(this);
         HierarchyInjector.inject(this);
     }
 
@@ -51,11 +51,6 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
     {
         picasso.cancelRequest(zoneIcon);
         super.onDetachedFromWindow();
-    }
-
-    protected void initViews()
-    {
-        ButterKnife.inject(this);
     }
 
     public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)

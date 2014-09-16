@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -35,6 +38,7 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -42,7 +46,6 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -50,19 +53,11 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MarkdownTextView;
-
+import dagger.Lazy;
+import java.text.SimpleDateFormat;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.text.SimpleDateFormat;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.Optional;
-import dagger.Lazy;
 import retrofit.client.Response;
 import timber.log.Timber;
 
@@ -92,7 +87,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
     @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
-    @InjectView(R.id.leaderboard_user_item_info) ImageView lbmuPositionInfo;
 
     // expanding view
     @InjectView(R.id.lbmu_pl) TextView lbmuPl;
@@ -499,12 +493,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             boolean showImage = isFollowing != null && isFollowing;
             lbmuFollowingUser.setVisibility(showImage ? VISIBLE : GONE);
         }
-    }
-
-    @OnClick(R.id.leaderboard_user_item_info)
-    protected void handleUserInfoClicked()
-    {
-        // Nothing?
     }
 
     @OnClick(R.id.leaderboard_user_item_open_profile)

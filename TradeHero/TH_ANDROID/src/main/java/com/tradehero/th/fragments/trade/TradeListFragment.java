@@ -72,7 +72,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject Lazy<TradeListCache> tradeListCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject PortfolioCache portfolioCache;
     @Inject CurrentUserId currentUserId;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
     @Inject THRouter thRouter;

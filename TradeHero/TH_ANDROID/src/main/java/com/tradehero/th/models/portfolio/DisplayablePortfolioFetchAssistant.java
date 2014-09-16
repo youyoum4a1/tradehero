@@ -43,10 +43,6 @@ public class DisplayablePortfolioFetchAssistant
         displayPortfolios = new HashMap<>();
     }
 
-    public void onDestroy()
-    {
-    }
-
     public void setFetchedListener(@Nullable OnFetchedListener fetchedListener)
     {
         this.fetchedListener = fetchedListener;

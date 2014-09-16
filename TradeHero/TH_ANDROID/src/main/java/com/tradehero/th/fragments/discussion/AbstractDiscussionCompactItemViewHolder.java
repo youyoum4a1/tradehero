@@ -386,6 +386,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
 
     public static interface OnMenuClickedListener extends DiscussionActionButtonsView.OnButtonClickedListener
     {
+        @Deprecated // TODO remove as all implementations are empty
         void onTranslationRequested();
     }
 }

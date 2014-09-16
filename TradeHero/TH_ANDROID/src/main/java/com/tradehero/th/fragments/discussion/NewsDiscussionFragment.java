@@ -84,11 +84,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         super.linkWith(discussionKey, andDisplay);

@@ -17,11 +17,6 @@ public class UserTagProcessor extends ClickableTagProcessor
         return "$1";
     }
 
-    @Override protected Span getSpanElement(String replacement, String[] matchStrings)
-    {
-        return super.getSpanElement(replacement, matchStrings);
-    }
-
     @Override public String key()
     {
         return "user";

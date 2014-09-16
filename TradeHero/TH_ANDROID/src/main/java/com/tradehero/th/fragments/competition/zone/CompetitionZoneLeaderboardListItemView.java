@@ -20,26 +20,24 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
     @InjectView(R.id.competition_roi) protected TextView roiView;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionZoneLeaderboardListItemView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionZoneLeaderboardListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionZoneLeaderboardListItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    @Override protected void initViews()
-    {
-        super.initViews();
-    }
 
     @Override public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
     {

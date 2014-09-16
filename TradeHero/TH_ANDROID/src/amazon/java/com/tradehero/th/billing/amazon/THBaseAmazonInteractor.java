@@ -56,8 +56,6 @@ public class THBaseAmazonInteractor
                 AmazonException>
     implements THAmazonInteractor
 {
-    public static final String BUNDLE_KEY_ACTION = THBaseAmazonInteractor.class.getName() + ".action";
-
     @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
     @NotNull protected final HeroListCache heroListCache;
     @NotNull protected final UserService userService;
@@ -93,13 +91,6 @@ public class THBaseAmazonInteractor
     {
         return AmazonConstants.NAME;
     }
-
-    //<editor-fold desc="Life Cycle">
-    public void onDestroy()
-    {
-        super.onDestroy();
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Request Handling">
     @Override public int run(@NotNull THUIAmazonRequest uiBillingRequest)

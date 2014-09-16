@@ -164,7 +164,6 @@ public class PositionView extends LinearLayout
         }
         if (andDisplay)
         {
-            displayExpandingPart();
         }
     }
 
@@ -199,7 +198,6 @@ public class PositionView extends LinearLayout
         displayTopView();
         displayBottomView();
         displayModelPart();
-        displayExpandingPart();
         displayHistoryButton();
     }
 
@@ -207,10 +205,6 @@ public class PositionView extends LinearLayout
     {
         displayColorIndicator();
         displayButtonSell();
-    }
-
-    public void displayExpandingPart()
-    {
     }
 
     public void displayTopView()

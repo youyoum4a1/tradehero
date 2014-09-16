@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@null">
 
-  <com.tradehero.th.fragments.portfolio.PortfolioListView
+  <ListView
       android:id="@+id/own_portfolios_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

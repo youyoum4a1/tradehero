@@ -60,11 +60,6 @@ public class ContestContentView extends RelativeLayout
         displayView();
     }
 
-    @Override protected void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
-    }
-
     @Override public void display(ContestPageDTO dto)
     {
         this.communityPageDTO = dto;

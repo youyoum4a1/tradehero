@@ -13,6 +13,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
@@ -91,7 +92,7 @@ public class PositionListFragment
 
     @InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
-    @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView;
+    @InjectView(R.id.pull_to_refresh_position_list) PullToRefreshListView pullToRefreshListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.error) View errorView;
 

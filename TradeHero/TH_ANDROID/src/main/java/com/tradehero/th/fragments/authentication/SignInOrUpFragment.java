@@ -55,12 +55,6 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
         checkLocale();
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-    }
-
     private void checkLocale()
     {
         boolean isChineseLocale = deviceTokenHelper.isChineseVersion();

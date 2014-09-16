@@ -53,11 +53,6 @@ public class MentionActionButtonsView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
-
     //<editor-fold desc="To be used in future, we should encapsulate searching for people and stock within this view, instead of doing it in the parent fragment">
     public static interface OnMentionListener
     {

@@ -29,7 +29,6 @@ import timber.log.Timber;
 public class NotificationClickHandler
 {
     private final NotificationDTO notificationDTO;
-    private final Context context;
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
@@ -40,7 +39,6 @@ public class NotificationClickHandler
             Context context,
             NotificationDTO notificationDTO)
     {
-        this.context = context;
         this.notificationDTO = notificationDTO;
 
         HierarchyInjector.inject(context, this);

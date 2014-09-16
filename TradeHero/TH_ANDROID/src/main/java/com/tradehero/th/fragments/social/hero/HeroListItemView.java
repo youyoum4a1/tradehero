@@ -79,11 +79,6 @@ public class HeroListItemView extends RelativeLayout
         HierarchyInjector.inject(this);
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
-
     @OnClick(R.id.ic_status) void onStatusIconClicked()
     {
         //OnHeroStatusButtonClickedListener heroStatusButtonClickedListener = HeroListItemView.this.heroStatusButtonClickedListener.get();

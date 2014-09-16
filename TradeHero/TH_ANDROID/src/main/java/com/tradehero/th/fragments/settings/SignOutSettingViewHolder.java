@@ -37,11 +37,6 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
-    {
-        super.initViews(preferenceFragment);
-    }
-
     @Override protected int getStringKeyResId()
     {
         return R.string.key_settings_misc_sign_out;

@@ -93,11 +93,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-    }
-
     @Override public void onDestroy()
     {
         transactionListCacheListener = null;

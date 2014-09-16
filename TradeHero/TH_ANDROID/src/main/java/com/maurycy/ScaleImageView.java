@@ -20,23 +20,28 @@ public class ScaleImageView extends ImageView
     private ImageChangeListener imageChangeListener;
     private boolean scaleToWidth = false; // this flag determines if should measure height manually dependent of width
 
+    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public ScaleImageView(Context context)
     {
         super(context);
         init();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ScaleImageView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
         init();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ScaleImageView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         init();
     }
+    //</editor-fold>
 
     private void init()
     {
@@ -61,12 +66,6 @@ public class ScaleImageView extends ImageView
         {
             imageChangeListener.changed((d == null));
         }
-    }
-
-    @Override
-    public void setImageResource(int id)
-    {
-        super.setImageResource(id);
     }
 
     public interface ImageChangeListener

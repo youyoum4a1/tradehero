@@ -140,11 +140,6 @@ public class StockInfoFragment extends DashboardFragment
         displayMarketClose();
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-    }
-
     @Override public void onPause()
     {
         detachSecurityCompactCache();

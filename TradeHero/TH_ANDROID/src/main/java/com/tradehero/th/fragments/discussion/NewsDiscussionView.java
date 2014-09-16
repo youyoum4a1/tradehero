@@ -6,26 +6,24 @@ import android.util.AttributeSet;
 public class NewsDiscussionView extends DiscussionView
 {
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public NewsDiscussionView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public NewsDiscussionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public NewsDiscussionView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-    }
 
     @Override protected void setLoading()
     {

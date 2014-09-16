@@ -279,16 +279,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         displayActionBarElements();
     }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-    }
-
-    @Override public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item)
-    {
-        return super.onOptionsItemSelected(item);
-    }
     //</editor-fold>
 
     @Override public void onStart()
@@ -991,11 +981,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
     }
 
-    @Override protected void setRefreshingQuote(boolean refreshingQuote)
-    {
-        super.setRefreshingQuote(refreshingQuote);
-    }
-
     @Override protected void prepareFreshQuoteHolder()
     {
         super.prepareFreshQuoteHolder();
@@ -1212,7 +1197,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
                 @Override public void onTransactionFailed(boolean isBuy, THException error)
                 {
-
+                    // TODO Toast error buy?
                 }
             });
         }

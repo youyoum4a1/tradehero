@@ -96,11 +96,6 @@ public class NewsHeadlineFragment extends SherlockFragment
         HierarchyInjector.inject(this);
     }
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override public void onResume()
     {
         super.onResume();

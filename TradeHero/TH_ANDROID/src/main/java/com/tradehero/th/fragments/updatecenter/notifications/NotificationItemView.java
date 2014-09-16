@@ -45,16 +45,19 @@ public class NotificationItemView
     @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public NotificationItemView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public NotificationItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public NotificationItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -67,11 +70,6 @@ public class NotificationItemView
 
         ButterKnife.inject(this);
         HierarchyInjector.inject(this);
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
     }
 
     @Override protected void onDetachedFromWindow()

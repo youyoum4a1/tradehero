@@ -84,11 +84,6 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         forceLoad();
     }
 
-    @Override protected void onReset()
-    {
-        super.onReset();
-    }
-
     public void resetQuery()
     {
         upperItemId = null;

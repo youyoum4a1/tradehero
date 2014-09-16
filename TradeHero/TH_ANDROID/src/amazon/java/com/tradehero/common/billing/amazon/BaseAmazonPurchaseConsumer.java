@@ -90,39 +90,18 @@ abstract public class BaseAmazonPurchaseConsumer<
         }
     }
 
-    private void notifyListenerConsumeFailed(AmazonException exception)
-    {
-        OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException> listener = getConsumptionFinishedListener();
-        if (listener != null)
-        {
-            listener.onPurchaseConsumeFailed(requestCode, purchase, exception);
-        }
-    }
-
     private void handleConsumeFinishedInternal(AmazonPurchaseType purchase)
     {
         consuming = false;
         getPurchaseCache().invalidate(purchase.getOrderId());
         // TODO invalidate incomplete purchases pref?
-        handleConsumeFinished(purchase);
         notifyListenerConsumeFinished(purchase);
-    }
-
-    protected void handleConsumeFinished(AmazonPurchaseType purchase)
-    {
-        // Just for children classes
     }
 
     private void handleConsumeSkippedInternal(AmazonPurchaseType purchase)
     {
         consuming = false;
-        handleConsumeSkipped(purchase);
         notifyListenerConsumeFinished(purchase);
-    }
-
-    protected void handleConsumeSkipped(AmazonPurchaseType purchase)
-    {
-        // Just for children classes
     }
 
     private void notifyListenerConsumeFinished(AmazonPurchaseType purchase)

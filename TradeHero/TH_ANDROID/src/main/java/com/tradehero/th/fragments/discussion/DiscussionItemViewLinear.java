@@ -37,12 +37,6 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
         return new DiscussionItemViewHolder<DiscussionDTO>(getContext());
     }
 
-    @Override protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO,
-            boolean andDisplay)
-    {
-        super.linkWith(abstractDiscussionDTO, andDisplay);
-    }
-
     protected void handleUserClicked(UserBaseKey userClicked)
     {
         Bundle bundle = new Bundle();

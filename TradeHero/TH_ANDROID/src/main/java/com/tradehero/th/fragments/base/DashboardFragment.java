@@ -21,11 +21,6 @@ abstract public class DashboardFragment extends BaseFragment
     @Inject DashboardNavigator navigator;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);

@@ -154,17 +154,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         showSendMessageLayoutIfNecessary();
     }
 
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        //setMessageLayoutShown(false);
-    }
-
-    @Override public void onPause()
-    {
-        super.onPause();
-    }
-
     @Override public void onDestroyView()
     {
         broadcastView.setOnClickListener(null);

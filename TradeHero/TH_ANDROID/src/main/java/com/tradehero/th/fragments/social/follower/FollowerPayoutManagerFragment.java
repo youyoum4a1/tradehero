@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -34,7 +35,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     private ImageView followerPicture;
     private TextView followerName;
     private TextView totalRevenue;
-    private FollowerPaymentListView followerPaymentListView;
+    private ListView followerPaymentListView;
     private View errorView;
 
     private FollowerPaymentListItemAdapter followerPaymentListAdapter;
@@ -79,7 +80,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
         totalRevenue = (TextView) view.findViewById(R.id.follower_revenue);
         followerPaymentListView =
-                (FollowerPaymentListView) view.findViewById(R.id.follower_payments_list);
+                (ListView) view.findViewById(R.id.follower_payments_list);
 
         errorView = view.findViewById(R.id.error_view);
 

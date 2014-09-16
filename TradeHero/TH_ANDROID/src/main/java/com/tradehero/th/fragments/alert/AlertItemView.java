@@ -83,7 +83,6 @@ public class AlertItemView extends RelativeLayout
             displayAlertDescription();
             displayAlertStatus();
             displayTrigger();
-            updateActionButtonsVisibility();
         }
     }
 
@@ -132,10 +131,6 @@ public class AlertItemView extends RelativeLayout
                 getContext().getString(R.string.stock_alert_when_price_move),
                 thPercentageChange.toString()
         ));
-    }
-
-    private void updateActionButtonsVisibility()
-    {
     }
 
     private void displayTrigger()

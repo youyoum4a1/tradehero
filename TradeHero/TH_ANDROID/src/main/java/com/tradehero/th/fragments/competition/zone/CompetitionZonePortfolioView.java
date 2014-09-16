@@ -14,16 +14,19 @@ public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
     @Inject @ForUserPhoto protected Transformation zoneIconTransformation;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionZonePortfolioView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionZonePortfolioView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public CompetitionZonePortfolioView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);

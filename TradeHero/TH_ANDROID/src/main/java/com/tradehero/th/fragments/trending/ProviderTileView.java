@@ -25,16 +25,19 @@ public class ProviderTileView extends ImageView
     private ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public ProviderTileView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ProviderTileView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ProviderTileView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -85,11 +88,6 @@ public class ProviderTileView extends ImageView
                         .into(this);
             }
         }
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
     }
 
     public int getProviderId()

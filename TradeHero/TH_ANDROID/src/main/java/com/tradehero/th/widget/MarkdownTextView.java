@@ -35,11 +35,6 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-    }
-
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
