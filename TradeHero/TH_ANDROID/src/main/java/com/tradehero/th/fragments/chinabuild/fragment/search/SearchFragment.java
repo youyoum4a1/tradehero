@@ -16,20 +16,28 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
+import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
+import com.tradehero.th.api.analytics.SearchSecurityEventForm;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SearchHotSecurityListType;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th2.R;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -41,6 +49,8 @@ public class SearchFragment extends DashboardFragment
 {
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserServiceWrapper userServiceWrapper;
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeCacheListener;
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeHotCacheListener;
 
@@ -89,7 +99,7 @@ public class SearchFragment extends DashboardFragment
     {
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch)
         {
-            fetchHotSecuritySearchList();
+            fetchHotSecuritySearchList(true);
         }
 
         tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener()
@@ -99,7 +109,7 @@ public class SearchFragment extends DashboardFragment
                 switch (actionId)
                 {
                     case EditorInfo.IME_ACTION_SEARCH:
-                        fetchSecuritySearchList();
+                        fetchSecuritySearchList(true);
                         break;
                     case EditorInfo.IME_ACTION_DONE:
                         break;
@@ -117,11 +127,11 @@ public class SearchFragment extends DashboardFragment
                 Timber.d("下拉刷新");
                 if (isUserSearch)
                 {
-                    fetchSecuritySearchList();
+                    fetchSecuritySearchList(true);
                 }
                 else
                 {
-                    fetchHotSecuritySearchList();
+                    fetchHotSecuritySearchList(true);
                 }
             }
 
@@ -148,6 +158,10 @@ public class SearchFragment extends DashboardFragment
                 {
                     Timber.d("list item clicked %s", dto.name);
                     enterSecurity(dto.getSecurityId(),dto.name);
+                    if(isUserSearch)
+                    {
+                        sendAnalytics(dto);
+                    }
                 }
             }
         });
@@ -258,21 +272,21 @@ public class SearchFragment extends DashboardFragment
         }
     }
 
-    private void fetchSecuritySearchList()
+    private void fetchSecuritySearchList(boolean force)
     {
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString())) return;
         detachSecurityListCache();
         keySearch = new SearchSecurityListType(getSearchString(), 1, 50);
         securityCompactListCache.get().register(keySearch, securityListTypeCacheListener);
-        securityCompactListCache.get().getOrFetchAsync(keySearch, true);
+        securityCompactListCache.get().getOrFetchAsync(keySearch, force);
     }
 
-    private void fetchHotSecuritySearchList()
+    private void fetchHotSecuritySearchList(boolean force)
     {
         detachSecurityHotListCache();
         keyHot = new SearchHotSecurityListType(1, 50);
         securityCompactListCache.get().register(keyHot, securityListTypeHotCacheListener);
-        securityCompactListCache.get().getOrFetchAsync(keyHot, true);
+        securityCompactListCache.get().getOrFetchAsync(keyHot, force);
     }
 
     private void fetchSecuritySearchListMore()
@@ -308,7 +322,35 @@ public class SearchFragment extends DashboardFragment
     {
         if (!StringUtils.isNullOrEmptyOrSpaces(getSearchString()))
         {
-            fetchSecuritySearchList();
+            fetchSecuritySearchList(true);
         }
+    }
+
+
+    private void sendAnalytics(final SecurityCompactDTO dto )
+    {
+        Thread thread = new Thread(new Runnable()
+        {
+            @Override public void run()
+            {
+                try
+                {
+                    SearchSecurityEventForm analyticsEventForm = new SearchSecurityEventForm("search",
+                            DateUtils.getFormattedUtcDateFromDate(getActivity().getResources(),
+                                    new Date(System.currentTimeMillis())), dto.id,
+                            currentUserId.toUserBaseKey().getUserId());
+                    BatchAnalyticsEventForm batchAnalyticsEventForm = new BatchAnalyticsEventForm();
+                    batchAnalyticsEventForm.events = new ArrayList<>();
+                    batchAnalyticsEventForm.events.add(analyticsEventForm);
+                    userServiceWrapper.sendAnalytics(batchAnalyticsEventForm);
+                }
+                catch (Exception e)
+                {
+                    THToast.show(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
     }
 }

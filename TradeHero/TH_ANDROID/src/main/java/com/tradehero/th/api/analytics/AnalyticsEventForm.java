@@ -1,6 +1,6 @@
 package com.tradehero.th.api.analytics;
 
-public class AnalyticsEventForm
+public class AnalyticsEventForm implements AnalyticsDTO
 {
     public String eventType;
     public String timestampUtc;
