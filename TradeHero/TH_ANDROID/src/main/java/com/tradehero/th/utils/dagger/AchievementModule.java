@@ -8,6 +8,7 @@ import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.QuestDialogFragment;
 import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
+import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.fragments.achievement.AchievementDialogFragment;
@@ -25,6 +26,7 @@ import javax.inject.Singleton;
                 AchievementCellView.class,
                 AchievementListTestingFragment.class,
                 QuestListTestingFragment.class,
+                LevelUpDialogFragment.class,
 
         },
         complete = false,

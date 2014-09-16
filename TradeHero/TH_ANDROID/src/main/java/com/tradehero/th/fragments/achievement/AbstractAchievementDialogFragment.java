@@ -40,10 +40,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
+import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
+import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
@@ -144,6 +146,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         displayXpEarned(0);
         startAnimation();
 
+        userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
+        userLevelProgressBar.setUserLevelProgressBarListener(new LevelUpListener());
         levelDefListCache.register(mLevelDefListId, levelDefListCacheListener);
         levelDefListCache.getOrFetchAsync(mLevelDefListId);
     }
@@ -457,6 +461,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         picasso.cancelRequest(badge);
         mBadgeCallback = null;
         levelDefListCache.unregister(levelDefListCacheListener);
+        userLevelProgressBar.setUserLevelProgressBarListener(null);
         super.onDestroyView();
     }
 
@@ -521,6 +526,16 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
         {
 
+        }
+    }
+
+    protected class LevelUpListener implements UserLevelProgressBar.UserLevelProgressBarListener
+    {
+
+        @Override public void onLevelUp(LevelDefDTO fromLevel, LevelDefDTO toLevel)
+        {
+            LevelUpDialogFragment levelUpDialogFragment = LevelUpDialogFragment.newInstance(fromLevel.getId(), toLevel.getId());
+            levelUpDialogFragment.show(getFragmentManager(), LevelUpDialogFragment.class.getName());
         }
     }
 
