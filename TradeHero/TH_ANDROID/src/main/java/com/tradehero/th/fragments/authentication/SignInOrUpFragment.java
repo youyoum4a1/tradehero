@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.MetaHelper;
-import com.tradehero.th2.R;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th2.R;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -38,14 +38,14 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
 
     public void setOnClickListener(View view)
     {
-        view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_twitter_signin).setOnClickListener(onClickListener);
+        //view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
+        //view.findViewById(R.id.btn_twitter_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_weibo_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_qq_signin).setOnClickListener(onClickListener);
         view.findViewById(getEmailSignUpViewId()).setOnClickListener(onClickListener);
-        view.findViewById(R.id.txt_term_of_service_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.txt_term_of_service_termsofuse).setOnClickListener(onClickListener);
+        //view.findViewById(R.id.txt_term_of_service_signin).setOnClickListener(onClickListener);
+        //view.findViewById(R.id.txt_term_of_service_termsofuse).setOnClickListener(onClickListener);
     }
 
     @Override
@@ -83,8 +83,8 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     private void showViewForChinese()
     {
         View root = getView();
-        root.findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
-        root.findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
+        //root.findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
+        //root.findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
         root.findViewById(R.id.btn_linkedin_signin).setVisibility(View.VISIBLE);
         root.findViewById(R.id.btn_weibo_signin).setVisibility(View.VISIBLE);
         root.findViewById(R.id.btn_qq_signin).setVisibility(View.VISIBLE);

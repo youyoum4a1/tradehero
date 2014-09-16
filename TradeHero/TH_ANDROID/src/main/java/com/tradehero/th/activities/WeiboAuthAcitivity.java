@@ -38,8 +38,8 @@ public class WeiboAuthAcitivity extends SherlockFragmentActivity implements View
 
     private void showViewForChinese()
     {
-        findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
-        findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
+        //findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
+        //findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
         findViewById(R.id.btn_linkedin_signin).setVisibility(View.GONE);
         View v = findViewById(R.id.btn_weibo_signin);
         v.setVisibility(View.VISIBLE);

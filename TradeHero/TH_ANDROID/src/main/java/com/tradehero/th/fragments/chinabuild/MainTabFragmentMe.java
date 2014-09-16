@@ -13,7 +13,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -27,6 +26,7 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th2.R;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -260,10 +260,12 @@ public class MainTabFragmentMe extends AbsBaseFragment
     {
         if (cached != null)
         {
-            String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
+            String valueString = String.format("%s %,.0f", cached.getNiceCurrency(),
+                    cached.totalValue);
             tvAllAmount.setText(valueString);
 
-            THSignedNumber roi = THSignedPercentage.builder(cached.roiSinceInception * 100)
+            Double rsi = cached.roiSinceInception == null ? 0 : cached.roiSinceInception;
+            THSignedNumber roi = THSignedPercentage.builder(rsi * 100)
                     .withSign()
                     .signTypeArrow()
                     .build();

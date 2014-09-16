@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:state_pressed="true">
-  <shape android:shape="rectangle">
-    <solid android:color="@color/btn_qq_color_end"/>
-    <corners android:radius="4dp"/>
-  </shape>
-</item>
+<item android:state_pressed="true"
+    android:drawable="@drawable/login_login_bg_hover"/>
 
-<item>
-  <shape android:shape="rectangle">
-    <solid android:color="@color/btn_qq_color_start"/>
-    <corners android:radius="4dp"/>
-  </shape>
-</item>
+<item android:drawable="@drawable/login_qq_bg"/>
 </selector>

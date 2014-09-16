@@ -1,30 +1,45 @@
 package com.tradehero.th.fragments.authentication;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.squareup.picasso.Picasso;
+import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
+import com.tradehero.th.models.graphics.BitmapTypedOutput;
+import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
+import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th2.R;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -40,11 +55,22 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
     private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
 
-    private ProfileInfoView profileView;
+    private ViewSwitcher mSwitcher;
     private EditText emailEditText;
+    private EditText passwordEditText;
+    private EditText mDisplayName;
+    private Button mNextButton;
     private ImageView backButton;
+    private ImageView mPhoto;
+    private TextView mServiceText;
+    private ImageView mAgreeButton;
+    private LinearLayout mAgreeLayout;
+    private String newImagePath;
 
     @Inject Analytics analytics;
+    @Inject BitmapForProfileFactory bitmapForProfileFactory;
+    @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
+    @Inject Picasso picasso;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -56,6 +82,12 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
     }
 
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain(R.string.authentication_register);
+    }
+
     @Override public int getDefaultViewId()
     {
         return R.layout.authentication_email_sign_up;
@@ -63,20 +95,51 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     @Override protected void initSetup(View view)
     {
-        FocusableOnTouchListener touchListener = new FocusableOnTouchListener();
-
-        this.profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
         this.emailEditText = (EditText) view.findViewById(R.id.authentication_sign_up_email);
+        this.passwordEditText = (EditText) view.findViewById(R.id.authentication_sign_up_password);
+        this.mDisplayName = (EditText) view.findViewById(R.id.authentication_sign_up_username);
+        this.mDisplayName.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
 
-        this.profileView.setOnTouchListenerOnFields(touchListener);
-        this.profileView.addValidationListenerOnFields(this);
-        this.profileView.setListener(createProfileViewListener());
+            }
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
+                signButton.setEnabled(charSequence.length() > 3);
+            }
+
+            @Override public void afterTextChanged(Editable editable)
+            {
+
+            }
+        });
+        this.mPhoto = (ImageView) view.findViewById(R.id.image_optional);
+        mPhoto.setOnClickListener(this);
+        //
+        //this.mPhoto.setOnTouchListenerOnFields(touchListener);
+        //this.profileView.setOnTouchListenerOnFields(touchListener);
+        //this.profileView.addValidationListenerOnFields(this);
+        //this.profileView.setListener(createProfileViewListener());
+
+        this.mAgreeButton = (ImageView) view.findViewById(R.id.authentication_agree);
+
+        this.mAgreeLayout = (LinearLayout) view.findViewById(R.id.authentication_agreement);
+        mAgreeLayout.setOnClickListener(this);
+
+        this.mServiceText = (TextView) view.findViewById(R.id.txt_term_of_service_signin);
+        mServiceText.setOnClickListener(onClickListener);
 
         this.signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         this.signButton.setOnClickListener(this);
+        signButton.setEnabled(false);
 
-        backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_up_back_button);
-        backButton.setOnClickListener(onClickListener);
+        mNextButton = (Button) view.findViewById(R.id.btn_next);
+        mNextButton.setOnClickListener(this);
+        mNextButton.setEnabled(false);
+        mSwitcher = (ViewSwitcher) view.findViewById(R.id.switcher);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -113,10 +176,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             {
                 try
                 {
-                    if (profileView != null)
-                    {
-                        profileView.handleDataFromLibrary(data);
-                    }
+                    handleDataFromLibrary(data);
                 }
                 catch (OutOfMemoryError e)
                 {
@@ -139,16 +199,63 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
     }
 
+    public void handleDataFromLibrary(Intent data)
+    {
+        Uri selectedImageUri = data.getData();
+        if (selectedImageUri != null)
+        {
+            String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
+            setNewImagePath(selectedPath);
+        }
+        else
+        {
+            alertDialogUtil.popWithNegativeButton(getActivity(),
+                    R.string.error_fetch_image_library,
+                    R.string.error_fetch_image_library,
+                    R.string.cancel);
+        }
+    }
+
+    public void setNewImagePath(String newImagePath)
+    {
+        this.newImagePath = newImagePath;
+        displayProfileImage();
+    }
+
+    public void displayProfileImage()
+    {
+        if (newImagePath != null)
+        {
+            Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
+            if (decoded != null)
+            {
+                mPhoto.setImageBitmap(decoded);
+                return;
+            }
+        }
+        displayDefaultProfileImage();
+    }
+
+    public void displayDefaultProfileImage()
+    {
+        if (this.mPhoto != null && picasso != null)
+        {
+            picasso.load(R.drawable.superman_facebook)
+                    //.transform(userPhotoTransformation)
+                    .into(mPhoto);
+        }
+    }
+
     @Override public void onDestroyView()
     {
-        if (this.profileView != null)
-        {
-            this.profileView.setOnTouchListenerOnFields(null);
-            this.profileView.removeAllListenersOnFields();
-            this.profileView.setNullOnFields();
-            this.profileView.setListener(null);
-        }
-        this.profileView = null;
+        //if (this.profileView != null)
+        //{
+        //    this.profileView.setOnTouchListenerOnFields(null);
+        //    this.profileView.removeAllListenersOnFields();
+        //    this.profileView.setNullOnFields();
+        //    this.profileView.setListener(null);
+        //}
+        //this.profileView = null;
 
         if (this.signButton != null)
         {
@@ -173,28 +280,142 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 handleSignInOrUpButtonClicked(view);
                 break;
             case R.id.image_optional:
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/jpeg");
-                startActivityForResult(intent, REQUEST_GALLERY);
+                showChooseImageDialog();
+                break;
+            case R.id.btn_next:
+                if (checkAccountAndPassword())
+                {
+                    mSwitcher.setDisplayedChild(1);
+                }
+                break;
+            case R.id.authentication_agreement:
+                mNextButton.setEnabled(!mNextButton.isEnabled());
+                mAgreeButton.setImageResource(mNextButton.isEnabled() ?
+                        R.drawable.register_duihao : R.drawable.register_duihao_cancel);
                 break;
         }
     }
 
+    private void showChooseImageDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCancelable(false);
+        builder.setItems(R.array.register_choose_image, new DialogInterface.OnClickListener()
+        {
+            @Override public void onClick(DialogInterface dialogInterface, int i)
+            {
+                switch (i)
+                {
+                    case 0:
+                        askImageFromCamera();
+                        break;
+                    case 1:
+                        askImageFromLibrary();
+                        break;
+                }
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, null);
+        builder.create().show();
+    }
+
     @Override protected void forceValidateFields()
     {
-        this.profileView.forceValidateFields();
+        //this.profileView.forceValidateFields();
     }
 
     @Override public boolean areFieldsValid()
     {
-        return this.profileView.areFieldsValid();
+        //return this.profileView.areFieldsValid();
+        //if (mDisplayName.getText().toString().isEmpty())
+        //{
+        //    THToast.show(R.string.register_error_displayname);
+        //    return false;
+        //}
+        return true;
+    }
+
+    private boolean checkAccountAndPassword()
+    {
+        if (emailEditText.getText().toString().isEmpty())
+        {
+            THToast.show(R.string.register_error_account);
+            return false;
+        }
+        else if (passwordEditText.getText().length() < 6)
+        {
+            THToast.show(R.string.register_error_password);
+            return false;
+        }
+        return true;
     }
 
     @Override protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = super.getUserFormMap();
-        this.profileView.populateUserFormMap(map);
+        populateUserFormMap(map);
         return map;
+    }
+
+    public void populateUserFormMap(Map<String, Object> map)
+    {
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_EMAIL, emailEditText.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD, passwordEditText.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD_CONFIRM, passwordEditText.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, mDisplayName.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_INVITE_CODE, "");
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, "");
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, "");
+        if (newImagePath != null)
+        {
+            map.put(UserFormFactory.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
+        }
+    }
+
+    protected BitmapTypedOutput safeCreateProfilePhoto()
+    {
+        BitmapTypedOutput created = null;
+        if (newImagePath != null)
+        {
+            try
+            {
+                created = bitmapTypedOutputFactory.createForProfilePhoto(
+                        getResources(), bitmapForProfileFactory, newImagePath);
+            }
+            catch (OutOfMemoryError e)
+            {
+                THToast.show(R.string.error_decode_image_memory);
+            }
+        }
+        return created;
+    }
+
+    private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
+    {
+        if (toPick != null)
+        {
+            toFill.put(key, toPick.toString());
+        }
+    }
+
+    private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, String toPick)
+    {
+        if (toPick != null)
+        {
+            toFill.put(key, toPick);
+        }
+    }
+
+    @Override public void onClickHeadLeft()
+    {
+        if (mSwitcher.getDisplayedChild() == 1)
+        {
+            mSwitcher.setDisplayedChild(0);
+        }
+        else
+        {
+            super.onClickHeadLeft();
+        }
     }
 
     protected void askImageFromLibrary()
@@ -207,7 +428,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     protected void askImageFromCamera()
     {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        //cameraIntent.setType("image/jpeg");
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
     }
 

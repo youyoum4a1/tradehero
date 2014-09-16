@@ -1,64 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<ScrollView-->
-<!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent"-->
-<!---->
-<!--android:orientation="vertical"-->
-<!--android:focusableInTouchMode="true"-->
-<!--android:stackFromBottom="true"-->
-<!--android:clickable="true"-->
-<!--android:fillViewport="true"-->
-<!--android:focusable="false">-->
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sign_up_form_wrapper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/authentication_bg"
+    android:layout_marginTop="@dimen/tab_main_indicator_height"
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:gravity="top">
 
-  <ImageView
-      android:id="@+id/authentication_by_sign_up_back_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/common_margin_10"
-      android:background="@drawable/basic_transparent_selector"
-      android:src="@drawable/settings_back_light_default"/>
-
-  <ScrollView
+  <ViewSwitcher
+      android:id="@+id/switcher"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
-
+      android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TradeHero.Authentication"
         android:orientation="vertical">
 
-      <include
-          layout="@layout/profile_info"/>
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_small"
+          android:background="@color/white"
+          android:gravity="center">
+        <TextView
+            android:id="@+id/register_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_medium"
+            android:text="@string/login_account"
+            android:textSize="@dimen/text_large"/>
+        <EditText
+            android:id="@+id/authentication_sign_up_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/register_account"
+            android:layout_alignBaseline="@+id/register_account"
+            android:textSize="@dimen/text_large"
+            android:hint="@string/login_account_hint"
+            android:textColorHint="#bfbfbf"
+            android:background="@color/white"/>
 
-      <Button
-          android:id="@+id/authentication_sign_up_button"
-          android:layout_width="fill_parent"
-          android:layout_height="@dimen/common_margin_60"
-          android:layout_marginTop="@dimen/common_margin_80"
-          android:background="@drawable/authentication_button"
-          android:text="@string/authentication_register"
-          android:textColor="@color/white"
-          android:textSize="@dimen/common_text_size_30"
-          android:textStyle="bold"
-          />
+        <View
+            android:id="@+id/register_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/register_account"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:background="#bfbfbf"/>
+
+        <TextView
+            android:id="@+id/register_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/register_line"
+            android:layout_margin="@dimen/margin_medium"
+            android:text="@string/login_password"
+            android:textSize="@dimen/text_large"/>
+        <EditText
+            android:id="@+id/authentication_sign_up_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/register_password"
+            android:layout_alignBaseline="@+id/register_password"
+            android:maxLength="20"
+            android:textSize="@dimen/text_large"
+            android:hint="@string/login_password_hint"
+            android:textColorHint="#bfbfbf"
+            android:background="@color/white"/>
+      </RelativeLayout>
+      <LinearLayout
+          android:id="@+id/authentication_agreement"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_small"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/authentication_agree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/register_duihao_cancel"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_xsmall"
+            android:text="@string/agreed"
+            android:textSize="@dimen/text_large"/>
+        <TextView
+            android:id="@+id/txt_term_of_service_signin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/authentication_agreement"
+            android:textColor="#1789d5"
+            android:textSize="@dimen/text_large"/>
+      </LinearLayout>
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_large"
+          android:orientation="horizontal">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:background="@drawable/basic_green_selector_round_corner"
+            android:text="@string/authentication_next"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_xlarge"
+            android:textStyle="bold"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+      </LinearLayout>
     </LinearLayout>
-
-  </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+      <ImageView
+          android:id="@+id/image_optional"
+          android:layout_width="@dimen/huge_avatar_w_h"
+          android:layout_height="@dimen/huge_avatar_w_h"
+          android:layout_marginTop="@dimen/margin_large"
+          android:layout_gravity="center_horizontal"
+          android:src="@drawable/register_photo"
+          android:scaleType="fitXY"
+          android:contentDescription="@string/empty"/>
+      <EditText
+          android:id="@+id/authentication_sign_up_username"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_large"
+          android:paddingTop="@dimen/margin_small"
+          android:paddingBottom="@dimen/margin_small"
+          android:gravity="center"
+          android:background="@color/white"
+          android:maxLength="20"
+          android:textSize="@dimen/text_xlarge"
+          android:hint="@string/register_diaplay_name_hint"
+          android:textColorHint="#bfbfbf"/>
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_large"
+          android:orientation="horizontal">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/authentication_sign_up_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:background="@drawable/basic_green_selector_round_corner"
+            android:text="@string/register_finish"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_xlarge"
+            android:textStyle="bold"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+      </LinearLayout>
+    </LinearLayout>
+  </ViewSwitcher>
 
 </LinearLayout>
 
-    <!--</ScrollView>-->

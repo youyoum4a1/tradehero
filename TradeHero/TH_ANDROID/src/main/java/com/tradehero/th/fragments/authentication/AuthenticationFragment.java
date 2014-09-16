@@ -2,10 +2,10 @@ package com.tradehero.th.fragments.authentication;
 
 import android.app.Activity;
 import android.view.View;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.fragments.base.DashboardFragment;
 
-public abstract class AuthenticationFragment extends SherlockFragment
+public abstract class AuthenticationFragment extends DashboardFragment
 {
     protected View.OnClickListener onClickListener;
 

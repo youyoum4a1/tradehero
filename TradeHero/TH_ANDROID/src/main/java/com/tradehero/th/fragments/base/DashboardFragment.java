@@ -6,19 +6,17 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.OnClick;
-import butterknife.Optional;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.th2.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th2.R;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +32,6 @@ abstract public class DashboardFragment extends BaseFragment
 
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
-
 
     private RelativeLayout rlCustomHeadView;
     private TextView tvHeadLeft;
@@ -87,6 +84,15 @@ abstract public class DashboardFragment extends BaseFragment
         }
     }
 
+    public void setHeadViewMiddleMain(int middleMainText)
+    {
+        if (tvHeadMiddleMain != null)
+        {
+            tvHeadMiddleMain.setVisibility(View.VISIBLE);
+            tvHeadMiddleMain.setText(middleMainText);
+        }
+    }
+
     public void setHeadViewMiddleSub(String middleSubText)
     {
         if (tvHeadMiddleSub != null)
@@ -97,6 +103,15 @@ abstract public class DashboardFragment extends BaseFragment
     }
 
     public void setHeadViewRight0(String right0)
+    {
+        if (tvHeadRight0 != null)
+        {
+            tvHeadRight0.setVisibility(View.VISIBLE);
+            tvHeadRight0.setText(right0);
+        }
+    }
+
+    public void setHeadViewRight0(int right0)
     {
         if (tvHeadRight0 != null)
         {
@@ -182,7 +197,7 @@ abstract public class DashboardFragment extends BaseFragment
 
         actionBar.setCustomView(R.layout.custom_head_layout);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.getCustomView();
+        //actionBar.getCustomView();
 
         if (actionBar != null)
         {
@@ -344,5 +359,10 @@ abstract public class DashboardFragment extends BaseFragment
     public void pushFragment(@NotNull Class fragmentClass, Bundle args)
     {
         getDashboardNavigator().pushFragment(fragmentClass, args);
+    }
+
+    public void setRight0ButtonOnClickListener(View.OnClickListener listener)
+    {
+        tvHeadRight0.setOnClickListener(listener);
     }
 }

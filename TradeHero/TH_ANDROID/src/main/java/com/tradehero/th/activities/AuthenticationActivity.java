@@ -9,10 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
@@ -23,7 +21,6 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
-import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
@@ -32,16 +29,15 @@ import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
-//import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
-import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th2.R;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -52,7 +48,9 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class AuthenticationActivity extends SherlockFragmentActivity
+//import com.tradehero.th.utils.FacebookUtils;
+
+public class AuthenticationActivity extends DashboardActivity
         implements View.OnClickListener
 {
     private static final String M_FRAGMENT = "M_CURRENT_FRAGMENT";
@@ -63,8 +61,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private ProgressDialog progressDialog;
     private TwitterCredentialsDTO twitterJson;
 
-    //@Inject Lazy<FacebookUtils> facebookUtils;
-    //@Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
@@ -73,7 +69,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject CredentialsDTOFactory credentialsDTOFactory;
 
-    @Override protected void onCreate(Bundle savedInstanceState)
+    @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
@@ -123,14 +119,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private void setupViewFragmentMapping()
     {
         //two buttons in WelcomeFragment
-        mapViewFragment.put(R.id.authentication_by_sign_up_button, SignUpFragment.class);
-        mapViewFragment.put(R.id.authentication_by_sign_up_back_button, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_by_sign_in_button, SignInFragment.class);
-        mapViewFragment.put(R.id.authentication_by_sign_in_back_button, SignInFragment.class);
         //button in SignInFragment
         mapViewFragment.put(R.id.authentication_email_sign_in_link, EmailSignInFragment.class);
         //button in SignUpFragment
         mapViewFragment.put(R.id.authentication_email_sign_up_link, EmailSignUpFragment.class);
+        mapViewFragment.put(R.id.tvHeadRight0, EmailSignUpFragment.class);
     }
 
     @Override protected void onSaveInstanceState(Bundle outState)
@@ -152,7 +146,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         //getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         //getSupportActionBar().setCustomView(R.layout.topbar_authentication);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -169,9 +163,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         Class<?> fragmentClass = mapViewFragment.get(view.getId());
         if (fragmentClass != null)
         {
-            if (view.getId() == R.id.authentication_by_sign_in_back_button
-                    || view.getId() == R.id.authentication_by_sign_up_back_button
-                    || view.getId() == R.id.authentication_by_sign_in_button)
+            if (view.getId() == R.id.authentication_by_sign_in_button)
             {
                 InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);

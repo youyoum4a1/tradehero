@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
@@ -14,6 +13,7 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
+import com.tradehero.th2.R;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;
@@ -31,7 +31,6 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(getDefaultViewId(), container, false);
-
         initSetup(view);
         setHasOptionsMenu(true);
         return view;
@@ -59,7 +58,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
             }
             else if (!areFieldsValid ())
             {
-                THToast.show(R.string.validation_please_correct);
+                //THToast.show(R.string.validation_please_correct);
             }
             else
             {

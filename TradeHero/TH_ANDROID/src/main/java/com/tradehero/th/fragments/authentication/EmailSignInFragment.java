@@ -4,13 +4,17 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
@@ -27,16 +31,15 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
-import com.tradehero.th.widget.ValidatedPasswordText;
+import com.tradehero.th2.R;
 import java.util.Map;
 import javax.inject.Inject;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
-    private SelfValidatedText email;
-    private ValidatedPasswordText password;
+    private EditText email;
+    private EditText password;
     private TextView forgotPasswordLink;
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
@@ -62,6 +65,14 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         DeviceUtil.showKeyboardDelayed(email);
     }
 
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain(R.string.guide_screen_login);
+        setHeadViewRight0(R.string.authentication_register);
+        setRight0ButtonOnClickListener(onClickListener);
+    }
+
     @Override public int getDefaultViewId ()
     {
         return R.layout.authentication_email_sign_in;
@@ -69,11 +80,34 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Override protected void initSetup(View view)
     {
-        email = (SelfValidatedText) view.findViewById(R.id.authentication_sign_in_email);
-        email.setListener(this);
+        email = (EditText) view.findViewById(R.id.authentication_sign_in_email);
 
-        password = (ValidatedPasswordText) view.findViewById(R.id.et_pwd_login);
-        password.setListener(this);
+        signButton = (Button) view.findViewById(R.id.btn_login);
+        signButton.setOnClickListener(this);
+        signButton.setEnabled(false);
+
+        password = (EditText) view.findViewById(R.id.et_pwd_login);
+        password.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
+
+            }
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
+                if (signButton != null)
+                {
+                    signButton.setEnabled(charSequence.length() > 5);
+                }
+            }
+
+            @Override public void afterTextChanged(Editable editable)
+            {
+
+            }
+        });
 
         // HACK
         if (!Constants.RELEASE)
@@ -82,29 +116,16 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             password.setText(getString(R.string.test_password));
         }
 
-        signButton = (Button) view.findViewById(R.id.btn_login);
-        signButton.setOnClickListener(this);
-
         forgotPasswordLink = (TextView) view.findViewById(R.id.authentication_sign_in_forgot_password);
         forgotPasswordLink.setOnClickListener(this);
 
-        backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_in_back_button);
-        backButton.setOnClickListener(onClickListener);
     }
 
     @Override public void onDestroyView()
     {
         detachMiddleCallbackForgotPassword();
-        if (this.email != null)
-        {
-            this.email.setListener(null);
-        }
         this.email = null;
 
-        if (this.password != null)
-        {
-            this.password.setListener(null);
-        }
         this.password = null;
 
         if (this.signButton != null)
@@ -142,7 +163,10 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             case R.id.btn_login:
                 //clear old user info
                 //THUser.clearCurrentUser();
-                handleSignInOrUpButtonClicked(view);
+                if (checkEmailAndPassword())
+                {
+                    handleSignInOrUpButtonClicked(view);
+                }
                 break;
 
             case R.id.authentication_sign_in_forgot_password:
@@ -154,15 +178,31 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         }
     }
 
+    private boolean checkEmailAndPassword()
+    {
+        if (email.getText().toString().isEmpty())
+        {
+            THToast.show(R.string.register_error_account);
+            return false;
+        }
+        else if (password.getText().length() < 6)
+        {
+            THToast.show(R.string.register_error_password);
+            return false;
+        }
+        return true;
+    }
+
     @Override protected void forceValidateFields ()
     {
-        email.forceValidate();
-        password.forceValidate();
+        //email.forceValidate();
+        //password.forceValidate();
     }
 
     @Override public boolean areFieldsValid ()
     {
-        return email.isValid() && password.isValid();
+        //return email.isValid() && password.isValid();
+        return true;
     }
 
     @Override protected Map<String, Object> getUserFormMap ()

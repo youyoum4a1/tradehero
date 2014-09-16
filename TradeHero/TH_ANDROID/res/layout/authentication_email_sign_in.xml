@@ -1,92 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/authentication_bg">
+    android:layout_marginTop="@dimen/tab_main_indicator_height"
+    android:orientation="vertical">
 
-  <ImageView
-      android:id="@+id/authentication_by_sign_in_back_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/common_margin_10"
-      android:src="@drawable/settings_back_light_default"
-      android:background="@drawable/basic_transparent_selector"/>
-
-  <ImageView
-      android:id="@+id/authentication_logo"
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/customer_margin_100"
-      android:layout_marginRight="@dimen/customer_margin_100"
-      android:layout_marginTop="@dimen/common_margin_80"
-      android:src="@drawable/logo_text"/>
+      android:layout_marginTop="@dimen/margin_small"
+      android:orientation="horizontal"
+      android:gravity="center"
+      android:background="@color/white">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_medium"
+        android:text="@string/login_account"
+        android:textSize="@dimen/text_large"/>
+    <EditText
+        android:id="@+id/authentication_sign_in_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_large"
+        android:hint="@string/login_account_hint"
+        android:textColorHint="#bfbfbf"
+        android:background="@color/white"/>
+  </LinearLayout>
 
-  <com.tradehero.th.widget.SelfValidatedText
-      android:id="@+id/authentication_sign_in_email"
-      android:layout_below="@id/authentication_logo"
-      android:layout_width="fill_parent"
+  <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:paddingLeft="@dimen/margin_small"
+      android:src="#bfbfbf"
+      android:background="@color/white"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/common_margin_80"
-      android:layout_marginLeft="@dimen/common_margin_60"
-      android:layout_marginRight="@dimen/common_margin_60"
-      android:text=""
-      android:hint="@string/authentication_email"
-      android:textColorHint="@color/red"
-      android:inputType="textEmailAddress"
-      style="@style/TradeHero.Authentication.EditText"
-      android:textSize="@dimen/common_text_size_30"
-      android:background="@drawable/authentication_edit_text">
-
-    <requestFocus/>
-
-  </com.tradehero.th.widget.SelfValidatedText>
-
-  <com.tradehero.th.widget.ValidatedPasswordText
-      android:id="@+id/et_pwd_login"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/authentication_sign_in_email"
-      android:layout_marginTop="@dimen/common_margin_20"
-      android:layout_marginLeft="@dimen/common_margin_60"
-      android:layout_marginRight="@dimen/common_margin_60"
-      android:text=""
-      android:hint="@string/authentication_password"
-      android:textColorHint="@color/red"
-      android:inputType="textPassword"
-      style="@style/TradeHero.Authentication.EditText"
-      android:textSize="@dimen/common_text_size_30"
-      android:background="@drawable/authentication_edit_text"/>
-
-  <Button
-      android:id="@+id/btn_login"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/et_pwd_login"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="@dimen/common_margin_50"
-      android:layout_marginLeft="@dimen/common_margin_60"
-      android:layout_marginRight="@dimen/common_margin_60"
-      android:background="@drawable/authentication_button"
-      android:text="@string/authentication_login"
-      android:textColor="@color/white"
-      android:textSize="@dimen/common_text_size_30"
-      android:textStyle="bold"/>
-      <!--android:layout_height="@dimen/common_margin_60"-->
+      android:orientation="horizontal"
+      android:gravity="center"
+      android:background="@color/white">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_medium"
+        android:text="@string/login_password"
+        android:textSize="@dimen/text_large"/>
+    <EditText
+        android:id="@+id/et_pwd_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:maxLength="20"
+        android:textSize="@dimen/text_large"
+        android:hint="@string/login_password_hint"
+        android:textColorHint="#bfbfbf"
+        android:background="@color/white"/>
+  </LinearLayout>
 
   <TextView
       android:id="@+id/authentication_sign_in_forgot_password"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_below="@id/btn_login"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="@dimen/common_margin_80"
-      android:background="@drawable/basic_transparent_selector"
-      android:padding="15dip"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_marginLeft="@dimen/margin_medium"
       android:text="@string/authentication_forgot_password"
-      android:textColor="@color/white"
-      android:textSize="@dimen/common_text_size_25"
-      android:textStyle="bold"/>
+      android:textColor="#1789d5"
+      android:textSize="@dimen/text_large"/>
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_large"
+      android:orientation="horizontal">
+    <View
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:background="@drawable/basic_green_selector_round_corner"
+        android:text="@string/authentication_login"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_xlarge"
+        android:textStyle="bold"/>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+  </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
