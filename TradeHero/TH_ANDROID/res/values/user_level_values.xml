@@ -11,5 +11,9 @@
   <dimen name="user_level_indicator_horizontal_margin">10dp</dimen>
   <dimen name="user_level_progressbar_height">14dp</dimen>
   <dimen name="user_level_progressbar_indicator_text_size">@dimen/text_xsmall</dimen>
-
+  <integer name="user_level_level_up_rotation_duration">1500</integer>
+  <integer name="user_level_level_up_start_delay">500</integer>
+  <integer name="user_level_level_up_end_delay">500</integer>
+  <dimen name="user_level_level_up_badge_w_h">180dp</dimen>
+  <dimen name="user_level_level_up_text_vertical_margin">10dp</dimen>
 </resources>

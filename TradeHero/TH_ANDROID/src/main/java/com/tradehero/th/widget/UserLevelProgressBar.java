@@ -131,7 +131,7 @@ public class UserLevelProgressBar extends RelativeLayout
     {
         if (mCurrentLevelDTO != null)
         {
-            picasso.load(mCurrentLevelDTO.badge).into(currentLevelLabel);
+            picasso.load(mCurrentLevelDTO.badge).placeholder(R.drawable.ic_bronze_level).fit().into(currentLevelLabel);
             if (mCurrentLevelDTO.equals(mMaxLevelDTO))
             {
                 hideNextLevel();
@@ -141,7 +141,8 @@ public class UserLevelProgressBar extends RelativeLayout
                 LevelDefDTO nextLevel = mLevelDefDTOList.getNextLevelDTO(mCurrentLevelDTO.level);
                 if (nextLevel != null)
                 {
-                    picasso.load(nextLevel.badge).transform(nextLevelBadgeTransformation).into(nextLevelLabel);
+                    picasso.load(nextLevel.badge).transform(nextLevelBadgeTransformation).placeholder(R.drawable.ic_bronze_level).fit().into(
+                            nextLevelLabel);
                 }
                 else
                 {
