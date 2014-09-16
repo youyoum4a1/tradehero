@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -53,12 +54,12 @@ public class DashboardTabHost extends TabHost
 
     @Override public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
     {
+        showTabBar();
         for (RootFragmentType rootFragmentType: bottomBarFragmentTypes)
         {
             if (rootFragmentType.fragmentClass == fragmentClass)
             {
                 setCurrentTabByTag(rootFragmentType.toString());
-                //showTabBar();
                 return;
             }
         }
@@ -77,10 +78,14 @@ public class DashboardTabHost extends TabHost
 
     private void showTabBar()
     {
-        if (getVisibility() != View.VISIBLE)
+        if (getVisibility() != View.VISIBLE || getTranslationY() > 0.0)
         {
             setVisibility(View.VISIBLE);
-            startAnimation(slideInAnimation);
+            //startAnimation(slideInAnimation);
+            // TODO this is a HACK to workaround problem with QuickReturnListViewOnScrollListener class, that class need to be improved
+            ObjectAnimator anim = ObjectAnimator.ofFloat(this, "translationY", getTranslationY(), 0);
+            anim.setDuration(100);
+            anim.start();
         }
     }
 
