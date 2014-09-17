@@ -10,7 +10,6 @@ import com.facebook.AppEventsLogger;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
-import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
@@ -30,7 +29,6 @@ import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
@@ -108,8 +106,6 @@ public class SplashActivity extends SherlockActivity
 
         mobileAppTracker.setReferralSources(this);
         mobileAppTracker.measureSession();
-
-        TCAgent.init(getApplicationContext(), MetricsModule.TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name());
 
         if (!Constants.RELEASE)
         {

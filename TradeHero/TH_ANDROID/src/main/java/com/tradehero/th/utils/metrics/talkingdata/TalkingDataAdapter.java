@@ -2,7 +2,9 @@ package com.tradehero.th.utils.metrics.talkingdata;
 
 import android.content.Context;
 import com.tendcloud.tenddata.TCAgent;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsAdapter;
+import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.utils.metrics.events.AnalyticsEvent;
 import java.util.Set;
 import javax.inject.Inject;
@@ -17,6 +19,7 @@ public class TalkingDataAdapter
     @Inject public TalkingDataAdapter(Context context)
     {
         this.context = context;
+        TCAgent.init(context, MetricsModule.TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name());
     }
 
     @Override public void open(Set<String> customDimensions)
