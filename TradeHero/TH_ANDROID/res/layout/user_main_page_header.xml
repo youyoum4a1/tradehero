@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -18,17 +18,6 @@
         android:layout_marginRight="@dimen/right_arrow_margin"
         />
 
-    <TextView
-        android:id="@+id/tvMeName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:layout_toRightOf="@id/imgMeHead"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:layout_alignTop="@id/imgMeHead"
-        android:layout_marginTop="10dp"
-        android:text=""/>
 
     <TextView
         android:id="@+id/tvTitleEarning"
@@ -71,10 +60,24 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
         android:text="已关注"
         android:background="@color/gray_1"
         android:layout_toLeftOf="@id/imgArrorRight"
         />
+
+    <TextView
+        android:id="@+id/tvMeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:layout_toRightOf="@id/imgMeHead"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:layout_toLeftOf="@id/tvUserCared"
+        android:layout_alignTop="@id/imgMeHead"
+        android:layout_marginTop="10dp"
+        android:text=""/>
 
   </RelativeLayout>
 

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -15,6 +14,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th2.R;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +40,12 @@ public class AbsBaseFragment extends Fragment
         Bundle args = new Bundle();
         args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,strFragment);
         ActivityHelper.launchDashboard(this.getActivity(), args);
+    }
+
+    public void gotoDashboard(String strFragment,Bundle bundle)
+    {
+        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,strFragment);
+        ActivityHelper.launchDashboard(this.getActivity(), bundle);
     }
 
     @Override public void onAttach(Activity activity)

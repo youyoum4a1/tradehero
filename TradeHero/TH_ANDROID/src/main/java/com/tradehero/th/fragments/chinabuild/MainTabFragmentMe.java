@@ -21,6 +21,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -51,7 +52,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @InjectView(R.id.rlMeDynamic) RelativeLayout rlMeDynamic;
     @InjectView(R.id.rlMeMessageCenter) RelativeLayout rlMeMessageCenter;
     @InjectView(R.id.rlMeInviteFriends) RelativeLayout rlMeInviteFriends;
-    //@InjectView(R.id.rlMeSetting) RelativeLayout rlMeSetting;
+    @InjectView(R.id.rlMeSetting) RelativeLayout rlMeSetting;
 
     @InjectView(R.id.llItemAllAmount) LinearLayout llItemAllAmount;
     @InjectView(R.id.llItemAllHero) LinearLayout llItemAllHero;
@@ -147,7 +148,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
         }
     }
 
-    @OnClick({R.id.rlMeDynamic, R.id.rlMeMessageCenter, R.id.rlMeInviteFriends,
+    @OnClick({R.id.rlMeDynamic, R.id.rlMeMessageCenter, R.id.rlMeInviteFriends, R.id.rlMeSetting,
             R.id.llItemAllAmount, R.id.llItemAllHero, R.id.llItemAllFans})
     public void onItemClicked(View view)
     {
@@ -156,6 +157,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
         {
             case R.id.rlMeDynamic:
                 Timber.d("clicked rlMeDynamic");
+                enterMyMainPager();
                 break;
             case R.id.rlMeMessageCenter:
                 Timber.d("clicked rlMeMessageCenter");
@@ -163,9 +165,9 @@ public class MainTabFragmentMe extends AbsBaseFragment
             case R.id.rlMeInviteFriends:
                 Timber.d("clicked rlMeInviteFriends");
                 break;
-            //case R.id.rlMeSetting:
-            //    Timber.d("clicked rlMeSetting");
-            //    break;
+            case R.id.rlMeSetting:
+                Timber.d("clicked rlMeSetting");
+                break;
             case R.id.llItemAllAmount:
                 Timber.d("clicked llItemAllAmount");
                 break;
@@ -190,6 +192,13 @@ public class MainTabFragmentMe extends AbsBaseFragment
         userProfileCacheListener = null;
         portfolioFetchListener = null;
         super.onDestroyView();
+    }
+
+    public void enterMyMainPager()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, currentUserId.toUserBaseKey().key);
+        gotoDashboard(UserMainPage.class.getName(),bundle);
     }
 
     @Override public void onDestroy()

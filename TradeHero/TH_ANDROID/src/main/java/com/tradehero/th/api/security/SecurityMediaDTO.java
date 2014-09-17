@@ -19,4 +19,10 @@ public class SecurityMediaDTO extends MediaDTO
     {
         return new SecurityId(exchange, symbol);
     }
+
+    public String displaySecurityName()
+    {
+        return exchange + ":" + symbol;
+    }
+
 }

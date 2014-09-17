@@ -13,6 +13,7 @@ import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
+import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
@@ -453,6 +454,7 @@ import javax.inject.Singleton;
                         SecurityListAdapter.class,
                         SecuritySearchListAdapter.class,
                         MyTradePositionListAdapter.class,
+                        UserTimeLineAdapter.class,
 
                         AbsLeaderboardFragment.class,
                         LeaderboardFromExchangeFragment.class,

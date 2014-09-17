@@ -42,4 +42,20 @@ public class TradeDTO implements DTO
     {
         return new OwnedTradeId(userId, portfolioId, positionId, id);
     }
+
+    //成交金额
+    public String displayTradeMoney()
+    {
+        return "" + Math.abs(quantity * unitPriceRefCcy);
+    }
+
+    public String displayTradeQuantity()
+    {
+        return "" + Math.abs(quantity);
+    }
+
+    public boolean isBuy()
+    {
+        return quantity > 0 ? true : false;
+    }
 }

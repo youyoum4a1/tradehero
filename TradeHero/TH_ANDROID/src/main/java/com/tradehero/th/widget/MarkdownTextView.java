@@ -10,15 +10,15 @@ import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
@@ -88,11 +88,6 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
                 break;
 
             case "link":
-                //if (matchStrings.length < 3) break;
-                //String link = matchStrings[2];
-                //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-                //getNavigator().goToPage(thIntentFactory.create(i));
-
                 String USER = "tradehero://user/";
                 if (matchStrings.length < 3) break;
                 String link = matchStrings[1];
@@ -116,27 +111,42 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         }
     }
 
-    private void openSecurityProfile(String exchange, String symbol)
-    {
-        SecurityId securityId = new SecurityId(exchange, symbol);
-        Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, securityId);
-        getNavigator().pushFragment(BuySellFragment.class, args);
-    }
-
     private DashboardNavigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 
+    private void openSecurityProfile(String exchange, String symbol)
+    {
+        //SecurityId securityId = new SecurityId(exchange, symbol);
+        //Bundle args = new Bundle();
+        //BuySellFragment.putSecurityId(args, securityId);
+        //getNavigator().pushFragment(BuySellFragment.class, args);
+        Timber.d("openSecurity " + exchange + " : " + symbol);
+        Bundle bundle = new Bundle();
+        SecurityId securityId = new SecurityId(exchange,symbol);
+        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
+        getNavigator().pushFragment(SecurityDetailFragment.class, bundle);
+    }
+
+
     private void openUserProfile(int userId)
     {
-        Bundle b = new Bundle();
-        thRouter.save(b, new UserBaseKey(userId));
+        //Bundle b = new Bundle();
+        //thRouter.save(b, new UserBaseKey(userId));
+        //
+        //if (currentUserId.get() != userId)
+        //{
+        //    getNavigator().pushFragment(PushableTimelineFragment.class, b);
+        //}
 
-        if (currentUserId.get() != userId)
+        Timber.d("openUserProfile : " + userId);
+        if (userId >= 0)
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, b);
+            Bundle bundle = new Bundle();
+            bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
+            getNavigator().pushFragment(UserMainPage.class, bundle);
         }
     }
 }

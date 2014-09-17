@@ -12,7 +12,7 @@
       android:textColor="@color/number_red"
       android:gravity="center_vertical"
       android:textSize="25sp"
-      android:text="15.4"/>
+      android:text=""/>
 
   <LinearLayout
       android:layout_marginLeft="3dp"
@@ -24,13 +24,13 @@
         android:id="@+id/tvSecurityDetailRate"
         style="@style/security_data_info"
         android:textSize="15sp"
-        android:text="+2.06%"/>
+        android:text=""/>
 
     <TextView
         android:id="@+id/tvSecurityDetailNum"
         style="@style/security_data_info"
         android:textSize="15sp"
-        android:text="+2.06"/>
+        android:text=""/>
   </LinearLayout>
 
   <LinearLayout
@@ -64,7 +64,7 @@
           android:layout_toRightOf="@id/tvInfo0Title"
           android:textSize="@dimen/sucurity_detail_info"
           android:textColor="@color/black"
-          android:text="$15.74"/>
+          android:text=""/>
 
       <TextView
           android:id="@+id/tvInfo1Value"
@@ -74,7 +74,7 @@
           android:layout_below="@id/tvInfo0Title"
           android:textSize="@dimen/sucurity_detail_info"
           android:textColor="@color/black"
-          android:text="$15.74"/>
+          android:text=""/>
 
     </RelativeLayout>
 
@@ -107,7 +107,7 @@
           android:textSize="@dimen/sucurity_detail_info"
           android:textColor="@color/black"
           android:singleLine="true"
-          android:text="29.04万"/>
+          android:text=""/>
 
       <TextView
           android:id="@+id/tvInfo3Value"
@@ -118,7 +118,7 @@
           android:textSize="@dimen/sucurity_detail_info"
           android:textColor="@color/black"
           android:singleLine="true"
-          android:text="2.46万"/>
+          android:text=""/>
     </RelativeLayout>
   </LinearLayout>
 </LinearLayout>

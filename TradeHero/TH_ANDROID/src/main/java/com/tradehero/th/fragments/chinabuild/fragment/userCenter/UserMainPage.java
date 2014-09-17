@@ -4,16 +4,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -27,6 +32,7 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
+import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th2.R;
@@ -59,6 +65,8 @@ public class UserMainPage extends DashboardFragment
 
     @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
 
+    @InjectView(R.id.includeUserHeader) LinearLayout includeUserHeader;
+
     @InjectView(R.id.imgMeHead) ImageView imgMeHead;
     @InjectView(R.id.tvMeName) TextView tvMeName;
     @InjectView(R.id.tvAllAmount) TextView tvAllAmount;
@@ -74,6 +82,12 @@ public class UserMainPage extends DashboardFragment
     private UserBaseKey userBaseKey;
     private UserProfileDTO currentUserProfileDTO;
 
+    private UserTimeLineAdapter adapter;
+
+    private int maxID = -1;
+
+    private boolean isMyMainPage = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -82,17 +96,32 @@ public class UserMainPage extends DashboardFragment
         if (userID != 0)
         {
             userBaseKey = new UserBaseKey(userID);
+            if (userBaseKey.key.equals(currentUserId.toUserBaseKey().getUserId()))
+            {
+                isMyMainPage = true;
+            }
         }
         Timber.d("UserID = " + userID);
         userProfileCacheListener = createUserProfileFetchListener();
         currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
+
+        adapter = new UserTimeLineAdapter(getActivity());
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain("TA的主页");
+
+        if (isMyMainPage)
+        {
+            setHeadViewMiddleMain("我的动态");
+            includeUserHeader.setVisibility(View.GONE);
+        }
+        else
+        {
+            setHeadViewMiddleMain("TA的主页");
+        }
     }
 
     @Override
@@ -110,6 +139,55 @@ public class UserMainPage extends DashboardFragment
     public void initView()
     {
         imgArrorRight.setVisibility(View.INVISIBLE);
+
+        listTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
+        listTimeLine.setAdapter(adapter);
+
+        adapter.setTimeLineOperater(new UserTimeLineAdapter.TimeLineOperater()
+        {
+            @Override public void OnTimeLineItemClicked(int position)
+            {
+                Timber.d("Item position = " + position);
+            }
+
+            @Override public void OnTimeLinePraiseClicked(int position)
+            {
+                Timber.d("Praise position = " + position);
+            }
+
+            @Override public void OnTimeLineCommentsClicked(int position)
+            {
+                Timber.d("Comments position = " + position);
+            }
+
+            @Override public void OnTimeLineShareClied(int position)
+            {
+                Timber.d("Share position = " + position);
+            }
+        });
+
+        listTimeLine.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
+        {
+            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
+            {
+                Timber.d("下拉刷新");
+                fetchTimeLine();
+            }
+
+            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
+            {
+                Timber.d("上拉加载更多");
+                fetchTimeLineMore();
+            }
+        });
+
+        listTimeLine.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
+            {
+                Timber.d("Clicked Position: " + position);
+            }
+        });
     }
 
     public void displayFollow()
@@ -165,12 +243,17 @@ public class UserMainPage extends DashboardFragment
 
     @Override public void onStop()
     {
+
         super.onStop();
     }
 
     @Override public void onDestroyView()
     {
         detachUserProfileCache();
+        detachTimeLineMiddleCallback();
+        detachCurrentUserProfileCache();
+        detachFreeFollowMiddleCallback();
+        detachFreeUnFollowMiddleCallback();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -181,6 +264,7 @@ public class UserMainPage extends DashboardFragment
         timeLineMiddleCallback = null;
         freeFollowMiddleCallback = null;
         freeUnFollowMiddleCallback = null;
+        timeLineMiddleCallback = null;
         super.onDestroy();
     }
 
@@ -371,19 +455,40 @@ public class UserMainPage extends DashboardFragment
 
     public void fetchTimeLine()
     {
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineNew(userBaseKey, 10, -1, -1, new TimeLineCallback());
+        maxID = -1;
+        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineNew(userBaseKey, 10, -1, maxID, new TimeLineCallback());
+    }
+
+    public void fetchTimeLineMore()
+    {
+        detachTimeLineMiddleCallback();
+        maxID = adapter.getMaxID();
+        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineNew(userBaseKey, 10, maxID, -1, new TimeLineCallback());
     }
 
     public class TimeLineCallback implements retrofit.Callback<TimelineDTO>
     {
-        @Override public void success(TimelineDTO userProfileDTO, Response response)
+        @Override public void success(TimelineDTO timelineDTO, Response response)
         {
-            Timber.d("ddd");
+
+            if (maxID == -1)//重新加载
+            {
+                adapter.setListData(timelineDTO);
+                adapter.notifyDataSetChanged();
+            }
+            else
+            {
+                adapter.addItems(timelineDTO);
+                adapter.notifyDataSetChanged();
+            }
+
+            listTimeLine.onRefreshComplete();
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
+            listTimeLine.onRefreshComplete();
         }
     }
 }

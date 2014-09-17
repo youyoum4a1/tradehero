@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TimelineItemDTO extends AbstractDiscussionDTO
 {
+    public int tradeId = 0;
     public int type;
     public Date userViewedAtUtc;
     private SecurityMediaDTOList medias;
@@ -28,6 +29,7 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
     //<editor-fold desc="Constructors">
     public TimelineItemDTO()
     {
+        super();
     }
 
     public <ExtendedDTOType extends ExtendedDTO> TimelineItemDTO(ExtendedDTOType other,
@@ -88,5 +90,10 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
     @Override public TimelineItemDTOKey getDiscussionKey()
     {
         return new TimelineItemDTOKey(id);
+    }
+
+    public boolean hasTrader()
+    {
+        return tradeId != 0;
     }
 }
