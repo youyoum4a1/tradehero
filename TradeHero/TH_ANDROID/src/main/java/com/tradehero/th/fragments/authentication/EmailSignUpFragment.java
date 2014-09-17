@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
@@ -44,7 +43,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private ImageView backButton;
 
     @Inject Analytics analytics;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -83,17 +81,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     {
         super.onViewCreated(view, savedInstanceState);
         DeviceUtil.showKeyboardDelayed(emailEditText);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                navigator.popFragment();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
