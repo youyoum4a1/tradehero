@@ -8,57 +8,43 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
-
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-
+import com.tradehero.th.widget.MultiScrollListener;
+import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
-
-import dagger.Lazy;
 
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
 
-    @Inject THBillingInteractor billingInteractor;
-    private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
-    private Integer restoreRequestCode;
-
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject SocialServiceWrapper socialServiceWrapper;
-    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
-    private MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject PushNotificationManager pushNotificationManager;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
+    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject Analytics analytics;
     @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;
     @Inject protected SocialConnectSettingViewHolderContainer socialConnectSettingViewHolderContainer;
@@ -129,17 +115,15 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
         view.setBackgroundColor(getResources().getColor(R.color.white));
 
-        if (view != null)
+        ListView listView = (ListView) view.findViewById(android.R.id.list);
+        if (listView != null)
         {
-            ListView listView = (ListView) view.findViewById(android.R.id.list);
-            if (listView != null)
-            {
-                listView.setPadding(
-                        (int) getResources().getDimension(R.dimen.setting_padding_left),
-                        (int) getResources().getDimension(R.dimen.setting_padding_top),
-                        (int) getResources().getDimension(R.dimen.setting_padding_right),
-                        (int) getResources().getDimension(R.dimen.setting_padding_bottom));
-            }
+            listView.setPadding(
+                    (int) getResources().getDimension(R.dimen.setting_padding_left),
+                    (int) getResources().getDimension(R.dimen.setting_padding_top),
+                    (int) getResources().getDimension(R.dimen.setting_padding_right),
+                    (int) getResources().getDimension(R.dimen.setting_padding_bottom));
+            listView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener));
         }
 
         return view;
