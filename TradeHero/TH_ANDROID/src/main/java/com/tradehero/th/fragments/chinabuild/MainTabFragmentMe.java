@@ -51,7 +51,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @InjectView(R.id.rlMeDynamic) RelativeLayout rlMeDynamic;
     @InjectView(R.id.rlMeMessageCenter) RelativeLayout rlMeMessageCenter;
     @InjectView(R.id.rlMeInviteFriends) RelativeLayout rlMeInviteFriends;
-    @InjectView(R.id.rlMeSetting) RelativeLayout rlMeSetting;
+    //@InjectView(R.id.rlMeSetting) RelativeLayout rlMeSetting;
 
     @InjectView(R.id.llItemAllAmount) LinearLayout llItemAllAmount;
     @InjectView(R.id.llItemAllHero) LinearLayout llItemAllHero;
@@ -147,7 +147,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
         }
     }
 
-    @OnClick({R.id.rlMeDynamic, R.id.rlMeMessageCenter, R.id.rlMeInviteFriends, R.id.rlMeSetting,
+    @OnClick({R.id.rlMeDynamic, R.id.rlMeMessageCenter, R.id.rlMeInviteFriends,
             R.id.llItemAllAmount, R.id.llItemAllHero, R.id.llItemAllFans})
     public void onItemClicked(View view)
     {
@@ -163,9 +163,9 @@ public class MainTabFragmentMe extends AbsBaseFragment
             case R.id.rlMeInviteFriends:
                 Timber.d("clicked rlMeInviteFriends");
                 break;
-            case R.id.rlMeSetting:
-                Timber.d("clicked rlMeSetting");
-                break;
+            //case R.id.rlMeSetting:
+            //    Timber.d("clicked rlMeSetting");
+            //    break;
             case R.id.llItemAllAmount:
                 Timber.d("clicked llItemAllAmount");
                 break;

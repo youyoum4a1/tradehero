@@ -129,4 +129,5 @@
   <string name="from_gallery">从相册选择</string>
   <string name="settings_score">去评分</string>
   <string name="settings_logout">退出当前账号</string>
+  <string name="settings_version">版本</string>
 </resources>

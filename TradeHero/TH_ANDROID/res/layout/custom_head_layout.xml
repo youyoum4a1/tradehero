@@ -15,7 +15,7 @@
       android:layout_height="fill_parent"
       android:gravity="center"
       android:textColor="@color/white"
-      android:layout_marginLeft="5dp"
+      android:layout_marginLeft="@dimen/margin_xsmall"
       android:visibility="visible"
       android:background="@drawable/icon_return_xml"
       >
@@ -29,9 +29,11 @@
       android:layout_height="fill_parent"
       android:gravity="center"
       android:textColor="@color/white"
-      android:layout_marginRight="10dp"
+      android:paddingLeft="@dimen/margin_small"
+      android:paddingRight="@dimen/margin_small"
       android:visibility="gone"
-      android:text="按钮0">
+      android:text="按钮0"
+      android:background="@drawable/basic_transparent_selector">
   </TextView>
 
   <TextView
@@ -40,7 +42,7 @@
       android:layout_height="fill_parent"
       android:gravity="center"
       android:textColor="@color/white"
-      android:layout_marginRight="5dp"
+      android:layout_marginRight="@dimen/margin_xsmall"
       android:layout_toLeftOf="@id/tvHeadRight0"
       android:visibility="gone"
       android:text="按钮1">
