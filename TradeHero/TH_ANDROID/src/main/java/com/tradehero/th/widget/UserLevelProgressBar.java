@@ -63,6 +63,7 @@ public class UserLevelProgressBar extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     public LevelDefDTOList getLevelDefDTOList()

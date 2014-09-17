@@ -124,7 +124,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        HierarchyInjector.inject(getActivity(), userLevelProgressBar);
         init();
     }
 
