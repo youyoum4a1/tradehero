@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import com.tradehero.th2.R;
-import com.tradehero.th.fragments.base.DashboardFragment;
 
 public class ActivityHelper
 {

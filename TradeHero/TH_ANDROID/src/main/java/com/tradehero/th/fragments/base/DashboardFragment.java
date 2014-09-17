@@ -365,4 +365,9 @@ abstract public class DashboardFragment extends BaseFragment
     {
         tvHeadRight0.setOnClickListener(listener);
     }
+
+    public void setLeftButtonOnClickListener(View.OnClickListener listener)
+    {
+        tvHeadLeft.setOnClickListener(listener);
+    }
 }

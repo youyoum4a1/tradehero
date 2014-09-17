@@ -71,6 +71,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         setHeadViewMiddleMain(R.string.guide_screen_login);
         setHeadViewRight0(R.string.authentication_register);
         setRight0ButtonOnClickListener(onClickListener);
+        setLeftButtonOnClickListener(onClickListener);
     }
 
     @Override public int getDefaultViewId ()

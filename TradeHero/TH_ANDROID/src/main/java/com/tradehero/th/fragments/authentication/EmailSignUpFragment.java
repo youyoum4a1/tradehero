@@ -24,6 +24,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -414,7 +415,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
         else
         {
-            super.onClickHeadLeft();
+            ((AuthenticationActivity)getActivity()).onBackPressed();
         }
     }
 

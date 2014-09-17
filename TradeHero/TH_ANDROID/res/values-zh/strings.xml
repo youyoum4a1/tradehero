@@ -127,4 +127,6 @@
   <string name="register_error_displayname">请输入您的用户名</string>
   <string name="take_photo">拍照</string>
   <string name="from_gallery">从相册选择</string>
+  <string name="settings_score">去评分</string>
+  <string name="settings_logout">退出当前账号</string>
 </resources>

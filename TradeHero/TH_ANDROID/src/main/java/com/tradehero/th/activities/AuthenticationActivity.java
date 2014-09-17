@@ -243,6 +243,9 @@ public class AuthenticationActivity extends DashboardActivity
                     THToast.show("Unable to open url: " + uri2);
                 }
                 break;
+            case R.id.tvHeadLeft:
+                onBackPressed();
+                break;
         }
     }
 
@@ -486,5 +489,22 @@ public class AuthenticationActivity extends DashboardActivity
         {
             return false;
         }
+    }
+
+    @Override public void onBackPressed()
+    {
+        if (currentFragment instanceof SignInFragment)
+        {
+            ActivityHelper.launchGuide(this);
+            return;
+        }
+        else if (currentFragment instanceof EmailSignInOrUpFragment)
+        {
+            getNavigator().popFragment();
+            setCurrentFragmentByPopBack(SignInFragment.class);
+            currentFragment = Fragment.instantiate(this, SignInFragment.class.getName(), null);
+            return;
+        }
+        super.onBackPressed();
     }
 }
