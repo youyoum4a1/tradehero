@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discovery;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -31,7 +31,7 @@ import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-public class NewsHeadlineFragment extends SherlockFragment
+public class NewsHeadlineFragment extends Fragment
 {
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
     @InjectView(android.R.id.list) ListView mNewsListView;
@@ -45,6 +45,11 @@ public class NewsHeadlineFragment extends SherlockFragment
     private NewsHeadlineAdapter mFeaturedNewsAdapter;
     protected NewsItemListKey newsItemListKey;
     private AbsListView.OnScrollListener scrollListener;
+
+    public NewsHeadlineFragment()
+    {
+        super();
+    }
 
     public NewsHeadlineFragment(NewsItemListKey newsItemListKey)
     {

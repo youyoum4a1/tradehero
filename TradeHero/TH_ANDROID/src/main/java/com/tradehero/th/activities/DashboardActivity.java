@@ -7,16 +7,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.TabHost;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
@@ -97,7 +97,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class DashboardActivity extends SherlockFragmentActivity
+public class DashboardActivity extends FragmentActivity
         implements Injector, ResideMenu.OnMenuListener
 {
     private DashboardNavigator navigator;
@@ -271,7 +271,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         UserProfileDTO currentUserProfile =
                 userProfileCache.get().get(currentUserId.toUserBaseKey());
-        MenuInflater menuInflater = getSupportMenuInflater();
+        MenuInflater menuInflater = getMenuInflater();
 
         menuInflater.inflate(R.menu.hardware_menu, menu);
 

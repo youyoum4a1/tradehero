@@ -5,16 +5,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
@@ -86,7 +85,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment)getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
+            getCurrentFragment().onCreateOptionsMenu(menu, inflater);
         }
     }
 
@@ -95,7 +94,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            boolean handled = ((SherlockFragment)getCurrentFragment()).onOptionsItemSelected(item);
+            boolean handled = getCurrentFragment().onOptionsItemSelected(item);
             if (handled)
             {
                 return true;
@@ -110,7 +109,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment) getCurrentFragment()).onPrepareOptionsMenu(menu);
+            getCurrentFragment().onPrepareOptionsMenu(menu);
         }
 
         super.onPrepareOptionsMenu(menu);

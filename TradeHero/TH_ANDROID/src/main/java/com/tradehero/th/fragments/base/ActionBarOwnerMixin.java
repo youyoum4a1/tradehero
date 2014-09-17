@@ -1,11 +1,10 @@
 package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.app.ActionBar;
+import android.support.v4.app.Fragment;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.th.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -17,10 +16,10 @@ public class ActionBarOwnerMixin
     private static final String BUNDLE_KEY_SHOW_HOME_AS_UP = ActionBarOwnerMixin.class.getName() + ".show_home_as_up";
     private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
 
-    private final SherlockFragment fragment;
+    private final Fragment fragment;
     private final ActionBar actionBar;
 
-    public static ActionBarOwnerMixin of(SherlockFragment fragment)
+    public static ActionBarOwnerMixin of(Fragment fragment)
     {
         return new ActionBarOwnerMixin(fragment);
     }
@@ -47,10 +46,10 @@ public class ActionBarOwnerMixin
         }
     }
 
-    private ActionBarOwnerMixin(SherlockFragment fragment)
+    private ActionBarOwnerMixin(Fragment fragment)
     {
         this.fragment = fragment;
-        this.actionBar = fragment.getSherlockActivity().getSupportActionBar();
+        this.actionBar = fragment.getActivity().getActionBar();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

@@ -44,7 +44,7 @@ public class SendFeedbackViewHolder extends OneSettingViewHolder
         if (preferenceFragmentCopy != null)
         {
             preferenceFragmentCopy.startActivity(
-                    Intent.createChooser(VersionUtils.getSupportEmailIntent(preferenceFragmentCopy.getSherlockActivity()),
+                    Intent.createChooser(VersionUtils.getSupportEmailIntent(preferenceFragmentCopy.getActivity()),
                             ""));
         }
     }
@@ -55,7 +55,7 @@ public class SendFeedbackViewHolder extends OneSettingViewHolder
         if (preferenceFragmentCopy != null)
         {
             preferenceFragmentCopy.startActivity(Intent.createChooser(
-                    VersionUtils.getSupportEmailIntent(preferenceFragmentCopy.getSherlockActivity(), true), ""));
+                    VersionUtils.getSupportEmailIntent(preferenceFragmentCopy.getActivity(), true), ""));
         }
     }
 }

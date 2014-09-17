@@ -9,8 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.actionbarsherlock.app.SherlockFragment;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.R;
@@ -20,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class NewsPagerFragment extends SherlockFragment
+public class NewsPagerFragment extends Fragment
 {
     @InjectView(R.id.news_pager) ViewPager mViewPager;
     @InjectView(R.id.news_carousel_wrapper) View mNewsCarouselWrapper;

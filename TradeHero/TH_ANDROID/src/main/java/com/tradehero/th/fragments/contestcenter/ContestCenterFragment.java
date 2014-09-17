@@ -2,14 +2,13 @@ package com.tradehero.th.fragments.contestcenter;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.updatecenter.TitleTabView;
@@ -45,7 +44,7 @@ public class ContestCenterFragment extends DashboardFragment
     private View addTabs()
     {
         FragmentTabHost mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), this.getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         graphicUtil.setBackground(mTabHost.getTabWidget(), Color.WHITE);
         Bundle args = getArguments();
         if (args == null)

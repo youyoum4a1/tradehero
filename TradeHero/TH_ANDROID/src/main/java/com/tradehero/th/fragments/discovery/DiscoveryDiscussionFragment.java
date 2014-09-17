@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discovery;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,6 @@ import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -27,7 +27,7 @@ import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
 
-public class DiscoveryDiscussionFragment extends SherlockFragment
+public class DiscoveryDiscussionFragment extends Fragment
 {
     private static final int TIMELINE_LOADER_ID = 0;
 

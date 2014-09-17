@@ -11,15 +11,13 @@ import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
-
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -47,14 +45,10 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.PreRoutable;
 import com.tradehero.th.utils.route.THRouter;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import dagger.Lazy;
+import java.util.List;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 @PreRoutable(preOpenRunnables = {
@@ -149,7 +143,7 @@ public class UpdateCenterFragment extends DashboardFragment
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment) getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
+            getCurrentFragment().onCreateOptionsMenu(menu, inflater);
         }
 
         setActionBarTitle(R.string.message_center_title);
@@ -173,7 +167,7 @@ public class UpdateCenterFragment extends DashboardFragment
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            boolean handled = ((SherlockFragment) getCurrentFragment()).onOptionsItemSelected(item);
+            boolean handled = getCurrentFragment().onOptionsItemSelected(item);
             if (handled)
             {
                 return true;
@@ -187,7 +181,7 @@ public class UpdateCenterFragment extends DashboardFragment
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment) getCurrentFragment()).onPrepareOptionsMenu(menu);
+            getCurrentFragment().onPrepareOptionsMenu(menu);
         }
         super.onPrepareOptionsMenu(menu);
     }

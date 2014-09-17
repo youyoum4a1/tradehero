@@ -3,8 +3,8 @@ package com.tradehero.th.activities;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
 import com.mobileapptracker.MobileAppTracker;
@@ -40,7 +40,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
 
-public class SplashActivity extends SherlockActivity
+public class SplashActivity extends FragmentActivity
 {
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
-import com.actionbarsherlock.app.ActionBar;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;

@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
@@ -56,7 +56,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class AuthenticationActivity extends SherlockFragmentActivity
+public class AuthenticationActivity extends FragmentActivity
         implements View.OnClickListener, Injector
 {
     private static final String M_FRAGMENT = "M_CURRENT_FRAGMENT";
@@ -155,7 +155,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         //getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         //getSupportActionBar().setCustomView(R.layout.topbar_authentication);
-        getSupportActionBar().hide();
+        getActionBar().hide();
         return super.onCreateOptionsMenu(menu);
     }
 

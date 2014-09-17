@@ -1,7 +1,11 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -10,10 +14,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -58,16 +58,16 @@ public class AboutFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_about_title));
-        getSherlockActivity().getSupportActionBar().hide();
+        getActivity().getActionBar().setTitle(getResources().getString(R.string.settings_about_title));
+        getActivity().getActionBar().hide();
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        SherlockFragmentActivity activity = getSherlockActivity();
+        FragmentActivity activity = getActivity();
         if (activity != null)
         {
-            ActionBar actionBar = activity.getSupportActionBar();
+            ActionBar actionBar = activity.getActionBar();
             if (actionBar != null)
             {
                 actionBar.show();
