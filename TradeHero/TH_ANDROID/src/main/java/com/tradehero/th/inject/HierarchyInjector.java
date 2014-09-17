@@ -3,6 +3,7 @@ package com.tradehero.th.inject;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 
 /**
@@ -46,6 +47,11 @@ public class HierarchyInjector
 
     public static boolean inject(Context context, Object o)
     {
+        // TODO Following check is used when view is created from a ContextThemeWrapper, instead of an Activity, which is wrapped inside the wrapper
+        if (!(context instanceof Activity) && (context instanceof ContextThemeWrapper))
+        {
+            context = ((ContextThemeWrapper) context).getBaseContext();
+        }
         return (context instanceof Injector) && inject((Injector) context, o);
     }
 
