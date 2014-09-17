@@ -19,17 +19,16 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -37,8 +36,6 @@ import org.jetbrains.annotations.Nullable;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
-    public static final String BUNDLE_KEY_PAGE = SecurityListFragment.class.getName() + ".page";
-
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 20;
     public static final int DEFAULT_VISIBLE_THRESHOLD = 20;
@@ -58,9 +55,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected int firstVisiblePosition = 0;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
+    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -93,7 +88,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
 
         securityListView.setOnItemClickListener(createOnItemClickListener());
-        securityListView.setOnScrollListener(listViewScrollListener);
+        securityListView.setOnScrollListener(new MultiScrollListener(listViewScrollListener, dashboardBottomTabsScrollListener));
         securityListView.setAdapter(adapter);
         listViewGesture = new GestureDetector(getActivity(), new SecurityListOnGestureListener());
         securityListView.setOnTouchListener(new SecurityListOnTouchListener());
