@@ -113,7 +113,7 @@
         android:icon="@drawable/settings_recover_purchase"
         />
 
-    <Preference
+    <com.tradehero.th.fragments.settings.ShowUnreadPreference
         android:enabled="true"
         android:key="@string/key_settings_primary_referral_code"
         android:title="@string/settings_primary_referral_code"

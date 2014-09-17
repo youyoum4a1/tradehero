@@ -27,4 +27,4 @@ public class CompetitionDTORestrictionComparator implements Comparator<Competiti
         }
         return compare;
     }
-};
+}

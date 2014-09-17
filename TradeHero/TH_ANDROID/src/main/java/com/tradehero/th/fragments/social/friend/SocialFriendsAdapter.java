@@ -4,12 +4,16 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import timber.log.Timber;
 
 public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListItemDTO, SocialFriendItemView>
@@ -20,10 +24,8 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
     @Nullable private SocialFriendUserView.OnElementClickListener elementClickedListener;
     private List<SocialFriendListItemDTO> mArrayList;
 
-
-
     //<editor-fold desc="Constructors">
-    public SocialFriendsAdapter(Context context, List<SocialFriendListItemDTO> objects, int layoutItemResId, int layoutHeaderResId)
+    public SocialFriendsAdapter(@NotNull Context context, List<SocialFriendListItemDTO> objects, int layoutItemResId, int layoutHeaderResId)
     {
         super(context, 0);
         addAll(objects);

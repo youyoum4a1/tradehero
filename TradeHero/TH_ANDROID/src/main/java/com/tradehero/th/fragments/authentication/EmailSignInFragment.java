@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -21,7 +22,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -30,7 +31,9 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+
 import java.util.Map;
+
 import javax.inject.Inject;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
@@ -51,7 +54,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         analytics.tagScreen(AnalyticsConstants.Login_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
     }
@@ -121,8 +124,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         if (backButton != null)
         {
             backButton.setOnClickListener(null);
-            backButton = null;
         }
+        backButton = null;
         super.onDestroyView();
     }
 
@@ -148,7 +151,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             case R.id.authentication_sign_in_forgot_password:
                 showForgotPasswordUI();
                 break;
-
             default:
                 break;
         }

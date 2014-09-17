@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
@@ -17,5 +18,10 @@ public interface MarketService
     @GET("/exchanges/{exchangeId}")
     ExchangeDTO getExchange(
             @Path("exchangeId") int exchangeId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get All Exchange And Sectors Compact">
+    @GET("/allExchangesAndSectors")
+    ExchangeSectorCompactListDTO getAllExchangeSectorCompact();
     //</editor-fold>
 }

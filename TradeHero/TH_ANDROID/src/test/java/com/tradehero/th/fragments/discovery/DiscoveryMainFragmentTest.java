@@ -5,6 +5,7 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,14 +17,14 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class DiscoveryMainFragmentTest
 {
-    private DashboardNavigator navigator;
+    @Inject DashboardNavigator navigator;
     private DiscoveryMainFragment discoveryMainFragment;
     private DashboardActivity activity;
 
     @Before public void setUp()
     {
         activity = Robolectric.setupActivity(DashboardActivity.class);
-        navigator = activity.getDashboardNavigator();
+        activity.inject(this);
         discoveryMainFragment = navigator.goToTab(RootFragmentType.DISCOVERY);
     }
 

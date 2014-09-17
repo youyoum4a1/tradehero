@@ -18,7 +18,6 @@ import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -250,7 +249,6 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         Bundle args = new Bundle();
         WebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         WebViewFragment.putIsOptionMenuVisible(args, false);
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             this.webViewFragment = navigator.pushFragment(WebViewFragment.class, args);
@@ -293,9 +291,9 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
             return CompetitionLeaderboardMarkUserListFragment.this.providerId;
         }
 
-        @Override protected Navigator getNavigator()
+        @Override protected DashboardNavigator getNavigator()
         {
-            return CompetitionLeaderboardMarkUserListFragment.this.getDashboardNavigator();
+            return navigator;
         }
 
         @Override protected Class<?> getClassToPop()

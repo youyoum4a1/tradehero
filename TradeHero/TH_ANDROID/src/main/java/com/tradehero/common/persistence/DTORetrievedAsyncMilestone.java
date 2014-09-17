@@ -1,12 +1,13 @@
 package com.tradehero.common.persistence;
 
 import com.tradehero.common.milestone.BaseAsyncTaskMilestone;
+
 import timber.log.Timber;
 
 abstract public class DTORetrievedAsyncMilestone<
         DTOKeyType extends DTOKey,
         DTOType extends DTO,
-        DTOCacheType extends DTOCache<DTOKeyType, DTOType>>
+        DTOCacheType extends DTOCacheNew<DTOKeyType, DTOType>>
     extends BaseAsyncTaskMilestone<Void, Void, DTOType>
 {
     private boolean running = false;
@@ -30,7 +31,7 @@ abstract public class DTORetrievedAsyncMilestone<
         this.error = null;
         try
         {
-            value = getCache().getOrFetch(key);
+            value = getCache().getOrFetchSync(key);
         }
         catch (Throwable throwable)
         {

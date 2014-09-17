@@ -5,9 +5,9 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.loaders.PaginationListLoader;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
     {
         super(context);
         this.pagedLeaderboardKey = pagedLeaderboardKey;
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     @Override protected void onLoadNext(LeaderboardUserDTO firstVisibleItem)

@@ -2,7 +2,9 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import android.content.Intent;
+
 import com.tradehero.th.R;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -16,6 +18,6 @@ import javax.inject.Singleton;
     {
         context.startActivity(Intent.createChooser(
                 emailIntent,
-                context.getString(R.string.google_play_send_support_email_chooser_title)));
+                context.getString(R.string.iap_send_support_email_chooser_title)));
     }
 }

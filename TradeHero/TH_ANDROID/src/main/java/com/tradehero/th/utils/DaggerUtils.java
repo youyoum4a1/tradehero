@@ -3,15 +3,13 @@ package com.tradehero.th.utils;
 import dagger.ObjectGraph;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * This class is deprecated, please use HierarchyInjector instead
+ */
+@Deprecated
 public class DaggerUtils
 {
     private static ObjectGraph objectGraph;
-
-    public static void initialize(Object[] modules)
-    {
-        objectGraph = ObjectGraph.create(modules);
-        objectGraph.injectStatics();
-    }
 
     public static void inject(Object object)
     {
@@ -24,5 +22,10 @@ public class DaggerUtils
     public static Object getObject(@NotNull Class<?> aClass)
     {
         return objectGraph.get(aClass);
+    }
+
+    public static void setObjectGraph(ObjectGraph objectGraph)
+    {
+        DaggerUtils.objectGraph = objectGraph;
     }
 }

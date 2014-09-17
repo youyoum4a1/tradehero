@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -35,10 +36,13 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 import retrofit.Callback;
 import timber.log.Timber;
 
@@ -71,6 +75,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
+    @Inject DashboardNavigator navigator;
 
     public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
@@ -134,7 +139,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             @Override public void onClick(View v)
             {
-                DeviceUtil.dismissKeyboard(getActivity(), getView());
+                DeviceUtil.dismissKeyboard(getView());
                 handleWatchButtonClicked();
             }
         };
@@ -201,7 +206,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             @Override public void onClick(View v)
             {
-                DeviceUtil.dismissKeyboard(getActivity(), getView());
+                DeviceUtil.dismissKeyboard(getView());
                 handleButtonDeleteClicked();
             }
         };
@@ -366,7 +371,7 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 watchPrice.setText(
                         watchListItem != null ?
-                                "" + watchListItem.watchlistPrice :
+                                "" + watchListItem.watchlistPriceRefCcy :
                                 securityCompactDTO.lastPrice != null ? securityCompactDTO.lastPrice.toString() : "");
             }
 
@@ -395,7 +400,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             if (isResumed())
             {
-                getDashboardNavigator().popFragment();
+                navigator.popFragment();
             }
             else
             {
@@ -413,7 +418,6 @@ public class WatchlistEditFragment extends DashboardFragment
 
         @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO, THResponse response)
         {
-            DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)
             {
                 navigator.popFragment();

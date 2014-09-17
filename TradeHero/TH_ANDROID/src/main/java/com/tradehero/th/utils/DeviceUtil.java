@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.ref.WeakReference;
 
 public final class DeviceUtil
@@ -22,20 +25,20 @@ public final class DeviceUtil
         return imm != null && imm.isAcceptingText();
     }
 
-    public static void dismissKeyboard(Context ctx, View v)
+    public static void dismissKeyboard(@Nullable View v)
     {
-        InputMethodManager imm = getInputMethodManager(ctx);
-        if (imm != null && v != null)
+        if (v != null)
         {
+            InputMethodManager imm = getInputMethodManager(v.getContext());
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
     }
 
-    public static void dismissKeyboard(Activity activity)
+    public static void dismissKeyboard(@Nullable Activity activity)
     {
         if (activity != null)
         {
-            dismissKeyboard(activity, activity.getCurrentFocus());
+            dismissKeyboard(activity.getCurrentFocus());
         }
     }
 

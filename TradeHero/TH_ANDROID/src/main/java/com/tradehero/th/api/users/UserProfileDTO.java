@@ -4,10 +4,13 @@ import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,9 +73,9 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public int achievementCount;
 
-    public LeaderboardKey getMostSkilledLbmuKey()
+    public UserOnLeaderboardKey getMostSkilledUserOnLbmuKey()
     {
-        return new LeaderboardKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
+        return new UserOnLeaderboardKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID, id);
     }
 
     public boolean isFollowingUser(int userId)
@@ -88,6 +91,11 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public boolean isFollowingUser(UserBaseDTO userBaseDTO)
     {
         return userBaseDTO != null && isFollowingUser(userBaseDTO.id);
+    }
+
+    public boolean isPremiumFollowingUser(@NotNull UserBaseKey userBaseKey)
+    {
+        return this.premiumHeroIds != null && this.premiumHeroIds.contains(userBaseKey.key);
     }
 
     public int getFollowType(UserBaseKey userBaseKey)
@@ -166,6 +174,11 @@ public class UserProfileDTO extends UserProfileCompactDTO
             }
         }
         return count;
+    }
+
+    public boolean alreadyClaimedInvitedDollars()
+    {
+        return inviteCode != null && !inviteCode.isEmpty();
     }
 
     @Override public String toString()

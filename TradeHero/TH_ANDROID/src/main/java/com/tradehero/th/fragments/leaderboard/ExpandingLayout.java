@@ -10,27 +10,24 @@ public class ExpandingLayout extends LinearLayout
     private OnExpandListener expandListener;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public ExpandingLayout(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ExpandingLayout(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ExpandingLayout(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    @Override protected void onVisibilityChanged(View changedView, int visibility)
-    {
-        super.onVisibilityChanged(changedView, visibility);
-
-    }
 
     private void notifyExpand(boolean expand)
     {

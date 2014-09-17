@@ -1,8 +1,13 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import timber.log.Timber;
 
 abstract public class BaseBillingPurchaserHolder<
@@ -18,18 +23,20 @@ abstract public class BaseBillingPurchaserHolder<
         ProductPurchaseType,
         BillingExceptionType>
 {
-    protected Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<
+    @NotNull protected final Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             PurchaseOrderType,
             OrderIdType,
             ProductPurchaseType,
             BillingExceptionType>> parentPurchaseFinishedListeners;
 
+    //<editor-fold desc="Constructors">
     public BaseBillingPurchaserHolder()
     {
         super();
         parentPurchaseFinishedListeners = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {
@@ -45,17 +52,19 @@ abstract public class BaseBillingPurchaserHolder<
      * @param purchaseFinishedListener
      * @return
      */
-    @Override public void registerPurchaseFinishedListener(int requestCode, BillingPurchaser.OnPurchaseFinishedListener<
-            ProductIdentifierType,
-            PurchaseOrderType,
-            OrderIdType,
-            ProductPurchaseType,
-            BillingExceptionType> purchaseFinishedListener)
+    @Override public void registerPurchaseFinishedListener(
+            int requestCode,
+            @Nullable BillingPurchaser.OnPurchaseFinishedListener<
+                    ProductIdentifierType,
+                    PurchaseOrderType,
+                    OrderIdType,
+                    ProductPurchaseType,
+                    BillingExceptionType> purchaseFinishedListener)
     {
         parentPurchaseFinishedListeners.put(requestCode, purchaseFinishedListener);
     }
 
-    @Override public BillingPurchaser.OnPurchaseFinishedListener<
+    @Override @Nullable public BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             PurchaseOrderType,
             OrderIdType,

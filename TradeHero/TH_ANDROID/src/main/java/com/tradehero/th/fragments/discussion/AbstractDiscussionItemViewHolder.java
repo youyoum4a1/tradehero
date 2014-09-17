@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,10 +27,12 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
     @Inject @ForUserPhoto Transformation userProfilePictureTransformation;
 
     //<editor-fold desc="Constructors">
-    public AbstractDiscussionItemViewHolder()
+
+    public AbstractDiscussionItemViewHolder(Context context)
     {
-        super();
+        super(context);
     }
+
     //</editor-fold>
 
     @Override public void linkWith(DiscussionDTOType discussionDTO, boolean andDisplay)

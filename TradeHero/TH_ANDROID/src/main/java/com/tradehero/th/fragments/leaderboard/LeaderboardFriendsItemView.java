@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -19,7 +20,6 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormUserDTO;
@@ -31,11 +31,11 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.MiddleLogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
@@ -47,7 +47,6 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -56,7 +55,7 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import javax.inject.Provider;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -77,13 +76,12 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     private MiddleLogInCallback middleTrackbackFacebook;
-    protected OnFollowRequestedListener followRequestedListener;
     private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfileDTO;
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
+    @Inject Provider<Activity> activityProvider;
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
@@ -92,26 +90,17 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
     @Inject Analytics analytics;
-
-    public LeaderboardFriendsItemView(Context context)
-    {
-        super(context);
-    }
+    @Inject DashboardNavigator dashboardNavigator;
 
     public LeaderboardFriendsItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public LeaderboardFriendsItemView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         ButterKnife.inject(this);
         loadDefaultPicture();
         if (lbmuFollowUser != null)
@@ -212,83 +201,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 break;
             case R.id.leaderboard_user_item_follow:
                 THToast.show("TODO");
-                //heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), userFriendsDTO,
-                //        UserProfileDTOUtil.IS_NOT_FOLLOWER,
-                //        new LeaderBoardFollowRequestedListener());
                 break;
-        }
-    }
-
-    public class LeaderBoardFollowRequestedListener
-            implements com.tradehero.th.models.social.OnFollowRequestedListener
-    {
-        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            freeFollow(heroId);
-        }
-
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            follow(heroId);
-        }
-    }
-
-    protected void freeFollow(@NotNull UserBaseKey heroId)
-    {
-        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
-                R.string.following_this_hero));
-        detachFreeFollowMiddleCallback();
-        freeFollowMiddleCallback =
-                userServiceWrapperLazy.get()
-                        .freeFollow(heroId, new FreeFollowCallback());
-    }
-
-    protected void follow(@NotNull UserBaseKey heroId)
-    {
-        notifyFollowRequested(heroId);
-    }
-
-    protected void notifyFollowRequested(@NotNull UserBaseKey heroId)
-    {
-        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
-        if (followRequestedListenerCopy != null)
-        {
-            followRequestedListenerCopy.onFollowRequested(heroId);
-        }
-    }
-
-    public static interface OnFollowRequestedListener
-    {
-        void onFollowRequested(UserBaseKey userBaseKey);
-    }
-
-    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
-    {
-        this.followRequestedListener = followRequestedListener;
-    }
-
-    private void detachFreeFollowMiddleCallback()
-    {
-        if (freeFollowMiddleCallback != null)
-        {
-            freeFollowMiddleCallback.setPrimaryCallback(null);
-        }
-        freeFollowMiddleCallback = null;
-    }
-
-    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
-    {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            alertDialogUtilLazy.get().dismissProgressDialog();
-            linkWith(userProfileDTO, true);
-            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            THToast.show(new THException(retrofitError));
-            alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
@@ -330,8 +243,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             Bundle bundle = new Bundle();
             thRouter.save(bundle, new UserBaseKey(userFriendsDTO.thUserId));
-            DashboardNavigator dashboardNavigator =
-                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
             if (dashboardNavigator != null)
             {
                 if (currentUserId.get() == userFriendsDTO.thUserId)
@@ -373,7 +284,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             {
                 detachTrackbackFacebook();
                 middleTrackbackFacebook = new MiddleLogInCallback(new TrackFacebookCallback());
-                facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
+                facebookUtils.get().logIn(activityProvider.get(),
                         middleTrackbackFacebook);
             }
             else
@@ -403,8 +314,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             params.putString("to", stringBuilder.toString());
 
             WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                    currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
-                    params))
+                activityProvider.get(), Session.getActiveSession(), params))
                     .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
                         @Override
@@ -501,7 +411,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             return progressDialog;
         }
         progressDialog = progressDialogUtilLazy.get().show(
-                currentActivityHolderLazy.get().getCurrentContext(),
+                activityProvider.get(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -22,7 +21,7 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -45,6 +44,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
+    @Inject DashboardNavigator navigator;
 
     private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
 
@@ -224,7 +224,8 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         Bundle args = new Bundle();
         CompetitionWebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         CompetitionWebViewFragment.putIsOptionMenuVisible(args, false);
-        this.webViewFragment = getDashboardNavigator().pushFragment(
+
+        this.webViewFragment = navigator.pushFragment(
                 CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -233,8 +234,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
-        SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        getDashboardNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
+        {
+            SecuritySearchProviderFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+        }
+        navigator.pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
     protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
@@ -284,7 +289,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
-            getDashboardNavigator().pushFragment(BuySellFragment.class, args);
+            navigator.pushFragment(BuySellFragment.class, args);
         }
     }
 
@@ -310,9 +315,9 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             return providerId;
         }
 
-        @Override protected Navigator getNavigator()
+        @Override protected DashboardNavigator getNavigator()
         {
-            return ProviderSecurityListFragment.this.getDashboardNavigator();
+            return navigator;
         }
 
         @Override protected Class<?> getClassToPop()

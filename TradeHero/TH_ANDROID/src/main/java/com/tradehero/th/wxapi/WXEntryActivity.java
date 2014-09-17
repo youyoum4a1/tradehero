@@ -24,12 +24,12 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -71,7 +71,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
+        THApp app = THApp.get(this);
+        app.inject(this);
         // TODO take this intent extraction into a separate method and use a new
         // WeChatDTO method to read from Intent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);

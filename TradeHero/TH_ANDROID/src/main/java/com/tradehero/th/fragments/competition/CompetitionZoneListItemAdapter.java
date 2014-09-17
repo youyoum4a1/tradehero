@@ -1,29 +1,22 @@
 package com.tradehero.th.fragments.competition;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
-import com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemView;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.list.BaseListHeaderView;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZoneDTO>
 {
@@ -68,7 +61,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
 
         orderedTypes = new ArrayList<>();
         orderedItems = new ArrayList<>();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 

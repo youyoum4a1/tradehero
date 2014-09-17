@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
+
 import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
@@ -9,9 +10,12 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
-import java.util.HashMap;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+
+import javax.inject.Inject;
 
 public class LeaderboardDefDTOFactory
 {
@@ -27,6 +31,7 @@ public class LeaderboardDefDTOFactory
 
     public void complementServerLeaderboardDefDTOs(@NotNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
+        leaderboardDefDTOs.add(new InviteFriendsLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new HeroLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new FollowerLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new FriendLeaderboardDefDTO(context));

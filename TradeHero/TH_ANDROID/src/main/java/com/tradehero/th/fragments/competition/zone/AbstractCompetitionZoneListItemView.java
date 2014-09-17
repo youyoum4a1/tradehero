@@ -43,9 +43,4 @@ abstract public class AbstractCompetitionZoneListItemView extends RelativeLayout
         {
         }
     }
-
-    public CompetitionZoneDTO getCompetitionZoneDTO()
-    {
-        return competitionZoneDTO;
-    }
 }

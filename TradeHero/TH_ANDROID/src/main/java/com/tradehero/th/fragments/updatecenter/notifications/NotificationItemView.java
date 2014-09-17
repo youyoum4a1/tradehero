@@ -17,12 +17,11 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -43,18 +42,22 @@ public class NotificationItemView
     @Inject CurrentUserId currentUserId;
 
     private NotificationDTO notificationDTO;
+    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public NotificationItemView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public NotificationItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public NotificationItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -66,12 +69,7 @@ public class NotificationItemView
         super.onFinishInflate();
 
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -90,11 +88,11 @@ public class NotificationItemView
             thRouter.save(bundle, referencedUser);
             if (currentUserId.toUserBaseKey().equals(referencedUser))
             {
-                getNavigator().pushFragment(MeTimelineFragment.class, bundle);
+                navigator.pushFragment(MeTimelineFragment.class, bundle);
             }
             else
             {
-                getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+                navigator.pushFragment(PushableTimelineFragment.class, bundle);
             }
         }
     }
@@ -139,11 +137,4 @@ public class NotificationItemView
                 .transform(userPhotoTransformation)
                 .into(notificationPicture);
     }
-
-    //<editor-fold desc="Navigation">
-    protected DashboardNavigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-    }
-    //</editor-fold>
 }

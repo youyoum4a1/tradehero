@@ -9,10 +9,8 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class MentionActionButtonsView extends LinearLayout
@@ -46,23 +44,13 @@ public class MentionActionButtonsView extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
-
-    protected Navigator getNavigator()
-    {
-        return ((NavigatorActivity) getContext()).getNavigator();
     }
 
     //<editor-fold desc="To be used in future, we should encapsulate searching for people and stock within this view, instead of doing it in the parent fragment">

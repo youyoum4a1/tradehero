@@ -6,14 +6,14 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 import com.tradehero.th.R;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.misc.exception.THException;
 import timber.log.Timber;
 
 public class THToast
 {
     public static Handler toastHandler = null;
-    public static int toastPosition = Application.context().getResources().getDimensionPixelOffset(R.dimen.abs__action_bar_default_height);
+    public static int toastPosition = THApp.context().getResources().getDimensionPixelOffset(R.dimen.abs__action_bar_default_height);
     public static void show(final String message)
     {
         //THLog.e(TAG, "show " + message, new IllegalArgumentException());
@@ -43,7 +43,7 @@ public class THToast
     {
         if (message != null)
         {
-            Toast toast = Toast.makeText(Application.context(), message, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(THApp.context(), message, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, toastPosition);
             toast.show();
         }
@@ -51,7 +51,7 @@ public class THToast
 
     public static void show(int resourceId)
     {
-        show(Application.getResourceString(resourceId));
+        show(THApp.getResourceString(resourceId));
     }
 
     public static void show(THException ex)
@@ -80,7 +80,7 @@ public class THToast
 
     public static void post(View view, final int resourceId)
     {
-        post(view, Application.getResourceString(resourceId));
+        post(view, THApp.getResourceString(resourceId));
     }
 
     public static void post(View view, final THException ex)

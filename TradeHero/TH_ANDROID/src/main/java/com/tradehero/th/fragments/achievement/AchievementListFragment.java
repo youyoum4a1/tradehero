@@ -16,6 +16,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
 import com.tradehero.th.utils.Constants;
@@ -33,6 +34,7 @@ public class AchievementListFragment extends DashboardFragment
     protected AchievementListAdapter achievementListAdapter;
 
     @Inject AchievementCategoryListCache achievementCategoryListCache;
+    @Inject DashboardNavigator navigator;
     UserBaseKey shownUserId;
 
     protected DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList> achievementCategoryListCacheListener;
@@ -79,10 +81,10 @@ public class AchievementListFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case R.id.menu_test_achievement:
-                getDashboardNavigator().pushFragment(AchievementListTestingFragment.class, null);
+                navigator.pushFragment(AchievementListTestingFragment.class, null);
                 break;
             case R.id.menu_test_achievement_daily:
-                getDashboardNavigator().pushFragment(QuestListTestingFragment.class, null);
+                navigator.pushFragment(QuestListTestingFragment.class, null);
                 break;
         }
         return super.onOptionsItemSelected(item);

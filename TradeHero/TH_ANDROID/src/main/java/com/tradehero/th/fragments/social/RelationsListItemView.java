@@ -7,8 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -18,17 +17,18 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>, View.OnClickListener
@@ -44,6 +44,7 @@ public class RelationsListItemView extends RelativeLayout
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
     public RelationsListItemView(Context context)
@@ -65,7 +66,7 @@ public class RelationsListItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
         initViews();
     }
@@ -102,7 +103,6 @@ public class RelationsListItemView extends RelativeLayout
 
         Bundle bundle = new Bundle();
         thRouter.save(bundle, new UserBaseKey(userId));
-        DashboardNavigator navigator = ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 

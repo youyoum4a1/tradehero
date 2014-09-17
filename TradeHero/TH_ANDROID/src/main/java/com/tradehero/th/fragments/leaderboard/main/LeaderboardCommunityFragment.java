@@ -5,12 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -50,10 +49,15 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -79,6 +83,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListFetchListener;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfileDTO;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -154,10 +159,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         {
             case R.id.btn_search:
                 pushSearchFragment();
-                return true;
-
-            case R.id.btn_add:
-                pushInvitationFragment();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -257,15 +258,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
         {
-            Object item = adapterView.getItemAtPosition(position);
-            if (item instanceof LeaderboardDefCommunityPageDTO)
-            {
-                handleLeaderboardItemClicked(((LeaderboardDefCommunityPageDTO) item).leaderboardDefDTO);
-            }
-            else
-            {
-                throw new IllegalArgumentException("Unhandled item type " + item);
-            }
+            handleLeaderboardItemClicked((LeaderboardDefDTO) adapterView.getItemAtPosition(position));
         }
     }
 
@@ -321,7 +314,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         return new LeaderboardCommunityAdapter(
                 getActivity(),
-                R.layout.leaderboard_definition_item_view_community);
+                R.layout.leaderboard_definition_item_view);
     }
 
     /**
@@ -386,10 +379,13 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             case LeaderboardDefKeyKnowledge.FOLLOWER_ID:
                 pushFollowerFragment();
                 break;
+            case LeaderboardDefKeyKnowledge.INVITE_FRIENDS_ID:
+                pushInvitationFragment();
+                break;
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+                navigator.pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }
@@ -398,7 +394,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         Bundle args = new Bundle();
         FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
@@ -414,7 +409,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getDashboardNavigator().pushFragment(HeroManagerFragment.class, bundle);
+        navigator.pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -426,7 +421,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+        navigator.pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     private void pushLeaderboardDefSector(LeaderboardDefDTO leaderboardDefDTOSector)
@@ -434,7 +429,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         Bundle bundle = new Bundle(getArguments());
         (new SectorLeaderboardDefListKey()).putParameters(bundle);
         LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOSector.getLeaderboardDefKey());
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
@@ -446,7 +440,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         Bundle bundle = new Bundle(getArguments());
         (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
         LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
@@ -455,7 +448,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private void pushSearchFragment()
     {
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(PeopleSearchFragment.class, null);
@@ -464,7 +456,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private void pushInvitationFragment()
     {
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
             navigator.pushFragment(FriendsInvitationFragment.class);

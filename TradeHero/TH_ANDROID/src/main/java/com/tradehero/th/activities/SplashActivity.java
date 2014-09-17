@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -12,25 +13,29 @@ import com.tapstream.sdk.Event;
 import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.UIModule;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
+import com.tradehero.th.base.THApp;
+import com.tradehero.th.inject.Injector;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.RequestHeaders;
 import com.tradehero.th.network.service.SessionServiceWrapper;
-import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
+import dagger.Module;
+import dagger.Provides;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
@@ -50,8 +55,6 @@ public class SplashActivity extends SherlockActivity
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
-    @Inject CurrentActivityHolder currentActivityHolder;
-    @Inject DTOCacheUtil dtoCacheUtil;
     @Inject Analytics analytics;
 
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -71,10 +74,9 @@ public class SplashActivity extends SherlockActivity
             appVersion.setText(VersionUtils.getAppVersion(this));
         }
 
-        DaggerUtils.inject(this);
-        currentActivityHolder.setCurrentActivity(this);
-        //delay this for first page is not trending fragment, now first page is home page by alex
-        //dtoCacheUtil.anonymousPrefetches();
+        THApp thApp = THApp.get(this);
+        Injector newInjector = thApp.plus(new SplashActivityModule());
+        newInjector.inject(this);
     }
 
     @Override protected void onResume()
@@ -187,5 +189,20 @@ public class SplashActivity extends SherlockActivity
     {
         initialAsyncTask = null;
         super.onDestroy();
+    }
+
+    @Module(
+            addsTo = AppModule.class,
+            includes = UIModule.class,
+            library = true,
+            complete = false,
+            overrides = true
+    )
+    public class SplashActivityModule
+    {
+        @Provides Activity provideActivity()
+        {
+            return SplashActivity.this;
+        }
     }
 }

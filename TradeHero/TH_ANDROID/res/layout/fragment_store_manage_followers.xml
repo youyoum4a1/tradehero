@@ -99,15 +99,6 @@
       android:paddingBottom="@dimen/discussion_list_padding"
       />
 
-  <!--<com.tradehero.th.fragments.social.follower.FollowerListView-->
-  <!--android:id="@+id/followers_list"-->
-  <!--android:layout_width="match_parent"-->
-  <!--android:layout_height="match_parent"-->
-  <!--android:layout_below="@id/manage_followers_header"-->
-  <!--android:background="@null"-->
-  <!--android:layout_marginBottom="50dp"-->
-  <!--/>-->
-
   <ProgressBar
       android:id="@android:id/progress"
       android:layout_width="wrap_content"

@@ -7,6 +7,7 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
@@ -138,6 +139,15 @@ import retrofit.Callback;
         {
             received =  providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key);
         }
+        else if (key instanceof ExchangeSectorSecurityListType)
+        {
+            ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
+            received = this.securityService.getBySectorAndExchange(
+                    exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
+                    exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
+                    key.page,
+                    key.perPage);
+        }
         else
         {
             throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
@@ -202,6 +212,16 @@ import retrofit.Callback;
         else if (key instanceof ProviderSecurityListType)
         {
             return providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key, callback);
+        }
+        else if (key instanceof ExchangeSectorSecurityListType)
+        {
+            ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
+            this.securityServiceAsync.getBySectorAndExchange(
+                    exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
+                    exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
+                    key.page,
+                    key.perPage,
+                    middleCallback);
         }
         else
         {

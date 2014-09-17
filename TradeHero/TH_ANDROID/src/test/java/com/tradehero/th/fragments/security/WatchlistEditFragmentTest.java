@@ -48,13 +48,13 @@ public class WatchlistEditFragmentTest
     @Inject protected SecurityCompactCache securityCompactCache;
 
     private WatchlistEditFragment watchlistFragment;
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
 
     @Before public void setUp()
     {
         ActivityController<DashboardActivity> activityController = Robolectric.buildActivity(DashboardActivity.class).create().start();
         DashboardActivity activity = activityController.get();
-        dashboardNavigator = spy(activity.getDashboardNavigator());
+        activity.inject(this);
 
         SecurityCompactDTO googleSecurityCompactDTO = new SecurityCompactDTO();
         googleSecurityCompactDTO.id = 162075;

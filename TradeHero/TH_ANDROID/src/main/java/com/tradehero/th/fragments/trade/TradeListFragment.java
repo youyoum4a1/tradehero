@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -34,6 +33,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
@@ -49,12 +49,18 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -66,7 +72,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject Lazy<TradeListCache> tradeListCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject PortfolioCache portfolioCache;
     @Inject CurrentUserId currentUserId;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
     @Inject THRouter thRouter;
@@ -91,6 +96,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
     private Dialog securityActionDialog;
+    @Inject DashboardNavigator navigator;
 
     public static void putPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKey positionDTOKey)
     {
@@ -167,14 +173,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         securityAlertAssistant.populate();
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        setActionBarSubtitle(null);
-        super.onDestroyOptionsMenu();
-    }
-
     @Override public void onDestroyView()
     {
+        setActionBarSubtitle(null);
         detachFetchPosition();
         detachFetchTrades();
         detachSecurityActionDialog();
@@ -424,14 +425,13 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             if (watchlistPositionCache.get(securityId) != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
-                WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
             }
             else
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
-                WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_add_title));
+                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
             }
-            DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)
             {
                 navigator.pushFragment(WatchlistEditFragment.class, args);
@@ -448,7 +448,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
             }
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
-            DashboardNavigator navigator = getDashboardNavigator();
             if (alertId != null)
             {
                 AlertEditFragment.putAlertId(args, alertId);
@@ -477,7 +476,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
             }
             BuySellFragment.putSecurityId(args, securityId);
-            DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)
             {
                 navigator.pushFragment(BuySellFragment.class, args);

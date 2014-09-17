@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -12,6 +13,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -31,7 +33,7 @@ public class PortfolioListFragment extends DashboardFragment
     implements WithTutorial
 {
     private ProgressBar progressBar;
-    private PortfolioListView portfolioListView;
+    private ListView portfolioListView;
 
     private PortfolioListItemAdapter portfolioListAdapter;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
@@ -39,6 +41,7 @@ public class PortfolioListFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -72,7 +75,7 @@ public class PortfolioListFragment extends DashboardFragment
                 portfolioListAdapter = new PortfolioListItemAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_list_item, R.layout.portfolio_list_header);
             }
 
-            portfolioListView = (PortfolioListView) view.findViewById(R.id.own_portfolios_list);
+            portfolioListView = (ListView) view.findViewById(R.id.own_portfolios_list);
             if (portfolioListView != null)
             {
                 portfolioListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -165,13 +168,13 @@ public class PortfolioListFragment extends DashboardFragment
             if (displayablePortfolioDTO.portfolioDTO != null && displayablePortfolioDTO.portfolioDTO.isWatchlist)
             {
                 WatchlistPositionFragment.putOwnedPortfolioId(args, displayablePortfolioDTO.ownedPortfolioId);
-                getDashboardNavigator().pushFragment(WatchlistPositionFragment.class, args);
+                navigator.pushFragment(WatchlistPositionFragment.class, args);
             }
             else
             {
                 PositionListFragment.putGetPositionsDTOKey(args, displayablePortfolioDTO.ownedPortfolioId);
                 PositionListFragment.putShownUser(args, displayablePortfolioDTO.ownedPortfolioId.getUserBaseKey());
-                getDashboardNavigator().pushFragment(PositionListFragment.class, args);
+                navigator.pushFragment(PositionListFragment.class, args);
             }
         }
         else

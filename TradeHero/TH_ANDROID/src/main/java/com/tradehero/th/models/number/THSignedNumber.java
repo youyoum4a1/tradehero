@@ -1,10 +1,11 @@
 package com.tradehero.th.models.number;
 
 import com.tradehero.th.R;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.THColorUtils;
-import java.text.DecimalFormat;
+import com.tradehero.th.base.THApp;
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
 
 public class THSignedNumber
 {
@@ -131,7 +132,7 @@ public class THSignedNumber
 
     public int getColor()
     {
-        return Application.context().getResources().getColor(getColorResId());
+        return THApp.context().getResources().getColor(getColorResId());
     }
 
     @Override public String toString()
@@ -245,7 +246,7 @@ public class THSignedNumber
 
     public static String getArrowPrefix(double value)
     {
-        return Application.getResourceString(getArrowPrefixResId(value));
+        return THApp.getResourceString(getArrowPrefixResId(value));
     }
 
     public static int getArrowPrefixResId(double value)
@@ -257,7 +258,7 @@ public class THSignedNumber
 
     public static String getMinusOnlyPrefix(double value)
     {
-        return Application.getResourceString(getMinusOnlyPrefixResId(value));
+        return THApp.getResourceString(getMinusOnlyPrefixResId(value));
     }
 
     public static int getMinusOnlyPrefixResId(double value)
@@ -267,7 +268,7 @@ public class THSignedNumber
 
     public static String getPlusMinusPrefix(double value)
     {
-        return Application.getResourceString(getPlusMinusPrefixResId(value));
+        return THApp.getResourceString(getPlusMinusPrefixResId(value));
     }
 
     public static int getPlusMinusPrefixResId(double value)

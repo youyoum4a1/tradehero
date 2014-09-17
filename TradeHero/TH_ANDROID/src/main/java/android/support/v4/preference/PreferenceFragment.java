@@ -53,11 +53,6 @@ public abstract class PreferenceFragment extends SherlockFragment implements
     private Handler mHandler;
     private OnKeyListener mListOnKeyListener;
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     final private Runnable mRequestFocus = new Runnable()
     {
         public void run()

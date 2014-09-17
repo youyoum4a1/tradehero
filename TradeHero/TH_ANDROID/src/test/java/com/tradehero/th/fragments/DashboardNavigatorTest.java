@@ -3,6 +3,7 @@ package com.tradehero.th.fragments;
 import android.support.v4.app.Fragment;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import javax.inject.Inject;
 import org.fest.util.VisibleForTesting;
 import org.junit.After;
 import org.junit.Before;
@@ -15,12 +16,12 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class DashboardNavigatorTest
 {
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
 
     @Before public void setUp()
     {
         DashboardActivity dashboardActivity = Robolectric.buildActivity(DashboardActivity.class).create().visible().get();
-        dashboardNavigator = dashboardActivity.getDashboardNavigator();
+        dashboardActivity.inject(this);
     }
 
     @After public void tearDown()

@@ -2,13 +2,16 @@ package com.tradehero.th.models.leaderboard.key;
 
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 public class LeaderboardDefKeyKnowledge
 {
     // For fake leaderboard definition, hardcoded on client side
+    public static final int INVITE_FRIENDS_ID = -6;
     public static final int FOLLOWER_ID = -5;
     public static final int HERO_ID = -4;
     public static final int EXCHANGE_ID = -3;
@@ -56,6 +59,7 @@ public class LeaderboardDefKeyKnowledge
             case FOLLOWER_ID:
                 return R.drawable.icn_lb_followers;
 
+            case INVITE_FRIENDS_ID:
             case FRIEND_ID:
                 return R.drawable.leaderboard_friends;
 

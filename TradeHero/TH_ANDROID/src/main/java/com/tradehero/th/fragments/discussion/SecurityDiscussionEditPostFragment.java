@@ -54,11 +54,6 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
         }
     }
 
-    @Override protected void postDiscussion()
-    {
-        super.postDiscussion();
-    }
-
     @Override protected DiscussionFormDTO buildDiscussionFormDTO()
     {
         SecurityCompactDTO securityCompactDTO = null;

@@ -4,18 +4,21 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.utils.IOUtils;
-import com.tradehero.th.api.BaseApiTest;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.inject.Inject;
+import com.tradehero.th.api.BaseApiTestClass;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.inject.Inject;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(THRobolectricTestRunner.class)
-public class PositionDTODeserialiserTest extends BaseApiTest
+public class PositionDTODeserialiserTest extends BaseApiTestClass
 {
     private ObjectMapper normalMapper;
     private ObjectMapper moduleMapper;

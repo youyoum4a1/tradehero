@@ -18,7 +18,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class TimelineFragmentTest
 {
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
     private UserBaseKey userBaseKey;
     @Inject THRouter thRouter;
 
@@ -26,7 +26,7 @@ public class TimelineFragmentTest
     public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
 
         userBaseKey = new UserBaseKey(94);
     }

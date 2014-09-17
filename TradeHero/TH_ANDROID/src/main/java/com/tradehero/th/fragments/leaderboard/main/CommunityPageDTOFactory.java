@@ -4,9 +4,12 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 class CommunityPageDTOFactory
@@ -24,9 +27,9 @@ class CommunityPageDTOFactory
     }
     //</editor-fold>
 
-    @NotNull public CommunityPageDTOList collectFromCaches(@Nullable String countryCode)
+    @NotNull public LeaderboardDefDTOList collectFromCaches(@Nullable String countryCode)
     {
-        @NotNull CommunityPageDTOList collected = new CommunityPageDTOList();
+        @NotNull LeaderboardDefDTOList collected = new LeaderboardDefDTOList();
         @Nullable LeaderboardDefListKey key;
         @Nullable LeaderboardDefDTOList cached;
         for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
@@ -38,11 +41,11 @@ class CommunityPageDTOFactory
                 cached = leaderboardDefListCache.get(key);
                 if (cached != null)
                 {
-                    collected.addAllLeaderboardDefDTO(cached);
+                    collected.addAll(cached);
                 }
                 if (countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey()))
                 {
-                    collected.addAllLeaderboardDefDTO(collectForCountryCodeFromCaches(countryCode));
+                    collected.addAll(collectForCountryCodeFromCaches(countryCode));
                 }
             }
         }
@@ -56,9 +59,6 @@ class CommunityPageDTOFactory
         {
             return allKeys.keepForCountryCode(countryCode);
         }
-        else
-        {
-            return new LeaderboardDefDTOList();
-        }
+        return new LeaderboardDefDTOList();
     }
 }

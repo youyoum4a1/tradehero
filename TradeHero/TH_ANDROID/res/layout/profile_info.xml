@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <com.tradehero.th.fragments.settings.ProfileInfoView
       android:orientation="vertical"
@@ -76,9 +76,6 @@
         android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
         />
-    <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
-    <!--app:invalidDrawable="@drawable/accounts_glyph_password_error"-->
-    <!--app:validDrawable="@drawable/accounts_glyph_password_ok"-->
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -89,7 +86,7 @@
       <com.tradehero.th.widget.ServerValidatedUsernameText
           android:id="@+id/authentication_sign_up_username"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="wrap_content"
           android:hint="@string/user_profile_display_name"
           android:textColorHint="@color/red"
           android:inputType="text"
@@ -123,6 +120,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_margin_15"
+        android:padding="@dimen/margin_small"
         android:hint="@string/user_profile_referral_code"
         android:inputType="text"
         style="@style/TradeHero.Authentication.EditText"
@@ -145,39 +143,38 @@
           android:gravity="center"
           android:src="@drawable/avatar"
           android:contentDescription="@string/empty"/>
-      <!--android:background="@drawable/image_selector"-->
 
       <LinearLayout
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
           android:layout_toRightOf="@id/image_optional"
-          android:layout_marginLeft="@dimen/common_margin_10"
+          android:layout_marginLeft="@dimen/margin_medium"
           android:orientation="vertical">
 
         <EditText
             android:id="@+id/et_firstname"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/margin_small"
             android:hint="@string/user_profile_first_name"
             android:inputType="text"
 
             style="@style/TradeHero.Authentication.EditText"
             android:textSize="@dimen/common_text_size_30"
             android:background="@drawable/authentication_edit_text"/>
-        <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
 
         <EditText
             android:id="@+id/et_lastname"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/common_margin_10"
+            android:padding="@dimen/margin_small"
             android:hint="@string/user_profile_last_name"
             android:inputType="text"
             style="@style/TradeHero.Authentication.EditText"
             android:textSize="@dimen/common_text_size_30"
             android:background="@drawable/authentication_edit_text"/>
-        <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
 
       </LinearLayout>
 

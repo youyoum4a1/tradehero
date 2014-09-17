@@ -1,6 +1,7 @@
 package com.tradehero.th.api.discussion.key;
 
 import com.tradehero.THRobolectricTestRunner;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -8,7 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
-public class TypedMessageListKeyTest extends BaseTypedMessageListKeyTest
+public class TypedMessageListKeyTest extends TypedMessageListKeyTestBase
 {
     @Test public void equalItself()
     {

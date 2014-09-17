@@ -20,13 +20,13 @@ public class TradeListFragmentTest
 {
     @Inject Context context;
     private TradeListFragment tradeListFragment;
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
 
     @Before
     public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
     }
 
     @After

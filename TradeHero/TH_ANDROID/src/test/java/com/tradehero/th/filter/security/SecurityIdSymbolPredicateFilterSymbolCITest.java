@@ -3,10 +3,12 @@ package com.tradehero.th.filter.security;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.th.api.security.SecurityId;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
@@ -14,7 +16,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 @RunWith(THRobolectricTestRunner.class)
-public class SecurityIdSymbolPredicateFilterSymbolCITest extends AbstractSecurityIdPredicateFilterTest
+public class SecurityIdSymbolPredicateFilterSymbolCITest extends SecurityIdPredicateFilterTestBase
 {
     @Override protected CharSequencePredicate<SecurityId> provideSecurityIdPredicate()
     {

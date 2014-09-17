@@ -12,7 +12,7 @@ import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.models.graphics.ForExtraTileBackground;
 import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -25,16 +25,19 @@ public class ProviderTileView extends ImageView
     private ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public ProviderTileView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ProviderTileView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ProviderTileView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -44,7 +47,7 @@ public class ProviderTileView extends ImageView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
@@ -85,11 +88,6 @@ public class ProviderTileView extends ImageView
                         .into(this);
             }
         }
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
     }
 
     public int getProviderId()

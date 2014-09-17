@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import com.tradehero.THRobolectricTestRunner;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class LeaderboardKeyTest extends BaseLeaderboardKeyTest
+public class LeaderboardKeyTest extends LeaderboardKeyTestBase
 {
     @Before public void setUp()
     {

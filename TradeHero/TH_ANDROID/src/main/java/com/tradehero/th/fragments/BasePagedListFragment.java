@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.api.PagedDTOKey;
+import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.DTOKey;
@@ -33,6 +34,7 @@ abstract public class BasePagedListFragment<
         PagedDTOKeyType extends DTOKey, // But it also needs to be a PagedDTOKey
         DTOType extends DTO,
         DTOListType extends DTO & List<DTOType>,
+        ContainerDTOType extends DTO & ContainerDTO<DTOType, DTOListType>,
         ViewType extends View & DTOView<DTOType>>
         extends BasePurchaseManagerFragment
 {
@@ -54,7 +56,7 @@ abstract public class BasePagedListFragment<
 
     protected PagedArrayDTOAdapterNew<DTOType, ViewType> itemViewAdapter;
     protected Map<Integer, DTOListType> pagedDtos;
-    protected Map<Integer, DTOCacheNew.Listener<PagedDTOKeyType, DTOListType>> dtoListeners;
+    protected Map<Integer, DTOCacheNew.Listener<PagedDTOKeyType, ContainerDTOType>> dtoListeners;
     protected DTOType selectedItem;
 
     protected Runnable requestDataTask;
@@ -238,23 +240,25 @@ abstract public class BasePagedListFragment<
         return dtoListeners.containsKey(page);
     }
 
-    abstract protected DTOCacheNew<PagedDTOKeyType, DTOListType> getListCache();
+    abstract protected void unregisterCache(DTOCacheNew.Listener<PagedDTOKeyType, ContainerDTOType> listener);
+    abstract protected void registerCache(PagedDTOKeyType key, DTOCacheNew.Listener<PagedDTOKeyType, ContainerDTOType> listener);
+    abstract protected void requestCache(PagedDTOKeyType key);
 
     protected void detachDtoListCache()
     {
-        for (DTOCacheNew.Listener<PagedDTOKeyType, DTOListType> listener : dtoListeners.values())
+        for (DTOCacheNew.Listener<PagedDTOKeyType, ContainerDTOType> listener : dtoListeners.values())
         {
-            getListCache().unregister(listener);
+            unregisterCache(listener);
         }
         dtoListeners.clear();
     }
 
     protected void detachDtoListCache(int page)
     {
-        DTOCacheNew.Listener<PagedDTOKeyType, DTOListType> listener = dtoListeners.get(page);
+        DTOCacheNew.Listener<PagedDTOKeyType, ContainerDTOType> listener = dtoListeners.get(page);
         if (listener != null)
         {
-            getListCache().unregister(listener);
+            unregisterCache(listener);
         }
     }
 
@@ -287,10 +291,10 @@ abstract public class BasePagedListFragment<
         {
             PagedDTOKeyType pagedKey = makePagedDtoKey(pageToLoad);
             detachDtoListCache(pageToLoad);
-            DTOCacheNew.Listener<PagedDTOKeyType, DTOListType> listener = createListCacheListener();
-            getListCache().register(pagedKey, listener);
+            DTOCacheNew.Listener<PagedDTOKeyType, ContainerDTOType> listener = createListCacheListener();
+            registerCache(pagedKey, listener);
             dtoListeners.put(pageToLoad, listener);
-            getListCache().getOrFetchAsync(pagedKey);
+            requestCache(pagedKey);
         }
         updateVisibilities();
     }
@@ -332,20 +336,20 @@ abstract public class BasePagedListFragment<
         this.selectedItem = clicked;
     }
 
-    protected DTOCacheNew.Listener<PagedDTOKeyType, DTOListType> createListCacheListener()
+    protected DTOCacheNew.Listener<PagedDTOKeyType, ContainerDTOType> createListCacheListener()
     {
         return new ListCacheListener();
     }
 
     protected class ListCacheListener
-            implements DTOCacheNew.Listener<PagedDTOKeyType, DTOListType>
+            implements DTOCacheNew.Listener<PagedDTOKeyType, ContainerDTOType>
     {
         @Override
-        public void onDTOReceived(@NotNull PagedDTOKeyType key, @NotNull DTOListType value)
+        public void onDTOReceived(@NotNull PagedDTOKeyType key, @NotNull ContainerDTOType value)
         {
             PagedDTOKey properKey = (PagedDTOKey) key;
             Timber.d("Page loaded: %d", properKey.getPage());
-            pagedDtos.put(properKey.getPage(), value);
+            pagedDtos.put(properKey.getPage(), value.getList());
             dtoListeners.remove(properKey.getPage());
 
             loadAdapterWithAvailableData();
@@ -362,7 +366,7 @@ abstract public class BasePagedListFragment<
             else if (canMakePagedDtoKey())
             {
                 // Prefetch next
-                getListCache().getOrFetchAsync(makePagedDtoKey(((PagedDTOKey) key).getPage() + 1));
+                requestCache(makePagedDtoKey(((PagedDTOKey) key).getPage() + 1));
             }
         }
 

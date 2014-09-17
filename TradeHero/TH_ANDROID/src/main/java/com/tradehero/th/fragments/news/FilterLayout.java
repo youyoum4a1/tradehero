@@ -37,21 +37,8 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
     public FilterLayout(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
-    }
-
-    public FilterLayout(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        init();
     }
     //</editor-fold>
-
-    protected void init()
-    {
-        //DaggerUtils.inject(this);
-        //trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
-    }
 
     public void fillDefaultData()
     {

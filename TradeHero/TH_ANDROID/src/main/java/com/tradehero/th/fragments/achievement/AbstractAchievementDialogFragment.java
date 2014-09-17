@@ -46,6 +46,7 @@ import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
@@ -123,6 +124,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        HierarchyInjector.inject(getActivity(), userLevelProgressBar);
         init();
     }
 

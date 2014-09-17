@@ -29,13 +29,13 @@ public class UserTranslationSettingsViewHolderTest
 {
     @Inject TranslationTokenCache translationTokenCache;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
     private SettingsFragment settingsFragment;
 
     @Before public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
     }
 
     @After public void tearDown()

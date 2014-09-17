@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -22,9 +23,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -41,14 +41,18 @@ import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -70,6 +74,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject DashboardNavigator navigator;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -102,10 +107,15 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         //signupButton.setOnTouchListener(this);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachMiddleCallbackUpdateUserProfile();
         detachUserProfileCache();
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         if (profileView != null)
         {
             profileView.setOnTouchListenerOnFields(null);
@@ -121,6 +131,13 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         updateButton = null;
         referralCodeEditText = null;
         super.onDestroyView();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        detachMiddleCallbackUpdateUserProfile();
+        detachUserProfileCache();
     }
 
     private void detachMiddleCallbackUpdateUserProfile()
@@ -251,7 +268,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private void updateProfile(View view)
     {
-        DeviceUtil.dismissKeyboard(getActivity(), view);
+        DeviceUtil.dismissKeyboard(view);
         forceValidateFields();
 
         if (!NetworkUtils.isConnected(getActivity()))
@@ -294,7 +311,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             {
                 profileView.progressDialog.hide(); // Before otherwise it is reset
                 THToast.show(R.string.settings_update_profile_successful);
-                Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                 navigator.popFragment();
                 if (emailCredentialsDTO != null && mainCredentialsPreference.getCredentials() instanceof EmailCredentialsDTO)
                 {
@@ -323,7 +339,14 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         Intent libraryIntent = new Intent(Intent.ACTION_PICK);
         libraryIntent.setType("image/jpeg");
-        startActivityForResult(libraryIntent, REQUEST_GALLERY);
+        try
+        {
+            startActivityForResult(libraryIntent, REQUEST_GALLERY);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            THToast.show(R.string.error_launch_photo_library);
+        }
     }
 
     protected void askImageFromCamera()

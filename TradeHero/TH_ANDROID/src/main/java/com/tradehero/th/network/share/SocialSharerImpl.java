@@ -6,9 +6,8 @@ import android.content.Intent;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.share.DiscussionShareResultDTO;
+import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.share.BaseResponseSocialShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
@@ -29,7 +28,7 @@ import timber.log.Timber;
 
 public class SocialSharerImpl implements SocialSharer
 {
-    @NotNull private final CurrentActivityHolder currentActivityHolder;
+    @NotNull private final Activity activity;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
@@ -41,13 +40,13 @@ public class SocialSharerImpl implements SocialSharer
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharerImpl(
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Activity activity,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull DiscussionServiceWrapper discussionServiceWrapper,
             @NotNull SocialShareVerifier socialShareVerifier)
     {
-        this.currentActivityHolder = currentActivityHolder;
+        this.activity = activity;
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
         this.discussionServiceWrapper = discussionServiceWrapper;
@@ -167,11 +166,7 @@ public class SocialSharerImpl implements SocialSharer
 
     public void share(@NotNull WeChatDTO weChatDTO)
     {
-        Activity currentActivity = currentActivityHolder.getCurrentActivity();
-        if (currentActivity != null)
-        {
-            currentActivity.startActivity(createWeChatIntent(currentActivity, weChatDTO));
-        }
+        activity.startActivity(createWeChatIntent(activity, weChatDTO));
     }
 
     public Intent createWeChatIntent(@NotNull Context activityContext, @NotNull WeChatDTO weChatDTO)
@@ -181,12 +176,12 @@ public class SocialSharerImpl implements SocialSharer
         return intent;
     }
 
-    protected Callback<DiscussionDTO> createDiscussionCallback(SocialShareFormDTO shareFormDTO)
+    protected Callback<BaseResponseDTO> createDiscussionCallback(SocialShareFormDTO shareFormDTO)
     {
         return new SocialSharerImplDiscussionCallback(shareFormDTO);
     }
 
-    protected class SocialSharerImplDiscussionCallback implements Callback<DiscussionDTO>
+    protected class SocialSharerImplDiscussionCallback implements Callback<BaseResponseDTO>
     {
         private final SocialShareFormDTO shareFormDTO;
 
@@ -195,9 +190,9 @@ public class SocialSharerImpl implements SocialSharer
             this.shareFormDTO = shareFormDTO;
         }
 
-        @Override public void success(DiscussionDTO discussionDTO, Response response)
+        @Override public void success(BaseResponseDTO responseDTO, Response response)
         {
-            notifySharedListener(shareFormDTO, new DiscussionShareResultDTO(discussionDTO));
+            notifySharedListener(shareFormDTO, new BaseResponseSocialShareResultDTO(responseDTO));
         }
 
         @Override public void failure(RetrofitError retrofitError)

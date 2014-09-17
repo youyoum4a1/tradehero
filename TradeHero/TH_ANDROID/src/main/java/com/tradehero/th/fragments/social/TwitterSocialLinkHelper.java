@@ -2,15 +2,14 @@ package com.tradehero.th.fragments.social;
 
 import android.app.Activity;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
-
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 
 public class TwitterSocialLinkHelper extends SocialLinkHelper
@@ -22,10 +21,10 @@ public class TwitterSocialLinkHelper extends SocialLinkHelper
             @NotNull CurrentUserId currentUserId,
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper,
-            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull Provider<Activity> activityProvider,
             @NotNull TwitterUtils twitterUtils)
     {
-        super(currentUserId, progressDialogUtil, socialServiceWrapper, currentActivityHolder);
+        super(currentUserId, progressDialogUtil, socialServiceWrapper, activityProvider);
         this.twitterUtils = twitterUtils;
     }
     //</editor-fold>

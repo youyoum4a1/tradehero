@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.widget.time.TimeDisplayViewHolder;
 import javax.inject.Inject;
 
@@ -23,26 +23,16 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
     protected Runnable viewUpdater;
 
     //<editor-fold desc="Constructors">
-    public CompetitionLeaderboardTimedHeader(Context context)
-    {
-        super(context);
-    }
-
     public CompetitionLeaderboardTimedHeader(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public CompetitionLeaderboardTimedHeader(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         fetchViews();
     }
 

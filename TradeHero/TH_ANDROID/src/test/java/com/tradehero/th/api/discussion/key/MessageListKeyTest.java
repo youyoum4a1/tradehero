@@ -1,6 +1,7 @@
 package com.tradehero.th.api.discussion.key;
 
 import com.tradehero.THRobolectricTestRunner;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
@@ -10,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class MessageListKeyTest extends BaseMessageListKeyTest
+public class MessageListKeyTest extends MessageListKeyTestBase
 {
     @Test public void equalItself()
     {

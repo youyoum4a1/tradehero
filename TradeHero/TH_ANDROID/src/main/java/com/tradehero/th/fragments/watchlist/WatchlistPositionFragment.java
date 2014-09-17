@@ -10,15 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
-import com.fortysevendeg.android.swipelistview.SwipeListView;
-import com.fortysevendeg.android.swipelistview.SwipeListViewListener;
+import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
+import com.fortysevendeg.swipelistview.SwipeListView;
+import com.fortysevendeg.swipelistview.SwipeListViewListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -32,18 +30,24 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
 
 public class WatchlistPositionFragment extends DashboardFragment
 {
@@ -52,10 +56,8 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     @InjectView(android.R.id.empty) @Optional protected ProgressBar progressBar;
 
-    @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject PortfolioCache portfolioCache;
-    @Inject PortfolioHeaderFactory headerFactory;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
 
@@ -69,11 +71,13 @@ public class WatchlistPositionFragment extends DashboardFragment
     private WatchlistAdapter watchListAdapter;
 
     private TwoStateView.OnStateChange gainLossModeListener;
-    private BroadcastReceiver broadcastReceiver;
+    @Nullable private BroadcastReceiver broadcastReceiver;
     private Runnable setOffsetRunnable;
 
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
+    private WatchlistPositionDTOList watchlistPositionDTOs;
+    @Inject DashboardNavigator navigator;
 
     public static void putOwnedPortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -128,6 +132,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                         adapter.notifyDataSetChanged();
                         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Delete));
                         watchlistListView.closeOpenedItems();
+                        fetchWatchlistPositionList();
                     }
                 }
             }
@@ -182,7 +187,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
     }
 
-    protected void fetchSecurityIdList()
+    protected void fetchWatchlistPositionList()
     {
         detachUserWatchlistFetchTask();
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
@@ -204,7 +209,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             case R.id.position_watchlist_add:
             {
                 Bundle bundle = new Bundle();
-                getDashboardNavigator().pushFragment(SecuritySearchWatchlistFragment.class, bundle);
+                navigator.pushFragment(SecuritySearchWatchlistFragment.class, bundle);
                 return true;
             }
         }
@@ -224,7 +229,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         shownPortfolioId = getOwnedPortfolioId(getArguments());
         fetchPortfolio();
-        fetchSecurityIdList();
+        fetchWatchlistPositionList();
     }
 
     @Override public void onPause()
@@ -311,19 +316,22 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         if (watchlistPortfolioHeaderView != null)
         {
-            watchlistPortfolioHeaderView.display(currentUserId.toUserBaseKey());
             watchlistPortfolioHeaderView.linkWith(shownPortfolioDTO, true);
+            watchlistPortfolioHeaderView.linkWith(watchlistPositionDTOs, true);
             watchlistPortfolioHeaderView.setOnStateChangeListener(gainLossModeListener);
         }
     }
 
     private void displayWatchlist(WatchlistPositionDTOList watchlistPositionDTOs)
     {
+        this.watchlistPositionDTOs = watchlistPositionDTOs;
+
         WatchlistAdapter newAdapter = createWatchlistAdapter();
         newAdapter.addAll(watchlistPositionDTOs);
         watchlistPositionListView.setAdapter(newAdapter);
         watchListAdapter = newAdapter;
         watchlistPositionListView.onRefreshComplete();
+        displayHeader();
     }
 
     private void openWatchlistItemEditor(int position)
@@ -337,7 +345,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             {
                 WatchlistEditFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
             }
-            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args, null);
+            navigator.pushFragment(WatchlistEditFragment.class, args, null);
         }
     }
 
@@ -437,7 +445,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         @Override public void onDismiss(int[] reverseSortedPositions)
         {
             super.onDismiss(reverseSortedPositions);
-            fetchSecurityIdList();
+            fetchWatchlistPositionList();
         }
     }
 

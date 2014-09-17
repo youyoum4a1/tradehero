@@ -28,7 +28,7 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
 
     @Inject QuestBonusListCache questBonusListCache;
 
-    protected QuestDialogFragment()
+    public QuestDialogFragment()
     {
         super();
     }

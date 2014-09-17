@@ -9,6 +9,7 @@ import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.filter.security.SecurityCompactPaddedSymbolCIPredicate;
 import com.tradehero.th.filter.security.SecurityIdPaddedSymbolCIPredicate;
 import com.tradehero.th.filter.security.WarrantPaddedSymbolOrUnderlyingCIPredicate;
+
 import dagger.Module;
 import dagger.Provides;
 

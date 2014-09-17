@@ -20,6 +20,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserNextLevelBadge;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
@@ -53,26 +54,15 @@ public class UserLevelProgressBar extends RelativeLayout
     private LevelDefDTO mMaxLevelDTO;
     private LevelDefDTOList mLevelDefDTOList;
 
-    public UserLevelProgressBar(Context context)
-    {
-        super(context);
-    }
-
     public UserLevelProgressBar(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public UserLevelProgressBar(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
     }
 
     public LevelDefDTOList getLevelDefDTOList()

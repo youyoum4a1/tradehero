@@ -8,7 +8,7 @@
     android:paddingRight="0dp"
     >
 
-  <com.tradehero.th.fragments.trending.TrendingSecurityGridView
+  <GridView
       android:id="@+id/trending_gridview"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -25,8 +25,7 @@
       android:clipToPadding="false"
       android:listSelector="@drawable/basic_transparent_selector"
       android:scrollbarStyle="outsideOverlay"
-      >
-  </com.tradehero.th.fragments.trending.TrendingSecurityGridView>
+      />
 
   <LinearLayout
       android:id="@+id/filter_text_container"

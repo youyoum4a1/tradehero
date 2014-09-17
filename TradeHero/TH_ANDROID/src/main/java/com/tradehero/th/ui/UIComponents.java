@@ -1,15 +1,15 @@
 package com.tradehero.th.ui;
 
-import com.special.ResideMenu.ResideMenu;
-import com.tradehero.th.activities.DashboardActivity;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.th.fragments.DashboardResideMenu;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 
 @Module(
         injects = {
-                DashboardActivity.class
         },
         complete = false,
         library = true

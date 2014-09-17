@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import butterknife.InjectView;
@@ -25,11 +26,13 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     @Inject WatchlistPositionCache watchlistPositionCache;
 
     //<editor-fold desc="Constructors">
-    public TimelineItemViewHolder()
+
+    public TimelineItemViewHolder(Context context)
     {
-        super();
+        super(context);
     }
-    //</editor-fold>
+
+    // </editor-fold>
 
     @Override public void linkWith(TimelineItemDTOType discussionDTO, boolean andDisplay)
     {
@@ -156,6 +159,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
 
     //</editor-fold>
 
+    @SuppressWarnings("UnusedDeclaration")
     @Optional @OnClick({R.id.discussion_user_picture, R.id.user_profile_name})
     protected void handleUserClicked(View view)
     {
@@ -165,6 +169,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @Optional @OnClick(R.id.timeline_vendor_picture)
     protected void handleSecurityClicked(View view)
     {

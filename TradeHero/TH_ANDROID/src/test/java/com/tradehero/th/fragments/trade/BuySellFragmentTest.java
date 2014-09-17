@@ -41,12 +41,12 @@ public class BuySellFragmentTest
     @Inject SecurityIdCache securityIdCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     private BuySellFragment buySellFragment;
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
 
     @Before public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
         currentUserId.set(123);
     }
 

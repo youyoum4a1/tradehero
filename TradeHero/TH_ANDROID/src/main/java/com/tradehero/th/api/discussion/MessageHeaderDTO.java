@@ -1,5 +1,6 @@
 package com.tradehero.th.api.discussion;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
@@ -16,6 +17,7 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
 {
     private static final Random idGenerator = new Random();
 
+    @JsonIgnore
     @Inject CurrentUserId currentUserId;
 
     // must be set by client when creating new message

@@ -15,8 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -24,7 +23,6 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
@@ -34,6 +32,7 @@ import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -47,12 +46,18 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TypeEvent;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -89,6 +94,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Analytics analytics;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -203,7 +209,7 @@ public class SendMessageFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        DeviceUtil.dismissKeyboard(getActivity(), inputText);
+        DeviceUtil.dismissKeyboard(inputText);
         progressDialogUtilLazy.get().dismiss(getActivity());
         super.onDestroy();
     }
@@ -437,7 +443,7 @@ public class SendMessageFragment extends DashboardFragment
 
     private void closeMe()
     {
-        ((DashboardActivity) getActivity()).getDashboardNavigator().popFragment();
+        navigator.popFragment();
     }
 
     protected Callback<DiscussionDTO> createSendMessageDiscussionCallback()

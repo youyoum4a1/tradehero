@@ -6,22 +6,19 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -33,7 +30,6 @@ public class MeTimelineFragment extends TimelineFragment
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @Inject LevelDefListCache levelDefListCache;
 
@@ -59,6 +55,7 @@ public class MeTimelineFragment extends TimelineFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.timeline_menu, menu);
         displayActionBarTitle();
+        setActionBarSubtitle(null);
 
         MenuItem updateCenterItem = menu.findItem(R.id.action_bar_update_center_icon);
         View updateCenterIcon = updateCenterItem.getActionView();
@@ -75,7 +72,7 @@ public class MeTimelineFragment extends TimelineFragment
         switch (item.getItemId())
         {
             case R.id.action_bar_home_icon:
-                getDashboardNavigator().pushFragment(HomeFragment.class);
+                navigator.pushFragment(HomeFragment.class);
                 return true;
             default:
                 break;
@@ -88,7 +85,15 @@ public class MeTimelineFragment extends TimelineFragment
         super.updateView();
         if (updateCenterCountTextView != null && shownProfile != null)
         {
-            updateCenterCountTextView.setText(String.valueOf(shownProfile.unreadMessageThreadsCount));
+            int unreadCount = shownProfile.unreadMessageThreadsCount;
+            if (unreadCount == 0)
+            {
+                updateCenterCountTextView.setText("");
+            }
+            else
+            {
+                updateCenterCountTextView.setText(THSignedNumber.builder(unreadCount).build().toString());
+            }
         }
     }
 
@@ -102,7 +107,7 @@ public class MeTimelineFragment extends TimelineFragment
         switch (view.getId())
         {
             case R.id.action_bar_update_center_icon:
-                getDashboardNavigator().pushFragment(UpdateCenterFragment.class);
+                navigator.pushFragment(UpdateCenterFragment.class);
                 break;
         }
     }

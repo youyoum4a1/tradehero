@@ -5,31 +5,34 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-import dagger.Lazy;
-import java.util.Date;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Date;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
 
 public class AlertItemView extends RelativeLayout
         implements DTOView<AlertCompactDTO>
@@ -38,34 +41,23 @@ public class AlertItemView extends RelativeLayout
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.alert_description) TextView alertDescription;
     @InjectView(R.id.alert_status) TextView alertStatus;
-    @InjectView(R.id.buy_stock) ImageView buyStock;
-    @InjectView(R.id.sell_stock) ImageView sellStock;
 
     @Inject protected Lazy<Picasso> picasso;
+    @Inject DashboardNavigator navigator;
 
     private AlertCompactDTO alertCompactDTO;
 
     //<editor-fold desc="Constructors">
-    public AlertItemView(Context context)
-    {
-        super(context);
-    }
-
     public AlertItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public AlertItemView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         ButterKnife.inject(this);
     }
 
@@ -91,7 +83,6 @@ public class AlertItemView extends RelativeLayout
             displayAlertDescription();
             displayAlertStatus();
             displayTrigger();
-            updateActionButtonsVisibility();
         }
     }
 
@@ -140,10 +131,6 @@ public class AlertItemView extends RelativeLayout
                 getContext().getString(R.string.stock_alert_when_price_move),
                 thPercentageChange.toString()
         ));
-    }
-
-    private void updateActionButtonsVisibility()
-    {
     }
 
     private void displayTrigger()
@@ -211,16 +198,10 @@ public class AlertItemView extends RelativeLayout
         }
     }
 
-    @OnClick({R.id.buy_stock, R.id.sell_stock})
-    public void onBuySellClick(View v)
+    @OnClick({R.id.trade})
+    public void onTradeClick()
     {
-        switch (v.getId())
-        {
-            case R.id.buy_stock:
-            case R.id.sell_stock:
-                handleBuyAndSellButtonClick();
-                break;
-        }
+        handleBuyAndSellButtonClick();
     }
 
     private void handleBuyAndSellButtonClick()
@@ -230,12 +211,7 @@ public class AlertItemView extends RelativeLayout
         {
             Bundle args = new Bundle();
             BuySellFragment.putSecurityId(args, alertCompactDTO.security.getSecurityId());
-            getNavigator().pushFragment(BuySellFragment.class, args);
+            navigator.pushFragment(BuySellFragment.class, args);
         }
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((NavigatorActivity) getContext()).getNavigator();
     }
 }

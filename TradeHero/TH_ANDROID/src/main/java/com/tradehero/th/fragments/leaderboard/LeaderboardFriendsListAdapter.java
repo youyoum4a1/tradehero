@@ -9,7 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +25,7 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
     private final int socialLayoutResId;
 
     protected UserProfileDTO currentUserProfileDTO;
-    protected LeaderboardFriendsItemView.OnFollowRequestedListener followRequestedListener;
+    protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
     public LeaderboardFriendsListAdapter(Context context, int markedLayoutResId, int socialLayoutResId)
     {
@@ -106,6 +106,7 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
             ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK
             ((LeaderboardMarkUserItemView) convertView).display(((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO);
             ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
+            ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(createChildFollowRequestedListener());
             final View expandingLayout = convertView.findViewById(R.id.expanding_layout);
             if (expandingLayout != null)
             {
@@ -114,7 +115,6 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
         }
         else if (convertView instanceof LeaderboardFriendsItemView)
         {
-            ((LeaderboardFriendsItemView) convertView).setFollowRequestedListener(createChildFollowRequestedListener());
             ((LeaderboardFriendsItemView) convertView).display(((FriendLeaderboardSocialUserDTO) item).userFriendsDTO);
         }
 
@@ -127,27 +127,27 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
         notifyDataSetChanged();
     }
 
-    protected LeaderboardFriendsItemView.OnFollowRequestedListener createChildFollowRequestedListener()
+    protected LeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
     {
-        return new LeaderboardFriendsItemView.OnFollowRequestedListener()
+        return new LeaderboardMarkUserItemView.OnFollowRequestedListener()
         {
-            @Override public void onFollowRequested(UserBaseKey userBaseKey)
+            @Override public void onFollowRequested(UserBaseDTO userBaseDTO)
             {
-                notifyFollowRequested(userBaseKey);
+                notifyFollowRequested(userBaseDTO);
             }
         };
     }
 
-    protected void notifyFollowRequested(UserBaseKey userBaseKey)
+    protected void notifyFollowRequested(UserBaseDTO userBaseDTO)
     {
-        LeaderboardFriendsItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
-            followRequestedListenerCopy.onFollowRequested(userBaseKey);
+            followRequestedListenerCopy.onFollowRequested(userBaseDTO);
         }
     }
 
-    public void setFollowRequestedListener(LeaderboardFriendsItemView.OnFollowRequestedListener followRequestedListener)
+    public void setFollowRequestedListener(LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
     }

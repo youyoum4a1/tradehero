@@ -1,8 +1,7 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.alert.AlertPlanDTO;
-import com.tradehero.th.api.alert.AlertPlanStatusDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -11,19 +10,23 @@ import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import retrofit.Callback;
 
-@Singleton public class AlertPlanServiceWrapper
+public class AlertPlanServiceWrapper
 {
-    @NotNull private final AlertPlanService alertPlanService;
-    @NotNull private final AlertPlanServiceAsync alertPlanServiceAsync;
+    @NotNull protected final AlertPlanService alertPlanService;
+    @NotNull protected final AlertPlanServiceAsync alertPlanServiceAsync;
     @NotNull protected final UserProfileCache userProfileCache;
 
+    //<editor-fold desc="Constructors">
     @Inject public AlertPlanServiceWrapper(
             @NotNull AlertPlanService alertPlanService,
             @NotNull AlertPlanServiceAsync alertPlanServiceAsync,
@@ -34,6 +37,7 @@ import retrofit.Callback;
         this.alertPlanServiceAsync = alertPlanServiceAsync;
         this.userProfileCache = userProfileCache;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Get Alert Plans">
     public List<AlertPlanDTO> getAlertPlans(@NotNull UserBaseKey userBaseKey)
@@ -54,14 +58,14 @@ import retrofit.Callback;
     //<editor-fold desc="Subscribe to Alert Plan">
     public UserProfileDTO subscribeToAlertPlan(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO)
+            @NotNull PurchaseReportDTO purchaseDTO)
     {
         return createDTOProcessorUserProfile().process(alertPlanService.subscribeToAlertPlan(userBaseKey.key, purchaseDTO));
     }
 
     public MiddleCallback<UserProfileDTO> subscribeToAlertPlan(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO,
+            @NotNull PurchaseReportDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUserProfile());
@@ -83,32 +87,6 @@ import retrofit.Callback;
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
         alertPlanServiceAsync.checkAlertPlanSubscription(userBaseKey.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Check Alert Plan Attribution">
-    public AlertPlanStatusDTO checkAlertPlanAttribution(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO googlePlayPurchaseDTO)
-    {
-        return alertPlanService.checkAlertPlanAttribution(
-                userBaseKey.key,
-                googlePlayPurchaseDTO.googlePlayData,
-                googlePlayPurchaseDTO.googlePlaySignature);
-    }
-
-    @NotNull public MiddleCallback<AlertPlanStatusDTO> checkAlertPlanAttribution(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO googlePlayPurchaseDTO,
-            @Nullable Callback<AlertPlanStatusDTO> callback)
-    {
-        MiddleCallback<AlertPlanStatusDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        alertPlanServiceAsync.checkAlertPlanAttribution(
-                userBaseKey.key,
-                googlePlayPurchaseDTO.googlePlayData,
-                googlePlayPurchaseDTO.googlePlaySignature,
-                middleCallback);
         return middleCallback;
     }
     //</editor-fold>

@@ -7,6 +7,7 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorFollowFreeUser extends AbstractDTOProcessorFollowUser
@@ -20,9 +21,15 @@ public class DTOProcessorFollowFreeUser extends AbstractDTOProcessorFollowUser
             @NotNull GetPositionsCache getPositionsCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
             @NotNull AllowableRecipientPaginatedCache allowableRecipientPaginatedCache,
-            @NotNull UserBaseKey userToFollow)
+            @NotNull UserBaseKey followerId,
+            @NotNull UserBaseKey heroId)
     {
-        super(userProfileCache, heroListCache, getPositionsCache, userMessagingRelationshipCache, userToFollow);
+        super(userProfileCache,
+                heroListCache,
+                getPositionsCache,
+                userMessagingRelationshipCache,
+                followerId,
+                heroId);
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
     }
     //</editor-fold>
@@ -30,7 +37,8 @@ public class DTOProcessorFollowFreeUser extends AbstractDTOProcessorFollowUser
     @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
-        userMessagingRelationshipCache.markIsFreeHero(userToFollow);
+        userMessagingRelationshipCache.markIsFreeHero(heroId);
+        allowableRecipientPaginatedCache.invalidateAll();
         return processed;
     }
 }

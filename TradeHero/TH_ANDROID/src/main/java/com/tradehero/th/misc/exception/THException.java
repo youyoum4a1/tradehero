@@ -5,7 +5,7 @@ import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.api.ErrorMessageDTO;
 import com.tradehero.th.api.http.ResponseErrorCode;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
@@ -82,7 +82,8 @@ public class THException extends Exception
                         Timber.d(ex.getMessage());
                     }
                     this.code = ExceptionCode.UnknownError;
-                    String errorMessage = dto != null ? Application.getResourceString(R.string.server_response) + dto.Message : Application.getResourceString(R.string.error_unknown);
+                    String errorMessage = dto != null ? THApp.getResourceString(R.string.server_response) + dto.Message : THApp.getResourceString(
+                            R.string.error_unknown);
                     return super.initCause(new Exception(errorMessage));
                 }
             }
@@ -134,7 +135,7 @@ public class THException extends Exception
 
         private ExceptionCode(boolean canContinue, int errorMessageResourceId)
         {
-            init(canContinue, Application.context().getString(errorMessageResourceId));
+            init(canContinue, THApp.context().getString(errorMessageResourceId));
         }
 
         private ExceptionCode(String errorMessage)
@@ -144,7 +145,7 @@ public class THException extends Exception
 
         private ExceptionCode(int errorMessageResourceId)
         {
-            init(false, Application.context().getString(errorMessageResourceId));
+            init(false, THApp.context().getString(errorMessageResourceId));
         }
 
         private void init(boolean canContinue, String errorMessage)

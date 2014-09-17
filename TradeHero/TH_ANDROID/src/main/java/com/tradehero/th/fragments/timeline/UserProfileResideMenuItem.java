@@ -23,12 +23,12 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -52,14 +52,10 @@ public class UserProfileResideMenuItem extends LinearLayout
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
 
     //<editor-fold desc="Constructors">
-    public UserProfileResideMenuItem(Context context)
-    {
-        super(context);
-    }
-
     public UserProfileResideMenuItem(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
@@ -68,7 +64,6 @@ public class UserProfileResideMenuItem extends LinearLayout
         super.onFinishInflate();
 
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
 
         userProfileListener = new UserProfileFetchListener();
     }

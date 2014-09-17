@@ -1,9 +1,10 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -31,7 +32,7 @@ public interface PortfolioService
     UserProfileDTO resetPortfolio(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
+            @Body PurchaseReportDTO purchaseReportDTO);
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">
@@ -39,7 +40,7 @@ public interface PortfolioService
     UserProfileDTO addCash(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
+            @Body PurchaseReportDTO purchaseReportDTO);
     //</editor-fold>
 
     //<editor-fold desc="Mark One User Portfolio">

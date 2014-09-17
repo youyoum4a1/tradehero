@@ -22,10 +22,16 @@ import retrofit.RetrofitError;
 public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 {
     public static final String PER_PAGE = "perpage";
-    private Query query;
+    private TimelineQuery query;
 
-    @Inject UserTimelineServiceWrapper timelineServiceWrapper;
-    @Inject DiscussionCache discussionCache;
+    private final UserTimelineServiceWrapper timelineServiceWrapper;
+    private final DiscussionCache discussionCache;
+
+    @Inject public TimelineStore(UserTimelineServiceWrapper timelineServiceWrapper, DiscussionCache discussionCache)
+    {
+        this.timelineServiceWrapper = timelineServiceWrapper;
+        this.discussionCache = discussionCache;
+    }
 
     @Override public List<TimelineItemDTOKey> request()
     {
@@ -34,7 +40,8 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
             TimelineDTO timelineDTO = null;
             try
             {
-                timelineDTO = timelineServiceWrapper.getTimeline(
+                timelineDTO = timelineServiceWrapper.getTimelineBySection(
+                        query.getSection(),
                         new UserBaseKey((Integer) query.getId()),
                         (Integer) query.getProperty(PER_PAGE),
                         query.getUpper(),
@@ -86,7 +93,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
     @Override
     public void setQuery(Query query)
     {
-        this.query = query;
+        this.query = (TimelineQuery) query;
     }
 
     // TODO guice has very nice feature that inject a factory using annotation @Factory
@@ -97,7 +104,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 
         private final Map<Integer, TimelineStore> stores;
 
-        public Factory()
+        @Inject public Factory()
         {
             stores = new WeakHashMap<>();
         }

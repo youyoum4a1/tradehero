@@ -2,31 +2,34 @@ package com.tradehero.th.persistence.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.th.activities.SplashActivity;
 import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
-import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceDTOFactory;
 import com.tradehero.th.models.share.preference.SocialShareSetPreference;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashSet;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import java.util.HashSet;
-import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
 
 @Module(
         injects = {
-                SplashActivity.class,
-                AdminSettingsFragment.class,
         },
         complete = false,
         library = true
@@ -44,7 +47,12 @@ public class PreferenceModule
     private static final String PREF_PUSH_IDENTIFIER_SENT_FLAG = "PREF_PUSH_IDENTIFIER_SENT_FLAG";
     private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
     private static final String PREF_FIRST_LAUNCH_FLAG = "PREF_FIRST_LAUNCH_FLAG";
-    private static final String PREF_FIRST_SHOW_REFERRAL_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
+    private static final String PREF_FIRST_SHOW_INVITE_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
+    private static final String PREF_FIRST_SHOW_ON_BOARD_FLAG = "PREF_FIRST_SHOW_ON_BOARD_FLAG";
+    private static final String PREF_SHOW_ASK_FOR_REVIEW_FLAG = "PREF_SHOW_ASK_FOR_REVIEW_FLAG";
+    private static final String PREF_SHOW_ASK_FOR_INVITE_FLAG = "PREF_SHOW_ASK_FOR_INVITE_FLAG";
+    private static final String PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG = "PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG";
+    private static final String PREF_IS_VISITED_SETTINGS_FLAG = "PREF_IS_VISITED_SETTINGS_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
     private static final String PREF_SAVED_TRANSLATION_SETTING_KEY = "PREF_SAVED_TRANSLATION_SETTING_KEY";
@@ -137,18 +145,43 @@ public class PreferenceModule
         return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, "");
     }
 
-    @Provides @Singleton @BaiduPushDeviceIdentifierSentFlag BooleanPreference providePushIdentifierSentFlag(@ForUser SharedPreferences sharedPreferences)
-    {
-        return new BooleanPreference(sharedPreferences, PREF_PUSH_IDENTIFIER_SENT_FLAG, false);
-    }
-
     @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, true);
     }
 
-    @Provides @Singleton @FirstShowReferralCodeDialog BooleanPreference provideFirstShowReferralCodeDialogPreference(@ForUser SharedPreferences sharedPreferences)
+    @Provides @Singleton @ShowAskForReviewDialog TimingIntervalPreference provideAskForReviewDialogPreference(
+            @ForApp SharedPreferences sharedPreferences)
     {
-        return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_REFERRAL_CODE_FLAG, true);
+        return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_ASK_FOR_REVIEW_FLAG, TimingIntervalPreference.YEAR);
+    }
+
+    @Provides @Singleton @FirstShowInviteCodeDialog BooleanPreference provideFirstShowInviteCodeDialogPreference(
+            @ForUser SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_INVITE_CODE_FLAG, true);
+    }
+
+    @Provides @Singleton @FirstShowOnBoardDialog TimingIntervalPreference provideFirstShowOnBoardDialogTimingPreference(
+            @ForApp SharedPreferences sharedPreferences) {
+        return new TimingIntervalPreference(sharedPreferences, PREF_FIRST_SHOW_ON_BOARD_FLAG, TimingIntervalPreference.MONTH);
+    }
+
+    @Provides @Singleton @ShowAskForInviteDialog TimingIntervalPreference provideAskForInviteDialogPreference(
+            @ForApp SharedPreferences sharedPreferences)
+    {
+        return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_FLAG, TimingIntervalPreference.WEEK);
+    }
+
+    @Provides @Singleton @ShowAskForInviteDialogCloseTimes IntPreference provideAskForInviteDialogCloseTimesPreference(
+            @ForApp SharedPreferences sharedPreferences)
+    {
+        return new IntPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG, 1);
+    }
+
+    @Provides @Singleton @IsVisitedSettings BooleanPreference provideIsVisitedSettingsPreference(
+            @ForApp SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_IS_VISITED_SETTINGS_FLAG, false);
     }
 }

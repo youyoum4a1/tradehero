@@ -1,13 +1,14 @@
 package com.tradehero.common.billing;
 
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+
+import org.jetbrains.annotations.NotNull;
 
 public interface ProductPurchase<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId>
     extends DTO
 {
-    OrderIdType getOrderId();
-    ProductIdentifierType getProductIdentifier();
+    @NotNull OrderIdType getOrderId();
+    @NotNull ProductIdentifierType getProductIdentifier();
 }

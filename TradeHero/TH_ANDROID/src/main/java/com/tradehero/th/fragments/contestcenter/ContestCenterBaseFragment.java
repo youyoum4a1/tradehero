@@ -56,6 +56,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     private BaseWebViewFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
     protected UserProfileDTO currentUserProfileDTO;
+    @Inject DashboardNavigator navigator;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -63,12 +64,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
         providerListFetchListener = createProviderIdListListener();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -237,7 +232,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     private void handleCompetitionItemClicked(ProviderDTO providerDTO)
     {
-        DashboardNavigator navigator = getDashboardNavigator();
         if (navigator == null)
         {
             return;

@@ -1,11 +1,11 @@
 package com.tradehero.th;
 
 import com.tradehero.th.network.NetworkDebugModule;
-import com.tradehero.th.persistence.PersistenceDebugModule;
 import dagger.Module;
 
 @Module(
         includes = {
+                FlavorDebugModule.class,
                 NetworkDebugModule.class,
         },
 
@@ -14,4 +14,5 @@ import dagger.Module;
 )
 public class DebugModule
 {
+
 }

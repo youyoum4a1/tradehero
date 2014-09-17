@@ -1,19 +1,23 @@
 package com.tradehero.th.models.push;
 
 import android.content.Context;
+
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.MarketSegment;
 import com.urbanairship.push.PushManager;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class DeviceTokenHelper
 {
-    @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
+    @NotNull StringPreference savedPushDeviceIdentifier;
     @NotNull Context context;
 
     //<editor-fold desc="Constructors">

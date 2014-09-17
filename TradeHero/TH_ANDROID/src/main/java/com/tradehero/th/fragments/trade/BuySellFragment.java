@@ -25,7 +25,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -58,6 +58,8 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
+import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -76,6 +78,9 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
+import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
@@ -116,6 +121,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.news) protected TextView mNewsTextView;
 
     @Inject ResideMenu resideMenu;
+    @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
+    @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
 
     //for dialog
     private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
@@ -168,6 +175,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject Analytics analytics;
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -270,16 +278,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onPrepareOptionsMenu(menu);
 
         displayActionBarElements();
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-    }
-
-    @Override public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item)
-    {
-        return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
 
@@ -983,11 +981,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
     }
 
-    @Override protected void setRefreshingQuote(boolean refreshingQuote)
-    {
-        super.setRefreshingQuote(refreshingQuote);
-    }
-
     @Override protected void prepareFreshQuoteHolder()
     {
         super.prepareFreshQuoteHolder();
@@ -1009,12 +1002,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (alertId != null)
             {
                 AlertEditFragment.putAlertId(args, alertId);
-                getDashboardNavigator().pushFragment(AlertEditFragment.class, args);
+                navigator.pushFragment(AlertEditFragment.class, args);
             }
             else
             {
                 AlertCreateFragment.putSecurityId(args, securityId);
-                getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
+                navigator.pushFragment(AlertCreateFragment.class, args);
             }
         }
         else if (securityAlertAssistant.isFailed())
@@ -1034,7 +1027,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Bundle args = new Bundle();
             WatchlistEditFragment.putSecurityId(args, securityId);
-            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
+            navigator.pushFragment(WatchlistEditFragment.class, args);
         }
         else
         {
@@ -1195,13 +1188,16 @@ public class BuySellFragment extends AbstractBuySellFragment
                     }
                     if (pushPortfolioFragmentRunnable != null)
                     {
+                        setActionBarSubtitle(null);
                         pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
                     }
+
+                    showPrettyReviewAndInvite(isBuy);
                 }
 
                 @Override public void onTransactionFailed(boolean isBuy, THException error)
                 {
-
+                    // TODO Toast error buy?
                 }
             });
         }
@@ -1212,6 +1208,29 @@ public class BuySellFragment extends AbstractBuySellFragment
                     R.string.buy_sell_no_quote_title,
                     R.string.buy_sell_no_quote_message,
                     R.string.buy_sell_no_quote_cancel);
+        }
+    }
+
+    private void showPrettyReviewAndInvite(boolean isBuy)
+    {
+        if (!isBuy)//only check after sell
+        {
+            Double profit = abstractTransactionDialogFragment.getProfitOrLossUsd();
+            if (profit != null)
+            {
+                if (profit > 0)
+                {
+                    if (mShowAskForReviewDialogPreference.isItTime())
+                    {
+                        AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
+                        return;
+                    }
+                    if (mShowAskForInviteDialogPreference.isItTime())
+                    {
+                        AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
+                    }
+                }
+            }
         }
     }
 
@@ -1281,7 +1300,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         shareToWeChat();
         if (isResumed())
         {
-            DashboardNavigator navigator = getDashboardNavigator();
             // TODO find a better way to remove this fragment from the stack
             navigator.popFragment();
 
@@ -1311,7 +1329,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
                     providerId.getArgs());
         }
-        getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
+        navigator.pushFragment(StockInfoFragment.class, args);
     }
 
     private BroadcastReceiver createImageButtonClickBroadcastReceiver()

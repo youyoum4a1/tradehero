@@ -1,0 +1,89 @@
+package com.tradehero.th.billing;
+
+import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForApp;
+import com.tradehero.common.billing.ProductDetailCache;
+import com.tradehero.common.billing.ProductIdentifierListCache;
+import com.tradehero.common.billing.ProductPurchaseCache;
+import com.tradehero.common.billing.exception.BillingExceptionFactory;
+import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
+import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
+import com.tradehero.common.persistence.prefs.StringSetPreference;
+import com.tradehero.th.billing.request.THBillingRequest;
+import com.tradehero.th.billing.samsung.ForSamsungBillingMode;
+import com.tradehero.th.billing.samsung.ProcessingPurchase;
+import com.tradehero.th.billing.samsung.THSamsungConstants;
+import com.tradehero.th.billing.samsung.THSamsungSecurityAlertKnowledge;
+import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
+import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCache;
+import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
+import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
+import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
+import dagger.Module;
+import dagger.Provides;
+import java.util.HashSet;
+import javax.inject.Singleton;
+
+@Module(
+        complete = false,
+        library = true,
+        overrides = true
+)
+public class BillingModule
+{
+    public static final String PREF_PROCESSING_PURCHASES = "SAMSUNG_PROCESSING_PURCHASES";
+
+    @Provides @ForSamsungBillingMode
+    int provideSamsungBillingMode()
+    {
+        return THSamsungConstants.PURCHASE_MODE;
+    }
+
+    //<editor-fold desc="Caches">
+    @Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(SamsungSKUListCache samsungSKUListCache)
+    {
+        return samsungSKUListCache;
+    }
+
+    @Provides @Singleton ProductDetailCache provideProductDetailCache(THSamsungProductDetailCache productDetailCache)
+    {
+        return productDetailCache;
+    }
+
+    @Provides @Singleton ProductPurchaseCache provideProductPurchaseCache(SamsungPurchaseCache purchaseCache)
+    {
+        return purchaseCache;
+    }
+
+    @Provides @Singleton SamsungPurchaseCache provideSamsungPurchaseCache(THSamsungPurchaseCache purchaseCache)
+    {
+        return purchaseCache;
+    }
+    //</editor-fold>
+
+    @Provides BillingExceptionFactory provideBillingExceptionFactory(SamsungExceptionFactory exceptionFactory)
+    {
+        return exceptionFactory;
+    }
+
+    @Provides SamsungExceptionFactory provideSamsungExceptionFactory(THSamsungExceptionFactory exceptionFactory)
+    {
+        return exceptionFactory;
+    }
+
+    @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THSamsungSecurityAlertKnowledge thiabSecurityAlertKnowledge)
+    {
+        return thiabSecurityAlertKnowledge;
+    }
+
+    @Provides THBillingRequest.Builder provideTHBillingRequestBuilder()
+    {
+        return THSamsungRequestFull.builder();
+    }
+
+    @Provides @Singleton @ProcessingPurchase
+    StringSetPreference provideProcessingPurchasePreference(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new StringSetPreference(sharedPreferences, PREF_PROCESSING_PURCHASES, new HashSet<String>());
+    }
+}

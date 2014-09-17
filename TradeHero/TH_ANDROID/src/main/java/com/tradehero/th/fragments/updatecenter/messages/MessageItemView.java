@@ -16,7 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -52,7 +52,7 @@ public class MessageItemView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 

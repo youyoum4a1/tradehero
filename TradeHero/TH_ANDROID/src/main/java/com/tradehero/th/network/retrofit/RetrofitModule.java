@@ -22,9 +22,6 @@ import com.tradehero.th.api.position.PositionDTOJacksonModule;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTODeserialiser;
 import com.tradehero.th.api.social.UserFriendsDTOJacksonModule;
-import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
-import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
-import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.FriendlyUrlConnectionClient;
@@ -57,11 +54,11 @@ import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineMarkerService;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.network.service.VideoService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.utils.RetrofitConstants;
-import com.tradehero.th.widget.VotePair;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -72,15 +69,11 @@ import retrofit.converter.Converter;
 
 @Module(
         includes = {
+                FlavorRetrofitModule.class,
                 RetrofitProtectedModule.class,
         },
         injects = {
-                SettingsTransactionHistoryFragment.class,
-                SettingsPayPalFragment.class,
-                SettingsAlipayFragment.class,
-                ProviderPageIntent.class,
-
-                VotePair.class,
+                ProviderPageIntent.class
         },
         complete = false,
         library = true
@@ -213,6 +206,11 @@ public class RetrofitModule
     @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
     {
         return adapter.create(UserTimelineService.class);
+    }
+
+    @Provides @Singleton VideoService provideVideoService(RestAdapter adapter)
+    {
+        return adapter.create(VideoService.class);
     }
 
     @Provides @Singleton WatchlistService provideWatchlistService(RestAdapter adapter)

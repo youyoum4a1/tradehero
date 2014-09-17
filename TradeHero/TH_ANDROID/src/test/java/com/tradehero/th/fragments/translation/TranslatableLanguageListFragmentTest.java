@@ -24,13 +24,13 @@ public class TranslatableLanguageListFragmentTest
 {
     @Inject Context context;
     @Inject TranslationTokenCache translationTokenCache;
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
     private TranslatableLanguageListFragment listFragment;
 
     @Before public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
     }
 
     @After public void tearDown()

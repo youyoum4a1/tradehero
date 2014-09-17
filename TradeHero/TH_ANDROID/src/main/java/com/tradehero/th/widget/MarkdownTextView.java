@@ -11,12 +11,11 @@ import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.intent.THIntentFactory;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 
@@ -26,29 +25,15 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     @Inject RichTextCreator parser;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
-    public MarkdownTextView(Context context)
-    {
-        super(context);
-    }
-
     public MarkdownTextView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public MarkdownTextView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
-
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-        DaggerUtils.inject(this);
-    }
 
     @Override protected void onAttachedToWindow()
     {
@@ -121,22 +106,16 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         SecurityId securityId = new SecurityId(exchange, symbol);
         Bundle args = new Bundle();
         BuySellFragment.putSecurityId(args, securityId);
-        getNavigator().pushFragment(BuySellFragment.class, args);
-    }
-
-    private DashboardNavigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+            navigator.pushFragment(BuySellFragment.class, args);
     }
 
     private void openUserProfile(int userId)
     {
         Bundle b = new Bundle();
         thRouter.save(b, new UserBaseKey(userId));
-
         if (currentUserId.get() != userId)
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, b);
+            navigator.pushFragment(PushableTimelineFragment.class, b);
         }
     }
 }

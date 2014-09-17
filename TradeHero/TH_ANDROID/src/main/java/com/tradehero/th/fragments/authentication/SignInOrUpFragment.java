@@ -8,7 +8,7 @@ import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -24,7 +24,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     {
         super.onCreate(savedInstanceState);
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -53,12 +53,6 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     {
         super.onViewCreated(view, savedInstanceState);
         checkLocale();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
     }
 
     private void checkLocale()

@@ -2,21 +2,28 @@ package com.tradehero.th.fragments.settings;
 
 import android.preference.PreferenceCategory;
 import android.support.v4.preference.PreferenceFragment;
+
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.MarketSegment;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+
+import timber.log.Timber;
 
 public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
 {
     @NotNull protected final THBillingInteractor billingInteractor;
-    @NotNull protected final Provider<THUIBillingRequest> billingRequestProvider;
+    @NotNull protected final Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider;
 
     private Integer restoreRequestCode;
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
@@ -24,10 +31,10 @@ public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
     //<editor-fold desc="Constructors">
     @Inject public RestorePurchaseSettingViewHolder(
             @NotNull THBillingInteractor billingInteractor,
-            @NotNull Provider<THUIBillingRequest> billingRequestProvider)
+            @NotNull Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider)
     {
         this.billingInteractor = billingInteractor;
-        this.billingRequestProvider = billingRequestProvider;
+        this.billingRequestBuilderProvider = billingRequestBuilderProvider;
     }
     //</editor-fold>
 
@@ -42,6 +49,7 @@ public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
                     List failedRestorePurchases,
                     List failExceptions)
             {
+                Timber.d("%d, %d, %d", restoredPurchases.size(), failedRestorePurchases.size(), failExceptions.size());
                 if (Integer.valueOf(requestCode).equals(restoreRequestCode))
                 {
                     restoreRequestCode = null;
@@ -86,12 +94,13 @@ public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
 
     protected THUIBillingRequest createRestoreRequest()
     {
-        THUIBillingRequest request = billingRequestProvider.get();
-        request.restorePurchase = true;
-        request.startWithProgressDialog = true;
-        request.popRestorePurchaseOutcome = true;
-        request.popRestorePurchaseOutcomeVerbose = true;
-        request.purchaseRestorerListener = purchaseRestorerFinishedListener;
-        return request;
+        BaseTHUIBillingRequest.Builder requestBuilder = billingRequestBuilderProvider.get();
+        requestBuilder.restorePurchase(true);
+        requestBuilder.startWithProgressDialog(true);
+        requestBuilder.popRestorePurchaseOutcome(true);
+        requestBuilder.popRestorePurchaseOutcomeVerbose(true);
+        //noinspection unchecked
+        requestBuilder.purchaseRestorerListener(purchaseRestorerFinishedListener);
+        return requestBuilder.build();
     }
 }

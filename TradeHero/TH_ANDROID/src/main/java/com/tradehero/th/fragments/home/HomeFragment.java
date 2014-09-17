@@ -5,8 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -19,7 +18,6 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
@@ -44,18 +42,23 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -69,12 +72,11 @@ public final class HomeFragment extends BaseWebViewFragment
     @InjectView(R.id.main_content_wrapper) BetterViewAnimator mainContentWrapper;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
-    @Inject @LanguageCode String languageCode;
 
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
+    @Inject Provider<Activity> activityProvider;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -237,7 +239,7 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             if (Session.getActiveSession() == null)
             {
-                facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
+                facebookUtils.get().logIn(activityProvider.get(),
                         new TrackFacebookCallback());
             }
             else
@@ -278,7 +280,7 @@ public final class HomeFragment extends BaseWebViewFragment
             params.putString("to", stringBuilder.toString());
 
             WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                    currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
+                    activityProvider.get(), Session.getActiveSession(),
                     params))
                     .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
@@ -368,7 +370,7 @@ public final class HomeFragment extends BaseWebViewFragment
             return progressDialog;
         }
         progressDialog = progressDialogUtilLazy.get().show(
-                currentActivityHolderLazy.get().getCurrentContext(),
+                activityProvider.get(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();

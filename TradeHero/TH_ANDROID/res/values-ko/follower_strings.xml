@@ -9,9 +9,8 @@
   </string>
   <string name="not_follow_subtitle">무료 팔로우</string>
   <string name="not_follow_subtitle2">무료</string>
-  <string name="follower_item_with_subtitle">%1$s (%2$s)</string>
   <string name="not_follow_premium_subtitle">프리미엄 팔로우</string>
-  <string name="not_follow_premium_subtitles">프리미엄</string>
+  <string name="not_follow_premium_subtitle2">프리미엄</string>
   <string name="free_follow_title">팔로우 중입니다</string>
   <string name="free_follow_content1">월 US$1.99로 프리미엄 팔로우 업그레이드하고 여러가지 혜택을 누리세요
   </string>

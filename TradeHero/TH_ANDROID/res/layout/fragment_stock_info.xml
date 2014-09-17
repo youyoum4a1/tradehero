@@ -1,37 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:android_auto="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
   <android.support.v4.view.ViewPager
       android:id="@+id/top_pager"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
-      android:layout_above="@+id/top_pager_indicator"
-      android:background="@color/white"
-      />
-
-  <com.viewpagerindicator.CirclePageIndicator
-      android:id="@+id/top_pager_indicator"
-      android:layout_height="wrap_content"
-      android:layout_width="fill_parent"
       android:layout_above="@+id/list_news_headline"
-      android_auto:strokeWidth="1dp"
-      android_auto:lineWidth="30dp"
-      android_auto:unselectedColor="#FFbbbbbb"
-      android_auto:selectedColor="@color/textbox_border_color_light"
-      android:paddingTop="2dp"
-      android:background="@android:color/transparent"
-      android_auto:radius="4dp"
-      android_auto:fillColor="@color/textbox_border_color_light"
-      android_auto:pageColor="@android:color/transparent"
-      android_auto:strokeColor="@color/textbox_border_color_light"
+      android:background="@color/white"
       />
 
   <ListView

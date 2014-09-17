@@ -9,33 +9,55 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
 
-    // TODO something belong to Google Play should not be here, generic util class for all store is expected
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject THBillingInteractor billingInteractor;
+    private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
+    private Integer restoreRequestCode;
+
+    @Inject UserServiceWrapper userServiceWrapper;
+    @Inject SocialServiceWrapper socialServiceWrapper;
+    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    private MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject PushNotificationManager pushNotificationManager;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
     @Inject Analytics analytics;
     @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;
@@ -49,7 +71,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected AlipaySettingViewHolder alipaySettingViewHolder;
     @Inject protected TransactionHistoryViewHolder transactionHistoryViewHolder;
     @Inject protected RestorePurchaseSettingViewHolder restorePurchaseSettingViewHolder;
-    @Inject protected ReferralCodeViewHolder referralCodeViewHolder;
+    @Inject protected ReferralCodeSettingViewHolder referralCodeSettingViewHolder;
     @Inject protected SignOutSettingViewHolder signOutSettingViewHolder;
     @Inject protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
     @Inject protected EmailNotificationSettingViewHolder emailNotificationSettingViewHolder;
@@ -96,7 +118,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         setHasOptionsMenu(true);
         addPreferencesFromResource(R.xml.settings);
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
 
         this.socialNetworkToConnectTo = getSocialNetworkToConnect(getArguments());
     }
@@ -159,7 +181,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         emailNotificationSettingViewHolder.destroyViews();
         userTranslationSettingsViewHolder.destroyViews();
         signOutSettingViewHolder.destroyViews();
-        referralCodeViewHolder.destroyViews();
+        referralCodeSettingViewHolder.destroyViews();
         restorePurchaseSettingViewHolder.destroyViews();
         transactionHistoryViewHolder.destroyViews();
         alipaySettingViewHolder.destroyViews();
@@ -184,7 +206,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         emailNotificationSettingViewHolder = null;
         userTranslationSettingsViewHolder = null;
         signOutSettingViewHolder = null;
-        referralCodeViewHolder = null;
+        referralCodeSettingViewHolder = null;
         restorePurchaseSettingViewHolder = null;
         transactionHistoryViewHolder = null;
         alipaySettingViewHolder = null;
@@ -219,7 +241,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         alipaySettingViewHolder.initViews(this);
         transactionHistoryViewHolder.initViews(this);
         restorePurchaseSettingViewHolder.initViews(this);
-        referralCodeViewHolder.initViews(this);
+        referralCodeSettingViewHolder.initViews(this);
         signOutSettingViewHolder.initViews(this);
 
         // Translations

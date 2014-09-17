@@ -13,6 +13,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementDefDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.StringUtils;
 import javax.inject.Inject;
@@ -47,7 +48,7 @@ public class AchievementCellView extends RelativeLayout implements DTOView<Achie
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 

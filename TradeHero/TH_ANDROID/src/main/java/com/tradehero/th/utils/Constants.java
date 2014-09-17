@@ -1,12 +1,11 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.th.BuildConfig;
 import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 
 public class Constants
 {
-    // build constants
-    // TODO fix
-    public static final boolean RELEASE = false; // !BuildConfig.DEBUG;
+    public static final boolean RELEASE = !BuildConfig.DEBUG;
 
     public static final boolean USE_BETA_HOME_PAGE = true;
 
@@ -49,20 +48,16 @@ public class Constants
     public static final String CONTENT_ENCODING_GZIP = ACCEPT_ENCODING_GZIP;
     public static final String TH_ERROR_CODE = "TH-Error-Code";
 
-    // Google PlayStore
-    public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 
     // Localytics
-    public static final String LOCALYTICS_APP_KEY_RELEASE = "f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207";
-    public static final String LOCALYTICS_APP_KEY_DEBUG = "731adfbe0df8a59ff8e1117-4a8d02de-01d4-11e4-9d24-005cf8cbabd8";
+    public static final String LOCALYTICS_APP_KEY_RELEASE = "731adfbe0df8a59ff8e1117-4a8d02de-01d4-11e4-9d24-005cf8cbabd8";
+    public static final String LOCALYTICS_APP_KEY_DEBUG = "eeace06a24de5f8f52697c5-c32afe1e-1eb1-11e4-234f-004a77f8b47f";
 
     // GCM
     public static final String GCM_STAGING_SENDER = "927417497470";
 
-    // TODO remove when automated build.
-    // 0 for international, 1 baidu, 2 tencent. It is here to help with build multiple version
-    private static final int VERSION = 0;
-
-    public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
+    // To change TAPSTREAM_VERSION, look at gradle build flavor for china
+    public static final TapStreamType TAP_STREAM_TYPE =
+            TapStreamType.fromType(BuildConfig.TAPSTREAM_VERSION);
 }

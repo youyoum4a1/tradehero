@@ -3,18 +3,22 @@ package com.tradehero.th.utils.route;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.webkit.WebView;
+
+import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -31,7 +35,8 @@ import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import javax.inject.Inject;
+
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +50,8 @@ import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
 
+import javax.inject.Inject;
+
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
 
@@ -52,8 +59,7 @@ import static org.robolectric.Robolectric.shadowOf;
 @Config(shadows = ShadowWebViewNew.class)
 public class THRouterTest
 {
-    private DashboardNavigator dashboardNavigator;
-
+    @Inject DashboardNavigator dashboardNavigator;
     @Inject THRouter thRouter;
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
@@ -62,8 +68,9 @@ public class THRouterTest
 
     @Before public void setUp()
     {
+        currentUserId.set(34);
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
         thRouter.setContext(activity);
     }
 
@@ -74,6 +81,20 @@ public class THRouterTest
         dashboardNavigator = null;
 
         thRouter.setContext(null);
+    }
+
+    @NotNull private PortfolioCompactDTOList createCurrentUserPortfolios()
+    {
+        PortfolioCompactDTOList created = new PortfolioCompactDTOList();
+        PortfolioCompactDTO defaultPortfolio = new PortfolioCompactDTO();
+        defaultPortfolio.id = 1;
+        defaultPortfolio.userId = currentUserId.get();
+        created.add(defaultPortfolio);
+        PortfolioCompactDTO otherPortfolio = new PortfolioCompactDTO();
+        otherPortfolio.id = 2;
+        otherPortfolio.userId = currentUserId.get();
+        created.add(otherPortfolio);
+        return created;
     }
 
     //region Timeline
@@ -128,9 +149,12 @@ public class THRouterTest
 
     @Test public void shouldOpenStoreAndResetPortfolioDialog() throws Throwable
     {
+        portfolioCompactListCache.put(currentUserId.toUserBaseKey(), createCurrentUserPortfolios());
         thRouter.open("reset-portfolio");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
+
+        THRobolectric.runBgUiTasks(3);
 
         AlertDialog resetPortfolioDialog = ShadowAlertDialog.getLatestAlertDialog();
         assertThat(resetPortfolioDialog).isNotNull();
@@ -142,7 +166,7 @@ public class THRouterTest
 
     @Test public void shouldOpenStoreAndResetPortfolioDialogFullUrl()
     {
-        portfolioCompactListCache.put(currentUserId.toUserBaseKey(), new PortfolioCompactDTOList());
+        portfolioCompactListCache.put(currentUserId.toUserBaseKey(), createCurrentUserPortfolios());
         thRouter.open("store/reset-portfolio");
         ShadowToast.reset();
 
@@ -191,6 +215,12 @@ public class THRouterTest
         thRouter.open("providers/23");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(MainCompetitionFragment.class);
+    }
+
+    @Test public void shouldOpenProviderVideoListFragment()
+    {
+        thRouter.open("providers/23/helpVideos");
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(ProviderVideoListFragment.class);
     }
 
     @Test public void shouldOpenProviderEnrollmentScreen()

@@ -22,16 +22,15 @@ import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -50,6 +49,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     @Inject SecurityCompactCache securityCompactCache;
     @Inject NewsItemCompactListCacheNew newsTitleCache;
     @Inject protected DiscussionCache discussionCache;
+    @Inject DashboardNavigator navigator;
     @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
@@ -70,7 +70,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         newsCacheListener = createNewsCacheListener();
         discussionFetchListener = createDiscussionFetchListener();
         start = System.currentTimeMillis();
@@ -113,11 +113,11 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         if (abstractDiscussionCompactDTO != null && ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url!=null)
         {
             WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
-            getNavigator().pushFragment(WebViewFragment.class, bundle);
+            navigator.pushFragment(WebViewFragment.class, bundle);
         }
         else
         {
-            handleNewClicked(tempPosition,tempDto);
+            handleNewClicked(tempPosition, tempDto);
         }
     }
 
@@ -234,11 +234,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         showNewsList();
     }
 
-    @Override public void onErrorThrown(@NotNull SecurityId securityId, @NotNull Throwable error)
-    {
-        super.onErrorThrown(securityId, error);
-    }
-
     public void linkWith(PaginatedDTO<NewsItemCompactDTO> news, boolean andDisplay)
     {
         paginatedNews = news;
@@ -300,8 +295,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
             NewsDiscussionFragment.putBackgroundResId(bundle, resId);
             NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
             NewsDiscussionFragment.putDiscussionKey(bundle, news);
-            getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
-
+            navigator.pushFragment(NewsDiscussionFragment.class, bundle);
         }
     }
 
@@ -316,11 +310,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     private void detachFetchDiscussionTask()
     {
         discussionCache.unregister(discussionFetchListener);
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 
     @NotNull protected DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> createNewsCacheListener()

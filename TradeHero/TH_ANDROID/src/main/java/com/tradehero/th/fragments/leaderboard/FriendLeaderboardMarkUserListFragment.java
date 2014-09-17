@@ -1,45 +1,59 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+
 import com.actionbarsherlock.view.MenuItem;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.social.FollowDialogCombo;
+import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
+import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
-import java.util.Date;
-import javax.inject.Inject;
-import javax.inject.Provider;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.Date;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
+import dagger.Lazy;
 import retrofit.RetrofitError;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     @Nullable @Optional @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     @Nullable @InjectView(R.id.progress) ProgressBar mProgress;
-    @Nullable protected  View headerView;
+    @Nullable protected View headerView;
 
     @Nullable protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
     private TextView leaderboardMarkUserMarkingTime;
@@ -48,6 +62,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCache leaderboardFriendsCache;
+    @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
+
+    protected FollowDialogCombo followDialogCombo;
+    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -64,6 +82,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                     getActivity(),
                     R.layout.lbmu_item_roi_mode,
                     R.layout.leaderboard_friends_social_item_view);
+            leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
             leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
             leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
             leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
@@ -150,6 +169,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public void onStop()
     {
         detachLeaderboardFriendsCacheListener();
+        detachFollowDialogCombo();
+        detachChoiceFollowAssistant();
         super.onStop();
     }
 
@@ -159,8 +180,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         {
             leaderboardMarkUserListView.setAdapter(null);
             leaderboardMarkUserListView.setOnItemClickListener(null);
-            leaderboardMarkUserListView.setEmptyView(null);
-            leaderboardMarkUserListView.addHeaderView(null);
             leaderboardMarkUserListView = null;
         }
         if (leaderboardFriendsUserListAdapter != null)
@@ -174,6 +193,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             mProgress = null;
         }
 
+        headerView = null;
         super.onDestroyView();
     }
 
@@ -188,13 +208,33 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         leaderboardFriendsCache.unregister(leaderboardFriendsKeyDTOListener);
     }
 
+    protected void detachFollowDialogCombo()
+    {
+        FollowDialogCombo followDialogComboCopy = followDialogCombo;
+        if (followDialogComboCopy != null)
+        {
+            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
+        }
+        followDialogCombo = null;
+    }
+
+    protected void detachChoiceFollowAssistant()
+    {
+        ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
+        if (copy != null)
+        {
+            copy.onDestroy();
+        }
+        choiceFollowUserAssistantWithDialog = null;
+    }
+
     protected View inflateEmptyView(@NotNull LayoutInflater inflater, ViewGroup container)
     {
         return inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false);
     }
 
     private void pushInvitationFragment(){
-        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
+        navigator.pushFragment(FriendsInvitationFragment.class);
     }
 
     @Override protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
@@ -228,40 +268,82 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     }
 
+    protected class LeaderboardMarkUserListFollowRequestedListener
+            implements LeaderboardMarkUserItemView.OnFollowRequestedListener
 
-    protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardFriendsItemView.OnFollowRequestedListener
     {
-        @Override public void onFollowRequested(UserBaseKey userBaseKey)
+        @Override public void onFollowRequested(UserBaseDTO userBaseDTO)
         {
-            handleFollowRequested(userBaseKey);
+            handleFollowRequested(userBaseDTO);
         }
     }
 
-    @NotNull @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @NotNull @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new LeaderboardMarkUserListPremiumUserFollowedListener();
     }
 
-    protected class LeaderboardMarkUserListPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
+    protected class LeaderboardMarkUserListPremiumUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
         {
             handleFollowSuccess(currentUserProfileDTO);
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
             // nothing for now
         }
     }
 
-    protected void handleFollowRequested(final UserBaseKey userBaseKey)
+    protected void handleFollowRequested(@NotNull final UserBaseDTO userBaseDTO)
     {
-        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        detachChoiceFollowAssistant();
+        choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
+                getActivity(),
+                userBaseDTO.getBaseKey(),
+                createUserFollowedListener(),
+                getApplicablePortfolioId());
+        choiceFollowUserAssistantWithDialog.setHeroBaseInfo(userBaseDTO);
+        choiceFollowUserAssistantWithDialog.launchChoice();
+    }
+
+    @NotNull protected SimpleFollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    {
+        return new LeaderboardMarkUserListOnUserFollowedListener();
+    }
+
+    protected class LeaderboardMarkUserListOnUserFollowedListener implements SimpleFollowUserAssistant.OnUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
         {
-            @Override public void onClick(DialogInterface dialog, int which)
+            setCurrentUserProfileDTO(currentUserProfileDTO);
+            int followType = currentUserProfileDTO.getFollowType(userFollowed);
+            if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
             {
-                premiumFollowUser(userBaseKey);
+                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
+            }
+            else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+            {
+                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
+            }
+            updateListViewRow(userFollowed);
+        }
+
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
+        {
+            THToast.show(new THException(error));
+        }
+    }
+
+    private void updateListViewRow(final UserBaseKey heroId)
+    {
+        AdapterView list = leaderboardMarkUserListView;
+        adapterViewUtilsLazy.get().updateSingleRowWhere(list, FriendLeaderboardMarkedUserDTO.class, new Predicate<FriendLeaderboardMarkedUserDTO>()
+        {
+            @Override public boolean apply(FriendLeaderboardMarkedUserDTO friendLeaderboardMarkedUserDTO)
+            {
+                return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
             }
         });
     }

@@ -1,9 +1,12 @@
 package com.tradehero.th.utils.metrics;
 
 import com.tradehero.th.utils.metrics.events.AnalyticsEvent;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -74,7 +77,7 @@ public class Analytics
 
     private void doPendingActions()
     {
-        for (Action action: pendingActions)
+        for (Action action: new ArrayList<>(pendingActions))
         {
             doAction(action);
         }

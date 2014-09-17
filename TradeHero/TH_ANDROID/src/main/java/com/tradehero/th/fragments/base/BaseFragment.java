@@ -6,7 +6,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
@@ -21,6 +21,8 @@ public class BaseFragment extends SherlockFragment
 
     protected boolean hasOptionMenu;
     protected boolean isOptionMenuVisible;
+
+    protected ActionBarOwnerMixin actionBarOwnerMixin;
 
     public static void putHasOptionMenu(@NotNull Bundle args, boolean hasOptionMenu)
     {
@@ -54,15 +56,24 @@ public class BaseFragment extends SherlockFragment
     {
         super.onAttach(activity);
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        actionBarOwnerMixin = ActionBarOwnerMixin.of(this);
+
         isOptionMenuVisible = getIsOptionMenuVisible(getArguments());
         hasOptionMenu = getHasOptionMenu(getArguments());
         setHasOptionsMenu(hasOptionMenu);
+    }
+
+    @Override public void onDestroy()
+    {
+        actionBarOwnerMixin.onDestroy();
+        actionBarOwnerMixin = null;
+        super.onDestroy();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -91,44 +102,28 @@ public class BaseFragment extends SherlockFragment
         }
         else
         {
-            Timber.e(new Exception(),"getActivity is Null");
+            Timber.e(new Exception(), "getActivity is Null");
             return null;
         }
     }
 
-    protected void setActionBarTitle(int titleresId)
+    protected final void setActionBarTitle(String string)
     {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setTitle(titleresId);
-        }
+        actionBarOwnerMixin.setActionBarTitle(string);
     }
 
-    protected void setActionBarTitle(String title)
+    protected final void setActionBarTitle(int stringResId)
     {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setTitle(title);
-        }
+        actionBarOwnerMixin.setActionBarTitle(stringResId);
     }
 
-    protected void setActionBarSubtitle(int subtitleResId)
+    protected void setActionBarSubtitle(int subTitleResId)
     {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setSubtitle(subtitleResId);
-        }
+        actionBarOwnerMixin.setActionBarSubtitle(subTitleResId);
     }
 
     protected void setActionBarSubtitle(String subtitle)
     {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setSubtitle(subtitle);
-        }
+        actionBarOwnerMixin.setActionBarSubtitle(subtitle);
     }
 }

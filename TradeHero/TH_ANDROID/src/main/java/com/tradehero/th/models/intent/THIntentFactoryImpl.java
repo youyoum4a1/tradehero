@@ -1,11 +1,12 @@
 package com.tradehero.th.models.intent;
 
+import android.app.Activity;
 import android.content.Intent;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import timber.log.Timber;
 
 public class THIntentFactoryImpl extends THIntentFactory<THIntent>
@@ -13,13 +14,13 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
     private final Map<String, THIntentFactory<? extends THIntent>> factoryMap;
 
     private final THRouter thRouter;
-    private final CurrentActivityHolder currentActivityHolder;
+    private final Provider<Activity> activityProvider;
 
     //<editor-fold desc="Constructors">
-    @Inject public THIntentFactoryImpl(THRouter thRouter, CurrentActivityHolder currentActivityHolder)
+    @Inject public THIntentFactoryImpl(THRouter thRouter, Provider<Activity> activityProvider)
     {
         this.thRouter = thRouter;
-        this.currentActivityHolder = currentActivityHolder;
+        this.activityProvider = activityProvider;
         factoryMap = new HashMap<>();
     }
     //</editor-fold>
@@ -59,7 +60,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
                 Timber.d("Something wrong with old THIntent" + ex.getMessage());
             }
         }
-        else
+        if (thIntent == null)
         {
             handleUrlByRouter(intent, host);
         }
@@ -85,7 +86,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
 
         try
         {
-            thRouter.open(url, currentActivityHolder.getCurrentActivity());
+            thRouter.open(url, activityProvider.get());
         }
         catch (Exception ex)
         {

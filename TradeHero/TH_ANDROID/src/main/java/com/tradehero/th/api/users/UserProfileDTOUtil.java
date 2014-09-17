@@ -1,13 +1,16 @@
 package com.tradehero.th.api.users;
 
-import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
-import java.util.ArrayList;
-import javax.inject.Inject;
+import com.tradehero.th.billing.SecurityAlertKnowledge;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 public class UserProfileDTOUtil extends UserBaseDTOUtil
 {
@@ -16,8 +19,8 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     public final static int IS_FREE_FOLLOWER = 1;
     public final static int IS_PREMIUM_FOLLOWER = 2;
 
-    @NotNull protected SecurityAlertKnowledge securityAlertKnowledge;
-    @NotNull protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
+    @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileDTOUtil(
@@ -49,25 +52,21 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     }
     //</editor-fold>
 
-    public ArrayList<IABSKU> getSubscribedAlerts(UserProfileDTO userProfileDTO)
+    @NotNull public ArrayList<ProductIdentifier> getSubscribedAlerts(
+            @NotNull UserProfileDTO userProfileDTO)
     {
-        if (userProfileDTO == null)
-        {
-            return null;
-        }
-
-        ArrayList<IABSKU> subscribedAlerts = new ArrayList<>();
+        ArrayList<ProductIdentifier> subscribedAlerts = new ArrayList<>();
         if (userProfileDTO.userAlertPlans != null)
         {
-            IABSKU localSKU;
-            IABSKU serverEquivalent;
+            ProductIdentifier localSKU;
+            ProductIdentifier serverEquivalent;
             for (UserAlertPlanDTO userAlertPlanDTO : userProfileDTO.userAlertPlans)
             {
                 if (userAlertPlanDTO != null &&
                         userAlertPlanDTO.alertPlan != null &&
                         userAlertPlanDTO.alertPlan.productIdentifier != null)
                 {
-                    localSKU = new IABSKU(userAlertPlanDTO.alertPlan.productIdentifier);
+                    localSKU = securityAlertKnowledge.createFrom(userAlertPlanDTO.alertPlan);
                     subscribedAlerts.add(localSKU);
 
                     serverEquivalent = securityAlertKnowledge.getServerEquivalentSKU(localSKU);

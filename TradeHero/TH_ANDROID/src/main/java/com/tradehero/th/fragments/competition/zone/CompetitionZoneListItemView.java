@@ -8,11 +8,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItemView
@@ -43,19 +43,14 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
-        DaggerUtils.inject(this);
+        ButterKnife.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         picasso.cancelRequest(zoneIcon);
         super.onDetachedFromWindow();
-    }
-
-    protected void initViews()
-    {
-        ButterKnife.inject(this);
     }
 
     public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
@@ -106,7 +101,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
             {
                 CompetitionZoneDisplayCellDTO displayCellDTO = (CompetitionZoneDisplayCellDTO) competitionZoneDTO;
                 String iconUrl = displayCellDTO.getIconUrl();
-                if (iconUrl != null)
+                if (iconUrl != null && !iconUrl.isEmpty())
                 {
                     picasso.cancelRequest(zoneIcon);
                     picasso.load(iconUrl)

@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+
 import javax.inject.Inject;
 
 public class SignInFragment extends SignInOrUpFragment
@@ -34,7 +36,11 @@ public class SignInFragment extends SignInOrUpFragment
     {
         View view = inflater.inflate(getViewId(), container, false);
         setOnClickListener(view);
-        view.findViewById(R.id.authentication_by_sign_up_button).setOnClickListener(onClickListener);
+        View signUpLink = view.findViewById(R.id.authentication_email_sign_up_link);
+        if (signUpLink != null)
+        {
+            signUpLink.setOnClickListener(onClickListener);
+        }
         return view;
     }
 

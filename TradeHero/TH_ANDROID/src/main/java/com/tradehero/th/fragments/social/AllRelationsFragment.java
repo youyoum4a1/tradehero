@@ -6,8 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.android.internal.util.Predicate;
@@ -20,20 +19,27 @@ import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCompactCache;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 import timber.log.Timber;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
@@ -52,6 +58,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -60,7 +67,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     }
 
     @Override
-    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new AllRelationsPremiumUserFollowedListener();
     }
@@ -146,7 +153,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         Bundle args = new Bundle();
         NewPrivateMessageFragment.putCorrespondentUserBaseKey(args,
                 mRelationsList.get(position).user.getBaseKey());
-        getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+        navigator.pushFragment(NewPrivateMessageFragment.class, args);
     }
 
     protected void handleFollowRequested(UserBaseKey userBaseKey)
@@ -196,15 +203,16 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     }
 
     protected class AllRelationsPremiumUserFollowedListener
-            implements PremiumFollowUserAssistant.OnUserFollowedListener
+            implements FollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
-                UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(
+                @NotNull UserBaseKey userFollowed,
+                @NotNull UserProfileDTO currentUserProfileDTO)
         {
             forceUpdateLook(userFollowed);
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
             // nothing for now
         }

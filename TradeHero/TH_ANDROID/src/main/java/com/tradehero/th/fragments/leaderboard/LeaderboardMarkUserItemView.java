@@ -25,7 +25,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
@@ -33,13 +32,13 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -47,7 +46,6 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -55,7 +53,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MarkdownTextView;
-import com.tradehero.th.widget.list.BaseExpandingItemListener;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -77,6 +74,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject DashboardNavigator navigator;
 
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
@@ -89,7 +87,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
     @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
-    @InjectView(R.id.leaderboard_user_item_info) ImageView lbmuPositionInfo;
 
     // expanding view
     @InjectView(R.id.lbmu_pl) TextView lbmuPl;
@@ -139,7 +136,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         super.onFinishInflate();
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         initViews();
         leaderboardOwnUserRankingListener = createLeaderboardUserRankingListener();
     }
@@ -150,7 +147,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // top part
         if (lbmuFoF != null)
         {
-            DaggerUtils.inject(lbmuFoF);
+            HierarchyInjector.inject(lbmuFoF);
         }
 
         lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
@@ -498,12 +495,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    @OnClick(R.id.leaderboard_user_item_info)
-    protected void handleUserInfoClicked()
-    {
-        // Nothing?
-    }
-
     @OnClick(R.id.leaderboard_user_item_open_profile)
     protected void handleProfileClicked()
     {
@@ -585,7 +576,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             LeaderboardPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
         }
 
-        getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
+        navigator.pushFragment(LeaderboardPositionListFragment.class, bundle);
     }
 
     protected void pushPositionListFragment(GetPositionsDTOKey getPositionsDTOKey)
@@ -599,12 +590,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             PositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
         }
 
-        getNavigator().pushFragment(PositionListFragment.class, bundle);
-    }
-
-    protected DashboardNavigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        navigator.pushFragment(PositionListFragment.class, bundle);
     }
 
     protected void handleOpenProfileButtonClicked()
@@ -626,11 +612,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         thRouter.save(bundle, userToSee);
         if (currentUserId.toUserBaseKey().equals(userToSee))
         {
-            getNavigator().pushFragment(MeTimelineFragment.class, bundle);
+            navigator.pushFragment(MeTimelineFragment.class, bundle);
         }
         else
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+            navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
 

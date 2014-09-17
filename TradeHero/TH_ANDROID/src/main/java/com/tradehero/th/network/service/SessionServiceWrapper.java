@@ -2,7 +2,9 @@ package com.tradehero.th.network.service;
 
 import android.app.NotificationManager;
 import android.content.Context;
+
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
@@ -18,11 +20,15 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+
+import dagger.Lazy;
 import retrofit.Callback;
+import retrofit.client.Response;
 
 @Singleton public class SessionServiceWrapper
 {
@@ -131,4 +137,11 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
+
+    public MiddleCallback<Response> updateAuthorizationTokens(UserFormDTO userFormDTO, Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        sessionServiceAsync.updateAuthorizationTokens(userFormDTO, middleCallback);
+        return middleCallback;
+    }
 }

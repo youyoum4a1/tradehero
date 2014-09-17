@@ -66,4 +66,12 @@ public class RecipientTypedMessageListKey extends TypedMessageListKey
     {
         return new RecipientTypedMessageListKey(this.page + 1, perPage, discussionType, recipientId);
     }
+
+    @Override public String toString()
+    {
+        return "RecipientTypedMessageListKey{" +
+                super.toString() +
+                ", recipientId=" + recipientId +
+                '}';
+    }
 }

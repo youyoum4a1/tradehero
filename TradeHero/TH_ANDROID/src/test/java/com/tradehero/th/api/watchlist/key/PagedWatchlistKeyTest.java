@@ -1,6 +1,7 @@
 package com.tradehero.th.api.watchlist.key;
 
 import com.tradehero.THRobolectricTestRunner;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class PagedWatchlistKeyTest extends BasePagedWatchlistKeyTest
+public class PagedWatchlistKeyTest extends PagedWatchlistKeyTestBase
 {
     @Before public void setUp()
     {

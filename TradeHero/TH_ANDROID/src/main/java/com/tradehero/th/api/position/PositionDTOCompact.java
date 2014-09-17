@@ -3,16 +3,18 @@ package com.tradehero.th.api.position;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.utils.SecurityUtils;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PositionDTOCompact implements DTO
 {
     public int id;
-    public Integer shares;
+    @Nullable public Integer shares;
     public int portfolioId;
 
     // This price is always in the portfolio currency

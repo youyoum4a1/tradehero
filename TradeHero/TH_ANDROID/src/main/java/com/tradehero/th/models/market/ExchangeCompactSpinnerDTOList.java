@@ -12,7 +12,6 @@ public class ExchangeCompactSpinnerDTOList extends ArrayList<ExchangeCompactSpin
     public ExchangeCompactSpinnerDTOList(@NotNull Resources resources, @NotNull Collection<? extends ExchangeCompactDTO> exchangeCompactDTOs)
     {
         super();
-        add(new ExchangeCompactSpinnerDTO(resources));
         for (@NotNull ExchangeCompactDTO exchangeCompactDTO : exchangeCompactDTOs)
         {
             add(new ExchangeCompactSpinnerDTO(resources, exchangeCompactDTO));

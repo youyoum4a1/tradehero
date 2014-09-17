@@ -66,6 +66,7 @@ abstract public class SocialConnectSettingViewHolder
         {
             clickablePrefCopy.setOrder(preferenceFragment.getResources().getInteger(getOrderIntResId()));
         }
+        showIsMainLogin();
     }
 
     protected abstract int getOrderIntResId();
@@ -250,6 +251,11 @@ abstract public class SocialConnectSettingViewHolder
     }
 
     @Override protected void updateStatus(@NotNull UserProfileDTO userProfileDTO)
+    {
+        showIsMainLogin();
+    }
+
+    protected void showIsMainLogin()
     {
         CheckBoxPreference clickablePrefCopy = clickablePref;
         if (clickablePrefCopy != null)

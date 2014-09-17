@@ -8,12 +8,10 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.Router;
 import com.tradehero.route.RouterOptions;
 import com.tradehero.route.RouterParams;
-import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,24 +20,19 @@ import timber.log.Timber;
 @Singleton
 public class THRouter extends Router
 {
-    @NotNull private final CurrentActivityHolder currentActivityHolder;
+    @NotNull private final Provider<DashboardNavigator> navigatorProvider;
     private Map<String, String> aliases;
 
     //<editor-fold desc="Constructors">
-    @Inject public THRouter(
+    public THRouter(
             @NotNull Context context,
-            @NotNull CurrentActivityHolder currentActivityHolder)
+            @NotNull Provider<DashboardNavigator> navigatorProvider)
     {
         super(context);
-        this.currentActivityHolder = currentActivityHolder;
+        this.navigatorProvider = navigatorProvider;
         aliases = new LinkedHashMap<>();
     }
     //</editor-fold>
-
-    @Override public void map(String format, Class<? extends Activity> klass)
-    {
-        super.map(format, klass);
-    }
 
     @Override public void open(String url, Bundle extras, Context context)
     {
@@ -53,10 +46,9 @@ public class THRouter extends Router
         }
 
         RouterParams params = this.paramsForUrl(url);
-        Activity currentActivity = currentActivityHolder.getCurrentActivity();
-        if (currentActivity != null && params.routerOptions instanceof THRouterOptions)
+        if (params.routerOptions instanceof THRouterOptions)
         {
-            openFragment(params, extras, currentActivity);
+            openFragment(params, extras);
         }
         else
         {
@@ -111,11 +103,10 @@ public class THRouter extends Router
         this.routes.put(format, options);
     }
 
-    private void openFragment(RouterParams params, Bundle extras, Activity activity)
+    private void openFragment(RouterParams params, Bundle extras)
     {
-        if (activity instanceof DashboardActivity && params != null)
+        if (params != null)
         {
-            DashboardNavigator navigator = ((DashboardActivity) activity).getDashboardNavigator();
             THRouterOptions options = (THRouterOptions) params.routerOptions;
 
             executePreOpenFragment(options.getPreOpenRunnableClasses());
@@ -133,7 +124,7 @@ public class THRouter extends Router
                 }
             }
 
-            Fragment currentFragment = navigator.getCurrentFragment();
+            Fragment currentFragment = navigatorProvider.get().getCurrentFragment();
 
             /** If the opening fragment is active, and not yet detached, resume it with routing bundle **/
             if (currentFragment != null && !currentFragment.isDetached() &&
@@ -144,7 +135,7 @@ public class THRouter extends Router
             }
             else
             {
-                navigator.pushFragment(options.getOpenFragmentClass(), args);
+                navigatorProvider.get().pushFragment(options.getOpenFragmentClass(), args);
             }
         }
     }

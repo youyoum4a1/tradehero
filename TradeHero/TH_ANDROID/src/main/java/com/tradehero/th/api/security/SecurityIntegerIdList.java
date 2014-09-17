@@ -1,27 +1,19 @@
 package com.tradehero.th.api.security;
 
 import com.tradehero.common.persistence.DTOKey;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
 
 public class SecurityIntegerIdList extends ArrayList<SecurityIntegerId>
     implements DTOKey
 {
     //<editor-fold desc="Constructors">
-    public SecurityIntegerIdList(int initialCapacity)
-    {
-        super(initialCapacity);
-    }
-
     public SecurityIntegerIdList()
     {
         super();
-    }
-
-    public SecurityIntegerIdList(Collection<? extends SecurityIntegerId> c)
-    {
-        super(c);
     }
 
     public SecurityIntegerIdList(@NotNull Collection<? extends Integer> c, Integer type)

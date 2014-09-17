@@ -13,12 +13,12 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -37,17 +37,22 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
+import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
+import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
+import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.security.SecurityIdCache;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -82,10 +87,12 @@ public class PositionListFragment
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCache portfolioCache;
     @Inject UserProfileCache userProfileCache;
+    @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
+    @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
 
     @InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
-    @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView;
+    @InjectView(R.id.pull_to_refresh_position_list) PullToRefreshListView pullToRefreshListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.error) View errorView;
 
@@ -107,6 +114,7 @@ public class PositionListFragment
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Nullable protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject THRouter thRouter;
+    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NotNull Bundle args, @NotNull GetPositionsDTOKey getPositionsDTOKey)
@@ -158,7 +166,7 @@ public class PositionListFragment
         portfolioFetchListener = createPortfolioCacheListener();
     }
 
-    @NotNull @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @NotNull @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new AbstractPositionListPremiumUserFollowedListener();
     }
@@ -322,7 +330,6 @@ public class PositionListFragment
             {
                 TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
             }
-            DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)
             {
                 navigator.pushFragment(TradeListFragment.class, args);
@@ -341,7 +348,7 @@ public class PositionListFragment
             TrendingFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        getDashboardNavigator().pushFragment(TrendingFragment.class, args);
+        navigator.pushFragment(TrendingFragment.class, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
@@ -622,13 +629,11 @@ public class PositionListFragment
         thRouter.save(args, userBaseKey);
         if (currentUserId.toUserBaseKey().equals(userBaseKey))
         {
-            ((DashboardActivity) getActivity())
-                    .getDashboardNavigator().pushFragment(MeTimelineFragment.class, args);
+            navigator.pushFragment(MeTimelineFragment.class, args);
         }
         else
         {
-            ((DashboardActivity) getActivity())
-                    .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+            navigator.pushFragment(PushableTimelineFragment.class, args);
         }
     }
     //</editor-fold>
@@ -706,16 +711,16 @@ public class PositionListFragment
     }
 
     protected class AbstractPositionListPremiumUserFollowedListener
-            implements PremiumFollowUserAssistant.OnUserFollowedListener
+            implements FollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
         {
             displayHeaderView();
             fetchSimplePage(true);
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
         {
             // do nothing for now
         }
@@ -729,6 +734,7 @@ public class PositionListFragment
         {
             linkWith(value, true);
             showResultIfNecessary();
+            showPrettyReviewAndInvite();
         }
 
         @Override public void onErrorThrown(
@@ -738,6 +744,34 @@ public class PositionListFragment
             THToast.show(R.string.error_fetch_user_profile);
             //TODO not just toast
             showErrorView();
+        }
+    }
+
+    private void showPrettyReviewAndInvite()
+    {
+        if (shownUser != null)
+        {
+            if (shownUser.getUserId().intValue() != currentUserId.get().intValue())
+            {
+                return;
+            }
+        }
+        Double profit = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey).roiSinceInception;
+        if (profit != null)
+        {
+            if (profit > 0)
+            {
+                if (mShowAskForReviewDialogPreference.isItTime())
+                {
+                    AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
+                    mShowAskForInviteDialogPreference.addInFuture(TimingIntervalPreference.DAY);
+                    return;
+                }
+                if (mShowAskForInviteDialogPreference.isItTime())
+                {
+                    AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
+                }
+            }
         }
     }
 

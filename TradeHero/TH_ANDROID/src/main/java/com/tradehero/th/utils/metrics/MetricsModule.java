@@ -5,11 +5,7 @@ import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
-import com.tradehero.th.base.Application;
-import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
-import com.tradehero.th.fragments.authentication.SignInFragment;
-import com.tradehero.th.fragments.authentication.SignUpFragment;
-import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.localytics.ForLocalytics;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsAdapter;
@@ -23,12 +19,6 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 @Module(
-        injects = {
-                SignInFragment.class,
-                SignUpFragment.class,
-                EmailSignUpFragment.class,
-                LeaderboardFilterSliderContainer.class
-        },
         library = true,
         complete = false
 )
@@ -44,7 +34,7 @@ public class MetricsModule
 
     @Provides @ForLocalytics String provideLocalyticsAppKey()
     {
-        return Constants.DOGFOOD_BUILD ? Constants.LOCALYTICS_APP_KEY_RELEASE : Constants.LOCALYTICS_APP_KEY_DEBUG;
+        return Constants.DOGFOOD_BUILD ? Constants.LOCALYTICS_APP_KEY_DEBUG : Constants.LOCALYTICS_APP_KEY_RELEASE;
     }
 
     @Provides(type = Provides.Type.SET_VALUES) @ForAnalytics Set<String> provideAnalyticsPredefineDimensions()
@@ -62,7 +52,7 @@ public class MetricsModule
     }
 
     // TapStream
-    @Provides @Singleton Api provideTapStream(Application app, Config config)
+    @Provides @Singleton Api provideTapStream(THApp app, Config config)
     {
         Tapstream.create(app, TAPSTREAM_APP_NAME, TAPSTREAM_KEY, config);
         return Tapstream.getInstance();

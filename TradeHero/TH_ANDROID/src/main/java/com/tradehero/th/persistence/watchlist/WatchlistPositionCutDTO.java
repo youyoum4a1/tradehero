@@ -5,9 +5,11 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import java.util.Date;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Date;
 
 class WatchlistPositionCutDTO implements DTO
 {
@@ -60,7 +62,7 @@ class WatchlistPositionCutDTO implements DTO
         this.sumInvestedAmountRefCcy = inflated.sumInvestedAmountRefCcy;
         this.totalTransactionCostRefCcy = inflated.totalTransactionCostRefCcy;
         this.aggregateCount = inflated.aggregateCount;
-        this.watchlistPrice = inflated.watchlistPrice;
+        this.watchlistPrice = inflated.watchlistPriceRefCcy;
         if (inflated.securityDTO == null)
         {
             this.securityIdKey = null;
@@ -103,7 +105,7 @@ class WatchlistPositionCutDTO implements DTO
         inflated.sumInvestedAmountRefCcy = sumInvestedAmountRefCcy;
         inflated.totalTransactionCostRefCcy = totalTransactionCostRefCcy;
         inflated.aggregateCount = aggregateCount;
-        inflated.watchlistPrice = watchlistPrice;
+        inflated.watchlistPriceRefCcy = watchlistPrice;
         return inflated;
     }
 }

@@ -14,11 +14,10 @@ import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import java.util.ArrayList;
-import java.util.List;
 
-public class UIBillingRequest<
+import org.jetbrains.annotations.Nullable;
+
+public interface UIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
@@ -28,101 +27,122 @@ public class UIBillingRequest<
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingExceptionType extends BillingException>
 {
-    /**
-     * The portfolio to pass when making a purchase
-     */
-    public OwnedPortfolioId applicablePortfolioId;
+    //<editor-fold desc="Generics">
+    boolean getStartWithProgressDialog();
+    //</editor-fold>
 
-    /**
-     * Indicates whether we want a progress dialog to show while stuff is being prepared.
-     */
-    public boolean startWithProgressDialog;
+    //<editor-fold desc="Testing Availability">
+    boolean getTestBillingAvailable();
+    void setTestBillingAvailable(boolean testBillingAvailable);
+    boolean getPopIfBillingNotAvailable();
+    @Nullable BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener();
+    void setBillingAvailableListener(
+            @Nullable BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener);
+    //</editor-fold>
 
-    /**
-     * When a listener is missing when an error occurs, the error should be sent to this listener.
-     */
-    public OnErrorListener<BillingExceptionType> onDefaultErrorListener;
-
-    /**
-     * Indicates whether we want to test if billing is available
-     */
-    public boolean billingAvailable;
-    /**
-     * Indicates whether we want the Interactor to pop a dialog when billing is not available
-     */
-    public boolean popIfBillingNotAvailable;
-    public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener;
-
-    /**
-     * Indicates whether we want to fetch the product identifiers
-     */
-    public boolean fetchProductIdentifiers;
-    /**
-     * Indicates whether we want the Interactor to pop a dialog when the product identifier fetch has failed
-     */
-    public boolean popIfProductIdentifierFetchFailed;
-    public ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+    //<editor-fold desc="Fetching Product Identifiers">
+    boolean getFetchProductIdentifiers();
+    void setFetchProductIdentifiers(boolean fetchProductIdentifiers);
+    boolean getPopIfProductIdentifierFetchFailed();
+    @Nullable ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType,
-            BillingExceptionType> productIdentifierFetchedListener;
+            BillingExceptionType> getProductIdentifierFetchedListener();
+    void setProductIdentifierFetchedListener(
+            @Nullable ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+                    ProductIdentifierListKeyType,
+                    ProductIdentifierType,
+                    ProductIdentifierListType,
+                    BillingExceptionType> productIdentifierFetchedListener);
+    //</editor-fold>
 
-    /**
-     * Indicates whether we want to fetch the product details
-     */
-    public boolean fetchInventory;
-    /**
-     * Indicates whether we want the Interactor to pop a dialog when the inventory fetch has failed
-     */
-    public boolean popIfInventoryFetchFailed;
-    public BillingInventoryFetcher.OnInventoryFetchedListener<
+    //<editor-fold desc="Fetching Inventory">
+    boolean getFetchInventory();
+    void setFetchInventory(boolean fetchInventory);
+    boolean getPopIfInventoryFetchFailed();
+    @Nullable BillingInventoryFetcher.OnInventoryFetchedListener<
             ProductIdentifierType,
             ProductDetailType,
-            BillingExceptionType> inventoryFetchedListener;
+            BillingExceptionType> getInventoryFetchedListener();
+    void setInventoryFetchedListener(
+            @Nullable BillingInventoryFetcher.OnInventoryFetchedListener<
+                    ProductIdentifierType,
+                    ProductDetailType,
+                    BillingExceptionType> inventoryFetchedListener);
+    //</editor-fold>
 
-    /**
-     * Indicates whether we want to fetch the purchases
-     */
-    public boolean fetchPurchase;
-    /**
-     * Indicates whether we want the Interactor to pop a dialog when the fetch of purchases has failed
-     */
-    public boolean popIfPurchaseFetchFailed;
-    public BillingPurchaseFetcher.OnPurchaseFetchedListener<
+    //<editor-fold desc="Fetching Purchases">
+    boolean getFetchPurchases();
+    void setFetchPurchases(boolean fetchPurchases);
+    boolean getPopIfPurchaseFetchFailed();
+    @Nullable BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType,
-            BillingExceptionType> purchaseFetchedListener;
+            BillingExceptionType> getPurchaseFetchedListener();
+    void setPurchaseFetchedListener(
+            @Nullable BillingPurchaseFetcher.OnPurchaseFetchedListener<
+                    ProductIdentifierType,
+                    OrderIdType,
+                    ProductPurchaseType,
+                    BillingExceptionType> purchaseFetchedListener);
+    //</editor-fold>
 
-    /**
-     * Indicates whether we want to restore purchases
-     */
-    public boolean restorePurchase;
-    /**
-     * Indicates whether we want the Interactor to pop an outcome dialog upon restore.
-     */
-    public boolean popRestorePurchaseOutcome;
-    /**
-     * Indicates whether we want the Interactor to pop an outcome dialog upon restore, even if nothing to report.
-     */
-    public boolean popRestorePurchaseOutcomeVerbose;
-    public BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener;
+    //<editor-fold desc="Restoring Purchases">
+    boolean getRestorePurchase();
+    void setRestorePurchase(boolean restorePurchases);
+    boolean getPopRestorePurchaseOutcome();
+    boolean getPopRestorePurchaseOutcomeVerbose();
+    @Nullable public BillingPurchaseRestorer.OnPurchaseRestorerListener<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType> getPurchaseRestorerListener();
+    void setPurchaseRestorerListener(
+            @Nullable BillingPurchaseRestorer.OnPurchaseRestorerListener<
+                    ProductIdentifierType,
+                    OrderIdType,
+                    ProductPurchaseType,
+                    BillingExceptionType> purchaseRestorerListener);
+    //</editor-fold>
 
-    /**
-     * Indicates whether we want the Interactor to pop a dialog when the purchase has failed
-     */
-    public boolean popIfPurchaseFailed;
-    public BillingPurchaser.OnPurchaseFinishedListener<
+    //<editor-fold desc="Purchasing">
+    boolean getDoPurchase();
+    void setDoPurchase(boolean doPurchase);
+    boolean getPopIfPurchaseFailed();
+    @Nullable BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             PurchaseOrderType,
             OrderIdType,
             ProductPurchaseType,
-            BillingExceptionType> purchaseFinishedListener;
+            BillingExceptionType> getPurchaseFinishedListener();
+    void setPurchaseFinishedListener(
+            @Nullable BillingPurchaser.OnPurchaseFinishedListener<
+                    ProductIdentifierType,
+                    PurchaseOrderType,
+                    OrderIdType,
+                    ProductPurchaseType,
+                    BillingExceptionType> purchaseFinishedListener);
+    //</editor-fold>
 
-    public UIBillingRequest()
-    {
-        super();
-    }
+    //<editor-fold desc="Manage Subscriptions">
+    boolean getManageSubscriptions();
+    void setManageSubscriptions(boolean manageSubscriptions);
+    //</editor-fold>
+
+    void onDestroy();
+
+    BillingRequest.Builder<
+            ProductIdentifierListKeyType,
+            ProductIdentifierType,
+            ProductIdentifierListType,
+            ProductDetailType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType,
+            BillingExceptionType,
+            ?> createEmptyBillingRequestBuilder();
 
     public static interface OnErrorListener<BillingExceptionType extends BillingException>
     {

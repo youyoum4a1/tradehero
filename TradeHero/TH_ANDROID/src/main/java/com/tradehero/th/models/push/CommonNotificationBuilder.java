@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
+
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.R;
@@ -16,10 +17,14 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.persistence.notification.NotificationCache;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+
 import timber.log.Timber;
 
 /**
@@ -106,6 +111,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle(
                     notificationBuilder
                             .setContentText(message)
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                             .setNumber(totalUnreadCount)
             );
 
@@ -237,7 +243,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 
     private NotificationCompat.Builder getCommonNotificationBuilder()
     {
-        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_status_icon);
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.launcher);
         return new NotificationCompat.Builder(context)
                         .setLargeIcon(largeIcon)
                         .setSmallIcon(R.drawable.th_logo)

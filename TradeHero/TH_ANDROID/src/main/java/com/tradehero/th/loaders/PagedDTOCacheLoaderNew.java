@@ -5,7 +5,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import timber.log.Timber;
@@ -27,7 +27,7 @@ abstract public class PagedDTOCacheLoaderNew<
     public PagedDTOCacheLoaderNew(Context context)
     {
         super(context);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(context, this);
     }
 
     abstract protected DTOCacheNew<DTOKeyType, DTOType> getCache();
@@ -172,11 +172,6 @@ abstract public class PagedDTOCacheLoaderNew<
         {
             Timber.d("Not started, not passing super.deliverResult");
         }
-    }
-
-    @Override
-    protected void onStartLoading() {
-        super.onStartLoading();
     }
 
     /**

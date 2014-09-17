@@ -16,8 +16,8 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.translation.TranslationResult;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,8 +51,8 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     @InjectView(R.id.discussion_translate_notice_image) @Optional protected ImageView translateNoticeImage;
 
     @Inject @NotNull protected PrettyTime prettyTime;
-    @Inject @NotNull protected Context context;
     @Inject @NotNull protected SocialShareTranslationHelper socialShareHelper;
+    protected final Context context;
 
     protected boolean downVote;
     @Nullable protected DiscussionDTOType discussionDTO;
@@ -62,15 +62,15 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     protected OnMenuClickedListener menuClickedListener;
 
     //<editor-fold desc="Constructors">
-    public AbstractDiscussionCompactItemViewHolder()
+    public AbstractDiscussionCompactItemViewHolder(Context context)
     {
-        super();
-        DaggerUtils.inject(this);
+        this.context = context;
     }
     //</editor-fold>
 
     public void onFinishInflate(@NotNull View view)
     {
+        HierarchyInjector.inject(view.getContext(), this);
         ButterKnife.inject(this, view);
         socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
     }
@@ -386,6 +386,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
 
     public static interface OnMenuClickedListener extends DiscussionActionButtonsView.OnButtonClickedListener
     {
+        @Deprecated // TODO remove as all implementations are empty
         void onTranslationRequested();
     }
 }

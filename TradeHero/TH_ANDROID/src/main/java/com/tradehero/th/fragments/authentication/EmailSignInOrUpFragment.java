@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -14,9 +15,11 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
+
+import org.json.JSONException;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONException;
 
 abstract public class EmailSignInOrUpFragment extends AuthenticationFragment implements View.OnClickListener, ValidationListener
 {
@@ -47,7 +50,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
 
     protected void handleSignInOrUpButtonClicked(View view)
     {
-        DeviceUtil.dismissKeyboard(getActivity(), view);
+        DeviceUtil.dismissKeyboard(view);
 
         forceValidateFields();
 

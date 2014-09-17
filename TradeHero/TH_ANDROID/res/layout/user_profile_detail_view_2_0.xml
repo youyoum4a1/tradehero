@@ -45,6 +45,7 @@
             android:src="@drawable/ic_action_content_edit"
             android:visibility="gone"/>
 
+
         <TextView
             android:id="@+id/user_profile_display_name"
             style="@style/UserProfile.Contained.Value"
@@ -56,11 +57,9 @@
             android:shadowDy="1"
             android:shadowDx="1"
             android:shadowRadius="1"
-            android:layout_toRightOf="@+id/user_profile_avatar"
             android:layout_toLeftOf="@id/user_profile_edit"
             android:layout_marginTop="@dimen/common_margin_10"
             tools:text="Lorem ipsum dolor sit amet contentulla"/>
-
 
         <TextView
             android:id="@+id/user_profile_roi"

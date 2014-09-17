@@ -6,6 +6,7 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,14 +16,14 @@ import org.robolectric.Robolectric;
 @RunWith(THRobolectricTestRunner.class)
 public class LeaderboardMarkUserListFragmentTest
 {
-    private DashboardNavigator dashboardNavigator;
+    @Inject DashboardNavigator dashboardNavigator;
     private LeaderboardMarkUserListFragment leaderboardMarkUserListFragment;
     private HeroAlertDialogUtil heroAlertDialogUtil;
 
     @Before public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        dashboardNavigator = activity.getDashboardNavigator();
+        activity.inject(this);
     }
 
     @After public void tearDown()

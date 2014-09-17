@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,23 +12,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THApp;
+import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -38,18 +38,18 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private static final CharSequence KEY_SEND_FAKE_PUSH = "send_fake_push";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
-    @Inject Application app;
+    @Inject THApp app;
     @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject AlertDialogUtil alertDialogUtil;
+    @Inject Provider<Activity> currentActivity;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
         addPreferencesFromResource(R.xml.admin_settings);
     }
 
@@ -111,6 +111,39 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 return askForNotificationId();
+            }
+        });
+
+        Preference showReviewDialog = findPreference("show_review_dialog");
+        showReviewDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivity.get();
+                AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
+                return true;
+            }
+        });
+
+        Preference showInviteDialog = findPreference("show_invite_dialog");
+        showInviteDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivity.get();
+                AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
+                return true;
+            }
+        });
+
+        Preference showOnBoardDialog = findPreference("show_onBoard_dialog");
+        showOnBoardDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+//                SherlockFragmentActivity activityversion.properties = (SherlockFragmentActivity) currentActivityHolder.getCurrentActivity();
+                OnBoardDialogFragment.showOnBoardDialog(getActivity().getSupportFragmentManager());
+                return true;
             }
         });
     }

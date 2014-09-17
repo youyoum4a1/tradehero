@@ -2,6 +2,9 @@ package com.tradehero.util;
 
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.IOUtils;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import org.jetbrains.annotations.NotNull;
 
 public class TestUtil
 {
@@ -56,15 +58,15 @@ public class TestUtil
         File directory = null;
         String fullPath;
         String relPath = pkgname.replace('.', '/');
-        System.out.println("ClassDiscovery: Package: " + pkgname + " becomes Path:" + relPath);
+        //System.out.println("ClassDiscovery: Package: " + pkgname + " becomes Path:" + relPath);
         URL resource = ClassLoader.getSystemClassLoader().getResource(relPath);
-        System.out.println("ClassDiscovery: Resource = " + resource);
+        //System.out.println("ClassDiscovery: Resource = " + resource);
         if (resource == null)
         {
             throw new RuntimeException("No resource for " + relPath);
         }
         fullPath = resource.getFile();
-        System.out.println("ClassDiscovery: FullPath = " + resource);
+        //System.out.println("ClassDiscovery: FullPath = " + resource);
 
         try
         {
@@ -79,14 +81,14 @@ public class TestUtil
         {
             directory = null;
         }
-        System.out.println("ClassDiscovery: Directory = " + directory);
+        //System.out.println("ClassDiscovery: Directory = " + directory);
 
         String nonTestFullPath = fullPath.replace("test-", "");
         String nonTestRelPath = "../" + relPath.replace("test-", "");
         File nonTestDirectory = new File(nonTestFullPath);
 
         ArrayList<Class<?>> collated = getClassesForDirectory(directory, pkgname, fullPath, relPath);
-        collated.addAll(getClassesForDirectory(nonTestDirectory, pkgname, nonTestFullPath, nonTestRelPath));
+        //collated.addAll(getClassesForDirectory(nonTestDirectory, pkgname, nonTestFullPath, nonTestRelPath));
         return collated;
     }
 
@@ -108,7 +110,7 @@ public class TestUtil
                 {
                     // removes the .class extension
                     String className = pkgname + '.' + files[i].substring(0, files[i].length() - 6);
-                    System.out.println("ClassDiscovery: className = " + className);
+                    //System.out.println("ClassDiscovery: className = " + className);
                     try
                     {
                         classes.add(Class.forName(className));

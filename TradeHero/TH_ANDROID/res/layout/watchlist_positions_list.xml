@@ -44,13 +44,6 @@
       <!--android:layout_marginTop="@dimen/watch_list_header_height"-->
       <!--/>-->
 
-  <!--<com.tradehero.th.fragments.watchlist.WatchlistPositionListView-->
-      <!--android:id="@+id/pull_to_refresh_watchlist_listview"-->
-      <!--android:layout_marginTop="@dimen/watch_list_header_height"-->
-      <!--android:layout_width="match_parent"-->
-      <!--android:layout_height="match_parent"-->
-      <!--/>-->
-
   <include
       android:layout_width="match_parent"
       android:layout_height="@dimen/watch_list_header_height"

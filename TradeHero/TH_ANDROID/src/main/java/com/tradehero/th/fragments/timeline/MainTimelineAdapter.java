@@ -22,6 +22,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
+import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -212,7 +213,7 @@ public class MainTimelineAdapter extends ArrayAdapter
 
     private ListLoader<TimelineItemDTOKey> createTimelineLoader(Context context, UserBaseKey shownUserBaseKey)
     {
-        TimelineListLoader timelineLoader = new TimelineListLoader(context, shownUserBaseKey);
+        TimelineListLoader timelineLoader = new TimelineListLoader(context, shownUserBaseKey, UserTimelineService.TimelineSection.Timeline);
         timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);
         return timelineLoader;
     }

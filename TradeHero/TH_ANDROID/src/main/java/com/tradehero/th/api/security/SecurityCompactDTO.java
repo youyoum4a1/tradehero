@@ -17,11 +17,14 @@ import com.tradehero.th.api.security.compact.TradableRightsIssueDTO;
 import com.tradehero.th.api.security.compact.UnitCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.utils.SecurityUtils;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
 import timber.log.Timber;
 
 @JsonTypeInfo(
@@ -62,7 +65,7 @@ public class SecurityCompactDTO implements DTO
     //// EDT/EST converted to UTC
     @Nullable public Date lastPriceDateAndTimeUtc;
 
-    public Double toUSDRate;
+    @Nullable public Double toUSDRate;
     public Date toUSDRateDate;
 
     public boolean active;

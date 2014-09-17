@@ -44,7 +44,7 @@
       android:layout_toRightOf="@id/stock_logo"
       android:layout_below="@id/stock_symbol"
       android:paddingLeft="5dp"
-      tools:text="Google Inc."
+      tools:text="Company Name"
       />
 
   <Switch

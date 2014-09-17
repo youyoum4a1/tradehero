@@ -12,12 +12,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -32,25 +31,33 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.THBasePurchaseActionInteractor;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THPurchaseReporter;
+import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.models.number.THSignedNumber;
-import dagger.Lazy;
-import java.text.SimpleDateFormat;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.text.SimpleDateFormat;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 import retrofit.Callback;
 import timber.log.Timber;
 
@@ -85,6 +92,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject ResideMenu resideMenu;
+    @Inject DashboardNavigator navigator;
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
@@ -274,15 +282,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void popPurchase()
     {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .buyStockAlertSubscription();
-    }
-
-    @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
-    {
-        return super.createPurchaseActionInteractorBuilder()
-                .setPurchaseReportedListener(new PurchaseReporter.OnPurchaseReportedListener()
+        detachRequestCode();
+        //noinspection unchecked
+        requestCode = userInteractor.run((THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                .domainToPresent(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
+                .purchaseReportedListener(new THPurchaseReporter.OnPurchaseReportedListener()
                 {
                     @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
                     {
@@ -292,7 +296,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                     @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
                     {
                     }
-                });
+                })
+                .build());
     }
 
     protected void saveAlert()
@@ -377,16 +382,17 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void displayTargetPriceHandler()
     {
-        if (alertDTO == null)
+        if (alertDTO == null || securityCompactDTO == null)
         {
             return; // TODO better than that
         }
         THSignedNumber thTargetPrice = THSignedMoney.builder(alertDTO.targetPrice)
                 .withOutSign()
+                .currency(securityCompactDTO.currencyDisplay)
                 .build();
         targetPrice.setText(thTargetPrice.toString());
 
-        if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
+        if (securityCompactDTO.lastPrice != null)
         {
             targetPriceSeekBar.setProgress((int) (50.0 * alertDTO.targetPrice / securityCompactDTO.lastPrice));
         }
@@ -433,7 +439,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void displayTargetPrice()
     {
-        if (alertDTO == null)
+        if (alertDTO == null || securityCompactDTO == null)
         {
             // TODO decide what to do
         }
@@ -441,6 +447,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THSignedNumber thTargetPrice = THSignedMoney.builder(alertDTO.targetPrice)
                     .withOutSign()
+                    .currency(securityCompactDTO.currencyDisplay)
                     .build();
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
@@ -621,10 +628,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected void updateTargetPriceChangeValues(boolean handlerEnabled)
     {
         Double seekingTargetPrice = getSeekingTargetPrice();
-        if (seekingTargetPrice != null)
+        if (seekingTargetPrice != null && securityCompactDTO != null)
         {
             THSignedNumber thSignedNumber = THSignedMoney.builder(seekingTargetPrice)
                     .withOutSign()
+                    .currency(securityCompactDTO.currencyDisplay)
                     .build();
             targetPriceChange.setText(getFormattedTargetPriceChange(handlerEnabled ? thSignedNumber.toString() : "-"));
             targetPriceSeekBar.setEnabled(targetPriceToggle.isChecked());
@@ -655,7 +663,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
-            getDashboardNavigator().popFragment();
+            navigator.popFragment();
         }
 
         @Override protected void failure(THException ex)

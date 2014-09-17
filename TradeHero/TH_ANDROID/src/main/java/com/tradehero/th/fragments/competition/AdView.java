@@ -16,13 +16,12 @@ import com.tradehero.th.api.analytics.AnalyticsEventForm;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -37,6 +36,7 @@ public class AdView extends RelativeLayout
     @Inject Context context;
     private AdDTO adDTO;
     private int providerId;
+    @Inject DashboardNavigator navigator;
 
     @OnClick(R.id.banner) void onBannerClicked(ImageView banner)
     {
@@ -45,33 +45,19 @@ public class AdView extends RelativeLayout
             Bundle bundle = new Bundle();
             String url = adDTO.redirectUrl + String.format("&userId=%d", currentUserId.get());
             WebViewFragment.putUrl(bundle, url);
-            getNavigator().pushFragment(WebViewFragment.class, bundle);
+            navigator.pushFragment(WebViewFragment.class, bundle);
             sendAnalytics(adDTO, "proceed");
         }
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((NavigatorActivity) getContext()).getNavigator();
     }
 
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    public AdView(Context context)
-    {
-        super(context);
-    }
-
     public AdView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public AdView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
@@ -79,7 +65,6 @@ public class AdView extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        DaggerUtils.inject(this);
     }
 
     @Override public void display(CompetitionZoneDTO competitionZoneDTO)

@@ -8,7 +8,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
-import butterknife.InjectView;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -34,6 +34,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
@@ -62,12 +65,17 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
-import dagger.Lazy;
-import java.util.HashSet;
-import java.util.Set;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import butterknife.InjectView;
+import dagger.Lazy;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -103,6 +111,7 @@ public class TrendingFragment extends SecurityListFragment
     private THIntentPassedListener thIntentPassedListener;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private Runnable handleCompetitionRunnable;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -279,12 +288,14 @@ public class TrendingFragment extends SecurityListFragment
 
     private void linkWith(@NotNull ExchangeCompactDTOList exchangeDTOs, boolean andDisplay)
     {
-        linkWith(new ExchangeCompactSpinnerDTOList(
-                        getResources(),
-                        exchangeCompactDTOUtil.filterAndOrderForTrending(
-                                exchangeDTOs,
-                                new ExchangeCompactDTODescriptionNameComparator<>())),
-                andDisplay);
+        ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
+                getResources(),
+                exchangeCompactDTOUtil.filterAndOrderForTrending(
+                        exchangeDTOs,
+                        new ExchangeCompactDTODescriptionNameComparator<>()));
+        // Adding the "All" choice
+        spinnerList.add(0, new ExchangeCompactSpinnerDTO(getResources()));
+        linkWith(spinnerList, andDisplay);
     }
 
     private void linkWith(@NotNull ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs, boolean andDisplay)
@@ -330,7 +341,7 @@ public class TrendingFragment extends SecurityListFragment
     public void pushSearchIn()
     {
         Bundle args = new Bundle();
-        getDashboardNavigator().pushFragment(SecuritySearchFragment.class, args);
+        navigator.pushFragment(SecuritySearchFragment.class, args);
     }
 
     //<editor-fold desc="Listeners">
@@ -403,7 +414,7 @@ public class TrendingFragment extends SecurityListFragment
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
             MainCompetitionFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId());
-            getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
+            navigator.pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
         {
@@ -412,7 +423,7 @@ public class TrendingFragment extends SecurityListFragment
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
-            webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment = navigator.pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }
@@ -424,27 +435,37 @@ public class TrendingFragment extends SecurityListFragment
         {
             Bundle bundle = new Bundle();
             WebViewFragment.putUrl(bundle, userProfileDTO.activeSurveyURL);
-            getDashboardNavigator().pushFragment(WebViewFragment.class, bundle, null);
+            navigator.pushFragment(WebViewFragment.class, bundle, null);
         }
     }
 
     private void handleResetPortfolioItemOnClick()
     {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .resetPortfolio();
+        detachRequestCode();
+        //noinspection unchecked
+        requestCode = userInteractor.run((THUIBillingRequest)
+                uiBillingRequestBuilderProvider.get()
+                        .domainToPresent(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO)
+                        .applicablePortfolioId(getApplicablePortfolioId())
+                        .startWithProgressDialog(true)
+                        .build());
     }
 
-    private void handleExtraCashItemOnClick()
+    protected void handleExtraCashItemOnClick()
     {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .buyVirtualDollar();
+        detachRequestCode();
+        //noinspection unchecked
+        requestCode = userInteractor.run((THUIBillingRequest)
+                uiBillingRequestBuilderProvider.get()
+                        .domainToPresent(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR)
+                        .applicablePortfolioId(getApplicablePortfolioId())
+                        .startWithProgressDialog(true)
+                        .build());
     }
 
     private void handleEarnCreditItemOnClick()
     {
-        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
+        navigator.pushFragment(FriendsInvitationFragment.class);
     }
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
@@ -461,7 +482,7 @@ public class TrendingFragment extends SecurityListFragment
             BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
+        navigator.pushFragment(BuySellFragment.class, args);
     }
 
     protected TrendingFilterSelectorView.OnFilterTypeChangedListener createTrendingFilterChangedListener()

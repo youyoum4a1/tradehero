@@ -15,23 +15,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
@@ -47,10 +47,14 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.PreRoutable;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 @PreRoutable(preOpenRunnables = {
@@ -79,6 +83,7 @@ public class UpdateCenterFragment extends DashboardFragment
     private FragmentTabHost mTabHost;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private BroadcastReceiver broadcastReceiver;
+    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -159,8 +164,7 @@ public class UpdateCenterFragment extends DashboardFragment
         {
             case R.id.menu_private:
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Notification_New_Message));
-                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
-                        .pushFragment(AllRelationsFragment.class);
+                navigator.pushFragment(AllRelationsFragment.class);
                 return true;
             case R.id.menu_broadcast:
                 jumpToSendBroadcastMessage();
@@ -218,7 +222,7 @@ public class UpdateCenterFragment extends DashboardFragment
                 DiscussionType.BROADCAST_MESSAGE.value);
         args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE,
                 MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(SendMessageFragment.class, args);
+        navigator.pushFragment(SendMessageFragment.class, args);
     }
 
     @Override public void onStop()

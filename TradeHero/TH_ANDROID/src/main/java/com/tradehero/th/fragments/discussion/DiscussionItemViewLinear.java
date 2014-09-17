@@ -20,19 +20,9 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
     @Inject CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    public DiscussionItemViewLinear(Context context)
-    {
-        super(context);
-    }
-
     public DiscussionItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public DiscussionItemViewLinear(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
     //</editor-fold>
 
@@ -44,13 +34,7 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
 
     @Override protected DiscussionItemViewHolder createViewHolder()
     {
-        return new DiscussionItemViewHolder<DiscussionDTO>();
-    }
-
-    @Override protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO,
-            boolean andDisplay)
-    {
-        super.linkWith(abstractDiscussionDTO, andDisplay);
+        return new DiscussionItemViewHolder<DiscussionDTO>(getContext());
     }
 
     protected void handleUserClicked(UserBaseKey userClicked)

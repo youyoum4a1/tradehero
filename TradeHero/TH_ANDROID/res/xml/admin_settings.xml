@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-  <Preference
-      android:key="user_info"
-      android:title="@string/app_name"
-      />
+    <Preference
+        android:key="user_info"
+        android:title="@string/app_name" />
 
-  <ListPreference
-      android:dialogTitle="@string/select_server"
-      android:key="server_endpoint"
-      android:title="@string/select_server"
-      android:entries="@array/servers"
-      android:entryValues="@array/server_values"
-      />
+    <ListPreference
+        android:dialogTitle="@string/select_server"
+        android:entries="@array/servers"
+        android:entryValues="@array/server_values"
+        android:key="server_endpoint"
+        android:title="@string/select_server" />
 
-  <Preference
-      android:key="send_fake_push"
-      android:title="@string/send_fake_push"
-      />
+    <Preference
+        android:key="send_fake_push"
+        android:title="@string/send_fake_push" />
+
+    <Preference
+        android:key="show_review_dialog"
+        android:title="show_review_dialog" />
+
+    <Preference
+        android:key="show_invite_dialog"
+        android:title="show_invite_dialog" />
+
+    <Preference
+        android:key="show_onBoard_dialog"
+        android:title="show_onBoard_dialog" />
 </PreferenceScreen>
