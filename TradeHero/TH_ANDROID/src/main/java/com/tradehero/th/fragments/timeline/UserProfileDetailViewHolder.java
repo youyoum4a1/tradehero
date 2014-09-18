@@ -11,13 +11,19 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.widget.UserLevelProgressBar;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
@@ -27,13 +33,16 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
     @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
     @InjectView(R.id.user_profile_achievement_count) @Optional protected TextView achievementCount;
+    @InjectView(R.id.user_level_progress_bar) @Optional protected UserLevelProgressBar userLevelProgressBar;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     @Inject GraphicUtil graphicUtil;
+    @Inject LevelDefListCache levelDefListCache;
 
     private Target topBackgroundTarget;
     private Target topDefaultBackgroundTarget;
     protected Runnable displayTopViewBackgroundRunnable;
+    private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> levelDefDTOListListener;
 
     public UserProfileDetailViewHolder(View view)
     {
@@ -45,6 +54,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         super.initViews(view);
         topBackgroundTarget = new BackgroundTarget();
         topDefaultBackgroundTarget = new DefaultBackgroundTarget();
+        levelDefDTOListListener = new LevelDefListCacheListener();
+        LevelDefListId levelDefListId = new LevelDefListId();
+        levelDefListCache.register(levelDefListId, levelDefDTOListListener);
+        levelDefListCache.getOrFetchAsync(levelDefListId);
     }
 
     @Override public void detachViews()
@@ -55,6 +68,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
         }
+        levelDefListCache.unregister(levelDefDTOListListener);
         super.detachViews();
     }
 
@@ -65,6 +79,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         displayAdditionalCash();
         displayCashOnHand();
         displayAchievementCount();
+        displayLevelProgress();
         loadBgPicture();
     }
 
@@ -180,6 +195,23 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         }
     }
 
+    protected void setLevelDef(LevelDefDTOList levelDefDTOList)
+    {
+        if(userLevelProgressBar != null)
+        {
+            userLevelProgressBar.setLevelDefDTOList(levelDefDTOList);
+        }
+        displayLevelProgress();
+    }
+
+    protected void displayLevelProgress()
+    {
+        if(userProfileDTO != null && userLevelProgressBar != null && userLevelProgressBar.getLevelDefDTOList() != null)
+        {
+            userLevelProgressBar.startsWith(userProfileDTO.xp);
+        }
+    }
+
     public void setVisibility(int visibility)
     {
         if (visibility == View.VISIBLE
@@ -187,6 +219,25 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 && profileTop != null)
         {
             profileTop.post(displayTopViewBackgroundRunnable);
+        }
+    }
+
+    protected class LevelDefListCacheListener implements DTOCacheNew.HurriedListener<LevelDefListId,LevelDefDTOList>
+    {
+
+        @Override public void onPreCachedDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        {
+            setLevelDef(value);
+        }
+
+        @Override public void onDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        {
+            setLevelDef(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
+        {
+            userLevelProgressBar.setVisibility(View.GONE);
         }
     }
 
