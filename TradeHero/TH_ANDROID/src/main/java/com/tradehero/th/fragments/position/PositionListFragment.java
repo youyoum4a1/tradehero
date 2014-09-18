@@ -100,7 +100,7 @@ public class PositionListFragment
     @InjectRoute PortfolioId injectedPortfolioId;
 
     private PortfolioHeaderView portfolioHeaderView;
-    protected GetPositionsDTOKey getPositionsDTOKey;
+    @NotNull protected GetPositionsDTOKey getPositionsDTOKey;
     protected GetPositionsDTO getPositionsDTO;
     protected UserBaseKey shownUser;
     @Nullable protected UserProfileDTO userProfileDTO;
@@ -434,7 +434,7 @@ public class PositionListFragment
      * @param positionsDTOKey
      * @param andDisplay
      */
-    public void linkWith(GetPositionsDTOKey positionsDTOKey, boolean andDisplay)
+    public void linkWith(@NotNull GetPositionsDTOKey positionsDTOKey, boolean andDisplay)
     {
         this.getPositionsDTOKey = positionsDTOKey;
         userProfileDTO = null;
@@ -756,20 +756,24 @@ public class PositionListFragment
                 return;
             }
         }
-        Double profit = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey).roiSinceInception;
-        if (profit != null)
+        PortfolioDTO cachedPortfolio = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey);
+        if (cachedPortfolio != null)
         {
-            if (profit > 0)
+            Double profit = cachedPortfolio.roiSinceInception;
+            if (profit != null)
             {
-                if (mShowAskForReviewDialogPreference.isItTime())
+                if (profit > 0)
                 {
-                    AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
-                    mShowAskForInviteDialogPreference.addInFuture(TimingIntervalPreference.DAY);
-                    return;
-                }
-                if (mShowAskForInviteDialogPreference.isItTime())
-                {
-                    AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
+                    if (mShowAskForReviewDialogPreference.isItTime())
+                    {
+                        AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
+                        mShowAskForInviteDialogPreference.addInFuture(TimingIntervalPreference.DAY);
+                        return;
+                    }
+                    if (mShowAskForInviteDialogPreference.isItTime())
+                    {
+                        AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
+                    }
                 }
             }
         }
