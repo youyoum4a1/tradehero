@@ -59,7 +59,9 @@
             android:shadowRadius="1"
             android:layout_toLeftOf="@id/user_profile_edit"
             android:layout_marginTop="@dimen/common_margin_10"
-            tools:text="Lorem ipsum dolor sit amet contentulla"/>
+            tools:text="Lorem ipsum dolor sit amet contentulla"
+            android:layout_toRightOf="@+id/user_profile_avatar"
+            android:layout_toEndOf="@+id/user_profile_avatar" />
 
         <TextView
             android:id="@+id/user_profile_roi"
@@ -71,12 +73,14 @@
             tools:text="+408%"/>
 
 
-        <!--<include layout="@layout/user_level_progressbar"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_below="@id/user_profile_roi"-->
-            <!--android:layout_toRightOf="@id/user_profile_avatar"-->
-            <!--/>-->
+        <include
+          android:id="@+id/user_level_progress_bar"
+            layout="@layout/user_level_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/user_profile_roi"
+            android:layout_toRightOf="@id/user_profile_avatar"
+            />
 
       </RelativeLayout>
 
