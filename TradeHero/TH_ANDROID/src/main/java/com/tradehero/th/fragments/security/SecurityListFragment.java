@@ -55,7 +55,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected int firstVisiblePosition = 0;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
+    @Inject @BottomTabs protected AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -88,7 +88,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
 
         securityListView.setOnItemClickListener(createOnItemClickListener());
-        securityListView.setOnScrollListener(new MultiScrollListener(listViewScrollListener, dashboardBottomTabsScrollListener));
+        securityListView.setOnScrollListener(createListViewScrollListener());
         securityListView.setAdapter(adapter);
         listViewGesture = new GestureDetector(getActivity(), new SecurityListOnGestureListener());
         securityListView.setOnTouchListener(new SecurityListOnTouchListener());
@@ -97,6 +97,11 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         {
             this.filterText.addTextChangedListener(this.filterTextWatcher);
         }
+    }
+
+    protected AbsListView.OnScrollListener createListViewScrollListener()
+    {
+        return new MultiScrollListener(listViewScrollListener, dashboardBottomTabsScrollListener);
     }
 
     abstract protected ListAdapter createSecurityItemViewAdapter();
