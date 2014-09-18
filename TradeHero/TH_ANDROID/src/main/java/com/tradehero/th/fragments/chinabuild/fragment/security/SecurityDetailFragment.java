@@ -82,6 +82,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".providerId";
     public final static String BUNDLE_KEY_COMPETITION_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".competitionID";
 
+    public static final int TYPE_DISCUSS = 0;
+    public static final int TYPE_NEWS = 1;
+
     public final static long MILLISEC_QUOTE_REFRESH = 10000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
@@ -130,6 +133,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.btnTabChart2) Button btnChart2;
     @InjectView(R.id.btnTabChart3) Button btnChart3;
     private int indexChart = -1;
+
+    private Button[] btnDiscussOrNews;
+    @InjectView(R.id.btnTabDiscuss) Button btnDiscuss;
+    @InjectView(R.id.btnTabNews) Button btnNews;
+    private int indexDiscussOrNews = -1;
 
     @InjectView(R.id.chart_image_wrapper) @Optional protected BetterViewAnimator chartImageWrapper;
     @InjectView(R.id.chart_imageView) protected ChartImageView chartImage;
@@ -296,7 +304,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         btnChart[1] = btnChart1;
         btnChart[2] = btnChart2;
         btnChart[3] = btnChart3;
-        setDefaultChartView();
+        btnDiscussOrNews = new Button[2];
+        btnDiscussOrNews[0] = btnDiscuss;
+        btnDiscussOrNews[1] = btnNews;
+        setDefaultBtnTabView();
 
         chartDTO.setIncludeVolume(chartImage.includeVolume);
         if (chartImage != null)
@@ -378,9 +389,24 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         super.onResume();
     }
 
-    private void setDefaultChartView()
+    private void setDefaultBtnTabView()
     {
-        btnChart[0].performClick();
+        if (indexChart == -1)
+        {
+            btnChart[0].performClick();
+        }
+        else
+        {
+            setChartView(indexChart);
+        }
+        if (indexDiscussOrNews == -1)
+        {
+            btnDiscussOrNews[0].performClick();
+        }
+        else
+        {
+            setDiscussOrNewsView(indexDiscussOrNews);
+        }
     }
 
     private void linkWith(final SecurityId securityId)
@@ -392,7 +418,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             queryCompactCache(securityId);
             prepareFreshQuoteHolder();
 
-            if(competitionID == 0)
+            if (competitionID == 0)
             {
                 SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
                 if (detailDTO != null)
@@ -692,7 +718,22 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         displaySecurityInfo();
     }
 
-    @OnClick({R.id.btnTabChart0, R.id.btnTabChart1, R.id.btnTabChart2, R.id.btnTabChart3})
+    @OnClick(R.id.tvSecurityDiscussOrNewsMore)
+    public void onDiscussOrNewsMore()
+    {
+        Timber.d("更多。。。");
+        //进入股票相关的更多讨论和资讯中
+        Bundle bundle = new Bundle();
+        bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE, indexDiscussOrNews);
+        bundle.putBundle(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        bundle.putString(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+        bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityCompactDTO.id);
+        pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
+    }
+
+    @OnClick({R.id.btnTabChart0, R.id.btnTabChart1, R.id.btnTabChart2, R.id.btnTabChart3
+            , R.id.btnTabDiscuss, R.id.btnTabNews
+    })
     public void onChartBtnClicked(View view)
     {
         if (view.getId() == R.id.btnTabChart0)
@@ -711,11 +752,20 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             setChartView(3);
         }
+        else if (view.getId() == R.id.btnTabDiscuss)
+        {
+            setDiscussOrNewsView(0);
+        }
+
+        else if (view.getId() == R.id.btnTabNews)
+        {
+            setDiscussOrNewsView(1);
+        }
     }
 
     public void setChartView(int select)
     {
-        if (indexChart != select)
+        //if (indexChart != select)
         {
             indexChart = select;
             for (int i = 0; i < btnChart.length; i++)
@@ -723,6 +773,20 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 btnChart[i].setBackgroundResource((i == indexChart ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
             }
             linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)), true);
+        }
+    }
+
+    public void setDiscussOrNewsView(int select)
+    {
+        //if (indexDiscussOrNews != select)
+        {
+            indexDiscussOrNews = select;
+            for (int i = 0; i < btnDiscussOrNews.length; i++)
+            {
+                btnDiscussOrNews[i].setBackgroundResource(
+                        (i == indexDiscussOrNews ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
+            }
+            //linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)), true);
         }
     }
 
@@ -864,7 +928,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
         bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
         bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
-        bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO,positionDTOCompactList);
+        bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
         pushFragment(BuySaleSecurityFragment.class, bundle);
     }
 

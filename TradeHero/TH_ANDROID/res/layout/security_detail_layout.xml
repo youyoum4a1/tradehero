@@ -9,8 +9,8 @@
     >
 
   <!--<include-->
-      <!--android:id="@+id/head_layout"-->
-      <!--layout="@layout/custom_head_layout"/>-->
+  <!--android:id="@+id/head_layout"-->
+  <!--layout="@layout/custom_head_layout"/>-->
 
   <include
       android:layout_marginLeft="10dp"
@@ -37,6 +37,51 @@
       android:layout_height="48dp"
       android:layout_alignParentBottom="true"
       layout="@layout/security_info_buy_sale_discuss"/>
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_below="@id/ic_info_chart"
+      android:layout_above="@id/ic_info_buy_sale_btns"
+      android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="32dp">
+      <Button
+          android:id="@+id/btnTabDiscuss"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:text="讨论"
+          android:textColor="@color/black"
+          android:textSize="15sp"
+          android:background="@drawable/tab_blue_head_active"
+          android:layout_weight="1"/>
+      <Button
+          android:id="@+id/btnTabNews"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:text="资讯"
+          android:textColor="@color/black"
+          android:textSize="15sp"
+          android:background="@drawable/tab_blue_head_xml"
+          android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvSecurityDiscussOrNewsMore"
+        android:background="@drawable/listview_item_selector"
+        android:layout_width="fill_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_height="32dp"
+        android:gravity="center"
+        android:text="点击加载更多"/>
+  </LinearLayout>
 
 
 </RelativeLayout>

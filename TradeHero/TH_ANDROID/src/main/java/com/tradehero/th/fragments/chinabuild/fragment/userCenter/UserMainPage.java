@@ -181,13 +181,7 @@ public class UserMainPage extends DashboardFragment
             }
         });
 
-        listTimeLine.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
-            {
-                Timber.d("Clicked Position: " + position);
-            }
-        });
+
     }
 
     public void displayFollow()

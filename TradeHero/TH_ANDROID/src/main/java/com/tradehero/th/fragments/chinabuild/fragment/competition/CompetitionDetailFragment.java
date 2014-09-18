@@ -181,6 +181,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     private void enterPortfolio(LeaderboardUserDTO userDTO)
     {
         Bundle bundle = new Bundle();
+        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
         bundle.putLong(PortfolioFragment.BUNDLE_LEADERBOARD_USER_MARK_ID, userDTO.lbmuId);
         bundle.putInt(PortfolioFragment.BUNLDE_COMPETITION_ID, userCompetitionDTO.id);
         pushFragment(PortfolioFragment.class, bundle);

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.chinabuild.fragment;
+package com.tradehero.th.fragments.chinabuild.fragment.discovery;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,10 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th2.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
-public class DiscoveryStockGodNewsFragment extends DashboardFragment
+/*
+热门话题
+ */
+public class DiscoveryHotTopicFragment extends DashboardFragment
 {
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -27,7 +30,7 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.discovery_stock_god_news, container, false);
+        View view = inflater.inflate(R.layout.discovery_hot_topic, container, false);
         ButterKnife.inject(this, view);
         return view;
     }

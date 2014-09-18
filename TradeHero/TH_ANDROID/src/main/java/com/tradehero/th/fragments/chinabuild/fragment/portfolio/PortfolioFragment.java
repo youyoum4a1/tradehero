@@ -21,19 +21,25 @@ import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
+import com.tradehero.th.fragments.chinabuild.data.PositionLockedItem;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th2.R;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -42,6 +48,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
@@ -49,7 +57,6 @@ import timber.log.Timber;
  */
 public class PortfolioFragment extends DashboardFragment
 {
-
     public static final String BUNDLE_LEADERBOARD_USER_MARK_ID = "bundle_leaderboard_user_mark_id";
     public static final String BUNLDE_SHOW_PROFILE_USER_ID = "bundle_show_profile_user_id";
     public static final String BUNLDE_PORTFOLIO_DTO = "bunlde_portfolio_dto";
@@ -64,9 +71,18 @@ public class PortfolioFragment extends DashboardFragment
     protected GetPositionsDTOKey getPositionsDTOKey;//
 
     @Inject Lazy<UserProfileCache> userProfileCache;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    //private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> currentUserProfileCacheListener;
+
+    @Inject CurrentUserId currentUserId;
+
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+
     private UserBaseKey showUserBaseKey;
+    private UserProfileDTO currentUserProfileDTO;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
@@ -74,12 +90,19 @@ public class PortfolioFragment extends DashboardFragment
     @InjectView(R.id.listPortfilio) SecurityListView listView;
     private MyTradePositionListAdapter adapter;
 
+    public static final int PORTFOLIO_TYPE_MINE = 0;
+    public static final int PORTFOLIO_TYPE_OTHER_USER = 1;
+    public static final int PORTFOLIO_TYPE_COMPETITION = 2;
+
+    public int portfolio_type = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
-        userProfileCacheListener = createUserProfileCacheListener();
+        //userProfileCacheListener = createUserProfileCacheListener();
+        currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
         initArgment();
     }
 
@@ -92,19 +115,6 @@ public class PortfolioFragment extends DashboardFragment
         {
             setHeadViewRight0("TA的主页");
         }
-    }
-
-    @Override public void onClickHeadRight0()
-    {
-        super.onClickHeadRight0();
-        enterUserMainPage();
-    }
-
-    public void enterUserMainPage()
-    {
-        Bundle bundle = new Bundle();
-        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, portfolioUserKey);
-        pushFragment(UserMainPage.class, bundle);
     }
 
     @Override
@@ -136,7 +146,20 @@ public class PortfolioFragment extends DashboardFragment
             }
         });
 
+        fetchCurrentUserProfile();
+
+        startLoadding();
+
         return view;
+    }
+
+    public void startLoadding()
+    {
+        //alertDialogUtilLazy.get().dismissProgressDialog();
+        if (getActivity() != null)
+        {
+            alertDialogUtilLazy.get().showProgressDialog(getActivity(), "加载中");
+        }
     }
 
     public void dealSecurityItem(PositionInterface item)
@@ -150,6 +173,24 @@ public class PortfolioFragment extends DashboardFragment
             enterSecurity(((WatchPositionItem) item).watchlistPosition.securityDTO.getSecurityId(),
                     ((WatchPositionItem) item).watchlistPosition.securityDTO.name);
         }
+        else if (item instanceof PositionLockedItem)
+        {
+            Timber.d("Clicked follow user!!!");
+            freeFollow(showUserBaseKey);
+        }
+    }
+
+    @Override public void onClickHeadRight0()
+    {
+        super.onClickHeadRight0();
+        enterUserMainPage();
+    }
+
+    public void enterUserMainPage()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, portfolioUserKey);
+        pushFragment(UserMainPage.class, bundle);
     }
 
     public void enterSecurity(SecurityId securityId, String securityName)
@@ -168,6 +209,9 @@ public class PortfolioFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        detachGetPositionsTask();
+        detachCurrentUserProfileCache();
+        detachFreeFollowMiddleCallback();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -181,7 +225,8 @@ public class PortfolioFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        fetchSimplePage(false);
+        fetchCurrentUserProfile();
+        //fetchSimplePage(false);
         //displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
     }
 
@@ -196,15 +241,19 @@ public class PortfolioFragment extends DashboardFragment
             competitionId = bundle.getInt(BUNLDE_COMPETITION_ID);
             if (leaderboardUserMarkId != 0)
             { //来自比赛的持仓
+                portfolio_type = PORTFOLIO_TYPE_COMPETITION;
+                showUserBaseKey = new UserBaseKey(portfolioUserKey);
                 getPositionsDTOKey = new LeaderboardMarkUserId((int) leaderboardUserMarkId);
             }
             else if (portfolioUserKey != 0)
             { //来自股神持仓，股神的主账户持仓
+                portfolio_type = PORTFOLIO_TYPE_OTHER_USER;
                 showUserBaseKey = new UserBaseKey(portfolioUserKey);
                 getDefaultPortfolio();
             }
             else if (portfolioCompactDTO != null)
             {//来自比赛的持仓，我的当前比赛持仓
+                portfolio_type = PORTFOLIO_TYPE_MINE;
                 getPositionsFromPortfolio(portfolioCompactDTO);
             }
         }
@@ -230,11 +279,28 @@ public class PortfolioFragment extends DashboardFragment
         }
     }
 
+    private void FetchedDefaultPortfolio()
+    {
+        PortfolioCompactDTO defaultPortfolio = portfolioCompactListCache.get().getDefaultPortfolio(showUserBaseKey);
+        if (defaultPortfolio != null)
+        {
+            getPositionsDTOKey = new OwnedPortfolioId(showUserBaseKey.key, defaultPortfolio.id);
+            fetchSimplePage(false);
+        }
+    }
+
     private void refreshPortfolioList()
     {
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         portfolioCompactListCache.get().invalidate(showUserBaseKey);
         displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
+        displayablePortfolioFetchAssistant.setFetchedListener(new DisplayablePortfolioFetchAssistant.OnFetchedListener()
+        {
+            @Override public void onFetched()
+            {
+                FetchedDefaultPortfolio();
+            }
+        });
     }
 
     protected List<UserBaseKey> getUserBaseKeys()
@@ -263,6 +329,7 @@ public class PortfolioFragment extends DashboardFragment
                 @NotNull GetPositionsDTO value)
         {
             linkWith(value, true);
+            finished();
             //showResultIfNecessary();
         }
 
@@ -271,6 +338,7 @@ public class PortfolioFragment extends DashboardFragment
                 @NotNull GetPositionsDTO value)
         {
             linkWith(value, true);
+            finished();
             //showResultIfNecessary();
         }
 
@@ -279,6 +347,12 @@ public class PortfolioFragment extends DashboardFragment
                 @NotNull Throwable error)
         {
             Timber.d(error, "Error fetching the positionList info %s", key);
+            finished();
+        }
+
+        public void finished()
+        {
+            alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
@@ -291,46 +365,58 @@ public class PortfolioFragment extends DashboardFragment
     {
         if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
         {
+            startLoadding();
             detachGetPositionsTask();
             getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
             getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
         }
     }
 
-    protected void detachUserProfileCache()
+    //protected void detachUserProfileCache()
+    //{
+    //    userProfileCache.get().unregister(userProfileCacheListener);
+    //}
+    //
+    //protected void fetchUserProfile(boolean force)
+    //{
+    //    detachUserProfileCache();
+    //    userProfileCache.get().register(showUserBaseKey, userProfileCacheListener);
+    //    userProfileCache.get().getOrFetchAsync(showUserBaseKey, force);
+    //}
+
+    private void detachCurrentUserProfileCache()
     {
-        userProfileCache.get().unregister(userProfileCacheListener);
+        userProfileCache.get().unregister(currentUserProfileCacheListener);
     }
 
-    protected void fetchUserProfile(boolean force)
+    protected void fetchCurrentUserProfile()
     {
-        detachUserProfileCache();
-        userProfileCache.get().register(showUserBaseKey, userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(showUserBaseKey, force);
+        detachCurrentUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), currentUserProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    private void linkWith(UserProfileDTO value)
-    {
-        Timber.d("UserProfileDTO 获取成功！");
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
-    {
-        return new TimelineFragmentUserProfileCacheListener();
-    }
-
-    protected class TimelineFragmentUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
-        {
-            linkWith(value);
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-            THToast.show(getString(R.string.error_fetch_user_profile));
-        }
-    }
+    //protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    //{
+    //    return new TimelineFragmentUserProfileCacheListener();
+    //}
+    //
+    //protected class TimelineFragmentUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    //{
+    //    @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+    //    {
+    //        linkWith(value);
+    //    }
+    //
+    //    @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+    //    {
+    //        THToast.show(getString(R.string.error_fetch_user_profile));
+    //    }
+    //}
+    //private void linkWith(UserProfileDTO value)
+    //{
+    //    Timber.d("UserProfileDTO 获取成功！");
+    //}
 
     private void initPositionSecurity(GetPositionsDTO value)
     {
@@ -338,31 +424,52 @@ public class PortfolioFragment extends DashboardFragment
         initPositionSecurityClosed(value);
     }
 
+    public boolean isNeedShowLock()
+    {
+        return portfolio_type != PORTFOLIO_TYPE_MINE;
+    }
+
     private void initPositionSecurityOpened(GetPositionsDTO psList)
     {
-        if (psList != null && psList.openPositionsCount > 0)
+
+        if (isNeedShowLock() && (!isFollowUserOrMe()))
         {
-            ArrayList<SecurityPositionItem> list = new ArrayList<SecurityPositionItem>();
-            List<PositionDTO> listData = psList.getOpenPositions();
-            int sizePosition = listData.size();
-            for (int i = 0; i < sizePosition; i++)
-            {
-                SecurityCompactDTO securityCompactDTO = psList.getSecurityCompactDTO(listData.get(i));
-                if (securityCompactDTO != null)
-                {
-                    list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i)));
-                }
-            }
             if (adapter != null)
             {
-                adapter.setSecurityPositionList(list);
+                adapter.setSecurityPositionListLocked(true);
+            }
+        }
+        else
+        {
+            if (adapter != null)
+            {
+                adapter.setSecurityPositionListLocked(false);
+            }
+
+            if (psList != null && psList.openPositionsCount > 0)
+            {
+                ArrayList<SecurityPositionItem> list = new ArrayList<SecurityPositionItem>();
+                List<PositionDTO> listData = psList.getOpenPositions();
+                int sizePosition = listData.size();
+                for (int i = 0; i < sizePosition; i++)
+                {
+                    SecurityCompactDTO securityCompactDTO = psList.getSecurityCompactDTO(listData.get(i));
+                    if (securityCompactDTO != null && securityCompactDTO.id > 0)
+                    {
+                        list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i)));
+                    }
+                }
+                if (adapter != null)
+                {
+                    adapter.setSecurityPositionList(list);
+                }
             }
         }
     }
 
     private void initPositionSecurityClosed(GetPositionsDTO psList)
     {
-        if (psList != null && psList.openPositionsCount > 0)
+        if (psList != null && psList.closedPositionsCount > 0)
         {
             ArrayList<SecurityPositionItem> list = new ArrayList<SecurityPositionItem>();
             List<PositionDTO> listData = psList.getClosedPositions();
@@ -379,6 +486,87 @@ public class PortfolioFragment extends DashboardFragment
             {
                 adapter.setSecurityPositionListClosed(list);
             }
+        }
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createCurrentUserProfileFetchListener()
+    {
+        return new CurrentUserProfileFetchListener();
+    }
+
+    protected class CurrentUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            setCurrentUserDTO(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+
+        }
+    }
+
+    public void setCurrentUserDTO(UserProfileDTO userDTO)
+    {
+        this.currentUserProfileDTO = userDTO;
+        fetchSimplePage(true);
+    }
+
+    public boolean isFollowUserOrMe()
+    {
+        if (showUserBaseKey != null && currentUserId != null)
+        {
+            if (showUserBaseKey.key.equals(currentUserId.toUserBaseKey().getUserId()))
+            {
+                return true;
+            }
+        }
+
+        if (currentUserProfileDTO != null)
+        {
+            return currentUserProfileDTO.isFollowingUser(showUserBaseKey);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void detachFreeFollowMiddleCallback()
+    {
+        if (freeFollowMiddleCallback != null)
+        {
+            freeFollowMiddleCallback.setPrimaryCallback(null);
+        }
+        freeFollowMiddleCallback = null;
+    }
+
+    protected void freeFollow(@NotNull UserBaseKey heroId)
+    {
+        alertDialogUtilLazy.get().showProgressDialog(getActivity(), getActivity().getString(
+                R.string.following_this_hero));
+        detachFreeFollowMiddleCallback();
+        freeFollowMiddleCallback =
+                userServiceWrapperLazy.get()
+                        .freeFollow(heroId, new FreeFollowCallback());
+    }
+
+    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            alertDialogUtilLazy.get().dismissProgressDialog();
+            userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            currentUserProfileDTO = userProfileDTO;
+            fetchSimplePage(true);
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+            alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 }

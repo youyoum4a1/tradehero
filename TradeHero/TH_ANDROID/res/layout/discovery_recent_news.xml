@@ -7,12 +7,16 @@
     android:layout_height="match_parent"
     >
 
-  <TextView
+  <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+
+      android:id="@+id/listTimeLine"
+      android:scrollingCache="false"
+      android:fadingEdge="none"
+      android:divider="@color/gray_1"
+      android:background="@color/bg_fragment"
       android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:gravity="center"
-      android:text="最新动态">
-  </TextView>
+      android:layout_height="fill_parent">
+  </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
 
 </LinearLayout>
 

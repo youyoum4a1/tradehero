@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.chinabuild.fragment;
+package com.tradehero.th.fragments.chinabuild.fragment.trade;
 
 import android.view.LayoutInflater;
 import android.view.View;

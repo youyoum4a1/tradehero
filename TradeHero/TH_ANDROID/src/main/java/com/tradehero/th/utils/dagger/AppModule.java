@@ -30,15 +30,16 @@ import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
-import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryHotTopicFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryRecentNewsFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryStockGodNewsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfChinaConceptFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfHotHoldFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfHotWatchFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfMineFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.TradeOfTypeBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotWatchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfMineFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfTypeBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCreateFragment;
@@ -478,6 +479,7 @@ import javax.inject.Singleton;
 
                         PortfolioFragment.class,
                         UserMainPage.class,
+                        SecurityDiscussOrNewsFragment.class,
                         //China Build End
                 },
         staticInjections =

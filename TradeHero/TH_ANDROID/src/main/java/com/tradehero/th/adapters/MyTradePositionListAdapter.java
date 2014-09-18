@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import com.tradehero.th.api.security.compact.LockedSecurityCompactDTO;
+import com.tradehero.th.fragments.chinabuild.data.PositionLockedItem;
 import com.tradehero.th2.R;
 import com.tradehero.th.fragments.chinabuild.data.PositionHeadItem;
 import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
@@ -26,12 +28,19 @@ public class MyTradePositionListAdapter extends BaseAdapter
     private ArrayList<SecurityPositionItem> securityPositionList;//持仓（open）
     private ArrayList<SecurityPositionItem> securityPositionListClosed;//平仓（Close）
     private ArrayList<WatchPositionItem> watchPositionList;//自选股
+    private boolean isLocked = false;
 
     public MyTradePositionListAdapter(Context context)
     {
         DaggerUtils.inject(this);
         this.context = context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public void setSecurityPositionListLocked(boolean locked)
+    {
+        isLocked = locked;
+        doRefreshData();
     }
 
     public void setSecurityPositionListClosed(ArrayList<SecurityPositionItem> list)
@@ -55,11 +64,24 @@ public class MyTradePositionListAdapter extends BaseAdapter
     private void doRefreshData()
     {
         listData = new ArrayList<PositionInterface>();
-        if (getSecurityPositionCount() > 0)
+
+        if(isLocked)
         {
-            listData.add(new PositionHeadItem(getHeadStrOfSecurityPosition()));
-            listData.addAll(securityPositionList);
+            //if (getSecurityPositionCount() > 0)
+            //{
+                listData.add(new PositionHeadItem("持仓"));
+                listData.add(new PositionLockedItem());
+            //}
         }
+        else
+        {
+            if (getSecurityPositionCount() > 0)
+            {
+                listData.add(new PositionHeadItem(getHeadStrOfSecurityPosition()));
+                listData.addAll(securityPositionList);
+            }
+        }
+
         if (getSecurityPositionClosedCount() > 0)
         {
             listData.add(new PositionHeadItem(getHeadStrOfSecurityClosedPosition()));
@@ -137,6 +159,10 @@ public class MyTradePositionListAdapter extends BaseAdapter
             convertView = inflater.inflate(R.layout.position_head_item, viewGroup, false);
             TextView tvHead = (TextView) convertView.findViewById(R.id.tvPositionHead);
             tvHead.setText(((PositionHeadItem) item).strHead);
+        }
+        else if (item instanceof PositionLockedItem)
+        {
+            convertView = inflater.inflate(R.layout.position_locked_item_new, viewGroup, false);
         }
         else
         {

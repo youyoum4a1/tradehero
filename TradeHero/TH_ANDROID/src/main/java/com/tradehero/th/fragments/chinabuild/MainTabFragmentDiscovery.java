@@ -12,9 +12,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th2.R;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryHotTopicFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryRecentNewsFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.DiscoveryStockGodNewsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.viewpagerindicator.TabPageIndicator;
 
 public class MainTabFragmentDiscovery extends AbsBaseFragment
