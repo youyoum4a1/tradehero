@@ -1,12 +1,16 @@
 package com.tradehero.th.fragments.position;
 
+import android.content.Context;
 import android.os.Bundle;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardPositionListFragment
         extends PositionListFragment
 {
+    @Inject Context context;
+
     private static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
     private static final String LEADERBOARD_PERIOD_START_STRING = "LEADERBOARD_PERIOD_START_STRING";
 
