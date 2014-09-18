@@ -10,20 +10,24 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.TabHost;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.UIModule;
@@ -99,7 +103,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class DashboardActivity extends SherlockFragmentActivity
+public class DashboardActivity extends FragmentActivity
         implements Injector, ResideMenu.OnMenuListener
 {
     private DashboardNavigator navigator;
@@ -142,6 +146,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private ProgressDialog progressDialog;
     private Injector newInjector;
+    private DashboardTabHost dashboardTabHost;
 
     private BroadcastReceiver mAchievementBroadcastReceiver;
 
@@ -197,10 +202,10 @@ public class DashboardActivity extends SherlockFragmentActivity
             navigator.addDashboardFragmentWatcher(watcher);
         }
 
-        DashboardTabHost fragmentTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
-        fragmentTabHost.setup();
-        navigator.addDashboardFragmentWatcher(fragmentTabHost);
-        fragmentTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
+        dashboardTabHost.setup();
+        navigator.addDashboardFragmentWatcher(dashboardTabHost);
+        dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
             @Override public void onTabChanged(String tabId)
             {
@@ -300,7 +305,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         UserProfileDTO currentUserProfile =
                 userProfileCache.get().get(currentUserId.toUserBaseKey());
-        MenuInflater menuInflater = getSupportMenuInflater();
+        MenuInflater menuInflater = getMenuInflater();
 
         menuInflater.inflate(R.menu.hardware_menu, menu);
 
@@ -629,6 +634,12 @@ public class DashboardActivity extends SherlockFragmentActivity
             router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
             router.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
             return router;
+        }
+
+        @Provides @BottomTabs AbsListView.OnScrollListener provideDashboardBottomTabScrollListener()
+        {
+            int tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
+            return new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
         }
     }
 }

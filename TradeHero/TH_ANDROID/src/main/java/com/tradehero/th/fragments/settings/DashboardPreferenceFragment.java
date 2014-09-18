@@ -3,9 +3,9 @@ package com.tradehero.th.fragments.settings;
 import android.os.Bundle;
 import android.support.v4.preference.PreferenceFragment;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;

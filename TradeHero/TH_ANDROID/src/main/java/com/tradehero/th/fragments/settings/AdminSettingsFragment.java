@@ -7,14 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -73,7 +73,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        ActionBar actionBar = getActivity().getActionBar();
         actionBar.setTitle(getString(R.string.admin_setting));
     }
 
@@ -119,7 +119,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivity.get();
+                FragmentActivity activity = (FragmentActivity) currentActivity.get();
                 AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
                 return true;
             }
@@ -130,7 +130,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                SherlockFragmentActivity activity = (SherlockFragmentActivity) currentActivity.get();
+                FragmentActivity activity = (FragmentActivity) currentActivity.get();
                 AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
                 return true;
             }
@@ -141,7 +141,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-//                SherlockFragmentActivity activityversion.properties = (SherlockFragmentActivity) currentActivityHolder.getCurrentActivity();
+//                FragmentActivity activityversion.properties = (FragmentActivity) currentActivityHolder.getCurrentActivity();
                 OnBoardDialogFragment.showOnBoardDialog(getActivity().getSupportFragmentManager());
                 return true;
             }

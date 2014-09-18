@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discovery;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
@@ -24,24 +25,31 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
+import com.tradehero.th.widget.MultiScrollListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-public class NewsHeadlineFragment extends SherlockFragment
+public class NewsHeadlineFragment extends Fragment
 {
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
     @InjectView(android.R.id.list) ListView mNewsListView;
     @InjectView(android.R.id.progress) ProgressBar mProgressBar;
 
     @Inject NewsItemCompactListCacheNew newsItemCompactListCache;
+    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     private int mDisplayedViewId;
     private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> mFeaturedNewsListener;
     private NewsHeadlineAdapter mFeaturedNewsAdapter;
     protected NewsItemListKey newsItemListKey;
     private AbsListView.OnScrollListener scrollListener;
+
+    public NewsHeadlineFragment()
+    {
+        super();
+    }
 
     public NewsHeadlineFragment(NewsItemListKey newsItemListKey)
     {
@@ -82,7 +90,7 @@ public class NewsHeadlineFragment extends SherlockFragment
         paddingHeader.setLayoutParams(new AbsListView.LayoutParams(1, getResources().getDimensionPixelOffset(R.dimen.discovery_news_carousel_height)));
         mNewsListView.addHeaderView(paddingHeader);
         mNewsListView.setAdapter(mFeaturedNewsAdapter);
-        mNewsListView.setOnScrollListener(scrollListener);
+        mNewsListView.setOnScrollListener(new MultiScrollListener(scrollListener, dashboardBottomTabsScrollListener));
     }
 
     public void setScrollListener(AbsListView.OnScrollListener scrollListener)

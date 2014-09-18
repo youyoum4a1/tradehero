@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.text.Editable;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.th.R;
 
 public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFragment

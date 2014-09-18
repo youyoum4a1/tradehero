@@ -35,9 +35,9 @@ public class THWebChromeClient extends WebChromeClient
     {
         super.onReceivedTitle(view, title);
         BaseWebViewFragment fragmentCopy = baseWebViewFragment;
-        if (fragmentCopy != null && fragmentCopy.getSherlockActivity().getActionBar() != null)
+        if (fragmentCopy != null && fragmentCopy.getActivity().getActionBar() != null)
         {
-            ActionBar actionBar = fragmentCopy.getSherlockActivity().getActionBar();
+            ActionBar actionBar = fragmentCopy.getActivity().getActionBar();
             actionBar.setTitle(view.getTitle());
         }
     }

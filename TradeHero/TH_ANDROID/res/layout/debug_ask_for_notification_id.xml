@@ -23,7 +23,6 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="10dp"
       android:padding="5dp"
-      android:textAppearance="?textAppearanceSmall"
       android:text="Example:\n\nPrivate message: 8143519\nBroadcast message: 8208452\nComment: 8145228\n"
       />
 </LinearLayout>
