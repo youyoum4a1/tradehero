@@ -76,7 +76,6 @@ import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
-import com.tradehero.th.ui.ViewWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.FacebookUtils;
@@ -125,7 +124,6 @@ public class DashboardActivity extends FragmentActivity
     @Inject Lazy<MarketUtil> marketUtilLazy;
 
     @Inject AppContainer appContainer;
-    @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
 
     @Inject THRouter thRouter;
@@ -137,6 +135,7 @@ public class DashboardActivity extends FragmentActivity
     private ProgressDialog progressDialog;
     private Injector newInjector;
     private DashboardTabHost dashboardTabHost;
+    private int tabHostHeight;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -179,28 +178,11 @@ public class DashboardActivity extends FragmentActivity
 
         // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
-        //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list,
-        // and this line is no use for it will update after login in prefetchesUponLogin
-
         showInviteCodeDialog();
 
-        navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        for (DashboardNavigator.DashboardFragmentWatcher watcher: dashboardFragmentWatchers)
-        {
-            navigator.addDashboardFragmentWatcher(watcher);
-        }
-
-        dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
-        dashboardTabHost.setup();
-        navigator.addDashboardFragmentWatcher(dashboardTabHost);
-        dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
-        {
-            @Override public void onTabChanged(String tabId)
-            {
-                RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
-                navigator.goToTab(selectedFragmentType);
-            }
-        });
+        tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
+        setupNavigator();
+        setupDashboardTabHost();
 
         if (savedInstanceState == null && navigator.getCurrentFragment() == null)
         {
@@ -214,6 +196,38 @@ public class DashboardActivity extends FragmentActivity
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
+    }
+
+    private void setupNavigator()
+    {
+        navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        for (DashboardNavigator.DashboardFragmentWatcher watcher: dashboardFragmentWatchers)
+        {
+            navigator.addDashboardFragmentWatcher(watcher);
+        }
+    }
+
+    private void setupDashboardTabHost()
+    {
+        final View mainContent = findViewById(R.id.realtabcontent);
+        dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
+        dashboardTabHost.setup();
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                mainContent.setPadding(0, 0, 0, tabHostHeight - (int) y);
+            }
+        });
+        dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        {
+            @Override public void onTabChanged(String tabId)
+            {
+                RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
+                navigator.goToTab(selectedFragmentType);
+            }
+        });
+        navigator.addDashboardFragmentWatcher(dashboardTabHost);
     }
 
     @Override
@@ -479,8 +493,7 @@ public class DashboardActivity extends FragmentActivity
 
     @Override public void openMenu()
     {
-        Fragment currentFragment =
-                getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
         if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
         {
             ((ResideMenu.OnMenuListener) currentFragment).openMenu();
@@ -489,8 +502,7 @@ public class DashboardActivity extends FragmentActivity
 
     @Override public void closeMenu()
     {
-        Fragment currentFragment =
-                getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
         if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
         {
             ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
@@ -540,12 +552,8 @@ public class DashboardActivity extends FragmentActivity
 
         // TODO remove
         // for DEBUGGING purpose only
-        String currentFragmentName =
-                getSupportFragmentManager().findFragmentById(R.id.realtabcontent)
-                        .getClass()
-                        .getName();
-        Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s",
-                currentFragmentName);
+        Fragment currentFragmentName = navigator.getCurrentFragment();
+        Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
         Crashlytics.setString("LowMemoryAt", new Date().toString());
     }
 
@@ -601,7 +609,6 @@ public class DashboardActivity extends FragmentActivity
 
         @Provides @BottomTabs AbsListView.OnScrollListener provideDashboardBottomTabScrollListener()
         {
-            int tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
             return new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
         }
     }

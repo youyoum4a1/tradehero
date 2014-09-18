@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +19,7 @@ public class DashboardTabHost extends TabHost
     private final Collection<RootFragmentType> bottomBarFragmentTypes = RootFragmentType.forBottomBar();
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
+    private OnTranslateListener onTranslateListener;
 
     public DashboardTabHost(Context context, AttributeSet attrs)
     {
@@ -83,10 +83,22 @@ public class DashboardTabHost extends TabHost
             setVisibility(View.VISIBLE);
             //startAnimation(slideInAnimation);
             // TODO this is a HACK to workaround problem with QuickReturnListViewOnScrollListener class, that class need to be improved
-            ObjectAnimator anim = ObjectAnimator.ofFloat(this, "translationY", getTranslationY(), 0);
-            anim.setDuration(100);
-            anim.start();
+            setTranslationY(0);
         }
+    }
+
+    @Override public void setTranslationY(float translationY)
+    {
+        if (onTranslateListener != null)
+        {
+            onTranslateListener.onTranslate(0, translationY);
+        }
+        super.setTranslationY(translationY);
+    }
+
+    public void setOnTranslate(OnTranslateListener onTranslateListener)
+    {
+        this.onTranslateListener = onTranslateListener;
     }
 
     private class DummyTabContentFactory implements TabContentFactory
@@ -95,5 +107,10 @@ public class DashboardTabHost extends TabHost
         {
             return new View(getContext());
         }
+    }
+
+    public static interface OnTranslateListener
+    {
+        void onTranslate(float x, float y);
     }
 }
