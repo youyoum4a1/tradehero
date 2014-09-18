@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.base;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import butterknife.ButterKnife;
 import com.tradehero.th.inject.HierarchyInjector;

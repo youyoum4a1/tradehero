@@ -407,7 +407,7 @@ public class DashboardActivity extends FragmentActivity
         else if (shouldShowInviteCode())
         {
             firstShowInviteCodeDialogPreference.set(false);
-            InviteCodeDialogFragment dialogFragment = InviteCodeDialogFragment.showInviteCodeDialog(getSupportFragmentManager());
+            InviteCodeDialogFragment dialogFragment = InviteCodeDialogFragment.showInviteCodeDialog(getFragmentManager());
             dialogFragment.setDismissedListener(new DashboardOnInviteCodeDismissed());
         }
     }
@@ -458,7 +458,7 @@ public class DashboardActivity extends FragmentActivity
     {
         if (shouldShowOnBoard())
         {
-            OnBoardDialogFragment.showOnBoardDialog(getSupportFragmentManager());
+            OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
         }
     }
 

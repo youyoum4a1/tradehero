@@ -120,7 +120,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 FragmentActivity activity = (FragmentActivity) currentActivity.get();
-                AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
+                AskForReviewDialogFragment.showReviewDialog(activity.getFragmentManager());
                 return true;
             }
         });
@@ -131,7 +131,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 FragmentActivity activity = (FragmentActivity) currentActivity.get();
-                AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
+                AskForInviteDialogFragment.showInviteDialog(activity.getFragmentManager());
                 return true;
             }
         });
@@ -142,7 +142,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
 //                FragmentActivity activityversion.properties = (FragmentActivity) currentActivityHolder.getCurrentActivity();
-                OnBoardDialogFragment.showOnBoardDialog(getActivity().getSupportFragmentManager());
+                OnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
                 return true;
             }
         });

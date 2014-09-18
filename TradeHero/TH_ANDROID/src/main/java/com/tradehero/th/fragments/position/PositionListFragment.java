@@ -766,13 +766,13 @@ public class PositionListFragment
                 {
                     if (mShowAskForReviewDialogPreference.isItTime())
                     {
-                        AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
+                        AskForReviewDialogFragment.showReviewDialog(getActivity().getFragmentManager());
                         mShowAskForInviteDialogPreference.addInFuture(TimingIntervalPreference.DAY);
                         return;
                     }
                     if (mShowAskForInviteDialogPreference.isItTime())
                     {
-                        AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
+                        AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
                     }
                 }
             }

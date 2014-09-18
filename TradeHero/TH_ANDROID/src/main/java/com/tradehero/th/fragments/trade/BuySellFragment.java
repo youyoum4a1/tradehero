@@ -1160,7 +1160,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
                     quoteDTO,
                     isTransactionTypeBuy);
-            abstractTransactionDialogFragment.show(getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
+            abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
             abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
             {
                 @Override public void onTransactionSuccessful(boolean isBuy)
@@ -1212,12 +1212,12 @@ public class BuySellFragment extends AbstractBuySellFragment
                 {
                     if (mShowAskForReviewDialogPreference.isItTime())
                     {
-                        AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
+                        AskForReviewDialogFragment.showReviewDialog(getActivity().getFragmentManager());
                         return;
                     }
                     if (mShowAskForInviteDialogPreference.isItTime())
                     {
-                        AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
+                        AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
                     }
                 }
             }
