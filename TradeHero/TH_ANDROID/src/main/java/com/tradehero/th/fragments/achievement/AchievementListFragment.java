@@ -99,6 +99,17 @@ public class AchievementListFragment extends DashboardFragment
 
         achievementCategoryListCache.register(shownUserId, achievementCategoryListCacheListener);
         achievementCategoryListCache.getOrFetchAsync(shownUserId);
+        displayProgress();
+    }
+
+    private void displayProgress()
+    {
+        emptyView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgress()
+    {
+        emptyView.setVisibility(View.GONE);
     }
 
     protected void detachAchievementCategoryListener()
@@ -131,12 +142,14 @@ public class AchievementListFragment extends DashboardFragment
             achievementListAdapter.clear();
             achievementListAdapter.addAll(value);
             achievementListAdapter.notifyDataSetChanged();
+            hideProgress();
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_achievements));
             Timber.e("Error fetching the list of competition info cell %s", key, error);
+            hideProgress();
         }
     }
 }
