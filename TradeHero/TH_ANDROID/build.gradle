@@ -114,6 +114,7 @@ android {
     amazon {
       flavorDimension "marketSegment"
       proguardFiles 'proguard/proguard-android-amazon.txt'
+      // https://github.com/TradeHero/TH_ANDROID/wiki/Amazon
       compileSdkVersion "Amazon.com:Amazon Fire Phone SDK Addon:17"
     }
   }
