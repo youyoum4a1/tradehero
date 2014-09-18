@@ -18,7 +18,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOList;
@@ -28,6 +27,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.social.friend.FriendsListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th2.R;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -572,8 +572,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
 
         notifyChangeData();
-        // TODO
-        THToast.show("Follow success");
+        THToast.show(R.string.follow_success);
 
         checkUserType();
     }

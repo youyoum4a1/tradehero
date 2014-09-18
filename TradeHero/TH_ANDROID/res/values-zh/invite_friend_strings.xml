@@ -2,7 +2,7 @@
 <resources>
 
   <string name="invite">邀请</string>
-  <string name="invite_friends">邀请朋友</string>
+  <string name="invite_friends">邀请好友</string>
   <string name="invite_all">全部邀请</string>
   <string name="invite_friend_refer_friend_empty_view">您的好友列表是空的, 连接微博或是 Linkedin 推荐朋友吧</string>
   <string name="invite_friend_send_invitations">发送邀请</string>
@@ -10,7 +10,7 @@
   <string name="invite_friend_search_friends">搜索朋友</string>
   <string name="invite_friend_add_all">全部添加</string>
   <string name="invite_friend_remove_all">全部移除</string>
-  <string name="invite_friend_success">邀请朋友成功</string>
+  <string name="invite_friend_success">输入正确，获得10000虚拟币</string>
   <string name="invite_friend_facebook_tradehero_refer_friend_message">下载全民股神，跟着顶尖英雄赚大钱! 使用我的邀请码 %1$s 更有额外奖励哦！</string>
   <string name="invite_friend_request_canceled">请求已取消</string>
   <string name="invite_friend_request_error">请求失败</string>

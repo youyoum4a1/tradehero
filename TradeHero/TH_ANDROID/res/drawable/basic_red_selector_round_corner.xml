@@ -4,10 +4,10 @@
     android:exitFadeDuration="@android:integer/config_mediumAnimTime">
 
   <item android:state_pressed="true"
-      android:drawable="@drawable/login_login_bg_hover"/>
+      android:drawable="@drawable/guide_screen_yijian_active"/>
 
   <item android:state_enabled="false"
-      android:drawable="@drawable/login_login_bg_hover"/>
+      android:drawable="@drawable/guide_screen_yijian_active"/>
 
-  <item android:drawable="@drawable/login_bg"/>
+  <item android:drawable="@drawable/guide_screen_yijian"/>
 </selector>

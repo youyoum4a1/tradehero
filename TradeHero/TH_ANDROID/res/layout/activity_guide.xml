@@ -82,7 +82,7 @@
           android:textColor="@color/white"
           android:textSize="@dimen/text_xlarge"
           android:gravity="center"
-          android:background="@drawable/basic_green_selector_round_corner"/>
+          android:background="@drawable/basic_red_selector_round_corner"/>
 
       <Button
           android:id="@+id/guide_screen_login"

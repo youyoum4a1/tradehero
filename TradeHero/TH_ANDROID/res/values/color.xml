@@ -94,6 +94,7 @@
   <color name="separate_line_color">#aaaaaa</color>
 
   <color name="bg_fragment">#FFFFFF</color>
+  <color name="orange_color">#FFAE00</color>
   <!-- china build end -->
 
 </resources>

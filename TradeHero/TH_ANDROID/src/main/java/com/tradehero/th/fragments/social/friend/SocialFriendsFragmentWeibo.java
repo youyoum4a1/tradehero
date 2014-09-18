@@ -6,11 +6,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th2.R;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -27,6 +29,11 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         return SocialNetworkEnum.WB;
     }
 
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain(getTitle());
+    }
     @Override
     protected String getTitle()
     {

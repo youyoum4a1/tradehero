@@ -34,7 +34,6 @@
           android:layout_width="fill_parent"
           android:layout_height="1px"
           android:background="@color/separate_line_color"
-          android:layout_toRightOf="@id/img_me_dynamic"
           android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 
@@ -66,7 +65,6 @@
         android:layout_width="fill_parent"
         android:layout_height="1px"
         android:background="@color/separate_line_color"
-        android:layout_toRightOf="@id/img_me_dynamic"
         android:layout_alignParentBottom="true"/>
   </RelativeLayout>
 

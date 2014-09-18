@@ -85,6 +85,8 @@
   <string name="invite_from_linkedIn">邀请LinkedIn好友</string>
   <string name="invite_from_facebook">邀请Facebook好友</string>
   <string name="invite_from_twitter">邀请Twitter好友</string>
+  <string name="social_no_friend_to_invite">请选中一个被邀请人</string>
+  <string name="social_no_friend_to_follow">请选中一个被关注人</string>
   <plurals name="inbox_notification_title">
     <item quantity="one">1 条新消息</item>
     <item quantity="other">%d 条<b>新</b>消息
@@ -130,4 +132,13 @@
   <string name="settings_score">去评分</string>
   <string name="settings_logout">退出当前账号</string>
   <string name="settings_version">版本</string>
+  <string name="invite_friends_title">邀请好友成功登录全民股神，输入邀请码，你和TA都将获得10000虚拟资金奖励，邀请得越多奖励越多。</string>
+  <string name="invite_friends_input">输入邀请码</string>
+  <string name="invite_friends_me">我的邀请码:</string>
+  <string name="invite_code">邀请码</string>
+  <string name="submit">提交</string>
+  <string name="invite_friend_fail">您的邀请码输入有误</string>
+  <string name="copy">复制</string>
+  <string name="copy_my_invite_code_success">复制成功，快去邀请好友吧～</string>
+  <string name="follow_success">关注成功</string>
 </resources>

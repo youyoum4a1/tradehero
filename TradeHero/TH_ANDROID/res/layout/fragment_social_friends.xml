@@ -52,7 +52,7 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             style="@style/TH.Btn_Invite_Action"
-            android:background="@drawable/leaderboard_user_item_follow_action_button"
+            android:background="@drawable/basic_green_selector_round_corner"
             />
 
         <TextView
@@ -63,7 +63,7 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             style="@style/TH.Btn_Invite_Action"
-            android:background="@drawable/yellow_rounded_button_selector"
+            android:background="@drawable/basic_red_selector_round_corner"
             android:layout_marginLeft="15dp"/>
       </LinearLayout>
     </RelativeLayout>

@@ -27,6 +27,7 @@
         android:layout_height="50dp"
         android:contentDescription="@null"
         tools:src="@drawable/superman_facebook"
+        android:src="@drawable/superman_facebook"
         />
 
     <TextView
@@ -34,9 +35,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/margin_small"
         android:textSize="@dimen/text_medium"
-        android:lines="2"
         android:maxLines="2"
         android:singleLine="false"
         android:ellipsize="end"
@@ -52,15 +52,14 @@
         tools:text="Invite"
         />
 
-    <CheckBox
+    <ImageView
         android:id="@+id/social_item_action_cb"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_small"
         android:visibility="gone"
-        >
-
-    </CheckBox>
+        android:background="@drawable/register_duihao_cancel"
+        />
 
   </LinearLayout>
 

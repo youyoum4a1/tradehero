@@ -20,6 +20,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -164,6 +165,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 break;
             case R.id.rlMeInviteFriends:
                 Timber.d("clicked rlMeInviteFriends");
+                gotoDashboard(InviteFriendsFragment.class.getName());
                 break;
             case R.id.rlMeSetting:
                 Timber.d("clicked rlMeSetting");

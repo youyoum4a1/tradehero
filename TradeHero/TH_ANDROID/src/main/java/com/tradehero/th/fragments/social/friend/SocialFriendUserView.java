@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.social.friend;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,11 +12,11 @@ import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsWeiboDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th2.R;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +28,7 @@ public class SocialFriendUserView extends SocialFriendItemView
     @InjectView(R.id.social_item_title) TextView friendTitle;
     @InjectView(R.id.social_item_action_btn) TextView actionBtn;
     @InjectView(R.id.social_friend_item_ll) LinearLayout socialFriendItem;
-    @InjectView(R.id.social_item_action_cb) CheckBox actionCb;
+    @InjectView(R.id.social_item_action_cb) ImageView actionCb;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
@@ -89,7 +88,9 @@ public class SocialFriendUserView extends SocialFriendItemView
     {
         if (onElementClickListener != null)
         {
-            socialFriendListItemUserDTO.isSelected = actionCb.isChecked();
+            socialFriendListItemUserDTO.isSelected = !socialFriendListItemUserDTO.isSelected;
+            actionCb.setBackgroundResource(socialFriendListItemUserDTO.isSelected ?
+                    R.drawable.register_duihao : R.drawable.register_duihao_cancel);
             onElementClickListener.onCheckBoxClick(socialFriendListItemUserDTO.userFriendsDTO);
         }
     }
@@ -128,10 +129,8 @@ public class SocialFriendUserView extends SocialFriendItemView
 
     private void displayUserIcon()
     {
-        displayDefaultUserIcon();
         picasso.load(socialFriendListItemUserDTO.userFriendsDTO.getProfilePictureURL())
-                .placeholder(friendLogo.getDrawable())
-                .transform(peopleIconTransformation)
+                .placeholder(R.drawable.superman_facebook)
                 .error(R.drawable.superman_facebook)
                 .into(friendLogo, new Callback()
                 {
@@ -150,7 +149,6 @@ public class SocialFriendUserView extends SocialFriendItemView
     private void displayDefaultUserIcon()
     {
         picasso.load(R.drawable.superman_facebook)
-                .transform(peopleIconTransformation)
                 .into(friendLogo);
     }
 
@@ -169,7 +167,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         if (socialFriendListItemUserDTO.userFriendsDTO.isTradeHeroUser())
         {
             actionBtn.setText(R.string.follow);
-            actionBtn.setBackgroundResource(R.drawable.leaderboard_user_item_follow_action_button);
+            actionBtn.setBackgroundResource(R.drawable.basic_green_selector_round_corner);
             actionBtn.setEnabled(true);
         }
         else
@@ -190,7 +188,8 @@ public class SocialFriendUserView extends SocialFriendItemView
 
     private void setWeiboCheckBox()
     {
-        actionCb.setChecked(socialFriendListItemUserDTO.isSelected);
+        actionCb.setBackgroundResource(socialFriendListItemUserDTO.isSelected ?
+                R.drawable.register_duihao : R.drawable.register_duihao_cancel);
 
         // TODO change to be another test
         if (isNeedCheckBoxShow())

@@ -361,6 +361,11 @@ abstract public class DashboardFragment extends BaseFragment
         getDashboardNavigator().pushFragment(fragmentClass, args);
     }
 
+    public void goToFragment(@NotNull Class fragmentClass)
+    {
+        getDashboardNavigator().pushFragment(fragmentClass);
+    }
+
     public void setRight0ButtonOnClickListener(View.OnClickListener listener)
     {
         tvHeadRight0.setOnClickListener(listener);

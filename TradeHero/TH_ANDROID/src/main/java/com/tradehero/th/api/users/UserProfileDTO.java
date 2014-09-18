@@ -171,6 +171,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
         return "UserProfileDTO{" +
                 "displayName='" + displayName + '\'' +
                 ", id=" + id +
+                ", inviteCode=" + inviteCode +
+                ", referralCode=" + referralCode +
                 ", picture='" + picture + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
