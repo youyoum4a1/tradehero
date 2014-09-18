@@ -2,20 +2,21 @@ package com.tradehero.th.fragments.leaderboard.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.special.residemenu.ResideMenu;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
@@ -49,15 +50,11 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-
+import com.tradehero.th.widget.MultiScrollListener;
+import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import dagger.Lazy;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -67,16 +64,14 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 {
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject ProviderUtil providerUtil;
     @Inject Analytics analytics;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
     @Inject UserProfileCache userProfileCache;
+    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
 
-    private THIntentPassedListener thIntentPassedListener;
     private BaseWebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
@@ -88,7 +83,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
         leaderboardDefListFetchListener = createDefKeyListListener();
         this.userProfileCacheListener = createUserProfileListener();
     }
@@ -104,6 +98,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
+        leaderboardDefListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener));
     }
 
     @Override public void onStart()
@@ -139,7 +134,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onDestroy()
     {
         leaderboardDefListFetchListener = null;
-        this.thIntentPassedListener = null;
         detachWebFragment();
         super.onDestroy();
     }

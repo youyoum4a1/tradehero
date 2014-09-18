@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,10 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
 import android.widget.TabHost;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import java.util.Collection;
@@ -22,7 +20,6 @@ public class DashboardTabHost extends TabHost
     private final Collection<RootFragmentType> bottomBarFragmentTypes = RootFragmentType.forBottomBar();
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
-    private QuickReturnListViewOnScrollListener quickReturnScrollListener;
 
     public DashboardTabHost(Context context, AttributeSet attrs)
     {
@@ -36,10 +33,6 @@ public class DashboardTabHost extends TabHost
         // slide in and out animation
         slideInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in);
         slideOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out);
-
-        int tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
-        quickReturnScrollListener = new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER,
-                null, 0, this, tabHostHeight);
 
         // Populate tabs for the button bar
         for (RootFragmentType tabType: bottomBarFragmentTypes)
@@ -61,12 +54,12 @@ public class DashboardTabHost extends TabHost
 
     @Override public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
     {
+        showTabBar();
         for (RootFragmentType rootFragmentType: bottomBarFragmentTypes)
         {
             if (rootFragmentType.fragmentClass == fragmentClass)
             {
                 setCurrentTabByTag(rootFragmentType.toString());
-                //showTabBar();
                 return;
             }
         }
@@ -85,16 +78,15 @@ public class DashboardTabHost extends TabHost
 
     private void showTabBar()
     {
-        if (getVisibility() != View.VISIBLE)
+        if (getVisibility() != View.VISIBLE || getTranslationY() > 0.0)
         {
             setVisibility(View.VISIBLE);
-            startAnimation(slideInAnimation);
+            //startAnimation(slideInAnimation);
+            // TODO this is a HACK to workaround problem with QuickReturnListViewOnScrollListener class, that class need to be improved
+            ObjectAnimator anim = ObjectAnimator.ofFloat(this, "translationY", getTranslationY(), 0);
+            anim.setDuration(100);
+            anim.start();
         }
-    }
-
-    public final void registerAutoHide(AbsListView listView)
-    {
-        listView.setOnScrollListener(quickReturnScrollListener);
     }
 
     private class DummyTabContentFactory implements TabContentFactory

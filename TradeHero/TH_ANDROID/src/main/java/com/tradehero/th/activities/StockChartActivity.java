@@ -1,9 +1,9 @@
 package com.tradehero.th.activities;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.base.THApp;
@@ -11,7 +11,7 @@ import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.inject.Injector;
 import dagger.Module;
 
-public class StockChartActivity extends SherlockFragmentActivity
+public class StockChartActivity extends FragmentActivity
     implements Injector
 {
     private Injector newInjector;

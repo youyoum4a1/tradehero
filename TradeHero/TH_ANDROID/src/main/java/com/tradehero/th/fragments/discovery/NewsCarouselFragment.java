@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.actionbarsherlock.app.SherlockFragment;
+import android.support.v4.app.Fragment;
 
-public class NewsCarouselFragment extends SherlockFragment
+public class NewsCarouselFragment extends Fragment
 {
     private NewsType newsType;
 

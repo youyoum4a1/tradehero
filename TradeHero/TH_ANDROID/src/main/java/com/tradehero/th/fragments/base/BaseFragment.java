@@ -1,17 +1,17 @@
 package com.tradehero.th.fragments.base;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.support.v4.app.Fragment;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.th.inject.HierarchyInjector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class BaseFragment extends SherlockFragment
+public class BaseFragment extends Fragment
 {
     private static final String BUNDLE_KEY_HAS_OPTION_MENU = BaseFragment.class.getName() + ".hasOptionMenu";
     private static final String BUNDLE_KEY_IS_OPTION_MENU_VISIBLE = BaseFragment.class.getName() + ".isOptionMenuVisible";
@@ -95,9 +95,9 @@ public class BaseFragment extends SherlockFragment
 
     @Nullable protected ActionBar getSupportActionBar()
     {
-        if (getSherlockActivity() != null)
+        if (getActivity() != null)
         {
-            ActionBar actionbar = getSherlockActivity().getSupportActionBar();
+            ActionBar actionbar = getActivity().getActionBar();
             return actionbar;
         }
         else

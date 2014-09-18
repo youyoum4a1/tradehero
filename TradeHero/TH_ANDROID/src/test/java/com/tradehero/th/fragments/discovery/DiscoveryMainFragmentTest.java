@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.discovery;
 
-import com.actionbarsherlock.app.ActionBar;
+import android.app.ActionBar;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -36,14 +36,14 @@ public class DiscoveryMainFragmentTest
     @Test public void dashboardFragmentShouldHaveSubTabs()
     {
         assertThat(discoveryMainFragment).isNotNull();
-        assertThat(activity.getSupportActionBar()).isNotNull();
-        assertThat(activity.getSupportActionBar().getNavigationMode()).isEqualTo(ActionBar.NAVIGATION_MODE_TABS);
-        assertThat(activity.getSupportActionBar().getTabCount()).isEqualTo(DiscoveryTabType.values().length);
+        assertThat(activity.getActionBar()).isNotNull();
+        assertThat(activity.getActionBar().getNavigationMode()).isEqualTo(ActionBar.NAVIGATION_MODE_TABS);
+        assertThat(activity.getActionBar().getTabCount()).isEqualTo(DiscoveryTabType.values().length);
     }
 
     @Test public void clickOnTabShouldShowCorrectFragment()
     {
-        ActionBar actionBar = activity.getSupportActionBar();
+        ActionBar actionBar = activity.getActionBar();
 
         for (int clickingTabIndex = 0; clickingTabIndex < DiscoveryTabType.values().length; ++clickingTabIndex)
         {

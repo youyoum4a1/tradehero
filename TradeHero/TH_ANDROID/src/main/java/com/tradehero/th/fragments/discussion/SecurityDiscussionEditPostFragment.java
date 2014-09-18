@@ -1,8 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.os.Bundle;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import android.support.v4.app.FragmentActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
@@ -46,7 +45,7 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
         if (andDisplay && securityCompactDTO != null)
         {
             setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, securityCompactDTO.name));
-            SherlockFragmentActivity activityCopy = getSherlockActivity();
+            FragmentActivity activityCopy = getActivity();
             if (activityCopy != null)
             {
                 activityCopy.invalidateOptionsMenu();

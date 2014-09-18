@@ -2,16 +2,18 @@ package com.tradehero.th.fragments.discovery;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
@@ -21,16 +23,18 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
 
-public class DiscoveryDiscussionFragment extends SherlockFragment
+public class DiscoveryDiscussionFragment extends Fragment
 {
     private static final int TIMELINE_LOADER_ID = 0;
 
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
     @InjectView(android.R.id.progress) ProgressBar mProgressBar;
     @InjectView(R.id.timeline_list_view) PullToRefreshListView mTimelineListView;
+    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     private int mDisplayedViewId;
     private SubTimelineAdapter mTimelineAdapter;
@@ -65,6 +69,7 @@ public class DiscoveryDiscussionFragment extends SherlockFragment
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mTimelineListView.setAdapter(mTimelineAdapter);
+        mTimelineListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener));
         mTimelineListView.getRefreshableView().addFooterView(mBottomLoadingView);
         mTimelineListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener()
         {

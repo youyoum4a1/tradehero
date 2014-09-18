@@ -4,12 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -17,6 +18,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.InjectRoute;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -67,6 +69,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
 
+import com.tradehero.th.widget.MultiScrollListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,6 +91,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         implements UserProfileCompactViewHolder.OnProfileClickedListener
 {
     private static final String USER_BASE_KEY_BUNDLE_KEY = TimelineFragment.class.getName() + ".userBaseKey";
+    @Inject @BottomTabs AbsListView.OnScrollListener dashboardTabBarScrollListener;
 
     public static void putUserBaseKey(Bundle bundle, UserBaseKey userBaseKey)
     {
@@ -280,6 +284,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             timelineListView.addFooterView(loadingView);
         }
+        timelineListView.setOnScrollListener(new MultiScrollListener(dashboardTabBarScrollListener));
 
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         displayablePortfolioFetchAssistant.setFetchedListener(

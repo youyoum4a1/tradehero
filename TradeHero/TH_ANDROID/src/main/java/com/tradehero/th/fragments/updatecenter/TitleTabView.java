@@ -15,20 +15,25 @@ public class TitleTabView extends RelativeLayout
     @InjectView(R.id.tab_title_number) TextView numberView;
     private String title;
 
+    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public TitleTabView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public TitleTabView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public TitleTabView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {

@@ -2,11 +2,11 @@ package com.tradehero.th.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 
-public class WeiboAuthAcitivity extends SherlockFragmentActivity implements View.OnClickListener
+public class WeiboAuthAcitivity extends FragmentActivity implements View.OnClickListener
 {
 
     //R.layout.authentication_sign_up;

@@ -13,9 +13,9 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.text.Span;
@@ -341,9 +341,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
         if (andDisplay)
         {
             setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
-            if(getSherlockActivity() != null)
+            if(getActivity() != null)
             {
-                getSherlockActivity().invalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
         }
     }
@@ -406,7 +406,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
                 if (notEmptyText != postMenuButton.isVisible())
                 {
                     // TODO do something to enable Post menu button
-                    getSherlockActivity().invalidateOptionsMenu();
+                    getActivity().invalidateOptionsMenu();
                 }
             }
         }

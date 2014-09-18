@@ -1,7 +1,8 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
-import com.actionbarsherlock.app.SherlockFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.Fragment;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -10,7 +11,7 @@ import com.tradehero.th.api.security.SecurityId;
 import org.jetbrains.annotations.NotNull;
 
 abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
-        extends SherlockFragment
+        extends Fragment
         implements DTOCacheNew.Listener<SecurityId, InfoType>
 {
     private static final String BUNDLE_KEY_SECURITY_ID = AbstractSecurityInfoFragment.class.getName() + ".securityId";

@@ -3,12 +3,12 @@ package com.tradehero.th.fragments.base;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 import butterknife.ButterKnife;
-import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 
-public abstract class BaseDialogFragment extends SherlockDialogFragment
+public abstract class BaseDialogFragment extends DialogFragment
 {
     private OnDismissedListener dismissedListener;
 

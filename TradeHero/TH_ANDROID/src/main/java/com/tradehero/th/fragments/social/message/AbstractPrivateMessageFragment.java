@@ -2,17 +2,15 @@ package com.tradehero.th.fragments.social.message;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -226,7 +224,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         correspondentProfile = userProfileDTO;
         if (andDisplay)
         {
-            getSherlockActivity().invalidateOptionsMenu();
+            getActivity().invalidateOptionsMenu();
         }
     }
 
