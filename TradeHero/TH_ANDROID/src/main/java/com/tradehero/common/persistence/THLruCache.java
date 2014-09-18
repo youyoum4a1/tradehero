@@ -1,6 +1,6 @@
 package com.tradehero.common.persistence;
 
-import android.support.v4.util.LruCache;
+import android.util.LruCache;
 import timber.log.Timber;
 
 public class THLruCache<U, V> extends LruCache<U, V>

@@ -36,13 +36,19 @@ public class HierarchyInjector
             return inject(activity, o) || inject(activity.getApplicationContext(), o);
         }
 
+        if (o instanceof android.app.Fragment)
+        {
+            Activity activity = ((android.app.Fragment) o).getActivity();
+            return inject(activity, o) || inject(activity.getApplicationContext(), o);
+        }
+
         if (o instanceof Activity)
         {
             Activity activity = (Activity) o;
             return inject(activity, o) || inject(activity.getApplicationContext(), o);
         }
 
-        throw new IllegalArgumentException("Hierarchy can only auto-inject (single argument) View, Fragment or Activity");
+        throw new IllegalArgumentException("Hierarchy can only auto-inject (single argument) View, Fragment or Activity, not " + o.getClass().getSimpleName());
     }
 
     public static boolean inject(Context context, Object o)
