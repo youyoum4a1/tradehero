@@ -1,12 +1,16 @@
 package com.tradehero.th.fragments.position;
 
+import android.content.Context;
 import android.os.Bundle;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
+import javax.inject.Inject;
 
 public class CompetitionLeaderboardPositionListFragment extends LeaderboardPositionListFragment
 {
+    @Inject Context context;
+
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
 
     protected ProviderId providerId;
