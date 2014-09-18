@@ -11,7 +11,9 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:paddingLeft="0dp"
-      android:paddingRight="0dp">
+      android:paddingRight="0dp"
+      android:paddingBottom="@dimen/dashboard_tabhost_height"
+      >
   </FrameLayout>
 
   <com.tradehero.th.fragments.DashboardTabHost
