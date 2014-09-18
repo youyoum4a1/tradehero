@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -19,7 +18,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
-import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -70,24 +68,6 @@ public class AchievementListFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(R.string.achievements);
-        if (!Constants.RELEASE)
-        {
-            inflater.inflate(R.menu.achievement_testing, menu);
-        }
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.menu_test_achievement:
-                navigator.pushFragment(AchievementListTestingFragment.class, null);
-                break;
-            case R.id.menu_test_achievement_daily:
-                navigator.pushFragment(QuestListTestingFragment.class, null);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     protected void init()
