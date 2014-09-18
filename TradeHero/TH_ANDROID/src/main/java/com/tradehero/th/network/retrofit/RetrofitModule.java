@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.tradehero.common.annotation.ForApp;
@@ -23,6 +24,7 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTODeserialiser;
 import com.tradehero.th.api.social.UserFriendsDTOJacksonModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
+import com.tradehero.th.network.ApiAuthenticator;
 import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
@@ -59,6 +61,7 @@ import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.RetrofitConstants;
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.io.File;
@@ -341,12 +344,18 @@ public class RetrofitModule
         return null;
     }
 
-    @Provides @Singleton OkHttpClient provideOkHttpClient(Cache cache)
+    @Provides @Singleton OkHttpClient provideOkHttpClient(Cache cache, Authenticator authenticator)
     {
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.setCache(cache);
         okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
+        okHttpClient.setAuthenticator(authenticator);
         return okHttpClient;
+    }
+
+    @Provides @Singleton Authenticator provideAuthenticator(Lazy<ApiAuthenticator> apiAuthenticator)
+    {
+        return apiAuthenticator.get();
     }
 
 }
