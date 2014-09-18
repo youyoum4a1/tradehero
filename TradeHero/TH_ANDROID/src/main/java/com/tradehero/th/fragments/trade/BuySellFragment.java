@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +25,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -61,7 +61,6 @@ import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
-import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
@@ -73,10 +72,7 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdList;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
@@ -137,11 +133,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.btn_add_trigger) protected Button mBtnAddTrigger;
     @InjectView(R.id.btn_add_watch_list) protected Button mBtnAddWatchlist;
 
-    @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject MenuOwnedPortfolioIdFactory menuOwnedPortfolioIdFactory;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject Picasso picasso;
@@ -150,7 +144,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
 
     @Inject AlertDialogUtil alertDialogUtil;
-    @Inject SocialLinkHelperFactory socialLinkHelperFactory;
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
 
     private PopupMenu mPortfolioSelectorMenu;
@@ -159,18 +152,14 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject protected SecurityAlertAssistant securityAlertAssistant;
     protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
 
-    private int mQuantity = 0;
     private Bundle desiredArguments;
-    //private String mPriceSelectionMethod;
 
     protected WatchlistPositionDTOList watchedList;
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
     private int selectedPageIndex;
-    @Inject SecurityServiceWrapper securityServiceWrapper;
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
     SocialLinkHelper socialLinkHelper;
-    @Inject SocialServiceWrapper socialServiceWrapper;
     private BroadcastReceiver chartImageButtonClickReceiver;
 
     @Inject Analytics analytics;
@@ -1153,7 +1142,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void showBuySellDialog()
     {
-        if (quoteDTO != null)
+        if (quoteDTO != null
+                && BuyDialogFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
         {
             pushPortfolioFragmentRunnable = null;
             pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()

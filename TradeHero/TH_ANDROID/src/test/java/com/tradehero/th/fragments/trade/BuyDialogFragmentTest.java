@@ -8,8 +8,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -19,22 +19,20 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
 import javax.inject.Inject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 @RunWith(THRobolectricTestRunner.class)
 public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTestBase
@@ -56,6 +54,42 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     @Override boolean isBuy()
     {
         return true;
+    }
+
+    @Test public void shouldNotShowWithQuoteNoAskNoBid()
+    {
+        QuoteDTO quoteDTO = mock(QuoteDTO.class);
+        quoteDTO.ask = null;
+        quoteDTO.bid = null;
+        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, true)).isFalse();
+        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, false)).isFalse();
+    }
+
+    @Test public void shouldShowOnlyBuyWithQuoteNoBid()
+    {
+        QuoteDTO quoteDTO = mock(QuoteDTO.class);
+        quoteDTO.ask = 3d;
+        quoteDTO.bid = null;
+        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, true)).isTrue();
+        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, false)).isFalse();
+    }
+
+    @Test public void shouldShowOnlySellWithQuoteNoAsk()
+    {
+        QuoteDTO quoteDTO = mock(QuoteDTO.class);
+        quoteDTO.ask = null;
+        quoteDTO.bid = 2d;
+        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, true)).isFalse();
+        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, false)).isTrue();
+    }
+
+    @Test public void shouldShowBothWithQuoteOk()
+    {
+        QuoteDTO quoteDTO = mock(QuoteDTO.class);
+        quoteDTO.ask = 3d;
+        quoteDTO.bid = 2d;
+        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, true)).isTrue();
+        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, false)).isTrue();
     }
 
     @Test

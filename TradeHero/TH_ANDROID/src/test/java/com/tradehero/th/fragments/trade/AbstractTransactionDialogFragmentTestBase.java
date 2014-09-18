@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
 import android.text.Editable;
-
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -17,11 +16,9 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-
+import javax.inject.Inject;
 import org.junit.Test;
 import org.robolectric.Robolectric;
-
-import javax.inject.Inject;
 
 import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;

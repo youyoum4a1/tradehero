@@ -61,8 +61,22 @@ public class QuoteDTO
         {
             asOfUtc = new Date(ofUtc);
         }
-        bid = bundle.getDouble(BUNDLE_KEY_BID_PRICE);
-        ask = bundle.getDouble(BUNDLE_KEY_ASK_PRICE);
+        if (bundle.containsKey(BUNDLE_KEY_BID_PRICE))
+        {
+            bid = bundle.getDouble(BUNDLE_KEY_BID_PRICE);
+        }
+        else
+        {
+            bid = null;
+        }
+        if (bundle.containsKey(BUNDLE_KEY_ASK_PRICE))
+        {
+            ask = bundle.getDouble(BUNDLE_KEY_ASK_PRICE);
+        }
+        else
+        {
+            ask = null;
+        }
         currencyISO = bundle.getString(BUNDLE_KEY_CURRENCY_ISO);
         currencyDisplay = bundle.getString(BUNDLE_KEY_CURRENCY_DISPLAY);
         fromCache = bundle.getBoolean(BUNDLE_KEY_FROM_CACHE);
@@ -77,6 +91,7 @@ public class QuoteDTO
         rawResponse = bundle.getString(BUNDLE_KEY_RAW_RESPONSE);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @JsonIgnore public Double getPrice(boolean isBuy)
     {
         return isBuy ? ask : bid;
@@ -100,6 +115,7 @@ public class QuoteDTO
         return ask * toUSDRate;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @JsonIgnore public Double getPriceUSD(boolean isBuy)
     {
         return isBuy ? getAskUSD() : getBidUSD();
@@ -131,6 +147,7 @@ public class QuoteDTO
         return askUSD / refCcyToUsdRate;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @JsonIgnore public Double getPriceRefCcy(Double refCcyToUsdRate, boolean isBuy)
     {
         return isBuy ? getAskRefCcy(refCcyToUsdRate) : getBidRefCcy(refCcyToUsdRate);
@@ -190,8 +207,22 @@ public class QuoteDTO
         {
             args.putLong(BUNDLE_KEY_AS_OF_UTC, 0);
         }
-        args.putDouble(BUNDLE_KEY_BID_PRICE, bid);
-        args.putDouble(BUNDLE_KEY_ASK_PRICE, ask);
+        if (bid != null)
+        {
+            args.putDouble(BUNDLE_KEY_BID_PRICE, bid);
+        }
+        else
+        {
+            args.remove(BUNDLE_KEY_BID_PRICE);
+        }
+        if (ask != null)
+        {
+            args.putDouble(BUNDLE_KEY_ASK_PRICE, ask);
+        }
+        else
+        {
+            args.remove(BUNDLE_KEY_ASK_PRICE);
+        }
         args.putString(BUNDLE_KEY_CURRENCY_ISO, currencyISO);
         args.putString(BUNDLE_KEY_CURRENCY_DISPLAY, currencyDisplay);
         args.putBoolean(BUNDLE_KEY_FROM_CACHE, fromCache);

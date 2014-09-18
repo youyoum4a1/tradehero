@@ -175,6 +175,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public abstract Double getPriceCcy();
 
+    public static boolean canShowDialog(@NotNull QuoteDTO quoteDTO, boolean isBuy)
+    {
+        return (isBuy && quoteDTO.ask != null) ||
+                (!isBuy && quoteDTO.bid != null);
+    }
+
     public static AbstractTransactionDialogFragment newInstance(
             @NotNull SecurityId securityId,
             @NotNull PortfolioId portfolioId,
