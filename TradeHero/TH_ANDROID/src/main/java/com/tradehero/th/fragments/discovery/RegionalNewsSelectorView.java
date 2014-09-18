@@ -165,7 +165,10 @@ public class RegionalNewsSelectorView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        mCountryLanguageFetchMiddleCallback.setPrimaryCallback(null);
+        if (mCountryLanguageFetchMiddleCallback != null)
+        {
+            mCountryLanguageFetchMiddleCallback.setPrimaryCallback(null);
+        }
         detachUserProfileFetchTask();
         super.onDetachedFromWindow();
     }
