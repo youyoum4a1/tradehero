@@ -6,6 +6,8 @@ import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import java.text.ParseException;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
@@ -14,23 +16,36 @@ public class FacebookCredentialsDTO extends BaseCredentialsDTO
 {
     public static final String FACEBOOK_AUTH_TYPE = "TH-Facebook";
 
-    public final String id;
-    public final String accessToken;
-    public final Date expirationDate;
+    @NotNull public final String id;
+    @NotNull public final String accessToken;
+    @Nullable public final Date expirationDate;
+
+    @Nullable public static Date getExpirationDate(@NotNull JSONObject object) throws JSONException
+    {
+        try
+        {
+            return FacebookAuthenticationProvider.PRECISE_DATE_FORMAT.parse(
+                    object.getString(FacebookAuthenticationProvider.EXPIRATION_DATE_KEY));
+        }
+        catch (ParseException e)
+        {
+            Timber.e(e, "Failed to parse date %s", object.getString(FacebookAuthenticationProvider.EXPIRATION_DATE_KEY));
+        }
+        return null;
+    }
 
     //<editor-fold desc="Constructors">
     // TODO replace Z by +0000 in date string that comes back?
     // http://stackoverflow.com/questions/2580925/simpledateformat-parsing-date-with-z-literal
     // https://www.crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/539b0912e3de5099ba5719ed
-    public FacebookCredentialsDTO(JSONObject object) throws JSONException, ParseException
+    public FacebookCredentialsDTO(@NotNull JSONObject object) throws JSONException
     {
         this(object.getString(SocialAuthenticationProvider.ID_KEY),
                 object.getString(FacebookAuthenticationProvider.ACCESS_TOKEN_KEY),
-                FacebookAuthenticationProvider.PRECISE_DATE_FORMAT.parse(
-                        object.getString(FacebookAuthenticationProvider.EXPIRATION_DATE_KEY)));
+                getExpirationDate(object));
     }
 
-    public FacebookCredentialsDTO(String id, String accessToken, Date expirationDate)
+    public FacebookCredentialsDTO(@NotNull String id, @NotNull String accessToken, @Nullable Date expirationDate)
     {
         super();
         this.id = id;
@@ -39,17 +54,17 @@ public class FacebookCredentialsDTO extends BaseCredentialsDTO
     }
     //</editor-fold>
 
-    @Override public String getAuthType()
+    @Override @NotNull public String getAuthType()
     {
         return FACEBOOK_AUTH_TYPE;
     }
 
-    @Override public String getAuthHeaderParameter()
+    @Override @NotNull public String getAuthHeaderParameter()
     {
         return accessToken;
     }
 
-    @Override protected void populate(JSONObject object) throws JSONException
+    @Override protected void populate(@NotNull JSONObject object) throws JSONException
     {
         super.populate(object);
         object.put(SocialAuthenticationProvider.ID_KEY, id);
@@ -65,7 +80,7 @@ public class FacebookCredentialsDTO extends BaseCredentialsDTO
         }
     }
 
-    @Override public UserFormDTO createUserFormDTO()
+    @Override @NotNull public UserFormDTO createUserFormDTO()
     {
         FacebookUserFormDTO userFormDTO = new FacebookUserFormDTO();
         userFormDTO.accessToken = accessToken;

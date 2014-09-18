@@ -1,6 +1,7 @@
 package com.tradehero.th.models.user.auth;
 
 import com.tradehero.th.api.form.UserFormDTO;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,28 +9,30 @@ public class WeChatCredentialsDTO extends BaseCredentialsDTO
 {
     public static final String WECHAT_AUTH_TYPE = "TH-WeChat";
 
+    //<editor-fold desc="Constructors">
     public WeChatCredentialsDTO()
     {
         super();
     }
+    //</editor-fold>
 
-    @Override public String getAuthType()
+    @Override @NotNull public String getAuthType()
     {
         return WECHAT_AUTH_TYPE;
     }
 
-    @Override public String getAuthHeaderParameter()
+    @Override @NotNull public String getAuthHeaderParameter()
     {
         throw new IllegalStateException("Not Implemented");
     }
 
-    @Override protected void populate(JSONObject object) throws JSONException
+    @Override protected void populate(@NotNull JSONObject object) throws JSONException
     {
         super.populate(object);
         // TODO
     }
 
-    @Override public UserFormDTO createUserFormDTO()
+    @Override @NotNull public UserFormDTO createUserFormDTO()
     {
         return null;
     }

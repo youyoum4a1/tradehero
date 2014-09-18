@@ -3,6 +3,7 @@ package com.tradehero.th.models.user.auth;
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.auth.LinkedInAuthenticationProvider;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,13 +11,13 @@ public class LinkedinCredentialsDTO extends BaseCredentialsDTO
 {
     public static final String LINKEDIN_AUTH_TYPE = "TH-LinkedIn";
 
-    public final String token;
-    public final String tokenSecret;
-    public final String consumerKey;
-    public final String consumerSecretKey;
+    @NotNull public final String token;
+    @NotNull public final String tokenSecret;
+    @NotNull public final String consumerKey;
+    @NotNull public final String consumerSecretKey;
 
     //<editor-fold desc="Constructors">
-    public LinkedinCredentialsDTO(JSONObject object) throws JSONException
+    public LinkedinCredentialsDTO(@NotNull JSONObject object) throws JSONException
     {
         this(object.getString(LinkedInAuthenticationProvider.AUTH_TOKEN_KEY),
                 object.getString(LinkedInAuthenticationProvider.AUTH_TOKEN_SECRET_KEY),
@@ -24,7 +25,10 @@ public class LinkedinCredentialsDTO extends BaseCredentialsDTO
                 object.getString(LinkedInAuthenticationProvider.CONSUMER_SECRET_KEY));
     }
 
-    public LinkedinCredentialsDTO(String token, String tokenSecret, String consumerKey, String consumerSecretKey)
+    public LinkedinCredentialsDTO(@NotNull String token,
+            @NotNull String tokenSecret,
+            @NotNull String consumerKey,
+            @NotNull String consumerSecretKey)
     {
         super();
         this.token = token;
@@ -34,17 +38,17 @@ public class LinkedinCredentialsDTO extends BaseCredentialsDTO
     }
     //</editor-fold>
 
-    @Override public String getAuthType()
+    @Override @NotNull public String getAuthType()
     {
         return LINKEDIN_AUTH_TYPE;
     }
 
-    @Override public String getAuthHeaderParameter()
+    @Override @NotNull public String getAuthHeaderParameter()
     {
         return String.format("%1$s:%2$s", token, tokenSecret);
     }
 
-    @Override protected void populate(JSONObject object) throws JSONException
+    @Override protected void populate(@NotNull JSONObject object) throws JSONException
     {
         super.populate(object);
         object.put(LinkedInAuthenticationProvider.AUTH_TOKEN_KEY, token);
@@ -53,7 +57,7 @@ public class LinkedinCredentialsDTO extends BaseCredentialsDTO
         object.put(LinkedInAuthenticationProvider.CONSUMER_SECRET_KEY, consumerSecretKey);
     }
 
-    @Override public UserFormDTO createUserFormDTO()
+    @Override @NotNull public UserFormDTO createUserFormDTO()
     {
         LinkedinUserFormDTO userFormDTO = new LinkedinUserFormDTO();
         userFormDTO.accessToken = token;

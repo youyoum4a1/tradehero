@@ -3,19 +3,22 @@ package com.tradehero.th.models.user.auth;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.base.JSONCredentials;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import retrofit.mime.TypedOutput;
 
 public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
 {
-    public final String displayName;
-    public String inviteCode;
-    public String firstName;
-    public String lastName;
-    public TypedOutput profilePicture;
+    @NotNull public final String displayName;
+    @Nullable public String inviteCode;
+    @Nullable public String firstName;
+    @Nullable public String lastName;
+    @Nullable public TypedOutput profilePicture;
 
-    public SignUpEmailCredentialsDTO(JSONObject object) throws JSONException
+    //<editor-fold desc="Constructors">
+    public SignUpEmailCredentialsDTO(@NotNull JSONObject object) throws JSONException
     {
         super(object);
         displayName = object.getString(UserFormFactory.KEY_DISPLAY_NAME);
@@ -37,13 +40,14 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
         }
     }
 
-    public SignUpEmailCredentialsDTO(String email, String password, String displayName)
+    public SignUpEmailCredentialsDTO(@NotNull String email, @NotNull String password, @NotNull String displayName)
     {
         super(email, password);
         this.displayName = displayName;
     }
+    //</editor-fold>
 
-    @Override protected void populate(JSONObject object) throws JSONException
+    @Override protected void populate(@NotNull JSONObject object) throws JSONException
     {
         super.populate(object);
         object.put(UserFormFactory.KEY_DISPLAY_NAME, displayName);
@@ -52,7 +56,7 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
         object.put(UserFormFactory.KEY_LAST_NAME, lastName);
     }
 
-    @Override public UserFormDTO createUserFormDTO()
+    @Override @NotNull public UserFormDTO createUserFormDTO()
     {
         UserFormDTO userFormDTO = super.createUserFormDTO();
         userFormDTO.displayName = displayName;

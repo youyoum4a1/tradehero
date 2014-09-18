@@ -3,6 +3,8 @@ package com.tradehero.th.models.user.auth;
 import com.tradehero.th.api.form.TwitterUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.auth.TwitterAuthenticationProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,14 +12,14 @@ public class TwitterCredentialsDTO extends BaseCredentialsDTO
 {
     public static final String TWITTER_AUTH_TYPE = "TH-Twitter";
 
-    public final String id;
-    public String email;
-    public final String token;
-    public final String tokenSecret;
-    public final String screenName;
+    @NotNull public final String id;
+    @Nullable public String email;
+    @NotNull public final String token;
+    @NotNull public final String tokenSecret;
+    @NotNull public final String screenName;
 
     //<editor-fold desc="Constructors">
-    public TwitterCredentialsDTO(JSONObject object) throws JSONException
+    public TwitterCredentialsDTO(@NotNull JSONObject object) throws JSONException
     {
         this(object.getString(TwitterAuthenticationProvider.ID_KEY),
                 object.has(TwitterAuthenticationProvider.EMAIL_KEY) ? object.getString(TwitterAuthenticationProvider.EMAIL_KEY) : "",
@@ -26,7 +28,11 @@ public class TwitterCredentialsDTO extends BaseCredentialsDTO
                 object.getString(TwitterAuthenticationProvider.SCREEN_NAME_KEY));
     }
 
-    public TwitterCredentialsDTO(String id, String email, String token, String tokenSecret, String screenName)
+    public TwitterCredentialsDTO(@NotNull String id,
+            @Nullable String email,
+            @NotNull String token,
+            @NotNull String tokenSecret,
+            @NotNull String screenName)
     {
         super();
         this.id = id;
@@ -37,17 +43,17 @@ public class TwitterCredentialsDTO extends BaseCredentialsDTO
     }
     //</editor-fold>
 
-    @Override public String getAuthType()
+    @Override @NotNull public String getAuthType()
     {
         return TWITTER_AUTH_TYPE;
     }
 
-    @Override public String getAuthHeaderParameter()
+    @Override @NotNull public String getAuthHeaderParameter()
     {
         return String.format("%1$s:%2$s", token, tokenSecret);
     }
 
-    @Override protected void populate(JSONObject object) throws JSONException
+    @Override protected void populate(@NotNull JSONObject object) throws JSONException
     {
         super.populate(object);
         object.put(TwitterAuthenticationProvider.ID_KEY, id);
@@ -57,7 +63,7 @@ public class TwitterCredentialsDTO extends BaseCredentialsDTO
         object.put(TwitterAuthenticationProvider.SCREEN_NAME_KEY, screenName);
     }
 
-    @Override public UserFormDTO createUserFormDTO()
+    @Override @NotNull public UserFormDTO createUserFormDTO()
     {
         TwitterUserFormDTO userFormDTO = new TwitterUserFormDTO();
         userFormDTO.accessToken = token;
