@@ -114,10 +114,7 @@ android {
     amazon {
       flavorDimension "marketSegment"
       proguardFiles 'proguard/proguard-android-amazon.txt'
-    }
-    amazonFire {
-      flavorDimension "marketSegment"
-      //compileSdkVersion "Amazon.com:Amazon Fire Phone SDK Addon:17"
+      compileSdkVersion "Amazon.com:Amazon Fire Phone SDK Addon:17"
     }
   }
 
@@ -197,25 +194,6 @@ android {
         srcDir 'src/amazon/res'
       }
     }
-
-    amazonFire {
-      manifest {
-        srcFile 'src/amazon/AndroidManifest.xml'
-      }
-      java {
-        srcDir 'src/row/java'
-        srcDir 'src/amazon/java'
-      }
-      res {
-        srcDir 'src/amazon/res'
-      }
-    }
-
-    amazonFireDebug {
-      java {
-        srcDir 'src/amazonDebug/java'
-      }
-    }
     //endregion
 
     // TODO make sure this is not breaking
@@ -276,9 +254,7 @@ dependencies {
 
   // TODO confirm on a hardware that it is "provided" and not "compile"
   amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
-  amazonFireCompile 'com.amazon:in-app-purchasing:2.0.0'
   androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
-  androidTestAmazonFireCompile 'com.amazon:in-app-purchasing:2.0.0'
 
   // This does not work as we would hope. Second "setProperty" wins
   def fbGoogproj = project(':facebook-android-sdk:facebook')
@@ -290,9 +266,6 @@ dependencies {
   def fbproj = project(':facebook-android-sdk:facebook')
   fbproj.setProperty('TEST_GOOGLE_PLAY', "false")
   amazonCompile (fbproj) {
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
-  amazonFireCompile (fbproj) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
   chinaCompile (fbproj) {
