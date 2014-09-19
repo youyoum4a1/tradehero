@@ -17,11 +17,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
+import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
+import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
@@ -36,6 +39,9 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private static final CharSequence KEY_USER_INFO = "user_info";
     private static final CharSequence KEY_SERVER_ENDPOINT = "server_endpoint";
     private static final CharSequence KEY_SEND_FAKE_PUSH = "send_fake_push";
+    private static final CharSequence KEY_DAILY_TEST_SCREEN = "show_daily_quest_test_screen";
+    private static final CharSequence KEY_ACHIEVEMENT_TEST_SCREEN = "show_achievement_test_screen";
+    private static final CharSequence KEY_XP_TEST_SCREEN = "show_xp_test_screen";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
@@ -143,6 +149,26 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             {
 //                FragmentActivity activityversion.properties = (FragmentActivity) currentActivityHolder.getCurrentActivity();
                 OnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+                return true;
+            }
+        });
+
+        Preference showTestDaily = findPreference(KEY_DAILY_TEST_SCREEN);
+        showTestDaily.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.pushFragment(QuestListTestingFragment.class);
+                return true;
+            }
+        });
+
+        Preference showTestAchievement = findPreference(KEY_ACHIEVEMENT_TEST_SCREEN);
+        showTestAchievement.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.pushFragment(AchievementListTestingFragment.class);
                 return true;
             }
         });
