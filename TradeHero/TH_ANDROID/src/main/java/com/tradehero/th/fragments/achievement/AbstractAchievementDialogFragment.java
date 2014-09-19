@@ -10,7 +10,6 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
@@ -47,7 +46,7 @@ import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
@@ -365,7 +364,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void displayXpEarned(int xp)
     {
-        xpEarned.setText(getString(R.string.achievement_xp_earned_format, xp));
+        xpEarned.setText(getString(R.string.achievement_xp_earned_format, THSignedNumber.builder(xp).relevantDigitCount(1).withOutSign().build().toString()));
     }
 
     private void setShareButtonColor()

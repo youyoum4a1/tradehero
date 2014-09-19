@@ -11,7 +11,6 @@ import com.tradehero.th.base.THApp;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.fragments.discovery.FragmentDiscoveryModule;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -28,6 +27,8 @@ import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.utils.achievement.AchievementModule;
+import com.tradehero.th.utils.level.XpModule;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import dagger.Module;
 import dagger.Provides;
@@ -38,6 +39,7 @@ import javax.inject.Singleton;
         includes = {
                 FlavorModule.class,
                 AchievementModule.class,
+                XpModule.class,
                 CacheModule.class,
                 GraphicModule.class,
                 NetworkModule.class,

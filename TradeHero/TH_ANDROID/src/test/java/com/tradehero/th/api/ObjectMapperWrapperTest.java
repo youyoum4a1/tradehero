@@ -31,7 +31,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricMavenTestRunner.class)
-public class ObjectMapperWrapperTest extends BaseApiTest
+public class ObjectMapperWrapperTest extends BaseApiTestClass
 {
     @Inject @ForApp ObjectMapper objectMapper;
     @Inject UserAchievementCache userAchievementCache;

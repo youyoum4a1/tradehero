@@ -11,9 +11,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
+import com.tradehero.th.api.level.UserXPAchievementDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.Iterator;
@@ -48,7 +51,7 @@ public class ObjectMapperWrapper extends ObjectMapper
             throws IOException, JsonParseException, JsonMappingException
     {
         TreeNode root = readTree(jp);
-        if(root instanceof ObjectNode)
+        if (root instanceof ObjectNode)
         {
             extractExtras((ObjectNode) root);
         }
@@ -67,7 +70,11 @@ public class ObjectMapperWrapper extends ObjectMapper
             {
                 handleAchievement(objectNode.get(UserAchievementCache.KEY_ACHIEVEMENT_NODE));
                 objectNode.remove(UserAchievementCache.KEY_ACHIEVEMENT_NODE);
-                break;
+            }
+            else if(isXPNode(element))
+            {
+                handleXP(objectNode.get(UserProfileCache.KEY_XP_NODE));
+                objectNode.remove(UserProfileCache.KEY_XP_NODE);
             }
             //else if (isOther(element)) {}
         }
@@ -76,6 +83,11 @@ public class ObjectMapperWrapper extends ObjectMapper
     protected boolean isAchievementNode(@NotNull Map.Entry<String, JsonNode> element)
     {
         return element.getKey().equals(UserAchievementCache.KEY_ACHIEVEMENT_NODE);
+    }
+
+    protected boolean isXPNode(@NotNull Map.Entry<String, JsonNode> element)
+    {
+        return element.getKey().equals(UserProfileCache.KEY_XP_NODE);
     }
 
     protected void handleAchievement(
@@ -90,5 +102,11 @@ public class ObjectMapperWrapper extends ObjectMapper
         userAchievementCacheLazy.get().put(userAchievementDTOs);
         achievementCategoryListCacheLazy.get().invalidateAll();
         achievementCategoryCacheLazy.get().invalidateAll();
+    }
+
+    protected void handleXP(@NotNull JsonNode jsonNode)
+            throws IOException
+    {
+
     }
 }

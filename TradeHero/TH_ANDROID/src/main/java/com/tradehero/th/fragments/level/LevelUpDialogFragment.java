@@ -29,7 +29,6 @@ import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.persistence.level.LevelDefCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 public class LevelUpDialogFragment extends BaseDialogFragment
 {
@@ -74,7 +73,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Achievement_Dialog);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
         d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         d.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         d.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

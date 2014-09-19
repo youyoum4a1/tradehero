@@ -2,9 +2,10 @@ package com.tradehero.th.api.achievement.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+import com.tradehero.th.utils.broadcast.BroadcastData;
 import org.jetbrains.annotations.NotNull;
 
-public class UserAchievementId extends AbstractIntegerDTOKey
+public class UserAchievementId extends AbstractIntegerDTOKey implements BroadcastData
 {
     private static final String BUNDLE_KEY = UserAchievementId.class.getName() + ".key";
 

@@ -22,7 +22,6 @@ import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserNextLevelBadge;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -164,6 +163,16 @@ public class UserLevelProgressBar extends RelativeLayout
         }
     }
 
+    public int getRoughDuration()
+    {
+        return getResources().getInteger(R.integer.user_level_progress_bar_xp_increase_duration);
+    }
+
+    public int getStartDelay()
+    {
+        return getResources().getInteger(R.integer.user_level_progress_bar_xp_increase_delay);
+    }
+
     public void increment(int xpGained)
     {
         if (mCurrentLevelDTO == null)
@@ -171,7 +180,7 @@ public class UserLevelProgressBar extends RelativeLayout
             throw new RuntimeException("Must call startsWith before calling increment!");
         }
 
-        int duration = getResources().getInteger(R.integer.user_level_progress_bar_xp_increase_duration);
+        int duration = getRoughDuration();
         float msPerXP = ((float) duration / (float) xpGained);
         setMsPerXp(msPerXP);
 
@@ -183,7 +192,7 @@ public class UserLevelProgressBar extends RelativeLayout
         mAnimatorSet = new AnimatorSet();
         mAnimatorSet.setInterpolator(new LinearInterpolator());
         mAnimatorSet.playSequentially(animators);
-        mAnimatorSet.setStartDelay(1000l);
+        mAnimatorSet.setStartDelay(getStartDelay());
         mAnimatorSet.start();
     }
 

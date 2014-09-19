@@ -8,6 +8,7 @@ import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,8 +23,6 @@ import org.jetbrains.annotations.Nullable;
     public static final String KEY_ACHIEVEMENT_NODE = "achievements";
 
     public static final int DEFAULT_SIZE = 20;
-
-    private static final int DELAY_INTERVAL = 5000;
 
     @NotNull private final AchievementServiceWrapper achievementServiceWrapper;
     @NotNull private final LocalBroadcastManager localBroadcastManager;
@@ -71,79 +70,12 @@ import org.jetbrains.annotations.Nullable;
         }
     }
 
-    public BroadcastTask putAndBroadcast(@NotNull UserAchievementDTO userAchievementDTO)
+    public BroadcastUtils putAndBroadcast(@NotNull UserAchievementDTO userAchievementDTO)
     {
         put(userAchievementDTO.getUserAchievementId(), userAchievementDTO);
         final UserAchievementId userAchievementId = userAchievementDTO.getUserAchievementId();
-        BroadcastTask broadcastTask = new BroadcastTask(userAchievementId, localBroadcastManager);
+        BroadcastUtils broadcastTask = new BroadcastUtils(userAchievementId, localBroadcastManager, INTENT_ACTION_NAME, KEY_USER_ACHIEVEMENT_ID);
         broadcastTask.start();
         return broadcastTask;
-    }
-
-    protected static class BroadcastTask
-    {
-        private static final int MAX_BROADCAST_TRY = 4;
-
-        private int mDelayInterval = DELAY_INTERVAL;
-        private UserAchievementId mUserAchievementId;
-        private Handler mHandler;
-        private LocalBroadcastManager mLocalBroadcastManager;
-        private volatile int mTry;
-        public volatile boolean isRunning;
-
-        private Runnable mTask = new Runnable()
-        {
-            @Override public void run()
-            {
-                if (mTry >= MAX_BROADCAST_TRY)
-                {
-                    stop();
-                }
-                else if (!broadcast(mUserAchievementId))
-                {
-                    mHandler.postDelayed(mTask, mDelayInterval);
-                    mTry++;
-                }
-                else
-                {
-                    stop();
-                }
-            }
-        };
-
-        public BroadcastTask(UserAchievementId mUserAchievementId, LocalBroadcastManager mLocalBroadcastManager)
-        {
-            this.mUserAchievementId = mUserAchievementId;
-            this.mLocalBroadcastManager = mLocalBroadcastManager;
-            if (Looper.myLooper() == null)
-            {
-                Looper.prepare();
-            }
-            mHandler = new Handler();
-        }
-
-        public int getCurrentTry()
-        {
-            return mTry;
-        }
-
-        private boolean broadcast(UserAchievementId userAchievementId)
-        {
-            Intent i = new Intent(INTENT_ACTION_NAME);
-            i.putExtra(KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
-            return mLocalBroadcastManager.sendBroadcast(i);
-        }
-
-        public void start()
-        {
-            isRunning = true;
-            mTask.run();
-        }
-
-        public void stop()
-        {
-            mHandler.removeCallbacks(mTask);
-            isRunning = false;
-        }
     }
 }

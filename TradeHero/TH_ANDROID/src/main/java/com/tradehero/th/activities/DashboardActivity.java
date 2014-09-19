@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.TabHost;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.crashlytics.android.Crashlytics;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
@@ -32,6 +34,7 @@ import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.UIModule;
+import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -89,8 +92,11 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.utils.dagger.AppModule;
+import com.tradehero.th.utils.level.ForXP;
+import com.tradehero.th.utils.level.XpModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.XpToast;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
@@ -138,8 +144,11 @@ public class DashboardActivity extends FragmentActivity
     @Inject Analytics analytics;
 
     @Inject LocalBroadcastManager localBroadcastManager;
-    @Inject @ForAchievement IntentFilter intentFilter;
+    @Inject @ForAchievement IntentFilter achievementIntentFilter;
+    @Inject @ForXP IntentFilter xpIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
+
+    @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
 
@@ -149,6 +158,7 @@ public class DashboardActivity extends FragmentActivity
     private int tabHostHeight;
 
     private BroadcastReceiver mAchievementBroadcastReceiver;
+    private BroadcastReceiver mXPBroadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -211,6 +221,8 @@ public class DashboardActivity extends FragmentActivity
         pushNotificationManager.get().enablePush();
 
         initAchievementBroadcastRecevier();
+
+        ButterKnife.inject(this);
     }
 
     private void setupNavigator()
@@ -243,6 +255,7 @@ public class DashboardActivity extends FragmentActivity
             }
         });
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
+
     }
 
     private void initAchievementBroadcastRecevier()
@@ -260,6 +273,20 @@ public class DashboardActivity extends FragmentActivity
                     {
                         abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
                     }
+                }
+
+            }
+        };
+
+        mXPBroadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                if(intent != null && intent.getBundleExtra(XpModule.XP_BROADCAST_KEY) != null)
+                {
+                    Bundle b = intent.getBundleExtra(XpModule.XP_BROADCAST_KEY);
+                    UserXPAchievementDTO userXPAchievementDTO = new UserXPAchievementDTO(b);
+                    xpToast.showWhenReady(userXPAchievementDTO);
                 }
             }
         };
@@ -373,7 +400,8 @@ public class DashboardActivity extends FragmentActivity
         launchActions();
         analytics.openSession();
 
-        localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, intentFilter);
+        localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, achievementIntentFilter);
+        localBroadcastManager.registerReceiver(mXPBroadcastReceiver, xpIntentFilter);
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -406,6 +434,7 @@ public class DashboardActivity extends FragmentActivity
     {
         analytics.closeSession();
         localBroadcastManager.unregisterReceiver(mAchievementBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mXPBroadcastReceiver);
         super.onPause();
     }
 

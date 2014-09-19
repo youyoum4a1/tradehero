@@ -3,4 +3,16 @@
   <string name="user_level_xp">XP</string>
   <string name="user_level_up_header_text">Congratulations!</string>
   <string name="user_level_up_description_text">You have achieved level %d!</string>
+
+
+  <!-- For XP Testing Screen -->
+  <string name="xp_test_reason">XP Reason eg. Trade Bonus</string>
+  <string name="xp_test_from">XP From</string>
+  <string name="xp_test_earned">XP Earned</string>
+  <string name="xp_test_multiplier_reason">Multiplier Reason eg. Positive ROI</string>
+  <string name="xp_test_multiplier">Multiplier Value</string>
+  <string name="xp_test_multiplier1">Multiplier 1</string>
+  <string name="xp_test_multiplier2">Multiplier 2</string>
+  <string name="xp_test_multiplier3">Multiplier 3</string>
+  <string name="xp_test_launch">Launch!</string>
 </resources>

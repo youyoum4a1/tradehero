@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/xp_test_reason"
+      android:id="@+id/xp_test_reason" />
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/xp_test_from"
+      android:inputType="number"
+      android:ems="10"
+      android:id="@+id/xp_test_from" />
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="number"
+      android:hint="@string/xp_test_earned"
+      android:ems="10"
+      android:id="@+id/xp_test_earned" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:layout_marginTop="10dp"
+      android:text="@string/xp_test_multiplier1" />
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textPersonName"
+      android:hint="@string/xp_test_multiplier_reason"
+      android:ems="10"
+      android:id="@+id/xp_test_multiplier_1_reason" />
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="number"
+      android:ems="10"
+      android:hint="@string/xp_test_multiplier"
+      android:id="@+id/xp_test_multiplier_1_value" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:layout_marginTop="10dp"
+      android:text="@string/xp_test_multiplier2" />
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textPersonName"
+      android:hint="@string/xp_test_multiplier_reason"
+      android:ems="10"
+      android:id="@+id/xp_test_multiplier_2_reason" />
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="number"
+      android:ems="10"
+      android:hint="@string/xp_test_multiplier"
+      android:id="@+id/xp_test_multiplier_2_value" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:layout_marginTop="10dp"
+      android:text="@string/xp_test_multiplier3" />
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textPersonName"
+      android:hint="@string/xp_test_multiplier_reason"
+      android:ems="10"
+      android:id="@+id/xp_test_multiplier_3_reason" />
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="number"
+      android:ems="10"
+      android:hint="@string/xp_test_multiplier"
+      android:id="@+id/xp_test_multiplier_3_value" />
+
+    <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:hint="@string/xp_test_launch"
+      android:id="@+id/xp_test_launch"
+      android:layout_gravity="center_horizontal" />
+  </LinearLayout>
+</ScrollView>
