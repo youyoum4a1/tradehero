@@ -44,7 +44,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private ImageView backButton;
 
     @Inject Analytics analytics;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -83,17 +82,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     {
         super.onViewCreated(view, savedInstanceState);
         DeviceUtil.showKeyboardDelayed(emailEditText);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                navigator.popFragment();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

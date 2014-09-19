@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer name="achievement_animation_start_delay">1000</integer>
+  <integer name="achievement_pulse_duration">1800</integer>
+  <integer name="achievement_pulse_delay">300</integer>
+  <integer name="achievement_pulse_delay2">600</integer>
+  <integer name="achievement_zoom_in_delay">100</integer>
+  <integer name="achievement_dismiss_duration">800</integer>
+
+  <dimen name="achievement_dialog_padding">10dp</dimen>
+  <dimen name="achievement_dialog_width">290dp</dimen>
+  <color name="achievement_dialog_bg">@color/white</color>
+  <dimen name="achievement_badge_w_h">120dp</dimen>
+  <dimen name="achievement_badge_margin_top">50dp</dimen>
+  <dimen name="achievement_pulse_circle_w_h">50dp</dimen>
+  <dimen name="achievement_pulse_circle_margin_top">85dp</dimen>
+  <dimen name="achievement_title_margin_top">20dp</dimen>
+  <dimen name="achievement_description_margin_top">10dp</dimen>
+  <dimen name="achievement_more_description_margin_top">5dp</dimen>
+  <dimen name="achievement_progress_vertical_margin">5dp</dimen>
+  <dimen name="achievement_progress_container_height">70dp</dimen>
+  <dimen name="achievement_dollar_xp_earned_horizontal_margin">10dp</dimen>
+  <dimen name="achievement_dollar_xp_earned_vertical_margin">13dp</dimen>
+
+  <integer name="achievement_earned_duration">1000</integer>
+
+  <integer name="achievement_level_up_start_duration">100</integer>
+  <integer name="achievement_level_up_end_start_offset">1000</integer>
+  <integer name="achievement_level_up_end_duration">300</integer>
+
+  <integer name="achievement_share_button_animation_delay">2500</integer>
+  <integer name="achievement_share_button_animation_duration">1000</integer>
+
+  <color name="achievement_indicator_blue_bg_transparent">#241376FB</color>
+  <color name="achievement_dollars_earned_color">#F3A422</color>
+  <color name="achievement_xp_color">#407304</color>
+  <color name="achievement_xp_color_brighter">#ff659b04</color>
+
+  <!-- Cell view -->
+  <dimen name="achievement_cell_padding">10dp</dimen>
+  <dimen name="achievement_cell_content_margin_left">5dp</dimen>
+  <dimen name="achievement_cell_progress_indicator_w_h">40dp</dimen>
+
+  <dimen name="achievement_indicator_bg_line_height">12dp</dimen>
+  <dimen name="achievement_indicator_bg_line_padding">20dp</dimen>
+  <dimen name="achievement_indicator_star_bg_padding">6dp</dimen>
+  <dimen name="achievement_indicator_star_padding">8dp</dimen>
+
+
+  <!-- Include this tag for a indicator for achievement -->
+  <string name="tag_achievement_indicator" translatable="false">is_an_indicator</string>
+
+  <!-- Include this tag for a indicator for quest -->
+  <string name="tag_quest_indicator" translatable="false">is_a_quest_indicator</string>
+
+  <integer name="quest_indicator_animation_start_delay">1500</integer>
+  <integer name="quest_indicator_animation_duration">800</integer>
+
+</resources>

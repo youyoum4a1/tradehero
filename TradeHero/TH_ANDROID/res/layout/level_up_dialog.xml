@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_level_up_main_container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center|center_horizontal"
+    android:minWidth="1280dp"
+    android:minHeight="1280dp"
+    android:layout_gravity="center|center_horizontal"
+    tools:background="@color/black">
+
+  <RelativeLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/user_level_up_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TH.Level.Up.Header"
+        android:layout_centerHorizontal="true"
+        android:text="@string/user_level_up_header_text"
+        android:layout_marginBottom="@dimen/user_level_level_up_text_vertical_margin"
+        />
+
+    <ImageView
+        android:id="@+id/user_level_next_badge"
+        android:layout_width="@dimen/user_level_level_up_badge_w_h"
+        android:layout_height="@dimen/user_level_level_up_badge_w_h"
+        android:layout_below="@id/user_level_up_header"
+        android:layout_centerHorizontal="true"
+        android:alpha="0"
+        android:src="@drawable/ic_bronze_level"/>
+
+    <ImageView
+        android:id="@+id/user_level_current_badge"
+        android:layout_width="@dimen/user_level_level_up_badge_w_h"
+        android:layout_height="@dimen/user_level_level_up_badge_w_h"
+        android:layout_below="@id/user_level_up_header"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_bronze_level"/>
+
+
+    <TextView
+        android:id="@+id/user_level_up_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TH.Level.Up.Desc"
+        android:layout_centerHorizontal="true"
+        tools:text="You've leveled up to level 7"
+        android:layout_below="@id/user_level_current_badge"
+        android:layout_marginTop="@dimen/user_level_level_up_text_vertical_margin"
+        />
+  </RelativeLayout>
+
+
+</RelativeLayout>

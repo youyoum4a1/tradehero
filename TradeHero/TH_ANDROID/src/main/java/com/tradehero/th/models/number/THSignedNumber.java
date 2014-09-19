@@ -1,10 +1,11 @@
 package com.tradehero.th.models.number;
 
 import com.tradehero.th.R;
+import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.utils.ColorUtils;
-import java.text.DecimalFormat;
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
 
 public class THSignedNumber
 {
@@ -124,7 +125,7 @@ public class THSignedNumber
     {
         if (colorResId == null)
         {
-            colorResId = ColorUtils.getColorResourceIdForNumber(value);
+            colorResId = THColorUtils.getColorResourceIdForNumber(value);
         }
         return colorResId;
     }

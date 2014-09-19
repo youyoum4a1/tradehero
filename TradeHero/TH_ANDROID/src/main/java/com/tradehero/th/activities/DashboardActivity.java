@@ -2,11 +2,14 @@ package com.tradehero.th.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +30,7 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
+import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
@@ -40,6 +44,7 @@ import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
@@ -69,6 +74,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.FirstShowInviteCodeDialog;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
@@ -81,6 +87,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
@@ -129,6 +136,9 @@ public class DashboardActivity extends FragmentActivity
     @Inject THRouter thRouter;
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject Analytics analytics;
+    @Inject LocalBroadcastManager localBroadcastManager;
+    @Inject @ForAchievement IntentFilter intentFilter;
+    @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
 
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
 
@@ -136,6 +146,7 @@ public class DashboardActivity extends FragmentActivity
     private Injector newInjector;
     private DashboardTabHost dashboardTabHost;
     private int tabHostHeight;
+    private BroadcastReceiver mAchievementBroadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -196,6 +207,8 @@ public class DashboardActivity extends FragmentActivity
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
+
+        initAchievementBroadcastReceiver();
     }
 
     private void setupNavigator()
@@ -228,6 +241,26 @@ public class DashboardActivity extends FragmentActivity
             }
         });
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
+    }
+
+    private void initAchievementBroadcastReceiver()
+    {
+        mAchievementBroadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                if(intent != null && intent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID) != null)
+                {
+                    Bundle bundle = intent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID);
+                    UserAchievementId userAchievementId = new UserAchievementId(bundle);
+                    AbstractAchievementDialogFragment abstractAchievementDialogFragment = achievementDialogCreator.newInstance(userAchievementId);
+                    if(abstractAchievementDialogFragment != null)
+                    {
+                        abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -337,6 +370,7 @@ public class DashboardActivity extends FragmentActivity
         super.onResume();
         launchActions();
         analytics.openSession();
+        localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, intentFilter);
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -368,6 +402,7 @@ public class DashboardActivity extends FragmentActivity
     @Override protected void onPause()
     {
         analytics.closeSession();
+        localBroadcastManager.unregisterReceiver(mAchievementBroadcastReceiver);
         super.onPause();
     }
 

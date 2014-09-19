@@ -8,24 +8,30 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 @Routable({
         "user/me", "profiles/me"
 })
 public class MeTimelineFragment extends TimelineFragment
-    implements WithTutorial, View.OnClickListener
+        implements WithTutorial, View.OnClickListener
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject Analytics analytics;
+
+    @Inject LevelDefListCache levelDefListCache;
 
     private TextView updateCenterCountTextView;
 
@@ -33,6 +39,15 @@ public class MeTimelineFragment extends TimelineFragment
     {
         super.onCreate(savedInstanceState);
         thRouter.save(getArguments(), currentUserId.toUserBaseKey());
+
+        LevelDefDTOList cached = levelDefListCache.get(new LevelDefListId());
+        Timber.d("cached %s", cached);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -47,15 +62,9 @@ public class MeTimelineFragment extends TimelineFragment
         if (updateCenterIcon != null)
         {
             updateCenterIcon.setOnClickListener(this);
-            updateCenterCountTextView = (TextView)updateCenterIcon.findViewById(R.id.action_bar_message_count);
+            updateCenterCountTextView = (TextView) updateCenterIcon.findViewById(R.id.action_bar_message_count);
         }
         updateView();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -64,7 +73,7 @@ public class MeTimelineFragment extends TimelineFragment
         {
             case R.id.action_bar_home_icon:
                 navigator.pushFragment(HomeFragment.class);
-                break;
+                return true;
             default:
                 break;
         }
@@ -95,7 +104,7 @@ public class MeTimelineFragment extends TimelineFragment
 
     @Override public void onClick(View view)
     {
-        switch(view.getId())
+        switch (view.getId())
         {
             case R.id.action_bar_update_center_icon:
                 navigator.pushFragment(UpdateCenterFragment.class);

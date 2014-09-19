@@ -3,8 +3,10 @@ package com.tradehero.th.persistence;
 import android.content.Context;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -18,6 +20,9 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
+import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
+import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
+import com.tradehero.th.persistence.achievement.QuestBonusListCache;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -32,6 +37,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionIdCache;
+import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
@@ -108,6 +114,11 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     protected final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     protected final Lazy<WatchlistPositionCache> watchlistPositionCache;
+    protected final Lazy<LevelDefListCache> levelDefListCache;
+
+    protected final Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy;
+    protected final Lazy<AchievementCategoryCache> achievementCategoryCacheLazy;
+    protected final Lazy<QuestBonusListCache> questBonusListCacheLazy;
     //</editor-fold>
 
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
@@ -157,6 +168,10 @@ import org.jetbrains.annotations.Nullable;
             Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
             Lazy<WatchlistPositionCache> watchlistPositionCache,
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
+            Lazy<LevelDefListCache> levelDefListCacheLazy,
+            Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy,
+            Lazy<AchievementCategoryCache> achievementCategoryCacheLazy,
+            Lazy<QuestBonusListCache> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
             @NotNull UserBaseDTOUtil userBaseDTOUtil,
             @NotNull Context context)
@@ -204,6 +219,10 @@ import org.jetbrains.annotations.Nullable;
         this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
         this.userBaseDTOUtil = userBaseDTOUtil;
+        this.levelDefListCache = levelDefListCacheLazy;
+        this.achievementCategoryCacheLazy = achievementCategoryCacheLazy;
+        this.achievementCategoryListCacheLazy = achievementCategoryListCacheLazy;
+        this.questBonusListCacheLazy = questBonusListCacheLazy;
         this.context = context;
     }
     //</editor-fold>
@@ -252,12 +271,17 @@ import org.jetbrains.annotations.Nullable;
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
+
+        achievementCategoryListCacheLazy.get().invalidateAll();
+        achievementCategoryCacheLazy.get().invalidateAll();
     }
 
     public void anonymousPrefetches()
     {
         preFetchExchanges();
         preFetchProviders();
+        preFetchTraderLevels();
+        preFetchQuestBonus();
     }
 
     public void preFetchExchanges()
@@ -298,6 +322,16 @@ import org.jetbrains.annotations.Nullable;
                 filterTypeBasicDTO.getSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
     }
 
+    private void preFetchTraderLevels()
+    {
+        this.levelDefListCache.get().getOrFetchAsync(new LevelDefListId(), true); //Should it be forceUpdate?
+    }
+
+    private void preFetchQuestBonus()
+    {
+        this.questBonusListCacheLazy.get().getOrFetchAsync(new QuestBonusListId(), true);
+    }
+
     public void prefetchesUponLogin(@Nullable UserProfileDTO profile)
     {
         if (profile != null)
@@ -326,7 +360,7 @@ import org.jetbrains.annotations.Nullable;
 
         conveniencePrefetches(); // TODO move them so time after the others
     }
-    
+
     public void preFetchWatchlist()
     {
         userWatchlistPositionCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());

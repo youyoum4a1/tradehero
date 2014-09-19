@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.UserLevelProgressBar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    tools:background="@color/red">
+
+  <ImageView
+      android:id="@+id/user_level_progress_next"
+      android:layout_width="@dimen/user_level_next_level_w_h"
+      android:layout_height="@dimen/user_level_next_level_w_h"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:src="@drawable/ic_bronze_level"
+      tools:text="10"
+      style="@style/TH.Level.Next"/>
+
+  <ProgressBar
+      android:id="@+id/user_level_main_progress_bar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_marginLeft="@dimen/user_level_progress_margin_left"
+      android:layout_marginRight="@dimen/user_level_progress_margin_right"
+      style="@style/TH.Level.ProgressBar"/>
+
+  <ImageView
+      android:id="@+id/user_level_progress_current"
+      android:layout_width="@dimen/user_level_current_level_w_h"
+      android:layout_height="@dimen/user_level_current_level_w_h"
+      android:layout_centerVertical="true"
+      android:src="@drawable/ic_bronze_level"
+      tools:text="10"
+      style="@style/TH.Level.Current"/>
+
+</com.tradehero.th.widget.UserLevelProgressBar>

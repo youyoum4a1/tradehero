@@ -9,6 +9,7 @@ import com.tradehero.common.log.RetrofitErrorHandlerLogger;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.competition.ProviderCompactDTO;
 import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
 import com.tradehero.th.api.competition.ProviderCompactDTOJacksonModule;
@@ -26,6 +27,7 @@ import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.FriendlyUrlConnectionClient;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
+import com.tradehero.th.network.service.AchievementService;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
@@ -79,6 +81,11 @@ import retrofit.converter.Converter;
 public class RetrofitModule
 {
     //<editor-fold desc="API Services">
+    @Provides @Singleton AchievementService provideAchievementService(RestAdapter adapter)
+    {
+        return adapter.create(AchievementService.class);
+    }
+
     @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter adapter)
     {
         return adapter.create(AlertPlanService.class);
@@ -258,7 +265,7 @@ public class RetrofitModule
     }
 
     @Provides @Singleton @ForApp ObjectMapper provideObjectMapper(
-            ObjectMapper objectMapper,
+            ObjectMapperWrapper objectMapper,
             UserFriendsDTOJacksonModule userFriendsDTOModule,
             PositionDTOJacksonModule positionDTOModule,
             ProviderCompactDTOJacksonModule providerCompactDTOModule,

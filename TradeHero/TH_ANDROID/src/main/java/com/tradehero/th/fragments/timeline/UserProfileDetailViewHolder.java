@@ -11,14 +11,19 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.api.level.LevelDefDTOList;
+import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.models.number.THSignedNumber;
-import java.text.SimpleDateFormat;
+import com.tradehero.th.persistence.level.LevelDefListCache;
+import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.widget.UserLevelProgressBar;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
@@ -27,17 +32,17 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
     @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
     @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
-    @InjectView(R.id.user_profile_trade_count_wrapper) @Optional protected View tradesCountWrapper;
-    @InjectView(R.id.user_profile_trade_count) @Optional protected TextView tradesCount;
-    @InjectView(R.id.user_profile_exchanges_count_wrapper) @Optional protected View exchangesCountWrapper;
-    @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
+    @InjectView(R.id.user_profile_achievement_count) @Optional protected TextView achievementCount;
+    @InjectView(R.id.user_level_progress_bar) @Optional protected UserLevelProgressBar userLevelProgressBar;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     @Inject GraphicUtil graphicUtil;
+    @Inject LevelDefListCache levelDefListCache;
 
     private Target topBackgroundTarget;
     private Target topDefaultBackgroundTarget;
     protected Runnable displayTopViewBackgroundRunnable;
+    private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> levelDefDTOListListener;
 
     public UserProfileDetailViewHolder(View view)
     {
@@ -48,29 +53,33 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     {
         super.initViews(view);
         topBackgroundTarget = new BackgroundTarget();
-		topDefaultBackgroundTarget = new DefaultBackgroundTarget();
+        topDefaultBackgroundTarget = new DefaultBackgroundTarget();
+        levelDefDTOListListener = new LevelDefListCacheListener();
+        LevelDefListId levelDefListId = new LevelDefListId();
+        levelDefListCache.register(levelDefListId, levelDefDTOListListener);
+        levelDefListCache.getOrFetchAsync(levelDefListId);
     }
 
     @Override public void detachViews()
     {
         topBackgroundTarget = null;
-		topDefaultBackgroundTarget = null;
+        topDefaultBackgroundTarget = null;
         if (profileTop != null)
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
         }
+        levelDefListCache.unregister(levelDefDTOListListener);
         super.detachViews();
     }
 
     @Override public void display(final UserProfileDTO dto)
     {
         super.display(dto);
-        displayProfitFromTrades();
         displayTotalWealth();
         displayAdditionalCash();
         displayCashOnHand();
-        displayExchangesCount();
-        displayTradesCount();
+        displayAchievementCount();
+        displayLevelProgress();
         loadBgPicture();
     }
 
@@ -114,43 +123,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                     .resize(profileTop.getWidth(), profileTop.getHeight())
                     .centerCrop()
                     .into(topDefaultBackgroundTarget);
-        }
-    }
-
-    protected void displayProfitFromTrades()
-    {
-        if (profitFromTrades != null)
-        {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
-            {
-                Double pl = userProfileDTO.portfolio.plSinceInception;
-                if (pl == null)
-                {
-                    pl = 0.0;
-                }
-                THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
-                        .withSign()
-                        .signTypePlusMinusAlways()
-                        .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build();
-                profitFromTrades.setText(thPlSinceInception.toString());
-                profitFromTrades.setTextColor(thPlSinceInception.getColor());
-                if (profitValue != null)
-                {
-                    profitValue.setText(thPlSinceInception.toString());
-                    profitValue.setTextColor(thPlSinceInception.getColor());
-                }
-            }
-            else
-            {
-                profitFromTrades.setText(R.string.na);
-                profitFromTrades.setTextColor(context.getResources().getColor(R.color.black));
-                if (profitValue != null)
-                {
-                    profitValue.setText(R.string.na);
-                    profitValue.setTextColor(context.getResources().getColor(R.color.black));
-                }
-            }
         }
     }
 
@@ -208,33 +180,35 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         }
     }
 
-    protected void displayExchangesCount()
+    protected void displayAchievementCount()
     {
-        if (exchangesCount != null)
+        if (achievementCount != null)
         {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
+            if (userProfileDTO != null)
             {
-                exchangesCount.setText(Integer.toString(userProfileDTO.portfolio.countExchanges));
+                achievementCount.setText(String.valueOf(userProfileDTO.achievementCount));
             }
             else
             {
-                exchangesCount.setText(R.string.na);
+                achievementCount.setText(R.string.na);
             }
         }
     }
 
-    protected void displayTradesCount()
+    protected void setLevelDef(LevelDefDTOList levelDefDTOList)
     {
-        if (tradesCount != null)
+        if(userLevelProgressBar != null)
         {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
-            {
-                tradesCount.setText(Integer.toString(userProfileDTO.portfolio.countTrades));
-            }
-            else
-            {
-                tradesCount.setText(R.string.na);
-            }
+            userLevelProgressBar.setLevelDefDTOList(levelDefDTOList);
+        }
+        displayLevelProgress();
+    }
+
+    protected void displayLevelProgress()
+    {
+        if(userProfileDTO != null && userLevelProgressBar != null && userLevelProgressBar.getLevelDefDTOList() != null)
+        {
+            userLevelProgressBar.startsWith(userProfileDTO.xp);
         }
     }
 
@@ -245,6 +219,25 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 && profileTop != null)
         {
             profileTop.post(displayTopViewBackgroundRunnable);
+        }
+    }
+
+    protected class LevelDefListCacheListener implements DTOCacheNew.HurriedListener<LevelDefListId,LevelDefDTOList>
+    {
+
+        @Override public void onPreCachedDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        {
+            setLevelDef(value);
+        }
+
+        @Override public void onDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        {
+            setLevelDef(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
+        {
+            userLevelProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -268,11 +261,11 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     }
 
     protected class DefaultBackgroundTarget
-			extends BackgroundTarget
+            extends BackgroundTarget
     {
     }
 
-    @OnClick(R.id.user_profile_trade_count_wrapper) @Optional
+    @OnClick(R.id.user_profile_achievement_count_wrapper) @Optional
     @Override protected void notifyDefaultPortfolioClicked()
     {
         super.notifyDefaultPortfolioClicked();

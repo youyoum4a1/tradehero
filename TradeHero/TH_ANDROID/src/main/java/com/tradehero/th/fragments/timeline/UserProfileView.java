@@ -13,7 +13,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 public class UserProfileView extends BetterViewAnimator
     implements DTOView<UserProfileDTO>
 {
-    @InjectView(R.id.user_profile_compact_view) @Optional protected UserProfileCompactView userProfileCompactView;
     @InjectView(R.id.user_profile_detail_view) @Optional protected UserProfileDetailView userProfileDetailView;
 
     private UserProfileCompactViewHolder.OnProfileClickedListener profileClickedListener;
@@ -45,10 +44,6 @@ public class UserProfileView extends BetterViewAnimator
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (userProfileCompactView != null)
-        {
-            userProfileCompactView.setProfileClickedListener(createProfileClickListener());
-        }
         if (userProfileDetailView != null)
         {
             userProfileDetailView.setProfileClickedListener(createProfileClickListener());
@@ -57,10 +52,6 @@ public class UserProfileView extends BetterViewAnimator
 
     @Override protected void onDetachedFromWindow()
     {
-        if (userProfileCompactView != null)
-        {
-            userProfileCompactView.setProfileClickedListener(null);
-        }
         if (userProfileDetailView != null)
         {
             userProfileDetailView.setProfileClickedListener(null);
@@ -70,22 +61,18 @@ public class UserProfileView extends BetterViewAnimator
 
     @Override public void display(UserProfileDTO userProfileDTO)
     {
-        if (userProfileCompactView != null)
-        {
-            userProfileCompactView.display(userProfileDTO);
-        }
         if (userProfileDetailView != null)
         {
             userProfileDetailView.display(userProfileDTO);
         }
     }
 
-    private void notifyDefaultPortfolioRequested()
+    private void notifyDefaultAchievementClicked()
     {
         UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
         if (listener != null)
         {
-            listener.onDefaultPortfolioClicked();
+            listener.onAchievementClicked();
         }
     }
 
@@ -133,9 +120,9 @@ public class UserProfileView extends BetterViewAnimator
             notifyFollowerClicked();
         }
 
-        @Override public void onDefaultPortfolioClicked()
+        @Override public void onAchievementClicked()
         {
-            notifyDefaultPortfolioRequested();
+            notifyDefaultAchievementClicked();
         }
 
         @Override public void onEditProfileClicked()

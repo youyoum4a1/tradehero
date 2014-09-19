@@ -5,6 +5,7 @@
   <string name="user_profile_count_heroes">Heroes</string>
   <string name="user_profile_count_trades">Trades</string>
   <string name="user_profile_count_exchanges">Exchanges</string>
+  <string name="user_profile_achievements_count">Achievements</string>
 
   <string name="user_profile_roi_below">ROI</string>
   <string name="user_profile_profit">Profit</string>

@@ -22,7 +22,8 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.utils.ColorUtils;
+import com.tradehero.th.utils.THColorUtils;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
@@ -277,7 +278,7 @@ public class PositionPartialTopView extends LinearLayout
                 {
                     stockMovementIndicator.setText(R.string.arrow_prefix_negative);
                 }
-                stockMovementIndicator.setTextColor(ColorUtils.getProperColorForNumber(securityCompactDTO.pc50DMA / 5));
+                stockMovementIndicator.setTextColor(THColorUtils.getProperColorForNumber(securityCompactDTO.pc50DMA / 5));
             }
         }
     }

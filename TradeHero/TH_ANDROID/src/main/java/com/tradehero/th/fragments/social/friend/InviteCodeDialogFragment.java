@@ -26,13 +26,6 @@ public class InviteCodeDialogFragment extends BaseDialogFragment
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
     }
 
-    @Override public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
-        Dialog d = super.onCreateDialog(savedInstanceState);
-        d.getWindow().setWindowAnimations(R.style.TH_BuySellDialogAnimation);
-        return d;
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.invite_code_dialog_layout, container, false);

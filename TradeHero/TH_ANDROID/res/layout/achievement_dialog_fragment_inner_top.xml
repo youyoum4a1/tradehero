@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/achievement_dialog_width"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/achievement_dialog_padding"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
+
+  <Button
+      android:id="@+id/btn_achievement_dismiss"
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
+      style="@style/TH.ButtonClose"
+      android:background="@drawable/basic_transparent_selector"
+      android:layout_alignParentRight="true"
+      android:visibility="gone"
+      android:text="X"/>
+
+  <TextView
+      android:id="@+id/achievement_header"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="Lorem ipsum dolor!"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      style="@style/TH.Achievement.Header"/>
+
+  <ImageView
+      android:id="@+id/achievement_pulse"
+      style="@style/TH.Achievement.Pulse"/>
+
+  <ImageView
+      android:id="@+id/achievement_pulse2"
+      style="@style/TH.Achievement.Pulse"/>
+
+  <ImageView
+      android:id="@+id/achievement_pulse3"
+      style="@style/TH.Achievement.Pulse"/>
+
+  <ImageView
+      android:id="@+id/achievement_starburst"
+      android:layout_width="@dimen/achievement_pulse_circle_w_h"
+      android:layout_height="@dimen/achievement_pulse_circle_w_h"
+      android:src="@drawable/achievement_background"
+      android:layout_alignParentTop="true"
+      android:layout_marginTop="@dimen/achievement_pulse_circle_margin_top"
+      android:layout_centerHorizontal="true"
+      android:alpha="0.1"
+      android:contentDescription="@null"/>
+
+  <ImageView
+      android:id="@+id/achievement_badge"
+      android:layout_width="@dimen/achievement_badge_w_h"
+      android:layout_height="@dimen/achievement_badge_w_h"
+      android:scaleType="fitCenter"
+      tools:src="@drawable/launcher"
+      android:layout_marginTop="@dimen/achievement_badge_margin_top"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:contentDescription="@null"/>
+
+  <TextView
+      android:id="@+id/achievement_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/achievement_title_margin_top"
+      tools:text="Lorem ipsum dolor sit amet"
+      android:layout_below="@id/achievement_badge"
+      android:layout_centerHorizontal="true"
+      style="@style/TH.Achievement.Title"/>
+
+
+
+
+</merge>

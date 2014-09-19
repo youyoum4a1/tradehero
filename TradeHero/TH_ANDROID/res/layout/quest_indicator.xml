@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+  <TextView
+      android:id="@+id/quest_top_indicator"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:singleLine="false"
+      android:lines="2"
+      style="@style/TH.Achievement.Indicator.Text.Top"
+      android:layout_centerHorizontal="true"
+      tools:text="Day 1"/>
+
+  <ImageView
+      android:id="@+id/quest_logo_indicator"
+      android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+      android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+      style="@style/TH.Achievement.Indicator.Image"
+      android:contentDescription="@null"
+      android:layout_centerHorizontal="true"
+      android:layout_below="@id/quest_top_indicator"/>
+
+  <TextView
+      android:id="@+id/quest_bottom_indicator"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:singleLine="false"
+      android:lines="2"
+      style="@style/TH.Achievement.Indicator.Text.Bot"
+      android:layout_below="@id/quest_logo_indicator"
+      android:layout_centerHorizontal="true"
+      tools:text="TH$100k"/>
+</RelativeLayout>

@@ -27,6 +27,9 @@ import dagger.Module;
                 ApiTranslationTestModule.class,
                 ApiUsersTestModule.class,
         },
+        injects = {
+                ObjectMapperWrapperTest.class,
+        },
         complete = false,
         library = true
 )

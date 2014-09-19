@@ -64,12 +64,12 @@ public class UserProfileCompactView extends RelativeLayout implements DTOView<Us
         }
     }
 
-    private void notifyDefaultPortfolioRequested()
+    private void notifyDefaultAchievementClicked()
     {
         UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
         if (listener != null)
         {
-            listener.onDefaultPortfolioClicked();
+            listener.onAchievementClicked();
         }
     }
 
@@ -117,9 +117,9 @@ public class UserProfileCompactView extends RelativeLayout implements DTOView<Us
             notifyFollowerClicked();
         }
 
-        @Override public void onDefaultPortfolioClicked()
+        @Override public void onAchievementClicked()
         {
-            notifyDefaultPortfolioRequested();
+            notifyDefaultAchievementClicked();
         }
 
         @Override public void onEditProfileClicked()

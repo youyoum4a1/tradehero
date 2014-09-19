@@ -8,7 +8,7 @@ import dagger.Module;
                 AppUtilsRouteTestModule.class,
         },
         injects = {
-                ColorUtilsTest.class,
+                THColorUtilsTest.class,
                 NumberDisplayUtilsTest.class,
         },
         complete = false,

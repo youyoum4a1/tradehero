@@ -1,7 +1,6 @@
 package com.tradehero.th;
 
 import com.tradehero.th.network.NetworkDebugModule;
-
 import dagger.Module;
 
 @Module(

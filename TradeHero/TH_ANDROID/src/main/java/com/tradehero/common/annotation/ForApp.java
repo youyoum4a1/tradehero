@@ -5,7 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Qualifier;
 
 /**
- * Created by tradehero on 14-7-9.
+ * Provides object mapper for all known types.
  */
 @Qualifier @Retention(RetentionPolicy.RUNTIME)
 public @interface ForApp

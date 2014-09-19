@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/achievement_dummy_container"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:background="@null"
+    android:minHeight="1280dp"
+    android:minWidth="1280dp"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    tools:background="@color/black"
+    >
+  <!-- A dummy container which takes the whole screen
+       This container allows us to animate the children view without being clipped-->
+  <RelativeLayout
+      android:id="@+id/achievement_content_container"
+      android:layout_width="@dimen/achievement_dialog_width"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:orientation="vertical"
+      android:background="@color/achievement_dialog_bg"
+      >
+    <RelativeLayout
+        android:id="@+id/achievement_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/achievement_dialog_padding"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        >
+      <include
+          android:id="@+id/achievement_dialog_fragment_inner_top"
+          layout="@layout/achievement_dialog_fragment_inner_top"/>
+
+      <com.tradehero.common.widget.QuestIndicatorGroupView
+          android:id="@+id/quest_indicator_group"
+          android:layout_width="@dimen/achievement_dialog_width"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/achievement_progress_vertical_margin"
+          android:layout_marginBottom="@dimen/achievement_progress_vertical_margin"
+          android:background="@drawable/achievement_indicator_bg_line"
+          android:layout_below="@id/achievement_title"
+          android:orientation="horizontal"
+          android:gravity="center"
+          tools:ignore="UnknownId">
+
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+        <com.tradehero.common.widget.QuestIndicatorView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Achievement.QuestIndicator"/>
+      </com.tradehero.common.widget.QuestIndicatorGroupView>
+
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/achievement_description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/achievement_description_margin_top"
+          tools:text="Lorem ipsum dolor sit amet, consectetur"
+          android:layout_below="@id/quest_indicator_group"
+          android:layout_centerHorizontal="true"
+          style="@style/TH.Achievement.Description"/>
+
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/achievement_more_description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="tempor incididunt ut labore et dolore magna aliqua."
+          android:layout_marginTop="@dimen/achievement_more_description_margin_top"
+          android:layout_below="@id/achievement_description"
+          android:layout_centerHorizontal="true"
+          style="@style/TH.Achievement.Description"/>
+
+      <TextView
+          android:id="@+id/user_level_progress_xp_earned"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/achievement_more_description"
+          style="@style/TH.Achievement.Earned.XP"
+          android:layout_marginTop="@dimen/achievement_dollar_xp_earned_vertical_margin"
+          android:layout_centerHorizontal="true"
+          tools:text="+1,000 XP!"/>
+
+      <include
+          android:id="@+id/user_level_progress_bar"
+          layout="@layout/user_level_progressbar"
+          android:layout_below="@id/user_level_progress_xp_earned"
+          android:layout_centerHorizontal="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/achievement_share_panel"/>
+
+  </RelativeLayout>
+
+</LinearLayout>

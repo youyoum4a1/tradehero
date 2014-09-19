@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.fragments.achievement.FragmentAchievementModule;
 import com.tradehero.th.fragments.alert.FragmentAlertModule;
 import com.tradehero.th.fragments.authentication.FragmentAuthenticationModule;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -54,7 +55,8 @@ import dagger.Module;
                 FragmentEducationModule.class,
                 FragmentTranslationModule.class,
                 FragmentAuthenticationModule.class,
-                FragmentOnboardModule.class
+                FragmentOnboardModule.class,
+                FragmentAchievementModule.class,
         },
         injects = {
                 DashboardFragment.class,

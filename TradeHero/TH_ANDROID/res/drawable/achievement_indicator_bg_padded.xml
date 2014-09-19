@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:drawable="@drawable/achievement_indicator_bg"
+      android:top="@dimen/achievement_indicator_star_bg_padding"
+      android:bottom="@dimen/achievement_indicator_star_bg_padding"
+      android:left="@dimen/achievement_indicator_star_bg_padding"
+      android:right="@dimen/achievement_indicator_star_bg_padding"/>
+</layer-list>

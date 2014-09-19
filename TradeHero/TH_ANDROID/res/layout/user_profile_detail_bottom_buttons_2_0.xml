@@ -7,15 +7,15 @@
     >
 
   <Button
-      android:id="@+id/btn_profile_timeline"
-      style="@style/UserProfile.Button"
-      android:text="@string/user_profile_button_timeline"
-      />
-
-  <Button
       android:id="@+id/btn_profile_portfolios"
       style="@style/UserProfile.Button"
       android:text="@string/user_profile_button_portfolios"
+      />
+
+  <Button
+      android:id="@+id/btn_profile_timeline"
+      style="@style/UserProfile.Button"
+      android:text="@string/user_profile_button_timeline"
       />
 
   <Button

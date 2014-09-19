@@ -1,8 +1,11 @@
 package com.tradehero.th.models.share.preference;
 
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +46,11 @@ public class SocialSharePreferenceHelperNew
         {
             return socialSharePreferenceDTO.isShareEnabled();
         }
-        return defaultValue;
+        else
+        {
+            sharePreferencesMap.put(socialNetworkEnum, socialSharePreferenceFactory.create(socialNetworkEnum, defaultValue));
+            return defaultValue;
+        }
     }
 
     public void updateSocialSharePreference(@NotNull SocialNetworkEnum networkEnum, boolean isShareEnabled)
@@ -59,6 +66,21 @@ public class SocialSharePreferenceHelperNew
             //Create and add
             sharePreferencesMap.put(networkEnum, socialSharePreferenceFactory.create(networkEnum, isShareEnabled));
         }
+    }
+
+    public List<SocialNetworkEnum> getAllEnabledSharePreferences()
+    {
+        List<SocialNetworkEnum> enabled = new ArrayList<>();
+        for (Map.Entry<SocialNetworkEnum, SocialSharePreferenceDTO> entry : sharePreferencesMap.entrySet())
+        {
+            SocialNetworkEnum networkEnum = entry.getKey();
+            SocialSharePreferenceDTO socialSharePreferenceDTO = entry.getValue();
+            if (socialSharePreferenceDTO != null && socialSharePreferenceDTO.isShareEnabled())
+            {
+                enabled.add(networkEnum);
+            }
+        }
+        return enabled;
     }
 
     public void save()

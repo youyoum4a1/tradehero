@@ -37,13 +37,6 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
         mShowAskForReviewDialogPreference.addInFuture(TimingIntervalPreference.MINUTE);
     }
 
-    @Override public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
-        Dialog d = super.onCreateDialog(savedInstanceState);
-        d.getWindow().setWindowAnimations(R.style.TH_BuySellDialogAnimation);
-        return d;
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.ask_for_review_dialog_layout, container, false);

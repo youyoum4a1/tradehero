@@ -15,7 +15,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import javax.inject.Inject;
@@ -24,14 +23,12 @@ public class UserProfileCompactViewHolder
 {
     @InjectView(R.id.user_profile_avatar) @Optional public ImageView avatar;
     @InjectView(R.id.user_profile_roi) @Optional public TextView roiSinceInception;
-    @InjectView(R.id.user_profile_profit_value) @Optional public TextView profitValue;
     @InjectView(R.id.user_profile_followers_count_wrapper) @Optional public View followersCountWrapper;
     @InjectView(R.id.user_profile_followers_count) @Optional public TextView followersCount;
     @InjectView(R.id.user_profile_heroes_count_wrapper) @Optional public View heroesCountWrapper;
-    @InjectView(R.id.user_profile_heroes_count)  @Optional public TextView heroesCount;
+    @InjectView(R.id.user_profile_heroes_count) @Optional public TextView heroesCount;
     @InjectView(R.id.user_profile_display_name) @Optional public TextView displayName;
-    @InjectView(R.id.btn_user_profile_default_portfolio) @Optional public ImageView btnDefaultPortfolio;
-    @InjectView(R.id.user_profile_edit) @Optional public TextView mEditTextView;
+    @InjectView(R.id.user_profile_edit) @Optional public ImageView mEdit;
 
     @Inject protected Context context;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
@@ -67,7 +64,6 @@ public class UserProfileCompactViewHolder
         this.userProfileDTO = dto;
         loadUserPicture();
         displayRoiSinceInception();
-        displayProfitValue();
         displayFollowersCount();
         displayHeroesCount();
         displayDisplayName();
@@ -76,39 +72,15 @@ public class UserProfileCompactViewHolder
 
     private void displayEditIcon()
     {
-        if (mEditTextView != null)
+        if (mEdit != null)
         {
             if (userProfileDTO != null && userProfileDTO.id == currentUserId.get().intValue())
             {
-                mEditTextView.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    protected void displayProfitValue()
-    {
-        if (profitValue != null)
-        {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
-            {
-                Double pl = userProfileDTO.portfolio.plSinceInception;
-                if (pl == null)
-                {
-                    pl = 0.0;
-                }
-                THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
-                        .withSign()
-                        .signTypePlusMinusAlways()
-                        .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build();
-                profitValue.setText(thPlSinceInception.toString());
-                profitValue.setTextColor(
-                        context.getResources().getColor(thPlSinceInception.getColorResId()));
+                mEdit.setVisibility(View.VISIBLE);
             }
             else
             {
-                profitValue.setText(R.string.na);
-                profitValue.setTextColor(context.getResources().getColor(R.color.black));
+                mEdit.setVisibility(View.GONE);
             }
         }
     }
@@ -239,21 +211,23 @@ public class UserProfileCompactViewHolder
         }
     }
 
-    @OnClick(R.id.btn_user_profile_default_portfolio) @Optional
     protected void notifyDefaultPortfolioClicked()
     {
         OnProfileClickedListener listener = profileClickedListener;
         if (listener != null)
         {
-            listener.onDefaultPortfolioClicked();
+            listener.onAchievementClicked();
         }
     }
 
     public static interface OnProfileClickedListener
     {
         void onHeroClicked();
+
         void onFollowerClicked();
-        void onDefaultPortfolioClicked();
+
+        void onAchievementClicked();
+
         void onEditProfileClicked();
     }
 }

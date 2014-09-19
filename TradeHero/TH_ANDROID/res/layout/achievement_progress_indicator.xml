@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.achievement.AchievementProgressIndicator
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+  <LinearLayout
+      android:id="@+id/achievement_indicator_image_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:background="@drawable/achievement_indicator_bg_line"
+      >
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator.Image"/>
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator.Image"/>
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator.Image"/>
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator.Image"/>
+    <ImageView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="@dimen/achievement_cell_progress_indicator_w_h"
+        style="@style/TH.Achievement.Indicator.Image"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/achievement_indicator_text_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      >
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="Top 100"/>
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="Top 10"/>
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="Top 5"/>
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="Top 3"/>
+    <TextView
+        android:layout_width="@dimen/achievement_cell_progress_indicator_w_h"
+        android:layout_height="wrap_content"
+        style="@style/TH.Achievement.Indicator.Text"
+        tools:text="#1"/>
+  </LinearLayout>
+</com.tradehero.th.fragments.achievement.AchievementProgressIndicator>

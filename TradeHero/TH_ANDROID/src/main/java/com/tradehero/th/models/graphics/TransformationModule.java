@@ -6,11 +6,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.graphics.*;
+import com.tradehero.common.graphics.AbstractSequentialTransformation;
+import com.tradehero.common.graphics.AlphaTransformation;
+import com.tradehero.common.graphics.GradientTransformation;
+import com.tradehero.common.graphics.GrayscaleTransformation;
+import com.tradehero.common.graphics.RecyclerTransformation;
+import com.tradehero.common.graphics.RoundedCornerShaderTransformation;
+import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.graphics.StackBlurTransformation;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import dagger.Module;
 import dagger.Provides;
-
 import javax.inject.Singleton;
 
 @Module(
@@ -39,11 +46,11 @@ public class TransformationModule
     @Provides @ForUserPhoto
     public Drawable provideDefaultUserPhoto(Context context, @ForUserPhoto Transformation userImageTransformation)
     {
-        return new BitmapDrawable (
+        return new BitmapDrawable(
                 context.getResources(),
                 userImageTransformation.transform(
                         BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.superman_facebook)));
+                                R.drawable.superman_facebook)));
     }
 
     @Provides @ForUserPhotoBackground
@@ -56,12 +63,8 @@ public class TransformationModule
                 return "toGaussianGrayscale11";
             }
         };
-        transformation.add(new GrayscaleTransformation(picasso));
-		transformation.add(new StackBlurTransformation(30));
-        transformation.add(new GradientTransformation(
-                context.getResources().getColor(R.color.profile_view_gradient_top),
-                context.getResources().getColor(R.color.profile_view_gradient_bottom)));
-        transformation.add(new AlphaTransformation(0.5f));
+        transformation.add(new StackBlurTransformation(25));
+        transformation.add(new AlphaTransformation(0.3f));
         return transformation;
     }
 
@@ -76,7 +79,7 @@ public class TransformationModule
             }
         };
         transformation.add(new GrayscaleTransformation(picasso));
-		transformation.add(new StackBlurTransformation(10));
+        transformation.add(new StackBlurTransformation(10));
         transformation.add(new GradientTransformation(
                 context.getResources().getColor(R.color.profile_view_gradient_top),
                 context.getResources().getColor(R.color.black)));
@@ -84,7 +87,7 @@ public class TransformationModule
     }
 
     @Provides @ForSecurityItemBackground2 @Singleton
-    public Transformation provideSecurityItemBackgroundTransformation2(Context context,Picasso picasso)
+    public Transformation provideSecurityItemBackgroundTransformation2(Context context, Picasso picasso)
     {
         AbstractSequentialTransformation transformation = new AbstractSequentialTransformation()
         {
@@ -94,7 +97,7 @@ public class TransformationModule
             }
         };
         transformation.add(new GrayscaleTransformation(picasso));
-		transformation.add(new StackBlurTransformation(10));
+        transformation.add(new StackBlurTransformation(10));
         transformation.add(new AlphaTransformation(0.2f));
         return transformation;
     }
@@ -118,13 +121,18 @@ public class TransformationModule
         };
         backgroundTransformation.add(new GrayscaleTransformation(picasso));
         backgroundTransformation.add(new StackBlurTransformation(10));
-		backgroundTransformation.add(new AlphaTransformation(0.2f));
+        backgroundTransformation.add(new AlphaTransformation(0.2f));
         return backgroundTransformation;
     }
 
     @Provides @ForExtraTileBackground Transformation provideExtraTileBackgroundTransformation(Context context)
     {
-		int rad = context.getResources().getDimensionPixelSize(R.dimen.grid_item_bg_radius);
+        int rad = context.getResources().getDimensionPixelSize(R.dimen.grid_item_bg_radius);
         return new RoundedCornerShaderTransformation(rad);
+    }
+
+    @Provides @ForUserNextLevelBadge Transformation provideUserNextLevelBadgeTransformation(Context context, Picasso picasso)
+    {
+        return new GrayscaleTransformation(picasso);
     }
 }
