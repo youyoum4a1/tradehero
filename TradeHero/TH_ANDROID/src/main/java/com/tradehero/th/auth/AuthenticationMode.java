@@ -5,7 +5,8 @@ public enum AuthenticationMode
     SignUp("users"),
     SignIn("login"),
     SignUpWithEmail("SignupByEmail"),
-    Unknown("");
+    Unknown(""),
+    Device("");
 
     private final String endPoint;
 

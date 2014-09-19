@@ -1,5 +1,6 @@
 package com.tradehero.th.api.users.signup;
 
+import com.tradehero.th.api.form.DeviceUserFormDTO;
 import com.tradehero.th.api.form.EmailUserFormDTO;
 import com.tradehero.th.api.form.FacebookUserFormDTO;
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
@@ -20,6 +21,7 @@ public class LoginSignUpFormDTOFactory
     @NotNull private final Provider<LoginSignUpFormQQDTO> loginSignUpFormQQDTOProvider;
     @NotNull private final Provider<LoginSignUpFormTwitterDTO> loginSignUpFormTwitterDTOProvider;
     @NotNull private final Provider<LoginSignUpFormWeiboDTO> loginSignUpFormWeiboDTOProvider;
+    @NotNull private final Provider<LoginSignUpFormDeviceDTO> loginSignUpFormDeviceDTOProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public LoginSignUpFormDTOFactory(
@@ -28,6 +30,7 @@ public class LoginSignUpFormDTOFactory
             @NotNull Provider<LoginSignUpFormLinkedinDTO> loginSignUpFormLinkedinDTOProvider,
             @NotNull Provider<LoginSignUpFormQQDTO> loginSignUpFormQQDTOProvider,
             @NotNull Provider<LoginSignUpFormTwitterDTO> loginSignUpFormTwitterDTOProvider,
+            @NotNull Provider<LoginSignUpFormDeviceDTO> loginSignUpFormDeviceDTOProvider,
             @NotNull Provider<LoginSignUpFormWeiboDTO> loginSignUpFormWeiboDTOProvider)
     {
         this.loginSignUpFormEmailDTOProvider = loginSignUpFormEmailDTOProvider;
@@ -36,6 +39,7 @@ public class LoginSignUpFormDTOFactory
         this.loginSignUpFormQQDTOProvider = loginSignUpFormQQDTOProvider;
         this.loginSignUpFormTwitterDTOProvider = loginSignUpFormTwitterDTOProvider;
         this.loginSignUpFormWeiboDTOProvider = loginSignUpFormWeiboDTOProvider;
+        this.loginSignUpFormDeviceDTOProvider = loginSignUpFormDeviceDTOProvider;
     }
     //</editor-fold>
 
@@ -79,6 +83,12 @@ public class LoginSignUpFormDTOFactory
         {
             LoginSignUpFormWeiboDTO weibo = loginSignUpFormWeiboDTOProvider.get();
             weibo.accessToken = ((WeiboUserFormDTO) fromForm).accessToken;
+            created = weibo;
+        }
+        else if (fromForm instanceof DeviceUserFormDTO)
+        {
+            LoginSignUpFormDeviceDTO weibo = loginSignUpFormDeviceDTOProvider.get();
+            weibo.deviceAccessToken = ((DeviceUserFormDTO) fromForm).deviceAccessToken;
             created = weibo;
         }
         else

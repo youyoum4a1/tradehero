@@ -30,9 +30,10 @@ import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DeviceSignUtils;
 import com.tradehero.th.utils.EmailSignUtils;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.dagger.AppModule;
+import com.tradehero.th.utils.route.THRouter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,6 +68,7 @@ public class Application extends PApplication
         THUser.initialize();
 
         EmailSignUtils.initialize();
+        DeviceSignUtils.initialize();
 
         pushNotificationManager.initialise();
 

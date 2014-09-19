@@ -1,18 +1,21 @@
 package com.tradehero.th.api.form;
 
 //import com.tradehero.th.auth.FacebookAuthenticationProvider;
+
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.models.user.auth.DeviceCredentialsDTO;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
-//import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import com.tradehero.th.models.user.auth.QQCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+//import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 
 public class UserFormFactory
 {
@@ -70,6 +73,10 @@ public class UserFormFactory
         if (type.equals(WeiboCredentialsDTO.WEIBO_AUTH_TYPE))
         {
             return new WeiboUserFormDTO();
+        }
+        if (type.equals(DeviceCredentialsDTO.DEVICE_AUTH_TYPE))
+        {
+            return new DeviceUserFormDTO();
         }
 
         return new UserFormDTO();

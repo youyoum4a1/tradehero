@@ -8,8 +8,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
-import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -29,12 +27,7 @@ import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
-//import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
-import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.th.models.user.auth.QQCredentialsDTO;
-//import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
-import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
@@ -42,6 +35,7 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th2.R;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -49,6 +43,9 @@ import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
 import timber.log.Timber;
+
+//import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
+//import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 
 public class THUser
 {
@@ -159,6 +156,7 @@ public class THUser
                         createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
                 break;
             case SignIn:
+            case Device:
                 //use new DTO, combine login and social register
                 LoginSignUpFormDTO loginSignUpFormDTO = loginSignUpFormDTOFactory.create(userFormDTO);
 

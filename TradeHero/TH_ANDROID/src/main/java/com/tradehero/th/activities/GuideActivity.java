@@ -1,8 +1,10 @@
 package com.tradehero.th.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +22,19 @@ import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.api.users.UserLoginDTO;
+import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.auth.DeviceAuthenticationProvider;
+import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.base.THUser;
+import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.DeviceCredentialsDTO;
+import com.tradehero.th.persistence.prefs.DiviceID;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
@@ -27,8 +42,12 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th2.BuildConfig;
 import com.tradehero.th2.R;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 public class GuideActivity extends Activity
@@ -36,13 +55,18 @@ public class GuideActivity extends Activity
         ViewPager.OnPageChangeListener,
         View.OnClickListener
 {
+    private static long TIMES = (long)1000000;
+    private static long TIMES2 = (long)10000000;
     @Inject Analytics analytics;
+    @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject @DiviceID StringPreference mDeviceIDStringPreference;
     @InjectView(R.id.guide_screen_indicator0) ImageView mIndicator0;
     @InjectView(R.id.guide_screen_indicator1) ImageView mIndicator1;
     @InjectView(R.id.guide_screen_indicator2) ImageView mIndicator2;
     @InjectView(R.id.guide_screen_indicator3) ImageView mIndicator3;
     @InjectView(R.id.guide_screen_fast_login) Button mFastLogin;
     @InjectView(R.id.guide_screen_login) Button mLogin;
+    private ProgressDialog mProgressDialog;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -199,6 +223,7 @@ public class GuideActivity extends Activity
         switch (v.getId())
         {
             case R.id.guide_screen_fast_login:
+                authenticateWithDevice();
                 break;
             case R.id.guide_screen_login:
                 ActivityHelper.launchAuthentication(this);
@@ -310,5 +335,124 @@ public class GuideActivity extends Activity
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.startActivity(intent);
+    }
+
+    private void authenticateWithDevice()
+    {
+        mProgressDialog = progressDialogUtil.show(this, getString(R.string.faster_login), getString(R.string.guest_user_id, getIMEI()));
+        JSONCredentials createdJson = new JSONCredentials(getUserFromMap());
+        DeviceAuthenticationProvider.setCredentials(createdJson);
+        THUser.setAuthenticationMode(AuthenticationMode.Device);
+        THUser.logInWithAsync(DeviceCredentialsDTO.DEVICE_AUTH_TYPE,
+                createCallbackForEmailSign(AuthenticationMode.Device));
+    }
+
+    private Map<String, Object> getUserFromMap()
+    {
+        Map<String, Object> map = new HashMap<>();
+        map.put(DeviceAuthenticationProvider.KEY_ACCESS_TOKEN, getIMEI());
+        return map;
+    }
+
+    public String getIMEI()
+    {
+        String imei = mDeviceIDStringPreference.get();
+        if (imei.isEmpty())
+        {
+            TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+            String strIMEI = tm.getDeviceId();
+            if (strIMEI.isEmpty() || strIMEI.contains("000000000000000"))
+            {
+                strIMEI = String.valueOf((int)Math.floor((Math.random() + 1) * TIMES));
+                strIMEI = strIMEI+String.valueOf((int)Math.floor((Math.random() + 1) * TIMES2));
+                mDeviceIDStringPreference.set(strIMEI);
+            }
+            else
+            {
+                mDeviceIDStringPreference.set(strIMEI);
+            }
+            return strIMEI;
+        }
+        return imei;
+    }
+
+    private LogInCallback createCallbackForEmailSign(final AuthenticationMode authenticationMode)
+    {
+        final boolean isSigningUp = authenticationMode == AuthenticationMode.SignUp;
+        return new SocialAuthenticationCallback(AnalyticsConstants.Email)
+        {
+            private final boolean signingUp = isSigningUp;
+
+            @Override public boolean isSigningUp()
+            {
+                return signingUp;
+            }
+
+            @Override public boolean onSocialAuthDone(JSONCredentials json)
+            {
+                return true;
+            }
+        };
+    }
+
+    private class SocialAuthenticationCallback extends LogInCallback
+    {
+        private final String providerName;
+
+        public SocialAuthenticationCallback(String providerName)
+        {
+            this.providerName = providerName;
+        }
+
+        @Override public void done(UserLoginDTO user, THException ex)
+        {
+            mProgressDialog.dismiss();
+            Throwable cause;
+            Response response;
+            if (user != null)
+            {
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, providerName));
+                launchDashboard(user);
+            }
+            else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
+                    (response = ((RetrofitError) cause).getResponse()) != null && response.getStatus() == 403) // Forbidden
+            {
+                THToast.show(R.string.authentication_not_registered);
+            }
+            else
+            {
+                THToast.show(ex);
+            }
+        }
+
+        @Override public boolean onSocialAuthDone(JSONCredentials json)
+        {
+            return true;
+        }
+
+        @Override public void onStart()
+        {
+            //progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero_only));
+        }
+
+        public boolean isSigningUp()
+        {
+            return false;
+        }
+    }
+
+    private void launchDashboard(UserLoginDTO userLoginDTO)
+    {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        intent.putExtra(UserLoginDTO.SUGGEST_UPGRADE, userLoginDTO.suggestUpgrade);
+        intent.putExtra(UserLoginDTO.SUGGEST_LI_REAUTH, userLoginDTO.suggestLiReauth);
+        intent.putExtra(UserLoginDTO.SUGGEST_TW_REAUTH, userLoginDTO.suggestTwReauth);
+        intent.putExtra(UserLoginDTO.SUGGEST_FB_REAUTH, userLoginDTO.suggestFbReauth);
+
+        startActivity(intent);
+        overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+        finish();
     }
 }

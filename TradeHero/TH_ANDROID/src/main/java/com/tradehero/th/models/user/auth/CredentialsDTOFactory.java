@@ -60,7 +60,9 @@ public class CredentialsDTOFactory
             case WeiboCredentialsDTO.WEIBO_AUTH_TYPE:
                 created = new WeiboCredentialsDTO(object);
                 break;
-
+            case DeviceCredentialsDTO.DEVICE_AUTH_TYPE:
+                created = new DeviceCredentialsDTO(object);
+                break;
             default:
                 throw new IllegalArgumentException("Unhandled type " + type);
         }

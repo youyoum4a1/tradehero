@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.LoginFormDTO;
+import com.tradehero.th.api.users.signup.LoginSignUpFormDeviceDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormEmailDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormFacebookDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormLinkedinDTO;
@@ -86,6 +87,14 @@ public class NetworkModule
     @Provides LoginSignUpFormWeiboDTO provideLoginSignUpFormWeiboDTO(DeviceTokenHelper deviceTokenHelper)
     {
         return new LoginSignUpFormWeiboDTO(
+                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
+                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                VersionUtils.getVersionId(Application.context()));
+    }
+
+    @Provides LoginSignUpFormDeviceDTO provideLoginSignUpFormDeviceDTO(DeviceTokenHelper deviceTokenHelper)
+    {
+        return new LoginSignUpFormDeviceDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
                 VersionUtils.getVersionId(Application.context()));

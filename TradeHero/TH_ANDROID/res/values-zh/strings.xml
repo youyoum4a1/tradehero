@@ -141,4 +141,6 @@
   <string name="copy">复制</string>
   <string name="copy_my_invite_code_success">复制成功，快去邀请好友吧～</string>
   <string name="follow_success">关注成功</string>
+  <string name="faster_login">快速登录</string>
+  <string name="guest_user_id">游客 ID:%1$s</string>
 </resources>
