@@ -435,6 +435,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @OnClick(R.id.dialog_btn_confirm)
     public void onConfirmClicked(/*View v*/)
     {
+        updateConfirmButton(true);
         socialSharePreferenceHelperNew.save();
         fireBuySellReport();
         launchBuySell();
@@ -535,7 +536,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         updateQuantityView();
         updateProfitLoss();
         updateTradeValueAndCashShareLeft();
-        updateConfirmButton();
+        updateConfirmButton(false);
     }
 
     private void updateQuantityView()
@@ -586,9 +587,16 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     @NotNull public abstract String getCashShareLeft();
 
-    private void updateConfirmButton()
+    private void updateConfirmButton(boolean forceDisable)
     {
-        mConfirm.setEnabled(mTransactionQuantity != 0 && (hasValidInfo()));
+        if (forceDisable)
+        {
+            mConfirm.setEnabled(false);
+        }
+        else
+        {
+            mConfirm.setEnabled(mTransactionQuantity != 0 && hasValidInfo());
+        }
     }
 
     protected void clampQuantity(boolean andDisplay)
@@ -1120,7 +1128,11 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             {
                 mTransactionDialog.dismiss();
             }
+
+            // FIXME should we dismiss the dialog on failure?
             getDialog().dismiss();
+
+            updateConfirmButton(false);
         }
 
         @Override public void failure(RetrofitError retrofitError)
