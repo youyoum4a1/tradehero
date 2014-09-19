@@ -27,6 +27,7 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.network.ApiAuthenticator;
 import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.NetworkConstants;
+import com.tradehero.th.network.NullHostNameVerifier;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AchievementService;
 import com.tradehero.th.network.service.AlertPlanService;
@@ -67,6 +68,7 @@ import dagger.Provides;
 import java.io.File;
 import java.io.IOException;
 import javax.inject.Singleton;
+import javax.net.ssl.HostnameVerifier;
 import retrofit.Endpoint;
 import retrofit.Endpoints;
 import retrofit.RestAdapter;
@@ -344,10 +346,11 @@ public class RetrofitModule
         return null;
     }
 
-    @Provides @Singleton OkHttpClient provideOkHttpClient(Cache cache, Authenticator authenticator)
+    @Provides @Singleton OkHttpClient provideOkHttpClient(Cache cache, Authenticator authenticator, HostnameVerifier hostNameVerifier)
     {
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.setCache(cache);
+        okHttpClient.setHostnameVerifier(hostNameVerifier);
         okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
         okHttpClient.setAuthenticator(authenticator);
         return okHttpClient;
@@ -356,6 +359,11 @@ public class RetrofitModule
     @Provides @Singleton Authenticator provideAuthenticator(Lazy<ApiAuthenticator> apiAuthenticator)
     {
         return apiAuthenticator.get();
+    }
+
+    @Provides @Singleton HostnameVerifier provideHostnameVerifier(NullHostNameVerifier hostNameVerifier)
+    {
+        return hostNameVerifier;
     }
 
 }
