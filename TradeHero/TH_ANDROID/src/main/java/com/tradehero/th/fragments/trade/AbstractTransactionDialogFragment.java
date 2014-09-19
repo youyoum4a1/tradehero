@@ -65,17 +65,11 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.Optional;
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -351,7 +345,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     }
 
     protected abstract String getLabel();
-
     protected abstract int getCashLeftLabelResId();
 
     public String getTitle()
@@ -408,12 +401,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     @OnClick(R.id.dialog_btn_confirm)
     public void onConfirmClicked(/*View v*/)
     {
-<<<<<<< HEAD
         updateConfirmButton(true);
-        socialSharePreferenceHelperNew.save();
-=======
         saveShareSettings();
->>>>>>> malvin/experiment/achievement
         fireBuySellReport();
         launchBuySell();
     }
