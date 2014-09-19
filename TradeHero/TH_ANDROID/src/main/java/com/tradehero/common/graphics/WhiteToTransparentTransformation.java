@@ -3,27 +3,29 @@ package com.tradehero.common.graphics;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Environment;
+import com.squareup.picasso.Transformation;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import timber.log.Timber;
 
-public class WhiteToTransparentTransformation implements com.squareup.picasso.Transformation
+public class WhiteToTransparentTransformation implements Transformation
 {
     public static final int DEFAULT_TOLERANCE = 5;
     public final int tolerance;
 
+    //<editor-fold desc="Constructors">
     public WhiteToTransparentTransformation()
     {
-        super();
-        this.tolerance = DEFAULT_TOLERANCE;
+        this(DEFAULT_TOLERANCE);
     }
 
     public WhiteToTransparentTransformation(int tolerance)
     {
         this.tolerance = tolerance;
     }
+    //</editor-fold>
 
     @Override public Bitmap transform(Bitmap bitmapIn)
     {

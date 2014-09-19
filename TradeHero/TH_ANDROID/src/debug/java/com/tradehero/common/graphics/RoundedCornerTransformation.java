@@ -7,8 +7,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import com.squareup.picasso.Transformation;
 
-public class RoundedCornerTransformation  implements com.squareup.picasso.Transformation
+public class RoundedCornerTransformation  implements Transformation
 {
     public static final int DEFAULT_PIXEL_RADIUS = 10;
     public static final int DEFAULT_COLOR = 0xff424242;
@@ -21,9 +22,7 @@ public class RoundedCornerTransformation  implements com.squareup.picasso.Transf
     //<editor-fold desc="Constructors">
     public RoundedCornerTransformation()
     {
-        super();
-        this.pixelRadius = DEFAULT_PIXEL_RADIUS;
-        this.color = DEFAULT_COLOR;
+        this(DEFAULT_PIXEL_RADIUS, DEFAULT_COLOR);
     }
 
     public RoundedCornerTransformation(int pixelRadius, int color)

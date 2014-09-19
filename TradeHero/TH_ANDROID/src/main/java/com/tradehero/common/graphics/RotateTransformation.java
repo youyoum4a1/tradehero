@@ -8,11 +8,13 @@ public class RotateTransformation implements Transformation
 {
     private final int rotationDegree;
 
+    //<editor-fold desc="Constructors">
     public RotateTransformation(int rotationDegree)
     {
         super();
         this.rotationDegree = rotationDegree;
     }
+    //</editor-fold>
 
     @Override public Bitmap transform(Bitmap source)
     {

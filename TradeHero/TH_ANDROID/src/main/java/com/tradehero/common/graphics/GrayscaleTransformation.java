@@ -19,13 +19,14 @@ import static android.graphics.Shader.TileMode.REPEAT;
 
 public class GrayscaleTransformation implements Transformation
 {
-
     private final Picasso picasso;
 
+    //<editor-fold desc="Constructors">
     public GrayscaleTransformation(Picasso picasso)
     {
         this.picasso = picasso;
     }
+    //</editor-fold>
 
     @Override public Bitmap transform(Bitmap source)
     {

@@ -35,16 +35,16 @@ import java.util.concurrent.Callable;
 public class StackBlurTransformation
 		implements Transformation
 {
-
 	static final int EXECUTOR_THREADS = Runtime.getRuntime().availableProcessors();
 
 	static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(EXECUTOR_THREADS);
 
 	private int radius;
 
-	public StackBlurTransformation()
+    //<editor-fold desc="Constructors">
+    public StackBlurTransformation()
 	{
-		radius = 10;
+		this(10);
 	}
 
 	public StackBlurTransformation(int radius)
@@ -55,6 +55,7 @@ public class StackBlurTransformation
 		}
 		this.radius = radius;
 	}
+    //</editor-fold>
 
 	@Override public Bitmap transform(Bitmap source)
 	{

@@ -9,15 +9,12 @@ abstract public class AbstractSequentialTransformation implements Transformation
 {
     protected List<Transformation> transformationList;
 
+    //<editor-fold desc="Constructors">
     public AbstractSequentialTransformation ()
     {
         this.transformationList = new ArrayList<>();
     }
-
-    public AbstractSequentialTransformation (List<Transformation> transformationList)
-    {
-        this.transformationList = transformationList;
-    }
+    //</editor-fold>
 
     public void add(Transformation transformation)
     {

@@ -13,6 +13,7 @@ public class GradientTransformation implements Transformation
     private final int endColor;
     private final int startColor;
 
+    //<editor-fold desc="Constructors">
     public GradientTransformation()
     {
         this(Color.TRANSPARENT, Color.WHITE);
@@ -23,6 +24,7 @@ public class GradientTransformation implements Transformation
         this.startColor = startColor;
         this.endColor = endColor;
     }
+    //</editor-fold>
 
     @Override public Bitmap transform(Bitmap bitmap)
     {

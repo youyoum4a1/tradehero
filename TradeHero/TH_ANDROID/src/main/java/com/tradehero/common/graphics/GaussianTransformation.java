@@ -13,8 +13,8 @@ public class GaussianTransformation implements com.squareup.picasso.Transformati
         };
         ConvolutionMatrix convMatrix = new ConvolutionMatrix(3);
         convMatrix.applyConfig(GaussianBlurConfig);
-        convMatrix.Factor = 27;
-        convMatrix.Offset = 0;
+        convMatrix.factor = 27;
+        convMatrix.offset = 0;
         Bitmap returnBitmap = ConvolutionMatrix.computeConvolution3x3(bitmap, convMatrix);
 
         if (returnBitmap != bitmap)

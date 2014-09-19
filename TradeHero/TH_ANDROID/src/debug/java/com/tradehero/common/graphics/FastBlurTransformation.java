@@ -32,9 +32,10 @@ public class FastBlurTransformation implements Transformation
 {
     private int radius;
 
+    //<editor-fold desc="Constructors">
     public FastBlurTransformation()
     {
-        radius = 10;
+        this(10);
     }
 
     public FastBlurTransformation(int radius)
@@ -45,6 +46,7 @@ public class FastBlurTransformation implements Transformation
         }
         this.radius = radius;
     }
+    //</editor-fold>
 
     @Override public String key()
     {

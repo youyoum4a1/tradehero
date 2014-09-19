@@ -5,20 +5,19 @@ import android.graphics.Color;
 
 public class ConvolutionMatrix
 {
-
-	/*public static final int SIZE = 3;
-    public double[][] Matrix;
-	public double Factor = 1;
-	public double Offset = 1;
+    /*public static final int SIZE = 3;
+    public double[][] matrix;
+	public double factor = 1;
+	public double offset = 1;
 
 	public ConvolutionMatrix(int size) {
-		Matrix = new double[size][size];
+		matrix = new double[size][size];
 	}
 
 	public void setAll(double value) {
 		for (int x = 0; x < SIZE; ++x) {
 			for (int y = 0; y < SIZE; ++y) {
-				Matrix[x][y] = value;
+				matrix[x][y] = value;
 			}
 		}
 	}
@@ -26,7 +25,7 @@ public class ConvolutionMatrix
 	public void applyConfig(double[][] config) {
 		for(int x = 0; x < SIZE; ++x) {
 			for(int y = 0; y < SIZE; ++y) {
-				Matrix[x][y] = config[x][y];
+				matrix[x][y] = config[x][y];
 			}
 		}
 	}
@@ -59,24 +58,24 @@ public class ConvolutionMatrix
 				// get sum of RGB on matrix
 				for(int i = 0; i < SIZE; ++i) {
 					for(int j = 0; j < SIZE; ++j) {
-						sumR += (Color.red(pixels[i][j]) * matrix.Matrix[i][j]);
-						sumG += (Color.green(pixels[i][j]) * matrix.Matrix[i][j]);
-						sumB += (Color.blue(pixels[i][j]) * matrix.Matrix[i][j]);
+						sumR += (Color.red(pixels[i][j]) * matrix.matrix[i][j]);
+						sumG += (Color.green(pixels[i][j]) * matrix.matrix[i][j]);
+						sumB += (Color.blue(pixels[i][j]) * matrix.matrix[i][j]);
 					}
 				}
 
 				// get final Red
-				R = (int)(sumR / matrix.Factor + matrix.Offset);
+				R = (int)(sumR / matrix.factor + matrix.offset);
 				if(R < 0) { R = 0; }
 				else if(R > 255) { R = 255; }
 
 				// get final Green
-				G = (int)(sumG / matrix.Factor + matrix.Offset);
+				G = (int)(sumG / matrix.factor + matrix.offset);
 				if(G < 0) { G = 0; }
 				else if(G > 255) { G = 255; }
 
 				// get final Blue
-				B = (int)(sumB / matrix.Factor + matrix.Offset);
+				B = (int)(sumB / matrix.factor + matrix.offset);
 				if(B < 0) { B = 0; }
 				else if(B > 255) { B = 255; }
 
@@ -90,14 +89,16 @@ public class ConvolutionMatrix
 	}*/
 
     public static final int SIZE = 3;
-    public final double[][] Matrix;
-    public double Factor = 1;
-    public double Offset = 1;
+    public final double[][] matrix;
+    public double factor = 1;
+    public double offset = 1;
 
+    //<editor-fold desc="Constructors">
     public ConvolutionMatrix(int size)
     {
-        Matrix = new double[size][size];
+        matrix = new double[size][size];
     }
+    //</editor-fold>
 
     public void setAll(double value)
     {
@@ -105,7 +106,7 @@ public class ConvolutionMatrix
         {
             for (int y = 0; y < SIZE; ++y)
             {
-                Matrix[x][y] = value;
+                matrix[x][y] = value;
             }
         }
     }
@@ -116,7 +117,7 @@ public class ConvolutionMatrix
         {
             for (int y = 0; y < SIZE; ++y)
             {
-                Matrix[x][y] = config[x][y];
+                matrix[x][y] = config[x][y];
             }
         }
     }
@@ -156,14 +157,14 @@ public class ConvolutionMatrix
                 {
                     for (int j = 0; j < SIZE; ++j)
                     {
-                        sumR += (Color.red(pixels[i][j]) * matrix.Matrix[i][j]);
-                        sumG += (Color.green(pixels[i][j]) * matrix.Matrix[i][j]);
-                        sumB += (Color.blue(pixels[i][j]) * matrix.Matrix[i][j]);
+                        sumR += (Color.red(pixels[i][j]) * matrix.matrix[i][j]);
+                        sumG += (Color.green(pixels[i][j]) * matrix.matrix[i][j]);
+                        sumB += (Color.blue(pixels[i][j]) * matrix.matrix[i][j]);
                     }
                 }
 
                 // get final Red
-                R = (int) (sumR / matrix.Factor + matrix.Offset);
+                R = (int) (sumR / matrix.factor + matrix.offset);
                 if (R < 0)
                 {
                     R = 0;
@@ -174,7 +175,7 @@ public class ConvolutionMatrix
                 }
 
                 // get final Green
-                G = (int) (sumG / matrix.Factor + matrix.Offset);
+                G = (int) (sumG / matrix.factor + matrix.offset);
                 if (G < 0)
                 {
                     G = 0;
@@ -185,7 +186,7 @@ public class ConvolutionMatrix
                 }
 
                 // get final Blue
-                B = (int) (sumB / matrix.Factor + matrix.Offset);
+                B = (int) (sumB / matrix.factor + matrix.offset);
                 if (B < 0)
                 {
                     B = 0;

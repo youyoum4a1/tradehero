@@ -2,14 +2,15 @@ package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
 import com.squareup.picasso.Transformation;
-import javax.inject.Inject;
 
 public class CenterCropTransformation implements Transformation
 {
-    @Inject public CenterCropTransformation()
+    //<editor-fold desc="Constructors">
+    public CenterCropTransformation()
     {
         super();
     }
+    //</editor-fold>
 
     @Override public Bitmap transform(Bitmap source)
     {

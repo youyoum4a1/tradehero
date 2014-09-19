@@ -7,30 +7,22 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import com.squareup.picasso.Transformation;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class RoundedShapeTransformation implements RecyclerTransformation
+public class RoundedShapeTransformation implements Transformation
 {
-    private boolean recycleOriginal = true;
     @NotNull private final CenterCropTransformation centerCropTransformation;
 
-    @Inject public RoundedShapeTransformation(@NotNull CenterCropTransformation centerCropTransformation)
+    //<editor-fold desc="Constructors">
+    @Inject public RoundedShapeTransformation()
     {
         super();
-        this.centerCropTransformation = centerCropTransformation;
+        this.centerCropTransformation = new CenterCropTransformation();
     }
-
-    @Override public boolean isRecycleOriginal()
-    {
-        return recycleOriginal;
-    }
-
-    @Override public void setRecycleOriginal(boolean recycleOriginal)
-    {
-        this.recycleOriginal = recycleOriginal;
-    }
+    //</editor-fold>
 
     @NotNull
     @Override public Bitmap transform(@NotNull Bitmap scaleBitmapImage)
@@ -70,7 +62,7 @@ public class RoundedShapeTransformation implements RecyclerTransformation
                 scaleBitmapImage.getHeight()), new RectF(0, 0, desiredEdge,
                 desiredEdge), paint);
 
-        if (recycleOriginal && targetBitmap != scaleBitmapImage)
+        if (targetBitmap != scaleBitmapImage)
         {
             scaleBitmapImage.recycle();
         }

@@ -25,10 +25,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class GraphicUtil implements BitmapForProfileFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public GraphicUtil()
     {
         super();
     }
+    //</editor-fold>
 
     //<editor-fold desc="EXIF Rotation">
     public Integer getOrientationCode(String imagePath)
