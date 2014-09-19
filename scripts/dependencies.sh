@@ -1,0 +1,1 @@
+../gradlew dependencies app:dependencies > dependencies.txt

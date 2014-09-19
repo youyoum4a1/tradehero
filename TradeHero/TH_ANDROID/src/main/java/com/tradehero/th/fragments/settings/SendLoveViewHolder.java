@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
 import com.tradehero.th.R;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +26,6 @@ public class SendLoveViewHolder extends OneSettingViewHolder
     @Override protected void handlePrefClicked()
     {
         AskForReviewDialogFragment.showReviewDialog(
-                ((FragmentActivity) activity).getSupportFragmentManager());
+                activity.getFragmentManager());
     }
 }

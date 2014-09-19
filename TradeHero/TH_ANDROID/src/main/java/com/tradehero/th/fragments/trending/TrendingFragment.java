@@ -2,16 +2,18 @@ package com.tradehero.th.fragments.trending;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
-
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import butterknife.InjectView;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -56,7 +58,6 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
@@ -65,17 +66,13 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import com.tradehero.th.widget.MultiScrollListener;
+import dagger.Lazy;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.inject.Inject;
-
-import butterknife.InjectView;
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -92,7 +89,6 @@ public class TrendingFragment extends SecurityListFragment
     @Inject ProviderUtil providerUtil;
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
-    @Inject DTOCacheUtil dtoCacheUtil;
     @Inject Analytics analytics;
 
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;
@@ -143,6 +139,15 @@ public class TrendingFragment extends SecurityListFragment
 
         thIntentPassedListener = createCompetitionTHIntentPassedListener();
         fetchExchangeList();
+    }
+
+    @Override protected AbsListView.OnScrollListener createListViewScrollListener()
+    {
+        int trendingFilterHeight = (int) getResources().getDimension(R.dimen.trending_filter_view_pager_height);
+        QuickReturnListViewOnScrollListener filterQuickReturnScrollListener =
+                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, filterSelectorView,
+                        -trendingFilterHeight, null, 0);
+        return new MultiScrollListener(listViewScrollListener, dashboardBottomTabsScrollListener, filterQuickReturnScrollListener);
     }
 
     @Override public void onResume()

@@ -12,10 +12,12 @@ import org.json.JSONObject;
 
 public class CredentialsDTOFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public CredentialsDTOFactory()
     {
         super();
     }
+    //</editor-fold>
 
     @NotNull public CredentialsDTO create(@NotNull String savedToken) throws JSONException, ParseException
     {

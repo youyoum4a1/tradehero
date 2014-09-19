@@ -25,7 +25,7 @@ public class SelectableUserViewRelative extends RelativeLayout
     public SelectableUserViewRelative(Context context)
     {
         super(context);
-        init();
+        init();dashbo
     }
 
     @SuppressWarnings("UnusedDeclaration")
