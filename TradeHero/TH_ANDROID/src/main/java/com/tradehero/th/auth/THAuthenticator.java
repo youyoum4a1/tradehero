@@ -6,7 +6,11 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+
+import com.tradehero.th.activities.AuthenticationActivity;
+import com.tradehero.th.utils.Constants;
 
 public class THAuthenticator extends AbstractAccountAuthenticator
 {
@@ -26,8 +30,13 @@ public class THAuthenticator extends AbstractAccountAuthenticator
     @Override public Bundle addAccount(AccountAuthenticatorResponse response, String accountType,
             String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException
     {
-        // TODO decide which activity to open when credential is requested
-        return null;
+        Intent authIntent = new Intent(mContext, AuthenticationActivity.class);
+        authIntent.putExtra(Constants.Auth.PARAM_AUTHTOKEN_TYPE, authTokenType);
+        authIntent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AccountManager.KEY_INTENT, authIntent);
+        return bundle;
     }
 
     @Override public Bundle confirmCredentials(AccountAuthenticatorResponse accountAuthenticatorResponse, Account account, Bundle bundle)
@@ -48,9 +57,12 @@ public class THAuthenticator extends AbstractAccountAuthenticator
         return bundle;
     }
 
-    @Override public String getAuthTokenLabel(String s)
+    @Override public String getAuthTokenLabel(String authTokenType)
     {
-        throw new UnsupportedOperationException();
+        if (Constants.Auth.PARAM_AUTHTOKEN_TYPE.equals(authTokenType)) {
+            return authTokenType;
+        }
+        return null;
     }
 
     @Override public Bundle updateCredentials(AccountAuthenticatorResponse accountAuthenticatorResponse, Account account, String authTokenType,

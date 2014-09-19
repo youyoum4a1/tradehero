@@ -60,4 +60,11 @@ public class Constants
     // To change TAPSTREAM_VERSION, look at gradle build flavor for china
     public static final TapStreamType TAP_STREAM_TYPE =
             TapStreamType.fromType(BuildConfig.TAPSTREAM_VERSION);
+
+    public static class Auth
+    {
+        public static final String PARAM_AUTHTOKEN_TYPE = "authTokenType";
+    }
+
+    private Constants() {}
 }
