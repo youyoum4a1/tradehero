@@ -17,13 +17,13 @@ import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.key.MockQuestBonusId;
-import com.tradehero.th.network.service.AchievementServiceWrapper;
+import com.tradehero.th.api.achievement.key.MockQuestBonusId;
+import com.tradehero.th.network.service.AchievementMockServiceWrapper;
 import com.tradehero.th.persistence.achievement.QuestBonusListCache;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -48,7 +48,7 @@ public class QuestListTestingFragment extends DashboardFragment
     @Inject UserAchievementCache userAchievementCache;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
 
-    @Inject AchievementServiceWrapper achievementServiceWrapper;
+    @Inject AchievementMockServiceWrapper achievementMockServiceWrapper;
 
     protected DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList> questBonusListIdQuestBonusDTOListListener;
     private List<QuestBonusDTO> list = new ArrayList<>();
@@ -79,9 +79,9 @@ public class QuestListTestingFragment extends DashboardFragment
 
                 MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()),
                         (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));
-                achievementServiceWrapper.getMockBonusDTO(mockQuestBonusId, new Callback<ExtendedDTO>()
+                achievementMockServiceWrapper.getMockBonusDTO(mockQuestBonusId, new Callback<BaseResponseDTO>()
                 {
-                    @Override public void success(ExtendedDTO dto, Response response)
+                    @Override public void success(BaseResponseDTO dto, Response response)
                     {
                         progressDialogUtilLazy.get().dismiss(getActivity());
                     }

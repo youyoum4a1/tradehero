@@ -1,10 +1,10 @@
-package com.tradehero.common.annotation;
+package com.tradehero.th.fragments.achievement;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import javax.inject.Qualifier;
 
 @Qualifier @Retention(RetentionPolicy.RUNTIME)
-public @interface ForUser
+public @interface ForAchievementListFragment
 {
 }

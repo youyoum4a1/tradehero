@@ -1,9 +1,17 @@
 package com.tradehero.th.network.retrofit;
 
+import com.tradehero.th.network.service.AchievementMockService;
+import com.tradehero.th.network.service.AchievementMockServiceWrapper;
+import com.tradehero.th.network.service.AchievementServiceWrapper;
+import com.tradehero.th.network.service.RetrofitStubProtectedModule;
 import dagger.Module;
+import dagger.Provides;
+import javax.inject.Singleton;
+import retrofit.RestAdapter;
 
 @Module(
         includes = {
+                RetrofitStubProtectedModule.class,
         },
         injects = {
         },
@@ -13,7 +21,17 @@ import dagger.Module;
 )
 public class RetrofitStubModule
 {
-    //@Provides RequestHeaders providesSlowRequestHeader(SlowRequestHeaders requestHeaders)
+    @Provides @Singleton AchievementMockService provideAchievementMockService(RestAdapter adapter)
+    {
+        return adapter.create(AchievementMockService.class);
+    }
+
+    @Provides AchievementServiceWrapper provideAchievementServiceWrapper(AchievementMockServiceWrapper achievementServiceWrapper)
+    {
+        return achievementServiceWrapper;
+    }
+
+    //@Provides RequestHeaders provideSlowRequestHeader(SlowRequestHeaders requestHeaders)
     //{
     //    return requestHeaders;
     //}

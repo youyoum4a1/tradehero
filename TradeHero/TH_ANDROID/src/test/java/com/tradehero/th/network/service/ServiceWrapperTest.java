@@ -30,7 +30,7 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
 
     @Test public void canGetAllServices()
     {
-        int serviceCount = 29;
+        int serviceCount = 31;
         int wrappersWithOutService = 1;
         //for (Class<?> service : getAllServices())
         //{

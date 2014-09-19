@@ -17,9 +17,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -83,18 +80,7 @@ public class THApp extends PApplication
 
     protected Object[] getModules()
     {
-        Object[] modules = new Object[]
-                {
-                        new AppModule(this)
-                };
-
-        if (!Constants.RELEASE)
-        {
-            List<Object> listModules = new ArrayList<>(Arrays.asList(modules));
-            //listModules.add(new com.tradehero.th.DebugModule());
-            return listModules.toArray();
-        }
-        return modules;
+        return new Object[] { new AppModule(this) };
     }
 
     public void restartActivity(Class<? extends Activity> activityClass)

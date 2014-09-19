@@ -9,7 +9,7 @@ public class UserAchievementId extends AbstractIntegerDTOKey
     private static final String BUNDLE_KEY = UserAchievementId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
-    public UserAchievementId(Integer key)
+    public UserAchievementId(@NotNull Integer key)
     {
         super(key);
     }

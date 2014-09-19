@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.achievement;
 
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.widget.UserLevelProgressBar;
-
 import dagger.Module;
 
 @Module(
@@ -13,7 +12,6 @@ import dagger.Module;
                 AchievementListFragment.class,
                 AchievementCellView.class,
                 AchievementListTestingFragment.class,
-                QuestListTestingFragment.class,
                 LevelUpDialogFragment.class,
 
         },
@@ -22,5 +20,4 @@ import dagger.Module;
 )
 public class FragmentAchievementModule
 {
-
 }

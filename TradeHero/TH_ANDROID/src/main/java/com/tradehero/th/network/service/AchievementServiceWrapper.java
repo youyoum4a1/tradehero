@@ -1,8 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
@@ -13,7 +11,6 @@ import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.key.MockQuestBonusId;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
@@ -116,18 +113,6 @@ public class AchievementServiceWrapper
         return middleCallback;
     }
     //</editor-fold>
-
-    public DTO getMockBonusDTO(MockQuestBonusId mockQuestBonusId)
-    {
-        return achievementService.getMockQuestBonus(mockQuestBonusId.key, mockQuestBonusId.xpEarned, mockQuestBonusId.xpTotal);
-    }
-
-    public MiddleCallback<ExtendedDTO> getMockBonusDTO(MockQuestBonusId mockQuestBonusId, Callback<ExtendedDTO> callback)
-    {
-        MiddleCallback<ExtendedDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        achievementServiceAsync.getMockQuestBonus(mockQuestBonusId.key, mockQuestBonusId.xpEarned, mockQuestBonusId.xpTotal, middleCallback);
-        return middleCallback;
-    }
 
     //<editor-fold desc="Share Achievement">
     @NotNull public BaseResponseDTO shareAchievement(

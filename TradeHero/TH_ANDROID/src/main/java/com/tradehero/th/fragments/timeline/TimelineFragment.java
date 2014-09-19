@@ -40,6 +40,7 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
+import com.tradehero.th.fragments.achievement.ForAchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
@@ -124,6 +125,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected THRouter thRouter;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DashboardNavigator navigator;
+    @Inject @ForAchievementListFragment Provider<Class> achievementListFragmentClassProvider;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -261,7 +263,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         AchievementListFragment.putUserId(bundle, mIsOtherProfile? shownUserBaseKey : currentUserId.toUserBaseKey());
-        navigator.pushFragment(AchievementListFragment.class, bundle);
+        navigator.pushFragment(achievementListFragmentClassProvider.get(), bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

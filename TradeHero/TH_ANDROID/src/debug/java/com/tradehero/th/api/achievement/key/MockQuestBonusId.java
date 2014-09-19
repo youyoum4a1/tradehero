@@ -1,6 +1,6 @@
-package com.tradehero.th.key;
+package com.tradehero.th.api.achievement.key;
 
-import com.tradehero.th.api.achievement.key.QuestBonusId;
+import org.jetbrains.annotations.NotNull;
 
 public class MockQuestBonusId extends QuestBonusId
 {
@@ -9,12 +9,14 @@ public class MockQuestBonusId extends QuestBonusId
     public int xpEarned;
     public int xpTotal;
 
-    public MockQuestBonusId(Integer key, int xpEarned, int xpTotal)
+    //<editor-fold desc="Constructors">
+    public MockQuestBonusId(@NotNull Integer key, int xpEarned, int xpTotal)
     {
         super(key);
         this.xpEarned = xpEarned;
         this.xpTotal = xpTotal;
     }
+    //</editor-fold>
 
     @Override public String getBundleKey()
     {

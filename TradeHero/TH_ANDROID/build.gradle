@@ -138,12 +138,6 @@ android {
       }
     }
 
-    debug {
-      java {
-        //srcDir 'src/debug/java'
-      }
-    }
-
     //region Flavours
     googleplay {
       manifest {
@@ -203,7 +197,6 @@ android {
     androidTest {
       java {
         srcDir 'src/row/java'
-        srcDir 'src/debug/java'
         srcDir 'src/test/java'
       }
       resources {

@@ -9,7 +9,8 @@ import dagger.Module;
         },
 
         complete = false,
-        library = true
+        library = true,
+        overrides = true
 )
 public class NetworkDebugModule
 {

@@ -1,5 +1,8 @@
 package com.tradehero.th.api;
 
+import com.tradehero.th.api.achievement.key.AchievementCategoryId;
+import com.tradehero.th.api.achievement.key.QuestBonusId;
+import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
@@ -35,6 +38,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
+import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.key.FriendsListKey;
@@ -44,12 +48,9 @@ import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Random;
-
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.mock;
 
@@ -271,6 +272,30 @@ public class ValidMocker
         if (type.equals(VideoCategoryId.class))
         {
             return new VideoCategoryId(1);
+        }
+
+        if (type.equals(AchievementCategoryId.class))
+        {
+            return new AchievementCategoryId(
+                    (UserBaseKey) mockValidParameter(UserBaseKey.class),
+                    2);
+        }
+
+        if (type.equals(UserAchievementId.class))
+        {
+            return new UserAchievementId(1);
+        }
+
+        if (type.equals(AchievementShareFormDTO.class))
+        {
+            return new AchievementShareFormDTO(
+                    (UserAchievementId) mockValidParameter(UserAchievementId.class),
+                    null);
+        }
+
+        if (type.equals(QuestBonusId.class))
+        {
+            return new QuestBonusId(1);
         }
 
         if (type.equals(Boolean.class) || type.equals(boolean.class))

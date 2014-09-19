@@ -30,7 +30,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 // Following modules need injected Activity to work, therefore, it cannot be in AppModule
                 SocialNetworkUIModule.class,
                 BillingUIModule.class,
-                IntentDaggerModule.class
+                IntentDaggerModule.class,
+                BuildTypeUIModule.class,
         },
         injects = {
                 FollowUserAssistant.class,
