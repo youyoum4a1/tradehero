@@ -8,6 +8,7 @@ public class UserAchievementId extends AbstractIntegerDTOKey
 {
     private static final String BUNDLE_KEY = UserAchievementId.class.getName() + ".key";
 
+    //<editor-fold desc="Constructors">
     public UserAchievementId(Integer key)
     {
         super(key);
@@ -17,6 +18,7 @@ public class UserAchievementId extends AbstractIntegerDTOKey
     {
         super(args);
     }
+    //</editor-fold>
 
     @Override public String getBundleKey()
     {

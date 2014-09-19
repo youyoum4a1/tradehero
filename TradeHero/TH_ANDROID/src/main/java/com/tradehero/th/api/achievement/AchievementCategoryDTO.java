@@ -21,7 +21,7 @@ public class AchievementCategoryDTO implements DTO
     public List<AchievementDefDTO> achievementDefs;
 
     @JsonIgnore
-    public AchievementCategoryId getCategoryId(@NotNull UserBaseKey userBaseKey)
+    @NotNull public AchievementCategoryId getCategoryId(@NotNull UserBaseKey userBaseKey)
     {
         return new AchievementCategoryId(userBaseKey, id);
     }

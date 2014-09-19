@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AchievementCategoryDTOList extends BaseArrayList<AchievementCategoryDTO> implements DTO
 {
-    public AchievementCategoryIdList createKeys(@NotNull UserBaseKey userBaseKey)
+    @NotNull public AchievementCategoryIdList createKeys(@NotNull UserBaseKey userBaseKey)
     {
         AchievementCategoryIdList list = new AchievementCategoryIdList();
         for(AchievementCategoryDTO achievementCategoryDTO : this)

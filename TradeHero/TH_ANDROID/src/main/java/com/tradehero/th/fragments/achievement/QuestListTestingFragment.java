@@ -174,7 +174,6 @@ public class QuestListTestingFragment extends DashboardFragment
 
     protected class AchievementCategoryListCacheListener implements DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList>
     {
-
         @Override public void onDTOReceived(@NotNull QuestBonusListId key, @NotNull QuestBonusDTOList value)
         {
             list.clear();

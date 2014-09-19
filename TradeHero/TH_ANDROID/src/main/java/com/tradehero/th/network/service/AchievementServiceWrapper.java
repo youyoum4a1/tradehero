@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
@@ -25,16 +26,18 @@ public class AchievementServiceWrapper
     @NotNull private final AchievementServiceAsync achievementServiceAsync;
     @NotNull private final AchievementService achievementService;
 
+    //<editor-fold desc="Constructors">
     @Inject public AchievementServiceWrapper(
             @NotNull AchievementService achievementService,
-            @NotNull AchievementServiceAsync achievementServiceAsync
-    )
+            @NotNull AchievementServiceAsync achievementServiceAsync)
     {
         this.achievementService = achievementService;
         this.achievementServiceAsync = achievementServiceAsync;
     }
+    //</editor-fold>
 
-    public LevelDefDTOList getLevelDefs()
+    //<editor-fold desc="Get Level Defs">
+    @NotNull public LevelDefDTOList getLevelDefs()
     {
         return achievementService.getLevelDefs();
     }
@@ -46,8 +49,10 @@ public class AchievementServiceWrapper
         achievementServiceAsync.getLevelDefs(middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 
-    public UserAchievementDTO getUserAchievementDetails(UserAchievementId userAchievementId)
+    //<editor-fold desc="Get User Achievement Details">
+    @NotNull public UserAchievementDTO getUserAchievementDetails(@NotNull UserAchievementId userAchievementId)
     {
         return achievementService.getUserAchievementDetails(userAchievementId.key);
     }
@@ -60,22 +65,32 @@ public class AchievementServiceWrapper
         achievementServiceAsync.getUserAchievementDetails(userAchievementId.key, middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 
-    public AchievementCategoryDTOList getAchievementCategories(@NotNull UserBaseKey key)
+    //<editor-fold desc="Get Achievement Categories">
+    @NotNull public AchievementCategoryDTOList getAchievementCategories(
+            @NotNull UserBaseKey key)
     {
         return achievementService.getAchievementCategories(key.getUserId());
     }
 
-    public MiddleCallback<AchievementCategoryDTOList> getAchievementCategories(@NotNull UserBaseKey key, @Nullable Callback<AchievementCategoryDTOList> callback)
+    @NotNull public MiddleCallback<AchievementCategoryDTOList> getAchievementCategories(
+            @NotNull UserBaseKey key,
+            @Nullable Callback<AchievementCategoryDTOList> callback)
     {
         MiddleCallback<AchievementCategoryDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         achievementServiceAsync.getAchievementCategories(key.getUserId(), middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 
-    @Nullable public AchievementCategoryDTO getAchievementCategory(@NotNull AchievementCategoryId achievementCategoryId)
+    //<editor-fold desc="Get Achievement Category">
+    @Nullable public AchievementCategoryDTO getAchievementCategory(
+            @NotNull AchievementCategoryId achievementCategoryId)
     {
-        AchievementCategoryDTOList achievementCategoryDTOs = achievementService.getAchievementCategory(achievementCategoryId.categoryId, achievementCategoryId.userId);
+        AchievementCategoryDTOList achievementCategoryDTOs = achievementService.getAchievementCategory(
+                achievementCategoryId.categoryId,
+                achievementCategoryId.userId);
         if(achievementCategoryDTOs != null && !achievementCategoryDTOs.isEmpty())
         {
             return achievementCategoryDTOs.get(0);
@@ -83,10 +98,24 @@ public class AchievementServiceWrapper
         return null;
     }
 
-    public QuestBonusDTOList getQuestBonuses(QuestBonusListId questBonusListId)
+    // TODO add Async
+    //</editor-fold>
+
+    //<editor-fold desc="Get Quest Bonuses">
+    @NotNull public QuestBonusDTOList getQuestBonuses(@SuppressWarnings("UnusedParameters") @NotNull QuestBonusListId questBonusListId)
     {
         return achievementService.getQuestBonuses();
     }
+
+    @NotNull public MiddleCallback<QuestBonusDTOList> getQuestBonuses(
+            @SuppressWarnings("UnusedParameters") @NotNull QuestBonusListId questBonusListId,
+            @Nullable Callback<QuestBonusDTOList> callback)
+    {
+        MiddleCallback<QuestBonusDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        achievementServiceAsync.getQuestBonuses(middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
 
     public DTO getMockBonusDTO(MockQuestBonusId mockQuestBonusId)
     {
@@ -100,10 +129,22 @@ public class AchievementServiceWrapper
         return middleCallback;
     }
 
-    public MiddleCallback<ExtendedDTO> shareAchievement(AchievementShareFormDTO achievementShareFormDTO, Callback<ExtendedDTO> callback)
+    //<editor-fold desc="Share Achievement">
+    @NotNull public BaseResponseDTO shareAchievement(
+            @NotNull AchievementShareFormDTO achievementShareFormDTO)
     {
-        MiddleCallback<ExtendedDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        achievementServiceAsync.shareUserAchievement(achievementShareFormDTO.userAchievementId.key, achievementShareFormDTO.achievementShareRequestDTO, middleCallback);
+        return achievementService.shareUserAchievement(
+                achievementShareFormDTO.userAchievementId.key,
+                achievementShareFormDTO.achievementShareReqFormDTO);
+    }
+
+    @NotNull public MiddleCallback<BaseResponseDTO> shareAchievement(
+            @NotNull AchievementShareFormDTO achievementShareFormDTO,
+            @Nullable Callback<BaseResponseDTO> callback)
+    {
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        achievementServiceAsync.shareUserAchievement(achievementShareFormDTO.userAchievementId.key, achievementShareFormDTO.achievementShareReqFormDTO, middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 }

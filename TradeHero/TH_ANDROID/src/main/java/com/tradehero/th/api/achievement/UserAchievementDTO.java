@@ -3,6 +3,7 @@ package com.tradehero.th.api.achievement;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
 
 public class UserAchievementDTO implements DTO
 {
@@ -14,7 +15,7 @@ public class UserAchievementDTO implements DTO
     public boolean isReset;
     public AchievementDefDTO achievementDef;
 
-    public UserAchievementId getUserAchievementId()
+    @NotNull public UserAchievementId getUserAchievementId()
     {
         return new UserAchievementId(id);
     }

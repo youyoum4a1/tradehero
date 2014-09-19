@@ -38,7 +38,6 @@ public enum SocialNetworkEnum
         return name;
     }
 
-
     @Override
     public String toString() {
         // TODO need to improve
