@@ -148,7 +148,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         startAnimation();
 
         userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
-        userLevelProgressBar.setUserLevelProgressBarListener(new LevelUpListener());
+        userLevelProgressBar.setUserLevelProgressBarLevelUpListener(new LevelUpListener());
         levelDefListCache.register(mLevelDefListId, levelDefListCacheListener);
         levelDefListCache.getOrFetchAsync(mLevelDefListId);
     }
@@ -462,7 +462,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         picasso.cancelRequest(badge);
         mBadgeCallback = null;
         levelDefListCache.unregister(levelDefListCacheListener);
-        userLevelProgressBar.setUserLevelProgressBarListener(null);
+        userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
         super.onDestroyView();
     }
 
@@ -530,7 +530,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
     }
 
-    protected class LevelUpListener implements UserLevelProgressBar.UserLevelProgressBarListener
+    protected class LevelUpListener implements UserLevelProgressBar.UserLevelProgressBarLevelUpListener
     {
 
         @Override public void onLevelUp(LevelDefDTO fromLevel, LevelDefDTO toLevel)

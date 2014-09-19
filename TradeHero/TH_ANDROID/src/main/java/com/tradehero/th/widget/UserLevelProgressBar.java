@@ -1,6 +1,7 @@
 package com.tradehero.th.widget;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -12,8 +13,10 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -22,10 +25,14 @@ import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserNextLevelBadge;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 public class UserLevelProgressBar extends RelativeLayout
 {
@@ -44,10 +51,11 @@ public class UserLevelProgressBar extends RelativeLayout
     @Inject @ForUserNextLevelBadge Transformation nextLevelBadgeTransformation;
 
     private int mCurrentXP = -1;
+    private UserLevelProgressBarLevelUpListener userLevelProgressBarLevelUpListener;
     private UserLevelProgressBarListener userLevelProgressBarListener;
 
     private float mMsPerXP = MS_PER_XP;
-    private AnimatorSet mAnimatorSet;
+    private AnimatorSet mIncrementAnimatorSet;
     private long mMsDelay;
     private LevelDefDTO mCurrentLevelDTO;
     private LevelDefDTO mMaxLevelDTO;
@@ -184,16 +192,40 @@ public class UserLevelProgressBar extends RelativeLayout
         float msPerXP = ((float) duration / (float) xpGained);
         setMsPerXp(msPerXP);
 
-        List<Animator> animators = getAnimatorQueue(xpGained);
-        if (mAnimatorSet != null)
+        if (mIncrementAnimatorSet != null)
         {
-            mAnimatorSet.end();
+            mIncrementAnimatorSet.removeAllListeners();
+            mIncrementAnimatorSet.cancel();
         }
-        mAnimatorSet = new AnimatorSet();
-        mAnimatorSet.setInterpolator(new LinearInterpolator());
-        mAnimatorSet.playSequentially(animators);
-        mAnimatorSet.setStartDelay(getStartDelay());
-        mAnimatorSet.start();
+        List<Animator> animators = getAnimatorQueue(xpGained);
+        mIncrementAnimatorSet = new AnimatorSet();
+        mIncrementAnimatorSet.setInterpolator(new LinearInterpolator());
+        mIncrementAnimatorSet.playSequentially(animators);
+        mIncrementAnimatorSet.setStartDelay(getStartDelay());
+
+        mIncrementAnimatorSet.addListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                super.onAnimationEnd(animation);
+                if(userLevelProgressBarListener != null)
+                {
+                    userLevelProgressBarListener.onIncrementEnded();
+                }
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation)
+            {
+                super.onAnimationStart(animation);
+                if(userLevelProgressBarListener != null)
+                {
+                    userLevelProgressBarListener.onIncrementStarted();
+                }
+            }
+        });
+        mIncrementAnimatorSet.start();
     }
 
     private int getMaxProgress(LevelDefDTO levelDTO)
@@ -219,7 +251,8 @@ public class UserLevelProgressBar extends RelativeLayout
     {
         return new ValueAnimator.AnimatorUpdateListener()
         {
-            @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator)
             {
                 Integer xp = mCurrentLevelDTO.xpFrom + (Integer) valueAnimator.getAnimatedValue(PROPERTY_SECONDARY_PROGRESS);
                 setCurrentXp(xp);
@@ -313,11 +346,11 @@ public class UserLevelProgressBar extends RelativeLayout
             {
                 if (xpProgressBar.getSecondaryProgress() >= xpProgressBar.getMax())
                 {
-                    UserLevelProgressBarListener userLevelProgressBarListenerCopy = userLevelProgressBarListener;
+                    UserLevelProgressBarLevelUpListener userLevelProgressBarLevelUpListenerCopy = userLevelProgressBarLevelUpListener;
                     LevelDefDTO nextLevel = mLevelDefDTOList.getNextLevelDTO(mCurrentLevelDTO.level);
-                    if (userLevelProgressBarListenerCopy != null)
+                    if (userLevelProgressBarLevelUpListenerCopy != null)
                     {
-                        userLevelProgressBarListenerCopy.onLevelUp(mCurrentLevelDTO, nextLevel);
+                        userLevelProgressBarLevelUpListenerCopy.onLevelUp(mCurrentLevelDTO, nextLevel);
                     }
                     mCurrentLevelDTO = nextLevel;
                     updateLevelDisplay();
@@ -346,6 +379,11 @@ public class UserLevelProgressBar extends RelativeLayout
         return diff;
     }
 
+    public void setUserLevelProgressBarLevelUpListener(UserLevelProgressBarLevelUpListener userLevelProgressBarLevelUpListener)
+    {
+        this.userLevelProgressBarLevelUpListener = userLevelProgressBarLevelUpListener;
+    }
+
     public void setUserLevelProgressBarListener(UserLevelProgressBarListener userLevelProgressBarListener)
     {
         this.userLevelProgressBarListener = userLevelProgressBarListener;
@@ -361,8 +399,15 @@ public class UserLevelProgressBar extends RelativeLayout
         return String.valueOf(mLevelDefDTOList.getNextLevelDTO(mCurrentLevelDTO.level).level);
     }
 
-    public interface UserLevelProgressBarListener
+    public interface UserLevelProgressBarLevelUpListener
     {
         void onLevelUp(LevelDefDTO fromLevel, LevelDefDTO toLevel);
+    }
+
+    public interface UserLevelProgressBarListener
+    {
+        void onIncrementStarted();
+
+        void onIncrementEnded();
     }
 }

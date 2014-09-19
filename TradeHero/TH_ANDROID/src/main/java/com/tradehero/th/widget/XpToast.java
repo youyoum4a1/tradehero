@@ -15,19 +15,23 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
+import com.tradehero.th.api.level.UserXPMultiplierDTO;
 import com.tradehero.th.api.level.key.LevelDefListId;
+import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.level.LevelDefListCache;
+import java.util.ArrayDeque;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-public class XpToast extends RelativeLayout implements UserLevelProgressBar.UserLevelProgressBarListener
+public class XpToast extends RelativeLayout implements UserLevelProgressBar.UserLevelProgressBarLevelUpListener, UserLevelProgressBar.UserLevelProgressBarListener
 {
-    @InjectView(R.id.xp_toast_text) TextSwitcher textSwitcher;
+    @InjectView(R.id.xp_toast_text) TextSwitcher xpTextSwitcher;
     @InjectView(R.id.xp_toast_value) TextView xpValue;
     @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
@@ -35,6 +39,9 @@ public class XpToast extends RelativeLayout implements UserLevelProgressBar.User
 
     private LevelDefListId levelDefListId = new LevelDefListId();
     private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> mLevelDefListCacheListener = new LevelDefCacheListener();
+
+    private ArrayDeque<LevelAnimationDefinition> levelAnimationDefinitions = new ArrayDeque<>();
+    private LevelAnimationDefinition currentLevelAnimationDefinition;
 
     public XpToast(Context context, AttributeSet attrs)
     {
@@ -48,42 +55,71 @@ public class XpToast extends RelativeLayout implements UserLevelProgressBar.User
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        initViews();
+        if(!isInEditMode())
+        {
+            initViews();
+        }
     }
 
     private void initViews()
     {
+        userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
+        userLevelProgressBar.setUserLevelProgressBarLevelUpListener(this);
+        userLevelProgressBar.setUserLevelProgressBarListener(this);
         levelDefListCache.register(levelDefListId, mLevelDefListCacheListener);
         levelDefListCache.getOrFetchAsync(levelDefListId);
-        textSwitcher.setFactory(new ViewSwitcher.ViewFactory()
+        xpTextSwitcher.setFactory(new ViewSwitcher.ViewFactory()
         {
             @Override public View makeView()
             {
-                return LayoutInflater.from(getContext()).inflate(R.layout.layout_xp_toast_text, textSwitcher, false);
+                return LayoutInflater.from(getContext()).inflate(R.layout.layout_xp_toast_text, xpTextSwitcher, false);
             }
         });
     }
 
-    public void showWhenReady(final UserXPAchievementDTO userXPAchievementDTO)
+    public void showWhenReady(UserXPAchievementDTO userXPAchievementDTO)
     {
         userLevelProgressBar.startsWith(userXPAchievementDTO.xpFrom);
-        displayXPEarned(0);
-        Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.alpha_in);
-        a.setAnimationListener(new Animation.AnimationListener()
+        populateAnimationLists(userXPAchievementDTO);
+        showAll();
+    }
+
+    private void populateAnimationLists(UserXPAchievementDTO userXPAchievementDTO)
+    {
+        LevelAnimationDefinition l0 = new LevelAnimationDefinition(0, userXPAchievementDTO.xpEarned, userXPAchievementDTO.text);
+        levelAnimationDefinitions.add(l0);
+        if(userXPAchievementDTO.multipliers != null && !userXPAchievementDTO.multipliers.isEmpty())
         {
-            @Override public void onAnimationStart(Animation animation)
+            int from = l0.to();
+            for (UserXPMultiplierDTO userXPMultiplierDTO : userXPAchievementDTO.multipliers)
             {
+                int to = userXPMultiplierDTO.xpTotal;
+                LevelAnimationDefinition ln = new LevelAnimationDefinition(from, to - from, userXPMultiplierDTO.text);
+                levelAnimationDefinitions.add(ln);
+                from = to;
+            }
+        }
+    }
+
+    private void showAll()
+    {
+        displayXPEarned(0);
+
+        Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.alpha_in);
+        a.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
                 setVisibility(View.VISIBLE);
-                textSwitcher.reset();
+                xpTextSwitcher.reset();
             }
 
-            @Override public void onAnimationEnd(Animation animation)
-            {
-                startXPAnimation(userXPAchievementDTO);
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                startXPAnimation();
             }
 
-            @Override public void onAnimationRepeat(Animation animation)
-            {
+            @Override
+            public void onAnimationRepeat(Animation animation) {
 
             }
         });
@@ -91,34 +127,16 @@ public class XpToast extends RelativeLayout implements UserLevelProgressBar.User
         startAnimation(a);
     }
 
-    private void startXPAnimation(UserXPAchievementDTO userXPAchievementDTO)
+    private void startXPAnimation()
     {
-        textSwitcher.setText(userXPAchievementDTO.text);
+        currentLevelAnimationDefinition = levelAnimationDefinitions.pop();
+
+        xpTextSwitcher.setText(currentLevelAnimationDefinition.text);
 
         if(userLevelProgressBar.getLevelDefDTOList() != null)
         {
-            userLevelProgressBar.increment(userXPAchievementDTO.xpEarned);
+            userLevelProgressBar.increment(currentLevelAnimationDefinition.earned);
         }
-
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, userXPAchievementDTO.xpEarned);
-        valueAnimator.setDuration(userLevelProgressBar.getRoughDuration());
-        valueAnimator.setStartDelay(userLevelProgressBar.getStartDelay());
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-        {
-            @Override public void onAnimationUpdate(ValueAnimator animation)
-            {
-                int value = (Integer) animation.getAnimatedValue();
-                displayXPEarned(value);
-            }
-        });
-        valueAnimator.start();
-        postDelayed(new Runnable()
-        {
-            @Override public void run()
-            {
-                hide();
-            }
-        }, 3000);
     }
 
     private void displayXPEarned(int value)
@@ -131,12 +149,13 @@ public class XpToast extends RelativeLayout implements UserLevelProgressBar.User
 
     public void hide()
     {
+        currentLevelAnimationDefinition = null;
+        levelAnimationDefinitions.clear();
         Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.alpha_out);
         a.setAnimationListener(new Animation.AnimationListener()
         {
             @Override public void onAnimationStart(Animation animation)
             {
-
             }
 
             @Override public void onAnimationEnd(Animation animation)
@@ -146,7 +165,6 @@ public class XpToast extends RelativeLayout implements UserLevelProgressBar.User
 
             @Override public void onAnimationRepeat(Animation animation)
             {
-
             }
         });
 
@@ -163,7 +181,45 @@ public class XpToast extends RelativeLayout implements UserLevelProgressBar.User
 
     @Override public void onLevelUp(LevelDefDTO fromLevel, LevelDefDTO toLevel)
     {
+        if(getContext() instanceof DashboardActivity)
+        {
+            LevelUpDialogFragment levelUpDialogFragment = LevelUpDialogFragment.newInstance(fromLevel.getId(), toLevel.getId());
+            levelUpDialogFragment.show(((DashboardActivity)getContext()).getFragmentManager(), LevelUpDialogFragment.class.getName());
+        }
+    }
 
+    @Override public void onIncrementStarted()
+    {
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(currentLevelAnimationDefinition.from, currentLevelAnimationDefinition.to());
+        valueAnimator.setDuration(userLevelProgressBar.getRoughDuration());
+        valueAnimator.setStartDelay(userLevelProgressBar.getStartDelay());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override public void onAnimationUpdate(ValueAnimator animation)
+            {
+                int value = (Integer) animation.getAnimatedValue();
+                displayXPEarned(value);
+            }
+        });
+        valueAnimator.start();
+    }
+
+    @Override public void onIncrementEnded()
+    {
+        if(levelAnimationDefinitions.isEmpty())
+        {
+            postDelayed(new Runnable()
+            {
+                @Override public void run()
+                {
+                    hide();
+                }
+            }, getResources().getInteger(R.integer.xp_level_toast_dismiss_delay));
+        }
+        else
+        {
+            startXPAnimation();
+        }
     }
 
     private class LevelDefCacheListener implements DTOCacheNew.HurriedListener<LevelDefListId, LevelDefDTOList>
@@ -182,6 +238,25 @@ public class XpToast extends RelativeLayout implements UserLevelProgressBar.User
         @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
         {
 
+        }
+    }
+
+    private class LevelAnimationDefinition
+    {
+        String text;
+        int from;
+        int earned;
+
+        private LevelAnimationDefinition(int from, int earned, String text)
+        {
+            this.from = from;
+            this.earned = earned;
+            this.text = text;
+        }
+
+        private int to()
+        {
+            return from + earned;
         }
     }
 }

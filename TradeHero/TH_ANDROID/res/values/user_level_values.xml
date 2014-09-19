@@ -23,8 +23,11 @@
        Basically, it's level up rotation + level up start delay + level up end delay + buffer-->
   <integer name="user_level_pause_on_level_up">3200</integer>
 
-  <dimen name="xp_level_toast_margin_bottom">54dp</dimen>
+
+  <integer name="xp_level_toast_dismiss_delay">500</integer>
+  <dimen name="xp_level_toast_margin_bottom">94dp</dimen>
   <dimen name="xp_level_toast_horizontal_margin">16dp</dimen>
-  <dimen name="xp_level_toast_padding">10dp</dimen>
+  <dimen name="xp_level_toast_padding">5dp</dimen>
   <dimen name="xp_level_toast_min_width">240dp</dimen>
+  <dimen name="xp_level_toast_min_text_height">30dp</dimen>
 </resources>

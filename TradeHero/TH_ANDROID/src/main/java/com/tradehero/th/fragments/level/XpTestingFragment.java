@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.level;
 
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,14 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
+import com.tradehero.th.api.level.UserXPMultiplierDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.level.XpModule;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
+import org.w3c.dom.Text;
 
 public class XpTestingFragment extends DashboardFragment
 {
@@ -49,15 +54,37 @@ public class XpTestingFragment extends DashboardFragment
     {
         try
         {
+            int xp = Integer.parseInt(xpEarned.getText().toString());
+
             UserXPAchievementDTO userXPAchievementDTO = new UserXPAchievementDTO();
             userXPAchievementDTO.text = xpReason.getText().toString();
-            userXPAchievementDTO.xpEarned = Integer.parseInt(xpEarned.getText().toString());
+            userXPAchievementDTO.xpEarned = xp;
             userXPAchievementDTO.xpFrom = Integer.parseInt(xpFrom.getText().toString());
-            BroadcastUtils utils = new BroadcastUtils(userXPAchievementDTO, localBroadcastManager, XpModule.XP_INTENT_ACTION_NAME, XpModule.XP_BROADCAST_KEY);
+            userXPAchievementDTO.multipliers = new ArrayList<>();
+            xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM1Reason, xpM1Value);
+            xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM2Reason, xpM2Value);
+            xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM3Reason, xpM3Value);
+
+            BroadcastUtils utils =
+                    new BroadcastUtils(userXPAchievementDTO, localBroadcastManager, XpModule.XP_INTENT_ACTION_NAME, XpModule.XP_BROADCAST_KEY);
             utils.start();
-        }catch (NumberFormatException e)
+        } catch (NumberFormatException e)
         {
             THToast.show(e.getMessage());
         }
+    }
+
+    private int parseMultipliers(List<UserXPMultiplierDTO> list, int baseXP, EditText reason, EditText value)
+    {
+        if (!TextUtils.isEmpty(reason.getText()) && !TextUtils.isEmpty(value.getText()))
+        {
+            UserXPMultiplierDTO m = new UserXPMultiplierDTO();
+            m.text = reason.getText().toString();
+            m.multiplier = Integer.parseInt(value.getText().toString());
+            m.xpTotal = baseXP * m.multiplier;
+            list.add(m);
+            return m.xpTotal;
+        }
+        return baseXP;
     }
 }

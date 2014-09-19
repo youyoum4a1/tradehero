@@ -7,37 +7,47 @@
     android:minWidth="@dimen/xp_level_toast_min_width"
     android:padding="@dimen/xp_level_toast_padding"
     android:visibility="gone"
-    android:background="@color/white">
+    android:clickable="true"
+    android:focusable="true"
+    android:background="@drawable/xp_toast_bg"
+    >
 
-    <TextSwitcher
-        android:id="@+id/xp_toast_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:inAnimation="@anim/push_down_in"
-        android:outAnimation="@anim/push_down_out"
-        android:minHeight="@dimen/clickable_element_min_dimen" />
+  <TextSwitcher
+      android:id="@+id/xp_toast_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:layout_marginLeft="@dimen/xp_level_toast_horizontal_margin"
+      android:layout_marginStart="@dimen/xp_level_toast_horizontal_margin"
+      android:inAnimation="@anim/push_down_in"
+      android:outAnimation="@anim/push_down_out"
+      android:minHeight="@dimen/xp_level_toast_min_text_height"
+      />
 
-    <TextView
-        android:id="@+id/xp_toast_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/xp_toast_text"
-        android:layout_toEndOf="@id/xp_toast_text"
-        style="@style/TH.Achievement.Earned.XP"
-        android:gravity="end|center_vertical"
-        android:layout_above="@+id/user_level_progress_bar"
-        android:layout_alignParentTop="true"
-        tools:text="+ 400 XP"/>
+  <TextView
+      android:id="@+id/xp_toast_value"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_toRightOf="@id/xp_toast_text"
+      android:layout_toEndOf="@id/xp_toast_text"
+      style="@style/TH.Achievement.Earned.XP"
+      android:layout_marginRight="@dimen/xp_level_toast_horizontal_margin"
+      android:layout_marginEnd="@dimen/xp_level_toast_horizontal_margin"
+      android:gravity="end|center_vertical"
+      android:layout_above="@+id/user_level_progress_bar"
+      android:layout_alignParentTop="true"
+      tools:text="+ 400 XP"
+      />
 
-    <include
-        android:id="@+id/user_level_progress_bar"
-        layout="@layout/user_level_progressbar"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_below="@id/xp_toast_text" />
+  <include
+      android:id="@+id/user_level_progress_bar"
+      layout="@layout/user_level_progressbar"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:layout_below="@id/xp_toast_text"
+      />
 
 </com.tradehero.th.widget.XpToast>
