@@ -3,11 +3,11 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.data.UGCFromDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
-import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -72,5 +72,12 @@ interface CompetitionServiceAsync
     );
 
 
-
+    //<editor-fold desc="Get MySelfRank">
+    @GET("/leaderboards/{leaderboardsId}/users/{userId}") void getMySelfRank(
+            @Path("leaderboardsId") int leaderboardsId,
+            @Path("userId") int userId,
+            Callback<LeaderboardDTO> callback);
+    //</editor-fold>
 }
+
+

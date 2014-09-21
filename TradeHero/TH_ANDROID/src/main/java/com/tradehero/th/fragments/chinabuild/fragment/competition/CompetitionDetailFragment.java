@@ -23,6 +23,7 @@ import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.api.competition.CompetitionDTOUtil;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.CompetitionId;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
@@ -37,6 +38,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
@@ -69,6 +71,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     @Inject Lazy<CompetitionCache> competitionCacheLazy;
     private Callback<UserCompetitionDTO> callbackEnrollUGC;
+    private Callback<LeaderboardDTO> callbackMySelfRank;
 
     @Inject protected PortfolioCompactNewCache portfolioCompactNewCache;
     private DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> portfolioCompactNewFetchListener;
@@ -97,7 +100,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     @InjectView(R.id.tvGotoCompetition) TextView tvGotoCompetition;//去比赛
 
     @InjectView(R.id.includeMyPosition) RelativeLayout includeMyPosition;//我的比赛数据行
-
+    @InjectView(R.id.tvUserRank) TextView tvUserRank;//我的排名
     @InjectView(R.id.tvUserExtraValue) TextView tvUserExtraValue;//我的收益率
     @InjectView(R.id.tvUserName) TextView tvUserName;//我的名字
     @InjectView(R.id.imgUserHead) ImageView imgUserHead;//我的头像
@@ -108,6 +111,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         getBundleCompetitionDTO();
         callbackEnrollUGC = new EnrollUGCCallback();
+        callbackMySelfRank = new MySelfRanCallbakc();
         competitionLeaderboardCacheListener = createCompetitionLeaderboardListener();
         portfolioCompactNewFetchListener = createPortfolioCompactNewFetchListener();
         userProfileCacheListener = createUserProfileFetchListener();
@@ -147,6 +151,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         includeMyPosition.setVisibility(userCompetitionDTO.isEnrolled ? View.VISIBLE : View.GONE);
         initCompetition();
         initRankList();
+        getMySelfRank();
     }
 
     private void initRankList()
@@ -211,11 +216,29 @@ public class CompetitionDetailFragment extends DashboardFragment
             tvCompetitionPeriod.setText(userCompetitionDTO.getDisplayDatePeriod());
             tvCompetitionExchange.setText(userCompetitionDTO.getDisplayExchangeShort());
             tvGotoCompetition.setText(userCompetitionDTO.isEnrolled ? "去比赛" : "我要报名");
+
+            tvCompetitionCreator.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    openUserProfile(userCompetitionDTO.hostUserId);
+                }
+            });
         }
 
         if (adapter != null && adapter.getCount() == 0)
         {
             fetchCompetitionLeaderboard();
+        }
+    }
+
+    private void openUserProfile(int userId)
+    {
+        if (userId >= 0)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
+            pushFragment(UserMainPage.class, bundle);
         }
     }
 
@@ -241,6 +264,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         portfolioCompactNewFetchListener = null;
         userProfileCacheListener = null;
         callbackEnrollUGC = null;
+        callbackMySelfRank = null;
         super.onDestroy();
     }
 
@@ -302,6 +326,11 @@ public class CompetitionDetailFragment extends DashboardFragment
         competitionCacheLazy.get().enrollUGCompetition(userCompetitionDTO.id, callbackEnrollUGC);
     }
 
+    public void getMySelfRank()
+    {
+        competitionCacheLazy.get().getMySelfRank(userCompetitionDTO.leaderboardId, currentUserId.toUserBaseKey().getUserId(), callbackMySelfRank);
+    }
+
     protected class EnrollUGCCallback implements retrofit.Callback<UserCompetitionDTO>
     {
 
@@ -337,6 +366,64 @@ public class CompetitionDetailFragment extends DashboardFragment
             }
             THException thException = new THException(retrofitError);
             THToast.show(thException);
+        }
+    }
+
+    private void displayMySelfRank(LeaderboardDTO leaderboardDTO)
+    {
+        int ordinaPosition = -1;
+        try
+        {
+            ordinaPosition = leaderboardDTO.users.get(0).ordinalPosition;
+        } catch (Exception e)
+        {
+
+        }
+
+        if (ordinaPosition != -1)
+        {
+            if (ordinaPosition < 3)
+            {
+                tvUserRank.setText("");
+                tvUserRank.setBackgroundResource(LeaderboardListAdapter.RANK_RES[ordinaPosition]);
+            }
+            else
+            {
+                tvUserRank.setBackgroundDrawable(null);
+                tvUserRank.setText(String.valueOf(ordinaPosition + 1));
+            }
+        }
+        else
+        {
+            tvUserRank.setText(" - - ");
+        }
+    }
+
+    protected class MySelfRanCallbakc implements retrofit.Callback<LeaderboardDTO>
+    {
+        @Override
+        public void success(LeaderboardDTO leaderboardDTO, Response response)
+        {
+            onFinish();
+            if (response.getStatus() == 200)
+            {
+                Timber.d("");
+                displayMySelfRank(leaderboardDTO);
+            }
+        }
+
+        private void onFinish()
+        {
+
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            onFinish();
+            if (retrofitError != null)
+            {
+                Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
+            }
         }
     }
 
@@ -396,7 +483,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             adapter.setListData(listData);
             adapter.setLeaderboardType(LeaderboardDefKeyKnowledge.COMPETITION);
-
         }
         else
         {

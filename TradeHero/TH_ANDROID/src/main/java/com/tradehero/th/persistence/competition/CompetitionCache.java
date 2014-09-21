@@ -4,8 +4,8 @@ import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.key.CompetitionId;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
-import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -113,7 +113,11 @@ import retrofit.Callback;
         return competitionServiceWrapper.enrollUGCompetition(competitionId, callback);
     }
 
-
+    public MiddleCallback<LeaderboardDTO> getMySelfRank(int leaderboardsId, int userId, @Nullable
+    Callback<LeaderboardDTO> callback)
+    {
+        return competitionServiceWrapper.getMySelfRank(leaderboardsId, userId, callback);
+    }
 
     //public MiddleCallback<UserCompetitionDTOList> getUserCompetitions(@NotNull int page, @NotNull int perpage,
     //        Callback<UserCompetitionDTOList> callback)

@@ -5,9 +5,9 @@ import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.CompetitionId;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
-import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.cache.CompetitionListType;
@@ -161,6 +161,18 @@ import retrofit.Callback;
         this.competitionServiceAsync.enrollUGCompetition(competitionId, middleCallback);
         return middleCallback;
     }
+
+    //获取自己的比赛排名信息
+    @NotNull public MiddleCallback<LeaderboardDTO> getMySelfRank(
+            int leaderboardsId,int userId,
+            @Nullable Callback<LeaderboardDTO> callback)
+    {
+        MiddleCallback<LeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        this.competitionServiceAsync.getMySelfRank(leaderboardsId,userId,middleCallback);
+        return middleCallback;
+    }
+
+
 
     @NotNull public UserCompetitionDTOList getCompetition(CompetitionListType key)
     {

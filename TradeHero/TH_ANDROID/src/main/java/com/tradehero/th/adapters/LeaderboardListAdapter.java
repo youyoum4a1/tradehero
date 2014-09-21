@@ -32,7 +32,7 @@ public class LeaderboardListAdapter extends BaseAdapter
 
     public int leaderboardType = LeaderboardDefKeyKnowledge.DAYS_30;
 
-    private static final int RANK_RES[] = {
+    public static final int RANK_RES[] = {
             R.drawable.icon_rank_first_place,
             R.drawable.icon_rank_second_place,
             R.drawable.icon_rank_third_place
