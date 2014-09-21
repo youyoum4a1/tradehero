@@ -387,6 +387,10 @@ public class CompetitionDetailFragment extends DashboardFragment
                 tvUserRank.setText("");
                 tvUserRank.setBackgroundResource(LeaderboardListAdapter.RANK_RES[ordinaPosition]);
             }
+            else if (ordinaPosition > 1000)
+            {
+                tvUserRank.setText(" - - ");
+            }
             else
             {
                 tvUserRank.setBackgroundDrawable(null);
