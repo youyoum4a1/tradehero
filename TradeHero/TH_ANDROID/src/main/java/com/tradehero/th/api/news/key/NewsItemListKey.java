@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.DTOKey;
 
 public class NewsItemListKey implements DTOKey
 {
-    public final Integer page;
+    public  Integer page;
     public final Integer perPage;
 
     //<editor-fold desc="Constructors">

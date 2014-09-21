@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -32,7 +31,6 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
-import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th2.R;
@@ -180,8 +178,6 @@ public class UserMainPage extends DashboardFragment
                 fetchTimeLineMore();
             }
         });
-
-
     }
 
     public void displayFollow()
@@ -413,13 +409,15 @@ public class UserMainPage extends DashboardFragment
         {
             String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
             tvAllAmount.setText(valueString);
-
-            THSignedNumber roi = THSignedPercentage.builder(cached.roiSinceInception * 100)
-                    .withSign()
-                    .signTypeArrow()
-                    .build();
-            tvEarning.setText(roi.toString());
-            tvEarning.setTextColor(getResources().getColor(roi.getColorResId()));
+            if (cached.roiSinceInception != null)
+            {
+                THSignedNumber roi = THSignedPercentage.builder(cached.roiSinceInception * 100)
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                tvEarning.setText(roi.toString());
+                tvEarning.setTextColor(getResources().getColor(roi.getColorResId()));
+            }
         }
     }
 

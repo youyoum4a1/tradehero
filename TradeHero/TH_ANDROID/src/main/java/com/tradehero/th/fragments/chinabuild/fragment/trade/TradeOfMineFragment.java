@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -13,12 +14,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
-import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.th2.R;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -26,12 +21,17 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
+import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
+import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -40,6 +40,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th2.R;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,21 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         adapter = new MyTradePositionListAdapter(getActivity());
         listView.setAdapter(adapter);
-        listView.setMode(PullToRefreshBase.Mode.DISABLED);
+        listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+
+        listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
+        {
+            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
+            {
+                Timber.d("下拉刷新");
+                refreshData(true);
+            }
+
+            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
+            {
+
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -167,9 +182,14 @@ public class TradeOfMineFragment extends DashboardFragment
 
     @Override public void onResume()
     {
-        fetchPortfolioCompactList();
-        fetchWatchPositionList();
+        refreshData(false);
         super.onResume();
+    }
+
+    public void refreshData(boolean force)
+    {
+        fetchPortfolioCompactList(force);
+        fetchWatchPositionList(force);
     }
 
     protected void fetchSimplePage(boolean force)
@@ -188,11 +208,11 @@ public class TradeOfMineFragment extends DashboardFragment
         }
     }
 
-    private void fetchPortfolioCompactList()
+    private void fetchPortfolioCompactList(boolean force)
     {
         detachPortfolioCompactListCache();
         portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
-        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(),force);
     }
 
     protected void fetchPortfolio()
@@ -209,11 +229,11 @@ public class TradeOfMineFragment extends DashboardFragment
     //    userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
     //}
 
-    protected void fetchWatchPositionList()
+    protected void fetchWatchPositionList(boolean force)
     {
         detachUserWatchlistFetchTask();
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
-        userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), false);
+        userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
 
     protected void detachGetPositionsTask()
@@ -257,6 +277,7 @@ public class TradeOfMineFragment extends DashboardFragment
             //showResultIfNecessary();
             Timber.d("");
             initPositionSecurity(value);
+            finish();
         }
 
         @Override public void onDTOReceived(
@@ -267,6 +288,7 @@ public class TradeOfMineFragment extends DashboardFragment
             //showResultIfNecessary();
             Timber.d("");
             initPositionSecurity(value);
+            finish();
         }
 
         @Override public void onErrorThrown(
@@ -274,6 +296,12 @@ public class TradeOfMineFragment extends DashboardFragment
                 @NotNull Throwable error)
         {
             Timber.d("error:  " + error.toString());
+            finish();
+        }
+
+        public void finish()
+        {
+            listView.onRefreshComplete();
         }
     }
 
@@ -289,12 +317,19 @@ public class TradeOfMineFragment extends DashboardFragment
             //displayWatchlist(value);
             Timber.d("");
             initWatchList(value);
+            finish();
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             //watchlistPositionListView.onRefreshComplete();
             //THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
+            finish();
+        }
+
+        private void finish()
+        {
+            listView.onRefreshComplete();
         }
     }
 

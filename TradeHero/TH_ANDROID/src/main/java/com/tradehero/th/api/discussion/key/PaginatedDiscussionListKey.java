@@ -1,8 +1,8 @@
 package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
-import com.tradehero.th.api.pagination.PaginatedKey;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.pagination.PaginatedKey;
 import java.util.Map;
 
 public class PaginatedDiscussionListKey extends DiscussionListKey
@@ -13,7 +13,7 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
     private static final Integer DEFAULT_PERPAGE = 42;
     private static final int FIRST_PAGE = 1;
 
-    public final Integer page;
+    public Integer page;
     public final Integer perPage;
 
     //<editor-fold desc="Constructors">

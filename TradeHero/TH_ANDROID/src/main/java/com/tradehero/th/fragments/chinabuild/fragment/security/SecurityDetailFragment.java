@@ -25,6 +25,16 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.key.NewsItemListKey;
+import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
@@ -34,6 +44,7 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
@@ -45,6 +56,7 @@ import com.tradehero.th.fragments.chinabuild.cache.PositionDTOKey;
 import com.tradehero.th.fragments.chinabuild.dialog.DialogFactory;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.security.ChartImageView;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.misc.callback.THCallback;
@@ -58,6 +70,9 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
+import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -70,12 +85,13 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
 /**
  * Created by huhaiping on 14-9-1.
  */
-public class SecurityDetailFragment extends BasePurchaseManagerFragment
+public class SecurityDetailFragment extends BasePurchaseManagerFragment implements DiscussionListCacheNew.DiscussionKeyListListener
 {
     public final static String BUNDLE_KEY_SECURITY_NAME = SecurityDetailFragment.class.getName() + ".securityName";
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".securityId";
@@ -168,6 +184,28 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public int competitionID;
 
+    @Inject DiscussionCache discussionCache;
+    @Inject DiscussionListCacheNew discussionListCache;
+    private PaginatedDiscussionListKey discussionListKey;
+    private NewsItemListKey listKey;
+    @Inject NewsItemCompactListCacheNew newsTitleCache;
+    @Nullable private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
+
+    @InjectView(R.id.llDisscurssOrNews) LinearLayout llDisscurssOrNews;
+    @InjectView(R.id.imgSecurityTLUserHeader) ImageView imgSecurityTLUserHeader;
+    @InjectView(R.id.tvUserTLTimeStamp) TextView tvUserTLTimeStamp;
+    @InjectView(R.id.tvUserTLContent) TextView tvUserTLContent;
+    @InjectView(R.id.llTLPraise) LinearLayout llTLPraise;
+    @InjectView(R.id.llTLComment) LinearLayout llTLComment;
+    @InjectView(R.id.llTLShare) LinearLayout llTLShare;
+    @InjectView(R.id.tvTLPraise) TextView tvTLPraise;
+    @InjectView(R.id.tvTLComment) TextView tvTLComment;
+    @InjectView(R.id.tvTLShare) TextView tvTLShare;
+
+    @Inject public Lazy<PrettyTime> prettyTime;
+    AbstractDiscussionCompactDTO dtoDiscuss;
+    AbstractDiscussionCompactDTO dtoNews;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -178,6 +216,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         positionNewCacheListener = createPositionNewCacheListener();
         userProfileCacheListener = createUserProfileCacheListener();
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
+        newsCacheListener = createNewsCacheListener();
     }
 
     @Override
@@ -354,6 +393,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         detachSecurityPositionDetailCache();
         detachCompetitionPositionCache();
         detachWatchlistFetchTask();
+
+        detachSecurityDiscuss();
+        detachSecurityNews();
+
         querying = false;
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -415,6 +458,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         if (securityId != null)
         {
+
             queryCompactCache(securityId);
             prepareFreshQuoteHolder();
 
@@ -705,12 +749,21 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
+    private void initKey()
+    {
+        discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id, 1, 2);
+        listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityCompactDTO.id), 1, 2);
+        fetchSecurityDiscuss(false);
+        fetchSecurityNews(false);
+    }
+
     private void linkWith(SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
 
         if (securityCompactDTO != null)
         {
+            initKey();
             chartDTO.setSecurityCompactDTO(securityCompactDTO);
         }
         displayChartImage();
@@ -778,16 +831,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void setDiscussOrNewsView(int select)
     {
-        //if (indexDiscussOrNews != select)
+        indexDiscussOrNews = select;
+        for (int i = 0; i < btnDiscussOrNews.length; i++)
         {
-            indexDiscussOrNews = select;
-            for (int i = 0; i < btnDiscussOrNews.length; i++)
-            {
-                btnDiscussOrNews[i].setBackgroundResource(
-                        (i == indexDiscussOrNews ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
-            }
-            //linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)), true);
+            btnDiscussOrNews[i].setBackgroundResource(
+                    (i == indexDiscussOrNews ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
         }
+        displayDiscussOrNewsDTO();
     }
 
     public long getChartTimeSpanDuration(int index)
@@ -1284,5 +1334,153 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public int getCompetitionID()
     {
         return competitionID;
+    }
+
+    private void detachSecurityDiscuss()
+    {
+        discussionListCache.unregister(this);
+    }
+
+    private void detachSecurityNews()
+    {
+        newsTitleCache.unregister(newsCacheListener);
+    }
+
+    public void fetchSecurityDiscuss(boolean force)
+    {
+        if (discussionListKey != null)
+        {
+            detachSecurityDiscuss();
+            discussionListCache.register(discussionListKey, this);
+            discussionListCache.getOrFetchAsync(discussionListKey, force);
+        }
+    }
+
+    private void fetchSecurityNews(boolean force)
+    {
+        if (listKey != null)
+        {
+            detachSecurityNews();
+            newsTitleCache.register(listKey, newsCacheListener);
+            newsTitleCache.getOrFetchAsync(listKey, force);
+        }
+    }
+
+    @Override public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value)
+    {
+        if (value != null && value.size() > 0)
+        {
+            AbstractDiscussionCompactDTO dto = discussionCache.get(value.get(0));
+            if (dto != null)
+            {
+                Timber.d(dto.toString());
+                dtoDiscuss = dto;
+                displayDiscussOrNewsDTO();
+            }
+        }
+    }
+
+    @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)
+    {
+
+    }
+
+    @NotNull protected DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> createNewsCacheListener()
+    {
+        return new NewsHeadlineNewsListListener();
+    }
+
+    protected class NewsHeadlineNewsListListener implements DTOCacheNew.HurriedListener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
+    {
+        @Override public void onPreCachedDTOReceived(
+                @NotNull NewsItemListKey key,
+                @NotNull PaginatedDTO<NewsItemCompactDTO> value)
+        {
+            linkWith(key, value);
+            finish();
+        }
+
+        @Override public void onDTOReceived(
+                @NotNull NewsItemListKey key,
+                @NotNull PaginatedDTO<NewsItemCompactDTO> value)
+        {
+            linkWith(key, value);
+            finish();
+        }
+
+        @Override public void onErrorThrown(
+                @NotNull NewsItemListKey key,
+                @NotNull Throwable error)
+        {
+            //THToast.show("");
+            finish();
+        }
+
+        public void finish()
+        {
+            //endLoading();
+        }
+    }
+
+    public void linkWith(@NotNull NewsItemListKey key,
+            @NotNull PaginatedDTO<NewsItemCompactDTO> value)
+    {
+        if (value.getData() != null && value.getData().size() > 0)
+        {
+            NewsItemCompactDTO dto = value.getData().get(0);
+            dtoNews = dto;
+            displayDiscussOrNewsDTO();
+        }
+    }
+
+    @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare,R.id.llDisscurssOrNews,R.id.imgSecurityTLUserHeader})
+    public void onOperaterClicked(View view)
+    {
+        if(view.getId() == R.id.imgSecurityTLUserHeader)
+        {
+            openUserProfile(((DiscussionDTO) getAbstractDiscussionCompactDTO()).user.id);
+        }
+    }
+    private void openUserProfile(int userId)
+    {
+        if (userId >= 0)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
+            pushFragment(UserMainPage.class, bundle);
+        }
+    }
+
+
+    public AbstractDiscussionCompactDTO getAbstractDiscussionCompactDTO()
+    {
+        return indexDiscussOrNews == 0 ? dtoDiscuss : dtoNews;
+    }
+
+    public void displayDiscussOrNewsDTO()
+    {
+        AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
+        llDisscurssOrNews.setVisibility(dto == null ? View.GONE : View.VISIBLE);
+        if (dto != null)
+        {
+            imgSecurityTLUserHeader.setVisibility(dto instanceof NewsItemCompactDTO ? View.GONE : View.VISIBLE);
+            tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(dto.createdAtUtc));
+
+            if (dto instanceof NewsItemCompactDTO)
+            {
+                tvUserTLContent.setText(((NewsItemCompactDTO) dto).description);
+            }
+            else if (dto instanceof DiscussionDTO)
+            {
+                tvUserTLContent.setText(((DiscussionDTO) dto).text);
+                picasso.load(((DiscussionDTO) dto).user.picture)
+                        .placeholder(R.drawable.superman_facebook)
+                        .error(R.drawable.superman_facebook)
+                        .into(imgSecurityTLUserHeader);
+            }
+
+            tvTLComment.setText("" + dto.commentCount);
+            tvTLPraise.setText("" + dto.upvoteCount);
+        }
     }
 }

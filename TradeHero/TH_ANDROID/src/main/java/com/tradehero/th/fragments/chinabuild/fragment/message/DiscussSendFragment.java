@@ -9,7 +9,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th2.R;
-import timber.log.Timber;
 
 /**
  * Created by huhaiping on 14-9-1.
@@ -27,6 +26,7 @@ public class DiscussSendFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain("发起讨论");
     }
 
     @Override
@@ -56,6 +56,5 @@ public class DiscussSendFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-
     }
 }

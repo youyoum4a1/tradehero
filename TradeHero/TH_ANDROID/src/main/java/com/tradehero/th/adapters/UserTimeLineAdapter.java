@@ -1,14 +1,15 @@
 package com.tradehero.th.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -18,24 +19,22 @@ import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th2.R;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
-public class UserTimeLineAdapter extends BaseAdapter
+public class UserTimeLineAdapter extends TimeLineBaseAdapter
 {
 
-    public TimeLineOperater timeLineOperater;
+    //public TimeLineOperater timeLineOperater;
+    //@Inject protected Lazy<PrettyTime> prettyTime;
+    //private Context context;
+    //private LayoutInflater inflater;
 
-    @Inject protected Lazy<PrettyTime> prettyTime;
-    private Context context;
-    private LayoutInflater inflater;
     private List<TimelineItemDTO> listData;
 
     private List<UserProfileCompactDTO> users = new ArrayList<>();
@@ -248,7 +247,22 @@ public class UserTimeLineAdapter extends BaseAdapter
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
-        getNavigator().pushFragment(SecurityDetailFragment.class, bundle);
+        if(getNavigator()!=null)
+        {
+            getNavigator().pushFragment(SecurityDetailFragment.class, bundle);
+        }
+        else
+        {
+            gotoDashboard(SecurityDetailFragment.class.getName(), bundle);
+        }
+    }
+
+    public void gotoDashboard(String strFragment, Bundle bundle)
+    {
+        Bundle args = new Bundle();
+        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
+        args.putAll(bundle);
+        ActivityHelper.launchDashboard((Activity)this.context, args);
     }
 
     public TradeDTO getTradeDTO(int tradeId)
@@ -306,14 +320,5 @@ public class UserTimeLineAdapter extends BaseAdapter
         public TextView title2;//买入数量
     }
 
-    public static interface TimeLineOperater
-    {
-        void OnTimeLineItemClicked(int position);
 
-        void OnTimeLinePraiseClicked(int position);
-
-        void OnTimeLineCommentsClicked(int position);
-
-        void OnTimeLineShareClied(int position);
-    }
 }
