@@ -124,11 +124,8 @@ class Navigator<ActivityType extends Activity>
     {
         if (args != null)
         {
-            if (DashboardFragment.class.isAssignableFrom(fragmentClass))
-            {
-                ActionBarOwnerMixin.putKeyShowHomeAsUp(args, showHomeAsUp);
-            }
-            else if (DashboardPreferenceFragment.class.isAssignableFrom(fragmentClass))
+            if (DashboardFragment.class.isAssignableFrom(fragmentClass) ||
+                    DashboardPreferenceFragment.class.isAssignableFrom(fragmentClass))
             {
                 ActionBarOwnerMixin.putKeyShowHomeAsUp(args, showHomeAsUp);
             }

@@ -49,9 +49,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject protected THBillingInteractor userInteractor;
     @Inject protected Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
-    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
-    @Inject SystemStatusCache systemStatusCache;
 
     public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
