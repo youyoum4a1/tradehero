@@ -1,12 +1,14 @@
 package com.tradehero.th.wxapi;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.Window;
+import android.widget.AbsListView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tencent.mm.sdk.openapi.BaseReq;
@@ -19,20 +21,30 @@ import com.tencent.mm.sdk.openapi.WXMediaMessage;
 import com.tencent.mm.sdk.openapi.WXWebpageObject;
 import com.tencent.mm.sdk.platformtools.Util;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
+import com.tradehero.th.UIModule;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.THApp;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.dagger.AppModule;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
+import dagger.Module;
+import dagger.Provides;
 import java.io.IOException;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -47,6 +59,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private static final String WECHAT_SHARE_NEWS_KEY = "news:";
     private static final String WECHAT_SHARE_TYPE_VALUE = "WeChat";
 
+    private Injector newInjector;
     private WeChatDTO weChatDTO;
     private Bitmap mBitmap;
     private MiddleCallback<Response> trackShareMiddleCallback;
@@ -72,7 +85,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     {
         super.onCreate(savedInstanceState);
         THApp app = THApp.get(this);
-        app.inject(this);
+        newInjector = app.plus(new WXEntryActivityModule());
+        newInjector.inject(this);
+
         // TODO take this intent extraction into a separate method and use a new
         // WeChatDTO method to read from Intent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -288,5 +303,46 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     {
         finish();
         return super.onTouchEvent(event);
+    }
+
+    @Module(
+            addsTo = AppModule.class,
+            includes = {
+                    UIModule.class
+            },
+            library = true,
+            complete = false,
+            overrides = true
+    )
+    public class WXEntryActivityModule
+    {
+        @Provides Activity provideActivity()
+        {
+            return WXEntryActivity.this;
+        }
+
+        @Provides DashboardNavigator provideDashboardNavigator()
+        {
+            throw new IllegalStateException("No navigator available when in Wechat share");
+        }
+
+        @Provides @Singleton THRouter provideTHRouter(Context context, Provider<DashboardNavigator> navigatorProvider)
+        {
+            throw new IllegalStateException("No router available when in Wechat share");
+        }
+
+        @Provides @BottomTabs AbsListView.OnScrollListener provideDashboardBottomTabScrollListener()
+        {
+            return new AbsListView.OnScrollListener()
+            {
+                @Override public void onScrollStateChanged(AbsListView absListView, int i)
+                {
+                }
+
+                @Override public void onScroll(AbsListView absListView, int i, int i2, int i3)
+                {
+                }
+            };
+        }
     }
 }
