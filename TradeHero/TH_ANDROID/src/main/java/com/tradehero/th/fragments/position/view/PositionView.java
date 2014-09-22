@@ -35,16 +35,19 @@ public class PositionView extends LinearLayout
     protected PositionListener<PositionDTO> listener = null;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public PositionView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PositionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PositionView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -70,6 +73,7 @@ public class PositionView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_buy_now)
     protected void handleBuyClicked(View v)
     {
@@ -85,6 +89,7 @@ public class PositionView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_sell_now)
     protected void handleSellClicked(View v)
     {
@@ -100,6 +105,7 @@ public class PositionView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_add_alert)
     protected void handleAddAlertClicked(View v)
     {
@@ -115,6 +121,7 @@ public class PositionView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_stock_info)
     protected void handleStockInfoClicked(View v)
     {
@@ -130,6 +137,7 @@ public class PositionView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_trade_history)
     protected void handleTradeHistoryClicked(View v)
     {

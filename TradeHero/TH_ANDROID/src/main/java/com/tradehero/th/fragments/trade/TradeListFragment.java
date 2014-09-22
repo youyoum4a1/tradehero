@@ -89,8 +89,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     protected PositionDTOKey positionDTOKey;
     protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> fetchPositionListener;
-    protected PositionDTO positionDTO;
-    protected TradeDTOList tradeDTOList;
+    @Nullable protected PositionDTO positionDTO;
+    @Nullable protected TradeDTOList tradeDTOList;
 
     protected TradeListItemAdapter adapter;
 

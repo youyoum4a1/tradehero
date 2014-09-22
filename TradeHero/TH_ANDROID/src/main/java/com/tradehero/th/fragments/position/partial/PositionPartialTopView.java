@@ -23,7 +23,6 @@ import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.THColorUtils;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
@@ -56,16 +55,19 @@ public class PositionPartialTopView extends LinearLayout
     private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -340,7 +342,9 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (positionLastAmountHeader != null)
         {
-            Boolean isOpen = positionDTO == null ? null : positionDTO.isOpen();
+            Boolean isOpen = positionDTO == null
+                    ? null
+                    : positionDTO.isOpen();
             if (isOpen == null || isOpen)
             {
                 positionLastAmountHeader.setVisibility(GONE);
