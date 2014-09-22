@@ -16,6 +16,7 @@ import butterknife.InjectView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
 
@@ -108,11 +109,9 @@ public class DiscoveryMainFragment extends DashboardFragment
         @Override public Fragment getItem(int position)
         {
             DiscoveryTabType tabType = DiscoveryTabType.values()[position];
-            switch (tabType)
-            {
-                default: // special case should be placed above
-                    return Fragment.instantiate(getActivity(), tabType.fragmentClass.getName());
-            }
+            Bundle args = new Bundle();
+            ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
+            return Fragment.instantiate(getActivity(), tabType.fragmentClass.getName(), args);
         }
 
         @Override public CharSequence getPageTitle(int position)

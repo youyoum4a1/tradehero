@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.education;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTOList;
 import com.tradehero.th.fragments.BasePagedListFragment;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.persistence.education.PaginatedVideoCategoryCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -29,25 +31,22 @@ public class VideoCategoriesFragment extends BasePagedListFragment<
         >
 {
     @Inject PaginatedVideoCategoryCache paginatedVideoCategoryCache;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Analytics analytics;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(R.string.dashboard_education);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+        {
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        }
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         scheduleRequestData();
-    }
-
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        resideMenuLazy.get().addIgnoredView(listView);
     }
 
     @Override public void onResume()
