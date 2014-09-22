@@ -20,8 +20,8 @@
       android:layout_alignParentLeft="true"
       android:layout_marginLeft="@dimen/xp_level_toast_horizontal_margin"
       android:layout_marginStart="@dimen/xp_level_toast_horizontal_margin"
-      android:inAnimation="@anim/push_down_in"
-      android:outAnimation="@anim/push_down_out"
+      android:inAnimation="@anim/push_up_in"
+      android:outAnimation="@anim/push_up_out"
       android:minHeight="@dimen/xp_level_toast_min_text_height"
       />
 

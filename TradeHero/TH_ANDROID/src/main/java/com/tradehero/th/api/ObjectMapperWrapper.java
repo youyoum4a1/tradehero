@@ -16,6 +16,7 @@ import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.utils.achievement.AchievementModule;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.level.XpModule;
 import dagger.Lazy;
 import java.io.IOException;
@@ -30,17 +31,20 @@ public class ObjectMapperWrapper extends ObjectMapper
     @NotNull protected final Lazy<UserAchievementCache> userAchievementCacheLazy;
     @NotNull protected final Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy;
     @NotNull protected final Lazy<AchievementCategoryCache> achievementCategoryCacheLazy;
+    @NotNull private final Lazy<BroadcastUtils> broadcastUtilsLazy;
 
     //<editor-fold desc="Constructors">
     @Inject public ObjectMapperWrapper(
             @NotNull Lazy<UserAchievementCache> userAchievementCacheLazy,
             @NotNull Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy,
-            @NotNull Lazy<AchievementCategoryCache> achievementCategoryCacheLazy)
+            @NotNull Lazy<AchievementCategoryCache> achievementCategoryCacheLazy,
+            @NotNull Lazy<BroadcastUtils> broadcastUtilsLazy)
     {
         super();
         this.userAchievementCacheLazy = userAchievementCacheLazy;
         this.achievementCategoryListCacheLazy = achievementCategoryListCacheLazy;
         this.achievementCategoryCacheLazy = achievementCategoryCacheLazy;
+        this.broadcastUtilsLazy = broadcastUtilsLazy;
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
     //</editor-fold>
@@ -71,7 +75,7 @@ public class ObjectMapperWrapper extends ObjectMapper
                 handleAchievement(objectNode.get(AchievementModule.KEY_ACHIEVEMENT_NODE));
                 objectNode.remove(AchievementModule.KEY_ACHIEVEMENT_NODE);
             }
-            else if(isXPNode(element))
+            else if (isXPNode(element))
             {
                 handleXP(objectNode.get(XpModule.KEY_XP_NODE));
                 objectNode.remove(XpModule.KEY_XP_NODE);
@@ -113,6 +117,9 @@ public class ObjectMapperWrapper extends ObjectMapper
                 {
                 });
 
-
+        for (UserXPAchievementDTO userXPAchievementDTO : userXPAchievementDTOs)
+        {
+            broadcastUtilsLazy.get().enqueue(userXPAchievementDTO);
+        }
     }
 }

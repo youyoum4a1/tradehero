@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
     @NotNull private final LocalBroadcastManager localBroadcastManager;
 
     private ArrayDeque<BroadcastData> broadcastQueue = new ArrayDeque<>();
-    private final AtomicBoolean flag = new AtomicBoolean(false);
+    private final AtomicBoolean isProcessing = new AtomicBoolean(false);
 
     @Inject public BroadcastUtils(@NotNull LocalBroadcastManager localBroadcastManager)
     {
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
     public BroadcastTaskNew enqueue(BroadcastData broadcastData)
     {
         broadcastQueue.add(broadcastData);
-        if (!flag.get())
+        if (!isProcessing.get())
         {
             return broadcast(broadcastQueue.pop());
         }
@@ -34,9 +34,9 @@ import org.jetbrains.annotations.NotNull;
 
     public void nextPlease()
     {
-        if (flag.get())
+        if (isProcessing.get())
         {
-            flag.set(false);
+            isProcessing.set(false);
             if (!broadcastQueue.isEmpty())
             {
                 broadcast(broadcastQueue.pop());
@@ -46,7 +46,7 @@ import org.jetbrains.annotations.NotNull;
 
     private BroadcastTaskNew broadcast(BroadcastData broadcastData)
     {
-        flag.set(true);
+        isProcessing.set(true);
         BroadcastTaskNew task = new BroadcastTaskNew(broadcastData, localBroadcastManager, this);
         task.start();
         return task;
@@ -54,7 +54,7 @@ import org.jetbrains.annotations.NotNull;
 
     @Override public void onStartBroadcast(BroadcastData broadcastData)
     {
-        flag.compareAndSet(false, true);
+        isProcessing.compareAndSet(false, true);
     }
 
     @Override public void onFinishBroadcast(BroadcastData broadcastData, boolean isSuccessful)
@@ -62,6 +62,7 @@ import org.jetbrains.annotations.NotNull;
         if (!isSuccessful)
         {
             broadcastQueue.addLast(broadcastData);
+            isProcessing.set(false);
         }
     }
 }

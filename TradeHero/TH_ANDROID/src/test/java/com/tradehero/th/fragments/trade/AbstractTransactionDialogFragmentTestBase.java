@@ -91,7 +91,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
         activity = Robolectric.setupActivity(DashboardActivity.class);
         abstractTransactionDialogFragment
                 = AbstractTransactionDialogFragment.newInstance(securityId, portfolioId, quoteDTO, isBuy());
-        abstractTransactionDialogFragment.show(activity.getSupportFragmentManager(), "Test");
+        abstractTransactionDialogFragment.show(activity.getFragmentManager(), "Test");
 
         runBgUiTasks(3);
     }

@@ -11,14 +11,14 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
 {
     private static final String KEY_TEXT = UserXPAchievementDTO.class.getName() + ".text";
     private static final String KEY_SUBTEXT = UserXPAchievementDTO.class.getName() + ".subText";
-    private static final String KEY_XP_FROM = UserXPAchievementDTO.class.getName() + ".xpFrom";
+    private static final String KEY_XP_FROM = UserXPAchievementDTO.class.getName() + ".originalXP";
     private static final String KEY_XP_EARNED = UserXPAchievementDTO.class.getName() + ".xpEarned";
     private static final String KEY_MULTIPLIERS = UserXPAchievementDTO.class.getName() + ".multipliers";
 
     public String text;
     public String subText;
-    public int xpFrom;
-    public int xpEarned;
+    public int originalXP;
+    public int xp;
     public List<UserXPMultiplierDTO> multipliers;
 
     public UserXPAchievementDTO()
@@ -40,12 +40,12 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
 
         if (b.containsKey(KEY_XP_EARNED))
         {
-            xpEarned = b.getInt(KEY_XP_EARNED);
+            xp = b.getInt(KEY_XP_EARNED);
         }
 
         if (b.containsKey(KEY_XP_FROM))
         {
-            xpFrom = b.getInt(KEY_XP_FROM);
+            originalXP = b.getInt(KEY_XP_FROM);
         }
 
         if (b.containsKey(KEY_MULTIPLIERS))
@@ -64,8 +64,8 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
         Bundle b = new Bundle();
         b.putString(KEY_TEXT, text);
         b.putString(KEY_SUBTEXT, subText);
-        b.putInt(KEY_XP_EARNED, xpEarned);
-        b.putInt(KEY_XP_FROM, xpFrom);
+        b.putInt(KEY_XP_EARNED, xp);
+        b.putInt(KEY_XP_FROM, originalXP);
 
         if (multipliers != null && !multipliers.isEmpty())
         {
