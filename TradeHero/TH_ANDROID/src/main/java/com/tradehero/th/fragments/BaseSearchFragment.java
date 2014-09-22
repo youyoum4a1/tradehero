@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +18,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.List;
+import javax.inject.Inject;
 
 abstract public class BaseSearchFragment<
         PagedDTOKeyType extends DTOKey, // But it also needs to be a PagedDTOKey
@@ -32,6 +34,8 @@ abstract public class BaseSearchFragment<
         ViewType>
 {
     private final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = BaseSearchFragment.class.getName() + ".currentSearchString";
+
+    @Inject Context doNotRemoveOtherwiseFails; // Do not remove otherwise fails
 
     @InjectView(R.id.search_empty_textview) protected TextView searchEmptyTextView;
     @InjectView(R.id.search_empty_textview_wrapper) protected View searchEmptyTextViewWrapper;
