@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -110,7 +109,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class DashboardActivity extends FragmentActivity
+public class DashboardActivity extends BaseActivity
         implements Injector, ResideMenu.OnMenuListener
 {
     private DashboardNavigator navigator;

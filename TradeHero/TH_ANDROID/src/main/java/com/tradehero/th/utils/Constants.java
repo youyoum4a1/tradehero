@@ -9,7 +9,7 @@ public class Constants
 
     public static final boolean USE_BETA_HOME_PAGE = true;
 
-    public static final boolean DOGFOOD_BUILD = false;
+    public static final boolean DOGFOOD_BUILD = true;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
@@ -64,6 +64,7 @@ public class Constants
     public static class Auth
     {
         public static final String PARAM_AUTHTOKEN_TYPE = "authTokenType";
+        public static final String PARAM_ACCOUNT_TYPE = "tradehero.mobi";
     }
 
     private Constants() {}
