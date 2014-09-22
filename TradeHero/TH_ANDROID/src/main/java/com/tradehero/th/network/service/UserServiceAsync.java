@@ -125,6 +125,26 @@ interface UserServiceAsync
             @Part("website") String website,
             @Part("profilePicture") TypedOutput profilePicture,
             Callback<UserProfileDTO> cb);
+
+    @Multipart @PUT("/users/{userId}/updateUser")
+    void updatePhoto(
+            @Path("userId") int userId,
+            @Part("profilePicture") TypedOutput profilePicture,
+            Callback<UserProfileDTO> cb);
+
+    @Multipart @PUT("/users/{userId}/updateUser")
+    void updateName(
+            @Path("userId") int userId,
+            @Part("displayName") String displayName,
+            Callback<UserProfileDTO> cb);
+
+    @Multipart @PUT("/users/{userId}/updateUser")
+    void updateAccount(
+            @Path("userId") int userId,
+            @Part("email") String email,
+            @Part("password") String password,
+            @Part("passwordConfirmation") String passwordConfirmation,
+            Callback<UserProfileDTO> cb);
     //</editor-fold>
 
     //<editor-fold desc="Signin">

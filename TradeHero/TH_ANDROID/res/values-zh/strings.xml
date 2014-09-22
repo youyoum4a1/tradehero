@@ -143,4 +143,12 @@
   <string name="follow_success">关注成功</string>
   <string name="faster_login">快速登录</string>
   <string name="guest_user_id">游客 ID:%1$s</string>
+  <string name="settings_my_photo">头像</string>
+  <string name="settings_my_name">名字</string>
+  <string name="settings_my_account">账号密码</string>
+  <string name="settings_my_social">账号绑定</string>
+  <string name="settings_my_profile">个人资料</string>
+  <string name="updating">更新中...</string>
+  <string name="bind_success">绑定成功</string>
+  <string name="unbind_success">解绑成功</string>
 </resources>

@@ -342,7 +342,7 @@ public class THUser
     {
         Timber.d("%d authentication tokens loaded", typedCredentials.size());
 
-        mainCredentialsPreference.setCredentials(credentialsDTO);
+        //mainCredentialsPreference.setCredentials(credentialsDTO);
         mainCredentialsPreference.setCredentials(credentialsDTO);
         typedCredentials.put(credentialsDTO.getAuthType(), credentialsDTO);
         credentialsSetPreference.replaceOrAddCredentials(credentialsDTO);

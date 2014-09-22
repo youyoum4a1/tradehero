@@ -198,4 +198,6 @@
 
   <dimen name="sucurity_detail_info">13sp</dimen>
 
+  <dimen name="photo_medium">50dp</dimen>
+
 </resources>

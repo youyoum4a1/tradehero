@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contest_center_content_screen"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_xlarge"
+    android:orientation="horizontal">
+
+  <View
+      android:layout_width="0dp"
+      android:layout_height="1dp"
+      android:layout_weight="1"/>
+
+  <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="4"
+      android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/btn_weibo_signin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/btn_background_social_weibo">
+      <View
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/login_weibo"/>
+      <TextView
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="3"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:text="@string/weibo_login_in"
+          android:textColor="@color/white"
+          android:textSize="@dimen/text_large"
+          android:gravity="left|center_vertical"/>
+      <ImageView
+          android:id="@+id/weibo_mark"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/register_duihao_cancel"/>
+      <View
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_qq_signin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/btn_background_social_qq">
+      <View
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/login_qq"/>
+      <TextView
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="3"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:text="@string/qq_login_in"
+          android:textColor="@color/white"
+          android:textSize="@dimen/text_large"
+          android:gravity="left|center_vertical"/>
+      <ImageView
+          android:id="@+id/qq_mark"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/register_duihao_cancel"/>
+      <View
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_linkedin_signin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/btn_background_social_linkedin">
+      <View
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/login_linkdin"/>
+      <TextView
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="3"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:text="@string/linkedin_login_in"
+          android:textColor="@color/white"
+          android:textSize="@dimen/text_large"
+          android:gravity="left|center_vertical"/>
+      <ImageView
+          android:id="@+id/linkedin_mark"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/register_duihao_cancel"/>
+      <View
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <View
+      android:layout_width="0dp"
+      android:layout_height="1dp"
+      android:layout_weight="1"/>
+
+</LinearLayout>
+

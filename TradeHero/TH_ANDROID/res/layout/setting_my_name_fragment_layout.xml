@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contest_center_content_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+  <RelativeLayout
+      android:layout_width="fill_parent"
+      android:layout_height="@dimen/more_bang_item_height"
+      android:layout_marginTop="@dimen/margin_small"
+      android:background="@drawable/listview_item_selector">
+    <EditText
+        android:id="@+id/display_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_centerVertical="true"
+        android:background="@color/white"/>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="@color/separate_line_color"
+        android:layout_alignParentBottom="true"/>
+  </RelativeLayout>
+
+</LinearLayout>
+

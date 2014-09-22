@@ -34,6 +34,10 @@ import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.InputInviteCodeFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.MyEditAccountFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.MyEditNameFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.MySocialFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionBaseFragment;
@@ -491,6 +495,10 @@ import javax.inject.Singleton;
                         InviteFriendsFragment.class,
                         InputInviteCodeFragment.class,
                         UserTimeLineAdapter.class,
+                        MyProfileFragment.class,
+                        MyEditNameFragment.class,
+                        MyEditAccountFragment.class,
+                        MySocialFragment.class,
                         //China Build End
                 },
         staticInjections =

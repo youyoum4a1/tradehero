@@ -331,6 +331,47 @@ import retrofit.client.Response;
         return middleCallback;
     }
 
+    public MiddleCallback<UserProfileDTO> updatePhoto(
+            UserBaseKey userBaseKey,
+            UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+            userServiceAsync.updatePhoto(
+                    userBaseKey.key,
+                    userFormDTO.profilePicture,
+                    middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<UserProfileDTO> updateName(
+            UserBaseKey userBaseKey,
+            UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        userServiceAsync.updateName(
+                userBaseKey.key,
+                userFormDTO.displayName,
+                middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<UserProfileDTO> updateAccount(
+            UserBaseKey userBaseKey,
+            UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        userServiceAsync.updateAccount(
+                userBaseKey.key,
+                userFormDTO.email,
+                userFormDTO.password,
+                userFormDTO.passwordConfirmation,
+                middleCallback);
+        return middleCallback;
+    }
+
     public UserProfileDTO updateProfilePropertyEmailNotifications(
             UserBaseKey userBaseKey,
             Boolean emailNotificationsEnabled)
