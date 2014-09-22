@@ -63,7 +63,7 @@ public enum RootFragmentType
             R.drawable.icn_menu_settings, AdminSettingsFragment.class),
     DISCOVERY(R.layout.tab_indicator_holo,
             R.string.discovery, R.string.dashboard_discovery_key,
-            R.drawable.icn_menu_settings, DiscoveryMainFragment.class)
+            R.drawable.icn_menu_compass_white, DiscoveryMainFragment.class)
     ;
 
     private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
@@ -96,7 +96,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, TRENDING, COMMUNITY, ACADEMY, REFERRAL, CONTEST_CENTER, STORE, SETTING
+                TIMELINE, TRENDING, COMMUNITY, DISCOVERY, REFERRAL, CONTEST_CENTER, STORE, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);
