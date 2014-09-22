@@ -1,16 +1,12 @@
 package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
 import android.view.View;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -35,6 +31,7 @@ import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -57,11 +54,9 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class AuthenticationActivity extends FragmentActivity
+public class AuthenticationActivity extends BaseActivity
         implements View.OnClickListener, Injector
 {
-    private static final String M_FRAGMENT = "M_CURRENT_FRAGMENT";
-
     private Map<Integer, Class<?>> mapViewFragment = new HashMap<>();
     private Fragment currentFragment;
 
@@ -87,16 +82,7 @@ public class AuthenticationActivity extends FragmentActivity
         newInjector = thApp.plus(new AuthenticationActivityModule());
         newInjector.inject(this);
 
-        // check if there is a saved fragment, restore it
-        if (savedInstanceState != null)
-        {
-            currentFragment = getSupportFragmentManager().getFragment(savedInstanceState, M_FRAGMENT);
-        }
-
-        if (currentFragment == null)
-        {
-            currentFragment = Fragment.instantiate(this, SignInFragment.class.getName(), null);
-        }
+        currentFragment = Fragment.instantiate(this, SignInFragment.class.getName(), null);
 
         setupViewFragmentMapping();
 
@@ -138,29 +124,6 @@ public class AuthenticationActivity extends FragmentActivity
         mapViewFragment.put(R.id.authentication_email_sign_up_link, EmailSignUpFragment.class);
     }
 
-    @Override protected void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        try
-        {
-            if (getSupportFragmentManager().getBackStackEntryCount() > 0)
-            {
-                getSupportFragmentManager().putFragment(outState, M_FRAGMENT, currentFragment);
-            }
-        } catch (Exception ex)
-        {
-            Timber.e("Error saving current Authentication Fragment", ex);
-        }
-    }
-
-    @Override public boolean onCreateOptionsMenu(Menu menu)
-    {
-        //getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        //getSupportActionBar().setCustomView(R.layout.topbar_authentication);
-        getActionBar().hide();
-        return super.onCreateOptionsMenu(menu);
-    }
-
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
@@ -178,8 +141,7 @@ public class AuthenticationActivity extends FragmentActivity
                     || view.getId() == R.id.authentication_by_sign_up_back_button
                     || view.getId() == R.id.authentication_by_sign_in_button)
             {
-                InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                DeviceUtil.dismissKeyboard(view);
                 setCurrentFragmentByPopBack(fragmentClass);
             }
             else
@@ -442,6 +404,11 @@ public class AuthenticationActivity extends FragmentActivity
     @Override public void inject(Object o)
     {
         newInjector.inject(o);
+    }
+
+    @Override protected boolean requireLogin()
+    {
+        return false;
     }
 
     private class SocialAuthenticationCallback extends LogInCallback

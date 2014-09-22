@@ -6,32 +6,20 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.ViewGroup;
-
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import timber.log.Timber;
 
 class Navigator<ActivityType extends Activity>
 {
     private static final boolean DEFAULT_SHOW_HOME_KEY_AS_UP = true;
 
-    public static final int[] TUTORIAL_ANIMATION = new int[] {
-            R.anim.card_flip_right_in, R.anim.card_flip_right_out,
-            R.anim.card_flip_left_in, R.anim.card_flip_left_out
-    };
-    public static final int[] PUSH_UP_FROM_BOTTOM = new int[] {
-            R.anim.slide_in_from_bottom, R.anim.slide_out_to_top,
-            R.anim.slide_in_from_top, R.anim.slide_out_to_bottom
-    };
     public static final int[] DEFAULT_FRAGMENT_ANIMATION = new int[] {
             R.anim.slide_right_in, R.anim.slide_left_out,
             R.anim.slide_left_in, R.anim.slide_right_out
@@ -43,12 +31,6 @@ class Navigator<ActivityType extends Activity>
     private int backPressedCount;
 
     //<editor-fold desc="Constructors">
-    public Navigator(ActivityType activity, FragmentManager manager)
-    {
-        this(activity, manager, 0);
-        setFragmentContentId(((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0).getId());
-    }
-
     public Navigator(ActivityType activity, FragmentManager manager, int fragmentContentId)
     {
         this.activity = activity;
@@ -56,11 +38,6 @@ class Navigator<ActivityType extends Activity>
         this.fragmentContentId = fragmentContentId;
     }
     //</editor-fold>
-
-    public void setFragmentContentId(int fragmentContentId)
-    {
-        this.fragmentContentId = fragmentContentId;
-    }
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass)
     {

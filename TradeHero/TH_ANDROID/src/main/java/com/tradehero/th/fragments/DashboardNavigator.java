@@ -21,9 +21,9 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 
     private Set<DashboardFragmentWatcher> dashboardFragmentWatchers = new HashSet<>();
 
-    public DashboardNavigator(FragmentActivity context, FragmentManager manager, int fragmentContentId)
+    public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId)
     {
-        super(context, manager, fragmentContentId);
+        super(fragmentActivity, fragmentActivity.getSupportFragmentManager(), fragmentContentId);
     }
 
     /**

@@ -228,7 +228,7 @@ public class DashboardActivity extends BaseActivity
 
     private void setupNavigator()
     {
-        navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        navigator = new DashboardNavigator(this, R.id.realtabcontent);
         for (DashboardNavigator.DashboardFragmentWatcher watcher: dashboardFragmentWatchers)
         {
             navigator.addDashboardFragmentWatcher(watcher);
