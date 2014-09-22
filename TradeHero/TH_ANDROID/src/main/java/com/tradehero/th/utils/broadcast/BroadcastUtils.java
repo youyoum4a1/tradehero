@@ -1,77 +1,67 @@
 package com.tradehero.th.utils.broadcast;
 
-import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
+import java.util.ArrayDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
-public class BroadcastUtils
+@Singleton public class BroadcastUtils implements BroadcastTaskNew.TaskListener
 {
-    private static final int DELAY_INTERVAL = 5000;
-    private static final int MAX_BROADCAST_TRY = 4;
-    private final String intentActionName;
-    private final String broadcastBundleKey;
+    @NotNull private final LocalBroadcastManager localBroadcastManager;
 
-    private BroadcastData mUserAchievementId;
-    private Handler mHandler;
-    private LocalBroadcastManager mLocalBroadcastManager;
-    private volatile int mTry;
-    public volatile boolean isRunning;
+    private ArrayDeque<BroadcastData> broadcastQueue = new ArrayDeque<>();
+    private final AtomicBoolean flag = new AtomicBoolean(false);
 
-    private Runnable mTask = new Runnable()
+    @Inject public BroadcastUtils(@NotNull LocalBroadcastManager localBroadcastManager)
     {
-        @Override public void run()
+        this.localBroadcastManager = localBroadcastManager;
+    }
+
+    public BroadcastTaskNew enqueue(BroadcastData broadcastData)
+    {
+        broadcastQueue.add(broadcastData);
+        if (!flag.get())
         {
-            if (mTry >= MAX_BROADCAST_TRY)
+            return broadcast(broadcastQueue.pop());
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public void nextPlease()
+    {
+        if (flag.get())
+        {
+            flag.set(false);
+            if (!broadcastQueue.isEmpty())
             {
-                stop();
-            }
-            else if (!broadcast(mUserAchievementId))
-            {
-                mHandler.postDelayed(mTask, DELAY_INTERVAL);
-                mTry++;
-            }
-            else
-            {
-                stop();
+                broadcast(broadcastQueue.pop());
             }
         }
-    };
+    }
 
-    public BroadcastUtils(BroadcastData broadcastData, LocalBroadcastManager mLocalBroadcastManager, String intentActionName, String broadcastBundleKey)
+    private BroadcastTaskNew broadcast(BroadcastData broadcastData)
     {
-        this.mUserAchievementId = broadcastData;
-        this.mLocalBroadcastManager = mLocalBroadcastManager;
-        this.intentActionName = intentActionName;
-        this.broadcastBundleKey = broadcastBundleKey;
-        if (Looper.myLooper() == null)
+        flag.set(true);
+        BroadcastTaskNew task = new BroadcastTaskNew(broadcastData, localBroadcastManager, this);
+        task.start();
+        return task;
+    }
+
+    @Override public void onStartBroadcast(BroadcastData broadcastData)
+    {
+        flag.compareAndSet(false, true);
+    }
+
+    @Override public void onFinishBroadcast(BroadcastData broadcastData, boolean isSuccessful)
+    {
+        if (!isSuccessful)
         {
-            Looper.prepare();
+            broadcastQueue.addLast(broadcastData);
         }
-        mHandler = new Handler();
-    }
-
-    public int getCurrentTry()
-    {
-        return mTry;
-    }
-
-    private boolean broadcast(BroadcastData broadcastData)
-    {
-        Intent i = new Intent(intentActionName);
-        i.putExtra(broadcastBundleKey, broadcastData.getArgs());
-        return mLocalBroadcastManager.sendBroadcast(i);
-    }
-
-    public void start()
-    {
-        isRunning = true;
-        mTask.run();
-    }
-
-    public void stop()
-    {
-        mHandler.removeCallbacks(mTask);
-        isRunning = false;
     }
 }

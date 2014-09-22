@@ -3,6 +3,7 @@ package com.tradehero.th.api.level;
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.utils.broadcast.BroadcastData;
+import com.tradehero.th.utils.level.XpModule;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,5 +77,15 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
             b.putParcelableArrayList(KEY_MULTIPLIERS, multis);
         }
         return b;
+    }
+
+    @Override public String getBroadcastBundleKey()
+    {
+        return XpModule.KEY_XP_BROADCAST;
+    }
+
+    @Override public String getBroadcastIntentActionName()
+    {
+        return XpModule.XP_INTENT_ACTION_NAME;
     }
 }

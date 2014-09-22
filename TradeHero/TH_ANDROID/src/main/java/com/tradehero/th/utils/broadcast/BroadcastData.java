@@ -5,4 +5,6 @@ import android.os.Bundle;
 public interface BroadcastData
 {
     Bundle getArgs();
+    String getBroadcastBundleKey();
+    String getBroadcastIntentActionName();
 }

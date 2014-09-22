@@ -1,11 +1,10 @@
 package com.tradehero.th.persistence.achievement;
 
-import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
-import com.tradehero.th.utils.achievement.AchievementModule;
+import com.tradehero.th.utils.broadcast.BroadcastTaskNew;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import java.util.List;
 import javax.inject.Inject;
@@ -18,14 +17,14 @@ import org.jetbrains.annotations.Nullable;
     public static final int DEFAULT_SIZE = 20;
 
     @NotNull private final AchievementServiceWrapper achievementServiceWrapper;
-    @NotNull private final LocalBroadcastManager localBroadcastManager;
+    @NotNull private final BroadcastUtils broadcastUtils;
 
     @Inject public UserAchievementCache(@NotNull AchievementServiceWrapper achievementServiceWrapper,
-            @NotNull LocalBroadcastManager localBroadcastManager)
+            @NotNull BroadcastUtils broadcastUtils)
     {
         super(DEFAULT_SIZE);
         this.achievementServiceWrapper = achievementServiceWrapper;
-        this.localBroadcastManager = localBroadcastManager;
+        this.broadcastUtils = broadcastUtils;
     }
 
     @NotNull @Override public UserAchievementDTO fetch(@NotNull UserAchievementId key) throws Throwable
@@ -63,12 +62,10 @@ import org.jetbrains.annotations.Nullable;
         }
     }
 
-    public BroadcastUtils putAndBroadcast(@NotNull UserAchievementDTO userAchievementDTO)
+    public BroadcastTaskNew putAndBroadcast(@NotNull UserAchievementDTO userAchievementDTO)
     {
         put(userAchievementDTO.getUserAchievementId(), userAchievementDTO);
         final UserAchievementId userAchievementId = userAchievementDTO.getUserAchievementId();
-        BroadcastUtils broadcastTask = new BroadcastUtils(userAchievementId, localBroadcastManager, AchievementModule.ACHIEVEMENT_INTENT_ACTION_NAME, AchievementModule.KEY_USER_ACHIEVEMENT_ID);
-        broadcastTask.start();
-        return broadcastTask;
+        return broadcastUtils.enqueue(userAchievementId);
     }
 }

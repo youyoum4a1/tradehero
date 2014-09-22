@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.level;
 
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.level.UserXPMultiplierDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import com.tradehero.th.utils.level.XpModule;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -35,7 +33,7 @@ public class XpTestingFragment extends DashboardFragment
     @InjectView(R.id.xp_test_multiplier_3_value) EditText xpM3Value;
     @InjectView(R.id.xp_test_launch) Button launch;
 
-    @Inject LocalBroadcastManager localBroadcastManager;
+    @Inject BroadcastUtils broadcastUtils;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -64,9 +62,7 @@ public class XpTestingFragment extends DashboardFragment
             xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM2Reason, xpM2Value);
             xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM3Reason, xpM3Value);
 
-            BroadcastUtils utils =
-                    new BroadcastUtils(userXPAchievementDTO, localBroadcastManager, XpModule.XP_INTENT_ACTION_NAME, XpModule.KEY_XP_BROADCAST);
-            utils.start();
+            broadcastUtils.enqueue(userXPAchievementDTO);
         } catch (NumberFormatException e)
         {
             THToast.show(e.getMessage());

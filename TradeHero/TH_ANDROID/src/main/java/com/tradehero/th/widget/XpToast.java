@@ -25,6 +25,7 @@ import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.level.LevelDefListCache;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import java.util.ArrayDeque;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +37,7 @@ public class XpToast extends RelativeLayout implements UserLevelProgressBar.User
     @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
     @Inject LevelDefListCache levelDefListCache;
+    @Inject BroadcastUtils broadcastUtils;
 
     private LevelDefListId levelDefListId = new LevelDefListId();
     private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> mLevelDefListCacheListener = new LevelDefCacheListener();
@@ -161,6 +163,7 @@ public class XpToast extends RelativeLayout implements UserLevelProgressBar.User
             @Override public void onAnimationEnd(Animation animation)
             {
                 setVisibility(View.GONE);
+                broadcastUtils.nextPlease();
             }
 
             @Override public void onAnimationRepeat(Animation animation)

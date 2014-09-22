@@ -10,6 +10,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
@@ -52,6 +53,7 @@ import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.widget.UserLevelProgressBar;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +101,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     @Inject AchievementServiceWrapper achievementServiceWrapper;
     @Inject AchievementShareFormDTOFactory achievementShareFormDTOFactory;
+
+    @Inject BroadcastUtils broadcastUtils;
 
     protected UserAchievementId userAchievementId;
     protected UserAchievementDTO userAchievementDTO;
@@ -475,6 +479,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         animator.cancel();
         animator.removeAllUpdateListeners();
         animator.removeAllListeners();
+    }
+
+    @Override public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+        broadcastUtils.nextPlease();
     }
 
     @OnClick(R.id.achievement_dummy_container)
