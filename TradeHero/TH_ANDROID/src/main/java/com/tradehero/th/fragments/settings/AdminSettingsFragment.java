@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
