@@ -77,7 +77,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.FirstShowInviteCodeDialog;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
@@ -90,6 +89,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.level.ForXP;
@@ -264,9 +264,9 @@ public class DashboardActivity extends FragmentActivity
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                if(intent != null && intent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID) != null)
+                if(intent != null && intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID) != null)
                 {
-                    Bundle bundle = intent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID);
+                    Bundle bundle = intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID);
                     UserAchievementId userAchievementId = new UserAchievementId(bundle);
                     AbstractAchievementDialogFragment abstractAchievementDialogFragment = achievementDialogCreator.newInstance(userAchievementId);
                     if(abstractAchievementDialogFragment != null)
@@ -282,9 +282,9 @@ public class DashboardActivity extends FragmentActivity
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                if(intent != null && intent.getBundleExtra(XpModule.XP_BROADCAST_KEY) != null)
+                if(intent != null && intent.getBundleExtra(XpModule.KEY_XP_BROADCAST) != null)
                 {
-                    Bundle b = intent.getBundleExtra(XpModule.XP_BROADCAST_KEY);
+                    Bundle b = intent.getBundleExtra(XpModule.KEY_XP_BROADCAST);
                     UserXPAchievementDTO userXPAchievementDTO = new UserXPAchievementDTO(b);
                     xpToast.showWhenReady(userXPAchievementDTO);
                 }

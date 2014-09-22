@@ -12,11 +12,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.achievement.AchievementModule;
+import com.tradehero.th.utils.level.XpModule;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.Iterator;
@@ -68,13 +68,13 @@ public class ObjectMapperWrapper extends ObjectMapper
             element = elementsIterator.next();
             if (isAchievementNode(element))
             {
-                handleAchievement(objectNode.get(UserAchievementCache.KEY_ACHIEVEMENT_NODE));
-                objectNode.remove(UserAchievementCache.KEY_ACHIEVEMENT_NODE);
+                handleAchievement(objectNode.get(AchievementModule.KEY_ACHIEVEMENT_NODE));
+                objectNode.remove(AchievementModule.KEY_ACHIEVEMENT_NODE);
             }
             else if(isXPNode(element))
             {
-                handleXP(objectNode.get(UserProfileCache.KEY_XP_NODE));
-                objectNode.remove(UserProfileCache.KEY_XP_NODE);
+                handleXP(objectNode.get(XpModule.KEY_XP_NODE));
+                objectNode.remove(XpModule.KEY_XP_NODE);
             }
             //else if (isOther(element)) {}
         }
@@ -82,12 +82,12 @@ public class ObjectMapperWrapper extends ObjectMapper
 
     protected boolean isAchievementNode(@NotNull Map.Entry<String, JsonNode> element)
     {
-        return element.getKey().equals(UserAchievementCache.KEY_ACHIEVEMENT_NODE);
+        return element.getKey().equals(AchievementModule.KEY_ACHIEVEMENT_NODE);
     }
 
     protected boolean isXPNode(@NotNull Map.Entry<String, JsonNode> element)
     {
-        return element.getKey().equals(UserProfileCache.KEY_XP_NODE);
+        return element.getKey().equals(XpModule.KEY_XP_NODE);
     }
 
     protected void handleAchievement(
@@ -107,6 +107,12 @@ public class ObjectMapperWrapper extends ObjectMapper
     protected void handleXP(@NotNull JsonNode jsonNode)
             throws IOException
     {
+        List<UserXPAchievementDTO> userXPAchievementDTOs = readValue(
+                jsonNode.traverse(),
+                new TypeReference<List<UserXPAchievementDTO>>()
+                {
+                });
+
 
     }
 }

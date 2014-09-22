@@ -21,7 +21,6 @@ import com.tradehero.th.utils.level.XpModule;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.w3c.dom.Text;
 
 public class XpTestingFragment extends DashboardFragment
 {
@@ -66,7 +65,7 @@ public class XpTestingFragment extends DashboardFragment
             xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM3Reason, xpM3Value);
 
             BroadcastUtils utils =
-                    new BroadcastUtils(userXPAchievementDTO, localBroadcastManager, XpModule.XP_INTENT_ACTION_NAME, XpModule.XP_BROADCAST_KEY);
+                    new BroadcastUtils(userXPAchievementDTO, localBroadcastManager, XpModule.XP_INTENT_ACTION_NAME, XpModule.KEY_XP_BROADCAST);
             utils.start();
         } catch (NumberFormatException e)
         {

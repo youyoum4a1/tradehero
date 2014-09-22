@@ -16,8 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 @Singleton public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
 {
-    public static final String KEY_XP_NODE = "xp";
-
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @NotNull private final Lazy<UserServiceWrapper> userServiceWrapper;

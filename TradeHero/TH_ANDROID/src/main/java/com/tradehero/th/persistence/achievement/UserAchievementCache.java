@@ -1,13 +1,11 @@
 package com.tradehero.th.persistence.achievement;
 
-import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
+import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import java.util.List;
 import javax.inject.Inject;
@@ -17,11 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserAchievementCache extends StraightDTOCacheNew<UserAchievementId, UserAchievementDTO>
 {
-    //TODO implements CutDTO when AchievementsDTO has its own cache?
-    public static final String KEY_USER_ACHIEVEMENT_ID = UserAchievementCache.class.getName() + ".achievementId";
-    public static final String INTENT_ACTION_NAME = "com.tradehero.th.achievement.ALERT";
-    public static final String KEY_ACHIEVEMENT_NODE = "achievements";
-
     public static final int DEFAULT_SIZE = 20;
 
     @NotNull private final AchievementServiceWrapper achievementServiceWrapper;
@@ -74,7 +67,7 @@ import org.jetbrains.annotations.Nullable;
     {
         put(userAchievementDTO.getUserAchievementId(), userAchievementDTO);
         final UserAchievementId userAchievementId = userAchievementDTO.getUserAchievementId();
-        BroadcastUtils broadcastTask = new BroadcastUtils(userAchievementId, localBroadcastManager, INTENT_ACTION_NAME, KEY_USER_ACHIEVEMENT_ID);
+        BroadcastUtils broadcastTask = new BroadcastUtils(userAchievementId, localBroadcastManager, AchievementModule.ACHIEVEMENT_INTENT_ACTION_NAME, AchievementModule.KEY_USER_ACHIEVEMENT_ID);
         broadcastTask.start();
         return broadcastTask;
     }
