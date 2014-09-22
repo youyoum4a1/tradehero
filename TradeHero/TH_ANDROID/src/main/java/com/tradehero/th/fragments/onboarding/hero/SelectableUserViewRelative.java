@@ -7,6 +7,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
@@ -20,32 +21,11 @@ public class SelectableUserViewRelative extends RelativeLayout
     @Inject @ForUserPhoto Transformation transformation;
     @NotNull SelectableUserViewHolder viewHolder;
 
-    //<editor-fold desc="Constructors">
-    @SuppressWarnings("UnusedDeclaration")
-    public SelectableUserViewRelative(Context context)
-    {
-        super(context);
-        init();
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     public SelectableUserViewRelative(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public SelectableUserViewRelative(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        init();
-    }
-    //</editor-fold>
-
-    void init()
-    {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onFinishInflate()
