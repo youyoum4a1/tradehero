@@ -13,13 +13,17 @@ public class TimelineDTO
 
     public UserProfileCompactDTO getUserById(int userId)
     {
-        for (UserProfileCompactDTO userProfileCompactDTO: users)
+        if (users != null)
         {
-            if (userProfileCompactDTO != null && userProfileCompactDTO.id == userId)
+            for (UserProfileCompactDTO userProfileCompactDTO : users)
             {
-                return userProfileCompactDTO;
+                if (userProfileCompactDTO != null && userProfileCompactDTO.id == userId)
+                {
+                    return userProfileCompactDTO;
+                }
             }
         }
+
 
         return null;
     }

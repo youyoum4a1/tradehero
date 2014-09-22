@@ -64,7 +64,6 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
                         TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();
                         discussionCache.put(timelineKey, itemDTO);
                         timelineItemDTOKeys.add(timelineKey);
-
                     }
                 }
 
