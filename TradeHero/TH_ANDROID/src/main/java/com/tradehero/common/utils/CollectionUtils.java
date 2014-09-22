@@ -3,9 +3,10 @@ package com.tradehero.common.utils;
 import com.android.internal.util.Predicate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
-public class ArrayUtils
+public class CollectionUtils
 {
     public static <T> List<T> filter(Collection<T> target, Predicate<T> predicate)
     {
@@ -18,5 +19,18 @@ public class ArrayUtils
             }
         }
         return result;
+    }
+
+    public static <T> Collection<T> inPlaceFilter(Collection<T> c, Predicate<T> p)
+    {
+        Iterator<T> it = c.iterator();
+        while (it.hasNext())
+        {
+            if (!p.apply(it.next()))
+            {
+                it.remove();
+            }
+        }
+        return c;
     }
 }

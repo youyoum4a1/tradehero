@@ -9,7 +9,7 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
-import com.tradehero.common.utils.ArrayUtils;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -80,7 +80,7 @@ public class THSamsungLogicHolderFull
         {
             return null;
         }
-        return ArrayUtils.filter(
+        return CollectionUtils.filter(
                 details,
                 new THProductDetailDomainPredicate<SamsungSKU, THSamsungProductDetail>(domain));
     }

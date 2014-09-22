@@ -7,7 +7,7 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
-import com.tradehero.common.utils.ArrayUtils;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -104,7 +104,7 @@ public class THAmazonLogicHolderFull
         {
             return null;
         }
-        return ArrayUtils.filter(
+        return CollectionUtils.filter(
                 details,
                 new THProductDetailDomainPredicate<AmazonSKU, THAmazonProductDetail>(domain));
     }

@@ -11,7 +11,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.utils.ArrayUtils;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -110,7 +110,7 @@ public class THIABLogicHolderFull
         {
             return null;
         }
-        return ArrayUtils.filter(details, new THProductDetailDomainPredicate<IABSKU, THIABProductDetail>(domain));
+        return CollectionUtils.filter(details, new THProductDetailDomainPredicate<IABSKU, THIABProductDetail>(domain));
     }
 
     protected BaseIABSKUList<IABSKU> getAllSkus()

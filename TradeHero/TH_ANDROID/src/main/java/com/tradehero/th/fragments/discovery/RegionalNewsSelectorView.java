@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.InstantAutoCompleteTextView;
@@ -28,7 +29,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.CollectionUtils;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
 

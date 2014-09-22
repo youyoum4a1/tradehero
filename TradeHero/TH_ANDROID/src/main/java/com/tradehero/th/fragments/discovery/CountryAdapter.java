@@ -5,9 +5,9 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.android.internal.util.Predicate;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
-import com.tradehero.th.utils.CollectionUtils;
 
 import org.jetbrains.annotations.NotNull;
 
