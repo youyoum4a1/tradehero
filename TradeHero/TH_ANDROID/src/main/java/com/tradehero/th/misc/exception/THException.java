@@ -79,11 +79,12 @@ public class THException extends Exception
                     }
                     catch (Exception ex)
                     {
-                        Timber.d(ex.getMessage());
+                        Timber.e(ex, ex.getMessage());
                     }
                     this.code = ExceptionCode.UnknownError;
-                    String errorMessage = dto != null ? THApp.getResourceString(R.string.server_response) + dto.Message : THApp.getResourceString(
-                            R.string.error_unknown);
+                    String errorMessage = dto != null
+                            ? THApp.getResourceString(R.string.server_response) + dto.Message
+                            : THApp.getResourceString(R.string.error_unknown);
                     return super.initCause(new Exception(errorMessage));
                 }
             }

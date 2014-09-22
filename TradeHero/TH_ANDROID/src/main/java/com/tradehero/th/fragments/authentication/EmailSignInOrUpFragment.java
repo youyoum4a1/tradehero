@@ -6,13 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 
@@ -56,7 +56,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
 
         try
         {
-            if (!NetworkUtils.isConnected(getActivity()))
+            if (!OnlineStateReceiver.isOnline(getActivity()))
             {
                 THToast.show(R.string.network_error);
             }

@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.utils.MetaHelper;
+import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -112,7 +112,7 @@ public class VotePair extends LinearLayout
     })
     public void onItemClicked(View view)
     {
-        if(!MetaHelper.isNetworkAvailable(getContext()))
+        if(!OnlineStateReceiver.isOnline(getContext()))
         {
             THToast.show(getContext().getString(R.string.network_error));
             return;

@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -37,7 +38,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
@@ -271,7 +271,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         DeviceUtil.dismissKeyboard(view);
         forceValidateFields();
 
-        if (!NetworkUtils.isConnected(getActivity()))
+        if (!OnlineStateReceiver.isOnline(getActivity()))
         {
             THToast.show(R.string.network_error);
         }

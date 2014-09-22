@@ -12,8 +12,6 @@ import android.content.res.Configuration;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
@@ -352,21 +350,5 @@ public class MetaHelper
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static boolean isNetworkAvailable(Context context)
-    {
-        boolean ret = false;
-        ConnectivityManager conMgr = (ConnectivityManager) context.getApplicationContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (conMgr != null)
-        {
-            NetworkInfo i = conMgr.getActiveNetworkInfo();
-            if (i != null && i.isConnected() && i.isAvailable())
-            {
-                ret = true;
-            }
-        }
-        return ret;
     }
 }
