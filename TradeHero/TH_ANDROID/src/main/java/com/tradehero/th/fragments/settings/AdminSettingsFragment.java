@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,21 +11,18 @@ import android.preference.Preference;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
-import android.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.EditText;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
-import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
@@ -153,15 +151,15 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             }
         });
 
-        Preference showTestDaily = findPreference(KEY_DAILY_TEST_SCREEN);
-        showTestDaily.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                navigator.pushFragment(QuestListTestingFragment.class);
-                return true;
-            }
-        });
+        //Preference showTestDaily = findPreference(KEY_DAILY_TEST_SCREEN);
+        //showTestDaily.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        //{
+        //    @Override public boolean onPreferenceClick(Preference preference)
+        //    {
+        //        navigator.pushFragment(QuestListTestingFragment.class);
+        //        return true;
+        //    }
+        //});
 
         Preference showTestAchievement = findPreference(KEY_ACHIEVEMENT_TEST_SCREEN);
         showTestAchievement.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
