@@ -193,16 +193,6 @@ android {
 
     // TODO make sure this is not breaking
     //androidTest.setRoot('src/test')
-
-    androidTest {
-      java {
-        srcDir 'src/row/java'
-        srcDir 'src/test/java'
-      }
-      resources {
-        srcDir 'src/test/resources'
-      }
-    }
   }
 
   lintOptions {
