@@ -4,13 +4,13 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-public class THAuthenticatorService extends Service
+public class THAccountAuthenticatorService extends Service
 {
-    private THAuthenticator mAuthenticator;
+    private THAccountAuthenticator mAuthenticator;
 
-    public THAuthenticatorService()
+    public THAccountAuthenticatorService()
     {
-        mAuthenticator = new THAuthenticator(this);
+        mAuthenticator = new THAccountAuthenticator(this);
     }
 
     @Override public IBinder onBind(Intent intent)

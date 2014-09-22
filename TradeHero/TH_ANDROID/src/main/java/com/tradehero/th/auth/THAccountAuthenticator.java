@@ -12,11 +12,11 @@ import android.os.Bundle;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.utils.Constants;
 
-public class THAuthenticator extends AbstractAccountAuthenticator
+public class THAccountAuthenticator extends AbstractAccountAuthenticator
 {
     private final Context mContext;
 
-    public THAuthenticator(Context context)
+    public THAccountAuthenticator(Context context)
     {
         super(context);
         mContext = context;

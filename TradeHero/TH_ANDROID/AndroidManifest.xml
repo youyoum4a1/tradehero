@@ -137,7 +137,7 @@
       </intent-filter>
     </receiver>
 
-    <service android:name=".auth.THAuthenticatorService">
+    <service android:name=".auth.THAccountAuthenticatorService">
       <intent-filter>
         <action android:name="android.accounts.AccountAuthenticator"/>
       </intent-filter>
