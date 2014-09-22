@@ -205,6 +205,7 @@ import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
+import com.tradehero.th.models.push.DefaultIntentReceiver;
 import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.models.user.SimplePremiumFollowUserAssistant;
@@ -499,6 +500,7 @@ import javax.inject.Singleton;
                         MyEditNameFragment.class,
                         MyEditAccountFragment.class,
                         MySocialFragment.class,
+                        DefaultIntentReceiver.class,
                         //China Build End
                 },
         staticInjections =

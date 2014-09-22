@@ -18,7 +18,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -31,6 +30,7 @@ import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
 import com.tradehero.th.models.push.DeviceTokenHelper;
+import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -40,6 +40,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th2.R;
 import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
@@ -60,6 +61,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     private ProgressDialog progressDialog;
     @Inject Analytics analytics;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
     @InjectView(R.id.llMainTab) LinearLayout llMainTab;
     @InjectView(R.id.llTabTrade) LinearLayout llTabTrade;
@@ -126,6 +128,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         userProfileCacheListener = createUserProfileFetchListener();
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        //enable baidu push
+        pushNotificationManager.get().enablePush();
     }
 
     @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabMe})
