@@ -55,8 +55,8 @@ public class XpTestingFragment extends DashboardFragment
 
             UserXPAchievementDTO userXPAchievementDTO = new UserXPAchievementDTO();
             userXPAchievementDTO.text = xpReason.getText().toString();
-            userXPAchievementDTO.xp = xp;
-            userXPAchievementDTO.originalXP = Integer.parseInt(xpFrom.getText().toString());
+            userXPAchievementDTO.xpEarned = xp;
+            userXPAchievementDTO.xpTotal = Integer.parseInt(xpFrom.getText().toString()) + xp;
             userXPAchievementDTO.multipliers = new ArrayList<>();
             xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM1Reason, xpM1Value);
             xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM2Reason, xpM2Value);

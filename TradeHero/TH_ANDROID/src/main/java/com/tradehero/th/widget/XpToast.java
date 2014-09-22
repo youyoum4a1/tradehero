@@ -82,14 +82,14 @@ public class XpToast extends RelativeLayout
 
     public void showWhenReady(UserXPAchievementDTO userXPAchievementDTO)
     {
-        userLevelProgressBar.startsWith(userXPAchievementDTO.originalXP);
+        userLevelProgressBar.startsWith(userXPAchievementDTO.getBaseXp());
         populateAnimationLists(userXPAchievementDTO);
         showAll();
     }
 
     private void populateAnimationLists(UserXPAchievementDTO userXPAchievementDTO)
     {
-        LevelAnimationDefinition l0 = new LevelAnimationDefinition(0, userXPAchievementDTO.xp, userXPAchievementDTO.text);
+        LevelAnimationDefinition l0 = new LevelAnimationDefinition(0, userXPAchievementDTO.xpEarned, userXPAchievementDTO.text);
         levelAnimationDefinitions.add(l0);
         if (userXPAchievementDTO.multipliers != null && !userXPAchievementDTO.multipliers.isEmpty())
         {
@@ -219,9 +219,8 @@ public class XpToast extends RelativeLayout
     {
         if (levelAnimationDefinitions.isEmpty())
         {
-            Animation fade = AnimationUtils.loadAnimation(getContext(), R.anim.alpha_out);
-            fade.setRepeatMode(Animation.INFINITE);
-            fade.setRepeatMode(Animation.REVERSE);
+            //Add emphasize effect on the total xp value.
+            Animation fade = AnimationUtils.loadAnimation(getContext(), R.anim.emphasize);
             xpValue.startAnimation(fade);
 
             postDelayed(new Runnable()
