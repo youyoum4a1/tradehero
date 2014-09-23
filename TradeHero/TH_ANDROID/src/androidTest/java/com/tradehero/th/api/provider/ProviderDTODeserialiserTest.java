@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.base.TestTHApp;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ public class ProviderDTODeserialiserTest
     @Before public void setUp() throws IOException
     {
         super.setUp();
+        TestTHApp.staticInject(this);
     }
 
     @Override protected ProviderDTO readValue(InputStream stream) throws IOException

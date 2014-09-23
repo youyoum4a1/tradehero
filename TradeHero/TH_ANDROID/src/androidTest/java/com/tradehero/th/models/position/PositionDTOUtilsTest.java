@@ -3,7 +3,9 @@ package com.tradehero.th.models.position;
 import android.content.Context;
 import android.widget.TextView;
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -14,6 +16,12 @@ public class PositionDTOUtilsTest
 {
     @Inject Context context;
     @Inject PositionDTOUtils positionDTOUtils;
+
+    @Before
+    public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @Test public void shouldNegativeAndPositiveValueShouldHaveDifferentDirectionArrows()
     {

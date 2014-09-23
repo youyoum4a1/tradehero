@@ -10,6 +10,6 @@ import dagger.Module;
         library = true,
         overrides = true
 )
-public class ModelsShareTestModule
+public class ModelsShareUITestModule
 {
 }

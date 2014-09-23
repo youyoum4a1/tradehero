@@ -5,7 +5,8 @@ import dagger.Module;
 @Module(
         injects = {
                 SplashActivityTest.class,
-                DashboardActivityTest.class
+                DashboardActivityExtended.class,
+                DashboardActivityTest.class,
         },
         complete = false,
         library = true

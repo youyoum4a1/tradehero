@@ -15,6 +15,7 @@ import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.achievement.ForAchievement;
@@ -48,6 +49,7 @@ public class ObjectMapperWrapperTest extends BaseApiTestClass
     @Before
     public void setUp() throws IOException
     {
+        TestTHApp.staticInject(this);
         positionDTOBody1Stream = PositionDTO.class.getResourceAsStream(getPackagePath() + "/position/GetPositionsDTOWithAchievementBody1.json");
         positionDTOBody2Stream = PositionDTO.class.getResourceAsStream(getPackagePath() + "/position/GetPositionsDTOWithoutAchievementBody1.json");
         leaderboardDefDTOStream = LeaderboardDefDTO.class.getResourceAsStream(getPackagePath() + "/leaderboard/def/LeaderboardDefDTOListBody1.json");

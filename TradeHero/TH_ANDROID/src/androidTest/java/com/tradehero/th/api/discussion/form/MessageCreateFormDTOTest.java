@@ -2,6 +2,7 @@ package com.tradehero.th.api.discussion.form;
 
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.discussion.MessageType;
+import com.tradehero.th.base.TestTHApp;
 import java.io.ByteArrayOutputStream;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -20,6 +21,7 @@ public class MessageCreateFormDTOTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
     }
 
     private String asString(TypedOutput typedOutput) throws Exception

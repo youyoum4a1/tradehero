@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import javax.inject.Inject;
@@ -22,6 +23,7 @@ public class StoreItemClickableTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
         storeItemClickable = new StoreItemClickable(context);
         storeItemClickable.title = new TextView(context);
         storeItemClickable.icon = new ImageView(context);

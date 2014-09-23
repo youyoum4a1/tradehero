@@ -14,7 +14,7 @@ public class BaseInjector implements ExInjector
         this.objectGraph = objectGraph;
     }
 
-    @Override public Injector plus(Object... modules)
+    @Override public ExInjector plus(Object... modules)
     {
         return new BaseInjector(objectGraph.plus(modules));
     }

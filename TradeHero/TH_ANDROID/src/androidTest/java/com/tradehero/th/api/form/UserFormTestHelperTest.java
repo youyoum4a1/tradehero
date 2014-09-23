@@ -1,9 +1,11 @@
 package com.tradehero.th.api.form;
 
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.base.TestTHApp;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -13,6 +15,12 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class UserFormTestHelperTest
 {
     @Inject UserFormTestHelper userFormTestHelper;
+
+    @Before
+    public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @Test public void testChildClassesCountOk()
             throws InstantiationException, IllegalAccessException

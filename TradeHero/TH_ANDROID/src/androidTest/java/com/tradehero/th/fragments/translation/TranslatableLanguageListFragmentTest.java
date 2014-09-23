@@ -4,6 +4,7 @@ import android.content.Context;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
@@ -29,7 +30,7 @@ public class TranslatableLanguageListFragmentTest
 
     @Before public void setUp()
     {
-        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivityExtended.class);
         activity.inject(this);
     }
 

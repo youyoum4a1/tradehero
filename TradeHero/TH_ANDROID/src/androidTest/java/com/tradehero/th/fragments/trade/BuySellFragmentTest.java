@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertId;
@@ -45,7 +46,7 @@ public class BuySellFragmentTest
 
     @Before public void setUp()
     {
-        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivityExtended.class);
         activity.inject(this);
         currentUserId.set(123);
     }

@@ -3,8 +3,10 @@ package com.tradehero.th.fragments.translation;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import javax.inject.Inject;
@@ -23,6 +25,7 @@ public class TranslatableLanguageItemLinearViewTest
 
     @Before public void setUp()
     {
+        THRobolectric.setupActivity(DashboardActivityExtended.class).inject(this);
         linearView = (TranslatableLanguageItemLinearView)
                 LayoutInflater.from(context).inflate(R.layout.translatable_language_item, null);
     }

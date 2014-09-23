@@ -5,6 +5,7 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.BaseApiTestClass;
 
+import com.tradehero.th.base.TestTHApp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,7 @@ public class PaginatedUserFriendsDTOListDeserialiserTest extends BaseApiTestClas
     @Before
     public void setUp() throws IOException
     {
+        TestTHApp.staticInject(this);
         paginatedUserFriendsDTOListBody1 = getClass().getResourceAsStream(getPackagePath() + "/PaginatedUserFriendsDTOListBody1.json");
     }
 

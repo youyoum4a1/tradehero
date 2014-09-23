@@ -2,8 +2,10 @@ package com.tradehero.th.api.competition;
 
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,6 +18,12 @@ public class ProviderUtilTest
 
     @Inject ProviderUtil providerUtil;
     @Inject CurrentUserId currentUserId;
+
+    @Before
+    public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @After public void tearDown()
     {

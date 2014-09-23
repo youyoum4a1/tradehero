@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.discovery;
 import android.app.ActionBar;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ public class DiscoveryMainFragmentTest
 
     @Before public void setUp()
     {
-        activity = Robolectric.setupActivity(DashboardActivity.class);
+        activity = Robolectric.setupActivity(DashboardActivityExtended.class);
         activity.inject(this);
         discoveryMainFragment = navigator.goToTab(RootFragmentType.DISCOVERY);
     }

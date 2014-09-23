@@ -6,6 +6,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,6 +27,11 @@ public class SocialShareTranslationHelperTest
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
     @Inject Provider<SocialShareTranslationHelper> translationHelperProvider;
     private SocialShareTranslationHelper translationHelper;
+
+    @Before public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @After public void tearDown()
     {

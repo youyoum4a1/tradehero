@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.timeline;
 import android.os.Bundle;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import java.util.Random;
@@ -25,7 +26,7 @@ public class MeTimelineFragmentTest
     @Before
     public void setUp()
     {
-        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivityExtended.class);
         activity.inject(this);
     }
 

@@ -92,7 +92,7 @@ public class THApp extends PApplication
         buildObjectGraphAndInject();
     }
 
-    @Override public Injector plus(Object... modules)
+    @Override public ExInjector plus(Object... modules)
     {
         return new BaseInjector(objectGraph.plus(modules));
     }

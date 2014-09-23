@@ -9,6 +9,7 @@ import butterknife.InjectView;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
@@ -52,7 +53,7 @@ public class WatchlistEditFragmentTest
 
     @Before public void setUp()
     {
-        ActivityController<DashboardActivity> activityController = Robolectric.buildActivity(DashboardActivity.class).create().start();
+        ActivityController<DashboardActivityExtended> activityController = Robolectric.buildActivity(DashboardActivityExtended.class).create().start();
         DashboardActivity activity = activityController.get();
         activity.inject(this);
 

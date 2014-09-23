@@ -5,6 +5,7 @@ import android.preference.Preference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -34,7 +35,7 @@ public class UserTranslationSettingsViewHolderTest
 
     @Before public void setUp()
     {
-        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivityExtended.class);
         activity.inject(this);
     }
 

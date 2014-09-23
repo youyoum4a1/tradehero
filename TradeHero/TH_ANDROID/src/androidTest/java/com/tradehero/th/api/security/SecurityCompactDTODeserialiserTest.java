@@ -7,6 +7,7 @@ import com.tradehero.th.api.BaseApiTestClass;
 import com.tradehero.th.api.security.compact.EquityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 
+import com.tradehero.th.base.TestTHApp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,7 @@ public class SecurityCompactDTODeserialiserTest extends BaseApiTestClass
     @Before
     public void setUp() throws IOException
     {
+        TestTHApp.staticInject(this);
         securityCompactDTOBody1Stream = getClass().getResourceAsStream(getPackagePath() + "/SecurityCompactDTOGoogleBody1.json");
         warrantDTOBody1Stream = getClass().getResourceAsStream(getPackagePath() + "/WarrantDTOBody1.json");
     }

@@ -1,7 +1,9 @@
 package com.tradehero.th.utils;
 
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -12,7 +14,13 @@ import static org.junit.Assert.assertThat;
 public class NumberDisplayUtilsTest
 {
     @Inject NumberDisplayUtils numberDisplayUtils;
-    
+
+    @Before
+    public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void formatWithRelevantDigits_shouldRejectTooBig()
     {

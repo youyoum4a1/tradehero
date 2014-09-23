@@ -29,7 +29,7 @@ public class DashboardActivityTest
 
     @Before public void setUp()
     {
-        activity = Robolectric.buildActivity(DashboardActivity.class).create().start().resume().get();
+        activity = Robolectric.setupActivity(DashboardActivityExtended.class);
         activity.inject(this);
     }
 

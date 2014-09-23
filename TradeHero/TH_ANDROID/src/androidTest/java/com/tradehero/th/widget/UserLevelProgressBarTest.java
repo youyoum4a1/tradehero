@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
@@ -30,7 +31,8 @@ public class UserLevelProgressBarTest
     @Before
     public void setUp()
     {
-        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivityExtended.class);
+        activity.inject(this);
 
         LevelDefDTO mockLevel1 = new LevelDefDTO();
         mockLevel1.id = 1;

@@ -6,6 +6,7 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.BaseApiTestClass;
 
+import com.tradehero.th.base.TestTHApp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,8 @@ public class PositionDTODeserialiserTest extends BaseApiTestClass
     @Before
     public void setUp() throws IOException
     {
+        TestTHApp.staticInject(this);
+
         normalMapper = new ObjectMapper();
         normalMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 

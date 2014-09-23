@@ -2,6 +2,7 @@ package com.tradehero.common.utils;
 
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.base.TestTHApp;
 import java.io.ByteArrayOutputStream;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -18,6 +19,7 @@ public class ConverterSerialisationTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
     }
 
     @Test public void shouldSerialiseSimple1() throws Exception

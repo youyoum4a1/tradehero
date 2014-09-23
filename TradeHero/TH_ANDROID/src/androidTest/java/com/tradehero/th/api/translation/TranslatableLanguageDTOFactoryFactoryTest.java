@@ -5,6 +5,7 @@ import com.tradehero.TestConstants;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.bing.BingLanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ public class TranslatableLanguageDTOFactoryFactoryTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
         translationTokenCache.invalidateAll();
     }
 

@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,6 +18,12 @@ import static org.junit.Assert.assertTrue;
 public class THColorUtilsTest
 {
     @Inject Context context;
+
+    @Before
+    public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @Test public void maxRedValue_shouldBeLargeEnough()
     {

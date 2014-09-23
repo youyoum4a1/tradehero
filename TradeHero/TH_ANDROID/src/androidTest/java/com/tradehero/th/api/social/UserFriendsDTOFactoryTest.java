@@ -1,7 +1,9 @@
 package com.tradehero.th.api.social;
 
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -11,6 +13,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class UserFriendsDTOFactoryTest
 {
     @Inject protected UserFriendsDTOFactory userFriendsDTOFactory;
+
+    @Before public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @Test public void recogniseFacebook()
     {

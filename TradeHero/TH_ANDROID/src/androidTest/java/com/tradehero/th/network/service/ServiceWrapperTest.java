@@ -4,9 +4,11 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.ValidMocker;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,6 +29,12 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
 {
     @Inject AlertPlanServiceWrapper alertPlanServiceWrapper;
     @Inject ValidMocker validMocker;
+
+    @Before
+    public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @Test public void canGetAllServices()
     {

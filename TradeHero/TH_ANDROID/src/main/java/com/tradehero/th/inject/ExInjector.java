@@ -6,5 +6,5 @@ package com.tradehero.th.inject;
  */
 public interface ExInjector extends Injector
 {
-    Injector plus(Object... modules);
+    ExInjector plus(Object... modules);
 }

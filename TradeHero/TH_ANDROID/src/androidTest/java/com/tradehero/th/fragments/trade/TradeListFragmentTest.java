@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.fragments.DashboardNavigator;
 import javax.inject.Inject;
 import org.junit.After;
@@ -25,7 +26,7 @@ public class TradeListFragmentTest
     @Before
     public void setUp()
     {
-        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivityExtended.class);
         activity.inject(this);
     }
 

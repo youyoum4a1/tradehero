@@ -7,11 +7,13 @@ import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
+import com.tradehero.th.base.TestTHApp;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,6 +24,12 @@ import static org.junit.Assume.assumeTrue;
 public class UserTranslationSettingPreferenceTest
 {
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
+
+    @Before
+    public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @After public void tearDown()
     {

@@ -1,11 +1,9 @@
 package com.tradehero.th.utils;
 
-import com.tradehero.th.utils.route.AppUtilsRouteTestModule;
 import dagger.Module;
 
 @Module(
         includes = {
-                AppUtilsRouteTestModule.class,
         },
         injects = {
                 THColorUtilsTest.class,
@@ -13,6 +11,6 @@ import dagger.Module;
         },
         complete = false,
         library = true
-)public class AppUtilsTestModule
+)public class UtilsTestModule
 {
 }

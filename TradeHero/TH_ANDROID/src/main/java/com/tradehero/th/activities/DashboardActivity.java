@@ -72,6 +72,7 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.DeviceTokenHelper;
@@ -165,8 +166,7 @@ public class DashboardActivity extends FragmentActivity
 
         super.onCreate(savedInstanceState);
 
-        THApp app = THApp.get(this);
-        newInjector = app.plus(new DashboardActivityModule());
+        newInjector = loadInjector(THApp.get(this));
         newInjector.inject(this);
 
         if (Constants.RELEASE)
@@ -220,6 +220,11 @@ public class DashboardActivity extends FragmentActivity
 
         initAchievementBroadcastReceiver();
         ButterKnife.inject(this);
+    }
+
+    protected ExInjector loadInjector(ExInjector injector)
+    {
+        return injector.plus(new DashboardActivityModule());
     }
 
     private void setupNavigator()

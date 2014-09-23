@@ -8,7 +8,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -43,6 +45,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     public void setUp() throws InterruptedException
     {
         super.setUp();
+        THRobolectric.setupActivity(DashboardActivityExtended.class).inject(this);
     }
 
     @After @Override

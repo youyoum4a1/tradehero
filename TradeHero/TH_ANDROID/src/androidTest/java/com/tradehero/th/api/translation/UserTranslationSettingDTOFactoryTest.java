@@ -4,8 +4,10 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
+import com.tradehero.th.base.TestTHApp;
 import java.io.IOException;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,6 +18,11 @@ import static org.junit.Assume.assumeTrue;
 public class UserTranslationSettingDTOFactoryTest
 {
     @Inject UserTranslationSettingDTOFactory userTranslationSettingDTOFactory;
+
+    @Before public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     //<editor-fold desc="Passing Nulls">
     @Test(expected = IllegalArgumentException.class)

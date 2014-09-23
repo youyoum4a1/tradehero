@@ -13,6 +13,6 @@ import dagger.Module;
         library = true,
         overrides = true
 )
-public class ModelsUserTestModule
+public class ModelsUserUITestModule
 {
 }

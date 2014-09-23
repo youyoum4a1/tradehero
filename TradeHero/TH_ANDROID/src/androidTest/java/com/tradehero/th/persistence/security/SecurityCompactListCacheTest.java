@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.security;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +19,7 @@ public class SecurityCompactListCacheTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
     }
 
     @After public void tearDown()

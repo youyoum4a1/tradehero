@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
@@ -32,7 +33,8 @@ public class FriendListAdapterTest
     @Before
     public void setUp() throws Exception
     {
-        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivityExtended.class);
+        activity.inject(this);
 
         layoutInflater = activity.getLayoutInflater();
         adapter = new FriendListAdapter(context, layoutInflater, R.layout.refer_friend_list_item_view);

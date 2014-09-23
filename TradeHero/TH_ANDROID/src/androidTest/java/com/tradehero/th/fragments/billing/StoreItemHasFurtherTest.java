@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
@@ -24,6 +25,7 @@ public class StoreItemHasFurtherTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
         storeItemHasFurther = new StoreItemHasFurther(context);
         storeItemHasFurther.title = new TextView(context);
         storeItemHasFurther.icon = new ImageView(context);

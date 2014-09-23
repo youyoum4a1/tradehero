@@ -8,9 +8,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.utils.broadcast.BroadcastTaskNew;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,6 +24,12 @@ public class UserAchievementCacheTest
     @Inject UserAchievementCache userAchievementCache;
     @Inject LocalBroadcastManager localBroadcastManager;
     @Inject @ForAchievement IntentFilter intentFilter;
+
+    @Before
+    public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @Test
     public void testWhenNoReceiverItShouldRepeat() throws Exception

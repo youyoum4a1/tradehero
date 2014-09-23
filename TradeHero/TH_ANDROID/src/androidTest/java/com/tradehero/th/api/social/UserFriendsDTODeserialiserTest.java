@@ -6,6 +6,7 @@ import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.BaseApiTestClass;
 
+import com.tradehero.th.base.TestTHApp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ public class UserFriendsDTODeserialiserTest extends BaseApiTestClass
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
         userFriendsDTOListBody1WindyLinkedInStream = getClass().getResourceAsStream(getPackagePath() + "/UserFriendsDTOListBody1WindyLinkedin.json");
     }
 

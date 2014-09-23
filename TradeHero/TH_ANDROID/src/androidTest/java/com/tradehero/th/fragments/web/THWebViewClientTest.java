@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.webkit.WebView;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class THWebViewClientTest
 
     @Before public void setUp()
     {
-        activity = Robolectric.setupActivity(DashboardActivity.class);
+        activity = Robolectric.setupActivity(DashboardActivityExtended.class);
         webView = new WebView(activity);
         thWebViewClient = new THWebViewClient(activity);
         webView.setWebViewClient(thWebViewClient);

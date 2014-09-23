@@ -1,6 +1,7 @@
 package com.tradehero.common.utils;
 
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.base.TestTHApp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ public class RetrofitHelperTest
     @Before
     public void setUp()
     {
+        TestTHApp.staticInject(this);
         headers = new ArrayList<Header>();
     }
 

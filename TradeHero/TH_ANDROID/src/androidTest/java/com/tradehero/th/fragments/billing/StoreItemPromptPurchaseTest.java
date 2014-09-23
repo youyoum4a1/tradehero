@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
@@ -24,6 +25,7 @@ public class StoreItemPromptPurchaseTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
         storeItemPromptPurchase = new StoreItemPromptPurchase(context);
         storeItemPromptPurchase.title = new TextView(context);
         storeItemPromptPurchase.icon = new ImageView(context);

@@ -17,6 +17,7 @@ import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.base.THApp;
+import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
@@ -72,9 +73,13 @@ public class SplashActivity extends FragmentActivity
             appVersion.setText(VersionUtils.getAppVersion(this));
         }
 
-        THApp thApp = THApp.get(this);
-        Injector newInjector = thApp.plus(new SplashActivityModule());
+        Injector newInjector = loadInjector(THApp.get(this));
         newInjector.inject(this);
+    }
+
+    protected ExInjector loadInjector(ExInjector injector)
+    {
+        return injector.plus(new SplashActivityModule());
     }
 
     @Override protected void onResume()

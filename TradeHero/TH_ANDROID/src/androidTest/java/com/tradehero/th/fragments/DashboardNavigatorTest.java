@@ -3,6 +3,7 @@ package com.tradehero.th.fragments;
 import android.support.v4.app.Fragment;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import javax.inject.Inject;
 import org.fest.util.VisibleForTesting;
 import org.junit.After;
@@ -20,7 +21,7 @@ public class DashboardNavigatorTest
 
     @Before public void setUp()
     {
-        DashboardActivity dashboardActivity = Robolectric.buildActivity(DashboardActivity.class).create().visible().get();
+        DashboardActivity dashboardActivity = Robolectric.buildActivity(DashboardActivityExtended.class).create().visible().get();
         dashboardActivity.inject(this);
     }
 

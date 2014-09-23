@@ -1,12 +1,15 @@
 package com.tradehero.th.models.user;
 
+import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
@@ -46,6 +49,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
     @Before @Override public void setUp()
     {
         super.setUp();
+        THRobolectric.setupActivity(DashboardActivityExtended.class).inject(this);
         currentUserId.set(98);
         billingInteractor = mock(THBillingInteractor.class);
     }

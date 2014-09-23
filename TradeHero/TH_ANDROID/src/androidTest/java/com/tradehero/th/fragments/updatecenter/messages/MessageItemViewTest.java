@@ -7,6 +7,7 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class MessageItemViewTest
 
     @Before public void setUp() throws IOException
     {
-        ActivityController<DashboardActivity> activityController = Robolectric.buildActivity(DashboardActivity.class).create().start();
+        ActivityController<DashboardActivityExtended> activityController = Robolectric.buildActivity(DashboardActivityExtended.class).create().start();
         DashboardActivity activity = activityController.get();
         messageItemView = (MessageItemView) LayoutInflater.from(activity).inflate(R.layout.message_list_item, null);
 

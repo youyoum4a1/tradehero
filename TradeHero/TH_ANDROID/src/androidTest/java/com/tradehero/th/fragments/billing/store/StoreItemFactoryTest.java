@@ -4,9 +4,11 @@ import com.android.internal.util.Predicate;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -18,6 +20,11 @@ public class StoreItemFactoryTest
     @Inject StoreItemFactory storeItemFactory;
     @Inject SystemStatusCache systemStatusCache;
     @Inject CurrentUserId currentUserId;
+
+    @Before public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     private Predicate<StoreItemDTO> createFindPerDomain(final ProductIdentifierDomain domain)
     {

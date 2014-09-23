@@ -2,7 +2,9 @@ package com.tradehero.th.api.i18n;
 
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.TestConstants;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -13,6 +15,11 @@ import static org.junit.Assume.assumeTrue;
 public class LanguageCodePredicateTest
 {
     @Inject LanguageDTOFactory languageDTOFactory;
+
+    @Before public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     //<editor-fold desc="Constructor does not accept null language code">
     @Test(expected = IllegalArgumentException.class)

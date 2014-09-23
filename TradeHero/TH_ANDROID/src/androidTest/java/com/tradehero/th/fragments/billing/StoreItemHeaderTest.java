@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.TextView;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemTitleDTO;
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ public class StoreItemHeaderTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
         storeItemHeader = new StoreItemHeader(context);
         storeItemHeader.title = new TextView(context);
     }

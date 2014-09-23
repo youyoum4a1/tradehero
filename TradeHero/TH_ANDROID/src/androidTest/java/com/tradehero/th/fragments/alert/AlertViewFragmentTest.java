@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
@@ -44,6 +45,9 @@ public class AlertViewFragmentTest
 
     @Before public void setUp() throws IOException
     {
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivityExtended.class);
+        activity.inject(this);
+
         currentUserId.set(2207);
         cachedAlertDTO = mapper.readValue(
                 getClass().getResourceAsStream(getPackagePath(AlertDTO.class) + "/AlertDTOBody1.json"),
@@ -59,9 +63,6 @@ public class AlertViewFragmentTest
         userAlertPlan.alertPlan.numberOfAlerts = 1;
         cachedProfileDTO.userAlertPlans = Collections.singletonList(userAlertPlan);
         userProfileCache.put(currentUserId.toUserBaseKey(), cachedProfileDTO);
-
-        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
-        activity.inject(this);
     }
 
     @After public void tearDown()

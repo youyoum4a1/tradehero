@@ -1,7 +1,9 @@
 package com.tradehero.th.api.i18n;
 
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -11,6 +13,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class LanguageDTOFactoryTest
 {
     @Inject LanguageDTOFactory languageDTOFactory;
+
+    @Before public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
 
     @SuppressWarnings("ConstantConditions")
     @Test public void canGetLocaleForLanguageTag()

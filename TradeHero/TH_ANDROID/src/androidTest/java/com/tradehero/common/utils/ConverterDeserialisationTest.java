@@ -3,6 +3,7 @@ package com.tradehero.common.utils;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,7 @@ public class ConverterDeserialisationTest
 
     @Before public void setUp()
     {
+        TestTHApp.staticInject(this);
     }
 
     @Test public void shouldCreatePortfolioDTO1() throws Exception
