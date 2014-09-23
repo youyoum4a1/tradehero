@@ -22,9 +22,9 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
-import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
-import com.tradehero.th.fragments.level.XpTestingFragment;
+import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
+import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
+import com.tradehero.th.fragments.level.ForXpTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
@@ -46,6 +46,9 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
     @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
+    @Inject @ForQuestListTestingFragment Provider<Class> questListTestingFragmentClassProvider;
+    @Inject @ForAchievementListTestingFragment Provider<Class> achievementListTestingFragmentClassProvider;
+    @Inject @ForXpTestingFragment Provider<Class> xpTestingFragmentClassProvider;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Provider<Activity> currentActivity;
@@ -154,31 +157,34 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         });
 
         Preference showTestDaily = findPreference(KEY_DAILY_TEST_SCREEN);
+        showTestDaily.setEnabled(questListTestingFragmentClassProvider.get() != null);
         showTestDaily.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                navigator.pushFragment(QuestListTestingFragment.class);
+                navigator.pushFragment(questListTestingFragmentClassProvider.get());
                 return true;
             }
         });
 
         Preference showTestAchievement = findPreference(KEY_ACHIEVEMENT_TEST_SCREEN);
+        showTestAchievement.setEnabled(achievementListTestingFragmentClassProvider.get() != null);
         showTestAchievement.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                navigator.pushFragment(AchievementListTestingFragment.class);
+                navigator.pushFragment(achievementListTestingFragmentClassProvider.get());
                 return true;
             }
         });
 
         Preference showXPTest = findPreference(KEY_XP_TEST_SCREEN);
+        showXPTest.setEnabled(xpTestingFragmentClassProvider.get() != null);
         showXPTest.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                navigator.pushFragment(XpTestingFragment.class);
+                navigator.pushFragment(xpTestingFragmentClassProvider.get());
                 return true;
             }
         });

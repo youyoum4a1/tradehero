@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-// TODO move to debug?
 public class AchievementListTestingFragment extends DashboardFragment
 {
     @InjectView(android.R.id.list) protected AbsListView listView;
