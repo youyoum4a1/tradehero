@@ -4,10 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
-import com.actionbarsherlock.ActionBarSherlock;
-import com.actionbarsherlock.internal.ActionBarSherlockCompat;
-import com.actionbarsherlock.internal.ActionBarSherlockNative;
-import com.actionbarsherlock.internal.ActionBarSherlockRobolectric;
 import com.facebook.LoginActivity;
 import com.tradehero.TestModule;
 import com.tradehero.common.log.SystemOutTree;
@@ -30,10 +26,6 @@ public class TestTHApp extends THApp
     @Override protected void init()
     {
         super.init();
-
-        ActionBarSherlock.registerImplementation(ActionBarSherlockRobolectric.class);
-        ActionBarSherlock.unregisterImplementation(ActionBarSherlockNative.class);
-        ActionBarSherlock.unregisterImplementation(ActionBarSherlockCompat.class);
 
         mockFacebookLoginActivity();
     }
@@ -83,11 +75,16 @@ public class TestTHApp extends THApp
         try
         {
             Class.forName(test.getClass().getName() + GeneratedAdapters.INJECT_ADAPTER_SUFFIX);
-            //inject(test);
+            inject(test);
         }
         catch (ClassNotFoundException e)
         {
             // not a subject for injection
+        }
+        catch (IllegalStateException e)
+        {
+            // Need in-class inject
+            System.out.println("Need further injection " + e.getStackTrace());
         }
     }
 

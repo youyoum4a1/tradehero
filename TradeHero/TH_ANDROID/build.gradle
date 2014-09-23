@@ -356,8 +356,6 @@ dependencies {
 
   androidTestCompile 'org.reflections:reflections:0.9.8'
 
-  androidTestCompile ('com.actionbarsherlock:actionbarsherlock:4.4.0@aar')
-
   if (project.ext.isIntelliJ) {
     androidTestCompile files('build/test-classes')
   }
