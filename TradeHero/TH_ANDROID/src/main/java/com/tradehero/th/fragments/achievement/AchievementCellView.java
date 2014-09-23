@@ -14,7 +14,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.StringUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
@@ -30,20 +29,25 @@ public class AchievementCellView extends RelativeLayout implements DTOView<Achie
 
     @Inject Picasso picasso;
 
+    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public AchievementCellView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public AchievementCellView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public AchievementCellView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {

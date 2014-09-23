@@ -15,9 +15,11 @@
       android:layout_height="@dimen/leaderboard_user_view_profile_width"
       android:layout_width="@dimen/leaderboard_user_view_profile_width"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
       android:contentDescription="@null"
       android:layout_marginRight="5dp"
+      android:layout_marginEnd="5dp"
       tools:src="@drawable/superman_facebook"
       />
 
@@ -27,7 +29,9 @@
       android:orientation="vertical"
       android:layout_centerVertical="true"
       android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+      android:layout_toEndOf="@id/leaderboard_user_item_profile_picture"
       android:layout_toLeftOf="@+id/tick_selected"
+      android:layout_toStartOf="@+id/tick_selected"
       >
 
     <TextView
@@ -57,6 +61,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
       android:src="@drawable/icn_tick_blue"
       />
