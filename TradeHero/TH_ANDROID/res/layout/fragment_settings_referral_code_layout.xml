@@ -46,7 +46,8 @@
     <ViewSwitcher
         android:id="@+id/invite_code_claimed_switcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:measureAllChildren="false">
 
       <include
           layout="@layout/invite_code_dialog_layout"
