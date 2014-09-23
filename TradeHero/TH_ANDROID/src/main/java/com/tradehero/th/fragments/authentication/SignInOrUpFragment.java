@@ -1,51 +1,94 @@
 package com.tradehero.th.fragments.authentication;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.utils.MetaHelper;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import timber.log.Timber;
 
-abstract public class SignInOrUpFragment extends AuthenticationFragment
+public class SignInOrUpFragment extends Fragment
 {
-    @Inject protected DeviceTokenHelper deviceTokenHelper;
-
-    abstract protected int getViewId();
-
-    abstract protected int getEmailSignUpViewId();
+    @Inject Analytics analytics;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         HierarchyInjector.inject(this);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SignIn));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(getViewId(), container, false);
-
-        setOnClickListener(view);
-
+        View view = inflater.inflate(R.layout.authentication_sign_in, container, false);
+        ButterKnife.inject(this, view);
         return view;
     }
 
+    @OnClick({
+            R.id.btn_facebook_signin,
+            R.id.btn_twitter_signin,
+            R.id.btn_linkedin_signin,
+            R.id.btn_weibo_signin,
+            R.id.btn_qq_signin,
+            R.id.authentication_email_sign_in_link,
+            R.id.authentication_email_sign_up_link,
+    })
     public void setOnClickListener(View view)
     {
-        view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_twitter_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_weibo_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_qq_signin).setOnClickListener(onClickListener);
-        view.findViewById(getEmailSignUpViewId()).setOnClickListener(onClickListener);
-        view.findViewById(R.id.txt_term_of_service_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.txt_term_of_service_termsofuse).setOnClickListener(onClickListener);
+        // FIXME
+        // AuthenticationActivity.onClick
+    }
+
+    @OnClick({
+            R.id.txt_term_of_service_signin,
+            R.id.txt_term_of_service_termsofuse
+    })
+    void handleTermOfServiceClick(View view)
+    {
+        String url = null;
+        switch (view.getId())
+        {
+            case R.id.txt_term_of_service_signin:
+                url = Constants.PRIVACY_TERMS_OF_SERVICE;
+                break;
+            case R.id.txt_term_of_service_termsofuse:
+                url = Constants.PRIVACY_TERMS_OF_USE;
+                break;
+        }
+
+        openWebPage(url);
+    }
+
+    private void openWebPage(String url)
+    {
+        Uri uri = Uri.parse(url);
+        Intent it = new Intent(Intent.ACTION_VIEW, uri);
+        try
+        {
+            startActivity(it);
+        }
+        catch (android.content.ActivityNotFoundException e)
+        {
+            THToast.show("Unable to open url: " + uri);
+        }
     }
 
     @Override
@@ -57,32 +100,19 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
 
     private void checkLocale()
     {
-        boolean isChineseLocale = deviceTokenHelper.isChineseVersion();
-        String language = MetaHelper.getLanguage(getActivity());
-        Timber.d("language %s", language);
-        if (isChineseLocale)
+        View root = getView();
+        if (Constants.IS_CHINA)
         {
-            showViewForChinese();
+            root.findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
+            root.findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
+            root.findViewById(R.id.btn_linkedin_signin).setVisibility(View.VISIBLE);
+            root.findViewById(R.id.btn_weibo_signin).setVisibility(View.VISIBLE);
+            root.findViewById(R.id.btn_qq_signin).setVisibility(View.VISIBLE);
         }
-        // TODO remove this shit
-        //else if (language != null && language.startsWith("ko"))
-        //if not ChineseLocale weibo & qq will show gone ,checked with Cody
         else
         {
-            getView().findViewById(R.id.btn_weibo_signin).setVisibility(View.GONE);
-            getView().findViewById(R.id.btn_qq_signin).setVisibility(View.GONE);
+            root.findViewById(R.id.btn_weibo_signin).setVisibility(View.GONE);
+            root.findViewById(R.id.btn_qq_signin).setVisibility(View.GONE);
         }
     }
-
-    private void showViewForChinese()
-    {
-        View root = getView();
-        root.findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
-        root.findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
-        root.findViewById(R.id.btn_linkedin_signin).setVisibility(View.VISIBLE);
-        root.findViewById(R.id.btn_weibo_signin).setVisibility(View.VISIBLE);
-        root.findViewById(R.id.btn_qq_signin).setVisibility(View.VISIBLE);
-    }
-
-    abstract public AuthenticationMode getAuthenticationMode();
 }

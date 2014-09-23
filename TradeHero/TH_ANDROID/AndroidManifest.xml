@@ -41,11 +41,6 @@
         android:theme="@style/AppBaseTheme.NoActionBar2"/>
 
     <activity
-        android:name=".activities.WebViewActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/AppBaseTheme.NoActionBar"/>
-
-    <activity
         android:name=".activities.AuthenticationActivity"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"
@@ -98,12 +93,6 @@
         android:name=".activities.StockChartActivity"
         android:screenOrientation="sensorLandscape"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-
-    <activity
-        android:name=".activities.WeiboAuthAcitivity"
-        android:windowSoftInputMode="adjustResize"
-        android:screenOrientation="portrait"
-        />
 
     <activity
         android:name=".wxapi.WXEntryActivity"

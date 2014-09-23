@@ -2,6 +2,8 @@ package com.tradehero.th.utils.dagger;
 
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.FlavorModule;
 import com.tradehero.th.BuildTypeModule;
@@ -122,5 +124,16 @@ public class AppModule
     LocalBroadcastManager providesLocalBroadcastReceiver(Context context)
     {
         return LocalBroadcastManager.getInstance(context);
+    }
+
+    @Provides @Singleton ConnectivityManager provideConnectivityManager(Context context) {
+
+        return (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    }
+
+    @Provides
+    NetworkInfo provideNetworkInfo(ConnectivityManager connectivityManager)
+    {
+        return connectivityManager.getActiveNetworkInfo();
     }
 }

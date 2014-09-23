@@ -6,16 +6,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -75,7 +72,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         this.signButton.setOnClickListener(this);
 
         backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_up_back_button);
-        backButton.setOnClickListener(onClickListener);
+        // FIXME backButton.setOnClickListener(onClickListener);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -200,11 +197,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
-    }
-
-    @Override public AuthenticationMode getAuthenticationMode()
-    {
-        return AuthenticationMode.SignUpWithEmail;
     }
 
     protected ProfileInfoView.Listener createProfileViewListener()

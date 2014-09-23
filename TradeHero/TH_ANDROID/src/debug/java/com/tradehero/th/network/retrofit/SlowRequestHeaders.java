@@ -2,7 +2,6 @@ package com.tradehero.th.network.retrofit;
 
 import android.accounts.AccountManager;
 import android.content.Context;
-import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -13,11 +12,10 @@ public class SlowRequestHeaders extends RequestHeaders
 
     @Inject public SlowRequestHeaders(
             Context context,
-            DeviceTokenHelper deviceTokenHelper,
             @LanguageCode String languageCode,
             AccountManager accountManager)
     {
-        super(context, deviceTokenHelper, languageCode, accountManager);
+        super(context, languageCode, accountManager);
     }
 
     @Override public void intercept(RequestFacade request)

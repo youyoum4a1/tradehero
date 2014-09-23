@@ -74,7 +74,6 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenter
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.notification.NotificationCache;
@@ -130,7 +129,6 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
-    @Inject DeviceTokenHelper deviceTokenHelper;
     @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
     @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
@@ -171,7 +169,7 @@ public class DashboardActivity extends BaseActivity
         if (Constants.RELEASE)
         {
             Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                    String.format("%s:%d", deviceTokenHelper.getDeviceType(), Constants.TAP_STREAM_TYPE.type));
+                    String.format("%s:%d", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.type));
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 

@@ -2,7 +2,6 @@ package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -17,20 +16,16 @@ import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.authentication.AuthenticationFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
-import com.tradehero.th.fragments.authentication.SignInFragment;
-import com.tradehero.th.fragments.authentication.SignUpFragment;
+import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
@@ -82,7 +77,7 @@ public class AuthenticationActivity extends BaseActivity
         newInjector = thApp.plus(new AuthenticationActivityModule());
         newInjector.inject(this);
 
-        currentFragment = Fragment.instantiate(this, SignInFragment.class.getName(), null);
+        currentFragment = Fragment.instantiate(this, SignInOrUpFragment.class.getName(), null);
 
         setupViewFragmentMapping();
 
@@ -115,9 +110,7 @@ public class AuthenticationActivity extends BaseActivity
     private void setupViewFragmentMapping()
     {
         //two buttons in WelcomeFragment
-        mapViewFragment.put(R.id.authentication_by_sign_up_back_button, SignUpFragment.class);
-        mapViewFragment.put(R.id.authentication_by_sign_in_button, SignInFragment.class);
-        mapViewFragment.put(R.id.authentication_by_sign_in_back_button, SignInFragment.class);
+        mapViewFragment.put(R.id.authentication_sign_up_button, SignInOrUpFragment.class);
         //button in SignInFragment
         mapViewFragment.put(R.id.authentication_email_sign_in_link, EmailSignInFragment.class);
         //button in SignUpFragment
@@ -138,8 +131,7 @@ public class AuthenticationActivity extends BaseActivity
         if (fragmentClass != null)
         {
             if (view.getId() == R.id.authentication_by_sign_in_back_button
-                    || view.getId() == R.id.authentication_by_sign_up_back_button
-                    || view.getId() == R.id.authentication_by_sign_in_button)
+                    || view.getId() == R.id.authentication_by_sign_up_back_button)
             {
                 DeviceUtil.dismissKeyboard(view);
                 setCurrentFragmentByPopBack(fragmentClass);
@@ -147,11 +139,6 @@ public class AuthenticationActivity extends BaseActivity
             else
             {
                 setCurrentFragmentByClass(fragmentClass);
-            }
-            if (currentFragment instanceof AuthenticationFragment)
-            {
-                THUser.setAuthenticationMode(((AuthenticationFragment) currentFragment).getAuthenticationMode());
-                return;
             }
         }
         //TODO maybe shouldn't clear user information here
@@ -185,38 +172,6 @@ public class AuthenticationActivity extends BaseActivity
             case R.id.btn_qq_signin:
                 authenticateWithQQ();
                 break;
-            case R.id.txt_term_of_service_signin:
-                //TODO WebViewActivity not work, for chromium﹕ [INFO:CONSOLE(17)] "The page at
-                //TODO https://www.tradehero.mobi/privacy ran insecure content from
-                //Intent pWebView = new Intent(this, WebViewActivity.class);
-                //pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
-                //startActivity(pWebView);
-                Uri uri = Uri.parse(Constants.PRIVACY_TERMS_OF_SERVICE);
-                Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                try
-                {
-                    startActivity(it);
-                }
-                catch (android.content.ActivityNotFoundException anfe)
-                {
-                    THToast.show("Unable to open url: " + uri);
-                }
-                break;
-            case R.id.txt_term_of_service_termsofuse:
-                //Intent pWebView2 = new Intent(this, WebViewActivity.class);
-                //pWebView2.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_USE);
-                //startActivity(pWebView2);
-                Uri uri2 = Uri.parse(Constants.PRIVACY_TERMS_OF_USE);
-                Intent it2 = new Intent(Intent.ACTION_VIEW, uri2);
-                try
-                {
-                    startActivity(it2);
-                }
-                catch (android.content.ActivityNotFoundException anfe)
-                {
-                    THToast.show("Unable to open url: " + uri2);
-                }
-                break;
         }
     }
 
@@ -245,9 +200,9 @@ public class AuthenticationActivity extends BaseActivity
             EmailSignInOrUpFragment castedFragment = (EmailSignInOrUpFragment) currentFragment;
             JSONCredentials createdJson = castedFragment.getUserFormJSON();
             EmailAuthenticationProvider.setCredentials(createdJson);
-            AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
-            THUser.setAuthenticationMode(authenticationMode);
-            THUser.logInWithAsync(EmailCredentialsDTO.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));
+            //AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
+            //THUser.setAuthenticationMode(authenticationMode);
+            //THUser.logInWithAsync(EmailCredentialsDTO.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));
         }
         else
         {
@@ -320,7 +275,7 @@ public class AuthenticationActivity extends BaseActivity
         {
             @Override public boolean isSigningUp()
             {
-                return !(currentFragment instanceof SignInFragment);
+                return /*!(currentFragment instanceof SignInFragment)*/ false;
             }
 
             @Override public boolean onSocialAuthDone(JSONCredentials json)

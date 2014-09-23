@@ -11,8 +11,9 @@ import com.tradehero.th.api.users.signup.LoginSignUpFormQQDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormTwitterDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormWeiboDTO;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.network.retrofit.RetrofitModule;
+import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Module;
 import dagger.Provides;
@@ -35,59 +36,61 @@ public class NetworkModule
         return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, NetworkConstants.getApiEndPointInUse());
     }
 
-    @Provides LoginFormDTO provideLoginFormDTO(DeviceTokenHelper deviceTokenHelper)
+    // TODO FIXME all below methods look the same to me, wtf??? Possible to use constructor injection here ...
+
+    @Provides LoginFormDTO provideLoginFormDTO(@SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
     {
         return new LoginFormDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                savedPushIdentifier.get(),
+                Constants.DEVICE_TYPE /**DeviceType.Android*/,
                 VersionUtils.getVersionId(THApp.context()));
     }
 
-    @Provides LoginSignUpFormEmailDTO provideLoginSignUpFormEmailDTO(DeviceTokenHelper deviceTokenHelper)
+    @Provides LoginSignUpFormEmailDTO provideLoginSignUpFormEmailDTO(@SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
     {
         return new LoginSignUpFormEmailDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                savedPushIdentifier.get(),
+                Constants.DEVICE_TYPE /**DeviceType.Android*/,
                 VersionUtils.getVersionId(THApp.context()));
     }
 
-    @Provides LoginSignUpFormFacebookDTO provideLoginSignUpFormFacebookDTO(DeviceTokenHelper deviceTokenHelper)
+    @Provides LoginSignUpFormFacebookDTO provideLoginSignUpFormFacebookDTO(@SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
     {
         return new LoginSignUpFormFacebookDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                savedPushIdentifier.get(),
+                Constants.DEVICE_TYPE /**DeviceType.Android*/,
                 VersionUtils.getVersionId(THApp.context()));
     }
 
-    @Provides LoginSignUpFormLinkedinDTO provideLoginSignUpFormLinkedinDTO(DeviceTokenHelper deviceTokenHelper)
+    @Provides LoginSignUpFormLinkedinDTO provideLoginSignUpFormLinkedinDTO(@SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
     {
         return new LoginSignUpFormLinkedinDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                savedPushIdentifier.get(),
+                Constants.DEVICE_TYPE /**DeviceType.Android*/,
                 VersionUtils.getVersionId(THApp.context()));
     }
 
-    @Provides LoginSignUpFormQQDTO provideLoginSignUpFormQQDTO(DeviceTokenHelper deviceTokenHelper)
+    @Provides LoginSignUpFormQQDTO provideLoginSignUpFormQQDTO(@SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
     {
         return new LoginSignUpFormQQDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                savedPushIdentifier.get(),
+                Constants.DEVICE_TYPE /**DeviceType.Android*/,
                 VersionUtils.getVersionId(THApp.context()));
     }
 
-    @Provides LoginSignUpFormTwitterDTO provideLoginSignUpFormTwitterDTO(DeviceTokenHelper deviceTokenHelper)
+    @Provides LoginSignUpFormTwitterDTO provideLoginSignUpFormTwitterDTO(@SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
     {
         return new LoginSignUpFormTwitterDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                savedPushIdentifier.get(),
+                Constants.DEVICE_TYPE /**DeviceType.Android*/,
                 VersionUtils.getVersionId(THApp.context()));
     }
 
-    @Provides LoginSignUpFormWeiboDTO provideLoginSignUpFormWeiboDTO(DeviceTokenHelper deviceTokenHelper)
+    @Provides LoginSignUpFormWeiboDTO provideLoginSignUpFormWeiboDTO(@SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
     {
         return new LoginSignUpFormWeiboDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                savedPushIdentifier.get(),
+                Constants.DEVICE_TYPE /**DeviceType.Android*/,
                 VersionUtils.getVersionId(THApp.context()));
     }
 }

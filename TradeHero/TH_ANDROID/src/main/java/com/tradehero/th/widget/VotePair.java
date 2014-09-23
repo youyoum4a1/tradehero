@@ -2,14 +2,13 @@ package com.tradehero.th.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.net.NetworkInfo;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.utils.OnlineStateReceiver;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -21,6 +20,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -32,6 +32,7 @@ public class VotePair extends LinearLayout
     @InjectView(R.id.timeline_action_button_vote_down) VoteView voteDown;
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
+    @Inject Provider<NetworkInfo> networkInfoProvider;
 
     private MiddleCallback<DiscussionDTO> voteCallback;
     private AbstractDiscussionCompactDTO discussionDTO;
@@ -112,11 +113,6 @@ public class VotePair extends LinearLayout
     })
     public void onItemClicked(View view)
     {
-        if(!OnlineStateReceiver.isOnline(getContext()))
-        {
-            THToast.show(getContext().getString(R.string.network_error));
-            return;
-        }
         if (discussionDTO == null)
         {
             // TODO inform player about lack of information

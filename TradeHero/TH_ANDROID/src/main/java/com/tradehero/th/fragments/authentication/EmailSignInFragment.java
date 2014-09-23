@@ -92,7 +92,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         forgotPasswordLink.setOnClickListener(this);
 
         backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_in_back_button);
-        backButton.setOnClickListener(onClickListener);
     }
 
     @Override public void onDestroyView()
@@ -253,10 +252,5 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                 mProgressDialog.dismiss();
             }
         };
-    }
-
-    @Override public AuthenticationMode getAuthenticationMode()
-    {
-        return AuthenticationMode.SignIn;
     }
 }

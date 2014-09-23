@@ -3,12 +3,11 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-
 import com.tradehero.common.annotation.ForUser;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.api.form.FacebookUserFormDTO;
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
 import com.tradehero.th.api.form.TwitterUserFormDTO;
@@ -26,7 +25,6 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
-import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
@@ -39,19 +37,15 @@ import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-
-import org.json.JSONException;
-
+import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.inject.Inject;
-
-import dagger.Lazy;
+import org.json.JSONException;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -70,15 +64,13 @@ public class THUser
     @Inject static CurrentUserId currentUserId;
 
     @Inject @ForUser static Lazy<SharedPreferences> sharedPreferences;
+    @Inject @SavedPushDeviceIdentifier static Lazy<StringPreference> savedPushIdentifier;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionServiceWrapper> sessionServiceWrapper;
-    @Inject static Lazy<UserProfileCache> userProfileCache;
     @Inject static Lazy<DTOCacheUtil> dtoCacheUtil;
     @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
     @Inject static LoginSignUpFormDTOFactory loginSignUpFormDTOFactory;
-    @Inject static DeviceTokenHelper deviceTokenHelper;
-    @Inject static Lazy<MarketUtil> marketUtilLazy;
 
     public static void initialize()
     {
@@ -140,7 +132,7 @@ public class THUser
 
         if (userFormDTO.deviceToken == null)
         {
-            userFormDTO.deviceToken = deviceTokenHelper.getDeviceToken();
+            userFormDTO.deviceToken = savedPushIdentifier.get().get();
         }
 
         if (authenticationMode == null)

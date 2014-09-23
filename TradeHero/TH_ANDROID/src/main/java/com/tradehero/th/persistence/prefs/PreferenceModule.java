@@ -19,6 +19,7 @@ import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 
+import com.urbanairship.push.PushManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -143,7 +144,7 @@ public class PreferenceModule
 
     @Provides @Singleton @SavedPushDeviceIdentifier StringPreference provideSavedPushIdentifier(@ForUser SharedPreferences sharedPreferences)
     {
-        return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, "");
+        return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, PushManager.shared().getAPID());
     }
 
     @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(@ForApp SharedPreferences sharedPreferences)
