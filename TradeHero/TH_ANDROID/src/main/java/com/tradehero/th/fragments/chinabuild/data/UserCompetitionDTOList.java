@@ -10,5 +10,5 @@ public class UserCompetitionDTOList extends BaseArrayList<UserCompetitionDTO> im
     {
         super();
     }
-    //</editor-fold>
+
 }

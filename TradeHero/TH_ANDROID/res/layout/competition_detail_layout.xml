@@ -22,7 +22,7 @@
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
         android:textColor="@color/black"
-        android:text="一起来比一比谁才是真正的大神，一起来比一比谁才是真正的大神，一起来比一比谁才是真正的大神。">
+        android:text=" ">
     </TextView>
 
     <TextView
@@ -32,8 +32,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="5dp"
-        android:textColor="@color/black"
-        android:text="09/20-10/19">
+        android:textColor="@color/white"
+        android:text=" ">
     </TextView>
 
     <TextView
@@ -43,8 +43,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_above="@id/tvCompetitionPeriod"
-        android:textColor="@color/black"
-        android:text="沪深">
+        android:textColor="@color/white"
+        android:text=" ">
     </TextView>
   </RelativeLayout>
 
@@ -83,8 +83,6 @@
         android:singleLine="true"
         android:text="杜淳杰"/>
 
-
-
     <TextView
         android:id="@+id/tvGotoCompetition"
         android:layout_width="wrap_content"
@@ -113,6 +111,32 @@
       layout="@layout/leaderboard_my_position_item"
       android:layout_marginBottom="3dp"
       android:layout_marginTop="3dp"/>
+
+  <LinearLayout
+      android:id="@+id/llCompetitionLeaderboardTitle"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      android:orientation="horizontal"
+      android:background="@color/gray_1">
+    <TextView
+        android:id="@+id/tvHeadLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:text="比赛排名"/>
+
+    <TextView
+        android:id="@+id/tvLeaderboardTime"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:text="（截止昨天24:00）"/>
+  </LinearLayout>
 
   <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
       android:id="@+id/listRanks"

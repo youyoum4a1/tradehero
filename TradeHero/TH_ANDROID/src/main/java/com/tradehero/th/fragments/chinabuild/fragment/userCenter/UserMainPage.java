@@ -76,6 +76,10 @@ public class UserMainPage extends DashboardFragment
 
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
 
+    @InjectView(R.id.llItemAllAmount) LinearLayout llItemAllAmount;
+    @InjectView(R.id.llItemAllHero) LinearLayout llItemAllHero;
+    @InjectView(R.id.llItemAllFans) LinearLayout llItemAllFans;
+
     private int userID;
     private UserBaseKey userBaseKey;
     private UserProfileDTO currentUserProfileDTO;
@@ -127,6 +131,7 @@ public class UserMainPage extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.user_main_page, container, false);
         ButterKnife.inject(this, view);
+        startLoadding();
         fetchUserProfile();
         fetchCurrentUserProfile();
         fetchTimeLine();
@@ -178,6 +183,14 @@ public class UserMainPage extends DashboardFragment
                 fetchTimeLineMore();
             }
         });
+    }
+
+    public void startLoadding()
+    {
+        if (getActivity() != null)
+        {
+            alertDialogUtilLazy.get().showProgressDialog(getActivity(), "加载中");
+        }
     }
 
     public void displayFollow()
@@ -274,11 +287,17 @@ public class UserMainPage extends DashboardFragment
         public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             linkWith(value);
+            finish();
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
+            finish();
+        }
 
+        private void finish()
+        {
+            alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
@@ -482,5 +501,41 @@ public class UserMainPage extends DashboardFragment
             THToast.show(new THException(retrofitError));
             listTimeLine.onRefreshComplete();
         }
+    }
+
+    @OnClick({R.id.llItemAllAmount, R.id.llItemAllHero, R.id.llItemAllFans})
+    public void onItemClicked(View view)
+    {
+        int id = view.getId();
+        switch (id)
+        {
+            case R.id.llItemAllAmount:
+                Timber.d("clicked llItemAllAmount");
+                enterUserAllAmount();
+                break;
+            case R.id.llItemAllHero:
+                Timber.d("clicked llItemAllHero");
+                enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_HERO);
+                break;
+            case R.id.llItemAllFans:
+                Timber.d("clicked llItemAllFans");
+                enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_FOLLOWS);
+                break;
+        }
+    }
+
+    public void enterUserAllAmount()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, userBaseKey.key);
+        pushFragment(UserAccountPage.class, bundle);
+    }
+
+    public void enterFriendsListFragment(int type)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, userBaseKey.key);
+        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_FRIENDS_TYPE, type);
+        pushFragment(UserFriendsListFragment.class, bundle);
     }
 }

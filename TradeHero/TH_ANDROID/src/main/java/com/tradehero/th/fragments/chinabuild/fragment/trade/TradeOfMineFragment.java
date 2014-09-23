@@ -212,7 +212,7 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         detachPortfolioCompactListCache();
         portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
-        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(),force);
+        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
 
     protected void fetchPortfolio()

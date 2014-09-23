@@ -15,6 +15,7 @@ import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
 import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
+import com.tradehero.th.adapters.UserFriendsListAdapter;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
@@ -68,6 +69,8 @@ import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragme
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotWatchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfMineFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfTypeBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
@@ -461,6 +464,7 @@ import javax.inject.Singleton;
                         SecurityListView.class,
 
                         LeaderboardListAdapter.class,
+                        UserFriendsListAdapter.class,
                         SecurityListAdapter.class,
                         SecuritySearchListAdapter.class,
                         MyTradePositionListAdapter.class,
@@ -501,6 +505,8 @@ import javax.inject.Singleton;
                         MyEditAccountFragment.class,
                         MySocialFragment.class,
                         DefaultIntentReceiver.class,
+                        UserFriendsListFragment.class,
+                        UserAccountPage.class,
                         //China Build End
                 },
         staticInjections =

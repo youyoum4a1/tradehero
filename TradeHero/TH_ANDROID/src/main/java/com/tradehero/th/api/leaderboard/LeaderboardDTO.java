@@ -6,6 +6,8 @@ import com.tradehero.common.persistence.BaseHasExpiration;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.tradehero.th.base.Application;
+import com.tradehero.th.utils.DateUtils;
 import java.io.IOException;
 import java.util.Date;
 import org.jetbrains.annotations.NotNull;
@@ -102,5 +104,10 @@ public class LeaderboardDTO extends BaseHasExpiration
             return 1/v;
         }
         return (double)2;
+    }
+
+    public String getMarkUTCString()
+    {
+        return DateUtils.getFormattedUtcDate(Application.context().getResources(), markUtc);
     }
 }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -104,6 +105,10 @@ public class CompetitionDetailFragment extends DashboardFragment
     @InjectView(R.id.tvUserExtraValue) TextView tvUserExtraValue;//我的收益率
     @InjectView(R.id.tvUserName) TextView tvUserName;//我的名字
     @InjectView(R.id.imgUserHead) ImageView imgUserHead;//我的头像
+    @InjectView(R.id.imgRightArrow) ImageView imgRightArrow;
+
+    @InjectView(R.id.llCompetitionLeaderboardTitle) LinearLayout llCompetitionLeaderboardTitle;//比赛排名 TITLE
+    @InjectView(R.id.tvLeaderboardTime) TextView tvLeaderboardTime;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -216,7 +221,12 @@ public class CompetitionDetailFragment extends DashboardFragment
             tvCompetitionPeriod.setText(userCompetitionDTO.getDisplayDatePeriod());
             tvCompetitionExchange.setText(userCompetitionDTO.getDisplayExchangeShort());
             tvGotoCompetition.setText(userCompetitionDTO.isEnrolled ? "去比赛" : "我要报名");
-
+            if (!userCompetitionDTO.isOngoing)
+            {
+                tvGotoCompetition.setText("已结束");
+                tvGotoCompetition.setEnabled(false);
+                tvGotoCompetition.setTextColor(getResources().getColor(R.color.black));
+            }
             tvCompetitionCreator.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
@@ -271,11 +281,16 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        if (userCompetitionDTO.isEnrolled)//只有参加了才去拿portfolio
+        if (!userCompetitionDTO.isOngoing)
+        {
+            getMySelfRank();
+        }
+        else if (userCompetitionDTO.isEnrolled)//只有参加了才去拿portfolio
         {
             fetchPortfolioCompactNew();
         }
         fetchUserProfile();
+        setLeaderboardHeadLine();
     }
 
     private void detachUserProfileCache()
@@ -293,22 +308,28 @@ public class CompetitionDetailFragment extends DashboardFragment
     @OnClick(R.id.tvGotoCompetition)
     public void onGotoCompetitionClicked()
     {
-        if (!userCompetitionDTO.isEnrolled)
+        if (userCompetitionDTO.isOngoing)
         {
-            //去报名
-            toJoinCompetition();//去报名
-        }
-        else
-        {
-            toPlayCompetition();//去比赛
+            if (!userCompetitionDTO.isEnrolled)
+            {
+                //去报名
+                toJoinCompetition();//去报名
+            }
+            else
+            {
+                toPlayCompetition();//去比赛
+            }
         }
     }
 
     @OnClick(R.id.includeMyPosition)
     public void onClickMyPosition()
     {
-        Timber.d("进入我的持仓页面");
-        enterPortfolio();
+        if (userCompetitionDTO.isOngoing)
+        {
+            Timber.d("进入我的持仓页面");
+            enterPortfolio();
+        }
     }
 
     public void toPlayCompetition()
@@ -378,6 +399,32 @@ public class CompetitionDetailFragment extends DashboardFragment
         } catch (Exception e)
         {
 
+        }
+
+        if (!userCompetitionDTO.isOngoing)
+        {
+            //比赛结束后显示自己的最终ROI
+            if (leaderboardDTO != null)
+            {
+                LeaderboardUserDTO dto = null;
+                try
+                {
+                    dto = leaderboardDTO.users.get(0);
+                } catch (Exception e)
+                {
+
+                }
+
+                if (dto != null)
+                {
+                    THSignedNumber roi = THSignedPercentage.builder(leaderboardDTO.users.get(0).roiInPeriod * 100)
+                            .withSign()
+                            .signTypeArrow()
+                            .build();
+                    tvUserExtraValue.setText(roi.toString());
+                    tvUserExtraValue.setTextColor(getResources().getColor(roi.getColorResId()));
+                }
+            }
         }
 
         if (ordinaPosition != -1)
@@ -472,6 +519,20 @@ public class CompetitionDetailFragment extends DashboardFragment
         competitionLeaderboardCache.getOrFetchAsync(key);
     }
 
+    public void setLeaderboardHeadLine()
+    {
+        if (!userCompetitionDTO.isOngoing)
+        {
+            imgRightArrow.setVisibility(View.GONE);
+        }
+
+        if (adapter.getCount() != 0)
+        {
+            llCompetitionLeaderboardTitle.setVisibility(View.VISIBLE);
+            tvLeaderboardTime.setText("(截止至" + competitionLeaderboardDTO.leaderboard.getMarkUTCString() + ")");
+        }
+    }
+
     protected void fetchCompetitionLeaderboardMore()
     {
         detachCompetitionLeaderboardCache();
@@ -487,6 +548,10 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             adapter.setListData(listData);
             adapter.setLeaderboardType(LeaderboardDefKeyKnowledge.COMPETITION);
+            if (listData != null && listData.size() > 0)
+            {
+                setLeaderboardHeadLine();
+            }
         }
         else
         {
@@ -581,7 +646,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         if (value == null) return;
         this.portfolioCompactDTO = value;
         this.portfolioCompactDTO.userId = currentUserId.toUserBaseKey().getUserId();
-        if (value != null && value.roiSinceInception != null)
+        if (value != null && value.roiSinceInception != null && userCompetitionDTO.isOngoing)
         {
             THSignedNumber roi = THSignedPercentage.builder(value.roiSinceInception * 100)
                     .withSign()

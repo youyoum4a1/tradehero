@@ -384,6 +384,21 @@ public class CompetitionBaseFragment extends DashboardFragment
         }
     }
 
+    public UserCompetitionDTOList removeVipCompetition(UserCompetitionDTOList userCompetitionDTOs)
+    {
+        if(userCompetitionDTOs!=null)
+        {
+            ArrayList<UserCompetitionDTO> list = new ArrayList<>();
+            int size = userCompetitionDTOs.size();
+            for(int i=0;i<size;i++)
+            {
+                list.add(userCompetitionDTOs.get(i));
+            }
+        }
+        return null;
+    }
+
+
     public int getCompetitionPageType()
     {
         return CompetitionUtils.COMPETITION_PAGE_ALL;
@@ -431,13 +446,19 @@ public class CompetitionBaseFragment extends DashboardFragment
             {
                 initMyCompetition(key, value);
             }
-            listCompetitions.onRefreshComplete();
+            if(listCompetitions!=null)
+            {
+                listCompetitions.onRefreshComplete();
+            }
         }
 
         @Override public void onErrorThrown(@NotNull CompetitionListType key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.fetch_error));
-            listCompetitions.onRefreshComplete();
+            if(listCompetitions!=null)
+            {
+                listCompetitions.onRefreshComplete();
+            }
         }
     }
 }

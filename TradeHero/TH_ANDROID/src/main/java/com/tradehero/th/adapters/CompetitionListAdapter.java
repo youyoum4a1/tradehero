@@ -13,17 +13,8 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.th.fragments.chinabuild.data.CompetitionDataItem;
 import com.tradehero.th.fragments.chinabuild.data.CompetitionHeadItem;
 import com.tradehero.th.fragments.chinabuild.data.CompetitionInterface;
-import com.tradehero.th.fragments.chinabuild.data.PositionHeadItem;
-import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
-import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
-import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
-import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionUtils;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th2.R;
 import dagger.Lazy;
@@ -75,7 +66,10 @@ public class CompetitionListAdapter extends BaseAdapter
             int sizeList = list.size();
             for (int i = 0; i < sizeList; i++)
             {
-                listItem.add(new CompetitionDataItem(list.get(i)));
+                if(!list.get(i).isOfficial)
+                {
+                    listItem.add(new CompetitionDataItem(list.get(i)));
+                }
             }
         }
         UserCompetitionDtoList = listItem;

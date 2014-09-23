@@ -31,6 +31,7 @@ public class UserCompetitionDTO implements DTO, Serializable
     public boolean isOngoing;
     public int userCount;
     public ExchangeDTOList exchanges;
+    public boolean isOfficial;
 
     public String getUserCounter()
     {

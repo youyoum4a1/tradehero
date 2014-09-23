@@ -23,6 +23,8 @@ import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -177,14 +179,32 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 break;
             case R.id.llItemAllAmount:
                 Timber.d("clicked llItemAllAmount");
+                enterUserAllAmount();
                 break;
             case R.id.llItemAllHero:
                 Timber.d("clicked llItemAllHero");
+                enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_HERO);
                 break;
             case R.id.llItemAllFans:
                 Timber.d("clicked llItemAllFans");
+                enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_FOLLOWS);
                 break;
         }
+    }
+
+    public void enterUserAllAmount()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
+        gotoDashboard(UserAccountPage.class.getName(), bundle);
+    }
+
+    public void enterFriendsListFragment(int type)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
+        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_FRIENDS_TYPE, type);
+        gotoDashboard(UserFriendsListFragment.class.getName(), bundle);
     }
 
     @Override public void onStop()
@@ -205,7 +225,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
     {
         Bundle bundle = new Bundle();
         bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, currentUserId.toUserBaseKey().key);
-        gotoDashboard(UserMainPage.class.getName(),bundle);
+        gotoDashboard(UserMainPage.class.getName(), bundle);
     }
 
     @Override public void onDestroy()
@@ -243,7 +263,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
-
 
     protected void fetchPortfolio()
     {
