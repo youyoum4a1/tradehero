@@ -18,25 +18,6 @@ public class BroadcastTaskNew
     private volatile int mTry;
     @VisibleForTesting public volatile boolean isRunning;
 
-    private TimerTask timerTask = new TimerTask()
-    {
-        @Override public void run()
-        {
-            if (mTry >= MAX_BROADCAST_TRY)
-            {
-                stop(false);
-            }
-            else if (!broadcast(mData))
-            {
-                mTry++;
-            }
-            else
-            {
-                stop(true);
-            }
-        }
-    };
-
     public BroadcastTaskNew(BroadcastData broadcastData, LocalBroadcastManager mLocalBroadcastManager, TaskListener taskListener)
     {
         this.mData = broadcastData;
@@ -60,7 +41,7 @@ public class BroadcastTaskNew
     public void start()
     {
         mTaskListener.onStartBroadcast(mData);
-        timer.scheduleAtFixedRate(timerTask, 0, DELAY_INTERVAL);
+        timer.scheduleAtFixedRate(new BroadcastTaskNewTimerTask(), 0, DELAY_INTERVAL);
     }
 
     public void stop(boolean isSuccess)
@@ -73,5 +54,24 @@ public class BroadcastTaskNew
     {
         void onStartBroadcast(BroadcastData broadcastData);
         void onFinishBroadcast(BroadcastData broadcastData, boolean isSuccessful);
+    }
+
+    protected class BroadcastTaskNewTimerTask extends TimerTask
+    {
+        @Override public void run()
+        {
+            if (mTry >= MAX_BROADCAST_TRY)
+            {
+                stop(false);
+            }
+            else if (!broadcast(mData))
+            {
+                mTry++;
+            }
+            else
+            {
+                stop(true);
+            }
+        }
     }
 }
