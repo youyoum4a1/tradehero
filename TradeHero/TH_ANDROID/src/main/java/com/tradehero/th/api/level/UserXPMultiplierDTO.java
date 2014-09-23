@@ -13,6 +13,7 @@ public class UserXPMultiplierDTO implements DTO
     public int xpTotal;
     public int multiplier;
 
+    //<editor-fold desc="Constructors">
     public UserXPMultiplierDTO()
     {
         super();
@@ -35,6 +36,7 @@ public class UserXPMultiplierDTO implements DTO
             multiplier = b.getInt(KEY_MULTIPLIER);
         }
     }
+    //</editor-fold>
 
     public Bundle getArgs()
     {

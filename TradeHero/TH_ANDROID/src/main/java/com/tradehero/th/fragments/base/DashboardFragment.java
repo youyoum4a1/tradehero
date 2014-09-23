@@ -18,7 +18,7 @@ import timber.log.Timber;
 abstract public class DashboardFragment extends BaseFragment
 {
     @Inject protected AlertDialogUtil alertDialogUtil;
-    @Inject DashboardNavigator navigator;
+    @Inject protected DashboardNavigator navigator;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

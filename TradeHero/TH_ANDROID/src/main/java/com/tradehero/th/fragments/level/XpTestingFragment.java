@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
+// TODO move to debug?
 public class XpTestingFragment extends DashboardFragment
 {
     @InjectView(R.id.xp_test_reason) EditText xpReason;

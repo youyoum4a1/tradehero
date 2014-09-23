@@ -252,7 +252,6 @@ public class XpToast extends RelativeLayout
 
         @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
         {
-
         }
     }
 

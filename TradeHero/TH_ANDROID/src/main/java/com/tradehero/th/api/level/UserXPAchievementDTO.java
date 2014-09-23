@@ -6,6 +6,7 @@ import com.tradehero.th.utils.broadcast.BroadcastData;
 import com.tradehero.th.utils.level.XpModule;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class UserXPAchievementDTO implements DTO, BroadcastData
 {
@@ -59,7 +60,7 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
         }
     }
 
-    @Override public Bundle getArgs()
+    @NotNull @Override public Bundle getArgs()
     {
         Bundle b = new Bundle();
         b.putString(KEY_TEXT, text);
@@ -79,12 +80,12 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
         return b;
     }
 
-    @Override public String getBroadcastBundleKey()
+    @NotNull @Override public String getBroadcastBundleKey()
     {
         return XpModule.KEY_XP_BROADCAST;
     }
 
-    @Override public String getBroadcastIntentActionName()
+    @NotNull @Override public String getBroadcastIntentActionName()
     {
         return XpModule.XP_INTENT_ACTION_NAME;
     }

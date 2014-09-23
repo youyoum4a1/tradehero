@@ -27,12 +27,12 @@ public class UserAchievementId extends AbstractIntegerDTOKey implements Broadcas
         return BUNDLE_KEY;
     }
 
-    @Override public String getBroadcastBundleKey()
+    @NotNull @Override public String getBroadcastBundleKey()
     {
         return AchievementModule.KEY_USER_ACHIEVEMENT_ID;
     }
 
-    @Override public String getBroadcastIntentActionName()
+    @NotNull @Override public String getBroadcastIntentActionName()
     {
         return AchievementModule.ACHIEVEMENT_INTENT_ACTION_NAME;
     }

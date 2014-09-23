@@ -16,10 +16,12 @@ import org.jetbrains.annotations.Nullable;
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
+    //<editor-fold desc="Constructors">
     @Inject public LevelDefCache()
     {
         super(DEFAULT_MAX_SIZE);
     }
+    //</editor-fold>
 
     @NotNull @Override public LevelDefDTO fetch(@NotNull LevelDefId key) throws Throwable
     {

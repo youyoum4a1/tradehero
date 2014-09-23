@@ -224,7 +224,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     protected class LevelDefListCacheListener implements DTOCacheNew.HurriedListener<LevelDefListId,LevelDefDTOList>
     {
-
         @Override public void onPreCachedDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
         {
             setLevelDef(value);

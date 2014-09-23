@@ -5,33 +5,39 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.jetbrains.annotations.NotNull;
 
 public class BroadcastTaskNew
 {
     private static final int DELAY_INTERVAL = 5000;
     private static final int MAX_BROADCAST_TRY = 4;
-    private BroadcastData mData;
+    @NotNull private BroadcastData mData;
 
-    private LocalBroadcastManager mLocalBroadcastManager;
-    private final TaskListener mTaskListener;
-    private Timer timer;
+    @NotNull private LocalBroadcastManager mLocalBroadcastManager;
+    @NotNull private final TaskListener mTaskListener;
+    @NotNull private Timer timer;
     private volatile int mTry;
     @VisibleForTesting public volatile boolean isRunning;
 
-    public BroadcastTaskNew(BroadcastData broadcastData, LocalBroadcastManager mLocalBroadcastManager, TaskListener taskListener)
+    //<editor-fold desc="Constructors">
+    public BroadcastTaskNew(
+            @NotNull BroadcastData broadcastData,
+            @NotNull LocalBroadcastManager mLocalBroadcastManager,
+            @NotNull TaskListener taskListener)
     {
         this.mData = broadcastData;
         this.mLocalBroadcastManager = mLocalBroadcastManager;
         this.mTaskListener = taskListener;
         timer = new Timer();
     }
+    //</editor-fold>
 
     public int getCurrentTry()
     {
         return mTry;
     }
 
-    private boolean broadcast(BroadcastData broadcastData)
+    private boolean broadcast(@NotNull BroadcastData broadcastData)
     {
         Intent i = new Intent(broadcastData.getBroadcastIntentActionName());
         i.putExtra(broadcastData.getBroadcastBundleKey(), broadcastData.getArgs());
@@ -52,8 +58,8 @@ public class BroadcastTaskNew
 
     public static interface TaskListener
     {
-        void onStartBroadcast(BroadcastData broadcastData);
-        void onFinishBroadcast(BroadcastData broadcastData, boolean isSuccessful);
+        void onStartBroadcast(@NotNull BroadcastData broadcastData);
+        void onFinishBroadcast(@NotNull BroadcastData broadcastData, boolean isSuccessful);
     }
 
     protected class BroadcastTaskNewTimerTask extends TimerTask

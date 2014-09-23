@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,7 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
+// TODO move to debug?
 public class AchievementListTestingFragment extends DashboardFragment
 {
     @InjectView(android.R.id.list) protected AbsListView listView;
@@ -39,7 +39,6 @@ public class AchievementListTestingFragment extends DashboardFragment
     @Inject AbstractAchievementDialogFragment.Creator creator;
 
     @Inject UserAchievementCache userAchievementCache;
-    @Inject LocalBroadcastManager localBroadcastManager;
 
     protected DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList> achievementCategoryListCacheListener;
     private List<AchievementDefDTO> list = new ArrayList<>();

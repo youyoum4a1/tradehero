@@ -20,12 +20,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
+import com.tradehero.th.api.achievement.key.MockQuestBonusId;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.api.achievement.key.MockQuestBonusId;
 import com.tradehero.th.network.service.AchievementMockServiceWrapper;
 import com.tradehero.th.persistence.achievement.QuestBonusListCache;
-import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ public class QuestListTestingFragment extends DashboardFragment
     @Inject QuestBonusListCache questBonusListCache;
     @Inject AbstractAchievementDialogFragment.Creator creator;
 
-    @Inject UserAchievementCache userAchievementCache;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
 
     @Inject AchievementMockServiceWrapper achievementMockServiceWrapper;

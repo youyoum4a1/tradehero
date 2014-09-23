@@ -32,7 +32,6 @@ public class AchievementListFragment extends DashboardFragment
     protected AchievementListAdapter achievementListAdapter;
 
     @Inject AchievementCategoryListCache achievementCategoryListCache;
-    @Inject DashboardNavigator navigator;
     UserBaseKey shownUserId;
 
     protected DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList> achievementCategoryListCacheListener;
@@ -136,7 +135,6 @@ public class AchievementListFragment extends DashboardFragment
 
     protected class AchievementCategoryListCacheListener implements DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList>
     {
-
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull AchievementCategoryDTOList value)
         {
             achievementListAdapter.clear();

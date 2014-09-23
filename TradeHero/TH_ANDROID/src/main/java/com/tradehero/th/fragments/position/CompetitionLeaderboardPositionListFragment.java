@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 public class CompetitionLeaderboardPositionListFragment extends LeaderboardPositionListFragment
 {
-    @Inject Context context;
+    @Inject Context doNotRemoveOrItFails;
 
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
 

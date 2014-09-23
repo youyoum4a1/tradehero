@@ -22,7 +22,7 @@ public class UserAchievementDTO implements DTO
         return new UserAchievementId(id);
     }
 
-    public UserBaseKey getUserId()
+    @NotNull public UserBaseKey getUserId()
     {
         return new UserBaseKey(userId);
     }

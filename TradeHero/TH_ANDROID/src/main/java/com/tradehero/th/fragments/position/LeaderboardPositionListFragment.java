@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public class LeaderboardPositionListFragment
         extends PositionListFragment
 {
-    @Inject Context context;
+    @Inject Context doNotRemoveOrItFails;
 
     private static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
     private static final String LEADERBOARD_PERIOD_START_STRING = "LEADERBOARD_PERIOD_START_STRING";
