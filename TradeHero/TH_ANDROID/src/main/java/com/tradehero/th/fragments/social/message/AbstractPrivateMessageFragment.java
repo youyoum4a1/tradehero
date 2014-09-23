@@ -139,7 +139,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onDetach()
     {
-        setActionBarSubtitle(null);
         super.onDetach();
     }
 

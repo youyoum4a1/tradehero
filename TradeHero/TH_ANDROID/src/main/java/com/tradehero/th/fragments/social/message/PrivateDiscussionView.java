@@ -272,7 +272,11 @@ public class PrivateDiscussionView extends DiscussionView
     {
         @Override public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value)
         {
-            linkWithInitiating((PrivateDiscussionDTO) value, true);
+            //Check with instanceof to avoid ClassCastException.
+            if(value instanceof PrivateDiscussionDTO)
+            {
+                linkWithInitiating((PrivateDiscussionDTO) value, true);
+            }
         }
 
         @Override public void onErrorThrown(@NotNull DiscussionKey key, @NotNull Throwable error)
