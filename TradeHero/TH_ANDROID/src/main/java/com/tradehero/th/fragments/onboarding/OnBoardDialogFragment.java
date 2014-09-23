@@ -84,7 +84,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setStyle(BaseDialogFragment.STYLE_NO_TITLE, R.style.TH_onBoardDialog);
         //exchange
         exchangeSectorListener = new OnBoardPickExchangeSectorListener();
         exchangeSectorViewHolder = new OnBoardPickExchangeSectorViewHolder(getActivity());

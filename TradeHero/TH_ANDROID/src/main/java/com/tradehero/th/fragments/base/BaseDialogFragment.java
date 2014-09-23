@@ -18,7 +18,13 @@ public abstract class BaseDialogFragment extends DialogFragment
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
+        d.setCanceledOnTouchOutside(shouldCancelOnOutsideClicked());
         return d;
+    }
+
+    protected boolean shouldCancelOnOutsideClicked()
+    {
+        return true;
     }
 
     @Override public void onAttach(Activity activity)

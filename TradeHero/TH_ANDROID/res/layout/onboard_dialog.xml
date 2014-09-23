@@ -10,7 +10,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:layout_margin="20dp"
       android:background="@drawable/rectangle_round_corner_white_bg">
 
     <ViewSwitcher
@@ -62,14 +61,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_margin_10"
-        android:layout_marginBottom="@dimen/common_margin_10"
         android:orientation="vertical"
         android:gravity="center"
         >
 
       <Button
           android:id="@+id/next_button"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:paddingTop="@dimen/common_margin_4"
           android:paddingBottom="@dimen/common_margin_4"
@@ -78,12 +76,12 @@
           android:text="@string/next"
           android:textSize="@dimen/text_large"
           android:textColor="@color/white"
-          android:background="@drawable/blue_rounded_button_bg"
+          android:background="@drawable/blue_rounded_button_selector"
           />
 
       <Button
           android:id="@+id/done_button"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:paddingTop="@dimen/common_margin_4"
           android:paddingBottom="@dimen/common_margin_4"
@@ -92,7 +90,7 @@
           android:text="@string/done"
           android:textSize="@dimen/text_large"
           android:textColor="@color/white"
-          android:background="@drawable/blue_rounded_button_bg"
+          android:background="@drawable/blue_rounded_button_selector"
           android:visibility="gone"
           />
 
@@ -106,8 +104,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:layout_alignParentRight="true"
-      android:background="@drawable/basic_transparent_selector"
-      android:src="@drawable/ic_btn_popup_close"
+      style="@style/TH.Btn_Popup_Close"
       />
 
 </RelativeLayout>

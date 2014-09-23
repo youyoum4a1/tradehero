@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.settings;
 
-import android.app.Dialog;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -33,8 +32,6 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setStyle(BaseDialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
-        setCancelable(false);
         mShowAskForInviteDialogPreference.addInFuture(TimingIntervalPreference.MINUTE);
     }
 
