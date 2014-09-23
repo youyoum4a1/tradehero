@@ -2,15 +2,16 @@ package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
-
-import android.view.Menu;
-import android.view.MenuInflater;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -40,7 +41,6 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
-import com.tradehero.th.fragments.achievement.ForAchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
@@ -69,20 +69,14 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
-
 import com.tradehero.th.widget.MultiScrollListener;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -125,7 +119,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected THRouter thRouter;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DashboardNavigator navigator;
-    @Inject @ForAchievementListFragment Provider<Class> achievementListFragmentClassProvider;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -263,7 +256,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         AchievementListFragment.putUserId(bundle, mIsOtherProfile? shownUserBaseKey : currentUserId.toUserBaseKey());
-        navigator.pushFragment(achievementListFragmentClassProvider.get(), bundle);
+        navigator.pushFragment(AchievementListFragment.class, bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

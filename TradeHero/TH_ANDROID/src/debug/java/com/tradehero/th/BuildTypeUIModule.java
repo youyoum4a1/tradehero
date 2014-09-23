@@ -1,9 +1,7 @@
 package com.tradehero.th;
 
 import com.tradehero.th.fragments.DebugFragmentModule;
-import com.tradehero.th.fragments.achievement.AchievementListDebugFragment;
 import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
-import com.tradehero.th.fragments.achievement.ForAchievementListFragment;
 import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
 import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
@@ -23,11 +21,6 @@ import dagger.Provides;
 )
 public class BuildTypeUIModule implements BuildTypeUIModuleExpectation
 {
-    @Provides @ForAchievementListFragment @Override public Class provideAchievementListFragmentClass()
-    {
-        return AchievementListDebugFragment.class;
-    }
-
     @Provides @ForAchievementListTestingFragment @Override public Class provideAchievementListTestingFragmentClass()
     {
         return AchievementListTestingFragment.class;

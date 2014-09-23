@@ -6,7 +6,6 @@ import dagger.Module;
         includes = {
         },
         injects = {
-                AchievementListDebugFragment.class,
                 AchievementListTestingFragment.class,
                 QuestListTestingFragment.class,
         },
