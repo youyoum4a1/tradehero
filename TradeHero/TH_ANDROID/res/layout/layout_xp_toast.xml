@@ -12,6 +12,21 @@
     android:background="@drawable/xp_toast_bg"
     >
 
+  <TextView
+      android:id="@+id/xp_toast_value"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      style="@style/TH.Achievement.Earned.XP"
+      android:layout_marginRight="@dimen/xp_level_toast_horizontal_margin"
+      android:layout_marginEnd="@dimen/xp_level_toast_horizontal_margin"
+      android:gravity="end|center_vertical"
+      android:layout_above="@+id/user_level_progress_bar"
+      android:layout_alignParentTop="true"
+      tools:text="+ 400 XP"
+      />
+
   <TextSwitcher
       android:id="@+id/xp_toast_text"
       android:layout_width="wrap_content"
@@ -20,26 +35,11 @@
       android:layout_alignParentLeft="true"
       android:layout_marginLeft="@dimen/xp_level_toast_horizontal_margin"
       android:layout_marginStart="@dimen/xp_level_toast_horizontal_margin"
+      android:layout_toLeftOf="@id/xp_toast_text"
+      android:layout_toStartOf="@id/xp_toast_text"
       android:inAnimation="@anim/push_up_in"
       android:outAnimation="@anim/push_up_out"
       android:minHeight="@dimen/xp_level_toast_min_text_height"
-      />
-
-  <TextView
-      android:id="@+id/xp_toast_value"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
-      android:layout_toRightOf="@id/xp_toast_text"
-      android:layout_toEndOf="@id/xp_toast_text"
-      style="@style/TH.Achievement.Earned.XP"
-      android:layout_marginRight="@dimen/xp_level_toast_horizontal_margin"
-      android:layout_marginEnd="@dimen/xp_level_toast_horizontal_margin"
-      android:gravity="end|center_vertical"
-      android:layout_above="@+id/user_level_progress_bar"
-      android:layout_alignParentTop="true"
-      tools:text="+ 400 XP"
       />
 
   <include
