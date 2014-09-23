@@ -50,4 +50,12 @@
   <string name="share_to_wechat_invite_friends">我在玩 tradehero, 快来加入吧, 使用我的邀请码 %1$s 还能获得额外 10,000TH 货币</string>
 
   <string name="share_success">分享成功</string>
+
+  <!--<string name="market_on_board_error_fetch_exchange_sector">There was an error fetching the list of exchanges and sectors</string>-->
+  <!--<string name="market_on_board_exchange_interested">Which exchange are you most interested in?</string>-->
+  <!--<string name="market_on_board_sector_interested">Which sector are you most interested in?</string>-->
+  <!--<string name="market_on_board_country_from">What country are you from?</string>-->
+  <string name="security_on_board_select_invitation_title">建议您 ...</string>
+  <string name="security_on_board_select_invitation_come_on">关注这些股票 !</string>
+
 </resources>
