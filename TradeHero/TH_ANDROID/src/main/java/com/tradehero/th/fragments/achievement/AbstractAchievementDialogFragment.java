@@ -416,7 +416,14 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @OnClick(R.id.btn_achievement_share)
     public void shareButtonClicked()
     {
-        showShareSuccess();
+        if(!getEnabledSharePreferences().isEmpty())
+        {
+            showShareSuccess();
+        }
+        else
+        {
+            alertDialogUtil.popWithNegativeButton(getActivity(), R.string.link_select_one_social, R.string.link_select_one_social_description, R.string.ok);
+        }
     }
 
     @Override public void onPause()
