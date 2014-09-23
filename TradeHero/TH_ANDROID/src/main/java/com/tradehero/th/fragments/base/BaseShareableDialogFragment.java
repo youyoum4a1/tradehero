@@ -29,7 +29,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 {
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
     @Inject SocialLinkHelperFactory socialLinkHelperFactory;
-    @Inject AlertDialogUtil alertDialogUtil;
+    @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject UserProfileCache userProfileCache;
     @Inject protected CurrentUserId currentUserId;
 
@@ -187,7 +187,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         socialSharePreferenceHelperNew.save();
     }
 
-    protected List<SocialNetworkEnum> getEnabledSharePreferences()
+    @NotNull protected List<SocialNetworkEnum> getEnabledSharePreferences()
     {
         return socialSharePreferenceHelperNew.getAllEnabledSharePreferences();
     }

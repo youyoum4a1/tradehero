@@ -44,16 +44,21 @@ import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.widget.UserLevelProgressBar;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -100,6 +105,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Inject AchievementShareFormDTOFactory achievementShareFormDTOFactory;
 
     @Inject BroadcastUtils broadcastUtils;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
+    @Inject Lazy<WeChatDTOFactory> weChatDTOFactoryLazy;
 
     protected UserAchievementId userAchievementId;
     protected UserAchievementDTO userAchievementDTO;
@@ -264,6 +271,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private void showShareSuccess()
     {
         //No need to hold reference to middle callback since we did not pass a listener
+        List<SocialNetworkEnum> shareTos = getEnabledSharePreferences();
+        if (shareTos.contains(SocialNetworkEnum.WECHAT))
+        {
+            WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), userAchievementDTO);
+            socialSharerLazy.get().share(weChatDTO);
+        }
         achievementServiceWrapper.shareAchievement(
                 achievementShareFormDTOFactory.createFrom(
                         getEnabledSharePreferences(),
@@ -420,7 +433,15 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @OnClick(R.id.btn_achievement_share)
     public void shareButtonClicked()
     {
-        showShareSuccess();
+        if (!getEnabledSharePreferences().isEmpty())
+        {
+            showShareSuccess();
+        }
+        else
+        {
+            alertDialogUtil.popWithNegativeButton(getActivity(), R.string.link_select_one_social, R.string.link_select_one_social_description,
+                    R.string.ok);
+        }
     }
 
     @Override public void onPause()

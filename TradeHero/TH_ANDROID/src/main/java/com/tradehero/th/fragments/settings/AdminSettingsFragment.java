@@ -23,6 +23,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
+import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
 import com.tradehero.th.fragments.level.XpTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -152,15 +153,15 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             }
         });
 
-        //Preference showTestDaily = findPreference(KEY_DAILY_TEST_SCREEN);
-        //showTestDaily.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        //{
-        //    @Override public boolean onPreferenceClick(Preference preference)
-        //    {
-        //        navigator.pushFragment(QuestListTestingFragment.class);
-        //        return true;
-        //    }
-        //});
+        Preference showTestDaily = findPreference(KEY_DAILY_TEST_SCREEN);
+        showTestDaily.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.pushFragment(QuestListTestingFragment.class);
+                return true;
+            }
+        });
 
         Preference showTestAchievement = findPreference(KEY_ACHIEVEMENT_TEST_SCREEN);
         showTestAchievement.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()

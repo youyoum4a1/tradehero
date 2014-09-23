@@ -12,6 +12,8 @@
   <scale
       android:fromYScale="1"
       android:fromXScale="1"
+      android:pivotX="50%"
+      android:pivotY="50%"
       android:toXScale="0.6"
       android:toYScale="0.6"
       android:duration="@integer/achievement_dismiss_duration"

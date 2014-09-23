@@ -1,10 +1,14 @@
 package com.tradehero.th.api.share.wechat;
 
+import android.content.Context;
+import com.tradehero.th.R;
+import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +22,26 @@ public class WeChatDTOFactory
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         populateWith(weChatDTO, abstractDiscussionCompactDTO);
+        return weChatDTO;
+    }
+
+    @NotNull public WeChatDTO createFrom(@NotNull Context context, @NotNull UserAchievementDTO userAchievementDTO)
+    {
+        WeChatDTO weChatDTO = new WeChatDTO();
+        weChatDTO.id = userAchievementDTO.id;
+        String dollars = THSignedNumber.builder(userAchievementDTO.achievementDef.virtualDollars).relevantDigitCount(1).withOutSign().toString();
+        String xp = THSignedNumber.builder(userAchievementDTO.xpEarned).relevantDigitCount(1).withOutSign().toString();
+        if(userAchievementDTO.achievementDef.isQuest)
+        {
+            weChatDTO.type = WeChatMessageType.QuestBonus;
+            weChatDTO.title = context.getString(R.string.share_to_wechat_quest_bonus_text, userAchievementDTO.achievementDef.thName, dollars, xp);
+        }
+        else
+        {
+            weChatDTO.type = WeChatMessageType.Achievement;
+            weChatDTO.title = context.getString(R.string.share_to_wechat_achievement_text, userAchievementDTO.achievementDef.thName, dollars, xp);
+        }
+        weChatDTO.imageURL = userAchievementDTO.achievementDef.visual;
         return weChatDTO;
     }
 

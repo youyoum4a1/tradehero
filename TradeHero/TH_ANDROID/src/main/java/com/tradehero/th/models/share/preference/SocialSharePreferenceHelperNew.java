@@ -68,7 +68,7 @@ public class SocialSharePreferenceHelperNew
         }
     }
 
-    public List<SocialNetworkEnum> getAllEnabledSharePreferences()
+    @NotNull public List<SocialNetworkEnum> getAllEnabledSharePreferences()
     {
         List<SocialNetworkEnum> enabled = new ArrayList<>();
         for (Map.Entry<SocialNetworkEnum, SocialSharePreferenceDTO> entry : sharePreferencesMap.entrySet())

@@ -17,6 +17,8 @@
   <string name="link">Link %1$s</string>
   <string name="link_description">You need to link your %1$s account before sharing…</string>
   <string name="link_now">Link now!</string>
+  <string name="link_select_one_social">Select a Social Network</string>
+  <string name="link_select_one_social_description">Please select at least one social network to share to</string>
 
   <string name="later">Later</string>
   <string name="please_update">This version is outdated, please update to continue using TradeHero</string>

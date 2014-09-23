@@ -47,7 +47,11 @@
   <string name="share_to_wechat_timeline_discussion">I\'ve shared a discussion on tradehero, come and join us.</string>
   <string name="share_to_wechat_timeline_timeline">I\'ve shared my timeline on tradehero, come and join us.</string>
   <string name="share_to_wechat_timeline_trade">I\'ve done a stock trade on tradehero, come and join us.</string>
-  <string name="share_to_wechat_invite_friends">I\'ve enjoy tradehero, come and join us, use my invitation code %1$s to get extra 10,000 TH dollars</string>
+  <string name="share_to_wechat_invite_friends">I\'ve enjoyed tradehero, come and join us, use my invitation code %1$s to get extra 10,000 TH dollars</string>
+  <string name="share_to_wechat_achievement">I\'ve just unlocked an achievement on tradehero, come and join us.</string>
+  <string name="share_to_wechat_achievement_text">Unlocked \"%1$s\" and gain a bonus of %2$s TH dollars and %3$s XP.</string>
+  <string name="share_to_wechat_quest_bonus">I\'ve just completed a quest on tradehero, come and join us.</string>
+  <string name="share_to_wechat_quest_bonus_text">Completed \"%1$s\" and gain a bonus of %2$s TH dollars and %3$s XP.</string>
   <string name="share_success">Your share is success</string>
   <!--do not thanslate-->
   <string name="security_action_bar_title" translatable="false">%1$s (%2$s)</string>
