@@ -1,7 +1,6 @@
 package com.tradehero.th.widget;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.persistence.level.LevelDefListCache;
-import java.lang.reflect.Field;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
@@ -21,7 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
-import static com.sun.javaws.JnlpxArgs.verify;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)

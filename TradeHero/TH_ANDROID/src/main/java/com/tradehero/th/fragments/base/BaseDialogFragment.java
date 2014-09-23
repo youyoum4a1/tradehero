@@ -2,15 +2,24 @@ package com.tradehero.th.fragments.base;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import butterknife.ButterKnife;
+import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
 
 public abstract class BaseDialogFragment extends DialogFragment
 {
     private OnDismissedListener dismissedListener;
+
+    @Override public Dialog onCreateDialog(Bundle savedInstanceState)
+    {
+        Dialog d = super.onCreateDialog(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
+        return d;
+    }
 
     @Override public void onAttach(Activity activity)
     {

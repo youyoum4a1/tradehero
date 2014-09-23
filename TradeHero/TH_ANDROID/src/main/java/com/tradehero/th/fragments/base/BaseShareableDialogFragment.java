@@ -33,15 +33,15 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject UserProfileCache userProfileCache;
     @Inject protected CurrentUserId currentUserId;
 
-    @Optional @InjectView(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
-    @InjectView(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
-    @Optional @InjectView(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
-    @InjectView(R.id.btn_share_wb) protected ToggleButton mBtnShareWb;
+    @Optional @InjectView(R.id.btn_share_fb) public ToggleButton mBtnShareFb;
+    @InjectView(R.id.btn_share_li) public ToggleButton mBtnShareLn;
+    @Optional @InjectView(R.id.btn_share_tw) public ToggleButton mBtnShareTw;
+    @InjectView(R.id.btn_share_wb) public ToggleButton mBtnShareWb;
 
-    @InjectView(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
+    @InjectView(R.id.btn_share_wechat) public ToggleButton mBtnShareWeChat;
 
     SocialLinkHelper socialLinkHelper;
-    private AlertDialog mSocialLinkingDialog;
+    public AlertDialog mSocialLinkingDialog;
 
     protected UserProfileDTO userProfileDTO;
 

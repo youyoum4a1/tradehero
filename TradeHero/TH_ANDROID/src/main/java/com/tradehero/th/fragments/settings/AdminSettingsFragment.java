@@ -23,6 +23,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
+import com.tradehero.th.fragments.level.XpTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
@@ -167,6 +168,16 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 navigator.pushFragment(AchievementListTestingFragment.class);
+                return true;
+            }
+        });
+
+        Preference showXPTest = findPreference(KEY_XP_TEST_SCREEN);
+        showXPTest.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.pushFragment(XpTestingFragment.class);
                 return true;
             }
         });

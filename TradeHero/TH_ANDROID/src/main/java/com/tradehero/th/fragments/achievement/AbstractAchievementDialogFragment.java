@@ -46,11 +46,13 @@ import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.widget.UserLevelProgressBar;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +98,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     @Inject AchievementServiceWrapper achievementServiceWrapper;
     @Inject AchievementShareFormDTOFactory achievementShareFormDTOFactory;
+
+    @Inject BroadcastUtils broadcastUtils;
 
     protected UserAchievementId userAchievementId;
     protected UserAchievementDTO userAchievementDTO;
@@ -145,7 +149,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         startAnimation();
 
         userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
-        userLevelProgressBar.setUserLevelProgressBarListener(new LevelUpListener());
+        userLevelProgressBar.setUserLevelProgressBarLevelUpListener(new LevelUpListener());
         levelDefListCache.register(mLevelDefListId, levelDefListCacheListener);
         levelDefListCache.getOrFetchAsync(mLevelDefListId);
     }
@@ -353,7 +357,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void displayXpEarned(int xp)
     {
-        xpEarned.setText(getString(R.string.achievement_xp_earned_format, xp));
+        xpEarned.setText(getString(R.string.achievement_xp_earned_format, THSignedNumber.builder(xp).relevantDigitCount(1).withOutSign().build().toString()));
     }
 
     private void setShareButtonColor()
@@ -451,7 +455,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         picasso.cancelRequest(badge);
         mBadgeCallback = null;
         levelDefListCache.unregister(levelDefListCacheListener);
-        userLevelProgressBar.setUserLevelProgressBarListener(null);
+        userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
         super.onDestroyView();
     }
 
@@ -464,6 +468,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         animator.cancel();
         animator.removeAllUpdateListeners();
         animator.removeAllListeners();
+    }
+
+    @Override public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+        broadcastUtils.nextPlease();
     }
 
     @OnClick(R.id.achievement_dummy_container)
@@ -519,7 +529,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
     }
 
-    protected class LevelUpListener implements UserLevelProgressBar.UserLevelProgressBarListener
+    protected class LevelUpListener implements UserLevelProgressBar.UserLevelProgressBarLevelUpListener
     {
 
         @Override public void onLevelUp(LevelDefDTO fromLevel, LevelDefDTO toLevel)

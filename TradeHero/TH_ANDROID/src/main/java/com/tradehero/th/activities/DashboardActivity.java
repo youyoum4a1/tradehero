@@ -9,8 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.TabHost;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.crashlytics.android.Crashlytics;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
@@ -30,8 +32,9 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
-import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.UIModule;
+import com.tradehero.th.api.achievement.key.UserAchievementId;
+import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -74,7 +77,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.FirstShowInviteCodeDialog;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
@@ -87,10 +89,14 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.utils.dagger.AppModule;
+import com.tradehero.th.utils.level.ForXP;
+import com.tradehero.th.utils.level.XpModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.XpToast;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
@@ -137,8 +143,11 @@ public class DashboardActivity extends FragmentActivity
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject Analytics analytics;
     @Inject LocalBroadcastManager localBroadcastManager;
-    @Inject @ForAchievement IntentFilter intentFilter;
+    @Inject @ForAchievement IntentFilter achievementIntentFilter;
+    @Inject @ForXP IntentFilter xpIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
+
+    @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
 
@@ -147,6 +156,7 @@ public class DashboardActivity extends FragmentActivity
     private DashboardTabHost dashboardTabHost;
     private int tabHostHeight;
     private BroadcastReceiver mAchievementBroadcastReceiver;
+    private BroadcastReceiver mXPBroadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -209,6 +219,7 @@ public class DashboardActivity extends FragmentActivity
         pushNotificationManager.get().enablePush();
 
         initAchievementBroadcastReceiver();
+        ButterKnife.inject(this);
     }
 
     private void setupNavigator()
@@ -249,15 +260,29 @@ public class DashboardActivity extends FragmentActivity
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                if(intent != null && intent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID) != null)
+                if(intent != null && intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID) != null)
                 {
-                    Bundle bundle = intent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID);
+                    Bundle bundle = intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID);
                     UserAchievementId userAchievementId = new UserAchievementId(bundle);
                     AbstractAchievementDialogFragment abstractAchievementDialogFragment = achievementDialogCreator.newInstance(userAchievementId);
                     if(abstractAchievementDialogFragment != null)
                     {
                         abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
                     }
+                }
+
+            }
+        };
+
+        mXPBroadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                if(intent != null && intent.getBundleExtra(XpModule.KEY_XP_BROADCAST) != null)
+                {
+                    Bundle b = intent.getBundleExtra(XpModule.KEY_XP_BROADCAST);
+                    UserXPAchievementDTO userXPAchievementDTO = new UserXPAchievementDTO(b);
+                    xpToast.showWhenReady(userXPAchievementDTO);
                 }
             }
         };
@@ -370,7 +395,8 @@ public class DashboardActivity extends FragmentActivity
         super.onResume();
         launchActions();
         analytics.openSession();
-        localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, intentFilter);
+        localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, achievementIntentFilter);
+        localBroadcastManager.registerReceiver(mXPBroadcastReceiver, xpIntentFilter);
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -403,6 +429,7 @@ public class DashboardActivity extends FragmentActivity
     {
         analytics.closeSession();
         localBroadcastManager.unregisterReceiver(mAchievementBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mXPBroadcastReceiver);
         super.onPause();
     }
 

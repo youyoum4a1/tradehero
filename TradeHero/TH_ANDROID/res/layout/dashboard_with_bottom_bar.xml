@@ -34,4 +34,16 @@
         android:layout_weight="0"/>
 
   </com.tradehero.th.fragments.DashboardTabHost>
+
+  <include
+    android:id="@+id/xp_toast_box"
+    layout="@layout/layout_xp_toast"
+    android:layout_alignParentBottom="true"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_marginBottom="@dimen/xp_level_toast_margin_bottom"
+    android:layout_marginLeft="@dimen/xp_level_toast_horizontal_margin"
+    android:layout_marginRight="@dimen/xp_level_toast_horizontal_margin"
+    />
+
 </RelativeLayout>

@@ -27,6 +27,8 @@ import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.utils.achievement.AchievementModule;
+import com.tradehero.th.utils.level.XpModule;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import dagger.Module;
 import dagger.Provides;
@@ -37,6 +39,7 @@ import javax.inject.Singleton;
         includes = {
                 FlavorModule.class,
                 AchievementModule.class,
+                XpModule.class,
                 CacheModule.class,
                 GraphicModule.class,
                 NetworkModule.class,

@@ -16,6 +16,7 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
+import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.achievement.ForAchievement;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +32,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricMavenTestRunner.class)
-public class ObjectMapperWrapperTest extends BaseApiTest
+public class ObjectMapperWrapperTest extends BaseApiTestClass
 {
     @Inject @ForApp ObjectMapper objectMapper;
     @Inject UserAchievementCache userAchievementCache;
@@ -106,7 +107,7 @@ public class ObjectMapperWrapperTest extends BaseApiTest
 
         assertThat(aReceivedIntent).isNotNull();
 
-        Bundle bundle = aReceivedIntent.getBundleExtra(UserAchievementCache.KEY_USER_ACHIEVEMENT_ID);
+        Bundle bundle = aReceivedIntent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID);
         assertThat(bundle).isNotNull();
 
         UserAchievementId userAchievementId = new UserAchievementId(bundle);
