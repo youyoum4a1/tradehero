@@ -7,23 +7,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.ArrayList;
@@ -35,8 +40,21 @@ public class NewsHeadlineFragment extends Fragment
 {
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
     @InjectView(android.R.id.list) ListView mNewsListView;
-    @InjectView(android.R.id.progress) ProgressBar mProgressBar;
+    @OnItemClick(android.R.id.list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        NewsItemDTOKey newsItemDTOKey = (NewsItemDTOKey) parent.getItemAtPosition(position);
+        NewsItemDTO newsItemDTO = (NewsItemDTO) discussionCache.get(newsItemDTOKey);
 
+        if (newsItemDTO != null && newsItemDTO.url != null)
+        {
+            Bundle bundle = new Bundle();
+            WebViewFragment.putUrl(bundle, newsItemDTO.url);
+            navigator.pushFragment(WebViewFragment.class, bundle);
+        }
+    }
+
+    @Inject DashboardNavigator navigator;
+    @Inject DiscussionCache discussionCache;
     @Inject NewsItemCompactListCacheNew newsItemCompactListCache;
     @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
