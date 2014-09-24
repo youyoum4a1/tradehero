@@ -92,6 +92,18 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
 
     public int getBaseXp()
     {
-        return xpTotal - xpEarned;
+        if(multiplier != null && !multiplier.isEmpty())
+        {
+            int baseXp = xpTotal;
+            for (UserXPMultiplierDTO multiplierDTO : multiplier)
+            {
+                baseXp -= xpEarned * multiplierDTO.multiplier;
+            }
+            return baseXp;
+        }
+        else
+        {
+            return xpTotal - xpEarned;
+        }
     }
 }

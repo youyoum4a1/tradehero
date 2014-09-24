@@ -78,7 +78,7 @@ public class XpTestingFragment extends DashboardFragment
             m.multiplier = Integer.parseInt(value.getText().toString());
             m.xpTotal = baseXP * m.multiplier;
             list.add(m);
-            return m.xpTotal;
+            return baseXP;
         }
         return baseXP;
     }

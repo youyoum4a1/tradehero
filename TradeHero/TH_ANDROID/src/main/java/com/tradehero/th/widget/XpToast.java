@@ -94,9 +94,10 @@ public class XpToast extends RelativeLayout
         if (userXPAchievementDTO.multiplier != null && !userXPAchievementDTO.multiplier.isEmpty())
         {
             int from = l0.to();
-            for (UserXPMultiplierDTO userXPMultiplierDTO : userXPAchievementDTO.multiplier)
+            for (int i = 0 ; i < userXPAchievementDTO.multiplier.size(); i++)
             {
-                int to = from + userXPMultiplierDTO.xpTotal;
+                UserXPMultiplierDTO userXPMultiplierDTO = userXPAchievementDTO.multiplier.get(i);
+                int to = (i == 0? userXPMultiplierDTO.xpTotal : from + userXPMultiplierDTO.xpTotal);
                 LevelAnimationDefinition ln = new LevelAnimationDefinition(from, to - from,
                         getContext().getString(R.string.user_level_xp_multiplier_format, userXPMultiplierDTO.text, userXPMultiplierDTO.multiplier));
                 levelAnimationDefinitions.add(ln);
