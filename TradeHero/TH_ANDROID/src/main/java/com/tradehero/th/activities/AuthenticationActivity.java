@@ -31,13 +31,18 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
+import dagger.Module;
+import dagger.Provides;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
@@ -46,7 +51,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public class AuthenticationActivity extends BaseActivity
-        implements View.OnClickListener, Injector
+        implements Injector
 {
     private Map<Integer, Class<?>> mapViewFragment = new HashMap<>();
     private Fragment currentFragment;
@@ -86,6 +91,13 @@ public class AuthenticationActivity extends BaseActivity
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));
     }
 
+    @Override protected List<Object> getModules()
+    {
+        List<Object> superModules = new ArrayList<>(super.getModules());
+        superModules.add(new AuthenticationActivityModule());
+        return superModules;
+    }
+
     @Override protected void onPause()
     {
         if (progressDialog != null)
@@ -114,56 +126,6 @@ public class AuthenticationActivity extends BaseActivity
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
-    }
-
-    @Override public void onClick(View view)
-    {
-        Class<?> fragmentClass = mapViewFragment.get(view.getId());
-        if (fragmentClass != null)
-        {
-            if (view.getId() == R.id.authentication_by_sign_in_back_button
-                    || view.getId() == R.id.authentication_by_sign_up_back_button)
-            {
-                DeviceUtil.dismissKeyboard(view);
-                setCurrentFragmentByPopBack(fragmentClass);
-            }
-            else
-            {
-                setCurrentFragmentByClass(fragmentClass);
-            }
-        }
-        //TODO maybe shouldn't clear user information here
-        THUser.clearCurrentUser();
-        switch (view.getId())
-        {
-            case R.id.authentication_sign_up_button:
-            case R.id.btn_login:
-                authenticateWithEmail();
-                break;
-
-            case R.id.btn_facebook_signin:
-                authenticateWithFacebook();
-                break;
-
-            case R.id.btn_twitter_signin:
-                authenticateWithTwitter();
-                break;
-
-            case R.id.authentication_twitter_email_button:
-                complementEmailForTwitterAuthentication();
-                break;
-
-            case R.id.btn_linkedin_signin:
-                authenticateWithLinkedIn();
-                break;
-            case R.id.btn_weibo_signin:
-                authenticateWithWeibo();
-                break;
-
-            case R.id.btn_qq_signin:
-                authenticateWithQQ();
-                break;
-        }
     }
 
     private void setCurrentFragmentByClass(Class<?> fragmentClass)
@@ -410,6 +372,73 @@ public class AuthenticationActivity extends BaseActivity
         public boolean isSigningUp()
         {
             return false;
+        }
+    }
+
+    public class OnAuthenticationButtonClicked implements View.OnClickListener
+    {
+        @Override public void onClick(View view)
+        {
+            Class<?> fragmentClass = mapViewFragment.get(view.getId());
+            if (fragmentClass != null)
+            {
+                if (view.getId() == R.id.authentication_by_sign_in_back_button
+                        || view.getId() == R.id.authentication_by_sign_up_back_button)
+                {
+                    DeviceUtil.dismissKeyboard(view);
+                    setCurrentFragmentByPopBack(fragmentClass);
+                }
+                else
+                {
+                    setCurrentFragmentByClass(fragmentClass);
+                }
+            }
+            //TODO maybe shouldn't clear user information here
+            THUser.clearCurrentUser();
+            switch (view.getId())
+            {
+                case R.id.authentication_sign_up_button:
+                case R.id.btn_login:
+                    authenticateWithEmail();
+                    break;
+
+                case R.id.btn_facebook_signin:
+                    authenticateWithFacebook();
+                    break;
+
+                case R.id.btn_twitter_signin:
+                    authenticateWithTwitter();
+                    break;
+
+                case R.id.authentication_twitter_email_button:
+                    complementEmailForTwitterAuthentication();
+                    break;
+
+                case R.id.btn_linkedin_signin:
+                    authenticateWithLinkedIn();
+                    break;
+                case R.id.btn_weibo_signin:
+                    authenticateWithWeibo();
+                    break;
+
+                case R.id.btn_qq_signin:
+                    authenticateWithQQ();
+                    break;
+            }
+        }
+    }
+
+    @Module(
+            addsTo = AppModule.class,
+            library = true,
+            complete = false,
+            overrides = true
+    )
+    public class AuthenticationActivityModule
+    {
+        @Provides View.OnClickListener provideOnAuthenticationButtonClickListener()
+        {
+            return new OnAuthenticationButtonClicked();
         }
     }
 }

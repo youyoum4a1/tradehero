@@ -22,6 +22,7 @@ import javax.inject.Inject;
 public class SignInOrUpFragment extends Fragment
 {
     @Inject Analytics analytics;
+    @Inject View.OnClickListener onAuthenticationButtonClickListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -54,14 +55,14 @@ public class SignInOrUpFragment extends Fragment
     })
     public void setOnClickListener(View view)
     {
-        // FIXME
-        // AuthenticationActivity.onClick
+        onAuthenticationButtonClickListener.onClick(view);
     }
 
     @OnClick({
             R.id.txt_term_of_service_signin,
             R.id.txt_term_of_service_termsofuse
-    }) void handleTermOfServiceClick(View view)
+    })
+    void handleTermOfServiceClick(View view)
     {
         String url = null;
         switch (view.getId())

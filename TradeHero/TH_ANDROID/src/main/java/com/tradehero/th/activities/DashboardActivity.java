@@ -70,11 +70,7 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
-<<<<<<< HEAD
 import com.tradehero.th.inject.ExInjector;
-import com.tradehero.th.inject.Injector;
-=======
->>>>>>> Move injection boilerplate to BaseActivity. Check null newInjector
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
@@ -165,12 +161,6 @@ public class DashboardActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
 
-<<<<<<< HEAD
-        newInjector = loadInjector(THApp.get(this));
-        newInjector.inject(this);
-
-=======
->>>>>>> Move injection boilerplate to BaseActivity. Check null newInjector
         if (Constants.RELEASE)
         {
             Crashlytics.setString(Constants.TH_CLIENT_TYPE,

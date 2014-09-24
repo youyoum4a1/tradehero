@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -51,16 +52,17 @@ abstract public class EmailSignInOrUpFragment extends Fragment
 
         forceValidateFields();
 
-        if (!NetworkUtils.isConnected(getActivity()))
+        if (!OnlineStateReceiver.isOnline(getActivity()))
         {
             THToast.show(R.string.network_error);
         }
-        else if (!areFieldsValid ())
+        else if (!areFieldsValid())
         {
             THToast.show(R.string.validation_please_correct);
         }
         else
         {
+            //register();
         }
     }
 
