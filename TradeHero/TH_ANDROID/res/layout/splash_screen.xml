@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/authentication_bg"
+    android:background="@color/color_blue"
     android:paddingTop="20dip"
     android:paddingBottom="20dip"
     android:paddingLeft="20dip"
@@ -23,7 +23,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="20dp"
-        android:src="@drawable/splash_logo"
+        android:src="@drawable/splash_logo2"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@null"
         />

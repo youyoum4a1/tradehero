@@ -96,6 +96,7 @@
   <color name="bg_fragment">#FFFFFF</color>
   <color name="orange_color">#FFAE00</color>
   <color name="color_gray">#bfbfbf</color>
+  <color name="color_blue">#1789d5</color>
   <!-- china build end -->
 
 </resources>

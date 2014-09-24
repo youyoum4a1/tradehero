@@ -32,7 +32,7 @@
   <style name="AppBaseTheme.NoActionBar2" parent="TradeHero">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
-    <item name="android:windowBackground">@drawable/authentication_bg</item>
+    <item name="android:windowBackground">@color/color_blue</item>
   </style>
 
   <style name="TradeHero.Menu.ItemTextIcon" parent="TextAppearance.Sherlock.Light.SearchResult">
