@@ -89,10 +89,12 @@ public class MeTimelineFragment extends TimelineFragment
             if (unreadCount == 0)
             {
                 updateCenterCountTextView.setText("");
+                updateCenterCountTextView.setVisibility(View.GONE);
             }
             else
             {
                 updateCenterCountTextView.setText(THSignedNumber.builder(unreadCount).build().toString());
+                updateCenterCountTextView.setVisibility(View.VISIBLE);
             }
         }
     }

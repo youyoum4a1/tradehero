@@ -23,9 +23,10 @@
       android:layout_marginTop="5dp"
       android:layout_marginRight="5dp"
       android:gravity="center"
-      android:textSize="13sp"
+      android:textSize="@dimen/text_xsmall"
       android:textColor="@color/white"
       android:background="@drawable/red_circle"
+      android:visibility="gone"
       tools:text="2"
       />
 
