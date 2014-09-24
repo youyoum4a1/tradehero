@@ -6,35 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-  <Button
-      android:id="@+id/btn_facebook_signin"
-      style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_fb_normal"
-      android:background="@drawable/btn_background_social_facebook"
-      android:text="@string/facebook_login_in"
-      />
+  <include layout="@layout/authentication_social_auth_row"/>
 
-  <Button
-      android:id="@+id/btn_twitter_signin"
-      style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_twitter_normal"
-      android:background="@drawable/btn_background_social_twitter"
-      android:text="@string/twitter_login_in"
-      />
-
-  <Button
-      android:id="@+id/btn_weibo_signin"
-      style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_weibo_normal"
-      android:background="@drawable/btn_background_social_weibo"
-      android:text="@string/weibo_login_in"/>
-
-  <Button
-      android:id="@+id/btn_qq_signin"
-      style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_qq_normal"
-      android:background="@drawable/btn_background_social_qq"
-      android:text="@string/qq_login_in"/>
+  <include layout="@layout/authentication_social_auth_china"/>
 
   <Button
       android:id="@+id/btn_linkedin_signin"

@@ -2,7 +2,6 @@ package com.tradehero.th.utils;
 
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.api.misc.DeviceType;
-import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 
 public class Constants
@@ -60,9 +59,7 @@ public class Constants
     public static final String GCM_STAGING_SENDER = "927417497470";
 
     // To change TAPSTREAM_VERSION, look at gradle build flavor for china
-    public static final TapStreamType TAP_STREAM_TYPE =
-            TapStreamType.fromType(BuildConfig.TAPSTREAM_VERSION);
-    public static final boolean IS_CHINA = Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA);
+    public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(BuildConfig.TAPSTREAM_VERSION);
     public static final DeviceType DEVICE_TYPE = Constants.TAP_STREAM_TYPE.marketSegment.deviceType;
 
     public static class Auth

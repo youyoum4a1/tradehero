@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -42,7 +43,7 @@ public class SignInOrUpFragment extends Fragment
         return view;
     }
 
-    @OnClick({
+    @Optional @OnClick({
             R.id.btn_facebook_signin,
             R.id.btn_twitter_signin,
             R.id.btn_linkedin_signin,
@@ -60,8 +61,7 @@ public class SignInOrUpFragment extends Fragment
     @OnClick({
             R.id.txt_term_of_service_signin,
             R.id.txt_term_of_service_termsofuse
-    })
-    void handleTermOfServiceClick(View view)
+    }) void handleTermOfServiceClick(View view)
     {
         String url = null;
         switch (view.getId())
@@ -88,31 +88,6 @@ public class SignInOrUpFragment extends Fragment
         catch (android.content.ActivityNotFoundException e)
         {
             THToast.show("Unable to open url: " + uri);
-        }
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        checkLocale();
-    }
-
-    private void checkLocale()
-    {
-        View root = getView();
-        if (Constants.IS_CHINA)
-        {
-            root.findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
-            root.findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
-            root.findViewById(R.id.btn_linkedin_signin).setVisibility(View.VISIBLE);
-            root.findViewById(R.id.btn_weibo_signin).setVisibility(View.VISIBLE);
-            root.findViewById(R.id.btn_qq_signin).setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            root.findViewById(R.id.btn_weibo_signin).setVisibility(View.GONE);
-            root.findViewById(R.id.btn_qq_signin).setVisibility(View.GONE);
         }
     }
 }
