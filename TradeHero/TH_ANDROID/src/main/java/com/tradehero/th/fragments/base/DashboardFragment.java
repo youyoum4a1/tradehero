@@ -356,9 +356,9 @@ abstract public class DashboardFragment extends BaseFragment
         ActivityHelper.launchDashboard(this.getActivity(), args);
     }
 
-    public void pushFragment(@NotNull Class fragmentClass, Bundle args)
+    public Fragment pushFragment(@NotNull Class fragmentClass, Bundle args)
     {
-        getDashboardNavigator().pushFragment(fragmentClass, args);
+        return getDashboardNavigator().pushFragment(fragmentClass, args);
     }
 
     public void goToFragment(@NotNull Class fragmentClass)

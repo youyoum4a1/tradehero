@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th2.R;
-import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
 import com.viewpagerindicator.TabPageIndicator;
 import timber.log.Timber;
 
@@ -69,7 +69,7 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
         Timber.d("onResume MainTabFragmentStockGod!");
     }
 
-    private static final String[] CONTENT = new String[] {"月盈利榜", "人气榜", "土豪榜", "更多榜单"};
+    private static final String[] CONTENT = new String[] {"推荐榜", "人气榜", "土豪榜", "更多榜单"};
 
     class CustomAdapter extends FragmentPagerAdapter
     {
@@ -81,24 +81,23 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
         @Override
         public Fragment getItem(int position)
         {
-
             StockGodListBaseFragment fragment;
             Bundle args = new Bundle();
             switch (position)
             {
                 case 0:
                     fragment = new StockGodListBaseFragment();
-                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY,LeaderboardDefKeyKnowledge.DAYS_30);
+                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.DAYS_ROI);
                     fragment.setArguments(args);
                     return fragment;
                 case 1:
                     fragment = new StockGodListBaseFragment();
-                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY,LeaderboardDefKeyKnowledge.POPULAR);
+                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.POPULAR);
                     fragment.setArguments(args);
                     return fragment;
                 case 2:
                     fragment = new StockGodListBaseFragment();
-                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY,LeaderboardDefKeyKnowledge.WEALTH);
+                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.WEALTH);
                     fragment.setArguments(args);
                     return fragment;
                 case 3:

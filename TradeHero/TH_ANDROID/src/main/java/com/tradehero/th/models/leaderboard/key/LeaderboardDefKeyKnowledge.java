@@ -1,7 +1,7 @@
 package com.tradehero.th.models.leaderboard.key;
 
-import com.tradehero.th2.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th2.R;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +39,8 @@ public class LeaderboardDefKeyKnowledge
     public static final int MOST_SKILLED_ID = 49;
     public static final int MONTHS_6 = 285;
 
+
+    public static final int DAYS_ROI = 5555;//ROI
     public static final int POPULAR = 6666;//人气榜
     public static final int WEALTH = 8888;//土豪榜
     public static final int COMPETITION = 9999;//比赛榜

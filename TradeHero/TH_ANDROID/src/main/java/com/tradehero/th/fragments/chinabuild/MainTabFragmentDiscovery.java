@@ -8,20 +8,26 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.th2.R;
+import butterknife.OnClick;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
+import com.tradehero.th2.R;
 import com.viewpagerindicator.TabPageIndicator;
+import timber.log.Timber;
 
 public class MainTabFragmentDiscovery extends AbsBaseFragment
 {
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
     private FragmentPagerAdapter adapter;
+
+    @InjectView(R.id.tvCreateTimeLine) TextView tvCreateTimeLine;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -106,6 +112,13 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
         {
             return CONTENT.length;
         }
+    }
+
+    @OnClick(R.id.tvCreateTimeLine)
+    public void createTimeLine()
+    {
+        Timber.d("tvCreateTimeLine!!");
+        gotoDashboard(DiscoveryDiscussSendFragment.class.getName());
     }
 
 }

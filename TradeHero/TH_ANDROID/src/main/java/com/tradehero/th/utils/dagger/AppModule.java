@@ -53,7 +53,9 @@ import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSec
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.AbsLeaderboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.LeaderboardFromExchangeFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.LeaderboardFromIndustryFragment;
@@ -510,9 +512,14 @@ import javax.inject.Singleton;
                         DefaultIntentReceiver.class,
                         UserFriendsListFragment.class,
                         UserAccountPage.class,
+
                         BindGuestUserFragment.class,
                         BindEmailSignUpFragment.class,
                         ShareSellDialogFragment.class,
+
+                        SecurityDiscussSendFragment.class,
+                        DiscoveryDiscussSendFragment.class,
+
                         //China Build End
                 },
         staticInjections =

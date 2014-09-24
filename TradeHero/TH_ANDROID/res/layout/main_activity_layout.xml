@@ -28,7 +28,7 @@
           android:layout_width="fill_parent"
           android:paddingLeft="10dp"
           android:paddingRight="10dp"
-          android:layout_height="@dimen/tab_menu_height"
+          android:layout_height="60dp"
           android:background="@drawable/tab_menu_bg"
           android:orientation="horizontal"
           >

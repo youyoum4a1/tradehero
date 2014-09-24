@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsList
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th2.R;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -35,6 +36,12 @@ public class UserFriendsListAdapter extends BaseAdapter
     public void setListData(List<UserProfileCompactDTO> list)
     {
         this.userProfileCompactDTOs = list;
+    }
+
+    public void addListData(List<UserProfileCompactDTO> list)
+    {
+        if(userProfileCompactDTOs == null) userProfileCompactDTOs = new ArrayList<>();
+        userProfileCompactDTOs.addAll(list);
     }
 
     public void setFriendsType(int type)

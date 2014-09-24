@@ -86,7 +86,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
     public int getMaxID()
     {
-        if (enhancedItems != null)
+        if (enhancedItems != null && enhancedItems.size() > 0)
         {
             return enhancedItems.get(enhancedItems.size() - 1).id - 1;//为了解决返回本条ID的bug
         }
@@ -162,9 +162,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
 
-            if (item.userViewedAtUtc != null)
+            if (item.createdAtUtc != null)
             {
-                holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.userViewedAtUtc));
+                holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
             }
             if (isTrade)
             {
@@ -247,7 +247,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
-        if(getNavigator()!=null)
+        if (getNavigator() != null)
         {
             getNavigator().pushFragment(SecurityDetailFragment.class, bundle);
         }
@@ -262,7 +262,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         Bundle args = new Bundle();
         args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
         args.putAll(bundle);
-        ActivityHelper.launchDashboard((Activity)this.context, args);
+        ActivityHelper.launchDashboard((Activity) this.context, args);
     }
 
     public TradeDTO getTradeDTO(int tradeId)
@@ -319,6 +319,4 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         public TextView title1;//买入价格
         public TextView title2;//买入数量
     }
-
-
 }

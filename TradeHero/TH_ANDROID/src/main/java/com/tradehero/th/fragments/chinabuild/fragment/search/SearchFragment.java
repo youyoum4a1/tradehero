@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
@@ -28,6 +29,7 @@ import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -40,12 +42,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 /*
    搜索  热门／历史
  */
-public class SearchFragment extends DashboardFragment
+public class SearchFragment extends DashboardFragment implements HasSelectedItem
 {
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
@@ -64,6 +67,8 @@ public class SearchFragment extends DashboardFragment
     private SearchHotSecurityListType keyHot;
     private SearchSecurityListType keySearch;
     boolean isUserSearch = false;
+
+    protected SecurityCompactDTO selectedItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -157,7 +162,7 @@ public class SearchFragment extends DashboardFragment
                 if (dto != null)
                 {
                     Timber.d("list item clicked %s", dto.name);
-                    enterSecurity(dto.getSecurityId(),dto.name);
+                    enterSecurity(dto.getSecurityId(),dto.name,dto);
                     if(isUserSearch)
                     {
                         sendAnalytics(dto);
@@ -167,12 +172,23 @@ public class SearchFragment extends DashboardFragment
         });
     }
 
-    public void enterSecurity(SecurityId securityId,String securityName)
+    public void enterSecurity(SecurityId securityId,String securityName,SecurityCompactDTO dto)
     {
-        Bundle bundle = new Bundle();
-        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        pushFragment(SecurityDetailFragment.class, bundle);
+        if (getArguments() != null && getArguments().containsKey(
+                DiscussSendFragment.BUNDLE_KEY_RETURN_FRAGMENT))
+        {
+            selectedItem = dto;
+            popCurrentFragment();
+            return;
+        }
+        else
+        {
+            Bundle bundle = new Bundle();
+            bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+            pushFragment(SecurityDetailFragment.class, bundle);
+        }
+
     }
 
 
@@ -203,6 +219,11 @@ public class SearchFragment extends DashboardFragment
     protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
     {
         return new TrendingSecurityListFetchListener();
+    }
+
+    @Nullable @Override public Object getSelectedItem()
+    {
+        return selectedItem;
     }
 
     protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>
@@ -324,6 +345,12 @@ public class SearchFragment extends DashboardFragment
         {
             fetchSecuritySearchList(true);
         }
+    }
+
+    @OnClick(R.id.btn_search_x)
+    public void onClearClicked()
+    {
+        tvSearchInput.setText("");
     }
 
 

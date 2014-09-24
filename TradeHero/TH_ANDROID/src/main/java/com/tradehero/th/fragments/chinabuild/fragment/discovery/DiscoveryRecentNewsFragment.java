@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -15,12 +14,12 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th2.R;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
@@ -107,7 +106,6 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
                 fetchTimeLineMore();
             }
         });
-
     }
 
     @Override public void onStop()
@@ -141,25 +139,24 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         timeLineMiddleCallback = null;
     }
 
-    public void fetchTimeLineMore()
-    {
-        detachTimeLineMiddleCallback();
-        maxID = adapter.getMaxID();
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineNew(currentUserId.toUserBaseKey(), 10, maxID, -1, new TimeLineCallback());
-    }
-
     public void fetchTimeLine()
     {
         detachTimeLineMiddleCallback();
         maxID = -1;
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineNew(currentUserId.toUserBaseKey(), 10, -1, maxID, new TimeLineCallback());
+        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), 10, -1, maxID, new TimeLineCallback());
+    }
+
+    public void fetchTimeLineMore()
+    {
+        detachTimeLineMiddleCallback();
+        maxID = adapter.getMaxID();
+        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), 10, maxID, -1, new TimeLineCallback());
     }
 
     public class TimeLineCallback implements retrofit.Callback<TimelineDTO>
     {
         @Override public void success(TimelineDTO timelineDTO, Response response)
         {
-
             if (maxID == -1)//重新加载
             {
                 adapter.setListData(timelineDTO);
@@ -170,7 +167,6 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
                 adapter.addItems(timelineDTO);
                 adapter.notifyDataSetChanged();
             }
-
             listTimeLine.onRefreshComplete();
         }
 
@@ -180,6 +176,4 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
             listTimeLine.onRefreshComplete();
         }
     }
-
-
 }

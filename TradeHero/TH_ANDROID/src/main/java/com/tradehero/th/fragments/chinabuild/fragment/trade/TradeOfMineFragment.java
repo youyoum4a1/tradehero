@@ -476,5 +476,27 @@ public class TradeOfMineFragment extends DashboardFragment
             }
             adapter.setSecurityPositionList(list);
         }
+
+
+        if (psList != null && psList.closedPositionsCount > 0)
+        {
+            ArrayList<SecurityPositionItem> list = new ArrayList<SecurityPositionItem>();
+            List<PositionDTO> listData = psList.getClosedPositions();
+            int sizePosition = listData.size();
+            for (int i = 0; i < sizePosition; i++)
+            {
+                SecurityCompactDTO securityCompactDTO = psList.getSecurityCompactDTO(listData.get(i));
+                if (securityCompactDTO != null)
+                {
+                    list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i)));
+                }
+            }
+            if (adapter != null)
+            {
+                adapter.setSecurityPositionListClosed(list);
+            }
+        }
     }
+
+
 }

@@ -55,7 +55,7 @@ import com.tradehero.th.fragments.chinabuild.cache.PositionCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.cache.PositionDTOKey;
 import com.tradehero.th.fragments.chinabuild.dialog.DialogFactory;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
-import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.security.ChartImageView;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
@@ -205,6 +205,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @Inject public Lazy<PrettyTime> prettyTime;
     AbstractDiscussionCompactDTO dtoDiscuss;
     AbstractDiscussionCompactDTO dtoNews;
+
+    public static final int ERROR_NO_ASK_BID = 0;
+    public static final int ERROR_NO_ASK = 1;
+    public static final int ERROR_NO_BID = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -455,14 +459,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     private void linkWith(final SecurityId securityId)
     {
         this.securityId = securityId;
-
         if (securityId != null)
         {
-
             queryCompactCache(securityId);
             prepareFreshQuoteHolder();
 
-            if (competitionID == 0)
+            if (competitionID == 0)//不是比赛
             {
                 SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
                 if (detailDTO != null)
@@ -474,7 +476,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                     requestPositionDetail();
                 }
             }
-            else
+            else//是比赛
             {
                 requestCompetitionPosition();
             }
@@ -530,6 +532,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
+
+
     public Integer getMaxPurchasableShares()
     {
         return portfolioCompactDTOUtil.getMaxPurchasableShares(
@@ -553,7 +557,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     {
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        if (this.mBuyQuantity != null && this.mSellQuantity != null)
+        //if (this.mBuyQuantity != null && this.mSellQuantity != null)
+        if (this.mSellQuantity != null)
         {
             setBuySaleButtonVisable(mSellQuantity > 0);//可以卖出
         }
@@ -675,12 +680,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             linkWith(securityCompactDTO);
         }
-        else
-        {
+        //else
+        //{
             detachSecurityCompactCache();
             securityCompactCache.get().register(securityId, compactCacheListener);
-            securityCompactCache.get().getOrFetchAsync(securityId);
-        }
+            securityCompactCache.get().getOrFetchAsync(securityId,true);
+        //}
     }
 
     protected void detachSecurityCompactCache()
@@ -879,6 +884,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
+    public void displayQuoto()
+    {
+    }
+
     public void displaySecurityInfo()
     {
         if (securityCompactDTO != null)
@@ -965,8 +974,49 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
+
+    public boolean isBuyOrSaleValid()
+    {
+        if(quoteDTO==null)return false;
+        if(quoteDTO.ask == null && quoteDTO.bid == null)
+        {//ask bid 都没有返回 则说明停牌
+            showBuyOrSaleError(ERROR_NO_ASK_BID);
+            return false;
+        }
+        else if(quoteDTO.bid == null)
+        {//涨停
+            showBuyOrSaleError(ERROR_NO_ASK);
+           return false;
+        }
+        else if(quoteDTO.ask == null)
+        {//跌停
+            showBuyOrSaleError(ERROR_NO_BID);
+            return false;
+        }
+
+        return true;
+    }
+
+    public void showBuyOrSaleError(int type)
+    {
+        if(type == ERROR_NO_ASK_BID)
+        {
+            THToast.show("你所购买的股票已停牌");
+        }
+        else if(type == ERROR_NO_ASK)
+        {
+            THToast.show("你所购买的股票已跌停");
+        }
+        else if(type == ERROR_NO_BID)
+        {
+            THToast.show("你所购买的股票已涨停");
+        }
+    }
+
     public void enterBuySale(boolean isBuy)
     {
+
+        if(!isBuyOrSaleValid())return;
         Bundle bundle = new Bundle();
         //securityId,
         //purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
@@ -988,7 +1038,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         //bundle.putBundle(SecurityDetail.BUNDLE_KEY_SECURITY_ID_BUNDLE,securityId.getArgs());
         //gotoDashboard(DiscussSendFragment.class.getName(), bundle);
         //getDashboardNavigator().pushFragment();
-        pushFragment(DiscussSendFragment.class, bundle);
+        bundle.putBundle(SecurityDiscussSendFragment.BUNDLE_KEY_SECURITY_ID,securityId.getArgs());
+        pushFragment(SecurityDiscussSendFragment.class, bundle);
     }
 
     protected DTOCacheNew.Listener<PositionDTOKey, PositionDTOCompact> createPositionNewCacheListener()

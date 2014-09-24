@@ -9,7 +9,9 @@ import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.fragments.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussion;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussionCreate;
@@ -87,7 +89,7 @@ import retrofit.Callback;
     public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
     {
         return createDiscussionCreateProcessor(discussionFormDTO.stubKey).process(
-            discussionService.createDiscussion(discussionFormDTO));
+                discussionService.createDiscussion(discussionFormDTO));
     }
 
     public MiddleCallback<DiscussionDTO> createDiscussion(
@@ -102,6 +104,17 @@ import retrofit.Callback;
             middleCallback.success(stub, null);
         }
         discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    public MiddleCallback<TimelineItemDTO> createDiscoveryDiscussion(
+            int userid,
+            DiscoveryDiscussFormDTO discussionFormDTO,
+            Callback<TimelineItemDTO> callback)
+    {
+        MiddleCallback<TimelineItemDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        discussionServiceAsync.createDiscoveryDiscussion(userid, discussionFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -159,7 +172,7 @@ import retrofit.Callback;
 
     public MiddleCallback<DiscussionDTO> vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)
     {
-        MiddleCallback<DiscussionDTO> middleCallback =  new BaseMiddleCallback<>(
+        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
                 callback, createDiscussionCreateProcessor(null));
         discussionServiceAsync.vote(
                 discussionVoteKey.inReplyToType,
@@ -174,10 +187,10 @@ import retrofit.Callback;
     public DiscussionDTO share(DiscussionListKey discussionKey, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
         return createDiscussionCreateProcessor(null).process(
-            discussionService.share(
-                discussionKey.inReplyToType,
-                discussionKey.inReplyToId,
-                timelineItemShareRequestDTO));
+                discussionService.share(
+                        discussionKey.inReplyToType,
+                        discussionKey.inReplyToId,
+                        timelineItemShareRequestDTO));
     }
 
     public MiddleCallback<DiscussionDTO> share(

@@ -8,11 +8,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th2.R;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
@@ -153,17 +152,17 @@ public class Navigator
         {
             //if (backPressedCount > 0)
             //{
-                resetBackPressCount();
+            resetBackPressCount();
 
-                if (context instanceof Activity)
-                {
-                    ((Activity) context).finish();
-                }
-                else
-                {
-                    // Question: do we really need this?
-                    sendAppToBackground();
-                }
+            if (context instanceof Activity)
+            {
+                ((Activity) context).finish();
+            }
+            else
+            {
+                // Question: do we really need this?
+                sendAppToBackground();
+            }
             //}
             //else
             //{

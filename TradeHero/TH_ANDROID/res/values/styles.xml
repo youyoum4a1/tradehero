@@ -402,7 +402,7 @@
     <item name="android:layout_width">24dp</item>
     <item name="android:layout_height">24dp</item>
     <item name="android:layout_marginTop">2.0dip</item>
-    <item name="android:layout_marginBottom">2.0dip</item>
+    <item name="android:layout_marginBottom">3.0dip</item>
     <!--<item name="android:duplicateParentState">true</item>-->
   </style>
 
@@ -411,7 +411,7 @@
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/tab_main_text_selector</item>
-    <item name="android:textSize">11dip</item>
+    <item name="android:textSize">12dip</item>
     <!--<item name="android:duplicateParentState">true</item>-->
   </style>
 

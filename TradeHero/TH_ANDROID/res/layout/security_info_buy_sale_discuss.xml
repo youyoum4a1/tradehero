@@ -6,6 +6,7 @@
     android:layout_width="fill_parent"
     android:orientation="horizontal"
     android:id="@+id/llBuySaleButtons"
+    android:background="@drawable/tab_menu_bg"
     android:layout_height="fill_parent">
 
   <RelativeLayout

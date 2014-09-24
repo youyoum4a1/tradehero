@@ -115,7 +115,18 @@ public class LeaderboardListAdapter extends BaseAdapter
 
             holder.imgUserName.setText(item.displayName);
 
-            if (leaderboardType == LeaderboardDefKeyKnowledge.POPULAR)
+            if (leaderboardType == LeaderboardDefKeyKnowledge.DAYS_ROI)
+            {//显示 PerROI
+                //推荐榜
+                holder.tvUserExtraTitle.setText(context.getString(R.string.user_tatal_roi_day_30));
+                THSignedNumber roi = THSignedPercentage.builder(item.perfRoi * 100)
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                holder.tvUserExtraValue.setText(roi.toString());
+                holder.tvUserExtraValue.setTextColor(context.getResources().getColor(roi.getColorResId()));
+            }
+            else if (leaderboardType == LeaderboardDefKeyKnowledge.POPULAR)
             {//显示 粉丝数
                 //人气榜
                 holder.tvUserExtraTitle.setText(context.getString(R.string.user_tatal_fans));

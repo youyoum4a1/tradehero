@@ -24,6 +24,14 @@ public interface LeaderboardService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
+
+    //活跃ROI榜 推荐榜
+    //<editor-fold desc="Get Leaderboard">
+    @GET("/users/trendingPerfRoi?countryCode=CN")
+    UserTrendingDTOList getLeaderboardDayROI(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+
     //人气榜
     //<editor-fold desc="Get Leaderboard">
     @GET("/users/trendingFollow?countryCode=CN")

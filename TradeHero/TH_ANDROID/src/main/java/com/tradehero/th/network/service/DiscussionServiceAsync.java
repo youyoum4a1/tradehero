@@ -5,7 +5,9 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.fragments.chinabuild.data.DiscoveryDiscussFormDTO;
 import java.util.Map;
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -79,4 +81,13 @@ interface DiscussionServiceAsync
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
             Callback<DiscussionDTO> callback);
     //</editor-fold>
+
+    //<editor-fold desc="Create Discussion">
+    @POST("/users/{userId}/timeline")
+    void createDiscoveryDiscussion(
+            @Path("userId") int userId,
+            @Body DiscoveryDiscussFormDTO discussionFormDTO,
+            Callback<TimelineItemDTO> callback);
+    //</editor-fold>
+
 }

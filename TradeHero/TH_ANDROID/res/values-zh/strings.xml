@@ -60,7 +60,7 @@
   <string name="security_discussion_add">+ 开始新的讨论</string>
   <string name="post">发送</string>
   <string name="discussion_new_post_hint">我感觉 %s 会涨/跌</string>
-  <string name="error_discussion_empty_post">讨论不可为空</string>
+  <string name="error_discussion_empty_post">发布内容不可为空</string>
   <string name="at">"@"</string>
   <string name="hashtag">$</string>
   <string name="discussion_edit_post_subtitle">在 %s</string>

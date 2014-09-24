@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -54,7 +53,7 @@ public class CompetitionBaseFragment extends DashboardFragment
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerVip;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerMine;
 
-    @InjectView(R.id.tvCreateCompetition) TextView tvCreateCompetition;//创建 浮标
+
     @InjectView(R.id.listCompetitions) SecurityListView listCompetitions;//比赛列表
     @InjectView(R.id.llCompetitionAdv) RelativeLayout llCompetitionAdv;//广告栏
     @InjectView(R.id.pager) ViewPager pager;
@@ -172,11 +171,7 @@ public class CompetitionBaseFragment extends DashboardFragment
         indicator.setViewPager(pager);
     }
 
-    @OnClick(R.id.tvCreateCompetition)
-    public void createCompetitionClicked()
-    {
-        gotoDashboard(CompetitionCreateFragment.class.getName());
-    }
+
 
     @OnClick(R.id.llCompetitionAdv)
     public void onCompetitionAdvClicked()

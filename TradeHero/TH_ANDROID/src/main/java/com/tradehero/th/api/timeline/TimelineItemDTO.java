@@ -16,7 +16,7 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
 {
     public int tradeId = 0;
     public int type;
-    public Date userViewedAtUtc;
+    public Date createdAtUtc;//userViewedAtUtc;
     private SecurityMediaDTOList medias;
     public Integer pushTypeId;
 

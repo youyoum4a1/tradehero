@@ -9,14 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCreateFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionMineFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSearchFragment;
 import com.tradehero.th2.R;
-import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.viewpagerindicator.TabPageIndicator;
 import timber.log.Timber;
 
@@ -25,6 +27,7 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
     @InjectView(R.id.imgSearch) ImageView imgSearch;
+    @InjectView(R.id.tvCreateCompetition) TextView tvCreateCompetition;//创建 浮标
     private FragmentPagerAdapter adapter;
 
     @Override
@@ -112,5 +115,11 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
         {
             return CONTENT.length;
         }
+    }
+
+    @OnClick(R.id.tvCreateCompetition)
+    public void createCompetitionClicked()
+    {
+        gotoDashboard(CompetitionCreateFragment.class.getName());
     }
 }

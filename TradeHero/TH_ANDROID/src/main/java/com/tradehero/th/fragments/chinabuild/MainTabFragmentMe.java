@@ -183,6 +183,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 break;
             case R.id.rlMeSetting:
                 Timber.d("clicked rlMeSetting");
+                gotoDashboard(SettingFragment.class.getName());
                 break;
             case R.id.llItemAllAmount:
                 Timber.d("clicked llItemAllAmount");
@@ -256,12 +257,11 @@ public class MainTabFragmentMe extends AbsBaseFragment
     {
         rlCustomHeadLayout.setVisibility(View.VISIBLE);
         tvHeadLeft.setVisibility(View.GONE);
-        tvHeadRight.setVisibility(View.VISIBLE);
+        //tvHeadRight.setVisibility(View.VISIBLE);
         tvHeadTitle.setVisibility(View.VISIBLE);
-
         tvHeadRight.setVisibility(View.VISIBLE);
         tvHeadTitle.setText(R.string.tab_main_me);
-        tvHeadRight.setText(R.string.settings);
+        //tvHeadRight.setText(R.string.settings);
     }
 
     protected void fetchUserProfile()

@@ -28,7 +28,7 @@ class TimelineItemCutDTO extends AbstractDiscussionCutDTO
     {
         super(timelineItemDTO);
         this.type = timelineItemDTO.type;
-        this.userViewedAtUtc = timelineItemDTO.userViewedAtUtc;
+        this.createdAtUtc = timelineItemDTO.createdAtUtc;
         this.medias = timelineItemDTO.getMedias();
         this.pushTypeId = timelineItemDTO.pushTypeId;
         this.useSysIcon = timelineItemDTO.useSysIcon;
@@ -62,7 +62,7 @@ class TimelineItemCutDTO extends AbstractDiscussionCutDTO
             return false;
         }
         inflated.type = this.type;
-        inflated.userViewedAtUtc = this.userViewedAtUtc;
+        inflated.createdAtUtc = this.createdAtUtc;
         inflated.setMedias(this.medias);
         inflated.pushTypeId = this.pushTypeId;
         inflated.useSysIcon = this.useSysIcon;

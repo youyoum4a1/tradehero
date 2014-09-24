@@ -19,7 +19,6 @@ import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserTrendingDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserTrendingDTOList;
-import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
@@ -131,6 +130,14 @@ import retrofit.Callback;
                         pagedLeaderboardKey.page,
                         pagedLeaderboardKey.perPage);
             }
+            else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.DAYS_ROI)//返回推荐榜
+            {
+                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+                UserTrendingDTOList data = leaderboardService.getLeaderboardDayROI(
+                        pagedLeaderboardKey.page,
+                        pagedLeaderboardKey.perPage);
+                return processFromExtraData(data);
+            }
             else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.POPULAR)//返回人气榜
             {
                 PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
@@ -168,6 +175,7 @@ import retrofit.Callback;
                 userDTO.picture = dataDTO.pictureUrl;
                 userDTO.totalWealth = dataDTO.totalWealth;
                 userDTO.roiInPeriod = dataDTO.winRatio;
+                userDTO.perfRoi = dataDTO.perfRoi;
                 leaderboardDTO.users.add(userDTO);
             }
             return leaderboardDTO;

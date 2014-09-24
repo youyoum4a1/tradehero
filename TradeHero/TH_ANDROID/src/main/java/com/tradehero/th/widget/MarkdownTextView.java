@@ -1,5 +1,6 @@
 package com.tradehero.th.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
@@ -8,10 +9,12 @@ import android.view.View;
 import android.widget.TextView;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.models.intent.THIntentFactory;
@@ -67,10 +70,16 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         if (parser != null && text != null)
         {
+            if(text.toString().startsWith("*") && text.toString().endsWith("*"))
+            {
+                text = text.subSequence(1,text.length()-1);
+            }
             text = parser.load(text.toString().trim()).create();
         }
         super.setText(text, BufferType.SPANNABLE);
     }
+
+
 
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
     {
@@ -127,9 +136,9 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         SecurityId securityId = new SecurityId(exchange,symbol);
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
-        getNavigator().pushFragment(SecurityDetailFragment.class, bundle);
+        //getNavigator().pushFragment(SecurityDetailFragment.class, bundle);
+        enterFragment(SecurityDetailFragment.class,bundle);
     }
-
 
     private void openUserProfile(int userId)
     {
@@ -146,7 +155,27 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         {
             Bundle bundle = new Bundle();
             bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
-            getNavigator().pushFragment(UserMainPage.class, bundle);
+            //getNavigator().pushFragment(UserMainPage.class, bundle);
+            enterFragment(UserMainPage.class,bundle);
         }
+    }
+
+
+    private void enterFragment(Class fragmentClass, Bundle args)
+    {
+        if(getNavigator()!=null)
+        {
+            getNavigator().pushFragment(fragmentClass, args);
+        }
+        else
+        {
+            gotoDashboard(fragmentClass.getName(),args);
+        }
+    }
+
+    public void gotoDashboard(String strFragment,Bundle bundle)
+    {
+        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,strFragment);
+        ActivityHelper.launchDashboard((Activity)getContext(), bundle);
     }
 }

@@ -11,4 +11,5 @@ public class UserTrendingDTO
     public double winRatio;
     public int followerCount;
     public double totalWealth;
+    public double perfRoi;
 }

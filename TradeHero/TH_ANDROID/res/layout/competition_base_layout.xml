@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/bg_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
 
   <RelativeLayout
@@ -32,7 +33,6 @@
 
   <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
       android:id="@+id/listCompetitions"
-      android:layout_below="@id/llCompetitionAdv"
       android:scrollingCache="false"
       android:fadingEdge="none"
       android:divider="@color/transparent"
@@ -40,19 +40,6 @@
       android:layout_height="fill_parent">
   </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
 
-  <TextView
-      android:id="@+id/tvCreateCompetition"
-      android:background="@drawable/blue_circle_alpha"
-      android:text="创建"
-      android:textColor="@color/white"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentBottom="true"
-      android:layout_marginRight="40dp"
-      android:layout_marginBottom="80dp"
-      android:gravity="center"
-      />
 
-</RelativeLayout>
+</LinearLayout>
 

@@ -11,6 +11,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.adapters.UserFriendsListAdapter;
@@ -19,6 +20,7 @@ import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
@@ -34,13 +36,14 @@ import timber.log.Timber;
 /*
    股神或者粉丝列表显示
  */
-public class UserFriendsListFragment extends DashboardFragment
+public class UserFriendsListFragment extends DashboardFragment implements HasSelectedItem
 {
     public static final String BUNDLE_SHOW_USER_ID = "bundle_show_user_id";
     public static final String BUNDLE_SHOW_FRIENDS_TYPE = "bundle_show_friends_type";
 
     public static final int TYPE_FRIENDS_HERO = 0;
     public static final int TYPE_FRIENDS_FOLLOWS = 1;
+    public static final int TYPE_FRIENDS_ALL = 2;
     public int typeFriends = TYPE_FRIENDS_HERO;
     public UserBaseKey showUserBaseKey;
 
@@ -49,6 +52,8 @@ public class UserFriendsListFragment extends DashboardFragment
 
     @Inject protected HeroManagerInfoFetcher heroInfoFetcher;
     @InjectView(R.id.listFriends) SecurityListView listView;
+
+    protected UserProfileCompactDTO selectedItem;
 
     private UserFriendsListAdapter adapter;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
@@ -116,16 +121,26 @@ public class UserFriendsListFragment extends DashboardFragment
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
             {
                 UserProfileCompactDTO dto = (UserProfileCompactDTO) adapter.getItem((int) position);
-                enterUserMainPage(dto.id);
+                enterUserMainPage(dto.id, dto);
             }
         });
     }
 
-    public void enterUserMainPage(int userId)
+    public void enterUserMainPage(int userId, UserProfileCompactDTO dto)
     {
-        Bundle bundle = new Bundle();
-        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
-        pushFragment(UserMainPage.class, bundle);
+        if (getArguments() != null && getArguments().containsKey(
+                DiscussSendFragment.BUNDLE_KEY_RETURN_FRAGMENT))
+        {
+            selectedItem = dto;
+            popCurrentFragment();
+            return;
+        }
+        else
+        {
+            Bundle bundle = new Bundle();
+            bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
+            pushFragment(UserMainPage.class, bundle);
+        }
     }
 
     public void fetchUserFriendList()
@@ -136,6 +151,11 @@ public class UserFriendsListFragment extends DashboardFragment
         }
         else if (typeFriends == TYPE_FRIENDS_FOLLOWS)
         {
+            fetchFollowers();
+        }
+        else if (typeFriends == TYPE_FRIENDS_ALL)
+        {
+            fetchHeros();
             fetchFollowers();
         }
     }
@@ -150,12 +170,13 @@ public class UserFriendsListFragment extends DashboardFragment
 
     protected void fetchHeros()
     {
+        detachHeroFetcher();
         this.heroInfoFetcher.fetch(showUserBaseKey);
     }
 
     protected void fetchFollowers()
     {
-        detachInfoFetcher();
+        detachFollowerFetcher();
         followerInfoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
         followerInfoFetcher.fetch(this.showUserBaseKey);
     }
@@ -177,7 +198,15 @@ public class UserFriendsListFragment extends DashboardFragment
             {
                 list.add(value.userFollowers.get(i));
             }
-            adapter.setListData(list);
+            if (typeFriends == TYPE_FRIENDS_ALL)
+            {
+                adapter.addListData(list);
+            }
+            else
+            {
+                adapter.setListData(list);
+            }
+
             adapter.notifyDataSetChanged();
         }
     }
@@ -194,7 +223,16 @@ public class UserFriendsListFragment extends DashboardFragment
             {
                 list.add(value.allActiveHeroes.get(i));
             }
-            adapter.setListData(list);
+
+            if (typeFriends == TYPE_FRIENDS_ALL)
+            {
+                adapter.addListData(list);
+            }
+            else
+            {
+                adapter.setListData(list);
+            }
+
             adapter.notifyDataSetChanged();
         }
     }
@@ -255,24 +293,27 @@ public class UserFriendsListFragment extends DashboardFragment
         super.onStop();
     }
 
-    protected void detachInfoFetcher()
+    protected void detachFollowerFetcher()
     {
         if (this.followerInfoFetcher != null)
         {
             this.followerInfoFetcher.onDestroyView();
         }
         this.followerInfoFetcher = null;
-
-        if (this.heroInfoFetcher != null)
-        {
-            this.heroInfoFetcher.onDestroyView();
-        }
+    }
+    protected void detachHeroFetcher()
+    {
+        //if (this.heroInfoFetcher != null)
+        //{
+        //    this.heroInfoFetcher.onDestroyView();
+        //}
         //this.heroInfoFetcher = null;
     }
 
     @Override public void onDestroyView()
     {
-        detachInfoFetcher();
+        detachFollowerFetcher();
+        detachHeroFetcher();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -285,5 +326,10 @@ public class UserFriendsListFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
+    }
+
+    @Override public Object getSelectedItem()
+    {
+        return selectedItem;
     }
 }

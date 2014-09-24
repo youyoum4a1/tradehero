@@ -16,6 +16,7 @@ import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -25,6 +26,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
@@ -129,7 +131,13 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
 
             @Override public void OnTimeLineCommentsClicked(int position)
             {
+                AbstractDiscussionCompactDTO dto = adapter.getItem(position);
+                DiscussionKey discussionKey = dto.getDiscussionKey();
                 Timber.d("Comments position = " + position);
+                Bundle bundle = new Bundle();
+                bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
+                        discussionKey.getArgs());
+                pushFragment(DiscussSendFragment.class, bundle);
             }
 
             @Override public void OnTimeLineShareClied(int position)

@@ -87,6 +87,15 @@ import retrofit.client.Response;
         userTimelineServiceAsync.getTimelineNew(userId.key, maxCount, maxId, minId, middleCallback);
         return middleCallback;
     }
+
+    //股聊广场
+    public @NotNull MiddleCallback<TimelineDTO> getTimelineSquare(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
+            @Nullable Callback<TimelineDTO> callback)
+    {
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userTimelineServiceAsync.getTimelineSquare(userId.key, maxCount, maxId, minId, middleCallback);
+        return middleCallback;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">
@@ -95,7 +104,8 @@ import retrofit.client.Response;
         return userTimelineService.shareTimelineItem(userId.key, timelineItemId, timelineItemShareRequestDTO);
     }
 
-    @NotNull public MiddleCallback<Response> shareTimelineItem(@NotNull UserBaseKey userId, int timelineItemId, TimelineItemShareRequestDTO timelineItemShareRequestDTO, @Nullable Callback<Response> callback)
+    @NotNull public MiddleCallback<Response> shareTimelineItem(@NotNull UserBaseKey userId, int timelineItemId,
+            TimelineItemShareRequestDTO timelineItemShareRequestDTO, @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.shareTimelineItem(userId.key, timelineItemId, timelineItemShareRequestDTO, middleCallback);
@@ -109,7 +119,8 @@ import retrofit.client.Response;
         return userTimelineService.deleteTimelineItem(userId.key, timelineItemId);
     }
 
-    @NotNull public MiddleCallback<Response> deleteTimelineItem(@NotNull UserBaseKey userId, int timelineItemId, @Nullable Callback<Response> callback)
+    @NotNull
+    public MiddleCallback<Response> deleteTimelineItem(@NotNull UserBaseKey userId, int timelineItemId, @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.deleteTimelineItem(userId.key, timelineItemId, middleCallback);

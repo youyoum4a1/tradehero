@@ -24,9 +24,7 @@
       android:background="@color/transparent"
       android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
       tools:text="Buy more security from TradeHero">
-
       <requestFocus/>
-
   </EditText>
 
 </RelativeLayout>
