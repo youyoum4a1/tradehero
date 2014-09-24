@@ -1145,51 +1145,62 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (quoteDTO != null
                 && BuyDialogFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
         {
-            pushPortfolioFragmentRunnable = null;
-            pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
+            if(purchaseApplicableOwnedPortfolioId != null)
             {
-                @Override
-                public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+                pushPortfolioFragmentRunnable = null;
+                pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
                 {
-                    BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
-                }
-            };
-
-            abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
-                    securityId,
-                    purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
-                    quoteDTO,
-                    isTransactionTypeBuy);
-            abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
-            abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
-            {
-                @Override public void onTransactionSuccessful(boolean isBuy)
-                {
-                    if (pushPortfolioFragmentRunnable == null)
+                    @Override
+                    public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
                     {
-                        pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
+                        BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
+                    }
+                };
+
+                abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
+                        securityId,
+                        purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
+                        quoteDTO,
+                        isTransactionTypeBuy);
+                abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
+                abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
+                {
+                    @Override public void onTransactionSuccessful(boolean isBuy)
+                    {
+                        if (pushPortfolioFragmentRunnable == null)
                         {
-                            @Override
-                            public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+                            pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
                             {
-                                BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
-                            }
-                        };
+                                @Override
+                                public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+                                {
+                                    BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
+                                }
+                            };
+                        }
+                        if (pushPortfolioFragmentRunnable != null)
+                        {
+                            setActionBarSubtitle(null);
+                            pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
+                        }
+
+                        showPrettyReviewAndInvite(isBuy);
                     }
-                    if (pushPortfolioFragmentRunnable != null)
+
+                    @Override public void onTransactionFailed(boolean isBuy, THException error)
                     {
-                        setActionBarSubtitle(null);
-                        pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
+                        // TODO Toast error buy?
                     }
-
-                    showPrettyReviewAndInvite(isBuy);
-                }
-
-                @Override public void onTransactionFailed(boolean isBuy, THException error)
-                {
-                    // TODO Toast error buy?
-                }
-            });
+                });
+            }
+            else
+            {
+                alertDialogUtil.popWithNegativeButton(
+                        getActivity(),
+                        R.string.buy_sell_no_portfolio_title,
+                        R.string.buy_sell_no_portfolio_message,
+                        R.string.buy_sell_no_portfolio_cancel);
+            }
         }
         else
         {
