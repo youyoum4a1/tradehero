@@ -39,7 +39,6 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
@@ -71,8 +70,11 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+<<<<<<< HEAD
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.inject.Injector;
+=======
+>>>>>>> Move injection boilerplate to BaseActivity. Check null newInjector
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
@@ -99,6 +101,7 @@ import com.tradehero.th.widget.XpToast;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -109,7 +112,7 @@ import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DashboardActivity extends BaseActivity
-        implements Injector, ResideMenu.OnMenuListener
+        implements ResideMenu.OnMenuListener
 {
     private DashboardNavigator navigator;
     @Inject Set<DashboardNavigator.DashboardFragmentWatcher> dashboardFragmentWatchers;
@@ -150,7 +153,6 @@ public class DashboardActivity extends BaseActivity
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
 
     private ProgressDialog progressDialog;
-    private Injector newInjector;
     private DashboardTabHost dashboardTabHost;
     private int tabHostHeight;
     private BroadcastReceiver mAchievementBroadcastReceiver;
@@ -163,9 +165,12 @@ public class DashboardActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
 
+<<<<<<< HEAD
         newInjector = loadInjector(THApp.get(this));
         newInjector.inject(this);
 
+=======
+>>>>>>> Move injection boilerplate to BaseActivity. Check null newInjector
         if (Constants.RELEASE)
         {
             Crashlytics.setString(Constants.TH_CLIENT_TYPE,
@@ -484,9 +489,11 @@ public class DashboardActivity extends BaseActivity
                 && (userProfileDTO == null || userProfileDTO.inviteCode == null || userProfileDTO.inviteCode.isEmpty());
     }
 
-    @Override public void inject(Object o)
+    @Override protected List<Object> getModules()
     {
-        newInjector.inject(o);
+        List<Object> superModules = new ArrayList<>(super.getModules());
+        superModules.add(new DashboardActivityModule());
+        return superModules;
     }
 
     protected class DashboardOnInviteCodeDismissed implements BaseDialogFragment.OnDismissedListener

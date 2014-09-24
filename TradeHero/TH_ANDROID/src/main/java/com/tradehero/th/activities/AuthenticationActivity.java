@@ -9,12 +9,10 @@ import android.view.Window;
 import android.widget.EditText;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.base.THApp;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
@@ -33,13 +31,11 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.WeiboUtils;
-import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
-import dagger.Module;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,16 +62,11 @@ public class AuthenticationActivity extends BaseActivity
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CredentialsDTOFactory credentialsDTOFactory;
-    private Injector newInjector;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-
-        THApp thApp = THApp.get(this);
-        newInjector = thApp.plus(new AuthenticationActivityModule());
-        newInjector.inject(this);
 
         currentFragment = Fragment.instantiate(this, SignInOrUpFragment.class.getName(), null);
 
@@ -356,11 +347,6 @@ public class AuthenticationActivity extends BaseActivity
     }
     //</editor-fold>
 
-    @Override public void inject(Object o)
-    {
-        newInjector.inject(o);
-    }
-
     @Override protected boolean requireLogin()
     {
         return false;
@@ -425,15 +411,5 @@ public class AuthenticationActivity extends BaseActivity
         {
             return false;
         }
-    }
-
-    @Module(
-            addsTo = AppModule.class,
-            includes = UIModule.class,
-            library = true,
-            complete = false
-    )
-    public class AuthenticationActivityModule
-    {
     }
 }
