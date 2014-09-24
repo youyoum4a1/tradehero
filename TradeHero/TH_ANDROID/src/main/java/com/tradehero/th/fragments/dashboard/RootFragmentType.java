@@ -37,9 +37,6 @@ public enum RootFragmentType
     COMMUNITY(R.layout.tab_indicator_holo,
             R.string.dashboard_community, R.string.dashboard_community_key,
             R.drawable.icn_menu_leaderboards, LeaderboardCommunityFragment.class),
-    REFERRAL(R.layout.tab_indicator_holo,
-            R.string.dashboard_referral, R.string.dashboard_referral_key,
-            R.drawable.icn_menu_referral, FriendsInvitationFragment.class),
     CONTEST_CENTER(R.layout.tab_indicator_holo,
             R.string.dashboard_contest_center, R.string.dashboard_contest_center_key,
             R.drawable.icn_menu_contest_center, ContestCenterFragment.class),
@@ -89,7 +86,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, DIVIDER, TRENDING, COMMUNITY, DISCOVERY, REFERRAL, CONTEST_CENTER, DIVIDER, STORE, SETTING
+                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, STORE, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);
