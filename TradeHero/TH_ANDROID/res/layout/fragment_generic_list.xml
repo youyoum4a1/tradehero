@@ -11,7 +11,8 @@
       android:layout_height="match_parent"
       android:clipToPadding="false"
       tools:listitem="@layout/achievement_cell_view"
-      android:listSelector="@null"/>
+      android:listSelector="@android:color/transparent"
+      android:cacheColorHint="@android:color/transparent"/>
 
   <ProgressBar
       android:id="@android:id/empty"
