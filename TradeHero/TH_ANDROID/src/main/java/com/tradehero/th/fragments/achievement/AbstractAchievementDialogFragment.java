@@ -266,6 +266,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                 new DominantColorCalculator(((BitmapDrawable) badge.getDrawable()).getBitmap());
         ColorScheme colorScheme = dominantColorCalculator.getColorScheme();
         updateColor(colorScheme);
+        setShareButtonColor();
     }
 
     private void showShareSuccess()
@@ -304,7 +305,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         mAnim.setDuration(getResources().getInteger(R.integer.achievement_earned_duration));
         mAnim.setInterpolator(new AccelerateInterpolator());
 
-        mAnim.addListener(createAnimatorListenerAdapter());
         mAnim.addUpdateListener(createEarnedAnimatorUpdateListener());
 
         mAnim.start();
@@ -506,18 +506,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
     {
         return new AbstractAchievementValueAnimatorUpdateListener();
-    }
-
-    protected AnimatorListenerAdapter createAnimatorListenerAdapter()
-    {
-        return new AnimatorListenerAdapter()
-        {
-            @Override public void onAnimationEnd(Animator animation)
-            {
-                super.onAnimationEnd(animation);
-                setShareButtonColor();
-            }
-        };
     }
 
     protected class AbstractAchievementValueAnimatorUpdateListener implements ValueAnimator.AnimatorUpdateListener
