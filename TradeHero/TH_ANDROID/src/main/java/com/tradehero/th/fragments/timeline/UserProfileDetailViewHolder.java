@@ -236,7 +236,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
         @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
         {
-            userLevelProgressBar.setVisibility(View.GONE);
+            if(userLevelProgressBar != null)
+            {
+                userLevelProgressBar.setVisibility(View.GONE);
+            }
         }
     }
 
