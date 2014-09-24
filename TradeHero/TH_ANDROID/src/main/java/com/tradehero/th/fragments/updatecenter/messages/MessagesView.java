@@ -3,17 +3,14 @@ package com.tradehero.th.fragments.updatecenter.messages;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
 import com.tradehero.th.R;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class MessagesView extends RelativeLayout
 {
@@ -23,7 +20,7 @@ public class MessagesView extends RelativeLayout
     @InjectView(android.R.id.empty) TextView emptyView;
     @InjectView(R.id.error) View errorView;
     @InjectView(R.id.listViewLayout) RelativeLayout listViewLayout;
-    @InjectView(R.id.readAllLayout) LinearLayout readAllLayout;
+    @InjectView(R.id.readAllLayout) View readAllLayout;
 
     //<editor-fold desc="Constructors">
     public MessagesView(Context context)

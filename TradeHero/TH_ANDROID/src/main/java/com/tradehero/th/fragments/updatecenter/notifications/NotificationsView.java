@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -49,7 +48,7 @@ public class NotificationsView extends BetterViewAnimator
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.notification_pull_to_refresh_list) PullToRefreshListView notificationList;
     @InjectView(R.id.listViewLayout) RelativeLayout listViewLayout;
-    @InjectView(R.id.readAllLayout) LinearLayout readAllLayout;
+    @InjectView(R.id.readAllLayout) View readAllLayout;
 
     @Inject Lazy<NotificationListCache> notificationListCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;

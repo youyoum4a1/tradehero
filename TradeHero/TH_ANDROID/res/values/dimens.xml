@@ -125,7 +125,7 @@
   <dimen name="news_detail_date_size">@dimen/text_xsmall</dimen>
 
   <dimen name="notification_horizontal_margin">10dp</dimen>
-  <dimen name="notification_vertical_margin">0dp</dimen>
+  <dimen name="notification_vertical_margin">10dp</dimen>
 
   <dimen name="message_center_horizontal_margin">10dp</dimen>
   <dimen name="message_center_vertical_margin">10dp</dimen>
@@ -185,7 +185,8 @@
   <dimen name="discussion_list_padding">60dp</dimen>
   <dimen name="leaderboard_position_width">60dp</dimen>
 
-  <dimen name="message_read_all_button_radius">4dp</dimen>
+  <dimen name="message_read_all_button_radius">@dimen/global_corner_radius</dimen>
+  <dimen name="message_read_all_margin_bottom">10dp</dimen>
   <dimen name="discovery_news_carousel_height">70dp</dimen>
   <dimen name="discovery_news_carousel_motleyfool_logo_height">60dp</dimen>
   <dimen name="discovery_news_carousel_spinner_width">250dp</dimen>

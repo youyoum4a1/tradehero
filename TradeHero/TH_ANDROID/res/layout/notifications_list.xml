@@ -22,23 +22,25 @@
         android:id="@+id/listViewLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+      <include
+          android:id="@+id/readAllLayout"
+          android:visibility="gone"
+          layout="@layout/read_all_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          />
+
       <com.handmark.pulltorefresh.library.PullToRefreshListView
           android:id="@+id/notification_pull_to_refresh_list"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_marginLeft="@dimen/notification_horizontal_margin"
-          android:layout_marginRight="@dimen/notification_horizontal_margin"
-          android:layout_marginTop="@dimen/notification_vertical_margin"
-          android:layout_marginBottom="@dimen/notification_vertical_margin"
+          android:clipToPadding="false"
+          android:paddingTop="@dimen/notification_vertical_margin"
+          android:paddingBottom="@dimen/notification_vertical_margin"
+          android:layout_above="@id/readAllLayout"
           />
-      <LinearLayout
-          android:visibility="gone"
-          android:id="@+id/readAllLayout"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_alignParentBottom="true">
-        <include layout="@layout/read_all_layout"/>
-      </LinearLayout>
+
 
     </RelativeLayout>
 
