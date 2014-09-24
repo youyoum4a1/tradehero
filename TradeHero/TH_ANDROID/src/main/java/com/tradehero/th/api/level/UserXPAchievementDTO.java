@@ -14,13 +14,13 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
     private static final String KEY_SUBTEXT = UserXPAchievementDTO.class.getName() + ".subText";
     private static final String KEY_XP_EARNED = UserXPAchievementDTO.class.getName() + ".xpEarned";
     private static final String KEY_XP_TOTAL = UserXPAchievementDTO.class.getName() + ".xpTotal";
-    private static final String KEY_MULTIPLIERS = UserXPAchievementDTO.class.getName() + ".multipliers";
+    private static final String KEY_MULTIPLIERS = UserXPAchievementDTO.class.getName() + ".multiplier";
 
     public String text;
     public String subText;
     public int xpEarned;
     public int xpTotal;
-    public List<UserXPMultiplierDTO> multipliers;
+    public List<UserXPMultiplierDTO> multiplier;
 
     public UserXPAchievementDTO()
     {
@@ -52,10 +52,10 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
         if (b.containsKey(KEY_MULTIPLIERS))
         {
             ArrayList<Bundle> bundles = b.getParcelableArrayList(KEY_MULTIPLIERS);
-            multipliers = new ArrayList<>();
+            multiplier = new ArrayList<>();
             for (Bundle multi : bundles)
             {
-                multipliers.add(new UserXPMultiplierDTO(multi));
+                multiplier.add(new UserXPMultiplierDTO(multi));
             }
         }
     }
@@ -68,10 +68,10 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
         b.putInt(KEY_XP_TOTAL, xpTotal);
         b.putInt(KEY_XP_EARNED, xpEarned);
 
-        if (multipliers != null && !multipliers.isEmpty())
+        if (multiplier != null && !multiplier.isEmpty())
         {
             ArrayList<Bundle> multis = new ArrayList<>();
-            for (UserXPMultiplierDTO multiplierDTO : multipliers)
+            for (UserXPMultiplierDTO multiplierDTO : multiplier)
             {
                 multis.add(multiplierDTO.getArgs());
             }

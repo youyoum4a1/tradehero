@@ -57,10 +57,10 @@ public class XpTestingFragment extends DashboardFragment
             userXPAchievementDTO.text = xpReason.getText().toString();
             userXPAchievementDTO.xpEarned = xp;
             userXPAchievementDTO.xpTotal = Integer.parseInt(xpFrom.getText().toString()) + xp;
-            userXPAchievementDTO.multipliers = new ArrayList<>();
-            xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM1Reason, xpM1Value);
-            xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM2Reason, xpM2Value);
-            xp = parseMultipliers(userXPAchievementDTO.multipliers, xp, xpM3Reason, xpM3Value);
+            userXPAchievementDTO.multiplier = new ArrayList<>();
+            xp = parseMultipliers(userXPAchievementDTO.multiplier, xp, xpM1Reason, xpM1Value);
+            xp = parseMultipliers(userXPAchievementDTO.multiplier, xp, xpM2Reason, xpM2Value);
+            xp = parseMultipliers(userXPAchievementDTO.multiplier, xp, xpM3Reason, xpM3Value);
 
             broadcastUtils.enqueue(userXPAchievementDTO);
         } catch (NumberFormatException e)

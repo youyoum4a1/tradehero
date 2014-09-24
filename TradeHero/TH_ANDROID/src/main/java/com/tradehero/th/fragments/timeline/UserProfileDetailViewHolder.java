@@ -208,7 +208,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     {
         if(userProfileDTO != null && userLevelProgressBar != null && userLevelProgressBar.getLevelDefDTOList() != null)
         {
-            userLevelProgressBar.startsWith(userProfileDTO.currentXp);
+            userLevelProgressBar.startsWith(userProfileDTO.currentXP);
         }
     }
 

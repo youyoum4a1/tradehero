@@ -68,7 +68,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public LeaderboardDTO mostSkilledLbmu;
 
     public int achievementCount;
-    public int currentXp;
+    public int currentXP;
 
     public UserOnLeaderboardKey getMostSkilledUserOnLbmuKey()
     {
