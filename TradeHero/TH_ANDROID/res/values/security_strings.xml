@@ -60,7 +60,7 @@
   <string name="market_on_board_exchange_interested">Which exchange are you most interested in?</string>
   <string name="market_on_board_sector_interested">Which sector are you most interested in?</string>
   <string name="market_on_board_country_from">What country are you from?</string>
-  <string name="security_on_board_select_invitation_title">Suggestion</string>
-  <string name="security_on_board_select_invitation_come_on">Follow These Securities</string>
+  <string name="security_on_board_select_invitation_title">Stocks to Watch!</string>
+  <string name="security_on_board_select_invitation_come_on">These stocks are hot! Add them to your watchlist now!</string>
 
 </resources>
