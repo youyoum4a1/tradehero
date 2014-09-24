@@ -67,7 +67,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Inject Analytics analytics;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
-    @Inject @BindGuestUser static BooleanPreference mBindGuestUserPreference;
+    @Inject @BindGuestUser BooleanPreference mBindGuestUserPreference;
 
     @InjectView(R.id.llMainTab) LinearLayout llMainTab;
     @InjectView(R.id.llTabTrade) LinearLayout llTabTrade;
