@@ -6,9 +6,6 @@ import com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZonePortfolioView;
 import dagger.Module;
 
-/**
- * Created by tho on 9/9/2014.
- */
 @Module(
         injects = {
                 MacquarieWarrantItemViewAdapter.class,

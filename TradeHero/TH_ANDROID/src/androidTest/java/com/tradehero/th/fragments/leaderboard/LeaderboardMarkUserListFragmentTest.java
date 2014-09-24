@@ -23,8 +23,7 @@ public class LeaderboardMarkUserListFragmentTest
 
     @Before public void setUp()
     {
-        DashboardActivity activity = Robolectric.setupActivity(DashboardActivityExtended.class);
-        activity.inject(this);
+        Robolectric.setupActivity(DashboardActivityExtended.class).inject(this);
     }
 
     @After public void tearDown()

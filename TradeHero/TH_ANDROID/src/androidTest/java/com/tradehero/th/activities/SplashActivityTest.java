@@ -6,10 +6,11 @@ import android.widget.TextView;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -23,10 +24,14 @@ public class SplashActivityTest
 {
     @Inject @FirstLaunch public BooleanPreference firstLaunchPreference;
 
+    @Before public void setUp()
+    {
+        TestTHApp.staticInject(this);
+    }
+
     @Test public void shouldHaveCopyrightShowing()
     {
         SplashActivity activity = Robolectric.setupActivity(SplashActivityExtended.class);
-        HierarchyInjector.inject(activity, this);
 
         ViewGroup copyrightView = (ViewGroup) activity.findViewById(R.id.copyright);
         assertThat(copyrightView).isNotNull();
@@ -35,7 +40,6 @@ public class SplashActivityTest
     @Test public void shouldDisplayAppVersionCorrectly()
     {
         SplashActivity activity = Robolectric.setupActivity(SplashActivity.class);
-        HierarchyInjector.inject(activity, this);
 
         TextView appVersionView = (TextView) activity.findViewById(R.id.app_version);
 
@@ -48,7 +52,6 @@ public class SplashActivityTest
     {
         firstLaunchPreference.set(true);
         SplashActivity activity = Robolectric.setupActivity(SplashActivity.class);
-        HierarchyInjector.inject(activity, this);
 
         ShadowActivity shadowSplashActivity = shadowOf(activity);
         assertThat(activity.isFinishing()).isTrue();
@@ -60,7 +63,6 @@ public class SplashActivityTest
     {
         firstLaunchPreference.set(false);
         SplashActivity activity = Robolectric.setupActivity(SplashActivity.class);
-        HierarchyInjector.inject(activity, this);
 
         assertThat(activity.isFinishing()).isFalse();
         assertThat(firstLaunchPreference.get()).isFalse();

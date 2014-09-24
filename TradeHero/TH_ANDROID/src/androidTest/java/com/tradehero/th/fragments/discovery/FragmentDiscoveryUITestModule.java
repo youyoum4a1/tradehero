@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.alert;
+package com.tradehero.th.fragments.discovery;
 
 import dagger.Module;
 
@@ -6,11 +6,11 @@ import dagger.Module;
         includes = {
         },
         injects = {
-                AlertViewFragmentTest.class,
+                DiscoveryMainFragmentTest.class,
         },
         complete = false,
         library = true
 )
-public class FragmentAlertTestModule
+public class FragmentDiscoveryUITestModule
 {
 }

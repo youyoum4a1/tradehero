@@ -1,22 +1,21 @@
 package com.tradehero.th.fragments.billing;
 
-import com.tradehero.th.fragments.billing.store.FragmentBillingStoreTestModule;
+import com.tradehero.th.fragments.billing.store.FragmentBillingStoreAppTestModule;
 import dagger.Module;
 
 @Module(
         includes = {
-                FragmentBillingStoreTestModule.class
+                FragmentBillingStoreAppTestModule.class
         },
         injects = {
                 StoreItemClickableTest.class,
                 StoreItemHasFurtherTest.class,
                 StoreItemHeaderTest.class,
                 StoreItemPromptPurchaseTest.class,
-                StoreScreenFragmentTest.class,
         },
         complete = false,
         library = true
 )
-public class FragmentBillingTestModule
+public class FragmentBillingAppTestModule
 {
 }

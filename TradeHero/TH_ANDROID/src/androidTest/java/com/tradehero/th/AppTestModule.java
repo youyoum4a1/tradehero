@@ -3,6 +3,7 @@ package com.tradehero.th;
 import com.tradehero.th.api.ApiTestModule;
 import com.tradehero.th.auth.AuthenticationTestModule;
 import com.tradehero.th.base.BaseTestModule;
+import com.tradehero.th.fragments.FragmentAppTestModule;
 import com.tradehero.th.models.ModelsTestModule;
 import com.tradehero.th.network.NetworkTestModule;
 import com.tradehero.th.network.retrofit.RetrofitTestModule;
@@ -17,6 +18,7 @@ import dagger.Module;
         includes = {
                 ApiTestModule.class,
                 BaseTestModule.class,
+                FragmentAppTestModule.class,
                 ModelsTestModule.class,
                 PersistenceTestModule.class,
                 UtilsTestModule.class,

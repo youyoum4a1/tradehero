@@ -22,7 +22,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class DashboardActivityTest
 {
-    private DashboardActivity activity;
+    private DashboardActivityExtended activity;
 
     @Inject NotificationCache notificationCache;
     @Inject DashboardNavigator navigator;

@@ -23,6 +23,11 @@ import static org.robolectric.Robolectric.shadowOf;
 public class TestTHApp extends THApp
         implements TestLifecycleApplication
 {
+    int mb = 1024*1024;
+
+    //Getting the runtime reference from system
+    Runtime runtime = Runtime.getRuntime();
+
     @Override protected void init()
     {
         super.init();
@@ -61,6 +66,12 @@ public class TestTHApp extends THApp
 
     @Override public void beforeTest(Method method)
     {
+        System.err.println("Before "
+                + method.getDeclaringClass().getCanonicalName()
+                + "."
+                + method.getName()
+                + " free "
+                + runtime.freeMemory() / mb);
     }
 
     @Override public void prepareTest(Object test)
@@ -81,7 +92,7 @@ public class TestTHApp extends THApp
         {
             // not a subject for injection
         }
-        catch (IllegalStateException e)
+        catch (IllegalArgumentException e)
         {
             // Need in-class inject
             System.out.println("Need further injection " + e.getStackTrace());
@@ -90,6 +101,31 @@ public class TestTHApp extends THApp
 
     @Override public void afterTest(Method method)
     {
+        System.err.println("After "
+                + method.getDeclaringClass().getCanonicalName()
+                + "."
+                + method.getName()
+                + " free "
+                + runtime.freeMemory() / mb);
+    }
+
+    protected void printMemory()
+    {
+        System.out.println("##### Heap utilization statistics [MB] #####");
+
+        //Print used memory
+        System.out.println("Used Memory:"
+                + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+
+        //Print free memory
+        System.out.println("Free Memory:"
+                + runtime.freeMemory() / mb);
+
+        //Print total available memory
+        System.out.println("Total Memory:" + runtime.totalMemory() / mb);
+
+        //Print Maximum available memory
+        System.out.println("Max Memory:" + runtime.maxMemory() / mb);
     }
 
     public static void staticInject(Object test)
