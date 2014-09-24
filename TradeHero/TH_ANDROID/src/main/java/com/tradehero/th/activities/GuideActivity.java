@@ -56,8 +56,8 @@ public class GuideActivity extends Activity
         ViewPager.OnPageChangeListener,
         View.OnClickListener
 {
-    private static long TIMES = (long)1000000;
-    private static long TIMES2 = (long)10000000;
+    public static long TIMES = (long)1000000;
+    public static long TIMES2 = (long)10000000;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject @DiviceID StringPreference mDeviceIDStringPreference;
@@ -108,7 +108,13 @@ public class GuideActivity extends Activity
             @Override
             public void run() {
                 viewpager.setCurrentItem((viewpager.getCurrentItem() + 1)%4, true);
-                handler.postDelayed(this, 3000);
+                if (isFinishing() || isDestroyed() || mIndicator0 == null)
+                {
+                }
+                else
+                {
+                    handler.postDelayed(this, 3000);
+                }
             }
         };
         handler.postDelayed(runnable, 3000);
@@ -316,23 +322,35 @@ public class GuideActivity extends Activity
         switch (i)
         {
             case 0:
-                mIndicator3.setBackgroundResource(R.drawable.guide_screen_indicator_off);
-                mIndicator1.setBackgroundResource(R.drawable.guide_screen_indicator_off);
-                mIndicator0.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                if (mIndicator3 != null)
+                {
+                    mIndicator3.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                    mIndicator1.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                    mIndicator0.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                }
                 break;
             case 1:
-                mIndicator0.setBackgroundResource(R.drawable.guide_screen_indicator_off);
-                mIndicator2.setBackgroundResource(R.drawable.guide_screen_indicator_off);
-                mIndicator1.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                if (mIndicator0 != null)
+                {
+                    mIndicator0.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                    mIndicator2.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                    mIndicator1.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                }
                 break;
             case 2:
-                mIndicator1.setBackgroundResource(R.drawable.guide_screen_indicator_off);
-                mIndicator3.setBackgroundResource(R.drawable.guide_screen_indicator_off);
-                mIndicator2.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                if (mIndicator1 != null)
+                {
+                    mIndicator1.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                    mIndicator3.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                    mIndicator2.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                }
                 break;
             case 3:
-                mIndicator2.setBackgroundResource(R.drawable.guide_screen_indicator_off);
-                mIndicator3.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                if (mIndicator2 != null)
+                {
+                    mIndicator2.setBackgroundResource(R.drawable.guide_screen_indicator_off);
+                    mIndicator3.setBackgroundResource(R.drawable.guide_screen_indicator_on);
+                }
                 break;
         }
     }

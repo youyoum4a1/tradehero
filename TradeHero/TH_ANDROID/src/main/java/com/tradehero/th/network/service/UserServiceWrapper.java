@@ -186,6 +186,9 @@ import retrofit.client.Response;
                     userFormDTO.pushNotificationsEnabled,
                     userFormDTO.username,
                     userFormDTO.website,
+                    userFormDTO.phoneNumber,
+                    userFormDTO.verifyCode,
+                    userFormDTO.deviceAccessToken,
                     middleCallback);
         }
         else
@@ -206,6 +209,9 @@ import retrofit.client.Response;
                     userFormDTO.pushNotificationsEnabled,
                     userFormDTO.username,
                     userFormDTO.website,
+                    userFormDTO.phoneNumber,
+                    userFormDTO.verifyCode,
+                    userFormDTO.deviceAccessToken,
                     userFormDTO.profilePicture,
                     middleCallback);
         }
@@ -369,6 +375,13 @@ import retrofit.client.Response;
                 userFormDTO.password,
                 userFormDTO.passwordConfirmation,
                 middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<Response> sendCode(String phoneNumber, Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.sendCode(phoneNumber, middleCallback);
         return middleCallback;
     }
 

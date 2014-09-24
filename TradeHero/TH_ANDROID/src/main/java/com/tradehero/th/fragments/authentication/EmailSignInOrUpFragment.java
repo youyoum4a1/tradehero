@@ -83,7 +83,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
         return map;
     }
 
-    private void register() throws JSONException
+    protected void register() throws JSONException
     {
         // In fact we let the activity take care of the rest, as it listens for this button
         onClickListener.onClick(signButton);

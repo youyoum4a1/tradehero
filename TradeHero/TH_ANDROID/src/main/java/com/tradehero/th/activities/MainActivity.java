@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
@@ -17,6 +18,7 @@ import butterknife.OnClick;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -24,14 +26,17 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentDiscovery;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
+import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -62,6 +67,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Inject Analytics analytics;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
+    @Inject @BindGuestUser static BooleanPreference mBindGuestUserPreference;
 
     @InjectView(R.id.llMainTab) LinearLayout llMainTab;
     @InjectView(R.id.llTabTrade) LinearLayout llTabTrade;
@@ -130,6 +136,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
         //enable baidu push
         pushNotificationManager.get().enablePush();
+        mBindGuestUserPreference.set(false);
     }
 
     @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabMe})
@@ -169,11 +176,14 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
     public void setTabViewAsChecked()
     {
-        imgTabMenu0.setBackgroundResource(currentTab == TAB_TRADE ? R.drawable.tab_menu0_active : R.drawable.tab_menu0_normal);
-        imgTabMenu1.setBackgroundResource(currentTab == TAB_STOCKGOD ? R.drawable.tab_menu1_active : R.drawable.tab_menu1_normal);
+        imgTabMenu0.setBackgroundResource(
+                currentTab == TAB_TRADE ? R.drawable.tab_menu0_active : R.drawable.tab_menu0_normal);
+        imgTabMenu1.setBackgroundResource(currentTab == TAB_STOCKGOD ? R.drawable.tab_menu1_active
+                : R.drawable.tab_menu1_normal);
         imgTabMenu2.setBackgroundResource(currentTab == TAB_DISCOVERY ? R.drawable.tab_menu2_active : R.drawable.tab_menu2_normal);
         imgTabMenu3.setBackgroundResource(currentTab == TAB_COMPETITION ? R.drawable.tab_menu3_active : R.drawable.tab_menu3_normal);
-        imgTabMenu4.setBackgroundResource(currentTab == TAB_ME ? R.drawable.tab_menu4_active : R.drawable.tab_menu4_normal);
+        imgTabMenu4.setBackgroundResource(
+                currentTab == TAB_ME ? R.drawable.tab_menu4_active : R.drawable.tab_menu4_normal);
         tvTabMenu0.setTextColor(currentTab == TAB_TRADE ? getResources().getColor(R.color.main_tab_text_color_active)
                 : getResources().getColor(R.color.main_tab_text_color_default));
         tvTabMenu1.setTextColor(currentTab == TAB_STOCKGOD ? getResources().getColor(R.color.main_tab_text_color_active)
@@ -182,8 +192,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                 : getResources().getColor(R.color.main_tab_text_color_default));
         tvTabMenu3.setTextColor(currentTab == TAB_COMPETITION ? getResources().getColor(R.color.main_tab_text_color_active)
                 : getResources().getColor(R.color.main_tab_text_color_default));
-        tvTabMenu4.setTextColor(currentTab == TAB_ME ? getResources().getColor(R.color.main_tab_text_color_active)
-                : getResources().getColor(R.color.main_tab_text_color_default));
+        tvTabMenu4.setTextColor(
+                currentTab == TAB_ME ? getResources().getColor(R.color.main_tab_text_color_active)
+                        : getResources().getColor(R.color.main_tab_text_color_default));
     }
 
     private void tabInit()
@@ -276,6 +287,10 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             supportInvalidateOptionsMenu();
+            if (value.isVisitor)
+            {
+                showBindGuestUserDialog();
+            }
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
@@ -327,5 +342,20 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.startActivity(intent);
+    }
+
+    private void showBindGuestUserDialog()
+    {
+        alertDialogUtil.get().popWithOkCancelButton(this, R.string.app_name,
+                R.string.guest_user_dialog_summary,
+                R.string.ok, R.string.cancel, new DialogInterface.OnClickListener()
+        {
+            @Override public void onClick(DialogInterface dialog, int which)
+            {
+                Bundle args = new Bundle();
+                args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, BindGuestUserFragment.class.getName());
+                ActivityHelper.launchDashboard(currentActivityHolder.getCurrentActivity(), args);
+            }
+        });
     }
 }

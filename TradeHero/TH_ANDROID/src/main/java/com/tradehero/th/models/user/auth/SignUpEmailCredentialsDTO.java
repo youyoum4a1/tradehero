@@ -14,6 +14,8 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
     public String firstName;
     public String lastName;
     public TypedOutput profilePicture;
+    public String phoneNumber;
+    public String verifyCode;
 
     public SignUpEmailCredentialsDTO(JSONObject object) throws JSONException
     {
@@ -32,6 +34,14 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
         {
             profilePicture = ((JSONCredentials)object).profilePicture;
         }
+        if (object.has(UserFormFactory.KEY_PHONE_NUMBER))
+        {
+            phoneNumber = object.getString(UserFormFactory.KEY_PHONE_NUMBER);
+        }
+        if (object.has(UserFormFactory.KEY_VERIFY_CODE))
+        {
+            verifyCode = object.getString(UserFormFactory.KEY_VERIFY_CODE);
+        }
     }
 
     public SignUpEmailCredentialsDTO(String email, String password, String displayName)
@@ -47,6 +57,8 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
         object.put(UserFormFactory.KEY_INVITE_CODE, inviteCode);
         object.put(UserFormFactory.KEY_FIRST_NAME, firstName);
         object.put(UserFormFactory.KEY_LAST_NAME, lastName);
+        object.put(UserFormFactory.KEY_PHONE_NUMBER, phoneNumber);
+        object.put(UserFormFactory.KEY_VERIFY_CODE, verifyCode);
     }
 
     @Override public UserFormDTO createUserFormDTO()
@@ -57,6 +69,8 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
         userFormDTO.firstName = firstName;
         userFormDTO.lastName = lastName;
         userFormDTO.profilePicture = profilePicture;
+        userFormDTO.phoneNumber = phoneNumber;
+        userFormDTO.verifyCode = verifyCode;
         return userFormDTO;
     }
 }

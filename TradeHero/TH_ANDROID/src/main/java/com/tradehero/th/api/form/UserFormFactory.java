@@ -31,6 +31,8 @@ public class UserFormFactory
     public static final String KEY_EMAIL_NOTIFICATION_ENABLED = "emailNotificationsEnabled";
     public static final String KEY_PUSH_NOTIFICATION_ENABLED = "pushNotificationsEnabled";
     public static final String KEY_PROFILE_PICTURE = "profilePicture";
+    public static final String KEY_PHONE_NUMBER = "phoneNumber";
+    public static final String KEY_VERIFY_CODE = "verifyCode";
 
     public static UserFormDTO create(JSONCredentials json)
     {
@@ -115,6 +117,14 @@ public class UserFormFactory
         if (json.profilePicture != null)
         {
             userFormDTO.profilePicture = json.profilePicture;
+        }
+        if (json.has(KEY_PHONE_NUMBER))
+        {
+            userFormDTO.phoneNumber = json.getString(KEY_PHONE_NUMBER);
+        }
+        if (json.has(KEY_VERIFY_CODE))
+        {
+            userFormDTO.verifyCode = json.getString(KEY_VERIFY_CODE);
         }
     }
 

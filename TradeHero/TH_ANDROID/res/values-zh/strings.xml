@@ -151,4 +151,11 @@
   <string name="updating">更新中...</string>
   <string name="bind_success">绑定成功</string>
   <string name="unbind_success">解绑成功</string>
+  <string name="login_verify_code">验证码:</string>
+  <string name="login_verify_code_hint">请输入验证码</string>
+  <string name="login_get_verify_code">获取验证码</string>
+  <string name="send_verify_code_success">验证码已发送，请注意查收短信</string>
+  <string name="guest_user">游客</string>
+  <string name="guest_user_dialog_summary">您的当前身份为游客，不会保存您 的账户信息，请升级为正式用户</string>
+  <string name="bind">绑定</string>
 </resources>

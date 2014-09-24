@@ -33,6 +33,8 @@ import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
+import com.tradehero.th.fragments.chinabuild.fragment.BindEmailSignUpFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.InputInviteCodeFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.MyEditAccountFragment;
@@ -507,6 +509,8 @@ import javax.inject.Singleton;
                         DefaultIntentReceiver.class,
                         UserFriendsListFragment.class,
                         UserAccountPage.class,
+                        BindGuestUserFragment.class,
+                        BindEmailSignUpFragment.class,
                         //China Build End
                 },
         staticInjections =

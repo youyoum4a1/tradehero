@@ -2,13 +2,18 @@ package com.tradehero.th.base;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.telephony.TelephonyManager;
 import com.tradehero.common.annotation.ForUser;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.activities.CurrentActivityHolder;
+import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -31,6 +36,8 @@ import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.prefs.BindGuestUser;
+import com.tradehero.th.persistence.prefs.DiviceID;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -69,6 +76,8 @@ public class THUser
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
     @Inject static LoginSignUpFormDTOFactory loginSignUpFormDTOFactory;
     @Inject static DeviceTokenHelper deviceTokenHelper;
+    @Inject @BindGuestUser static BooleanPreference mBindGuestUserPreference;
+    @Inject @DiviceID static StringPreference mDeviceIDStringPreference;
 
     public static void initialize()
     {
@@ -142,24 +151,21 @@ public class THUser
         switch (authenticationMode)
         {
             case SignUpWithEmail:
-                Timber.d("SignUpWithEmail Auth Header "+authenticator.getAuthHeader());
-                userServiceWrapper.get().signUpWithEmail(
-                        authenticator.getAuthHeader(),
-                        userFormDTO,
+                if (mBindGuestUserPreference.get())
+                {
+                    userFormDTO.deviceAccessToken = getIMEI();
+                }
+                userServiceWrapper.get().signUpWithEmail(authenticator.getAuthHeader(), userFormDTO,
                         createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
                 break;
             case SignUp:
-                Timber.d("SignUp Auth Header "+authenticator.getAuthHeader());
-                userServiceWrapper.get().signUp(
-                        authenticator.getAuthHeader(),
-                        userFormDTO,
+                userServiceWrapper.get().signUp(authenticator.getAuthHeader(), userFormDTO,
                         createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
                 break;
             case SignIn:
             case Device:
                 //use new DTO, combine login and social register
                 LoginSignUpFormDTO loginSignUpFormDTO = loginSignUpFormDTOFactory.create(userFormDTO);
-
                 // TODO save middle callback?
                 sessionServiceWrapper.get().signupAndLogin(authenticator.getAuthHeader(),
                         loginSignUpFormDTO,
@@ -395,5 +401,28 @@ public class THUser
 
         typedCredentials.remove(authenticationHeader);
         credentialsSetPreference.delete();
+    }
+
+    public static String getIMEI()
+    {
+        String imei = mDeviceIDStringPreference.get();
+        if (imei.isEmpty())
+        {
+            TelephonyManager tm = (TelephonyManager)currentActivityHolder.get()
+                    .getCurrentActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            String strIMEI = tm.getDeviceId();
+            if (strIMEI.isEmpty() || strIMEI.contains("000000000000000"))
+            {
+                strIMEI = String.valueOf((int)Math.floor((Math.random() + 1) * GuideActivity.TIMES));
+                strIMEI = strIMEI+String.valueOf((int)Math.floor((Math.random() + 1) * GuideActivity.TIMES2));
+                mDeviceIDStringPreference.set(strIMEI);
+            }
+            else
+            {
+                mDeviceIDStringPreference.set(strIMEI);
+            }
+            return strIMEI;
+        }
+        return imei;
     }
 }

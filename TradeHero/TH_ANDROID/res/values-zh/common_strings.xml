@@ -68,7 +68,7 @@
   <string name="translating">翻译中...</string>
   <string name="translation_result">翻译结果:</string>
 
-  <string name="ok">好的</string>
+  <string name="ok">确定</string>
   <string name="downloading_relations">正在加载联系人...</string>
   <string name="upgrade_now">现在升级!</string>
 </resources>

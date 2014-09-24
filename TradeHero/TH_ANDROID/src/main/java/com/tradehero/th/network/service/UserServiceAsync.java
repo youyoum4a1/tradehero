@@ -57,6 +57,9 @@ interface UserServiceAsync
             @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
             @Field("username") String username,
             @Field("website") String website,
+            @Field("phone_number") String phoneNumber,
+            @Field("verify_code") String verifyCode,
+            @Field("device_access_token") String deviceAccessToken,
             Callback<UserProfileDTO> cb);
 
     @Multipart @POST("/SignupWithEmail")
@@ -76,6 +79,9 @@ interface UserServiceAsync
             @Part("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
             @Part("username") String username,
             @Part("website") String website,
+            @Part("phone_number") String phoneNumber,
+            @Part("verify_code") String verifyCode,
+            @Part("device_access_token") String deviceAccessToken,
             @Part("profilePicture") TypedOutput profilePicture,
             Callback<UserProfileDTO> cb);
     //</editor-fold>
@@ -308,5 +314,12 @@ interface UserServiceAsync
             @Path("userId") int userId,
             @Body UpdateReferralCodeDTO updateReferralCodeDTO,
             Callback<Response> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Send Verify code">
+    @POST("/sendCode")
+    void sendCode(
+            @Query("phoneNumber") String phoneNumber,
+            Callback<Response> cb);
     //</editor-fold>
 }

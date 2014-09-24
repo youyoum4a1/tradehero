@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import com.actionbarsherlock.view.Menu;
@@ -31,8 +32,11 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
@@ -44,7 +48,12 @@ import com.tradehero.th2.R;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
@@ -56,22 +65,28 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
     private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
 
-    private ViewSwitcher mSwitcher;
-    private EditText emailEditText;
-    private EditText passwordEditText;
-    private EditText mDisplayName;
-    private Button mNextButton;
+    protected ViewSwitcher mSwitcher;
+    protected EditText emailEditText;
+    protected EditText passwordEditText;
+    protected RelativeLayout verifyCodeLayout;
+    protected EditText verifyCode;
+    protected TextView getVerifyCodeButton;
+    protected EditText mDisplayName;
+    protected Button mNextButton;
     private ImageView backButton;
-    private ImageView mPhoto;
-    private TextView mServiceText;
-    private ImageView mAgreeButton;
-    private LinearLayout mAgreeLayout;
+    protected ImageView mPhoto;
+    protected TextView mServiceText;
+    protected ImageView mAgreeButton;
+    protected LinearLayout mAgreeLayout;
     private String newImagePath;
+    private MiddleCallback<Response> sendCodeMiddleCallback;
+    protected boolean mIsPhoneNumRegister;
 
     @Inject Analytics analytics;
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject Picasso picasso;
+    @Inject UserServiceWrapper userServiceWrapper;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -97,7 +112,42 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Override protected void initSetup(View view)
     {
         this.emailEditText = (EditText) view.findViewById(R.id.authentication_sign_up_email);
+        emailEditText.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
+
+            }
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
+                mIsPhoneNumRegister = false;
+                if (charSequence.length() == 11)
+                {
+                    Pattern p = Pattern.compile("[0-9]*");
+                    Matcher m = p.matcher(charSequence);
+                    if (m.matches())
+                    {
+                        mIsPhoneNumRegister = true;
+                    }
+                }
+                if (verifyCodeLayout != null)
+                {
+                    verifyCodeLayout.setVisibility(mIsPhoneNumRegister ? View.VISIBLE : View.GONE);
+                }
+            }
+
+            @Override public void afterTextChanged(Editable editable)
+            {
+
+            }
+        });
         this.passwordEditText = (EditText) view.findViewById(R.id.authentication_sign_up_password);
+        verifyCodeLayout = (RelativeLayout) view.findViewById(R.id.login_verify_code_layout);
+        verifyCode = (EditText) view.findViewById(R.id.verify_code);
+        getVerifyCodeButton = (TextView) view.findViewById(R.id.get_verify_code_button);
+        getVerifyCodeButton.setOnClickListener(this);
         this.mDisplayName = (EditText) view.findViewById(R.id.authentication_sign_up_username);
         this.mDisplayName.addTextChangedListener(new TextWatcher()
         {
@@ -139,7 +189,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
         mNextButton = (Button) view.findViewById(R.id.btn_next);
         mNextButton.setOnClickListener(this);
-        mNextButton.setEnabled(false);
         mSwitcher = (ViewSwitcher) view.findViewById(R.id.switcher);
     }
 
@@ -257,7 +306,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         //    this.profileView.setListener(null);
         //}
         //this.profileView = null;
-
+        detachSendCodeMiddleCallback();
         if (this.signButton != null)
         {
             this.signButton.setOnClickListener(null);
@@ -293,6 +342,10 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 mNextButton.setEnabled(!mNextButton.isEnabled());
                 mAgreeButton.setImageResource(mNextButton.isEnabled() ?
                         R.drawable.register_duihao : R.drawable.register_duihao_cancel);
+                break;
+            case R.id.get_verify_code_button:
+                detachSendCodeMiddleCallback();
+                sendCodeMiddleCallback = userServiceWrapper.sendCode(emailEditText.getText().toString(), new SendCodeCallback());
                 break;
         }
     }
@@ -360,6 +413,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     public void populateUserFormMap(Map<String, Object> map)
     {
+        if (mIsPhoneNumRegister)
+        {
+            populateUserFormMapFromEditable(map, UserFormFactory.KEY_PHONE_NUMBER, emailEditText.getText());
+            populateUserFormMapFromEditable(map, UserFormFactory.KEY_VERIFY_CODE, verifyCode.getText());
+        }
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_EMAIL, emailEditText.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD, passwordEditText.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD_CONFIRM, passwordEditText.getText());
@@ -468,6 +526,28 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         {
             askImageFromLibrary();
         }
+    }
+
+    private class SendCodeCallback implements Callback<Response>
+    {
+        @Override public void success(Response response, Response response2)
+        {
+            THToast.show(R.string.send_verify_code_success);
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+        }
+    }
+
+    private void detachSendCodeMiddleCallback()
+    {
+        if (sendCodeMiddleCallback != null)
+        {
+            sendCodeMiddleCallback.setPrimaryCallback(null);
+        }
+        sendCodeMiddleCallback = null;
     }
 }
 

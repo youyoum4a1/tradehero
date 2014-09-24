@@ -12,6 +12,9 @@ public class UserFormDTO
     public String lastName;
     public String displayName;
     public String inviteCode;
+    public String phoneNumber;
+    public String verifyCode;
+    public String deviceAccessToken;
 
     //notifications settings
     public Boolean pushNotificationsEnabled;

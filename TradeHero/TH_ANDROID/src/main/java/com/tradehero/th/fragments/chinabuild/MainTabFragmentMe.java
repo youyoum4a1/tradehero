@@ -147,7 +147,14 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 picasso.load(user.picture).placeholder(R.drawable.superman_facebook).fit().error(R.drawable.superman_facebook)
                         .centerInside().into(imgMeHead);
             }
-            tvMeName.setText(user.displayName);
+            if (user.isVisitor)
+            {
+                tvMeName.setText(R.string.guest_user);
+            }
+            else
+            {
+                tvMeName.setText(user.displayName);
+            }
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
             tvAllHero.setText(String.valueOf(user.heroIds == null ? 0 : user.heroIds.size()));
         }

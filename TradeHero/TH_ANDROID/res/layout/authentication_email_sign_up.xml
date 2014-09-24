@@ -20,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
       <RelativeLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -44,7 +43,6 @@
             android:hint="@string/login_account_hint"
             android:textColorHint="#bfbfbf"
             android:background="@color/white"/>
-
         <View
             android:id="@+id/register_line"
             android:layout_width="match_parent"
@@ -52,7 +50,6 @@
             android:layout_below="@+id/register_account"
             android:layout_marginLeft="@dimen/margin_small"
             android:background="#bfbfbf"/>
-
         <TextView
             android:id="@+id/register_password"
             android:layout_width="wrap_content"
@@ -72,6 +69,52 @@
             android:hint="@string/login_password_hint"
             android:textColorHint="#bfbfbf"
             android:background="@color/white"/>
+        <RelativeLayout
+            android:id="@+id/login_verify_code_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/register_password"
+            android:background="@color/white"
+            android:visibility="gone">
+          <View
+              android:id="@+id/line"
+              android:layout_width="match_parent"
+              android:layout_height="1dp"
+              android:layout_alignParentTop="true"
+              android:layout_marginLeft="@dimen/margin_small"
+              android:background="#bfbfbf"/>
+          <TextView
+              android:id="@+id/login_verify_code_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@+id/line"
+              android:layout_margin="@dimen/margin_medium"
+              android:text="@string/login_verify_code"
+              android:textSize="@dimen/text_large"/>
+          <EditText
+              android:id="@+id/verify_code"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_toRightOf="@+id/login_verify_code_title"
+              android:layout_alignBaseline="@id/login_verify_code_title"
+              android:maxLength="4"
+              android:textSize="@dimen/text_large"
+              android:hint="@string/login_verify_code_hint"
+              android:textColorHint="#bfbfbf"
+              android:background="@color/white"/>
+          <TextView
+              android:id="@+id/get_verify_code_button"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_margin="@dimen/margin_small"
+              android:paddingLeft="@dimen/margin_small"
+              android:paddingRight="@dimen/margin_small"
+              android:layout_alignParentRight="true"
+              android:gravity="center"
+              android:text="@string/login_get_verify_code"
+              android:textColor="@color/white"
+              android:background="@drawable/basic_blue_selector_round_corner"/>
+            </RelativeLayout>
       </RelativeLayout>
       <LinearLayout
           android:id="@+id/authentication_agreement"
@@ -85,7 +128,7 @@
             android:id="@+id/authentication_agree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/register_duihao_cancel"/>
+            android:background="@drawable/register_duihao"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

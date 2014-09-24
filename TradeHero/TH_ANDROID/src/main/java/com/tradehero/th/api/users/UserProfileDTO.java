@@ -18,6 +18,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public String biography;
     public String location;
     public String website;
+    public boolean isVisitor;
 
     public List<Integer> heroIds;
     public List<Integer> freeHeroIds;

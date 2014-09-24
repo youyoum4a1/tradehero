@@ -45,6 +45,7 @@ public class PreferenceModule
     private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
     private static final String PREF_FIRST_LAUNCH_FLAG = "PREF_FIRST_LAUNCH_FLAG";
     private static final String PREF_FIRST_SHOW_REFERRAL_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
+    private static final String PREF_BIND_GUEST_USER_FLAG = "PREF_BIND_GUEST_USER_FLAG";
     private static final String PREF_DEVICE_ID_FLAG = "PREF_DEVICE_ID_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
@@ -156,5 +157,10 @@ public class PreferenceModule
     @Provides @Singleton @DiviceID StringPreference provideDeviceIDPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new StringPreference(sharedPreferences, PREF_DEVICE_ID_FLAG, "");
+    }
+
+    @Provides @Singleton @BindGuestUser BooleanPreference provideBindGuestPreference(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_BIND_GUEST_USER_FLAG, false);
     }
 }
