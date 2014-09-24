@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -32,6 +33,7 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.ShareSellDialogFragment;
 import com.tradehero.th.fragments.trade.AlertDialogUtilBuySell;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -92,6 +94,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     @InjectView(R.id.llBuySaleLine5) LinearLayout llBuySaleLine5;//预估盈利
     @InjectView(R.id.llBuySaleLine7) LinearLayout llBuySaleLine7;//分享到社交网络
+    @InjectView(R.id.share_to_social_checkbox) CheckBox mShareToSocialCheckBox;//分享到社交网络
     @InjectView(R.id.llBuySaleLineBottom) LinearLayout llBuySaleLineBottom;//确认出售
 
     @InjectView(R.id.buy_sell_item_title0) TextView tvTitle0;//卖出价格 or 买入价格
@@ -721,7 +724,14 @@ public class BuySaleSecurityFragment extends DashboardFragment
                 THToast.show("出售成功!");
             }
 
-            popCurrentFragment();
+            if (mShareToSocialCheckBox.isChecked())
+            {
+                ShareSellDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager(), tvBuySaleMayProfit.getText().toString());
+            }
+            else
+            {
+                popCurrentFragment();
+            }
             //if (buySellTransactionListener != null)
             //{
             //    buySellTransactionListener.onTransactionSuccessful(isBuy);

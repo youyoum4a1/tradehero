@@ -158,4 +158,13 @@
   <string name="guest_user">游客</string>
   <string name="guest_user_dialog_summary">您的当前身份为游客，不会保存您 的账户信息，请升级为正式用户</string>
   <string name="bind">绑定</string>
+  <string name="share_to_social">分享到社交网络</string>
+  <string name="share_sell_title">恭喜你，盈利</string>
+  <string name="share_sell_title2">快去跟小伙伴们炫耀下吧~</string>
+  <string name="share_tips">小贴士：如果不想弹出分享界面</string>
+  <string name="share_tips2">可以在出售时把分享开关关掉</string>
+  <string name="share_sell_title_money">%1$s元！</string>
+  <string name="share_sell_to_wechat_title">新一代股神闪亮登场！\n共盈利 %1$s 元人民币\n小伙伴们快一起来赚钱吧！\n
+    http://www.tradehero.mobi
+  </string>
 </resources>

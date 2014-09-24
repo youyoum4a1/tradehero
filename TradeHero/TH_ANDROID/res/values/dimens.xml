@@ -147,6 +147,7 @@
   <!--please use this instead of common margin-->
   <dimen name="margin_xsmall">5dp</dimen>
   <dimen name="margin_small">10dp</dimen>
+  <dimen name="margin_xmedium">15dp</dimen>
   <dimen name="margin_medium">20dp</dimen>
   <dimen name="margin_large">30dp</dimen>
   <dimen name="margin_xlarge">40dp</dimen>

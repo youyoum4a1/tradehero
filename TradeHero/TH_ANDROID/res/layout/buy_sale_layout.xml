@@ -164,9 +164,10 @@
       android:layout_below="@id/llBuySaleLine6"
       >
 
-    <CheckBox style="@style/CustomCheckboxTheme"
-
-        android:text="  分享到社交网络"/>
+    <CheckBox
+        android:id="@+id/share_to_social_checkbox"
+        style="@style/CustomCheckboxTheme"
+        android:text="@string/share_to_social"/>
   </LinearLayout>
 
 

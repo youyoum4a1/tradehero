@@ -16,10 +16,10 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.WXMediaMessage;
+import com.tencent.mm.sdk.openapi.WXTextObject;
 import com.tencent.mm.sdk.openapi.WXWebpageObject;
 import com.tencent.mm.sdk.platformtools.Util;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
@@ -30,6 +30,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th2.R;
 import dagger.Lazy;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -103,30 +104,43 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
     private WXMediaMessage buildMessage(WeChatMessageType weChatMessageType)
     {
-        WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = Constants.WECHAT_SHARE_URL;
-
-        WXMediaMessage weChatMsg = new WXMediaMessage(webpage);
-        weChatMsg.description = getString(weChatMessageType.getTitleResId());
-        if (weChatDTO != null && weChatDTO.title != null && !weChatDTO.title.isEmpty())
+        if (weChatMessageType == WeChatMessageType.ShareSell || weChatMessageType == WeChatMessageType.ShareSellToTimeline)
         {
-            weChatMsg.title = weChatDTO.title;
-            weChatMsg.description = weChatDTO.title;
+            WXTextObject textObj = new WXTextObject();
+            textObj.text = weChatDTO.title;
+            WXMediaMessage msg = new WXMediaMessage();
+            msg.mediaObject = textObj;
+            msg.title = weChatDTO.title;
+            msg.description = weChatDTO.title;
+            return msg;
         }
         else
         {
-            weChatMsg.title = weChatMsg.description;
-        }
-        int i = 0;
-        while (weChatDTO != null && weChatDTO.imageURL != null && mBitmap == null && i < 200)
-        {
-            i++;
-        }
-        initBitmap();
-        weChatMsg.thumbData = Util.bmpToByteArray(mBitmap, true);
-        mBitmap.recycle();
+            WXWebpageObject webpage = new WXWebpageObject();
+            webpage.webpageUrl = Constants.WECHAT_SHARE_URL;
 
-        return weChatMsg;
+            WXMediaMessage weChatMsg = new WXMediaMessage(webpage);
+            weChatMsg.description = getString(weChatMessageType.getTitleResId());
+            if (weChatDTO != null && weChatDTO.title != null && !weChatDTO.title.isEmpty())
+            {
+                weChatMsg.title = weChatDTO.title;
+                weChatMsg.description = weChatDTO.title;
+            }
+            else
+            {
+                weChatMsg.title = weChatMsg.description;
+            }
+            int i = 0;
+            while (weChatDTO != null && weChatDTO.imageURL != null && mBitmap == null && i < 200)
+            {
+                i++;
+            }
+            initBitmap();
+            weChatMsg.thumbData = Util.bmpToByteArray(mBitmap, true);
+            mBitmap.recycle();
+
+            return weChatMsg;
+        }
     }
 
     private void loadImage()
@@ -184,7 +198,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         SendMessageToWX.Req weChatReq = new SendMessageToWX.Req();
         weChatReq.transaction = String.valueOf(System.currentTimeMillis());
         //not sure for transaction, maybe identify id?
-        if(weChatDTO.type==WeChatMessageType.Invite)
+        if(weChatDTO.type == WeChatMessageType.Invite || weChatDTO.type == WeChatMessageType.ShareSell)
         {
             weChatReq.scene = SendMessageToWX.Req.WXSceneSession;
         }
