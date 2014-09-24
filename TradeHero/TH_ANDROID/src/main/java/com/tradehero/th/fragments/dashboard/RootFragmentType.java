@@ -31,21 +31,12 @@ public enum RootFragmentType
     ME(R.layout.home_selector,
             R.string.dashboard_timeline, R.string.dashboard_timeline_key,
             R.drawable.icn_menu_home, MeTimelineFragment.class),
-    HOME(R.layout.tab_indicator_holo,
-            R.string.dashboard_home, R.string.dashboard_home_key,
-            R.drawable.icn_menu_home, HomeFragment.class),
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
             R.drawable.icn_menu_trending, TrendingFragment.class),
     COMMUNITY(R.layout.tab_indicator_holo,
             R.string.dashboard_community, R.string.dashboard_community_key,
             R.drawable.icn_menu_leaderboards, LeaderboardCommunityFragment.class),
-    ACADEMY(R.layout.tab_indicator_holo,
-            R.string.dashboard_education, R.string.dashboard_education_key,
-            R.drawable.icn_menu_compass_white, VideoCategoriesFragment.class),
-    UPDATE_CENTER(R.layout.update_center_selector,
-            R.string.dashboard_message_center, R.string.dashboard_message_center_key,
-            R.color.transparent, UpdateCenterFragment.class),
     REFERRAL(R.layout.tab_indicator_holo,
             R.string.dashboard_referral, R.string.dashboard_referral_key,
             R.drawable.icn_menu_referral, FriendsInvitationFragment.class),
@@ -63,8 +54,10 @@ public enum RootFragmentType
             R.drawable.icn_menu_settings, AdminSettingsFragment.class),
     DISCOVERY(R.layout.tab_indicator_holo,
             R.string.discovery, R.string.dashboard_discovery_key,
-            R.drawable.icn_menu_compass_white, DiscoveryMainFragment.class)
-    ;
+            R.drawable.icn_menu_compass_white, DiscoveryMainFragment.class),
+    DIVIDER(R.layout.residemenu_item_divider,
+            R.string.dashboard_divider, R.string.dashboard_divider_key,
+            R.drawable.icn_menu_settings, null);
 
     private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
 
@@ -96,7 +89,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, TRENDING, COMMUNITY, DISCOVERY, REFERRAL, CONTEST_CENTER, STORE, SETTING
+                TIMELINE, DIVIDER, TRENDING, COMMUNITY, DISCOVERY, REFERRAL, CONTEST_CENTER, DIVIDER, STORE, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);

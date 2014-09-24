@@ -60,10 +60,14 @@ public class AppContainerImpl implements AppContainer
                             navigator.pushFragment(StoreScreenFragment.class);
                             return;
                         }
-                        if (tabType == RootFragmentType.SETTING)
+                        else if (tabType == RootFragmentType.SETTING)
                         {
                             navigator.goToTab(RootFragmentType.ME);
                             navigator.pushFragment(SettingsFragment.class);
+                            return;
+                        }
+                        else if(tabType == RootFragmentType.DIVIDER)
+                        {
                             return;
                         }
                         navigator.goToTab(tabType);

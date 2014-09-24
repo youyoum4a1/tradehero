@@ -21,5 +21,6 @@
   <string name="dashboard_menu_settings_key" translatable="false">key_settings</string>
   <string name="dashboard_discovery_key" translatable="false">key_discovery</string>
   <string name="dashboard_admin_settings_key" translatable="false">key_admin_settings</string>
+  <string name="dashboard_divider_key" translatable="false">key_divider</string>
 
 </resources>
