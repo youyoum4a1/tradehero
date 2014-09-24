@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition.specific;
 
-import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.specific.etoro.EToroProviderSpecificResourcesDTO;
@@ -9,7 +9,6 @@ import com.tradehero.th.api.competition.specific.macquarie.PhillipMacquarieProvi
 import javax.inject.Inject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class ProviderSpecificResourcesFactory
 {
@@ -21,12 +20,12 @@ public class ProviderSpecificResourcesFactory
     //</editor-fold>
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public ProviderSpecificResourcesDTO createResources(@Nullable ProviderCompactDTO providerCompactDTO)
+    public ProviderSpecificResourcesDTO createResources(@Nullable ProviderDTO providerDTO)
     {
         ProviderSpecificResourcesDTO created = null;
-        if (providerCompactDTO != null)
+        if (providerDTO != null)
         {
-            created = createResources(providerCompactDTO.getProviderId());
+            created = createResources(providerDTO.getProviderId());
         }
         return created;
     }

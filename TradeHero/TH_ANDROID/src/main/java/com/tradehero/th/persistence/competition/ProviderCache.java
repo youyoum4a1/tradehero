@@ -105,7 +105,7 @@ import org.jetbrains.annotations.Nullable;
 
         List<ProviderDTO> previousValues = new ArrayList<>();
 
-        for (@NotNull ProviderDTO providerDTO: values)
+        for (@NotNull ProviderDTO providerDTO : values)
         {
             previousValues.add(put(providerDTO.getProviderId(), providerDTO));
         }

@@ -10,9 +10,6 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.api.ObjectMapperWrapper;
-import com.tradehero.th.api.competition.ProviderCompactDTO;
-import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
-import com.tradehero.th.api.competition.ProviderCompactDTOJacksonModule;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTODeserialiser;
 import com.tradehero.th.api.competition.ProviderDTOJacksonModule;
@@ -242,11 +239,6 @@ public class RetrofitModule
         return deserialiser;
     }
 
-    @Provides JsonDeserializer<ProviderCompactDTO> providesProviderCompactDTODeserialiser(ProviderCompactDTODeserialiser deserialiser)
-    {
-        return deserialiser;
-    }
-
     @Provides JsonDeserializer<ProviderDTO> providesProviderDTODeserialiser(ProviderDTODeserialiser deserialiser)
     {
         return deserialiser;
@@ -268,12 +260,10 @@ public class RetrofitModule
             ObjectMapperWrapper objectMapper,
             UserFriendsDTOJacksonModule userFriendsDTOModule,
             PositionDTOJacksonModule positionDTOModule,
-            ProviderCompactDTOJacksonModule providerCompactDTOModule,
             ProviderDTOJacksonModule providerDTOModule)
     {
         objectMapper.registerModule(userFriendsDTOModule);
         objectMapper.registerModule(positionDTOModule);
-        objectMapper.registerModule(providerCompactDTOModule);
         objectMapper.registerModule(providerDTOModule);
 
         // TODO confirm this is correct here

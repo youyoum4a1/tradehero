@@ -9,14 +9,14 @@ import com.tradehero.th.api.competition.specific.ProviderSpecificsPopulator;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
-abstract public class ProviderCompactDTODeserialiserBase<ProviderCompactDTOType extends ProviderCompactDTO>
+abstract public class ProviderDTODeserialiserBase<ProviderCompactDTOType extends ProviderDTO>
         extends StdDeserializer<ProviderCompactDTOType>
 {
     @NotNull protected final ObjectMapper innerMapper;
     @NotNull protected final ProviderSpecificsPopulator providerSpecificsPopulator;
 
     //<editor-fold desc="Constructors">
-    protected ProviderCompactDTODeserialiserBase(
+    protected ProviderDTODeserialiserBase(
             @NotNull ObjectMapper objectMapper,
             @NotNull ProviderSpecificsPopulator providerSpecificsPopulator)
     {

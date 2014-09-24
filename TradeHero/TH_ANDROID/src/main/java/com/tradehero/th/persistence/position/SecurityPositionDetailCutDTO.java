@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.position;
 
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
@@ -16,7 +15,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.competition.ProviderCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import java.util.List;
@@ -37,7 +35,7 @@ class SecurityPositionDetailCutDTO implements DTO
             @NotNull SecurityCompactCache securityCompactCache,
             @NotNull PortfolioCache portfolioCache,
             @NotNull PositionCompactCache positionCompactCache,
-            @NotNull ProviderCompactCache providerCompactCache,
+            @NotNull ProviderCache providerCache,
             @NotNull UserBaseKey userBaseKey)
     {
         if (securityPositionDetailDTO.security != null)
@@ -67,7 +65,7 @@ class SecurityPositionDetailCutDTO implements DTO
             this.portfolioId = null;
         }
 
-        providerCompactCache.put(securityPositionDetailDTO.providers);
+        providerCache.put(securityPositionDetailDTO.providers);
 
         this.providerIds = ProviderDTO.getProviderIds(securityPositionDetailDTO.providers);
 
@@ -78,7 +76,7 @@ class SecurityPositionDetailCutDTO implements DTO
             @NotNull SecurityCompactCache securityCompactCache,
             @NotNull PortfolioCache portfolioCache,
             @NotNull PositionCompactCache positionCompactCache,
-            @NotNull ProviderCompactCache providerCompactCache,
+            @NotNull ProviderCache providerCache,
             @NotNull UserBaseKey userBaseKey)
     {
         SecurityCompactDTO cachedSecurity = null;
@@ -108,7 +106,7 @@ class SecurityPositionDetailCutDTO implements DTO
             }
         }
 
-        ProviderCompactDTOList cachedProviderDTOs = providerCompactCache.get(providerIds);
+        ProviderDTOList cachedProviderDTOs = providerCache.get(providerIds);
         if (cachedProviderDTOs != null && cachedProviderDTOs.hasNullItem())
         {
             return null;

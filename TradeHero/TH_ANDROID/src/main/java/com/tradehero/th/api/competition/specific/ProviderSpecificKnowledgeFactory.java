@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition.specific;
 
-import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.specific.macquarie.MacquarieProviderSpecificKnowledgeDTO;
@@ -9,7 +9,6 @@ import com.tradehero.th.api.competition.specific.sgxtockwhiz.SgxStockWhizProvide
 import javax.inject.Inject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class ProviderSpecificKnowledgeFactory
 {
@@ -21,12 +20,12 @@ public class ProviderSpecificKnowledgeFactory
     //</editor-fold>
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public ProviderSpecificKnowledgeDTO createKnowledge(@Nullable ProviderCompactDTO providerCompactDTO)
+    public ProviderSpecificKnowledgeDTO createKnowledge(@Nullable ProviderDTO providerDTO)
     {
         ProviderSpecificKnowledgeDTO created = null;
-        if (providerCompactDTO != null)
+        if (providerDTO != null)
         {
-            created = createKnowledge(providerCompactDTO.getProviderId());
+            created = createKnowledge(providerDTO.getProviderId());
         }
         return created;
     }

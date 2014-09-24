@@ -7,7 +7,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.competition.ProviderCompactCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +16,6 @@ public class DTOProcessorUpdateCountryCode implements DTOProcessor<UpdateCountry
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final ProviderListCache providerListCache;
     @NotNull private final ProviderCache providerCache;
-    @NotNull private final ProviderCompactCache providerCompactCache;
     @NotNull private final UserBaseKey playerId;
     @NotNull private final UpdateCountryCodeFormDTO updateCountryCodeFormDTO;
 
@@ -25,14 +23,12 @@ public class DTOProcessorUpdateCountryCode implements DTOProcessor<UpdateCountry
             @NotNull UserProfileCache userProfileCache,
             @NotNull ProviderListCache providerListCache,
             @NotNull ProviderCache providerCache,
-            @NotNull ProviderCompactCache providerCompactCache,
             @NotNull UserBaseKey playerId,
             @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         this.userProfileCache = userProfileCache;
         this.providerListCache = providerListCache;
         this.providerCache = providerCache;
-        this.providerCompactCache = providerCompactCache;
         this.playerId = playerId;
         this.updateCountryCodeFormDTO = updateCountryCodeFormDTO;
     }
@@ -49,7 +45,7 @@ public class DTOProcessorUpdateCountryCode implements DTOProcessor<UpdateCountry
             }
             userProfileCache.getOrFetchAsync(playerId, true);
 
-            providerCompactCache.invalidateAll();
+            providerCache.invalidateAll();
             providerCache.invalidateAll();
             providerListCache.invalidateAll();
             providerListCache.getOrFetchAsync(new ProviderListKey(), true);

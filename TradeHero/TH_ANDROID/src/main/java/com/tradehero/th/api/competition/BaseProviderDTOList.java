@@ -6,12 +6,12 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import org.jetbrains.annotations.NotNull;
 
-public class BaseProviderCompactDTOList<ProviderDTOType extends ProviderCompactDTO>
+public class BaseProviderDTOList<ProviderDTOType extends ProviderDTO>
         extends BaseArrayList<ProviderDTOType>
     implements DTO
 {
     //<editor-fold desc="Constructors">
-    public BaseProviderCompactDTOList()
+    public BaseProviderDTOList()
     {
         super();
     }
@@ -21,7 +21,7 @@ public class BaseProviderCompactDTOList<ProviderDTOType extends ProviderCompactD
     {
         OwnedPortfolioIdList ownedPortfolioIds = new OwnedPortfolioIdList();
         OwnedPortfolioId providerPortfolioId;
-        for (ProviderCompactDTO providerDTO : this)
+        for (ProviderDTO providerDTO : this)
         {
             providerPortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
             if (providerPortfolioId != null)
@@ -35,7 +35,7 @@ public class BaseProviderCompactDTOList<ProviderDTOType extends ProviderCompactD
     @NotNull public ProviderIdList createKeys()
     {
         ProviderIdList list = new ProviderIdList();
-        for (@NotNull ProviderCompactDTO providerDTO : this)
+        for (@NotNull ProviderDTO providerDTO : this)
         {
             list.add(providerDTO.getProviderId());
         }

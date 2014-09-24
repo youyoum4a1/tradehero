@@ -1,6 +1,6 @@
 package com.tradehero.th.models.security;
 
-import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -30,11 +30,11 @@ public class DTOProcessorSecurityPositionReceived implements DTOProcessor<Securi
         }
         if (value.providers != null)
         {
-            for (@NotNull ProviderCompactDTO providerCompactDTO : value.providers)
+            for (@NotNull ProviderDTO providerDTO : value.providers)
             {
-                if (providerCompactDTO.associatedPortfolio != null)
+                if (providerDTO.associatedPortfolio != null)
                 {
-                    providerCompactDTO.associatedPortfolio.userId = currentUserId.get();
+                    providerDTO.associatedPortfolio.userId = currentUserId.get();
                 }
             }
         }

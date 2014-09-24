@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.trade;
 
 import android.text.Editable;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.competition.ProviderCompactDTOList;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -74,7 +74,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
         mockPortfolioDTO.cashBalance = CASH_BALANCE;
         mockPortfolioDTO.currencyDisplay = "US$";
         mockPortfolioDTO.currencyISO = "USD";
-        ProviderCompactDTOList mockProviderCompactsDTOList = new ProviderCompactDTOList();
+        ProviderDTOList mockProvidersDTOList = new ProviderDTOList();
         int firstTradeAllTime = 0;
 
         SecurityPositionDetailDTO mockPositionDetailDTO =
@@ -82,7 +82,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
                         mockSecurityCompactDTO,
                         mockPositionsDTOCompactList,
                         mockPortfolioDTO,
-                        mockProviderCompactsDTOList,
+                        mockProvidersDTOList,
                         firstTradeAllTime);
 
         securityCompactCache.put(securityId, mockSecurityCompactDTO);

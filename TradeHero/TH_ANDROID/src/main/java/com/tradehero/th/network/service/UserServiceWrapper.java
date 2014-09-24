@@ -47,7 +47,6 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.competition.ProviderCompactCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
@@ -79,7 +78,6 @@ import retrofit.client.Response;
     @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
     @NotNull private final Lazy<ProviderListCache> providerListCache;
     @NotNull private final Lazy<ProviderCache> providerCache;
-    @NotNull private final Lazy<ProviderCompactCache> providerCompactCache;
     @NotNull private final Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache;
 
     //<editor-fold desc="Constructors">
@@ -95,7 +93,6 @@ import retrofit.client.Response;
             @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache,
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull Lazy<ProviderCache> providerCache,
-            @NotNull Lazy<ProviderCompactCache> providerCompactCache,
             @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache)
     {
         this.userService = userService;
@@ -109,7 +106,6 @@ import retrofit.client.Response;
         this.leaderboardFriendsCache = leaderboardFriendsCache;
         this.providerListCache = providerListCache;
         this.providerCache = providerCache;
-        this.providerCompactCache = providerCompactCache;
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
     }
     //</editor-fold>
@@ -894,7 +890,6 @@ import retrofit.client.Response;
                 userProfileCache.get(),
                 providerListCache.get(),
                 providerCache.get(),
-                providerCompactCache.get(),
                 playerId,
                 updateCountryCodeFormDTO);
     }

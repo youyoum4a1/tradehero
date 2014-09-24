@@ -1,7 +1,7 @@
 package com.tradehero.th.api.provider;
 
 import com.tradehero.th.api.BaseApiTestClass;
-import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderDTO;
 
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import java.io.InputStream;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
-abstract public class ProviderCompactDTODeserialiserTestBase<ProviderCompactDTOType extends ProviderCompactDTO>
+abstract public class ProviderDTODeserialiserTestBase<ProviderCompactDTOType extends ProviderDTO>
         extends BaseApiTestClass
 {
     protected InputStream providerDTOBody1Stream;

@@ -1,13 +1,13 @@
 package com.tradehero.th.models.provider;
 
-import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import org.jetbrains.annotations.NotNull;
 
-public class DTOProcessorProviderCompactReceived implements DTOProcessor<ProviderCompactDTO>
+public class DTOProcessorProviderCompactReceived implements DTOProcessor<ProviderDTO>
 {
     @NotNull private final DTOProcessor<PortfolioCompactDTO> portfolioCompactProcessor;
 
@@ -18,7 +18,7 @@ public class DTOProcessorProviderCompactReceived implements DTOProcessor<Provide
     }
     //</editor-fold>
 
-    @Override public ProviderCompactDTO process(ProviderCompactDTO value)
+    @Override public ProviderDTO process(ProviderDTO value)
     {
         if (value != null && value.associatedPortfolio != null)
         {

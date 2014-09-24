@@ -8,7 +8,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-public class ProviderDTODeserialiser extends ProviderCompactDTODeserialiserBase<ProviderDTO>
+public class ProviderDTODeserialiser extends ProviderDTODeserialiserBase<ProviderDTO>
 {
     //<editor-fold desc="Constructors">
     @Inject protected ProviderDTODeserialiser(

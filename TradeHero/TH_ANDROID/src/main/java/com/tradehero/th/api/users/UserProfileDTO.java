@@ -1,18 +1,15 @@
 package com.tradehero.th.api.users;
 
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
-import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class UserProfileDTO extends UserProfileCompactDTO
 {
@@ -66,7 +63,6 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public List<UserAlertPlanDTO> userAlertPlans;
     public List<UserCreditPlanDTO> userCreditPlans;
-    public List<ProviderDTO> enrolledProviders;
 
     public boolean competitionAutoEnrollOnFirstLaunch;
     public LeaderboardDTO mostSkilledLbmu;
@@ -213,7 +209,6 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", alertCount=" + alertCount +
                 ", tradesSharedCount_FB=" + tradesSharedCount_FB +
                 ", userAlertPlans=" + userAlertPlans +
-                ", enrolledProviders=" + enrolledProviders +
                 '}';
     }
 }

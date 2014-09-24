@@ -1,13 +1,13 @@
 package com.tradehero.th.models.provider;
 
-import com.tradehero.th.api.competition.BaseProviderCompactDTOList;
-import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.BaseProviderDTOList;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.models.DTOProcessor;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorProviderCompactListReceivedBase<
-        ProviderCompactDTOType extends ProviderCompactDTO,
-        ProviderCompactDTOListType extends BaseProviderCompactDTOList<? extends ProviderCompactDTOType>>
+        ProviderCompactDTOType extends ProviderDTO,
+        ProviderCompactDTOListType extends BaseProviderDTOList<? extends ProviderCompactDTOType>>
         implements DTOProcessor<ProviderCompactDTOListType>
 {
     @NotNull private final DTOProcessor<ProviderCompactDTOType> providerCompactProcessor;

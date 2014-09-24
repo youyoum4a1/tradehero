@@ -16,10 +16,9 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(THRobolectricTestRunner.class)
 public class ProviderDTODeserialiserTest
-    extends ProviderCompactDTODeserialiserTestBase<ProviderDTO>
+    extends ProviderDTODeserialiserTestBase<ProviderDTO>
 {
     @Inject @ForApp protected ObjectMapper normalMapper;
-    private InputStream providerDTOBody1Stream;
 
     @Before public void setUp() throws IOException
     {

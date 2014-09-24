@@ -1,8 +1,6 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.HelpVideoDTOList;
-import com.tradehero.th.api.competition.ProviderCompactDTO;
-import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
@@ -18,8 +16,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderCompactReceived;
-import com.tradehero.th.models.provider.DTOProcessorProviderListReceived;
-import com.tradehero.th.models.provider.DTOProcessorProviderReceived;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
@@ -48,52 +44,27 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Providers">
-    private DTOProcessor<ProviderCompactDTO> createProcessorProviderCompactReceived()
+    private DTOProcessor<ProviderDTO> createProcessorProviderCompactReceived()
     {
         return new DTOProcessorProviderCompactReceived(currentUserId);
     }
 
-    private DTOProcessor<ProviderDTO> createProcessorProviderReceived()
-    {
-        return new DTOProcessorProviderReceived(createProcessorProviderCompactReceived());
-    }
-
-    private DTOProcessor<ProviderCompactDTOList> createProcessorProviderCompactListReceived()
+    private DTOProcessor<ProviderDTOList> createProcessorProviderCompactListReceived()
     {
         return new DTOProcessorProviderCompactListReceived(createProcessorProviderCompactReceived());
     }
 
-    private DTOProcessor<ProviderDTOList> createProcessorProviderListReceived()
-    {
-        return new DTOProcessorProviderListReceived(createProcessorProviderReceived());
-    }
-
-    @NotNull public ProviderCompactDTOList getProviderCompacts()
-    {
-        return createProcessorProviderCompactListReceived().process(
-                this.providerService.getProviderCompacts());
-    }
-
     @NotNull public ProviderDTOList getProviders()
     {
-        return createProcessorProviderListReceived().process(
+        return createProcessorProviderCompactListReceived().process(
                 this.providerService.getProviders());
-    }
-
-    @NotNull public MiddleCallback<ProviderCompactDTOList> getProviderCompacts(@Nullable Callback<ProviderCompactDTOList> callback)
-    {
-        MiddleCallback<ProviderCompactDTOList> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createProcessorProviderCompactListReceived());
-        this.providerServiceAsync.getProviderCompacts(middleCallback);
-        return middleCallback;
     }
 
     @NotNull public MiddleCallback<ProviderDTOList> getProviders(@Nullable Callback<ProviderDTOList> callback)
     {
         MiddleCallback<ProviderDTOList> middleCallback = new BaseMiddleCallback<>(
                 callback,
-                createProcessorProviderListReceived());
+                createProcessorProviderCompactListReceived());
         this.providerServiceAsync.getProviders(middleCallback);
         return middleCallback;
     }
@@ -227,6 +198,4 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
-
-
 }
