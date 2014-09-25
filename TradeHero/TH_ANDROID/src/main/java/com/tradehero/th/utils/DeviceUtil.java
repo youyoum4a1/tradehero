@@ -55,7 +55,7 @@ public final class DeviceUtil
             @Override public void run()
             {
                 View viewToUse = viewRef.get();
-                if (viewToUse != null)
+                if (viewToUse != null && viewToUse.isFocused())
                 {
                     InputMethodManager inputManager = getInputMethodManager(viewToUse.getContext());
                     inputManager.showSoftInput(viewToUse, 0);
