@@ -2,14 +2,11 @@ package com.tradehero.th.fragments.authentication;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -38,12 +35,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
     private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
 
-    private ProfileInfoView profileView;
-    private EditText emailEditText;
-    private ImageView backButton;
-
     @Inject Analytics analytics;
     @Inject DashboardNavigator navigator;
+
+    @InjectView(R.id.profile_info) ProfileInfoView profileView;
+    @InjectView(R.id.authentication_sign_up_email) EditText emailEditText;
 
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
@@ -82,12 +78,9 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
     {
         FocusableOnTouchListener touchListener = new FocusableOnTouchListener();
 
-        this.profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
-        this.emailEditText = (EditText) view.findViewById(R.id.authentication_sign_up_email);
-
         this.profileView.setOnTouchListenerOnFields(touchListener);
         this.profileView.addValidationListenerOnFields(this);
-        this.profileView.setListener(createProfileViewListener());
+        this.profileView.setListener(new EmailSignUpProfileViewListener());
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -142,8 +135,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
             this.profileView.setNullOnFields();
             this.profileView.setListener(null);
         }
-        this.profileView = null;
-
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -165,35 +156,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
         return map;
     }
 
-    protected void askImageFromLibrary()
-    {
-        Intent libraryIntent = new Intent(Intent.ACTION_PICK);
-        libraryIntent.setType("image/jpeg");
-        startActivityForResult(libraryIntent, REQUEST_GALLERY);
-    }
-
-    protected void askImageFromCamera()
-    {
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        //cameraIntent.setType("image/jpeg");
-        startActivityForResult(cameraIntent, REQUEST_CAMERA);
-    }
-
-    public String getPath(Uri uri)
-    {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
-    protected ProfileInfoView.Listener createProfileViewListener()
-    {
-        return new EmailSignUpProfileViewListener();
-    }
-
     protected class EmailSignUpProfileViewListener implements ProfileInfoView.Listener
     {
         @Override public void onUpdateRequested()
@@ -203,12 +165,16 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
 
         @Override public void onImageFromCameraRequested()
         {
-            askImageFromCamera();
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            //cameraIntent.setType("image/jpeg");
+            startActivityForResult(cameraIntent, REQUEST_CAMERA);
         }
 
         @Override public void onImageFromLibraryRequested()
         {
-            askImageFromLibrary();
+            Intent libraryIntent = new Intent(Intent.ACTION_PICK);
+            libraryIntent.setType("image/jpeg");
+            startActivityForResult(libraryIntent, REQUEST_GALLERY);
         }
     }
 }

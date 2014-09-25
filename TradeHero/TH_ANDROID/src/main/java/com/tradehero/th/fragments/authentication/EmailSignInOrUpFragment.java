@@ -5,8 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import butterknife.InjectView;
+import butterknife.ButterKnife;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -22,21 +21,24 @@ import java.util.Map;
 abstract public class EmailSignInOrUpFragment extends Fragment
         implements ValidationListener
 {
-    abstract public int getDefaultViewId ();
+    abstract public int getDefaultViewId();
+
     abstract protected void initSetup(View view);
+
     abstract protected void forceValidateFields();
 
     abstract public boolean areFieldsValid();
 
-    @InjectView(R.id.authentication_back_button) ImageView backButton;
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(getDefaultViewId(), container, false);
+        return inflater.inflate(getDefaultViewId(), container, false);
+    }
 
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         initSetup(view);
-        setHasOptionsMenu(true);
-        return view;
     }
 
     @Override public void notifyValidation(ValidationMessage message)
@@ -67,12 +69,12 @@ abstract public class EmailSignInOrUpFragment extends Fragment
         }
     }
 
-    public JSONCredentials getUserFormJSON ()
+    public JSONCredentials getUserFormJSON()
     {
         return new JSONCredentials(getUserFormMap());
     }
 
-    protected Map<String, Object> getUserFormMap ()
+    protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = new HashMap<>();
         map.put(UserFormFactory.KEY_TYPE, EmailCredentialsDTO.EMAIL_AUTH_TYPE);

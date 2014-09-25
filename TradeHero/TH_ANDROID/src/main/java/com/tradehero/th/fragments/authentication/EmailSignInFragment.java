@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -35,7 +34,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
-    implements View.OnClickListener
 {
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
@@ -47,7 +45,11 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @InjectView(R.id.authentication_sign_in_email) SelfValidatedText email;
     @InjectView(R.id.et_pwd_login) ValidatedPasswordText password;
-    @InjectView(R.id.btn_login) Button signButton;
+
+    @OnClick(R.id.btn_login) void handleSignInButtonClicked(View view)
+    {
+        handleSignInOrUpButtonClicked(view);
+    }
 
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
@@ -114,7 +116,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         DeviceUtil.showKeyboardDelayed(email);
     }
 
-    @Override public int getDefaultViewId ()
+    @Override public int getDefaultViewId()
     {
         return R.layout.authentication_email_sign_in;
     }
@@ -145,30 +147,18 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         middleCallbackForgotPassword = null;
     }
 
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.btn_login:
-                //clear old user info
-                //THUser.clearCurrentUser();
-                handleSignInOrUpButtonClicked(view);
-                break;
-        }
-    }
-
-    @Override protected void forceValidateFields ()
+    @Override protected void forceValidateFields()
     {
         email.forceValidate();
         password.forceValidate();
     }
 
-    @Override public boolean areFieldsValid ()
+    @Override public boolean areFieldsValid()
     {
         return email.isValid() && password.isValid();
     }
 
-    @Override protected Map<String, Object> getUserFormMap ()
+    @Override protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = super.getUserFormMap();
         map.put(UserFormFactory.KEY_EMAIL, email.getText().toString());
