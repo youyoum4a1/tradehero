@@ -27,9 +27,9 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
 {
     @InjectView(R.id.settings_score) RelativeLayout mScoreLayout;
     @InjectView(R.id.settings_faq) RelativeLayout mFaqLayout;
-    @InjectView(R.id.settings_logout) LinearLayout mLogoutLayout;
     @InjectView(R.id.settings_version_code) TextView mVersionCode;
     @InjectView(R.id.settings_about) RelativeLayout mAboutLayout;
+    @InjectView(R.id.settings_logout) LinearLayout mLogoutLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -93,8 +93,8 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                 }
                 break;
             case R.id.settings_logout:
-                ActivityHelper.launchAuthentication(getActivity());
                 THUser.clearCurrentUser();
+                ActivityHelper.launchAuthentication(getActivity());
                 break;
             case R.id.settings_about:
                 goToFragment(SettingsAboutUsFragment.class);

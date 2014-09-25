@@ -726,12 +726,9 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
             if (mShareToSocialCheckBox.isChecked())
             {
-                ShareSellDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager(), tvBuySaleMayProfit.getText().toString());
+                ShareSellDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager(), getSecurityName(), securityId.getDisplayName(), tvBuySaleRate.getText().toString(), mQuantityEditText.getText().toString(), tvBuySaleMayProfit.getText().toString());
             }
-            else
-            {
-                popCurrentFragment();
-            }
+            popCurrentFragment();
             //if (buySellTransactionListener != null)
             //{
             //    buySellTransactionListener.onTransactionSuccessful(isBuy);

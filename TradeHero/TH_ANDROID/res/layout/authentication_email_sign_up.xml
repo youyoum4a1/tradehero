@@ -190,7 +190,7 @@
           android:paddingBottom="@dimen/margin_small"
           android:gravity="center"
           android:background="@color/white"
-          android:maxLength="20"
+          android:maxLength="10"
           android:textSize="@dimen/text_xlarge"
           android:hint="@string/register_diaplay_name_hint"
           android:textColorHint="#bfbfbf"/>

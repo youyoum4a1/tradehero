@@ -159,7 +159,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
             @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
             {
-                signButton.setEnabled(charSequence.length() > 3);
+                signButton.setEnabled(charSequence.length() > 1);
             }
 
             @Override public void afterTextChanged(Editable editable)
