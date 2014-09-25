@@ -158,6 +158,6 @@ class Navigator<ActivityType extends Activity>
 
     public Fragment getCurrentFragment()
     {
-        return manager.findFragmentById(R.id.realtabcontent);
+        return manager.findFragmentById(fragmentContentId);
     }
 }
