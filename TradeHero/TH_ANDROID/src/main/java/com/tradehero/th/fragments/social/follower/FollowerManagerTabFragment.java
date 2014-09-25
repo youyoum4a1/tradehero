@@ -12,7 +12,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;

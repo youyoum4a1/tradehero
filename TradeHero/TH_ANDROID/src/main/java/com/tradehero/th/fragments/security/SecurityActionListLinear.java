@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.utils.DaggerUtils;
 import org.jetbrains.annotations.NotNull;

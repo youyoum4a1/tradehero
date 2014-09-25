@@ -10,7 +10,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryListType;

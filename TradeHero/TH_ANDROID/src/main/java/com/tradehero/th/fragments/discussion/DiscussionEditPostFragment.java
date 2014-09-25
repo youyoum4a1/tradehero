@@ -20,7 +20,7 @@ import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.text.Span;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;

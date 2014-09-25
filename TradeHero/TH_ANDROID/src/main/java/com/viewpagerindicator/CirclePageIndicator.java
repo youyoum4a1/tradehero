@@ -32,7 +32,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.widget.LinearLayout.HORIZONTAL;

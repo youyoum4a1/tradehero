@@ -13,12 +13,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCreateFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionMineFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSearchFragment;
-import com.tradehero.th2.R;
 import com.viewpagerindicator.TabPageIndicator;
 import timber.log.Timber;
 

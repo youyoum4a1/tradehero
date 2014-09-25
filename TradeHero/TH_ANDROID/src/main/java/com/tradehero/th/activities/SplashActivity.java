@@ -10,7 +10,7 @@ import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
 import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;

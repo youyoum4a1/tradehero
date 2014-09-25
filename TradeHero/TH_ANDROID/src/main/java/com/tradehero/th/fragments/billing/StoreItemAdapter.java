@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;

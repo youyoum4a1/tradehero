@@ -1,7 +1,7 @@
 package com.tradehero.th.misc.exception;
 
 import com.tradehero.common.utils.RetrofitHelper;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.ErrorMessageDTO;
 import com.tradehero.th.api.http.ResponseErrorCode;
 import com.tradehero.th.base.Application;

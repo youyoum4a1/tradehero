@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.view.LayoutInflater;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;

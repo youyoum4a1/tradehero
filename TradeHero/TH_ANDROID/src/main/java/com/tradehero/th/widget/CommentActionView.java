@@ -5,7 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 public class CommentActionView extends CompoundButton
 {

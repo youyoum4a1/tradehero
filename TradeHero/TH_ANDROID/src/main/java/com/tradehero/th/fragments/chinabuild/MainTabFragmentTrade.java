@@ -12,13 +12,13 @@ import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotWatchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfMineFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.viewpagerindicator.TabPageIndicator;
 import timber.log.Timber;
 

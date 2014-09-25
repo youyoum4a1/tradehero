@@ -1,7 +1,7 @@
 package com.tradehero.th.models.user.auth;
 
 import android.content.Context;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

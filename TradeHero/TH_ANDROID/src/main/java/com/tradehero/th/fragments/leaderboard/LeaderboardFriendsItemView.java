@@ -11,14 +11,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-//import com.facebook.FacebookException;
-//import com.facebook.FacebookOperationCanceledException;
-//import com.facebook.Session;
-//import com.facebook.widget.WebDialog;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -48,18 +44,23 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-//import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+//import com.facebook.FacebookException;
+//import com.facebook.FacebookOperationCanceledException;
+//import com.facebook.Session;
+//import com.facebook.widget.WebDialog;
+//import com.tradehero.th.utils.FacebookUtils;
 
 public class LeaderboardFriendsItemView extends RelativeLayout
         implements DTOView<UserFriendsDTO>, View.OnClickListener

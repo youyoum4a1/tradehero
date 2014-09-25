@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.discussion;
 import android.text.Editable;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFragment
 {

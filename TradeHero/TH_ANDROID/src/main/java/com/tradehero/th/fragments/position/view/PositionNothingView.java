@@ -6,7 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 public class PositionNothingView extends RelativeLayout
 {

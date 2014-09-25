@@ -9,10 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import butterknife.OnItemClick;
+import com.tradehero.th.R;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th2.R;
 import java.util.ArrayList;
 import org.jetbrains.annotations.Nullable;
 

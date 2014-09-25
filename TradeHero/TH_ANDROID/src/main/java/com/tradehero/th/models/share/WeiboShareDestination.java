@@ -1,6 +1,6 @@
 package com.tradehero.th.models.share;
 
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 
 public class WeiboShareDestination extends BaseShareDestination

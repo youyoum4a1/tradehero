@@ -13,7 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;

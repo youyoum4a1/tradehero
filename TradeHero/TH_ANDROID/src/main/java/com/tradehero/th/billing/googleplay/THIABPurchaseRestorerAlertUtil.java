@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import java.util.List;

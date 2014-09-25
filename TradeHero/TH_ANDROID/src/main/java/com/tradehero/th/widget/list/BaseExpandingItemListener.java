@@ -1,7 +1,7 @@
 package com.tradehero.th.widget.list;
 
 import android.view.View;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
 
 public class BaseExpandingItemListener

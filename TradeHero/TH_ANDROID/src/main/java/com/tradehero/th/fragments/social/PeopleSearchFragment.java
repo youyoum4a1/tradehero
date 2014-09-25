@@ -6,7 +6,7 @@ import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;

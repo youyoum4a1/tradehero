@@ -35,8 +35,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import com.tradehero.th.R;
 import java.util.ArrayList;
-import com.tradehero.th2.R;
 
 /**
  * A TitlePageIndicator is a PageIndicator which displays the title of left view

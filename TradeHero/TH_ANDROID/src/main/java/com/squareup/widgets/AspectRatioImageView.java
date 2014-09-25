@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 /** Maintains an aspect ratio based on either width or height. Disabled by default. */
 public class AspectRatioImageView extends ImageView

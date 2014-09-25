@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.support.v4.preference.PreferenceFragment;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;

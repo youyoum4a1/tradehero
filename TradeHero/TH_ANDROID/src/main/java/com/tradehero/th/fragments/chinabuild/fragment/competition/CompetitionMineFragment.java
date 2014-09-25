@@ -4,11 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th2.R;
 import timber.log.Timber;
 
 /**

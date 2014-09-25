@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th2.R;
 import com.viewpagerindicator.TabPageIndicator;
 import timber.log.Timber;
 

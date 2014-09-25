@@ -1,8 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
-import android.support.v4.preference.PreferenceFragment;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;

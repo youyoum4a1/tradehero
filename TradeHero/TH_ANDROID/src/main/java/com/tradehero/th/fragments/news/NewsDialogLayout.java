@@ -13,7 +13,7 @@ import android.widget.ViewSwitcher;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;

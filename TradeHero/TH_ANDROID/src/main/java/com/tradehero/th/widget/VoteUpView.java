@@ -2,7 +2,7 @@ package com.tradehero.th.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.VoteDirection;
 

@@ -12,7 +12,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.List;

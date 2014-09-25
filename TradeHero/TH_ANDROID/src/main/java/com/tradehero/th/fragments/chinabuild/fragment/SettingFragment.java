@@ -16,10 +16,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th2.R;
 import timber.log.Timber;
 
 public class SettingFragment extends DashboardFragment implements View.OnClickListener

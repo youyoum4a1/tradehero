@@ -8,14 +8,11 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.route.Routable;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 

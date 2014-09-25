@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.chinabuild.fragment.trade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 
 public class TradeOfChinaConceptFragment extends TradeOfTypeBaseFragment

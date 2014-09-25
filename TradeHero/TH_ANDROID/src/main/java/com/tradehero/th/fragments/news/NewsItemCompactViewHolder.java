@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import java.net.MalformedURLException;

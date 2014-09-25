@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.trending;
 
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 public enum TileType
 {

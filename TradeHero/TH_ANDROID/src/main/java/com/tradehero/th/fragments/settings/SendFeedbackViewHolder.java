@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.content.Intent;
 import android.support.v4.preference.PreferenceFragment;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;

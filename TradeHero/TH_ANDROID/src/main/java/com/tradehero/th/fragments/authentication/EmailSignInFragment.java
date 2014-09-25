@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
@@ -32,7 +33,6 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
-import com.tradehero.th2.R;
 import java.util.Map;
 import javax.inject.Inject;
 

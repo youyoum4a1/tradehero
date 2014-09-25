@@ -18,12 +18,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-//import com.facebook.FacebookException;
-//import com.facebook.FacebookOperationCanceledException;
-//import com.facebook.Session;
-//import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteContactEntryDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
@@ -46,7 +42,6 @@ import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-//import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -54,12 +49,16 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.client.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
-import timber.log.Timber;
+
+//import com.facebook.FacebookException;
+//import com.facebook.FacebookOperationCanceledException;
+//import com.facebook.Session;
+//import com.facebook.widget.WebDialog;
+//import com.tradehero.th.utils.FacebookUtils;
 
 public class InviteFriendFragment extends DashboardFragment
 {

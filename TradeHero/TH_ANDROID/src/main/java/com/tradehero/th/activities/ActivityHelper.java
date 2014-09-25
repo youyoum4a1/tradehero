@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 public class ActivityHelper
 {

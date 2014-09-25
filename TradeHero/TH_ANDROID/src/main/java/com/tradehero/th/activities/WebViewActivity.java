@@ -9,7 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 /**
  * I don't know who wrote this but need to be refactor as soon as possible

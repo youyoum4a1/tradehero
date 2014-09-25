@@ -6,7 +6,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.EditText;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import org.jetbrains.annotations.Nullable;
 
 public class ValidatedText extends EditText

@@ -12,7 +12,7 @@ import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
@@ -30,7 +30,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 public class PrivateDiscussionView extends DiscussionView
 {

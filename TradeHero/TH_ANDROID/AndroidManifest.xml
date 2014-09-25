@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tradehero.th2"
+    package="com.tradehero.th"
     android:versionName="2.3"
     android:versionCode="174"
     android:installLocation="auto">

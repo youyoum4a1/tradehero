@@ -2,12 +2,11 @@ package com.tradehero.th.models.intent.competition;
 
 import android.net.Uri;
 import android.support.v4.app.Fragment;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
-
 import retrofit.Endpoint;
 
 public class ProviderPageIntent extends OneProviderIntent

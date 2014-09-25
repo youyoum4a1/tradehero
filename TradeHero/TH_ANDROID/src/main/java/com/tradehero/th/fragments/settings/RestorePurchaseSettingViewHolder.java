@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.settings;
 import android.preference.PreferenceCategory;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.utils.Constants;

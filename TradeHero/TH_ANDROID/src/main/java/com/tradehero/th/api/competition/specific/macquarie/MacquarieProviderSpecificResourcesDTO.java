@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition.specific.macquarie;
 
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
 
 public class MacquarieProviderSpecificResourcesDTO extends ProviderSpecificResourcesDTO

@@ -20,7 +20,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.SimpleCounterUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;

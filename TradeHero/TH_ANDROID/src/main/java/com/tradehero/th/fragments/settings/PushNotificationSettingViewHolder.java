@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.settings;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.v4.preference.PreferenceFragment;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.push.PushNotificationManager;

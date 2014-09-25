@@ -16,7 +16,7 @@ import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.utils.ArrayUtils;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;

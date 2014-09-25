@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.OnClick;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
-import com.tradehero.th2.R;
 import java.util.Collection;
 
 //import com.tradehero.th.activities.MarketUtil;

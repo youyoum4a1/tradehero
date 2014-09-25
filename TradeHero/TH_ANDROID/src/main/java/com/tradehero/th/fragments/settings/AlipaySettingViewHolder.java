@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;

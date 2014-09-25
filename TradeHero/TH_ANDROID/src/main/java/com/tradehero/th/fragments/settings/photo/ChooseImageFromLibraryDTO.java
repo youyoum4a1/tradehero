@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.settings.photo;
 
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 public class ChooseImageFromLibraryDTO extends ChooseImageFromDTO
 {

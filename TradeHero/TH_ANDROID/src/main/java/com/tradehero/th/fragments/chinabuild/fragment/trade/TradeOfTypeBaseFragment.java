@@ -15,6 +15,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SpinnerExchangeIconAdapter;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
@@ -30,7 +31,6 @@ import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFra
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.th2.R;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;

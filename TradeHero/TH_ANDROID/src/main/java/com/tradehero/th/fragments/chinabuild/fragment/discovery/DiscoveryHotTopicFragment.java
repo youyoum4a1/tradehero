@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
 /*

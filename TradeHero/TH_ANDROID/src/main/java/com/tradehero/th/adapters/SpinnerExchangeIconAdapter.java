@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 /**
  * Created by huhaiping on 14-8-19.

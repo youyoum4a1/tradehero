@@ -12,6 +12,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
@@ -33,7 +34,6 @@ import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.WeiboUtils;
-import com.tradehero.th2.R;
 import dagger.Lazy;
 import javax.inject.Inject;
 

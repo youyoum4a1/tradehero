@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.preference.PreferenceFragment;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;

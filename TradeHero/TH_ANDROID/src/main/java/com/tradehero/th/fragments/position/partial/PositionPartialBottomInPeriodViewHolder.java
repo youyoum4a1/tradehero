@@ -6,7 +6,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;

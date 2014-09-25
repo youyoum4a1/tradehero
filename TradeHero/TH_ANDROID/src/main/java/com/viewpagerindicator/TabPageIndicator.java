@@ -26,8 +26,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.tradehero.th2.R;
-import com.tradehero.th.utils.FontUtil;
+import com.tradehero.th.R;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;

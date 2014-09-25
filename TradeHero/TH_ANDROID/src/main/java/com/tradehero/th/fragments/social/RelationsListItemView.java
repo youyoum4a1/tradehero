@@ -13,7 +13,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
@@ -27,8 +27,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>, View.OnClickListener

@@ -5,13 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>

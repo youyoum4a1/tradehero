@@ -12,6 +12,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
@@ -24,7 +25,6 @@ import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragmen
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
-import com.tradehero.th2.R;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;

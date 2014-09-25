@@ -3,7 +3,7 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.DisplayNameDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.persistence.user.UserAvailabilityCache;

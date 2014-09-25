@@ -4,7 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;

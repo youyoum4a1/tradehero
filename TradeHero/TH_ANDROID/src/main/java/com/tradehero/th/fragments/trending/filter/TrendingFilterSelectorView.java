@@ -12,7 +12,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.utils.DaggerUtils;

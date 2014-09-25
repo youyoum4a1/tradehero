@@ -10,22 +10,17 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-//import com.facebook.FacebookException;
-//import com.facebook.FacebookOperationCanceledException;
-//import com.facebook.Session;
-//import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOFactory;
-import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -46,7 +41,6 @@ import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-//import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
@@ -57,6 +51,12 @@ import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+//import com.facebook.FacebookException;
+//import com.facebook.FacebookOperationCanceledException;
+//import com.facebook.Session;
+//import com.facebook.widget.WebDialog;
+//import com.tradehero.th.utils.FacebookUtils;
 
 @Routable({
         "refer-friend/:socialId/:socialUserId",

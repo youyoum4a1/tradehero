@@ -1,9 +1,8 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.os.Bundle;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;

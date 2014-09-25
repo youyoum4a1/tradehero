@@ -8,7 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;

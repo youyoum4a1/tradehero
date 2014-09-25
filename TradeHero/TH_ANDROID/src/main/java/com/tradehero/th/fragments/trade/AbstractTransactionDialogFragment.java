@@ -27,7 +27,7 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;

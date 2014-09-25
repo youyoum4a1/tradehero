@@ -2,7 +2,7 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 

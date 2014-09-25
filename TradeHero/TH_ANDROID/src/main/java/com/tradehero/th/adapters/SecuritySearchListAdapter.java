@@ -6,12 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th2.R;
 
 /*
 搜索出来的股票显示

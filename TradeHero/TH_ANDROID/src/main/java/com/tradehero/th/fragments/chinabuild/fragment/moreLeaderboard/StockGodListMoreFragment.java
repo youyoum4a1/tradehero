@@ -10,11 +10,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th2.R;
-import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest01;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import timber.log.Timber;
 
 public class StockGodListMoreFragment extends DashboardFragment

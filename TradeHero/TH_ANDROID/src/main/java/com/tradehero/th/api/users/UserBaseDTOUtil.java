@@ -1,7 +1,7 @@
 package com.tradehero.th.api.users;
 
 import android.content.Context;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.market.ExchangeCompactDTO;

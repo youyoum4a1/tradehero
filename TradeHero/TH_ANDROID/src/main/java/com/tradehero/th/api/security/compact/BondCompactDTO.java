@@ -1,6 +1,6 @@
 package com.tradehero.th.api.security.compact;
 
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import org.jetbrains.annotations.NotNull;
 

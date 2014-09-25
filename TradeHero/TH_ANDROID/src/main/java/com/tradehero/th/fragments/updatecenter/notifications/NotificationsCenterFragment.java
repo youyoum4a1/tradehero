@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.route.Routable;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
 @Routable("notifications")

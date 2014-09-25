@@ -1,6 +1,6 @@
 package com.tradehero.th.models.number;
 
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.ColorUtils;
 import java.text.DecimalFormat;

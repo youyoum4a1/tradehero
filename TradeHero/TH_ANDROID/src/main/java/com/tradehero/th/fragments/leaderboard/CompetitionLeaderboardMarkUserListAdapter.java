@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;

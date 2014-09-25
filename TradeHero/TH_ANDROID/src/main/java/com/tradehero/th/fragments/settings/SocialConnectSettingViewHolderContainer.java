@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.MarketSegment;

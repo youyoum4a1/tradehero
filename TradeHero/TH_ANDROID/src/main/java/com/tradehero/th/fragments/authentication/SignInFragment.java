@@ -6,12 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th2.R;
 import javax.inject.Inject;
 
 public class SignInFragment extends SignInOrUpFragment

@@ -5,14 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th2.R;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import timber.log.Timber;
 

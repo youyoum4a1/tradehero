@@ -7,7 +7,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import dagger.Lazy;

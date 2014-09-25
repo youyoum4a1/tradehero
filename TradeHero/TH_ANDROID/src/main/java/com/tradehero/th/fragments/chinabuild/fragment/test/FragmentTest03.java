@@ -10,7 +10,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
@@ -19,10 +19,8 @@ import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import timber.log.Timber;
 
 public class FragmentTest03 extends DashboardFragment
 {

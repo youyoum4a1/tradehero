@@ -1,7 +1,7 @@
 package com.tradehero.th.utils;
 
 import com.tradehero.common.application.PApplication;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 
 public class ColorUtils
 {

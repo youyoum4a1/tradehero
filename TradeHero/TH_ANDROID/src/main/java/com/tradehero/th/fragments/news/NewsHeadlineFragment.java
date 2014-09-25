@@ -12,7 +12,7 @@ import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;

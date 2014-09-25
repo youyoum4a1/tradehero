@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.chinabuild.fragment.message;
 
 import android.os.Bundle;
+import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th2.R;
 import org.jetbrains.annotations.Nullable;
 
 /**

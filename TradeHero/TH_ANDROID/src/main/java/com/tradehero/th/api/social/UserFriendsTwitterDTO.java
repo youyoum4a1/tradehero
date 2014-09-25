@@ -1,6 +1,6 @@
 package com.tradehero.th.api.social;
 
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import org.jetbrains.annotations.NotNull;
 
 public class UserFriendsTwitterDTO extends UserFriendsDTO

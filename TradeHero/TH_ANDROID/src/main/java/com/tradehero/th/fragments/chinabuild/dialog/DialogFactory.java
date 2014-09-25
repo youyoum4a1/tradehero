@@ -4,7 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.common.widget.dialog.THDialog;
-import com.tradehero.th2.R;
+import com.tradehero.th.R;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

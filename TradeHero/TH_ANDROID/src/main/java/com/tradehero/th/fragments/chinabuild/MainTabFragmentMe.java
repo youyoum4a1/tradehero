@@ -13,6 +13,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -31,7 +32,6 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th2.R;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -259,7 +259,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
         tvHeadLeft.setVisibility(View.GONE);
         //tvHeadRight.setVisibility(View.VISIBLE);
         tvHeadTitle.setVisibility(View.VISIBLE);
-        tvHeadRight.setVisibility(View.VISIBLE);
+        //tvHeadRight.setVisibility(View.VISIBLE);
         tvHeadTitle.setText(R.string.tab_main_me);
         //tvHeadRight.setText(R.string.settings);
     }
