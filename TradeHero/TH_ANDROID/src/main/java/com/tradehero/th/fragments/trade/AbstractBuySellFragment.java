@@ -2,13 +2,13 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.tradehero.route.InjectRoute;
+import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -16,7 +16,6 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
-import com.tradehero.th.api.position.SecurityPositionDetailDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -25,7 +24,9 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.prefs.ShowMarketClosed;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
@@ -46,16 +47,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
-    public static boolean alreadyNotifiedMarketClosed = false;
-
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
-    @Inject SecurityPositionDetailDTOUtil securityPositionDetailDTOUtil;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject THRouter thRouter;
+    @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
 
     @InjectRoute protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -430,10 +429,10 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void notifyOnceMarketClosed()
     {
-        if (!alreadyNotifiedMarketClosed)
+        if (showMarketClosedIntervalPreference.isItTime())
         {
-            alreadyNotifiedMarketClosed = true;
             notifyMarketClosed();
+            showMarketClosedIntervalPreference.justHandled();
         }
     }
 
