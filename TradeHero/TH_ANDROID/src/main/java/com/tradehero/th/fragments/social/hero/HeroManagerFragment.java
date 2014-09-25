@@ -79,9 +79,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(),
-                FRAGMENT_LAYOUT_ID);
-        mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
 
         List<HeroTypeResourceDTO> resourceDTOs = heroTypeResourceDTOFactory.getListOfHeroType();
         tabSpecList = new ArrayList<>(resourceDTOs.size());
@@ -193,16 +191,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             changeTabTitle(new PremiumHeroTypeResourceDTO(), premiumCount);
             changeTabTitle(new FreeHeroTypeResourceDTO(), freeCount);
             changeTabTitle(new AllHeroTypeResourceDTO(), premiumCount + freeCount);
-        }
-    }
-
-    protected class HeroManagerOnTabChangeListener implements TabHost.OnTabChangeListener
-    {
-        @Override public void onTabChanged(String tabId)
-        {
-            Fragment fragment = getFragmentManager().findFragmentByTag(tabId);
-            Fragment f = ((Fragment) HeroManagerFragment.this).getChildFragmentManager()
-                    .findFragmentByTag(tabId);
         }
     }
 

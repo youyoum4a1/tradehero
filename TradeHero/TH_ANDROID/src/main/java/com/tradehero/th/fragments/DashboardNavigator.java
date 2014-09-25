@@ -4,12 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.widget.TabHost;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.models.intent.THIntent;
 import java.util.HashSet;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
@@ -23,8 +20,6 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
     private static final boolean TAB_SHOW_HOME_AS_UP = false;
 
     private Set<DashboardFragmentWatcher> dashboardFragmentWatchers = new HashSet<>();
-
-    private TabHost.OnTabChangeListener mOnTabChangedListener;
 
     public DashboardNavigator(FragmentActivity context, FragmentManager manager, int fragmentContentId)
     {
@@ -59,7 +54,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         Class<T> targetFragmentClass = (Class<T>) tabType.fragmentClass;
         T tabFragment = pushFragment(targetFragmentClass, args, null, null, showHomeKeyAsUp);
 
-        updateTabBarOnTabChanged(((Object)tabFragment).getClass().getName());
+        resetBackPressCount();
         return tabFragment;
     }
 
@@ -100,7 +95,6 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
     }
 
-
     public void popFragment()
     {
         Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
@@ -112,19 +106,6 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
             backStackName = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
         }
         popFragment(backStackName);
-    }
-
-    private void updateTabBarOnTabChanged(String tabId)
-    {
-        Timber.d("tabBarChanged to %s, backstack %d", tabId, manager.getBackStackEntryCount());
-        resetBackPressCount();
-
-        if (mOnTabChangedListener != null)
-        {
-            Timber.d("Called further onTabChangedListener");
-            mOnTabChangedListener.onTabChanged(tabId);
-        }
-        mOnTabChangedListener = null;
     }
 
     //<editor-fold desc="DashboardFragmentWatcher">
