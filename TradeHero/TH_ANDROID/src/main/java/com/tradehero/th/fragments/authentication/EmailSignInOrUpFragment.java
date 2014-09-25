@@ -5,7 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
+import butterknife.InjectView;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -19,15 +20,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 abstract public class EmailSignInOrUpFragment extends Fragment
-        implements View.OnClickListener, ValidationListener
+        implements ValidationListener
 {
-    protected Button signButton;
-
     abstract public int getDefaultViewId ();
     abstract protected void initSetup(View view);
     abstract protected void forceValidateFields();
 
     abstract public boolean areFieldsValid();
+
+    @InjectView(R.id.authentication_back_button) ImageView backButton;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

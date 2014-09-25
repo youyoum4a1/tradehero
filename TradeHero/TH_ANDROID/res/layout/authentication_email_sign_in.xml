@@ -7,7 +7,7 @@
     android:background="@drawable/authentication_bg">
 
   <ImageView
-      android:id="@+id/authentication_by_sign_in_back_button"
+      android:id="@+id/authentication_back_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/common_margin_10"

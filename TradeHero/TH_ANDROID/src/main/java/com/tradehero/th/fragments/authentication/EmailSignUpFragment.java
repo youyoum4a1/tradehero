@@ -7,12 +7,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -30,7 +32,7 @@ import timber.log.Timber;
 /**
  * Register using email.
  */
-public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
+public class EmailSignUpFragment extends EmailSignInOrUpFragment
 {
     //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
@@ -41,6 +43,25 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private ImageView backButton;
 
     @Inject Analytics analytics;
+    @Inject DashboardNavigator navigator;
+
+    @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
+    {
+        navigator.popFragment();
+    }
+
+    @OnClick(R.id.authentication_sign_up_button) void handleSignUpButtonClicked(View view)
+    {
+        THUser.clearCurrentUser();
+        handleSignInOrUpButtonClicked(view);
+    }
+
+    @OnClick(R.id.image_optional) void handleImageOptionClicked()
+    {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/jpeg");
+        startActivityForResult(intent, REQUEST_GALLERY);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -67,17 +88,12 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         this.profileView.setOnTouchListenerOnFields(touchListener);
         this.profileView.addValidationListenerOnFields(this);
         this.profileView.setListener(createProfileViewListener());
-
-        this.signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
-        this.signButton.setOnClickListener(this);
-
-        backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_up_back_button);
-        // FIXME backButton.setOnClickListener(onClickListener);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         DeviceUtil.showKeyboardDelayed(emailEditText);
     }
 
@@ -128,34 +144,8 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
         this.profileView = null;
 
-        if (this.signButton != null)
-        {
-            this.signButton.setOnClickListener(null);
-        }
-        this.signButton = null;
-        if (backButton != null)
-        {
-            backButton.setOnClickListener(null);
-            backButton = null;
-        }
+        ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.authentication_sign_up_button:
-                //clear old user info
-                THUser.clearCurrentUser();
-                handleSignInOrUpButtonClicked(view);
-                break;
-            case R.id.image_optional:
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/jpeg");
-                startActivityForResult(intent, REQUEST_GALLERY);
-                break;
-        }
     }
 
     @Override protected void forceValidateFields()

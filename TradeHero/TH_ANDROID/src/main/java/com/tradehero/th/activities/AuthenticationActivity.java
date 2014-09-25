@@ -14,6 +14,7 @@ import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
@@ -24,7 +25,6 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
-import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -41,9 +41,7 @@ import dagger.Module;
 import dagger.Provides;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
 import retrofit.RetrofitError;
@@ -53,7 +51,6 @@ import timber.log.Timber;
 public class AuthenticationActivity extends BaseActivity
         implements Injector
 {
-    private Map<Integer, Class<?>> mapViewFragment = new HashMap<>();
     private Fragment currentFragment;
 
     private ProgressDialog progressDialog;
@@ -67,20 +64,22 @@ public class AuthenticationActivity extends BaseActivity
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CredentialsDTOFactory credentialsDTOFactory;
+    private DashboardNavigator navigator;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-
-        currentFragment = Fragment.instantiate(this, SignInOrUpFragment.class.getName(), null);
-
-        setupViewFragmentMapping();
-
         setContentView(R.layout.authentication_layout);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_content, currentFragment)
-                .commit();
+
+        setupNavigator();
+
+        navigator.pushFragment(SignInOrUpFragment.class, new Bundle());
+    }
+
+    private void setupNavigator()
+    {
+        navigator = new DashboardNavigator(this, R.id.fragment_content);
     }
 
     @Override protected void onResume()
@@ -109,40 +108,12 @@ public class AuthenticationActivity extends BaseActivity
         super.onPause();
     }
 
-    /** map view and the next fragment, which is appears when click on that view */
-    private void setupViewFragmentMapping()
-    {
-        //two buttons in WelcomeFragment
-        mapViewFragment.put(R.id.authentication_sign_up_button, SignInOrUpFragment.class);
-        //button in SignInFragment
-        mapViewFragment.put(R.id.authentication_email_sign_in_link, EmailSignInFragment.class);
-        //button in SignUpFragment
-        mapViewFragment.put(R.id.authentication_email_sign_up_link, EmailSignUpFragment.class);
-    }
-
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
-    }
-
-    private void setCurrentFragmentByClass(Class<?> fragmentClass)
-    {
-        currentFragment = Fragment.instantiate(this, fragmentClass.getName(), null);
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(
-                        R.anim.slide_right_in, R.anim.slide_left_out,
-                        R.anim.slide_left_in, R.anim.slide_right_out)
-                .replace(R.id.fragment_content, currentFragment)
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
-    }
-
-    private void setCurrentFragmentByPopBack(Class<?> fragmentClass)
-    {
-        getSupportFragmentManager().popBackStack();
     }
 
     private void authenticateWithEmail()
@@ -242,12 +213,13 @@ public class AuthenticationActivity extends BaseActivity
                 try
                 {
                     setTwitterData((TwitterCredentialsDTO) credentialsDTOFactory.create(json));
-                } catch (JSONException | ParseException e)
+                }
+                catch (JSONException | ParseException e)
                 {
                     Timber.e(e, "Failed to create twitter credentials with %s", json);
                 }
                 progressDialog.hide();
-                setCurrentFragmentByClass(TwitterEmailFragment.class);
+                navigator.pushFragment(TwitterEmailFragment.class, new Bundle());
                 return false;
             }
         };
@@ -379,25 +351,22 @@ public class AuthenticationActivity extends BaseActivity
     {
         @Override public void onClick(View view)
         {
-            Class<?> fragmentClass = mapViewFragment.get(view.getId());
-            if (fragmentClass != null)
-            {
-                if (view.getId() == R.id.authentication_by_sign_in_back_button
-                        || view.getId() == R.id.authentication_by_sign_up_back_button)
-                {
-                    DeviceUtil.dismissKeyboard(view);
-                    setCurrentFragmentByPopBack(fragmentClass);
-                }
-                else
-                {
-                    setCurrentFragmentByClass(fragmentClass);
-                }
-            }
             //TODO maybe shouldn't clear user information here
             THUser.clearCurrentUser();
             switch (view.getId())
             {
                 case R.id.authentication_sign_up_button:
+                    navigator.pushFragment(SignInOrUpFragment.class, new Bundle());
+                    break;
+
+                case R.id.authentication_email_sign_in_link:
+                    navigator.pushFragment(EmailSignInFragment.class, new Bundle());
+                    break;
+
+                case R.id.authentication_email_sign_up_link:
+                    navigator.pushFragment(EmailSignUpFragment.class, new Bundle());
+                    break;
+
                 case R.id.btn_login:
                     authenticateWithEmail();
                     break;
@@ -439,6 +408,11 @@ public class AuthenticationActivity extends BaseActivity
         @Provides View.OnClickListener provideOnAuthenticationButtonClickListener()
         {
             return new OnAuthenticationButtonClicked();
+        }
+
+        @Provides DashboardNavigator provideDashboardNavigator()
+        {
+            return navigator;
         }
     }
 }

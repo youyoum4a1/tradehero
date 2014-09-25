@@ -7,22 +7,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
-import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -31,150 +31,30 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
-
 import java.util.Map;
-
 import javax.inject.Inject;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
+    implements View.OnClickListener
 {
-    private SelfValidatedText email;
-    private ValidatedPasswordText password;
-    private TextView forgotPasswordLink;
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
-    private ImageView backButton;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Analytics analytics;
+    @Inject DashboardNavigator navigator;
 
-    protected MiddleCallback<ForgotPasswordDTO> middleCallbackForgotPassword;
+    @InjectView(R.id.authentication_sign_in_email) SelfValidatedText email;
+    @InjectView(R.id.et_pwd_login) ValidatedPasswordText password;
+    @InjectView(R.id.btn_login) Button signButton;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
-        super.onCreate(savedInstanceState);
-        HierarchyInjector.inject(this);
-        analytics.tagScreen(AnalyticsConstants.Login_Form);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+        navigator.popFragment();
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        DeviceUtil.showKeyboardDelayed(email);
-    }
-
-    @Override public int getDefaultViewId ()
-    {
-        return R.layout.authentication_email_sign_in;
-    }
-
-    @Override protected void initSetup(View view)
-    {
-        email = (SelfValidatedText) view.findViewById(R.id.authentication_sign_in_email);
-        email.setListener(this);
-
-        password = (ValidatedPasswordText) view.findViewById(R.id.et_pwd_login);
-        password.setListener(this);
-
-        // HACK
-        if (!Constants.RELEASE)
-        {
-            email.setText(getString(R.string.test_email));
-            password.setText(getString(R.string.test_password));
-        }
-
-        signButton = (Button) view.findViewById(R.id.btn_login);
-        signButton.setOnClickListener(this);
-
-        forgotPasswordLink = (TextView) view.findViewById(R.id.authentication_sign_in_forgot_password);
-        forgotPasswordLink.setOnClickListener(this);
-
-        backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_in_back_button);
-    }
-
-    @Override public void onDestroyView()
-    {
-        detachMiddleCallbackForgotPassword();
-        if (this.email != null)
-        {
-            this.email.setListener(null);
-        }
-        this.email = null;
-
-        if (this.password != null)
-        {
-            this.password.setListener(null);
-        }
-        this.password = null;
-
-        if (this.signButton != null)
-        {
-            this.signButton.setOnClickListener(null);
-        }
-        this.signButton = null;
-
-        if (this.forgotPasswordLink != null)
-        {
-            this.forgotPasswordLink.setOnClickListener(null);
-        }
-        this.forgotPasswordLink = null;
-        if (backButton != null)
-        {
-            backButton.setOnClickListener(null);
-        }
-        backButton = null;
-        super.onDestroyView();
-    }
-
-    protected void detachMiddleCallbackForgotPassword()
-    {
-        if (middleCallbackForgotPassword != null)
-        {
-            middleCallbackForgotPassword.setPrimaryCallback(null);
-        }
-        middleCallbackForgotPassword = null;
-    }
-
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.btn_login:
-                //clear old user info
-                //THUser.clearCurrentUser();
-                handleSignInOrUpButtonClicked(view);
-                break;
-
-            case R.id.authentication_sign_in_forgot_password:
-                showForgotPasswordUI();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override protected void forceValidateFields ()
-    {
-        email.forceValidate();
-        password.forceValidate();
-    }
-
-    @Override public boolean areFieldsValid ()
-    {
-        return email.isValid() && password.isValid();
-    }
-
-    @Override protected Map<String, Object> getUserFormMap ()
-    {
-        Map<String, Object> map = super.getUserFormMap();
-        map.put(UserFormFactory.KEY_EMAIL, email.getText().toString());
-        map.put(UserFormFactory.KEY_PASSWORD, password.getText().toString());
-        return map;
-    }
-
-    private void showForgotPasswordUI()
+    @OnClick(R.id.authentication_sign_in_forgot_password) void showForgotPasswordUI()
     {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, null);
@@ -216,6 +96,84 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                         }
                     }
                 }).create().show();
+    }
+
+    protected MiddleCallback<ForgotPasswordDTO> middleCallbackForgotPassword;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        HierarchyInjector.inject(this);
+        analytics.tagScreen(AnalyticsConstants.Login_Form);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        DeviceUtil.showKeyboardDelayed(email);
+    }
+
+    @Override public int getDefaultViewId ()
+    {
+        return R.layout.authentication_email_sign_in;
+    }
+
+    @Override protected void initSetup(View view)
+    {
+        ButterKnife.inject(this, view);
+        if (!Constants.RELEASE)
+        {
+            email.setText(getString(R.string.test_email));
+            password.setText(getString(R.string.test_password));
+        }
+    }
+
+    @Override public void onDestroyView()
+    {
+        detachMiddleCallbackForgotPassword();
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    protected void detachMiddleCallbackForgotPassword()
+    {
+        if (middleCallbackForgotPassword != null)
+        {
+            middleCallbackForgotPassword.setPrimaryCallback(null);
+        }
+        middleCallbackForgotPassword = null;
+    }
+
+    @Override public void onClick(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.btn_login:
+                //clear old user info
+                //THUser.clearCurrentUser();
+                handleSignInOrUpButtonClicked(view);
+                break;
+        }
+    }
+
+    @Override protected void forceValidateFields ()
+    {
+        email.forceValidate();
+        password.forceValidate();
+    }
+
+    @Override public boolean areFieldsValid ()
+    {
+        return email.isValid() && password.isValid();
+    }
+
+    @Override protected Map<String, Object> getUserFormMap ()
+    {
+        Map<String, Object> map = super.getUserFormMap();
+        map.put(UserFormFactory.KEY_EMAIL, email.getText().toString());
+        map.put(UserFormFactory.KEY_PASSWORD, password.getText().toString());
+        return map;
     }
 
     private void doForgotPassword(String email)
