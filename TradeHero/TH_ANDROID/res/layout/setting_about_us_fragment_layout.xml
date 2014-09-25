@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_large"
+      android:src="@drawable/logo"/>
+  <TextView
+      android:id="@+id/app_version"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_small"/>
+  <TextView
+      android:id="@+id/txt_term_of_service_signin"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_xmedium"
+      android:text="@string/authentication_agreement"
+      android:textColor="#1789d5"
+      android:background="@drawable/basic_transparent_selector"/>
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"/>
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/settings_about_us_company"
+      android:textColor="@color/color_gray"/>
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_marginBottom="@dimen/margin_large"
+      android:text="@string/settings_about_us_company2"
+      android:textColor="@color/color_gray"/>
+</LinearLayout>
+

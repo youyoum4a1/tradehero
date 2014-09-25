@@ -56,10 +56,12 @@
   <string name="settings_update_profile_successful">个人资料更新成功</string>
   <string name="settings_privacy">个人隐私政策</string>
   <string name="settings_terms">条款和条件</string>
-  <string name="settings_about_title">关于</string>
+  <string name="settings_about_title">关于我们</string>
   <string name="settings_about_trademark">TM\n</string>
   <string name="settings_version_holder">v%s</string>
   <string name="settings_about_copyright">&#169; 版权 2012&#8211;2014 上海迈和信息科技有限公司</string>
+  <string name="settings_about_us_company">上海迈和信息科技有限公司</string>
+  <string name="settings_about_us_company2">版权 2012-2014 My Manisku Pte. Ltd.</string>
   <string name="settings_about_registered_company">新加坡总公司执照号 201003309N</string>
   <string name="settings_about_patents_pending">专利申请中</string>
   <string name="settings_about">商标或被版权保护的文字或图片，仅限用于个人研究或学习，禁止涉及商业用途。我们保留最终所有权与解释权</string>

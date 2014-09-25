@@ -42,6 +42,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.MyEditNameFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.MySocialFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.SettingsAboutUsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareSellDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionBaseFragment;
@@ -516,10 +517,9 @@ import javax.inject.Singleton;
                         BindGuestUserFragment.class,
                         BindEmailSignUpFragment.class,
                         ShareSellDialogFragment.class,
-
                         SecurityDiscussSendFragment.class,
                         DiscoveryDiscussSendFragment.class,
-
+                        SettingsAboutUsFragment.class,
                         //China Build End
                 },
         staticInjections =

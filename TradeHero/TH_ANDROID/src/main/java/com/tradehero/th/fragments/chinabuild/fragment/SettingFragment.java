@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.base.THUser;
@@ -25,8 +26,10 @@ import timber.log.Timber;
 public class SettingFragment extends DashboardFragment implements View.OnClickListener
 {
     @InjectView(R.id.settings_score) RelativeLayout mScoreLayout;
+    @InjectView(R.id.settings_faq) RelativeLayout mFaqLayout;
     @InjectView(R.id.settings_logout) LinearLayout mLogoutLayout;
     @InjectView(R.id.settings_version_code) TextView mVersionCode;
+    @InjectView(R.id.settings_about) RelativeLayout mAboutLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -47,6 +50,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.setting_fragment_layout, container, false);
         ButterKnife.inject(this, view);
         mScoreLayout.setOnClickListener(this);
+        mFaqLayout.setOnClickListener(this);
         PackageInfo packageInfo = null;
         try
         {
@@ -59,6 +63,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         {
             mVersionCode.setText("V"+packageInfo.versionName+"."+packageInfo.versionCode);
         }
+        mAboutLayout.setOnClickListener(this);
         mLogoutLayout.setOnClickListener(this);
         return view;
     }
@@ -75,9 +80,24 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
             case R.id.settings_score:
                 showAppOnMarket();
                 break;
+            case R.id.settings_faq:
+                Uri uri = Uri.parse("http://cn.tradehero.mobi/help/");
+                Intent it = new Intent(Intent.ACTION_VIEW, uri);
+                try
+                {
+                    startActivity(it);
+                }
+                catch (android.content.ActivityNotFoundException anfe)
+                {
+                    THToast.show("Unable to open url: " + uri);
+                }
+                break;
             case R.id.settings_logout:
                 ActivityHelper.launchAuthentication(getActivity());
                 THUser.clearCurrentUser();
+                break;
+            case R.id.settings_about:
+                goToFragment(SettingsAboutUsFragment.class);
                 break;
         }
     }
