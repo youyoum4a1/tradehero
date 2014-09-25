@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:background="@color/white"
     android:layout_height="match_parent">
 
-  <ListView
-      android:id="@android:id/list"
+  <com.handmark.pulltorefresh.library.PullToRefreshListView
+      android:id="@+id/generic_ptr_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:clipToPadding="false"
       tools:listitem="@layout/achievement_cell_view"
+      app:ptrMode="pullFromStart"
+      app:ptrScrollingWhileRefreshingEnabled="true"
       android:listSelector="@android:color/transparent"
       android:cacheColorHint="@android:color/transparent"/>
 

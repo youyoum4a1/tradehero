@@ -6,16 +6,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
 import javax.inject.Inject;
@@ -26,7 +27,7 @@ public class AchievementListFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_USER_ID = AchievementListFragment.class.getName() + ".userId";
 
-    @InjectView(android.R.id.list) protected AbsListView listView;
+    @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
     @InjectView(android.R.id.empty) protected ProgressBar emptyView;
 
     protected AchievementListAdapter achievementListAdapter;
@@ -55,11 +56,9 @@ public class AchievementListFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-
+        displayProgress();
         init();
-
         initAdapter();
-
         achievementCategoryListCacheListener = createAchievementCategoryListCacheListener();
     }
 
@@ -78,6 +77,15 @@ public class AchievementListFragment extends DashboardFragment
     {
         achievementListAdapter = new AchievementListAdapter(getActivity(), R.layout.achievement_cell_view);
         listView.setAdapter(achievementListAdapter);
+
+        listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+        {
+            @Override public void onRefresh(PullToRefreshBase<ListView> listViewPullToRefreshBase)
+            {
+                listView.setRefreshing();
+                attachAndFetchAchievementCategoryListener(true);
+            }
+        });
     }
 
     @Override public void onStart()
@@ -94,11 +102,14 @@ public class AchievementListFragment extends DashboardFragment
 
     protected void attachAndFetchAchievementCategoryListener()
     {
-        achievementListAdapter.clear();
+        attachAndFetchAchievementCategoryListener(false);
+    }
 
+    protected void attachAndFetchAchievementCategoryListener(boolean forceUpdate)
+    {
+        detachAchievementCategoryListener();
         achievementCategoryListCache.register(shownUserId, achievementCategoryListCacheListener);
-        achievementCategoryListCache.getOrFetchAsync(shownUserId);
-        displayProgress();
+        achievementCategoryListCache.getOrFetchAsync(shownUserId, forceUpdate);
     }
 
     private void displayProgress()
@@ -137,6 +148,7 @@ public class AchievementListFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull AchievementCategoryDTOList value)
         {
+            listView.onRefreshComplete();
             achievementListAdapter.clear();
             achievementListAdapter.addAll(value);
             achievementListAdapter.notifyDataSetChanged();
@@ -145,6 +157,7 @@ public class AchievementListFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
+            listView.onRefreshComplete();
             THToast.show(getString(R.string.error_fetch_achievements));
             Timber.e("Error fetching the list of competition info cell %s", key, error);
             hideProgress();

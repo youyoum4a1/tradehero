@@ -4,12 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -30,7 +30,7 @@ import timber.log.Timber;
 
 public class AchievementListTestingFragment extends DashboardFragment
 {
-    @InjectView(android.R.id.list) protected AbsListView listView;
+    @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
     @InjectView(android.R.id.empty) protected ProgressBar emptyView;
 
     @Inject AchievementCategoryListCache achievementCategoryListCache;
