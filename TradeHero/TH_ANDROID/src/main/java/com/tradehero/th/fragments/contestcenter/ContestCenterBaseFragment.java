@@ -102,10 +102,19 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         {
             @Override public int compare(ProviderDTO lhs, ProviderDTO rhs)
             {
-                //return (lhs != null && lhs.vip != null && lhs.vip) ? 1 : 0;
-                if(lhs.vip == rhs.vip)return 0 ;
-                else if(lhs.vip && (!rhs.vip)) return -1;
-                else return 1;
+                if (lhs.vip == rhs.vip)
+                {
+                    return 0;
+                }
+                else if (lhs.vip == null)
+                {
+                    return -1;
+                }
+                else if (rhs.vip == null)
+                {
+                    return 1;
+                }
+                else return lhs.vip ? 1 : -1;
             }
         });
     }
