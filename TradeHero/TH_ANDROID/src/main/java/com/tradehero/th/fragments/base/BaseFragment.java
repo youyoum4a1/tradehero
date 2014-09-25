@@ -24,11 +24,6 @@ public class BaseFragment extends Fragment
 
     protected ActionBarOwnerMixin actionBarOwnerMixin;
 
-    public static void putHasOptionMenu(@NotNull Bundle args, boolean hasOptionMenu)
-    {
-        args.putBoolean(BUNDLE_KEY_HAS_OPTION_MENU, hasOptionMenu);
-    }
-
     public static boolean getHasOptionMenu(@Nullable Bundle args)
     {
         if (args == null)
@@ -72,7 +67,6 @@ public class BaseFragment extends Fragment
     @Override public void onDestroy()
     {
         actionBarOwnerMixin.onDestroy();
-        actionBarOwnerMixin = null;
         super.onDestroy();
     }
 
@@ -97,8 +91,7 @@ public class BaseFragment extends Fragment
     {
         if (getActivity() != null)
         {
-            ActionBar actionbar = getActivity().getActionBar();
-            return actionbar;
+            return getActivity().getActionBar();
         }
         else
         {

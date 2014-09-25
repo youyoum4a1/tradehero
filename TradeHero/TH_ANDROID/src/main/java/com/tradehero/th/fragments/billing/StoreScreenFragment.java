@@ -9,8 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import com.special.residemenu.ResideMenu;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -36,16 +37,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
-
-import org.jetbrains.annotations.NotNull;
-
 import javax.inject.Inject;
-import javax.inject.Provider;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnItemClick;
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 @Routable({
@@ -60,7 +53,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
     @Inject protected THBillingInteractor userInteractor;
