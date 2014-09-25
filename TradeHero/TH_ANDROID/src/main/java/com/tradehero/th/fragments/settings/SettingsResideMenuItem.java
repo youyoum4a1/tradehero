@@ -7,15 +7,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.prefs.IsVisitedReferralCodeSettings;
 import javax.inject.Inject;
 
 public class SettingsResideMenuItem extends LinearLayout
 {
-    @Inject @IsVisitedReferralCodeSettings BooleanPreference mIsVisitedReferralCodeSettingsPreference;
+    @Inject UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
     @InjectView(R.id.unread_icon) ImageView unreadIcon;
 
     //<editor-fold desc="Constructors">
@@ -54,6 +52,6 @@ public class SettingsResideMenuItem extends LinearLayout
 
     public boolean hasUnVisitedSetting()
     {
-        return !mIsVisitedReferralCodeSettingsPreference.get(); // || !mIsOtherVisited();
+        return unreadSettingPreferenceHolder.hasUnread();
     }
 }

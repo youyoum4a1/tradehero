@@ -46,6 +46,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject @ServerEndpoint StringPreference serverEndpoint;
     @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject Analytics analytics;
+    @Inject protected UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
     @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;
     @Inject protected SocialConnectSettingViewHolderContainer socialConnectSettingViewHolderContainer;
     @Inject protected SendLoveViewHolder sendLoveViewHolder;
@@ -66,6 +67,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected ClearCacheViewHolder clearCacheViewHolder;
     @Inject protected AboutPrefViewHolder aboutPrefViewHolder;
 
+    @NotNull private SettingViewHolderList allSettingViewHolders;
     private SocialNetworkEnum socialNetworkToConnectTo;
 
     public static void putSocialNetworkToConnect(@NotNull Bundle args, @NotNull SocialNetworkEnum socialNetwork)
@@ -106,6 +108,32 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         HierarchyInjector.inject(this);
 
+        this.allSettingViewHolders = new SettingViewHolderList();
+        allSettingViewHolders.add(topBannerSettingViewHolder);
+        // Sharing
+        allSettingViewHolders.add(socialConnectSettingViewHolderContainer);
+        // General
+        allSettingViewHolders.add(sendLoveViewHolder);
+        allSettingViewHolders.add(sendFeedbackViewHolder);
+        allSettingViewHolders.add(faqViewHolder);
+        // Account
+        allSettingViewHolders.add(profilePreferenceViewHolder);
+        allSettingViewHolders.add(locationCountrySettingsViewHolder);
+        allSettingViewHolders.add(payPalSettingViewHolder);
+        allSettingViewHolders.add(alipaySettingViewHolder);
+        allSettingViewHolders.add(transactionHistoryViewHolder);
+        allSettingViewHolders.add(restorePurchaseSettingViewHolder);
+        allSettingViewHolders.add(referralCodeSettingViewHolder);
+        allSettingViewHolders.add(signOutSettingViewHolder);
+        // Translations
+        allSettingViewHolders.add(userTranslationSettingsViewHolder);
+        // Notification
+        allSettingViewHolders.add(emailNotificationSettingViewHolder);
+        allSettingViewHolders.add(pushNotificationSettingViewHolder);
+        // Misc
+        allSettingViewHolders.add(resetHelpScreensViewHolder);
+        allSettingViewHolders.add(clearCacheViewHolder);
+        allSettingViewHolders.add(aboutPrefViewHolder);
         this.socialNetworkToConnectTo = getSocialNetworkToConnect(getArguments());
     }
 
@@ -144,6 +172,21 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     }
     //</editor-fold>
 
+    @Override public void onStart()
+    {
+        super.onStart();
+        if (unreadSettingPreferenceHolder.hasUnread())
+        {
+            ListView listView = (ListView) getView().findViewById(android.R.id.list);
+            SettingViewHolder unreadHolder = allSettingViewHolders.getFirstUnread();
+            if (unreadHolder != null)
+            {
+                Preference toShow = unreadHolder.getPreference();
+                // TODO move to unread one
+            }
+        }
+    }
+
     @Override public void onResume()
     {
         super.onResume();
@@ -158,26 +201,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroyView()
     {
-        aboutPrefViewHolder.destroyViews();
-        clearCacheViewHolder.destroyViews();
-        resetHelpScreensViewHolder.destroyViews();
-        pushNotificationSettingViewHolder.destroyViews();
-        emailNotificationSettingViewHolder.destroyViews();
-        userTranslationSettingsViewHolder.destroyViews();
-        signOutSettingViewHolder.destroyViews();
-        referralCodeSettingViewHolder.destroyViews();
-        restorePurchaseSettingViewHolder.destroyViews();
-        transactionHistoryViewHolder.destroyViews();
-        alipaySettingViewHolder.destroyViews();
-        payPalSettingViewHolder.destroyViews();
-        locationCountrySettingsViewHolder.destroyViews();
-        profilePreferenceViewHolder.destroyViews();
-        faqViewHolder.destroyViews();
-        sendFeedbackViewHolder.destroyViews();
-        sendLoveViewHolder.destroyViews();
-        socialConnectSettingViewHolderContainer.destroyViews();
-        topBannerSettingViewHolder.destroyViews();
-
+        allSettingViewHolders.destroyViews();
         super.onDestroyView();
     }
 
@@ -203,42 +227,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         socialConnectSettingViewHolderContainer = null;
         topBannerSettingViewHolder = null;
 
+        allSettingViewHolders.clear();
         super.onDestroy();
     }
 
     private void initPreferenceClickHandlers()
     {
-        topBannerSettingViewHolder.initViews(this);
-
-        // Sharing
-        socialConnectSettingViewHolderContainer.initViews(this);
-
-        // General
-        sendLoveViewHolder.initViews(this);
-        sendFeedbackViewHolder.initViews(this);
-        faqViewHolder.initViews(this);
-
-        // Account
-        profilePreferenceViewHolder.initViews(this);
-        locationCountrySettingsViewHolder.initViews(this);
-        payPalSettingViewHolder.initViews(this);
-        alipaySettingViewHolder.initViews(this);
-        transactionHistoryViewHolder.initViews(this);
-        restorePurchaseSettingViewHolder.initViews(this);
-        referralCodeSettingViewHolder.initViews(this);
-        signOutSettingViewHolder.initViews(this);
-
-        // Translations
-        userTranslationSettingsViewHolder.initViews(this);
-
-        // Notification
-        emailNotificationSettingViewHolder.initViews(this);
-        pushNotificationSettingViewHolder.initViews(this);
-
-        // Misc
-        resetHelpScreensViewHolder.initViews(this);
-        clearCacheViewHolder.initViews(this);
-        aboutPrefViewHolder.initViews(this);
+        allSettingViewHolders.initViews(this);
 
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");

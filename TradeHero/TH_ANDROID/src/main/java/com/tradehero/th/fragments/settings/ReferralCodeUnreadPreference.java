@@ -8,7 +8,7 @@ import com.tradehero.th.persistence.prefs.IsVisitedReferralCodeSettings;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-public class ReferralCodeUnreadPreference extends ShowUnreadPreference
+public class ReferralCodeUnreadPreference extends BaseShowUnreadPreference
 {
     @Inject @IsVisitedReferralCodeSettings BooleanPreference mIsVisitedSettingsPreference;
 

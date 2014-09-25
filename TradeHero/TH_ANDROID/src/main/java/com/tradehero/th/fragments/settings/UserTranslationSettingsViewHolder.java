@@ -203,4 +203,15 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
             preferenceFragmentCopy.getNavigator().pushFragment(TranslatableLanguageListFragment.class);
         }
     }
+
+    @Override public boolean isUnread()
+    {
+        return (translationPreferredLang instanceof ShowUnreadPreference)
+                && !((ShowUnreadPreference) translationPreferredLang).isVisited();
+    }
+
+    @Override public Preference getPreference()
+    {
+        return translationContainer;
+    }
 }

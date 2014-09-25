@@ -92,4 +92,18 @@ public class SocialConnectSettingViewHolderContainer implements SettingViewHolde
                 break;
         }
     }
+
+    @Override public boolean isUnread()
+    {
+        return socialConnectFacebookSettingViewHolder.isUnread()
+            || socialConnectLinkedInSettingViewHolder.isUnread()
+            || socialConnectQQSettingViewHolder.isUnread()
+            || socialConnectTwitterSettingViewHolder.isUnread()
+            || socialConnectWeiboSettingViewHolder.isUnread();
+    }
+
+    @Override public Preference getPreference()
+    {
+        return container;
+    }
 }
