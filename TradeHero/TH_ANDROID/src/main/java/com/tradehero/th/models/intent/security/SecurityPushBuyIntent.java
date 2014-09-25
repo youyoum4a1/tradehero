@@ -1,5 +1,6 @@
 package com.tradehero.th.models.intent.security;
 
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,18 +13,24 @@ import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class SecurityPushBuyIntent extends THIntent
 {
-    public SecurityPushBuyIntent(SecurityIntegerId securityIntegerId, SecurityId securityId)
+    //<editor-fold desc="Constructors">
+    public SecurityPushBuyIntent(
+            @NotNull Resources resources,
+            @NotNull SecurityIntegerId securityIntegerId,
+            @NotNull SecurityId securityId)
     {
-        super();
+        super(resources);
         setData(getSecurityActionUri(securityIntegerId, securityId));
     }
+    //</editor-fold>
 
     @Override public String getUriPath()
     {
-        return getHostUriPath(R.string.intent_host_security);
+        return getHostUriPath(resources, R.string.intent_host_security);
     }
 
     @Override public RootFragmentType getDashboardType()
@@ -34,17 +41,17 @@ public class SecurityPushBuyIntent extends THIntent
         return null;
     }
 
-    public Uri getSecurityActionUri(SecurityIntegerId securityIntegerId, SecurityId securityId)
+    public Uri getSecurityActionUri(@NotNull SecurityIntegerId securityIntegerId, @NotNull SecurityId securityId)
     {
         return Uri.parse(getSecurityActionUriPath(securityIntegerId, securityId));
     }
 
-    public String getSecurityActionUriPath(SecurityIntegerId securityIntegerId, SecurityId securityId)
+    public String getSecurityActionUriPath(@NotNull SecurityIntegerId securityIntegerId, @NotNull SecurityId securityId)
     {
-        return getString(
+        return resources.getString(
                 R.string.intent_security_push_buy_action,
-                getString(R.string.intent_scheme),
-                getString(R.string.intent_host_security),
+                resources.getString(R.string.intent_scheme),
+                resources.getString(R.string.intent_host_security),
                 securityIntegerId.key,
                 securityId.getExchange(),
                 securityId.getSecuritySymbol());
@@ -52,36 +59,45 @@ public class SecurityPushBuyIntent extends THIntent
 
     public SecurityIntegerId getSecurityIntegerId()
     {
-        return getSecurityIntegerId(getData());
+        return getSecurityIntegerId(resources, getData());
     }
 
-    public static SecurityIntegerId getSecurityIntegerId(Uri data)
+    public static SecurityIntegerId getSecurityIntegerId(
+            @NotNull Resources resources,
+            @NotNull Uri data)
     {
-        return getSecurityIntegerId(data.getPathSegments());
+        return getSecurityIntegerId(resources, data.getPathSegments());
     }
 
-    public static SecurityIntegerId getSecurityIntegerId(List<String> pathSegments)
+    public static SecurityIntegerId getSecurityIntegerId(
+            @NotNull Resources resources,
+            @NotNull List<String> pathSegments)
     {
-        String[] splitElements = getSplitElements(pathSegments.get(getInteger(R.integer.intent_security_push_buy_index_elements)));
-        return new SecurityIntegerId(Integer.parseInt(splitElements[getInteger(R.integer.intent_security_push_buy_split_index_security_num_key)]));
+        String[] splitElements = getSplitElements(pathSegments.get(resources.getInteger(R.integer.intent_security_push_buy_index_elements)));
+        return new SecurityIntegerId(Integer.parseInt(splitElements[resources.getInteger(
+                R.integer.intent_security_push_buy_split_index_security_num_key)]));
     }
 
     public SecurityId getSecurityId()
     {
-        return getSecurityId(getData());
+        return getSecurityId(resources, getData());
     }
 
-    public static SecurityId getSecurityId(Uri data)
+    public static SecurityId getSecurityId(
+            @NotNull Resources resources,
+            @NotNull Uri data)
     {
-        return getSecurityId(data.getPathSegments());
+        return getSecurityId(resources, data.getPathSegments());
     }
 
-    public static SecurityId getSecurityId(List<String> pathSegments)
+    public static SecurityId getSecurityId(
+            @NotNull Resources resources,
+            @NotNull List<String> pathSegments)
     {
-        String[] splitElements = getSplitElements(pathSegments.get(getInteger(R.integer.intent_security_push_buy_index_elements)));
+        String[] splitElements = getSplitElements(pathSegments.get(resources.getInteger(R.integer.intent_security_push_buy_index_elements)));
         return new SecurityId(
-                splitElements[getInteger(R.integer.intent_security_push_buy_split_index_security_exchange_key)],
-                splitElements[getInteger(R.integer.intent_security_push_buy_split_index_security_symbol_key)]);
+                splitElements[resources.getInteger(R.integer.intent_security_push_buy_split_index_security_exchange_key)],
+                splitElements[resources.getInteger(R.integer.intent_security_push_buy_split_index_security_symbol_key)]);
     }
 
     public static String[] getSplitElements(String elements)

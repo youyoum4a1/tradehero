@@ -1,13 +1,15 @@
 package com.tradehero.th.models.intent;
 
+import android.content.res.Resources;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import org.jetbrains.annotations.NotNull;
 
 public class SimpleTHIntent extends THIntent
 {
     //<editor-fold desc="Constructors">
-    public SimpleTHIntent()
+    public SimpleTHIntent(@NotNull Resources resources)
     {
-        super();
+        super(resources);
     }
     //</editor-fold>
 

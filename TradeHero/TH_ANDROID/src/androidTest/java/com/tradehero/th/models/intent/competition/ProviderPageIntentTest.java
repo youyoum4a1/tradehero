@@ -1,12 +1,12 @@
 package com.tradehero.th.models.intent.competition;
 
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
-import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
@@ -20,14 +20,15 @@ import static org.junit.Assert.assertTrue;
 @RunWith(THRobolectricTestRunner.class)
 public class ProviderPageIntentTest
 {
+    private Resources resources;
+
     @Before public void setUp()
     {
-        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
+        resources = Robolectric.getShadowApplication().getApplicationContext().getResources();
     }
 
     @After public void tearDown()
     {
-        THIntent.context = null;
     }
 
     @Test public void providerActionUriPathIsWellFormed1()
@@ -36,7 +37,7 @@ public class ProviderPageIntentTest
         String uselessUri = "abc";
         ProviderId providerId = new ProviderId(456);
         String uri = "def";
-        assertEquals("tradehero://providers/456/pages/def", new ProviderPageIntent(uselessId, uselessUri).getProviderActionUriPath(providerId, uri));
+        assertEquals("tradehero://providers/456/pages/def", new ProviderPageIntent(resources, uselessId, uselessUri).getProviderActionUriPath(providerId, uri));
     }
 
     @Test public void providerActionUriPathIsWellFormed2()
@@ -46,7 +47,7 @@ public class ProviderPageIntentTest
         ProviderId providerId = new ProviderId(456);
         String uri = "/competitionpages/rules?providerId=789&userId=234";
         assertEquals("tradehero://providers/456/pages/%252Fcompetitionpages%252Frules%253FproviderId%253D789%2526userId%253D234",
-                new ProviderPageIntent(uselessId, uselessUri).getProviderActionUriPath(providerId, uri));
+                new ProviderPageIntent(resources, uselessId, uselessUri).getProviderActionUriPath(providerId, uri));
     }
 
     // disable for now
@@ -64,7 +65,7 @@ public class ProviderPageIntentTest
         String uselessUri = "abc";
         ProviderId providerId = new ProviderId(456);
         String usedUri = "def";
-        ProviderPageIntent intent = new ProviderPageIntent(useless, uselessUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, useless, uselessUri);
         Uri uri = intent.getProviderActionUri(providerId, usedUri);
         List<String> pathSegments = uri.getPathSegments();
 
@@ -82,7 +83,7 @@ public class ProviderPageIntentTest
         String uselessUri = "abc";
         ProviderId providerId = new ProviderId(456);
         String usedUri = "/competitionpages/rules?providerId=789&userId=234";
-        ProviderPageIntent intent = new ProviderPageIntent(useless, uselessUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, useless, uselessUri);
         Uri uri = intent.getProviderActionUri(providerId, usedUri);
         List<String> pathSegments = uri.getPathSegments();
 
@@ -98,7 +99,7 @@ public class ProviderPageIntentTest
     {
         ProviderId providerId = new ProviderId(123);
         String usedUri = "def";
-        ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, providerId, usedUri);
         Uri uri = intent.getData();
 
         assertEquals("tradehero://providers/123/pages/def", uri + "");
@@ -107,16 +108,16 @@ public class ProviderPageIntentTest
         assertEquals("tradehero", uri.getScheme());
         assertEquals("providers", uri.getHost());
         assertEquals(3, pathSegments.size());
-        assertEquals("123", pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_provider_path_index_id)));
-        assertEquals("pages", pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_provider_path_index_action)));
-        assertEquals("def", pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_provider_path_index_encoded_page)));
+        assertEquals("123", pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_id)));
+        assertEquals("pages", pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_action)));
+        assertEquals("def", pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_encoded_page)));
     }
 
     @Test public void constructorPlacesPath2()
     {
         ProviderId providerId = new ProviderId(123);
         String usedUri = "/competitionpages/rules?providerId=789&userId=234";
-        ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, providerId, usedUri);
         Uri uri = intent.getData();
 
         assertEquals("tradehero://providers/123/pages/%252Fcompetitionpages%252Frules%253FproviderId%253D789%2526userId%253D234", uri + "");
@@ -125,36 +126,36 @@ public class ProviderPageIntentTest
         assertEquals("tradehero", uri.getScheme());
         assertEquals("providers", uri.getHost());
         assertEquals(3, pathSegments.size());
-        assertEquals("123", pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_provider_path_index_id)));
-        assertEquals("pages", pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_provider_path_index_action)));
-        assertEquals("%2Fcompetitionpages%2Frules%3FproviderId%3D789%26userId%3D234", pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_provider_path_index_encoded_page)));
+        assertEquals("123", pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_id)));
+        assertEquals("pages", pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_action)));
+        assertEquals("%2Fcompetitionpages%2Frules%3FproviderId%3D789%26userId%3D234", pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_encoded_page)));
     }
 
     @Test public void uriParserIsOk1()
     {
         ProviderId providerId = new ProviderId(123);
         String usedUri = "def";
-        ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, providerId, usedUri);
         Uri uri = intent.getData();
-        assertTrue(providerId.equals(ProviderPageIntent.getProviderId(uri)));
-        assertTrue(usedUri.equals(ProviderPageIntent.getForwardUriPath(uri)));
+        assertTrue(providerId.equals(ProviderPageIntent.getProviderId(resources, uri)));
+        assertTrue(usedUri.equals(ProviderPageIntent.getForwardUriPath(resources, uri)));
     }
 
     @Test public void uriParserIsOk2()
     {
         ProviderId providerId = new ProviderId(123);
         String usedUri = "/competitionpages/rules?providerId=789&userId=234";
-        ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, providerId, usedUri);
         Uri uri = intent.getData();
-        assertTrue(providerId.equals(ProviderPageIntent.getProviderId(uri)));
-        assertTrue(usedUri.equals(ProviderPageIntent.getForwardUriPath(uri)));
+        assertTrue(providerId.equals(ProviderPageIntent.getProviderId(resources, uri)));
+        assertTrue(usedUri.equals(ProviderPageIntent.getForwardUriPath(resources, uri)));
     }
 
     @Test public void getProviderIdForwardUriReturnsCorrect1()
     {
         ProviderId providerId = new ProviderId(123);
         String usedUri = "def";
-        ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, providerId, usedUri);
 
         assertTrue(providerId.equals(intent.getProviderId()));
         assertTrue(usedUri.equals(intent.getForwardUriPath()));
@@ -164,7 +165,7 @@ public class ProviderPageIntentTest
     {
         ProviderId providerId = new ProviderId(123);
         String usedUri = "/competitionpages/rules?providerId=789&userId=234";
-        ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, providerId, usedUri);
 
         assertTrue(providerId.equals(intent.getProviderId()));
         assertTrue(usedUri.equals(intent.getForwardUriPath()));
@@ -174,7 +175,7 @@ public class ProviderPageIntentTest
     {
         try
         {
-            new ProviderPageIntent(new ProviderId(123), "abc").getActionFragment();
+            new ProviderPageIntent(resources, new ProviderId(123), "abc").getActionFragment();
             assertTrue("We should not have reached here", false);
         }
         catch (RuntimeException e)
@@ -191,7 +192,7 @@ public class ProviderPageIntentTest
     {
         ProviderId providerId = new ProviderId(123);
         String usedUri = "abc";
-        ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, providerId, usedUri);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
         assertEquals(123, (int) CompetitionFragment.getProviderId(bundle).key);
@@ -201,7 +202,7 @@ public class ProviderPageIntentTest
     {
         ProviderId providerId = new ProviderId(123);
         String usedUri = "abc";
-        ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
+        ProviderPageIntent intent = new ProviderPageIntent(resources, providerId, usedUri);
         Bundle bundle = new Bundle();
         bundle.putString("Whoo", "bah");
         intent.populate(bundle);

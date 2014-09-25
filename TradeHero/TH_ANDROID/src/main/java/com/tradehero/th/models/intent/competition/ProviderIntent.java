@@ -1,21 +1,23 @@
 package com.tradehero.th.models.intent.competition;
 
+import android.content.res.Resources;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.models.intent.THIntent;
+import org.jetbrains.annotations.NotNull;
 
 public class ProviderIntent extends THIntent
 {
     //<editor-fold desc="Constructors">
-    public ProviderIntent()
+    public ProviderIntent(@NotNull Resources resources)
     {
-        super();
+        super(resources);
     }
     //</editor-fold>
 
     @Override public String getUriPath()
     {
-        return getHostUriPath(R.string.intent_host_providers);
+        return getHostUriPath(resources, R.string.intent_host_providers);
     }
 
     @Override public RootFragmentType getDashboardType()

@@ -1,16 +1,18 @@
 package com.tradehero.th.models.intent.security;
 
+import android.content.Context;
 import android.content.Intent;
 import com.tradehero.th.R;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class SecurityIntentFactory extends THIntentSubFactory<SecurityPushBuyIntent>
 {
-    @Inject public SecurityIntentFactory()
+    @Inject public SecurityIntentFactory(@NotNull Context context)
     {
-        super();
+        super(context.getResources());
     }
 
     @Override public String getHost()
@@ -32,7 +34,8 @@ public class SecurityIntentFactory extends THIntentSubFactory<SecurityPushBuyInt
     @Override protected SecurityPushBuyIntent create(Intent intent, List<String> pathSegments)
     {
         return new SecurityPushBuyIntent(
-                SecurityPushBuyIntent.getSecurityIntegerId(pathSegments),
-                SecurityPushBuyIntent.getSecurityId(pathSegments));
+                resources,
+                SecurityPushBuyIntent.getSecurityIntegerId(resources, pathSegments),
+                SecurityPushBuyIntent.getSecurityId(resources, pathSegments));
     }
 }

@@ -1,13 +1,20 @@
 package com.tradehero.th.models.intent;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class THIntentSubFactory<THIntentType extends THIntent> extends THIntentFactory<THIntentType>
 {
-    public THIntentSubFactory()
+    @NotNull protected final Resources resources;
+
+    //<editor-fold desc="Constructors">
+    public THIntentSubFactory(@NotNull Resources resources)
     {
+        this.resources = resources;
     }
+    //</editor-fold>
 
     @Override public boolean isHandlableIntent(Intent intent)
     {

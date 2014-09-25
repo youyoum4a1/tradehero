@@ -1,22 +1,23 @@
 package com.tradehero.th.models.intent;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class THIntent extends Intent
 {
-    @Inject public static Context context;
+    @NotNull protected Resources resources;
 
     //<editor-fold desc="Constructors">
-    public THIntent()
+    public THIntent(@NotNull Resources resources)
     {
         super();
+        this.resources = resources;
         setDefaultAction();
         setData(getUri());
     }
@@ -32,21 +33,6 @@ abstract public class THIntent extends Intent
         return Intent.ACTION_VIEW;
     }
 
-    public static String getString(int resId)
-    {
-        return context.getString(resId);
-    }
-
-    public static String getString(int resId, java.lang.Object... formatArgs)
-    {
-        return context.getString(resId, formatArgs);
-    }
-
-    public static int getInteger(int resId)
-    {
-        return context.getResources().getInteger(resId);
-    }
-
     public Uri getUri()
     {
         return Uri.parse(getUriPath());
@@ -54,31 +40,36 @@ abstract public class THIntent extends Intent
 
     public String getUriPath()
     {
-        return getBaseUriPath();
+        return getBaseUriPath(resources);
     }
 
-    public static String getBaseUriPath()
+    public static String getBaseUriPath(@NotNull Resources resources)
     {
-        return getString(
+        return resources.getString(
                 R.string.intent_uri_base,
-                getString(R.string.intent_scheme));
+                resources.getString(R.string.intent_scheme));
     }
 
-    public static String getHostUriPath(int hostResId)
+    public static String getHostUriPath(
+            @NotNull Resources resources,
+            int hostResId)
     {
-        return getString(
+        return resources.getString(
                 R.string.intent_uri_host,
-                getString(R.string.intent_scheme),
-                getString(hostResId));
+                resources.getString(R.string.intent_scheme),
+                resources.getString(hostResId));
     }
 
-    public static String getActionUriPath(int hostResId, int actionResId)
+    public static String getActionUriPath(
+            @NotNull Resources resources,
+            int hostResId,
+            int actionResId)
     {
-        return getString(
+        return resources.getString(
                 R.string.intent_uri_action,
-                getString(R.string.intent_scheme),
-                getString(hostResId),
-                getString(actionResId));
+                resources.getString(R.string.intent_scheme),
+                resources.getString(hostResId),
+                resources.getString(actionResId));
     }
 
     abstract public RootFragmentType getDashboardType();
