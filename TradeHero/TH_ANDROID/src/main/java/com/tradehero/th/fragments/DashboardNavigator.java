@@ -15,7 +15,7 @@ import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator<FragmentActivity>
 {
-    public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
+    public static final String BUNDLE_KEY_RETURN_FRAGMENT = DashboardNavigator.class.getName() + ".returnFragment";
 
     private static final boolean TAB_SHOW_HOME_AS_UP = false;
 
@@ -42,7 +42,9 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
     {
         if (tabType.fragmentClass.isInstance(getCurrentFragment()))
         {
-            return (T) getCurrentFragment();
+            @SuppressWarnings("unchecked")
+            T castedFragment = (T) getCurrentFragment();
+            return castedFragment;
         }
 
         Bundle args = new Bundle();
