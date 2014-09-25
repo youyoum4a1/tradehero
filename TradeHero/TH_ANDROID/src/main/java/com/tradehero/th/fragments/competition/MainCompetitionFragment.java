@@ -20,6 +20,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.SimpleCounterUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
@@ -61,9 +62,9 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-@Routable(
+@Routable({
         "providers/:providerId"
-)
+})
 public class MainCompetitionFragment extends CompetitionFragment
 {
     private static final int EXPECTED_COUNT = 2;
@@ -86,6 +87,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject THIntentFactory thIntentFactory;
     @Inject DashboardNavigator navigator;
 
+    @RouteProperty("providerId") Integer routedProviderId;
+
     protected UserProfileCompactDTO portfolioUserCompactDTO;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected CompetitionDTOList competitionDTOs;
@@ -96,6 +99,11 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
+        thRouter.inject(this);
+        if (getArguments() != null && routedProviderId != null)
+        {
+            putProviderId(getArguments(), new ProviderId(routedProviderId));
+        }
         super.onCreate(savedInstanceState);
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
         this.competitionListCacheFetchListener = createCompetitionListCacheListener();
