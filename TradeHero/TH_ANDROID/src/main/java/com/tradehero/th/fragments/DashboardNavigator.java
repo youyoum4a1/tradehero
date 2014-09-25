@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import java.util.HashSet;
@@ -15,8 +14,6 @@ import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator<FragmentActivity>
 {
-    public static final String BUNDLE_KEY_RETURN_FRAGMENT = DashboardNavigator.class.getName() + ".returnFragment";
-
     private static final boolean TAB_SHOW_HOME_AS_UP = false;
 
     private Set<DashboardFragmentWatcher> dashboardFragmentWatchers = new HashSet<>();
@@ -95,19 +92,6 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         }
         onFragmentChanged(activity, getCurrentFragment().getClass(), null);
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
-    }
-
-    public void popFragment()
-    {
-        Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
-
-        String backStackName = null;
-        if (currentDashboardFragment != null && currentDashboardFragment.getArguments() != null)
-        {
-            Bundle args = currentDashboardFragment.getArguments();
-            backStackName = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
-        }
-        popFragment(backStackName);
     }
 
     //<editor-fold desc="DashboardFragmentWatcher">

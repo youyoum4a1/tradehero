@@ -18,6 +18,7 @@ import timber.log.Timber;
 
 class Navigator<ActivityType extends Activity>
 {
+    public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
     private static final boolean DEFAULT_SHOW_HOME_KEY_AS_UP = true;
 
     public static final int[] DEFAULT_FRAGMENT_ANIMATION = new int[] {
@@ -98,6 +99,20 @@ class Navigator<ActivityType extends Activity>
                 ActionBarOwnerMixin.putKeyShowHomeAsUp(args, showHomeAsUp);
             }
         }
+    }
+
+
+    public void popFragment()
+    {
+        Fragment currentDashboardFragment = manager.findFragmentById(fragmentContentId);
+
+        String backStackName = null;
+        if (currentDashboardFragment != null && currentDashboardFragment.getArguments() != null)
+        {
+            Bundle args = currentDashboardFragment.getArguments();
+            backStackName = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+        }
+        popFragment(backStackName);
     }
 
     public void popFragment(String backStackName)
