@@ -10,12 +10,12 @@ import butterknife.InjectView;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.prefs.IsVisitedSettings;
+import com.tradehero.th.persistence.prefs.IsVisitedReferralCodeSettings;
 import javax.inject.Inject;
 
 public class SettingsResideMenuItem extends LinearLayout
 {
-    @Inject @IsVisitedSettings BooleanPreference mIsVisitedSettingsPreference;
+    @Inject @IsVisitedReferralCodeSettings BooleanPreference mIsVisitedReferralCodeSettingsPreference;
     @InjectView(R.id.unread_icon) ImageView unreadIcon;
 
     //<editor-fold desc="Constructors">
@@ -49,6 +49,11 @@ public class SettingsResideMenuItem extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        unreadIcon.setVisibility(mIsVisitedSettingsPreference.get() ? View.INVISIBLE : View.VISIBLE);
+        unreadIcon.setVisibility(hasUnVisitedSetting() ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    public boolean hasUnVisitedSetting()
+    {
+        return !mIsVisitedReferralCodeSettingsPreference.get(); // || !mIsOtherVisited();
     }
 }

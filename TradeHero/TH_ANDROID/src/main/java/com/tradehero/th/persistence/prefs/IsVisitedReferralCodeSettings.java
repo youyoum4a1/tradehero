@@ -6,6 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Qualifier;
 
 @Qualifier @Retention(RetentionPolicy.RUNTIME)
-public @interface IsVisitedSettings
+public @interface IsVisitedReferralCodeSettings
 {
 }
