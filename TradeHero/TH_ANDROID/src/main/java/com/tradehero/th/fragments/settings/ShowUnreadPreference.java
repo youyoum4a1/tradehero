@@ -34,7 +34,7 @@ public class ShowUnreadPreference extends Preference
     @Override protected void onBindView(@NotNull View view)
     {
         super.onBindView(view);
-        if (!mIsVisitedSettingsPreference.get())
+        if (!isVisited())
         {
             ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
             if (icon != null)
@@ -44,5 +44,16 @@ public class ShowUnreadPreference extends Preference
                 icon.setPadding(80, 0, 0, 80);
             }
         }
+    }
+
+    @Override protected void onClick()
+    {
+        super.onClick();
+        mIsVisitedSettingsPreference.set(true);
+    }
+
+    public boolean isVisited()
+    {
+        return mIsVisitedSettingsPreference.get();
     }
 }
