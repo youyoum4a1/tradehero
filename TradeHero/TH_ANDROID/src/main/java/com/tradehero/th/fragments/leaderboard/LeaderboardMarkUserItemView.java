@@ -663,6 +663,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         return leaderboardItem == null ? null : (leaderboardItem.ordinalPosition + 1);
     }
 
+    protected void displayUserIsLoading()
+    {
+        lbmuPosition.setText("-");
+        lbmuRoi.setText("-");
+        lbmuDisplayName.setText(R.string.loading_required_information);
+    }
+
     protected void displayUserIsNotRanked()
     {
         // disable touch feedback so we don't confuse the user

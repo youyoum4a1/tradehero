@@ -380,6 +380,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                 new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
         leaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
         leaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
+        //Show loading
+        updateLoadingCurrentRankHeaderView();
     }
 
     /**
@@ -390,9 +392,17 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         if (mRankHeaderView == null)
         {
             mRankHeaderView = LayoutInflater.from(getActivity()).inflate(getCurrentRankLayoutResId(), null, false);
-            updateCurrentRankHeaderView();
         }
         return mRankHeaderView;
+    }
+
+    protected void updateLoadingCurrentRankHeaderView()
+    {
+        if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
+        {
+            LeaderboardMarkUserItemView leaderboardMarkUserItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
+            leaderboardMarkUserItemView.displayUserIsLoading();
+        }
     }
 
     protected void updateCurrentRankHeaderView()
