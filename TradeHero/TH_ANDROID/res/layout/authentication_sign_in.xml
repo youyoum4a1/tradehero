@@ -12,7 +12,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fillViewport="true"
-      android:background="@drawable/authentication_bg"
       android:scrollbarStyle="outsideOverlay"
       android:paddingLeft="@dimen/authentication_horizontal_padding"
       android:paddingRight="@dimen/authentication_horizontal_padding"
