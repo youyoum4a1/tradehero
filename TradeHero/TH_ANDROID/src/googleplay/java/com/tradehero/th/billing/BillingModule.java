@@ -11,7 +11,6 @@ import com.tradehero.th.billing.googleplay.exception.THIABExceptionFactory;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCache;
 import dagger.Module;
@@ -20,8 +19,6 @@ import javax.inject.Singleton;
 
 @Module(
         injects = {
-                IABSKUListRetrievedAsyncMilestone.class,
-                IABSKUListRetrievedAsyncMilestone.class,
         },
         complete = false,
         library = true,
