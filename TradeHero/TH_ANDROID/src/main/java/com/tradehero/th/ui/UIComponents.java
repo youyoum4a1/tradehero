@@ -2,11 +2,9 @@ package com.tradehero.th.ui;
 
 import com.special.residemenu.ResideMenu;
 import com.tradehero.th.fragments.DashboardResideMenu;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Singleton;
 
 @Module(
         injects = {

@@ -8,12 +8,8 @@ import android.view.ViewGroup;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.widget.reside.THResideMenuItemImpl;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.utils.DeviceUtil;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -23,13 +19,13 @@ import static butterknife.ButterKnife.findById;
 public class AppContainerImpl implements AppContainer
 {
     private final ResideMenu resideMenu;
-    private final Lazy<DashboardNavigator> navigatorLazy;
+    private final ResideMenuItemClickListener resideMenuItemClickListener;
     private Activity activity;
 
-    @Inject public AppContainerImpl(ResideMenu resideMenu, Lazy<DashboardNavigator> navigatorLazy)
+    @Inject public AppContainerImpl(ResideMenu resideMenu, ResideMenuItemClickListener resideMenuItemClickListener)
     {
         this.resideMenu = resideMenu;
-        this.navigatorLazy = navigatorLazy;
+        this.resideMenuItemClickListener = resideMenuItemClickListener;
     }
 
     @Override public ViewGroup get(final Activity activity)
@@ -40,47 +36,11 @@ public class AppContainerImpl implements AppContainer
         resideMenu.setBackground(R.drawable.parallax_bg);
         resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());
 
-        // hAcK to make the menu works while waiting for a injectable navigatorProvider
-        ResideMenuItemClickListener menuItemClickListener = new ResideMenuItemClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                super.onClick(v);
-                DashboardNavigator navigator = navigatorLazy.get();
-                if (navigator != null && !activity.isFinishing())
-                {
-                    Object tag = v.getTag();
-                    if (tag instanceof RootFragmentType)
-                    {
-                        RootFragmentType tabType = (RootFragmentType) tag;
-                        //store and setting in reside menu belongs to ME tab
-                        if (tabType == RootFragmentType.STORE)
-                        {
-                            navigator.goToTab(RootFragmentType.ME);
-                            navigator.pushFragment(StoreScreenFragment.class);
-                            return;
-                        }
-                        else if (tabType == RootFragmentType.SETTING)
-                        {
-                            navigator.goToTab(RootFragmentType.ME);
-                            navigator.pushFragment(SettingsFragment.class);
-                            return;
-                        }
-                        else if(tabType == RootFragmentType.DIVIDER)
-                        {
-                            return;
-                        }
-                        navigator.goToTab(tabType);
-                    }
-                }
-            }
-        };
-
         List<View> menuItems = new ArrayList<>();
         for (RootFragmentType tabType : RootFragmentType.forResideMenu())
         {
             View menuItem = createMenuItemFromTabType(activity, tabType);
-            menuItem.setOnClickListener(menuItemClickListener);
+            menuItem.setOnClickListener(resideMenuItemClickListener);
             menuItems.add(menuItem);
         }
         resideMenu.setMenuListener(new CustomOnMenuListener());
@@ -97,7 +57,7 @@ public class AppContainerImpl implements AppContainer
     {
         @Override public void openMenu()
         {
-            closeSoftInput();
+            DeviceUtil.dismissKeyboard(activity);
             if (activity instanceof ResideMenu.OnMenuListener && !activity.isFinishing())
             {
                 ((ResideMenu.OnMenuListener) activity).openMenu();
@@ -110,17 +70,6 @@ public class AppContainerImpl implements AppContainer
             {
                 ((ResideMenu.OnMenuListener) activity).closeMenu();
             }
-        }
-    }
-
-    private void closeSoftInput()
-    {
-        try
-        {
-            DeviceUtil.dismissKeyboard(activity);
-        }
-        catch (Exception e)
-        {
         }
     }
 
@@ -148,13 +97,5 @@ public class AppContainerImpl implements AppContainer
         created.setBackgroundResource(R.drawable.basic_transparent_selector);
 
         return created;
-    }
-
-    private class ResideMenuItemClickListener implements View.OnClickListener
-    {
-        @Override public void onClick(View v)
-        {
-            resideMenu.closeMenu();
-        }
     }
 }
