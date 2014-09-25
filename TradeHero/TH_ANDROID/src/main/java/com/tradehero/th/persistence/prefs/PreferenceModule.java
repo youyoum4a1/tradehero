@@ -174,16 +174,16 @@ public class PreferenceModule
         return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_FLAG, TimingIntervalPreference.WEEK);
     }
 
-    @Provides @Singleton @ShowMarketClosed TimingIntervalPreference provideShowMarketClosedIntervalPreference(
-            @ForApp SharedPreferences sharedPreferences)
-    {
-        return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_MARKET_CLOSED, 30 * TimingIntervalPreference.MINUTE);
-    }
-
     @Provides @Singleton @ShowAskForInviteDialogCloseTimes IntPreference provideAskForInviteDialogCloseTimesPreference(
             @ForApp SharedPreferences sharedPreferences)
     {
         return new IntPreference(sharedPreferences, PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG, 1);
+    }
+
+    @Provides @Singleton @ShowMarketClosed TimingIntervalPreference provideShowMarketClosedIntervalPreference(
+            @ForUser SharedPreferences sharedPreferences)
+    {
+        return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_MARKET_CLOSED, 30 * TimingIntervalPreference.MINUTE);
     }
 
     @Provides @Singleton @IsVisitedSettings BooleanPreference provideIsVisitedSettingsPreference(
