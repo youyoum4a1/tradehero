@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOList;
@@ -26,6 +27,7 @@ import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.social.friend.FriendsListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.ArrayList;
@@ -51,6 +53,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
 
     protected SocialFriendHandler socialFriendHandler;
+    @Nullable protected MiddleCallback<UserProfileDTO> followFriendsMiddleCallback;
+    @Nullable protected MiddleCallback<BaseResponseDTO> inviteFriendsMiddleCallback;
+
     protected EditText edtMessageInvite;
     protected TextView tvMessageCount;
     protected Button btnMessageCancel;
@@ -95,6 +100,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Override public void onStop()
     {
         detachFriendsListCache();
+        detachFollowFriendsMiddleCallback();
+        detachInviteFriendsMiddleCallback();
         super.onStop();
     }
 
@@ -107,6 +114,24 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected void detachFriendsListCache()
     {
         friendsListCache.unregister(friendsListCacheListener);
+    }
+
+    protected void detachFollowFriendsMiddleCallback()
+    {
+        MiddleCallback<UserProfileDTO> middleCallbackCopy = followFriendsMiddleCallback;
+        if (middleCallbackCopy != null)
+        {
+            middleCallbackCopy.setPrimaryCallback(null);
+        }
+    }
+
+    protected void detachInviteFriendsMiddleCallback()
+    {
+        MiddleCallback<BaseResponseDTO> middleCallbackCopy = inviteFriendsMiddleCallback;
+        if (middleCallbackCopy != null)
+        {
+            middleCallbackCopy.setPrimaryCallback(null);
+        }
     }
 
     @Override
@@ -147,14 +172,16 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback(usersToFollow));
+        detachFollowFriendsMiddleCallback();
+        followFriendsMiddleCallback = socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback(usersToFollow));
     }
 
-    // TODO subclass like FaccbookSocialFriendsFragment should override this methos because the logic of inviting friends is finished on the client side
+    // TODO subclass like FacebookSocialFriendsFragment should override this methos because the logic of inviting friends is finished on the client side
     protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
+        detachInviteFriendsMiddleCallback();
+        inviteFriendsMiddleCallback = socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
     }
 
     protected String getWeiboInviteMessage()

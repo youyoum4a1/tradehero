@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -16,7 +17,6 @@ import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
-import com.tradehero.th.api.users.WebSignInFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -24,8 +24,6 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
-
-import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
@@ -118,11 +116,6 @@ public interface UserService
             @Part("profilePicture") TypedOutput profilePicture);
     //</editor-fold>
 
-    //<editor-fold desc="Signin">
-    @POST("users/signin") Response signIn(
-            @Body WebSignInFormDTO webSignInFormDTO);
-    //</editor-fold>
-
     //<editor-fold desc="Check Display Name Available">
     @GET("/checkDisplayNameAvailable") UserAvailabilityDTO checkDisplayNameAvailable(
             @Query("displayName") String username);
@@ -172,7 +165,7 @@ public interface UserService
     //</editor-fold>
 
     //<editor-fold desc="Delete User">
-    @DELETE("/users/{userId}") Response deleteUser(
+    @DELETE("/users/{userId}") BaseResponseDTO deleteUser(
             @Path("userId") int userId);
     //</editor-fold>
 
@@ -195,7 +188,7 @@ public interface UserService
     @POST("/users/batchFollow/free") UserProfileDTO followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
 
     //<editor-fold desc="Invite Friends">
-    @POST("/users/{userId}/inviteFriends") Response inviteFriends(
+    @POST("/users/{userId}/inviteFriends") BaseResponseDTO inviteFriends(
             @Path("userId") int userId,
             @Body InviteFormDTO inviteFormDTO);
     //</editor-fold>
@@ -246,14 +239,14 @@ public interface UserService
 
     //<editor-fold desc="Update Referral Code">
     @POST("/users/{userId}/updateInviteCode")
-    Response updateReferralCode(
+    BaseResponseDTO updateReferralCode(
             @Path("userId") int userId,
             @Body UpdateReferralCodeDTO updateReferralCodeDTO);
     //</editor-fold>
 
     //<editor-fold desc="Send Analytics">
     @POST("/analytics")
-    Response sendAnalytics(
+    BaseResponseDTO sendAnalytics(
             @Body BatchAnalyticsEventForm batchAnalyticsEventForm);
     //</editor-fold>
 }

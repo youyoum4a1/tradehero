@@ -1,14 +1,14 @@
 package com.tradehero.th.models.user;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
-import retrofit.client.Response;
 
-public class DTOProcessorUpdateReferralCode implements DTOProcessor<Response>
+public class DTOProcessorUpdateReferralCode implements DTOProcessor<BaseResponseDTO>
 {
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final UpdateReferralCodeDTO updateReferralCodeDTO;
@@ -26,7 +26,7 @@ public class DTOProcessorUpdateReferralCode implements DTOProcessor<Response>
     }
     //</editor-fold>
 
-    @Override public Response process(Response value)
+    @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
         UserProfileDTO cachedProfile = userProfileCache.get(invitedUserId);
         if (cachedProfile != null)

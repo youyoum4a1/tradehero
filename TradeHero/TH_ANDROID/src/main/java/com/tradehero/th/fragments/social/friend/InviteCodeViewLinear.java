@@ -9,6 +9,7 @@ import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -18,7 +19,6 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import retrofit.client.Response;
 
 public class InviteCodeViewLinear extends LinearLayout
 {
@@ -71,7 +71,7 @@ public class InviteCodeViewLinear extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void setParentCallback(@Nullable Callback<Response> parentCallback)
+    public void setParentCallback(@Nullable Callback<BaseResponseDTO> parentCallback)
     {
         viewHolder.setParentCallback(parentCallback);
     }

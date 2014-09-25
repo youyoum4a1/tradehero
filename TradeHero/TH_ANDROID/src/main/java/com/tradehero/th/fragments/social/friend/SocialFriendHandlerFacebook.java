@@ -9,6 +9,7 @@ import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -33,7 +34,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 public class SocialFriendHandlerFacebook extends SocialFriendHandler
@@ -50,7 +50,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     private ProgressDialog progressDialog;
     private UserBaseKey userBaseKey;
     private List<UserFriendsDTO> users;
-    RequestCallback<Response> callback;
+    RequestCallback<BaseResponseDTO> callback;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialFriendHandlerFacebook(
@@ -71,10 +71,10 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     //</editor-fold>
 
     @Override
-    public MiddleCallback<Response> inviteFriends(
+    public MiddleCallback<BaseResponseDTO> inviteFriends(
             @NotNull UserBaseKey userKey,
             @NotNull List<UserFriendsDTO> users,
-            @Nullable RequestCallback<Response> callback)
+            @Nullable RequestCallback<BaseResponseDTO> callback)
     {
         this.userBaseKey = userKey;
         this.users = users;

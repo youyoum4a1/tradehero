@@ -8,6 +8,8 @@ import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,14 +18,13 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteContactEntryDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
@@ -57,7 +58,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.client.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -94,10 +94,10 @@ public class InviteFriendFragment extends DashboardFragment
     private ToggleButton contactToggle;
 
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
-    private MiddleCallback<Response> middleCallbackInvite;
+    private MiddleCallback<BaseResponseDTO> middleCallbackInvite;
 
     private LoaderManager.LoaderCallbacks<List<UserFriendsDTO>> contactListLoaderCallback;
-    private THCallback<Response> inviteFriendCallback;
+    private THCallback<BaseResponseDTO> inviteFriendCallback;
     private LogInCallback socialNetworkCallback;
     private TextWatcher searchTextWatcher;
     private AdapterView.OnItemClickListener itemClickListener;
@@ -123,7 +123,7 @@ public class InviteFriendFragment extends DashboardFragment
             {
             }
         };
-        inviteFriendCallback = new THCallback<Response>()
+        inviteFriendCallback = new THCallback<BaseResponseDTO>()
         {
             @Override protected void finish()
             {
@@ -134,7 +134,7 @@ public class InviteFriendFragment extends DashboardFragment
                 conditionalSendInvitations();
             }
 
-            @Override protected void success(Response response, THResponse thResponse)
+            @Override protected void success(BaseResponseDTO response, THResponse thResponse)
             {
                 THToast.show(R.string.invite_friend_success);
                 // just hacked it :))

@@ -1,5 +1,7 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
@@ -15,7 +17,6 @@ import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
-import com.tradehero.th.api.users.WebSignInFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -23,9 +24,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
-
 import retrofit.Callback;
-import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
@@ -129,13 +128,6 @@ interface UserServiceAsync
             Callback<UserProfileDTO> cb);
     //</editor-fold>
 
-    //<editor-fold desc="Signin">
-    @POST("users/signin")
-    void signIn(
-            @Body WebSignInFormDTO webSignInFormDTO,
-            Callback<Response> callback);
-    //</editor-fold>
-
     //<editor-fold desc="Check Display Name Available">
     @GET("/checkDisplayNameAvailable")
     void checkDisplayNameAvailable(
@@ -202,7 +194,7 @@ interface UserServiceAsync
     @DELETE("/users/{userId}")
     void deleteUser(
             @Path("userId") int userId,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Friends">
@@ -230,7 +222,7 @@ interface UserServiceAsync
     void inviteFriends(
             @Path("userId") int userId,
             @Body InviteFormDTO inviteFormDTO,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Add Follow Credit">
@@ -299,6 +291,13 @@ interface UserServiceAsync
     void updateReferralCode(
             @Path("userId") int userId,
             @Body UpdateReferralCodeDTO updateReferralCodeDTO,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Send Analytics">
+    @POST("/analytics")
+    void sendAnalytics(
+            @Body BatchAnalyticsEventForm batchAnalyticsEventForm,
+            Callback<BaseResponseDTO> callback);
     //</editor-fold>
 }

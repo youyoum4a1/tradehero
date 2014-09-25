@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -470,7 +471,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    class InviteFriendCallback extends RequestCallback<Response>
+    class InviteFriendCallback extends RequestCallback<BaseResponseDTO>
     {
         final List<UserFriendsDTO> usersToInvite;
 
@@ -483,7 +484,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         //</editor-fold>
 
         @Override
-        public void success(Response data, Response response)
+        public void success(BaseResponseDTO data, Response response)
         {
             super.success(data, response);
             if (response.getStatus() == 200 || response.getStatus() == 204)

@@ -8,6 +8,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -34,8 +35,8 @@ public class InvitedCodeViewHolder
     @NotNull private final UserServiceWrapper userServiceWrapper;
     @Nullable private UserProfileDTO userProfileDTO;
 
-    @Nullable private Callback<Response> parentCallback;
-    @Nullable private MiddleCallback<Response> middleCallbackUpdateInviteCode;
+    @Nullable private Callback<BaseResponseDTO> parentCallback;
+    @Nullable private MiddleCallback<BaseResponseDTO> middleCallbackUpdateInviteCode;
 
     //<editor-fold desc="Constructors">
     @Inject public InvitedCodeViewHolder(
@@ -61,7 +62,7 @@ public class InvitedCodeViewHolder
 
     private void detachMiddleCallbackUpdateInvite()
     {
-        MiddleCallback<Response> middleCallbackCopy = middleCallbackUpdateInviteCode;
+        MiddleCallback<BaseResponseDTO> middleCallbackCopy = middleCallbackUpdateInviteCode;
         if (middleCallbackCopy != null)
         {
             middleCallbackCopy.setPrimaryCallback(null);
@@ -83,14 +84,14 @@ public class InvitedCodeViewHolder
         }
     }
 
-    public void setParentCallback(@Nullable Callback<Response> parentCallback)
+    public void setParentCallback(@Nullable Callback<BaseResponseDTO> parentCallback)
     {
         this.parentCallback = parentCallback;
     }
 
-    protected void notifyParentCallbackSuccess(Response response, Response response2)
+    protected void notifyParentCallbackSuccess(BaseResponseDTO response, Response response2)
     {
-        Callback<Response> callbackCopy = parentCallback;
+        Callback<BaseResponseDTO> callbackCopy = parentCallback;
         if (callbackCopy != null)
         {
             callbackCopy.success(response, response2);
@@ -99,7 +100,7 @@ public class InvitedCodeViewHolder
 
     protected void notifyParentCallbackFailure(RetrofitError retrofitError)
     {
-        Callback<Response> callbackCopy = parentCallback;
+        Callback<BaseResponseDTO> callbackCopy = parentCallback;
         if (callbackCopy != null)
         {
             callbackCopy.failure(retrofitError);
@@ -115,14 +116,14 @@ public class InvitedCodeViewHolder
         middleCallbackUpdateInviteCode = userServiceWrapper.updateReferralCode(currentUserId.toUserBaseKey(), formDTO, createUpdateInviteCallback());
     }
 
-    protected Callback<Response> createUpdateInviteCallback()
+    protected Callback<BaseResponseDTO> createUpdateInviteCallback()
     {
         return new InviteCodeUpdateInviteCallback();
     }
 
-    protected class InviteCodeUpdateInviteCallback implements Callback<Response>
+    protected class InviteCodeUpdateInviteCallback implements Callback<BaseResponseDTO>
     {
-        @Override public void success(Response response, Response response2)
+        @Override public void success(BaseResponseDTO response, Response response2)
         {
             showSubmitDone();
             notifyParentCallbackSuccess(response, response2);

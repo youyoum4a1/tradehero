@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormUserDTO;
@@ -72,7 +73,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_following) @Optional RelativeLayout lbmuFollowingUser;
 
     @Nullable private UserFriendsDTO userFriendsDTO;
-    private MiddleCallback<Response> middleCallbackInvite;
+    private MiddleCallback<BaseResponseDTO> middleCallbackInvite;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     private MiddleLogInCallback middleTrackbackFacebook;
@@ -355,9 +356,9 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         middleCallbackInvite = null;
     }
 
-    private class TrackShareCallback implements retrofit.Callback<Response>
+    private class TrackShareCallback implements retrofit.Callback<BaseResponseDTO>
     {
-        @Override public void success(Response response, Response response2)
+        @Override public void success(BaseResponseDTO response, Response response2)
         {
             THToast.show(R.string.invite_friend_success);
             getProgressDialog().hide();

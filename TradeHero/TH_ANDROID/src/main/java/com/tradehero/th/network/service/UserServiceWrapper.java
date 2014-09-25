@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -54,16 +55,12 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import retrofit.client.Response;
 
 @Singleton public class UserServiceWrapper
 {
@@ -567,21 +564,21 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Delete User">
-    @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
+    @NotNull protected DTOProcessor<BaseResponseDTO> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
     {
         return new DTOProcessorUserDeleted(userProfileCache.get(), playerId);
     }
 
-    public Response deleteUser(@NotNull UserBaseKey userKey)
+    public BaseResponseDTO deleteUser(@NotNull UserBaseKey userKey)
     {
         return createUserDeletedProcessor(userKey).process(userService.deleteUser(userKey.key));
     }
 
-    @NotNull public MiddleCallback<Response> deleteUser(
+    @NotNull public MiddleCallback<BaseResponseDTO> deleteUser(
             @NotNull UserBaseKey userKey,
-            @Nullable Callback<Response> callback)
+            @Nullable Callback<BaseResponseDTO> callback)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createUserDeletedProcessor(userKey));
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserDeletedProcessor(userKey));
         userServiceAsync.deleteUser(userKey.key, middleCallback);
         return middleCallback;
     }
@@ -698,24 +695,24 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
-    @NotNull protected DTOProcessor<Response> createDTOProcessorFriendInvited()
+    @NotNull protected DTOProcessor<BaseResponseDTO> createDTOProcessorFriendInvited()
     {
         return new DTOProcessorFriendInvited(this.leaderboardFriendsCache.get());
     }
 
-    public Response inviteFriends(
+    public BaseResponseDTO inviteFriends(
             @NotNull UserBaseKey userKey,
             @NotNull InviteFormDTO inviteFormDTO)
     {
         return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
     }
 
-    @NotNull public MiddleCallback<Response> inviteFriends(
+    @NotNull public MiddleCallback<BaseResponseDTO> inviteFriends(
             @NotNull UserBaseKey userKey,
             @NotNull InviteFormDTO inviteFormDTO,
-            @Nullable Callback<Response> callback)
+            @Nullable Callback<BaseResponseDTO> callback)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorFriendInvited());
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorFriendInvited());
         userServiceAsync.inviteFriends(userKey.key, inviteFormDTO, middleCallback);
         return middleCallback;
     }
@@ -915,14 +912,14 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Referral Code">
-    @NotNull protected DTOProcessor<Response> createUpdateReferralCodeProcessor(
+    @NotNull protected DTOProcessor<BaseResponseDTO> createUpdateReferralCodeProcessor(
             @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
             @NotNull UserBaseKey invitedUserId)
     {
         return new DTOProcessorUpdateReferralCode(userProfileCache.get(), updateReferralCodeDTO, invitedUserId);
     }
 
-    @NotNull public Response updateReferralCode(
+    @NotNull public BaseResponseDTO updateReferralCode(
             @NotNull UserBaseKey invitedUserId,
             @NotNull UpdateReferralCodeDTO updateReferralCodeDTO)
     {
@@ -930,12 +927,12 @@ import retrofit.client.Response;
                 userService.updateReferralCode(invitedUserId.key, updateReferralCodeDTO));
     }
 
-    @NotNull public MiddleCallback<Response> updateReferralCode(
+    @NotNull public MiddleCallback<BaseResponseDTO> updateReferralCode(
             @NotNull UserBaseKey invitedUserId,
             @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
-            @Nullable Callback<Response> callback)
+            @Nullable Callback<BaseResponseDTO> callback)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId));
         userServiceAsync.updateReferralCode(invitedUserId.key, updateReferralCodeDTO, middleCallback);
@@ -944,9 +941,18 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Send Analytics">
-    @NotNull public void sendAnalytics(@NotNull BatchAnalyticsEventForm batchAnalyticsEventForm)
+    @NotNull public BaseResponseDTO sendAnalytics(@NotNull BatchAnalyticsEventForm batchAnalyticsEventForm)
     {
-        userService.sendAnalytics(batchAnalyticsEventForm);
+        return userService.sendAnalytics(batchAnalyticsEventForm);
+    }
+
+    @NotNull public MiddleCallback<BaseResponseDTO> sendAnalytics(
+            @NotNull BatchAnalyticsEventForm batchAnalyticsEventForm,
+            @Nullable Callback<BaseResponseDTO> callback)
+    {
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.sendAnalytics(batchAnalyticsEventForm, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 }

@@ -3,12 +3,13 @@ package com.tradehero.th.fragments.home;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.view.View;
-import android.webkit.WebView;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
@@ -18,6 +19,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
@@ -47,18 +49,12 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
-
-import org.jetbrains.annotations.NotNull;
-
+import dagger.Lazy;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -98,7 +94,7 @@ public final class HomeFragment extends BaseWebViewFragment
     private ProgressDialog progressDialog;
     private UserFriendsDTO userFriendsDTO;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
-    private MiddleCallback<Response> middleCallbackInvite;
+    private MiddleCallback<BaseResponseDTO> middleCallbackInvite;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -323,9 +319,9 @@ public final class HomeFragment extends BaseWebViewFragment
         middleCallbackInvite = null;
     }
 
-    private class TrackShareCallback implements retrofit.Callback<Response>
+    private class TrackShareCallback implements retrofit.Callback<BaseResponseDTO>
     {
-        @Override public void success(Response response, Response response2)
+        @Override public void success(BaseResponseDTO response, Response response2)
         {
             THToast.show(R.string.invite_friend_success);
             getProgressDialog().hide();

@@ -1,11 +1,11 @@
 package com.tradehero.th.models.social;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
-import retrofit.client.Response;
 
-public class DTOProcessorFriendInvited implements DTOProcessor<Response>
+public class DTOProcessorFriendInvited implements DTOProcessor<BaseResponseDTO>
 {
     private final LeaderboardFriendsCache leaderboardFriendsCache;
 
@@ -14,7 +14,7 @@ public class DTOProcessorFriendInvited implements DTOProcessor<Response>
         this.leaderboardFriendsCache = leaderboardFriendsCache;
     }
 
-    @Override public Response process(Response value)
+    @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
         leaderboardFriendsCache.invalidate(new LeaderboardFriendsKey());
         return value;
