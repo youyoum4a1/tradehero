@@ -96,6 +96,8 @@ public class PortfolioFragment extends DashboardFragment
 
     public int portfolio_type = 0;
 
+    private PortfolioCompactDTO defaultPortfolio;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -166,7 +168,7 @@ public class PortfolioFragment extends DashboardFragment
     {
         if (item instanceof SecurityPositionItem)
         {
-            enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name);
+            enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name , ((SecurityPositionItem) item).position);
         }
         else if (item instanceof WatchPositionItem)
         {
@@ -200,6 +202,23 @@ public class PortfolioFragment extends DashboardFragment
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
         bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
         pushFragment(SecurityDetailFragment.class, bundle);
+    }
+
+    public void enterSecurity(SecurityId securityId, String securityName,PositionDTO positionDTO)
+    {
+        if(defaultPortfolio == null )return;
+        Bundle bundle = new Bundle();
+        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+        bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
+        PositionDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
+        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(defaultPortfolio.userId,defaultPortfolio.id);
+        if (ownedPortfolioId != null)
+        {
+            PositionDetailFragment.putApplicablePortfolioId(bundle, ownedPortfolioId);
+        }
+        pushFragment(PositionDetailFragment.class, bundle);
+        //pushFragment(SecurityDetailFragment.class, bundle);
     }
 
     @Override public void onStop()
@@ -268,6 +287,7 @@ public class PortfolioFragment extends DashboardFragment
     private void getDefaultPortfolio()
     {
         PortfolioCompactDTO defaultPortfolio = portfolioCompactListCache.get().getDefaultPortfolio(showUserBaseKey);
+        this.defaultPortfolio = defaultPortfolio;
         if (defaultPortfolio != null)
         {
             getPositionsDTOKey = new OwnedPortfolioId(showUserBaseKey.key, defaultPortfolio.id);
@@ -282,6 +302,7 @@ public class PortfolioFragment extends DashboardFragment
     private void FetchedDefaultPortfolio()
     {
         PortfolioCompactDTO defaultPortfolio = portfolioCompactListCache.get().getDefaultPortfolio(showUserBaseKey);
+        this.defaultPortfolio = defaultPortfolio;
         if (defaultPortfolio != null)
         {
             getPositionsDTOKey = new OwnedPortfolioId(showUserBaseKey.key, defaultPortfolio.id);

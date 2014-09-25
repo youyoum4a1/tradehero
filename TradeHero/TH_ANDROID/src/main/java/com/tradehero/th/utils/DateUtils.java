@@ -45,9 +45,9 @@ public class DateUtils
         return sdfStart.format(dStart) + " - " + sdfEnd.format(dEnd);
     }
 
-    public static int getNumberOfDaysBetweenDates(@NotNull Date start, @NotNull Date end)
+    public static long getNumberOfDaysBetweenDates(@NotNull Date start, @NotNull Date end)
     {
-           return (int) (end.getTime() - start.getTime()) / MILLISECOND_PER_DAY;
+           return (end.getTime()-start.getTime())/MILLISECOND_PER_DAY;
     }
 
     public static String getFormattedDate(@NotNull Resources resources, @NotNull Date utcDate)

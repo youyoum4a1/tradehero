@@ -11,6 +11,7 @@ import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
+import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
 import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
@@ -63,6 +64,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.Leaderboar
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
@@ -472,6 +474,7 @@ import javax.inject.Singleton;
                         LeaderboardListAdapter.class,
                         UserFriendsListAdapter.class,
                         SecurityListAdapter.class,
+                        PositionTradeListAdapter.class,
                         SecuritySearchListAdapter.class,
                         MyTradePositionListAdapter.class,
 
@@ -520,6 +523,8 @@ import javax.inject.Singleton;
                         SecurityDiscussSendFragment.class,
                         DiscoveryDiscussSendFragment.class,
                         SettingsAboutUsFragment.class,
+                        PositionDetailFragment.class,
+
                         //China Build End
                 },
         staticInjections =

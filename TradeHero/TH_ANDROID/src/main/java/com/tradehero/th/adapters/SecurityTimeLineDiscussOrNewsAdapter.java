@@ -83,7 +83,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                 holder.tvUserTLContent = (TextView) convertView.findViewById(R.id.tvUserTLContent);
 
                 holder.imgSecurityTLUserHeader = (ImageView) convertView.findViewById(R.id.imgSecurityTLUserHeader);
-
+                holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
                 ////是股票交易
                 //holder.rlUserTLTrade = (RelativeLayout) convertView.findViewById(R.id.rlUserTLTrade);
                 //holder.tvTradeName = (TextView) convertView.findViewById(R.id.tvTradeName);
@@ -119,10 +119,12 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             {
                 holder.tvUserTLContent.setText(((NewsItemCompactDTO) item).description);
                 holder.imgSecurityTLUserHeader.setVisibility(View.GONE);
+                holder.tvUserTLName.setVisibility(View.GONE);
             }
             else if (item instanceof DiscussionDTO)
             {
                 holder.tvUserTLContent.setText(((DiscussionDTO) item).text);
+                holder.tvUserTLName.setText(((DiscussionDTO) item).user.displayName);
                 holder.imgSecurityTLUserHeader.setVisibility(View.VISIBLE);
                 picasso.get()
                         .load(((DiscussionDTO) item).user.picture)
@@ -181,6 +183,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         public LinearLayout llItemAll = null;
 
         public ImageView imgSecurityTLUserHeader = null;
+        public TextView tvUserTLName = null;
 
         public TextView tvUserTLTimeStamp = null;
         public TextView tvUserTLContent = null;

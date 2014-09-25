@@ -159,7 +159,7 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
         {
             if (positionDTO != null && positionDTO.earliestTradeUtc != null && positionDTO.latestTradeUtc != null)
             {
-                int nDays = DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.latestTradeUtc);
+                long nDays = DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.latestTradeUtc);
                 String s;
                 if (nDays > 1 )
                 {

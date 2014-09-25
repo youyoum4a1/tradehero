@@ -74,6 +74,30 @@ public class PositionDTO extends PositionDTOCompact
         return getOwnedPositionId();
     }
 
+    public Date getLatestHoldDate()
+    {
+        if(shares == 0)
+        {
+            return latestTradeUtc;
+        }
+        else
+        {
+            return new Date();
+        }
+    }
+
+    //获取总盈亏
+    public double getTotalScoreOfTrade()
+    {
+        double numberToDisplay = realizedPLRefCcy;
+        if (isOpen())
+        {
+            numberToDisplay += unrealizedPLRefCcy;
+        }
+
+        return numberToDisplay;
+    }
+
     public static List<PositionDTOKey> getPositionDTOKeys(List<PositionDTO> positionDTOs)
     {
         if (positionDTOs == null)

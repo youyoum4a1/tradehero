@@ -278,4 +278,5 @@
   <string name="guide_screen_login">Login</string>
   <string name="guide_screen_try">Fast Login</string>
   <string name="or">or</string>
+  <string name="position_hold_days">%d天</string>
 </resources>

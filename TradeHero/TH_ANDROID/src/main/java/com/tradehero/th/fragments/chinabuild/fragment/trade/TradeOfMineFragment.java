@@ -32,6 +32,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
+import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -142,13 +143,26 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         if (item instanceof SecurityPositionItem)
         {
-            enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name);
+            enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,((SecurityPositionItem) item).position);
         }
         else if (item instanceof WatchPositionItem)
         {
             enterSecurity(((WatchPositionItem) item).watchlistPosition.securityDTO.getSecurityId(),
                     ((WatchPositionItem) item).watchlistPosition.securityDTO.name);
         }
+    }
+
+    public void enterSecurity(SecurityId securityId, String securityName,PositionDTO positionDTO)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+        PositionDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
+        if (shownPortfolioId != null)
+        {
+            PositionDetailFragment.putApplicablePortfolioId(bundle, shownPortfolioId);
+        }
+        gotoDashboard(PositionDetailFragment.class, bundle);
     }
 
     public void enterSecurity(SecurityId securityId, String securityName)
