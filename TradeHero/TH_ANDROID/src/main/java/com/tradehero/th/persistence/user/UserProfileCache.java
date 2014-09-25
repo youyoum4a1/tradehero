@@ -72,4 +72,14 @@ import org.jetbrains.annotations.NotNull;
         }
         return previous;
     }
+
+    public void updateXPIfNecessary(@NotNull UserBaseKey userBaseKey, int newXpTotal)
+    {
+        UserProfileDTO userProfileDTO = get(userBaseKey);
+        if(userProfileDTO != null && userProfileDTO.currentXP < newXpTotal)
+        {
+            userProfileDTO.currentXP = newXpTotal;
+            put(userBaseKey, userProfileDTO);
+        }
+    }
 }
