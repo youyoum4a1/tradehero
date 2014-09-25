@@ -243,22 +243,25 @@ public class AlertDialogUtil
             @NotNull final Context context,
             @Nullable SecurityId securityId)
     {
+        AlertDialog dialog;
         if (securityId == null)
         {
-            return popWithNegativeButton(context,
+            dialog = popWithNegativeButton(context,
                     R.string.alert_dialog_market_close_title,
                     R.string.alert_dialog_market_close_message_basic,
                     R.string.alert_dialog_market_close_cancel);
         }
         else
         {
-            return popWithNegativeButton(context,
+            dialog = popWithNegativeButton(context,
                     context.getString(R.string.alert_dialog_market_close_title),
                     context.getString(R.string.alert_dialog_market_close_message,
                             securityId.getExchange(),
                             securityId.getSecuritySymbol()),
                     context.getString(R.string.alert_dialog_market_close_cancel));
         }
+        dialog.setIcon(R.drawable.market_sleep_grey);
+        return dialog;
     }
 
     public void showProgressDialog(@NotNull final Context context)
