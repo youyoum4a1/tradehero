@@ -20,7 +20,6 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 {
     public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
 
-    private static final boolean TAB_SHOULD_ADD_TO_BACKSTACK = false;
     private static final boolean TAB_SHOW_HOME_AS_UP = false;
 
     private Set<DashboardFragmentWatcher> dashboardFragmentWatchers = new HashSet<>();
@@ -39,53 +38,12 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
     {
     }
 
-    public void goToPage(final THIntent thIntent)
-    {
-        if (thIntent == null)
-        {
-            return;
-        }
-
-        if (thIntent.getDashboardType() == null)
-        {
-            Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
-            currentDashboardFragment.getArguments().putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_THINTENT_BUNDLE, thIntent.getBundle());
-            //currentDashboardFragment.onResume();
-            return;
-        }
-
-        final String expectedTag = activity.getString(thIntent.getDashboardType().stringKeyResId);
-        goToTab(
-                thIntent.getDashboardType(),
-                new TabHost.OnTabChangeListener()
-                {
-                    @Override public void onTabChanged(String tabTag)
-                    {
-                        if (expectedTag.equals(tabTag))
-                        {
-                            postPushActionFragment(thIntent);
-                        }
-                    }
-                });
-    }
-
-    private <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, TabHost.OnTabChangeListener changeListener)
-    {
-        mOnTabChangedListener = changeListener;
-        return goToTab(tabType);
-    }
-
     public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType)
     {
-        return goToTab(tabType, TAB_SHOULD_ADD_TO_BACKSTACK);
+        return goToTab(tabType, TAB_SHOW_HOME_AS_UP);
     }
 
-    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack)
-    {
-        return goToTab(tabType, shouldAddToBackStack, TAB_SHOW_HOME_AS_UP);
-    }
-
-    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
+    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, boolean showHomeKeyAsUp)
     {
         if (tabType.fragmentClass.isInstance(getCurrentFragment()))
         {
@@ -99,33 +57,14 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 
         @SuppressWarnings("unchecked")
         Class<T> targetFragmentClass = (Class<T>) tabType.fragmentClass;
-        T tabFragment = pushFragment(targetFragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp);
+        T tabFragment = pushFragment(targetFragmentClass, args, null, null, showHomeKeyAsUp);
 
         updateTabBarOnTabChanged(((Object)tabFragment).getClass().getName());
         return tabFragment;
     }
 
-    private void postPushActionFragment(final THIntent thIntent)
-    {
-        final Class<? extends Fragment> actionFragment = thIntent.getActionFragment();
-        if (actionFragment == null)
-        {
-            return;
-        }
-
-        Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
-        currentDashboardFragment.getView().post(new Runnable()
-        {
-            // This is the way we found to make sure we do not superimpose 2 fragments.
-            @Override public void run()
-            {
-                pushFragment(actionFragment, thIntent.getBundle());
-            }
-        });
-    }
-
     @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
-            @Nullable String backStackName, Boolean shouldAddToBackStack, Boolean showHomeAsUp)
+            @Nullable String backStackName, boolean showHomeAsUp)
     {
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof DashboardFragment)
@@ -137,7 +76,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
             }
         }
 
-        T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, shouldAddToBackStack, showHomeAsUp);
+        T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, showHomeAsUp);
         executePending();
 
         onFragmentChanged(activity, fragmentClass, args);

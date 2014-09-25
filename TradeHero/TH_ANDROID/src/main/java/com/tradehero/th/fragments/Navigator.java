@@ -22,7 +22,6 @@ import timber.log.Timber;
 
 class Navigator<ActivityType extends Activity>
 {
-    private static final boolean DEFAULT_ADD_TO_BACK_STACK = true;
     private static final boolean DEFAULT_SHOW_HOME_KEY_AS_UP = true;
 
     public static final int[] TUTORIAL_ANIMATION = new int[] {
@@ -75,17 +74,11 @@ class Navigator<ActivityType extends Activity>
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable String backStackName)
     {
-        return pushFragment(fragmentClass, args, backStackName, DEFAULT_ADD_TO_BACK_STACK);
-    }
-
-    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable String backStackName,
-            Boolean shouldAddToBackStack)
-    {
-        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, shouldAddToBackStack, DEFAULT_SHOW_HOME_KEY_AS_UP);
+        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, DEFAULT_SHOW_HOME_KEY_AS_UP);
     }
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName,
-            Boolean shouldAddToBackStack, Boolean showHomeAsUp)
+            boolean showHomeAsUp)
     {
         resetBackPressCount();
 
@@ -108,12 +101,10 @@ class Navigator<ActivityType extends Activity>
             backStackName = fragmentClass.getName();
         }
 
-        FragmentTransaction ft = transaction.replace(fragmentContentId, fragment);
-        if (shouldAddToBackStack)
-        {
-            ft.addToBackStack(backStackName);
-        }
-        ft.commitAllowingStateLoss();
+        transaction
+                .replace(fragmentContentId, fragment)
+                .addToBackStack(backStackName)
+                .commitAllowingStateLoss();
 
         @SuppressWarnings("unchecked")
         T returnFragment = (T) fragment;
