@@ -13,29 +13,35 @@ import com.tradehero.th.api.achievement.QuestBonusDTO;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QuestIndicatorGroupView extends LinearLayout
 {
-    List<QuestIndicatorView> questIndicatorViews = new ArrayList<>();
+    @NotNull List<QuestIndicatorView> questIndicatorViews = new ArrayList<>();
     private ValueAnimator revealNextAnimator;
-    private QuestBonusDTO mNextBonusDTO;
+    @Nullable private QuestBonusDTO mNextBonusDTO;
     private int mCurrentCount;
     private int mCurrentColor;
 
+    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public QuestIndicatorGroupView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public QuestIndicatorGroupView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public QuestIndicatorGroupView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -56,7 +62,7 @@ public class QuestIndicatorGroupView extends LinearLayout
         }
     }
 
-    public void setQuestBonusDef(List<QuestBonusDTO> questBonusDef, int currentCount)
+    public void setQuestBonusDef(@NotNull List<QuestBonusDTO> questBonusDef, int currentCount)
     {
         this.mCurrentCount = currentCount;
         updateDisplay(questBonusDef);
@@ -71,7 +77,6 @@ public class QuestIndicatorGroupView extends LinearLayout
             @Override public void run()
             {
                 if (mNextBonusDTO != null &&
-                        questIndicatorViews != null &&
                         !questIndicatorViews.isEmpty())
                 {
                     QuestIndicatorView questIndicatorView = questIndicatorViews.get(0);
@@ -89,7 +94,7 @@ public class QuestIndicatorGroupView extends LinearLayout
                 }
             }
 
-            private QuestIndicatorView createNextIndicatorView(View source)
+            private QuestIndicatorView createNextIndicatorView(@NotNull View source)
             {
                 QuestIndicatorView indicatorView =
                         new QuestIndicatorView(getContext());
@@ -126,8 +131,8 @@ public class QuestIndicatorGroupView extends LinearLayout
             }
 
             private ValueAnimator.AnimatorListener createAnimListener(
-                    final QuestIndicatorView questIndicatorView,
-                    final QuestIndicatorView nextQuestIndicatorView)
+                    @NotNull final QuestIndicatorView questIndicatorView,
+                    @NotNull final QuestIndicatorView nextQuestIndicatorView)
             {
                 return new AnimatorListenerAdapter()
                 {
@@ -156,6 +161,8 @@ public class QuestIndicatorGroupView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
+        getHandler().removeCallbacks(null);
+
         if (revealNextAnimator != null)
         {
             revealNextAnimator.removeAllUpdateListeners();
@@ -165,7 +172,6 @@ public class QuestIndicatorGroupView extends LinearLayout
         }
 
         questIndicatorViews.clear();
-        questIndicatorViews = null;
 
         mNextBonusDTO = null;
 
@@ -192,7 +198,7 @@ public class QuestIndicatorGroupView extends LinearLayout
         }
     }
 
-    private void hideUndefinedIndicators(List<QuestBonusDTO> questBonusDef)
+    private void hideUndefinedIndicators(@NotNull List<QuestBonusDTO> questBonusDef)
     {
         if (questBonusDef.size() < questIndicatorViews.size())
         {
@@ -204,7 +210,7 @@ public class QuestIndicatorGroupView extends LinearLayout
         }
     }
 
-    private void detectNextIndicator(List<QuestBonusDTO> questBonusDef)
+    private void detectNextIndicator(@NotNull List<QuestBonusDTO> questBonusDef)
     {
         if (questBonusDef.size() > questIndicatorViews.size())
         {

@@ -14,9 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class WeChatDTOFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public WeChatDTOFactory()
     {
     }
+    //</editor-fold>
 
     @NotNull public WeChatDTO createFrom(@NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {

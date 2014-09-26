@@ -15,7 +15,7 @@ public class UserAchievementDTO implements DTO
     public int xpTotal;
     public int contiguousCount;
     public boolean isReset;
-    public AchievementDefDTO achievementDef;
+    @NotNull public AchievementDefDTO achievementDef;
 
     @NotNull public UserAchievementId getUserAchievementId()
     {

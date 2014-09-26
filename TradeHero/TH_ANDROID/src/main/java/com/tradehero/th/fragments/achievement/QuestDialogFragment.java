@@ -10,11 +10,13 @@ import com.tradehero.common.widget.QuestIndicatorGroupView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
+import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.persistence.achievement.QuestBonusListCache;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QuestDialogFragment extends AbstractAchievementDialogFragment
 {
@@ -22,18 +24,20 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
 
     @InjectView(R.id.quest_indicator_group) QuestIndicatorGroupView questIndicatorGroupView;
 
-    private DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList> mQuestBonusListCacheListener;
+    @Nullable private DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList> mQuestBonusListCacheListener;
 
-    private QuestBonusListId questBonusListId = new QuestBonusListId();
+    @NotNull private QuestBonusListId questBonusListId = new QuestBonusListId();
 
     @Inject QuestBonusListCache questBonusListCache;
 
+    //<editor-fold desc="Constructors">
     public QuestDialogFragment()
     {
         super();
     }
+    //</editor-fold>
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.quest_dialog_fragment, container, false);
     }
@@ -42,19 +46,24 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
     {
         super.init();
         mQuestBonusListCacheListener = new QuestBonusCacheListener();
-        attachQuestBonusCacheListener();
     }
 
-    @Override public void onDestroyView()
+    @Override protected void initView()
     {
-        detachQuestBonusListener();
-        super.onDestroyView();
+        super.initView();
+        attachQuestBonusCacheListener();
     }
 
     private void attachQuestBonusCacheListener()
     {
         questBonusListCache.register(questBonusListId, mQuestBonusListCacheListener);
         questBonusListCache.getOrFetchAsync(questBonusListId);
+    }
+
+    @Override public void onDestroyView()
+    {
+        detachQuestBonusListener();
+        super.onDestroyView();
     }
 
     private void detachQuestBonusListener()
@@ -78,28 +87,39 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
     {
         @Override public void onDTOReceived(@NotNull QuestBonusListId key, @NotNull QuestBonusDTOList value)
         {
-            List<QuestBonusDTO> questBonusDTOList = value.getInclusive(userAchievementDTO.contiguousCount, questIndicatorGroupView.getNumberOfIndicators());
-            if(firstIsCurrentLevel(questBonusDTOList))
+            UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+            if (userAchievementDTOCopy != null)
             {
-                //Get previous
-                List<QuestBonusDTO> questBonusDTO = value.getPrevious(userAchievementDTO.contiguousCount, NO_OF_QUEST_BEFORE_CURRENT);
-                if(!questBonusDTO.isEmpty())
+                List<QuestBonusDTO> questBonusDTOList = value.getInclusive(
+                        userAchievementDTOCopy.contiguousCount,
+                        questIndicatorGroupView.getNumberOfIndicators());
+                Boolean first = firstIsCurrentLevel(questBonusDTOList);
+                if(first != null && first)
                 {
-                    questBonusDTOList.addAll(0, questBonusDTO);
+                    //Get previous
+                    List<QuestBonusDTO> questBonusDTO = value.getPrevious(userAchievementDTO.contiguousCount, NO_OF_QUEST_BEFORE_CURRENT);
+                    if(!questBonusDTO.isEmpty())
+                    {
+                        questBonusDTOList.addAll(0, questBonusDTO);
+                    }
                 }
+                questIndicatorGroupView.setQuestBonusDef(questBonusDTOList, userAchievementDTO.contiguousCount);
+                questIndicatorGroupView.revealNext();
             }
-            questIndicatorGroupView.setQuestBonusDef(questBonusDTOList, userAchievementDTO.contiguousCount);
-            questIndicatorGroupView.revealNext();
         }
 
-        private boolean firstIsCurrentLevel(List<QuestBonusDTO> questBonusDTOList)
+        @Nullable private Boolean firstIsCurrentLevel(List<QuestBonusDTO> questBonusDTOList)
         {
-            return !questBonusDTOList.isEmpty() && questBonusDTOList.get(0).level == userAchievementDTO.contiguousCount;
+            UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+            if (userAchievementDTOCopy == null)
+            {
+                return null;
+            }
+            return !questBonusDTOList.isEmpty() && questBonusDTOList.get(0).level == userAchievementDTOCopy.contiguousCount;
         }
 
         @Override public void onErrorThrown(@NotNull QuestBonusListId key, @NotNull Throwable error)
         {
-
         }
     }
 }

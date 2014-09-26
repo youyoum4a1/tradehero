@@ -9,10 +9,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class AchievementShareFormDTOFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public AchievementShareFormDTOFactory()
     {
         super();
     }
+    //</editor-fold>
 
     @NotNull public AchievementShareFormDTO createFrom(
             @NotNull List<SocialNetworkEnum> shareDestinationWithEnums,

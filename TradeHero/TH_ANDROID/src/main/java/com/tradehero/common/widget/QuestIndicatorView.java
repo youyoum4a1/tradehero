@@ -17,6 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestBonusDTO>
 {
@@ -25,24 +26,30 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
     @InjectView(R.id.quest_bottom_indicator) TextView botIndicator;
     private int mCurrentColor = Color.BLACK;
     private int mCurrentLevel;
-    private QuestBonusDTO mQuestBonusDTO;
+    @Nullable private QuestBonusDTO mQuestBonusDTO;
     private Animator scaleUpAnimator;
 
+    //<editor-fold desc="Constructors">
     public QuestIndicatorView(Context context)
     {
-        this(context, null, 0);
+        super(context);
+        init();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public QuestIndicatorView(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public QuestIndicatorView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
         init();
     }
+    //</editor-fold>
 
     private void init()
     {
@@ -126,19 +133,22 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
     private void display()
     {
         QuestBonusDTO dto = mQuestBonusDTO;
-        setText(dto.levelStr, dto.bonusStr);
+        if (dto != null)
+        {
+            setText(dto.levelStr, dto.bonusStr);
 
-        if (dto.level < mCurrentLevel)
-        {
-            on();
-        }
-        else if (dto.level == mCurrentLevel)
-        {
-            animateOn();
-        }
-        else
-        {
-            off();
+            if (dto.level < mCurrentLevel)
+            {
+                on();
+            }
+            else if (dto.level == mCurrentLevel)
+            {
+                animateOn();
+            }
+            else
+            {
+                off();
+            }
         }
     }
 
