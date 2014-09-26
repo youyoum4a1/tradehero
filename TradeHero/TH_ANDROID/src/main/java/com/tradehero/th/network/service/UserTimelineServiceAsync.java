@@ -1,10 +1,10 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import retrofit.Callback;
-import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -43,7 +43,7 @@ interface UserTimelineServiceAsync
             @Path("userId") int userId,
             @Path("timelineItemId") int timelineItemId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Delete Timeline Item">
@@ -51,6 +51,6 @@ interface UserTimelineServiceAsync
     void deleteTimelineItem(
             @Path("userId") int userId,
             @Path("timelineItemId") int timelineItemId,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
     //</editor-fold>
 }

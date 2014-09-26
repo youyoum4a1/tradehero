@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
@@ -12,13 +13,13 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import retrofit.client.Response;
 
 @Singleton public class UserTimelineServiceWrapper
 {
     @NotNull private final UserTimelineService userTimelineService;
     @NotNull private final UserTimelineServiceAsync userTimelineServiceAsync;
 
+    //<editor-fold desc="Constructors">
     @Inject public UserTimelineServiceWrapper(
             @NotNull UserTimelineService userTimelineService,
             @NotNull UserTimelineServiceAsync userTimelineServiceAsync)
@@ -27,6 +28,7 @@ import retrofit.client.Response;
         this.userTimelineService = userTimelineService;
         this.userTimelineServiceAsync = userTimelineServiceAsync;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Get Global Timeline">
     // TODO create a proper key that contains the values max / min
@@ -81,28 +83,40 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">
-    public Response shareTimelineItem(@NotNull UserBaseKey userId, @NotNull TimelineItemDTOKey timelineItemId, TimelineItemShareRequestDTO timelineItemShareRequestDTO)
+    public BaseResponseDTO shareTimelineItem(
+            @NotNull UserBaseKey userId,
+            @NotNull TimelineItemDTOKey timelineItemId,
+            @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
         return userTimelineService.shareTimelineItem(userId.key, timelineItemId.id, timelineItemShareRequestDTO);
     }
 
-    @NotNull public MiddleCallback<Response> shareTimelineItem(@NotNull UserBaseKey userId, @NotNull TimelineItemDTOKey timelineItemId, TimelineItemShareRequestDTO timelineItemShareRequestDTO, @Nullable Callback<Response> callback)
+    @NotNull public MiddleCallback<BaseResponseDTO> shareTimelineItem(
+            @NotNull UserBaseKey userId,
+            @NotNull TimelineItemDTOKey timelineItemId,
+            @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO,
+            @Nullable Callback<BaseResponseDTO> callback)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.shareTimelineItem(userId.key, timelineItemId.id, timelineItemShareRequestDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Delete Timeline Item">
-    public Response deleteTimelineItem(@NotNull UserBaseKey userId, @NotNull TimelineItemDTOKey timelineItemId)
+    public BaseResponseDTO deleteTimelineItem(
+            @NotNull UserBaseKey userId,
+            @NotNull TimelineItemDTOKey timelineItemId)
     {
         return userTimelineService.deleteTimelineItem(userId.key, timelineItemId.id);
     }
 
-    @NotNull public MiddleCallback<Response> deleteTimelineItem(@NotNull UserBaseKey userId, @NotNull TimelineItemDTOKey timelineItemId, @Nullable Callback<Response> callback)
+    @NotNull public MiddleCallback<BaseResponseDTO> deleteTimelineItem(
+            @NotNull UserBaseKey userId,
+            @NotNull TimelineItemDTOKey timelineItemId,
+            @Nullable Callback<BaseResponseDTO> callback)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userTimelineServiceAsync.deleteTimelineItem(userId.key, timelineItemId.id, middleCallback);
         return middleCallback;
     }
