@@ -20,6 +20,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
@@ -66,6 +67,8 @@ public class CompetitionCreateFragment extends DashboardFragment
 
     private ProgressDialog mTransactionDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
+
+    private UserCompetitionDTO userCompetitionDTO;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -261,6 +264,7 @@ public class CompetitionCreateFragment extends DashboardFragment
             {
                 THToast.show("创建成功！");
                 popCurrentFragment();
+                CompetitionCreateFragment.this.userCompetitionDTO = userCompetitionDTO;
             }
         }
 
@@ -283,5 +287,12 @@ public class CompetitionCreateFragment extends DashboardFragment
             THException thException = new THException(retrofitError);
             THToast.show(thException);
         }
+    }
+
+    public void inviteFriendsToCompetition()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DiscoveryDiscussSendFragment.BUNDLE_KEY_COMPETITION,userCompetitionDTO);
+        pushFragment(DiscoveryDiscussSendFragment.class, bundle);
     }
 }
