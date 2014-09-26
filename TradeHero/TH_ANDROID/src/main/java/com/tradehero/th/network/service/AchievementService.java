@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.AchievementShareReqFormDTO;
@@ -39,11 +38,6 @@ public interface AchievementService
     //<editor-fold desc="Get Quest Bonuses">
     @GET("/achievements/questbonus")
     QuestBonusDTOList getQuestBonuses();
-    //</editor-fold>
-
-    //<editor-fold desc="Get Mock Quest Bonus">
-    @GET("/achievements/mockdaily/{contiguousCount}")
-    DTO getMockQuestBonus(@Path("contiguousCount") int contiguousCount, @Query("xpEarned") int xpEarned, @Query("xpTotal") int xpTotal);
     //</editor-fold>
 
     //<editor-fold desc="Share Achievement">

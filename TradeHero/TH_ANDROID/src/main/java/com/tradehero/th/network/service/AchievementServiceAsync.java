@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.AchievementShareReqFormDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
@@ -38,18 +37,10 @@ interface AchievementServiceAsync
     @GET("/achievements/categories/{userId}")
     void getAchievementCategory(@Query("id") int categoryId, @Path("userId") int userId,
             Callback<AchievementCategoryDTOList> callback);
+    //</editor-fold>
 
     //<editor-fold desc="Get Quest Bonuses">
     @GET("/achievements/questbonus") void getQuestBonuses(Callback<QuestBonusDTOList> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Get Mock Quest Bonus">
-    @GET("/achievements/mockdaily/{contiguousCount}")
-    void getMockQuestBonus(
-            @Path("contiguousCount") int contiguousCount,
-            @Query("xpEarned") int xpEarned,
-            @Query("xpTotal") int xpTotal,
-            Callback<ExtendedDTO> middleCallback);
     //</editor-fold>
 
     //<editor-fold desc="Share Achievement">
