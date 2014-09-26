@@ -13,6 +13,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
@@ -32,6 +34,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
+import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -41,6 +44,8 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.persistence.prefs.ShareDialogKey;
+import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -82,6 +87,8 @@ public class TradeOfMineFragment extends DashboardFragment
     protected GetPositionsDTO getPositionsDTO;
 
     private MyTradePositionListAdapter adapter;
+    @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
+    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -437,10 +444,15 @@ public class TradeOfMineFragment extends DashboardFragment
 
         String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
         tvItemAllAmount.setText(valueString);
-        Timber.d("lyl all="+valueString);
         if (cached.totalValue > 150000)
         {
-            //ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(), getString(R.string.share_amount_total_value));
+            if (mShareDialogKeyPreference.get())
+            {
+                mShareDialogKeyPreference.set(false);
+                mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary));
+                ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                        getString(R.string.share_amount_total_value_title));
+            }
         }
 
         Double pl = cached.plSinceInception;

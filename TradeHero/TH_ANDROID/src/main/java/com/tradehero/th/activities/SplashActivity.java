@@ -21,6 +21,7 @@ import com.tradehero.th.network.retrofit.RequestHeaders;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
+import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -52,6 +53,7 @@ public class SplashActivity extends SherlockActivity
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject Analytics analytics;
+    @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -72,6 +74,7 @@ public class SplashActivity extends SherlockActivity
 
         DaggerUtils.inject(this);
         currentActivityHolder.setCurrentActivity(this);
+        mShareDialogKeyPreference.set(true);
         //delay this for first page is not trending fragment, now first page is home page by alex
         //dtoCacheUtil.anonymousPrefetches();
     }

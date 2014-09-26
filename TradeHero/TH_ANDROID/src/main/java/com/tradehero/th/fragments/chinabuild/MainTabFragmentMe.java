@@ -13,6 +13,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -24,6 +26,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
@@ -31,6 +34,8 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.prefs.ShareDialogKey;
+import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -43,6 +48,8 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
+    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject PortfolioCompactCache portfolioCompactCache;
@@ -156,6 +163,16 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 tvMeName.setText(user.displayName);
             }
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
+            if (user.allFollowerCount > 9)
+            {
+                if (mShareDialogKeyPreference.get())
+                {
+                    mShareDialogKeyPreference.set(false);
+                    mShareSheetTitleCache.set(getString(R.string.share_amount_fans_num_summary));
+                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                            getString(R.string.share_amount_fans_num_title));
+                }
+            }
             tvAllHero.setText(String.valueOf(user.heroIds == null ? 0 : user.heroIds.size()));
         }
     }

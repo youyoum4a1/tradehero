@@ -11,6 +11,7 @@ import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
+import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
 import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
@@ -527,6 +528,7 @@ import javax.inject.Singleton;
 
                         ShareDialogFragment.class,
                         ShareSheetDialogLayout.class,
+                        PositionTradeListAdapter.class,
                         //China Build End
                 },
         staticInjections =

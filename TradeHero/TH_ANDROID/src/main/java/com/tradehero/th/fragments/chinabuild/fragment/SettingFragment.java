@@ -16,11 +16,16 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.prefs.ShareDialogKey;
+import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class SettingFragment extends DashboardFragment implements View.OnClickListener
@@ -30,6 +35,8 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     @InjectView(R.id.settings_version_code) TextView mVersionCode;
     @InjectView(R.id.settings_about) RelativeLayout mAboutLayout;
     @InjectView(R.id.settings_logout) LinearLayout mLogoutLayout;
+    @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
+    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -79,6 +86,13 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         {
             case R.id.settings_score:
                 showAppOnMarket();
+                if (mShareDialogKeyPreference.get())
+                {
+                    mShareDialogKeyPreference.set(false);
+                    mShareSheetTitleCache.set(getString(R.string.share_score_summary));
+                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                            getString(R.string.share_score_title));
+                }
                 break;
             case R.id.settings_faq:
                 Uri uri = Uri.parse("http://cn.tradehero.mobi/help/");
