@@ -325,7 +325,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
         @Override public void onErrorThrown(@NotNull MessageHeaderId key, @NotNull Throwable error)
         {
-            THToast.show(new THException(error));
+            if (error instanceof RetrofitError)
+            {
+                THToast.show(new THException(error));
+            }
         }
     }
 }

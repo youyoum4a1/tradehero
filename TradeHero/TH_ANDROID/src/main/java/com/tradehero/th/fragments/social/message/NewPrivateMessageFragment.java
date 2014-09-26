@@ -10,6 +10,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
@@ -18,7 +19,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     protected boolean isFresh = true;
 
     @Inject protected MessageThreadHeaderCache messageThreadHeaderCache;
-    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
+    @Nullable protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

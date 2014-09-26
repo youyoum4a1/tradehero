@@ -30,7 +30,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
+import retrofit.RetrofitError;
 
 public class PrivateDiscussionView extends DiscussionView
 {
@@ -48,16 +48,19 @@ public class PrivateDiscussionView extends DiscussionView
     private DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchListener;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public PrivateDiscussionView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PrivateDiscussionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PrivateDiscussionView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -330,7 +333,10 @@ public class PrivateDiscussionView extends DiscussionView
 
         @Override public void onErrorThrown(@NotNull MessageHeaderId key, @NotNull Throwable error)
         {
-            THToast.show(new THException(error));
+            if (error instanceof RetrofitError)
+            {
+                THToast.show(new THException(error));
+            }
         }
     }
 }
