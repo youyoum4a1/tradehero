@@ -1,11 +1,11 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
-import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -51,7 +51,7 @@ public interface MessageService
 
     //<editor-fold desc="Delete Message">
     @DELETE("/messages/delete/{commentId}/{senderUserId}/{recipientUserId}")
-    Response deleteMessage(
+    BaseResponseDTO deleteMessage(
             @Path("commentId") int commentId,
             @Path("senderUserId") int senderUserId,
             @Path("recipientUserId") int recipientUserId);
@@ -59,7 +59,7 @@ public interface MessageService
 
     //<editor-fold desc="Read Message">
     @POST("/messages/read/{commentId}/{senderUserId}/{recipientUserId}")
-    Response readMessage(
+    BaseResponseDTO readMessage(
             @Path("commentId") int commentId,
             @Path("senderUserId") int senderUserId,
             @Path("recipientUserId") int recipientUserId);
@@ -67,6 +67,6 @@ public interface MessageService
 
     //<editor-fold desc="Read All Message">
     @POST("/messages/read/-1")
-    Response readAllMessage();
+    BaseResponseDTO readAllMessage();
     //</editor-fold>
 }

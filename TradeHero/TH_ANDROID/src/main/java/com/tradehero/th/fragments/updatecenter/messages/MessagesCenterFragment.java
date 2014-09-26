@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-
+import butterknife.ButterKnife;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -21,6 +21,7 @@ import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DirtyNewFirstMessageHeaderDTOComparator;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTOList;
@@ -37,6 +38,7 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
@@ -45,18 +47,12 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
-
+import dagger.Lazy;
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -80,14 +76,13 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Nullable private DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> fetchMessageListListener;
     @Nullable private DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> fetchMessageRefreshListListener;
-    private MessageListKey nextOlderMessageListKey;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
     @Nullable private MessageHeaderDTOList alreadyFetched;
     private MessagesView messagesView;
     private SwipeListener swipeListener;
-    @NotNull private MiddleCallbackWeakList<Response> middleCallbackList;
+    @NotNull private MiddleCallbackWeakList<BaseResponseDTO> middleCallbackList;
     @Nullable private MessageListAdapter messageListAdapter;
-    @Nullable private MiddleCallback<Response> messageDeletionMiddleCallback;
+    @Nullable private MiddleCallback<BaseResponseDTO> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
     @Nullable private BroadcastReceiver broadcastReceiver;
     @Inject DashboardNavigator navigator;
@@ -769,17 +764,17 @@ public class MessagesCenterFragment extends DashboardFragment
                         createMessageAsReadAllCallback()));
     }
 
-    @NotNull private Callback<Response> createMessageAsReadCallback(MessageHeaderDTO messageHeaderDTO)
+    @NotNull private Callback<BaseResponseDTO> createMessageAsReadCallback(MessageHeaderDTO messageHeaderDTO)
     {
         return new MessageMarkAsReadCallback(messageHeaderDTO);
     }
 
-    @NotNull private Callback<Response> createMessageAsReadAllCallback()
+    @NotNull private Callback<BaseResponseDTO> createMessageAsReadAllCallback()
     {
         return new MessageMarkAsReadAllCallback();
     }
 
-    private class MessageMarkAsReadCallback implements Callback<Response>
+    private class MessageMarkAsReadCallback implements Callback<BaseResponseDTO>
     {
         private final MessageHeaderDTO messageHeaderDTO;
 
@@ -788,9 +783,9 @@ public class MessagesCenterFragment extends DashboardFragment
             this.messageHeaderDTO = messageHeaderDTO;
         }
 
-        @Override public void success(@NotNull Response response, Response response2)
+        @Override public void success(@NotNull BaseResponseDTO response, Response response2)
         {
-            if (response.getStatus() == 200)
+            if (response2.getStatus() == 200)
             {
                 Timber.d("Message %d is reported as read");
                 // TODO update title
@@ -810,11 +805,11 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private class MessageMarkAsReadAllCallback implements Callback<Response>
+    private class MessageMarkAsReadAllCallback implements Callback<BaseResponseDTO>
     {
-        @Override public void success(@NotNull Response response, Response response2)
+        @Override public void success(@NotNull BaseResponseDTO response, Response response2)
         {
-            if (response.getStatus() == 200)
+            if (response2.getStatus() == 200)
             {
                 Timber.d("Message are reported as read all ");
                 setAllMessageRead();
@@ -825,7 +820,6 @@ public class MessagesCenterFragment extends DashboardFragment
 
         @Override public void failure(RetrofitError retrofitError)
         {
-
         }
     }
 
@@ -836,7 +830,7 @@ public class MessagesCenterFragment extends DashboardFragment
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(requestUpdateIntent);
     }
 
-    private class MessageDeletionCallback implements Callback<Response>
+    private class MessageDeletionCallback implements Callback<BaseResponseDTO>
     {
         @NotNull private final MessageHeaderDTO messageHeaderDTO;
 
@@ -847,7 +841,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
         //</editor-fold>
 
-        @Override public void success(Response response, Response response2)
+        @Override public void success(BaseResponseDTO response, Response response2)
         {
             // mark message as deleted
             if (getListAdapter() != null)

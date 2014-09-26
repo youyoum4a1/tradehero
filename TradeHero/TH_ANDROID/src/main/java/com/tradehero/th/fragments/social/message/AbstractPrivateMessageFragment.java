@@ -16,6 +16,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
@@ -274,12 +275,12 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
                 createMessageAsReadCallback(messageHeaderDTO.id));
     }
 
-    private Callback<Response> createMessageAsReadCallback(int pushId)
+    private Callback<BaseResponseDTO> createMessageAsReadCallback(int pushId)
     {
         return new MessageMarkAsReadCallback(pushId);
     }
 
-    private class MessageMarkAsReadCallback implements Callback<Response>
+    private class MessageMarkAsReadCallback implements Callback<BaseResponseDTO>
     {
         private final int messageId;
 
@@ -288,9 +289,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             this.messageId = messageId;
         }
 
-        @Override public void success(Response response, Response response2)
+        @Override public void success(BaseResponseDTO response, Response response2)
         {
-            if (response.getStatus() == 200)
+            if (response2.getStatus() == 200)
             {
                 updateMessageCacheReadStatus(messageId);
             }
