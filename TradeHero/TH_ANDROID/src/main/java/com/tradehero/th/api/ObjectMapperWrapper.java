@@ -116,7 +116,7 @@ public class ObjectMapperWrapper extends ObjectMapper
                 });
         if (userAchievementDTOs != null)
         {
-            userAchievementCacheLazy.get().put(userAchievementDTOs);
+            userAchievementCacheLazy.get().putNonDefDuplicates(userAchievementDTOs);
             UserBaseKey userBaseKey = currentUserIdLazy.get().toUserBaseKey();
             achievementCategoryListCacheLazy.get().invalidate(userBaseKey);
             for (UserAchievementDTO userAchievementDTO : userAchievementDTOs)
