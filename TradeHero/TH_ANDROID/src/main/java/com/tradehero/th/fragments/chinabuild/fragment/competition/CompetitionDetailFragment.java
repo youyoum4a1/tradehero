@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.chinabuild.fragment.competition;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -97,6 +98,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     private LeaderboardListAdapter adapter;
     private int currentPage = 1;
     private int PER_PAGE = 20;
+    private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @InjectView(R.id.tvCompetitionDetailMore) TextView tvCompetitionDetailMore;//比赛详情
@@ -677,10 +679,22 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     @Override public void onClickHeadRight0()
     {
-        mShareSheetTitleCache.set(getString(R.string.share_create_contest,
+        mShareSheetTitleCache.set(getString(R.string.share_detial_contest,
                 userCompetitionDTO.name));
         ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                 .inflate(R.layout.share_sheet_local_dialog_layout, null);
-        THDialog.showUpDialog(getActivity(), contentView);
+        contentView.setLocalSocialClickedListener(
+                new ShareSheetDialogLayout.OnLocalSocialClickedListener()
+                {
+                    @Override public void onShareRequestedClicked()
+                    {
+                        inviteFriendsToCompetition();
+                        if (mShareSheetDialog != null)
+                        {
+                            mShareSheetDialog.dismiss();
+                        }
+                    }
+                });
+        mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
     }
 }

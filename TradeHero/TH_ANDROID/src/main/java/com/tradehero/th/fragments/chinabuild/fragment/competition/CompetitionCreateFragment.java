@@ -76,6 +76,7 @@ public class CompetitionCreateFragment extends DashboardFragment
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     private UserCompetitionDTO userCompetitionDTO;
+    private Dialog mShareSheetDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -276,8 +277,20 @@ public class CompetitionCreateFragment extends DashboardFragment
                         edtCompetitionName.getText().toString()));
                 ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                         .inflate(R.layout.share_sheet_local_dialog_layout, null);
-                Dialog dialog = THDialog.showUpDialog(getActivity(), contentView);
-                dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
+                contentView.setLocalSocialClickedListener(
+                        new ShareSheetDialogLayout.OnLocalSocialClickedListener()
+                        {
+                            @Override public void onShareRequestedClicked()
+                            {
+                                inviteFriendsToCompetition();
+                                if (mShareSheetDialog != null)
+                                {
+                                    mShareSheetDialog.hide();
+                                }
+                            }
+                        });
+                mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
+                mShareSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener()
                 {
                     @Override public void onDismiss(DialogInterface dialogInterface)
                     {

@@ -171,5 +171,6 @@
   <string name="share_dialog_summary">（现在分享还可获得资金奖励哦）</string>
   <string name="wechat_timeline">朋友圈</string>
   <string name="share_create_contest">我创建了一个炒股比赛＃%1$s＃，一起来切磋下吧～</string>
+  <string name="share_detial_contest">我参与了一个炒股比赛＃%1$s＃，一起来切磋下吧～</string>
   <string name="local_social">社区</string>
 </resources>

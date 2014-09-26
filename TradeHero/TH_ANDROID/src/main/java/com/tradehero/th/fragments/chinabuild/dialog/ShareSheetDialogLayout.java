@@ -27,6 +27,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -42,6 +43,7 @@ public class ShareSheetDialogLayout extends LinearLayout implements View.OnClick
     @Inject UserProfileCache userProfileCache;
     @Inject Provider<WeiboSocialLinkHelper> weiboSocialLinkHelperProvider;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
+    private OnLocalSocialClickedListener mLocalSocialClickedListener;
 
     //<editor-fold desc="Constructors">
     public ShareSheetDialogLayout(Context context)
@@ -92,6 +94,7 @@ public class ShareSheetDialogLayout extends LinearLayout implements View.OnClick
         switch (view.getId())
         {
             case R.id.share_local:
+                mLocalSocialClickedListener.onShareRequestedClicked();
                 break;
             case R.id.share_wechat:
                 shareWeChat();
@@ -169,5 +172,15 @@ public class ShareSheetDialogLayout extends LinearLayout implements View.OnClick
             super.failure(retrofitError);
             THToast.show(R.string.share_fail);
         }
+    }
+
+    public void setLocalSocialClickedListener(@Nullable OnLocalSocialClickedListener localSocialClickedListener)
+    {
+        mLocalSocialClickedListener = localSocialClickedListener;
+    }
+
+    public static interface OnLocalSocialClickedListener
+    {
+        void onShareRequestedClicked();
     }
 }
