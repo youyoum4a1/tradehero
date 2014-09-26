@@ -34,6 +34,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.DiscoveryDiscussFormDTO;
+import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -59,10 +60,11 @@ public class DiscussSendFragment extends DashboardFragment
     private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
     private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
+    public static final String BUNDLE_KEY_COMPETITION = "bundle_key_competition";
+
     @InjectView(R.id.btnAt) Button btnAt;
     @InjectView(R.id.btnSelectStock) Button btnSelectStock;
     @InjectView(R.id.edtDiscussionPostContent) EditText discussionPostContent;
-
 
     @Inject RichTextCreator parser;
     private DiscussionKey discussionKey;
@@ -82,10 +84,13 @@ public class DiscussSendFragment extends DashboardFragment
 
     private HasSelectedItem selectionFragment;
 
+    private UserCompetitionDTO userCompetitionDTO;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        initArgument();
     }
 
     @Override
@@ -102,6 +107,18 @@ public class DiscussSendFragment extends DashboardFragment
         postDiscussion();
     }
 
+    public void initArgument()
+    {
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            if (args.containsKey(BUNDLE_KEY_COMPETITION))
+            {
+                userCompetitionDTO = (UserCompetitionDTO) args.getSerializable(BUNDLE_KEY_COMPETITION);
+            }
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -114,6 +131,10 @@ public class DiscussSendFragment extends DashboardFragment
     public void initView()
     {
         DeviceUtil.showKeyboardDelayed(discussionPostContent);
+        if (userCompetitionDTO != null)
+        {
+            discussionPostContent.setText(getResources().getString(R.string.competition_joined_invite, userCompetitionDTO.name));
+        }
     }
 
     @Override public void onStop()
@@ -204,14 +225,14 @@ public class DiscussSendFragment extends DashboardFragment
             bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
             bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_FRIENDS_TYPE, UserFriendsListFragment.TYPE_FRIENDS_ALL);
             bundle.putString(BUNDLE_KEY_RETURN_FRAGMENT, DiscussSendFragment.this.getClass().getName());
-            selectionFragment = (UserFriendsListFragment)pushFragment(UserFriendsListFragment.class,bundle);
+            selectionFragment = (UserFriendsListFragment) pushFragment(UserFriendsListFragment.class, bundle);
         }
         else if (view.getId() == R.id.btnSelectStock)
         {
             Timber.d("$ selected!!");
             Bundle bundle = new Bundle();
             bundle.putString(BUNDLE_KEY_RETURN_FRAGMENT, DiscussSendFragment.this.getClass().getName());
-            selectionFragment = (SearchFragment)pushFragment(SearchFragment.class,bundle);
+            selectionFragment = (SearchFragment) pushFragment(SearchFragment.class, bundle);
         }
     }
 
@@ -264,7 +285,7 @@ public class DiscussSendFragment extends DashboardFragment
 
     private void handleExtraInput(Object extraInput)
     {
-        if(extraInput == null)return;
+        if (extraInput == null) return;
 
         String extraText = "";
         Editable editable = discussionPostContent.getText();

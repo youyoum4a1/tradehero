@@ -74,7 +74,7 @@ public class SecurityDetailDialogLayout extends LinearLayout
     {
         ArrayList<String> data = new ArrayList<String>();
         data.add("取消自选");
-        data.add("添加预警");
+        //data.add("添加预警");
         data.add("分享个股");
         return data;
     }

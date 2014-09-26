@@ -46,6 +46,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         adapter = new UserTimeLineAdapter(getActivity());
+        adapter.isShowHeadAndName = true;
     }
 
     @Override

@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -22,9 +24,11 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class UserTimeLineAdapter extends TimeLineBaseAdapter
@@ -35,6 +39,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     //private Context context;
     //private LayoutInflater inflater;
 
+    @Inject Picasso picasso;
     private List<TimelineItemDTO> listData;
 
     private List<UserProfileCompactDTO> users = new ArrayList<>();
@@ -42,6 +47,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     private List<TimelineItemDTO> enhancedItems = new ArrayList<>();
     private List<DiscussionDTO> comments = new ArrayList<>();
     private List<TradeDTO> trades = new ArrayList<>();
+
+    public boolean isShowHeadAndName = false;
 
     public UserTimeLineAdapter(Context context)
     {
@@ -67,6 +74,29 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         enhancedItems.addAll(timelineDTO.getEnhancedItems());
         comments.addAll(timelineDTO.getComments());
         trades.addAll(timelineDTO.getTrades());
+
+        parseEnhancedItemsUserInfo();
+    }
+
+    public void parseEnhancedItemsUserInfo()
+    {
+        for (int i = 0; i < enhancedItems.size(); i++)
+        {
+            int userid = enhancedItems.get(i).userId;
+            enhancedItems.get(i).setUser(getUserFromUsers(userid));
+        }
+    }
+
+    public UserProfileCompactDTO getUserFromUsers(int userId)
+    {
+        for (int i = 0; i < users.size(); i++)
+        {
+            if (users.get(i).id == userId)
+            {
+                return users.get(i);
+            }
+        }
+        return null;
     }
 
     public void parseTimeLineDTO(TimelineDTO timelineDTO)
@@ -128,6 +158,10 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.llUserTLNoTrade = (LinearLayout) convertView.findViewById(R.id.llUserTLNoTrade);
                 holder.tvUserTLContent = (TextView) convertView.findViewById(R.id.tvUserTLContent);
 
+                holder.imgUserTLUserHeader = (ImageView) convertView.findViewById(R.id.imgUserTLUserHeader);
+                holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
+                holder.tvUserTLTimeStamp2 = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp2);
+
                 //是股票交易
                 holder.rlUserTLTrade = (RelativeLayout) convertView.findViewById(R.id.rlUserTLTrade);
                 holder.tvTradeName = (TextView) convertView.findViewById(R.id.tvTradeName);
@@ -161,6 +195,10 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
+            holder.tvUserTLTimeStamp.setVisibility(isShowHeadAndName ? View.GONE : View.VISIBLE);
+            holder.tvUserTLTimeStamp2.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
+            holder.tvUserTLName.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
+            holder.imgUserTLUserHeader.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
 
             if (item.createdAtUtc != null)
             {
@@ -198,6 +236,35 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             else
             {
                 holder.tvUserTLContent.setText("" + item.text);
+            }
+
+            if (isShowHeadAndName)
+            {
+                if (item.getUser() != null)
+                {
+                    holder.tvUserTLName.setText(item.getUser().displayName);
+                    picasso.load(item.getUser().picture)
+                            .placeholder(R.drawable.superman_facebook)
+                            .error(R.drawable.superman_facebook)
+                            .into(holder.imgUserTLUserHeader);
+
+                    holder.tvUserTLName.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override public void onClick(View view)
+                        {
+                            openUserProfile(item.getUser().id);
+                        }
+                    });
+
+                    holder.imgUserTLUserHeader.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override public void onClick(View view)
+                        {
+                            openUserProfile(item.getUser().id);
+                        }
+                    });
+                }
+                holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
             }
 
             holder.tvTLPraise.setText("" + item.upvoteCount);
@@ -257,6 +324,23 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         }
     }
 
+    private void openUserProfile(int userId)
+    {
+        if (userId >= 0)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
+            if (getNavigator() != null)
+            {
+                getNavigator().pushFragment(UserMainPage.class, bundle);
+            }
+            else
+            {
+                gotoDashboard(UserMainPage.class.getName(), bundle);
+            }
+        }
+    }
+
     public void gotoDashboard(String strFragment, Bundle bundle)
     {
         Bundle args = new Bundle();
@@ -295,6 +379,10 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
         public TextView tvUserTLTimeStamp = null;
         public TextView tvUserTLContent = null;
+
+        public ImageView imgUserTLUserHeader = null;
+        public TextView tvUserTLTimeStamp2 = null;
+        public TextView tvUserTLName = null;
 
         //不是一个交易相关
         public LinearLayout llUserTLNoTrade = null;

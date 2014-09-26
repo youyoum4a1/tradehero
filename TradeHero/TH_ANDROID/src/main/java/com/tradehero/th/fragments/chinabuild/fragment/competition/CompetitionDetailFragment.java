@@ -39,6 +39,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -139,6 +140,11 @@ public class CompetitionDetailFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain("比赛详情");
         setHeadViewRight0("邀请好友");
+    }
+
+    @Override public void onClickHeadRight0()
+    {
+        inviteFriendsToCompetition();
     }
 
     @Override
@@ -655,5 +661,12 @@ public class CompetitionDetailFragment extends DashboardFragment
             tvUserExtraValue.setText(roi.toString());
             tvUserExtraValue.setTextColor(getResources().getColor(roi.getColorResId()));
         }
+    }
+
+    public void inviteFriendsToCompetition()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DiscoveryDiscussSendFragment.BUNDLE_KEY_COMPETITION,userCompetitionDTO);
+        pushFragment(DiscoveryDiscussSendFragment.class, bundle);
     }
 }

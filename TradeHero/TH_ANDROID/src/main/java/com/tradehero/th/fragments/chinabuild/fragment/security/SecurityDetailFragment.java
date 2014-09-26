@@ -195,6 +195,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @InjectView(R.id.imgSecurityTLUserHeader) ImageView imgSecurityTLUserHeader;
     @InjectView(R.id.tvUserTLTimeStamp) TextView tvUserTLTimeStamp;
     @InjectView(R.id.tvUserTLContent) TextView tvUserTLContent;
+    @InjectView(R.id.tvUserTLName) TextView tvUserTLName;
     @InjectView(R.id.llTLPraise) LinearLayout llTLPraise;
     @InjectView(R.id.llTLComment) LinearLayout llTLComment;
     @InjectView(R.id.llTLShare) LinearLayout llTLShare;
@@ -1515,6 +1516,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         if (dto != null)
         {
             imgSecurityTLUserHeader.setVisibility(dto instanceof NewsItemCompactDTO ? View.GONE : View.VISIBLE);
+            tvUserTLName.setVisibility(dto instanceof NewsItemCompactDTO ? View.GONE : View.VISIBLE);
             tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(dto.createdAtUtc));
 
             if (dto instanceof NewsItemCompactDTO)
