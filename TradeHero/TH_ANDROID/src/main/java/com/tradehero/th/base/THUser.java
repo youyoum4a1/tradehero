@@ -8,6 +8,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.form.FacebookUserFormDTO;
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
 import com.tradehero.th.api.form.TwitterUserFormDTO;
@@ -146,10 +147,10 @@ public class THUser
                 userFormDTO instanceof TwitterUserFormDTO))
         {
             mainCredentialsPreference.setCredentials(credentialsDTO);
-            sessionServiceWrapper.get().updateAuthorizationTokens(userFormDTO, new Callback<Response>()
+            sessionServiceWrapper.get().updateAuthorizationTokens(userFormDTO, new Callback<BaseResponseDTO>()
             {
                 @Override
-                public void success(Response response, Response response2)
+                public void success(BaseResponseDTO response, Response response2)
                 {
                     authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
                 }
