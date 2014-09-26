@@ -47,6 +47,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSe
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -331,6 +332,15 @@ public class CompetitionDetailFragment extends DashboardFragment
                 toPlayCompetition();//去比赛
             }
         }
+    }
+
+    @OnClick(R.id.tvCompetitionDetailMore)
+    public void onDetailClicked()
+    {
+        Bundle bundle = new Bundle();
+        String url = "www.baidu.com";
+        WebViewFragment.putUrl(bundle, url);
+        pushFragment(WebViewFragment.class, bundle);
     }
 
     @OnClick(R.id.includeMyPosition)
