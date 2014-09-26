@@ -1,7 +1,6 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.PositionLockedItem;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
-import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -192,17 +190,6 @@ public class MyTradePositionListAdapter extends BaseAdapter
                         .build();
                 tvSecurityRate.setText(roi.toString());
                 tvSecurityRate.setTextColor(context.getResources().getColor(roi.getColorResId()));
-                if (((SecurityPositionItem) item).position.getROISinceInception() * 100 > 10)
-                {
-                    if (mShareDialogKeyPreference.get())
-                    {
-                        mShareDialogKeyPreference.set(false);
-                        mShareSheetTitleCache.set(context.getString(
-                                R.string.share_amount_roi_value_summary));
-                        ShareDialogFragment.showDialog(((FragmentActivity)context).getSupportFragmentManager(),
-                                context.getString(R.string.share_amount_roi_value_title));
-                    }
-                }
                 //price
                 tvSecurityPrice.setText(String.valueOf((((SecurityPositionItem) item)).security.lastPrice));
                 //currency

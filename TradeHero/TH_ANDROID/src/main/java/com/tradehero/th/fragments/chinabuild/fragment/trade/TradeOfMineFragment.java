@@ -503,6 +503,17 @@ public class TradeOfMineFragment extends DashboardFragment
                 if (securityCompactDTO != null)
                 {
                     list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i)));
+                    if (listData.get(i).getROISinceInception() * 100 > 10)
+                    {
+                        if (mShareDialogKeyPreference.get())
+                        {
+                            mShareDialogKeyPreference.set(false);
+                            mShareSheetTitleCache.set(getString(
+                                    R.string.share_amount_roi_value_summary));
+                            ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                                    getString(R.string.share_amount_roi_value_title));
+                        }
+                    }
                 }
             }
             adapter.setSecurityPositionList(list);
