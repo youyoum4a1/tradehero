@@ -47,6 +47,7 @@ public class PreferenceModule
     private static final String PREF_FIRST_SHOW_REFERRAL_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
     private static final String PREF_BIND_GUEST_USER_FLAG = "PREF_BIND_GUEST_USER_FLAG";
     private static final String PREF_DEVICE_ID_FLAG = "PREF_DEVICE_ID_FLAG";
+    private static final String PREF_SHARE_SHEET_TITLE_CACHE_FLAG = "PREF_SHARE_SHEET_TITLE_CACHE_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
     private static final String PREF_SAVED_TRANSLATION_SETTING_KEY = "PREF_SAVED_TRANSLATION_SETTING_KEY";
@@ -162,5 +163,10 @@ public class PreferenceModule
     @Provides @Singleton @BindGuestUser BooleanPreference provideBindGuestPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_BIND_GUEST_USER_FLAG, false);
+    }
+
+    @Provides @Singleton @ShareSheetTitleCache StringPreference provideShareSheetTitleCachePreference(@ForUser SharedPreferences sharedPreferences)
+    {
+        return new StringPreference(sharedPreferences, PREF_SHARE_SHEET_TITLE_CACHE_FLAG, "");
     }
 }

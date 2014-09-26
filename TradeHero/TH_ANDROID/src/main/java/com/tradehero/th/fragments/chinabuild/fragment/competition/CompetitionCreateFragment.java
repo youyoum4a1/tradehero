@@ -20,7 +20,6 @@ import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
-import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
@@ -67,6 +66,7 @@ public class CompetitionCreateFragment extends DashboardFragment
 
     private ProgressDialog mTransactionDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     private UserCompetitionDTO userCompetitionDTO;
 
@@ -263,8 +263,19 @@ public class CompetitionCreateFragment extends DashboardFragment
             if (response.getStatus() == 200)
             {
                 THToast.show("创建成功！");
-                popCurrentFragment();
                 CompetitionCreateFragment.this.userCompetitionDTO = userCompetitionDTO;
+                mShareSheetTitleCache.set(getString(R.string.share_create_contest,
+                        edtCompetitionName.getText().toString()));
+                ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
+                        .inflate(R.layout.share_sheet_local_dialog_layout, null);
+                Dialog dialog = THDialog.showUpDialog(getActivity(), contentView);
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
+                {
+                    @Override public void onDismiss(DialogInterface dialogInterface)
+                    {
+                        popCurrentFragment();
+                    }
+                });
             }
         }
 

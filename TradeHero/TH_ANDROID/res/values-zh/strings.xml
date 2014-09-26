@@ -167,4 +167,9 @@
   <string name="share_sell_to_wechat_title">新一代股神闪亮登场！ \n我刚出售了 %1$s 股 %2$s %3$s 股票，
     涨跌 %4$s 共盈利 %5$s ， \n小伙伴们快一起来赚钱吧！ \nhttp://cn.tradehero.mobi
   </string>
+  <string name="share_amount_total_value">恭喜你！总资产达到15w \n你这么土豪你的朋友们知道吗？</string>
+  <string name="share_dialog_summary">（现在分享还可获得资金奖励哦）</string>
+  <string name="wechat_timeline">朋友圈</string>
+  <string name="share_create_contest">我创建了一个炒股比赛＃%1$s＃，一起来切磋下吧～</string>
+  <string name="local_social">社区</string>
 </resources>

@@ -39,7 +39,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
-import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -93,6 +92,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     private LeaderboardListAdapter adapter;
     private int currentPage = 1;
     private int PER_PAGE = 20;
+    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @InjectView(R.id.tvCompetitionDetailMore) TextView tvCompetitionDetailMore;//比赛详情
     @InjectView(R.id.tvCompetitionCreator) TextView tvCompetitionCreator;//创建人
@@ -668,5 +668,14 @@ public class CompetitionDetailFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putSerializable(DiscoveryDiscussSendFragment.BUNDLE_KEY_COMPETITION,userCompetitionDTO);
         pushFragment(DiscoveryDiscussSendFragment.class, bundle);
+    }
+
+    @Override public void onClickHeadRight0()
+    {
+        mShareSheetTitleCache.set(getString(R.string.share_create_contest,
+                userCompetitionDTO.name));
+        ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
+                .inflate(R.layout.share_sheet_local_dialog_layout, null);
+        THDialog.showUpDialog(getActivity(), contentView);
     }
 }
