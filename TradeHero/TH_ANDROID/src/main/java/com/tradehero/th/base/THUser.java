@@ -3,12 +3,12 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.MarketUtil;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.form.FacebookUserFormDTO;
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
 import com.tradehero.th.api.form.TwitterUserFormDTO;
@@ -42,16 +42,12 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-
-import org.json.JSONException;
-
+import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.inject.Inject;
-
-import dagger.Lazy;
+import org.json.JSONException;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -154,10 +150,10 @@ public class THUser
                 userFormDTO instanceof TwitterUserFormDTO))
         {
             mainCredentialsPreference.setCredentials(credentialsDTO);
-            sessionServiceWrapper.get().updateAuthorizationTokens(userFormDTO, new Callback<Response>()
+            sessionServiceWrapper.get().updateAuthorizationTokens(userFormDTO, new Callback<BaseResponseDTO>()
             {
                 @Override
-                public void success(Response response, Response response2)
+                public void success(BaseResponseDTO response, Response response2)
                 {
                     authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
                 }

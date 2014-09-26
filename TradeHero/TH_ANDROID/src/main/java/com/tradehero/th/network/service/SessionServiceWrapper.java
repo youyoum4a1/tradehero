@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginFormDTO;
@@ -25,7 +26,6 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import retrofit.client.Response;
 
 @Singleton public class SessionServiceWrapper
 {
@@ -150,16 +150,16 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Authorization Tokens">
-    @NotNull Response updateAuthorizationTokens(@NotNull UserFormDTO userFormDTO)
+    @NotNull BaseResponseDTO updateAuthorizationTokens(@NotNull UserFormDTO userFormDTO)
     {
         return sessionService.updateAuthorizationTokens(userFormDTO);
     }
 
-    @NotNull public MiddleCallback<Response> updateAuthorizationTokens(
+    @NotNull public MiddleCallback<BaseResponseDTO> updateAuthorizationTokens(
             @NotNull UserFormDTO userFormDTO,
-            @Nullable Callback<Response> callback)
+            @Nullable Callback<BaseResponseDTO> callback)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
         sessionServiceAsync.updateAuthorizationTokens(userFormDTO, middleCallback);
         return middleCallback;
     }

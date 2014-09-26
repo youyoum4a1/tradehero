@@ -1,12 +1,12 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import retrofit.Callback;
-import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -35,7 +35,7 @@ interface SessionServiceAsync
     @POST("/updateAuthorizationTokens")
     void updateAuthorizationTokens(
             @Body UserFormDTO userFormDTO,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Update Device">
