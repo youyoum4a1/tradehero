@@ -29,6 +29,8 @@
 
   <string name="competition_trade_now">Trade Now!</string>
 
+  <string name="competition_help_video_title">Academy - %1$s</string>
+
   <!-- Macquarie WarrantHero specific strings. providerId == 3-->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>

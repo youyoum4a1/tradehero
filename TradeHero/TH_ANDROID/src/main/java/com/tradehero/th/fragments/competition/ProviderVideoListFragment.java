@@ -168,7 +168,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
         else
         {
-            setActionBarTitle(providerDTO.name);
+            setActionBarTitle(getString(R.string.competition_help_video_title, providerDTO.name));
         }
     }
 
