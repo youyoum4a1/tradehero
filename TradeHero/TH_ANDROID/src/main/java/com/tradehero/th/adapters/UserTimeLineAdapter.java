@@ -33,12 +33,6 @@ import timber.log.Timber;
 
 public class UserTimeLineAdapter extends TimeLineBaseAdapter
 {
-
-    //public TimeLineOperater timeLineOperater;
-    //@Inject protected Lazy<PrettyTime> prettyTime;
-    //private Context context;
-    //private LayoutInflater inflater;
-
     @Inject Picasso picasso;
     private List<TimelineItemDTO> listData;
 
@@ -50,11 +44,19 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
     public boolean isShowHeadAndName = false;
 
+    public boolean isMySelf = false;
+
     public UserTimeLineAdapter(Context context)
     {
         DaggerUtils.inject(this);
         this.context = context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public UserTimeLineAdapter(Context context, boolean isMySelf)
+    {
+        this(context);
+        this.isMySelf = isMySelf;
     }
 
     public void setListData(TimelineDTO timelineDTO)
@@ -138,6 +140,31 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         return i;
     }
 
+    public String getItemString(int i)
+    {
+        String strShare = "";
+        TimelineItemDTO dto = enhancedItems.get(i);
+        if (dto != null)
+        {
+            strShare = dto.text;
+            boolean isTrade = dto.hasTrader();
+            if(isTrade)
+            {
+                TradeDTO tradeDTO = getTradeDTO(dto.tradeId);
+                if (tradeDTO != null)
+                {
+                    String securityName = dto.getMedias().get(0).displaySecurityName();
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("我以 ").append(tradeDTO.unitPriceRefCcy).append(" 每股的价格，购买了 ").append(tradeDTO.displayTradeQuantity()).append(" 股 ").append(
+                            securityName);
+                    return sb.toString();
+                }
+            }
+        }
+
+        return strShare;
+    }
+
     @Override public View getView(final int position, View convertView, ViewGroup viewGroup)
     {
         final TimelineItemDTO item = (TimelineItemDTO) getItem(position);
@@ -193,6 +220,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
             boolean isTrade = item.hasTrader();
 
+            holder.llTLShare.setVisibility((!isMySelf && isTrade) ? View.GONE : View.VISIBLE);
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
             holder.tvUserTLTimeStamp.setVisibility(isShowHeadAndName ? View.GONE : View.VISIBLE);

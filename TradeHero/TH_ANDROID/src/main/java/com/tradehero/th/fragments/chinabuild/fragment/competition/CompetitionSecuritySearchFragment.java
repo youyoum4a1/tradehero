@@ -69,6 +69,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         securityListTypeCacheListener = createSecurityListFetchListener();
 
         adapterSecurity = new SecurityListAdapter(getActivity(), getTradeType());
+
     }
 
     public void getCompetitionId()
@@ -136,6 +137,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     {
         detachSecurityListCache();
         setTradeType(TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION);
+        adapterSecurity.setType(getTradeType());
         SecurityListType key = new TrendingAllSecurityListType(getTradeType(), competitionId, currentPage + 1, ITEMS_PER_PAGE);
         securityCompactListCache.get().register(key, securityListTypeCacheListener);
         securityCompactListCache.get().getOrFetchAsync(key, true);
@@ -146,6 +148,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString())) return;
         detachSecurityListCache();
         setTradeType(TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH);
+        adapterSecurity.setType(getTradeType());
         SecurityListType key = new TrendingAllSecurityListType(getTradeType(), competitionId, getSearchString(), currentPage + 1, ITEMS_PER_PAGE);
         securityCompactListCache.get().register(key, securityListTypeCacheListener);
         securityCompactListCache.get().getOrFetchAsync(key, true);

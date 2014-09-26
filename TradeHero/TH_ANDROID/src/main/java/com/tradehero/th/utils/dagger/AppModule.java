@@ -482,6 +482,7 @@ import javax.inject.Singleton;
                         UserTimeLineAdapter.class,
                         SecurityTimeLineDiscussOrNewsAdapter.class,
                         TimeLineBaseAdapter.class,
+                        PositionTradeListAdapter.class,
 
 
                         AbsLeaderboardFragment.class,

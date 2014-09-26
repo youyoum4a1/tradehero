@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.chinabuild.fragment.security;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
@@ -27,11 +30,13 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
+import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -69,6 +74,9 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
 
     private SecurityTimeLineDiscussOrNewsAdapter adapter;
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
+
+    private Dialog mShareSheetDialog;
+    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -143,6 +151,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
             @Override public void OnTimeLineShareClied(int position)
             {
                 Timber.d("Share position = " + position);
+                share(adapter.getItemString(position));
             }
         });
 
@@ -162,6 +171,22 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
                 refreshDataMore(false);
             }
         });
+    }
+
+    public void share(String strShare)
+    {
+        mShareSheetTitleCache.set(strShare);
+        ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
+                .inflate(R.layout.share_sheet_dialog_layout, null);
+        contentView.setLocalSocialClickedListener(
+                new ShareSheetDialogLayout.OnLocalSocialClickedListener()
+                {
+                    @Override public void onShareRequestedClicked()
+                    {
+
+                    }
+                });
+        mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
     }
 
     public void refreshData(boolean force)

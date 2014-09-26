@@ -48,7 +48,7 @@
           android:layout_gravity="left"
           android:layout_marginLeft="2dp"
           android:textColor="@color/tradehero_blue"
-          android:text="windy911"
+          android:text=""
           />
     </RelativeLayout>
 

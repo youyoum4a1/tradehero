@@ -183,6 +183,12 @@
             android:layout_toRightOf="@id/img_me_setting"
             android:layout_alignParentBottom="true"/>
       </RelativeLayout>
+
+      <View
+          android:id="@+id/viewEndpoint"
+          android:layout_width="fill_parent"
+          android:layout_height="30dp">
+      </View>
     </LinearLayout>
 
 

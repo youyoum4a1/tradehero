@@ -65,6 +65,21 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         return listData.get(i);
     }
 
+    public String getItemString(int i)
+    {
+        AbstractDiscussionCompactDTO dto = listData.get(i);
+        if (dto == null) return "";
+        if (dto instanceof NewsItemCompactDTO)
+        {
+            return ((NewsItemCompactDTO) dto).description;
+        }
+        else if (dto instanceof DiscussionDTO)
+        {
+            return ((DiscussionDTO) dto).text;
+        }
+        return "";
+    }
+
     @Override public View getView(final int position, View convertView, ViewGroup viewGroup)
     {
         final AbstractDiscussionCompactDTO item = (AbstractDiscussionCompactDTO) getItem(position);

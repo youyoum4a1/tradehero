@@ -8,7 +8,6 @@
     >
 
   <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
-
       android:id="@+id/listTimeLine"
       android:scrollingCache="false"
       android:fadingEdge="none"

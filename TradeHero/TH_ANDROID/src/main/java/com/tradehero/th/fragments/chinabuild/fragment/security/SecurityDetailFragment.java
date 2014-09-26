@@ -22,8 +22,10 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -56,6 +58,7 @@ import com.tradehero.th.fragments.chinabuild.cache.PositionCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.cache.PositionDTOKey;
 import com.tradehero.th.fragments.chinabuild.dialog.DialogFactory;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
+import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.security.ChartImageView;
@@ -76,6 +79,7 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -206,6 +210,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @Inject public Lazy<PrettyTime> prettyTime;
     AbstractDiscussionCompactDTO dtoDiscuss;
     AbstractDiscussionCompactDTO dtoNews;
+
+    private Dialog mShareSheetDialog;
+    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     public static final int ERROR_NO_ASK_BID = 0;
     public static final int ERROR_NO_ASK = 1;
@@ -533,8 +540,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
-
-
     public Integer getMaxPurchasableShares()
     {
         return portfolioCompactDTOUtil.getMaxPurchasableShares(
@@ -683,9 +688,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
         //else
         //{
-            detachSecurityCompactCache();
-            securityCompactCache.get().register(securityId, compactCacheListener);
-            securityCompactCache.get().getOrFetchAsync(securityId,true);
+        detachSecurityCompactCache();
+        securityCompactCache.get().register(securityId, compactCacheListener);
+        securityCompactCache.get().getOrFetchAsync(securityId, true);
         //}
     }
 
@@ -975,21 +980,20 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
-
     public boolean isBuyOrSaleValid()
     {
-        if(quoteDTO==null)return false;
-        if(quoteDTO.ask == null && quoteDTO.bid == null)
+        if (quoteDTO == null) return false;
+        if (quoteDTO.ask == null && quoteDTO.bid == null)
         {//ask bid 都没有返回 则说明停牌
             showBuyOrSaleError(ERROR_NO_ASK_BID);
             return false;
         }
-        else if(quoteDTO.bid == null)
+        else if (quoteDTO.bid == null)
         {//涨停
             showBuyOrSaleError(ERROR_NO_ASK);
-           return false;
+            return false;
         }
-        else if(quoteDTO.ask == null)
+        else if (quoteDTO.ask == null)
         {//跌停
             showBuyOrSaleError(ERROR_NO_BID);
             return false;
@@ -1000,15 +1004,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public void showBuyOrSaleError(int type)
     {
-        if(type == ERROR_NO_ASK_BID)
+        if (type == ERROR_NO_ASK_BID)
         {
             THToast.show("你所购买的股票已停牌");
         }
-        else if(type == ERROR_NO_ASK)
+        else if (type == ERROR_NO_ASK)
         {
             THToast.show("你所购买的股票已跌停");
         }
-        else if(type == ERROR_NO_BID)
+        else if (type == ERROR_NO_BID)
         {
             THToast.show("你所购买的股票已涨停");
         }
@@ -1017,7 +1021,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     public void enterBuySale(boolean isBuy)
     {
 
-        if(!isBuyOrSaleValid())return;
+        if (!isBuyOrSaleValid()) return;
         Bundle bundle = new Bundle();
         //securityId,
         //purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
@@ -1039,7 +1043,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         //bundle.putBundle(SecurityDetail.BUNDLE_KEY_SECURITY_ID_BUNDLE,securityId.getArgs());
         //gotoDashboard(DiscussSendFragment.class.getName(), bundle);
         //getDashboardNavigator().pushFragment();
-        bundle.putBundle(SecurityDiscussSendFragment.BUNDLE_KEY_SECURITY_ID,securityId.getArgs());
+        bundle.putBundle(SecurityDiscussSendFragment.BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
         pushFragment(SecurityDiscussSendFragment.class, bundle);
     }
 
@@ -1485,14 +1489,46 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
-    @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare,R.id.llDisscurssOrNews,R.id.imgSecurityTLUserHeader})
+    @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader})
     public void onOperaterClicked(View view)
     {
-        if(view.getId() == R.id.imgSecurityTLUserHeader)
+        if (view.getId() == R.id.imgSecurityTLUserHeader)
         {
             openUserProfile(((DiscussionDTO) getAbstractDiscussionCompactDTO()).user.id);
         }
+
+        else if (view.getId() == R.id.llTLShare)
+        {
+            AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
+            String strShare = "";
+            if (dto instanceof NewsItemCompactDTO)
+            {
+                strShare = (((NewsItemCompactDTO) dto).description);
+            }
+            else if (dto instanceof DiscussionDTO)
+            {
+                strShare = (((DiscussionDTO) dto).text);
+            }
+            share(strShare);
+        }
     }
+
+    public void share(String strShare)
+    {
+        mShareSheetTitleCache.set(strShare);
+        ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
+                .inflate(R.layout.share_sheet_dialog_layout, null);
+        contentView.setLocalSocialClickedListener(
+                new ShareSheetDialogLayout.OnLocalSocialClickedListener()
+                {
+                    @Override public void onShareRequestedClicked()
+                    {
+
+                    }
+                });
+        mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
+    }
+
     private void openUserProfile(int userId)
     {
         if (userId >= 0)
@@ -1502,7 +1538,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             pushFragment(UserMainPage.class, bundle);
         }
     }
-
 
     public AbstractDiscussionCompactDTO getAbstractDiscussionCompactDTO()
     {
@@ -1522,9 +1557,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             if (dto instanceof NewsItemCompactDTO)
             {
                 tvUserTLContent.setText(((NewsItemCompactDTO) dto).description);
+
             }
             else if (dto instanceof DiscussionDTO)
             {
+                tvUserTLName.setText(((DiscussionDTO) dto).user.displayName);
                 tvUserTLContent.setText(((DiscussionDTO) dto).text);
                 picasso.load(((DiscussionDTO) dto).user.picture)
                         .placeholder(R.drawable.superman_facebook)

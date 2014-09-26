@@ -57,8 +57,9 @@ import timber.log.Timber;
 public class DiscussSendFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_RETURN_FRAGMENT = DiscussSendFragment.class.getName();
-    private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
-    private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
+    private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)"; //选取的股票
+    private static final String MENTIONED_FORMAT = "<@@%s,%d@>";//选取的user
+    private static final String COMPETITION_FORMAT = "我参加了一个炒股比赛 <#%s,%d#> ，一起来切磋下吧～";//比赛
 
     public static final String BUNDLE_KEY_COMPETITION = "bundle_key_competition";
 
@@ -133,7 +134,7 @@ public class DiscussSendFragment extends DashboardFragment
         DeviceUtil.showKeyboardDelayed(discussionPostContent);
         if (userCompetitionDTO != null)
         {
-            discussionPostContent.setText(getResources().getString(R.string.competition_joined_invite, userCompetitionDTO.name));
+            handleExtraInput(userCompetitionDTO);
         }
     }
 
@@ -300,8 +301,12 @@ public class DiscussSendFragment extends DashboardFragment
 
         if (extraInput instanceof UserProfileCompactDTO)
         {
-            //UserSearchResultDTO mentionedUserProfileDTO = userSearchResultCache.get((UserBaseKey) extraInput);
             extraText = String.format(MENTIONED_FORMAT, ((UserProfileCompactDTO) extraInput).displayName, ((UserProfileCompactDTO) extraInput).id);
+        }
+
+        if (extraInput instanceof UserCompetitionDTO)
+        {
+            extraText = String.format(COMPETITION_FORMAT, ((UserCompetitionDTO) extraInput).name, ((UserCompetitionDTO) extraInput).id);
         }
 
         String nonMarkUpText = extraText;

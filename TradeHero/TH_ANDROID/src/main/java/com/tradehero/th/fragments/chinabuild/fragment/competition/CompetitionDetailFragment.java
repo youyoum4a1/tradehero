@@ -146,13 +146,11 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain("比赛详情");
-        setHeadViewRight0("邀请好友");
+        if (userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing)
+        {//比赛我参加了，并且还没结束。
+            setHeadViewRight0("邀请好友");
+        }
     }
-
-    //@Override public void onClickHeadRight0()
-    //{
-    //    inviteFriendsToCompetition();
-    //}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -673,7 +671,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     public void inviteFriendsToCompetition()
     {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(DiscoveryDiscussSendFragment.BUNDLE_KEY_COMPETITION,userCompetitionDTO);
+        bundle.putSerializable(DiscoveryDiscussSendFragment.BUNDLE_KEY_COMPETITION, userCompetitionDTO);
         pushFragment(DiscoveryDiscussSendFragment.class, bundle);
     }
 

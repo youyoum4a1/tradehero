@@ -221,6 +221,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 tvSecurityExtraInfo.setText(thPlSinceInception.toString());
                 tvSecurityExtraInfo.setTextColor(context.getResources().getColor(
                         ColorUtils.getColorResourceIdForNumber(((SecurityPositionItem) item).position.unrealizedPLRefCcy)));
+                tvSecurityExtraInfo.setVisibility(View.VISIBLE);
             }
             else if (item instanceof WatchPositionItem)
             {
@@ -238,6 +239,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 //currency
                 tvSecurityCurrency.setText(((WatchPositionItem) item).watchlistPosition.securityDTO.currencyDisplay);
 
+                tvSecurityExtraInfo.setVisibility(View.GONE);
                 tvSecurityExtraInfo.setText("xxx人关注");
             }
         }

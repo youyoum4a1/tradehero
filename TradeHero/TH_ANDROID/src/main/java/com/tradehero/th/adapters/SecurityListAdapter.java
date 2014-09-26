@@ -29,7 +29,8 @@ public class SecurityListAdapter extends BaseAdapter
         this.securityType = securityType;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
-    public SecurityListAdapter(Context context , int securityType)
+
+    public SecurityListAdapter(Context context, int securityType)
     {
         DaggerUtils.inject(this);
         this.context = context;
@@ -38,11 +39,15 @@ public class SecurityListAdapter extends BaseAdapter
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public void setType(int securityType)
+    {
+        this.securityType = securityType;
+    }
+
     public void setSecurityList(SecurityCompactDTOList list)
     {
         this.securityCompactDTOs = list;
     }
-
 
     public void addItems(SecurityCompactDTOList listAdd)
     {

@@ -27,6 +27,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest03;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
@@ -76,6 +77,8 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @InjectView(R.id.tvAllHero) TextView tvAllHero;
     @InjectView(R.id.tvAllFans) TextView tvAllFans;
     @InjectView(R.id.tvEarning) TextView tvEarning;
+
+    @InjectView(R.id.viewEndpoint) View viewEndpoint;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -331,5 +334,12 @@ public class MainTabFragmentMe extends AbsBaseFragment
             tvEarning.setText(roi.toString());
             tvEarning.setTextColor(getResources().getColor(roi.getColorResId()));
         }
+    }
+
+    @OnClick(R.id.viewEndpoint)
+    public void onEndPoint()
+    {
+        Timber.d("onTestClicked FragmentTest02");
+        gotoDashboard(FragmentTest03.class.getName(), new Bundle());
     }
 }

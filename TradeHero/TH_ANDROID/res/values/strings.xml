@@ -279,6 +279,6 @@
   <string name="guide_screen_try">Fast Login</string>
   <string name="or">or</string>
   <string name="position_hold_days">%d天</string>
-  <string name="competition_joined_invite">我参加了一个炒股比赛 #%s# ，一起来切磋下吧～</string>
+  <string name="competition_joined_invite">我参加了一个炒股比赛 %s ，一起来切磋下吧～</string>
 
 </resources>

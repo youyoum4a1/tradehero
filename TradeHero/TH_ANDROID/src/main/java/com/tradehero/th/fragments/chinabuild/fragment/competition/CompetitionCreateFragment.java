@@ -40,8 +40,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
- * Created by huhaiping on 14-9-9.
- * UGC 比赛创建页
+ * Created by huhaiping on 14-9-9. UGC 比赛创建页
  */
 public class CompetitionCreateFragment extends DashboardFragment
 {
@@ -77,6 +76,8 @@ public class CompetitionCreateFragment extends DashboardFragment
 
     private UserCompetitionDTO userCompetitionDTO;
     private Dialog mShareSheetDialog;
+
+    private boolean bSuccessed = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -182,6 +183,11 @@ public class CompetitionCreateFragment extends DashboardFragment
     {
         super.onResume();
         fetchExchangeList();
+
+        if (bSuccessed)
+        {
+            popCurrentFragment();
+        }
     }
 
     //<editor-fold desc="Exchange List Listener">
@@ -273,30 +279,40 @@ public class CompetitionCreateFragment extends DashboardFragment
             {
                 THToast.show("创建成功！");
                 CompetitionCreateFragment.this.userCompetitionDTO = userCompetitionDTO;
-                mShareSheetTitleCache.set(getString(R.string.share_create_contest,
-                        edtCompetitionName.getText().toString()));
-                ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
-                        .inflate(R.layout.share_sheet_local_dialog_layout, null);
-                contentView.setLocalSocialClickedListener(
-                        new ShareSheetDialogLayout.OnLocalSocialClickedListener()
-                        {
-                            @Override public void onShareRequestedClicked()
-                            {
-                                inviteFriendsToCompetition();
-                                if (mShareSheetDialog != null)
-                                {
-                                    mShareSheetDialog.hide();
-                                }
-                            }
-                        });
-                mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
-                mShareSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener()
+
+                if (cbCompetitionInvite.isChecked())
                 {
-                    @Override public void onDismiss(DialogInterface dialogInterface)
+                    mShareSheetTitleCache.set(getString(R.string.share_create_contest,
+                            edtCompetitionName.getText().toString()));
+                    ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
+                            .inflate(R.layout.share_sheet_local_dialog_layout, null);
+                    contentView.setLocalSocialClickedListener(
+                            new ShareSheetDialogLayout.OnLocalSocialClickedListener()
+                            {
+                                @Override public void onShareRequestedClicked()
+                                {
+                                    inviteFriendsToCompetition();
+                                    if (mShareSheetDialog != null)
+                                    {
+                                        mShareSheetDialog.hide();
+                                    }
+                                    bSuccessed = true;
+                                }
+                            });
+
+                    mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
+                    mShareSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener()
                     {
-                        popCurrentFragment();
-                    }
-                });
+                        @Override public void onDismiss(DialogInterface dialogInterface)
+                        {
+                            popCurrentFragment();
+                        }
+                    });
+                }
+                else
+                {
+                    popCurrentFragment();
+                }
             }
         }
 
@@ -324,7 +340,7 @@ public class CompetitionCreateFragment extends DashboardFragment
     public void inviteFriendsToCompetition()
     {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(DiscoveryDiscussSendFragment.BUNDLE_KEY_COMPETITION,userCompetitionDTO);
+        bundle.putSerializable(DiscoveryDiscussSendFragment.BUNDLE_KEY_COMPETITION, userCompetitionDTO);
         pushFragment(DiscoveryDiscussSendFragment.class, bundle);
     }
 }

@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.chinabuild.fragment.userCenter;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,9 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -25,6 +28,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -32,6 +36,7 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
+import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
@@ -89,6 +94,8 @@ public class UserMainPage extends DashboardFragment
     private int maxID = -1;
 
     private boolean isMyMainPage = false;
+    private Dialog mShareSheetDialog;
+    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -107,7 +114,7 @@ public class UserMainPage extends DashboardFragment
         userProfileCacheListener = createUserProfileFetchListener();
         currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
 
-        adapter = new UserTimeLineAdapter(getActivity());
+        adapter = new UserTimeLineAdapter(getActivity(),isMyMainPage);
     }
 
     @Override
@@ -166,6 +173,8 @@ public class UserMainPage extends DashboardFragment
             @Override public void OnTimeLineShareClied(int position)
             {
                 Timber.d("Share position = " + position);
+                //TimelineItemDTO dto = (TimelineItemDTO)adapter.getItem(position);
+                share(adapter.getItemString(position));
             }
         });
 
@@ -183,6 +192,25 @@ public class UserMainPage extends DashboardFragment
                 fetchTimeLineMore();
             }
         });
+    }
+
+    public void share(String strShare)
+    {
+
+        mShareSheetTitleCache.set(strShare);
+
+        ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
+                .inflate(R.layout.share_sheet_dialog_layout, null);
+        contentView.setLocalSocialClickedListener(
+                new ShareSheetDialogLayout.OnLocalSocialClickedListener()
+                {
+                    @Override public void onShareRequestedClicked()
+                    {
+
+                    }
+                });
+
+        mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
     }
 
     public void startLoadding()
