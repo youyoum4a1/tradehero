@@ -1,5 +1,6 @@
 package com.tradehero.th.models.notification;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -8,9 +9,8 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
-import retrofit.client.Response;
 
-public class DTOProcessorNotificationRead implements DTOProcessor<Response>
+public class DTOProcessorNotificationRead implements DTOProcessor<BaseResponseDTO>
 {
     @NotNull private final NotificationKey key;
     @NotNull private final NotificationCache notificationCache;
@@ -31,7 +31,7 @@ public class DTOProcessorNotificationRead implements DTOProcessor<Response>
     }
     //</editor-fold>
 
-    @Override public Response process(Response value)
+    @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
         NotificationDTO notificationDTO = notificationCache.get(key);
         boolean previousUnread = false;

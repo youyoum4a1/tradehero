@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -8,7 +9,6 @@ import com.tradehero.th.api.news.NewsItemSourceDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import retrofit.Callback;
-import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -70,5 +70,5 @@ interface NewsServiceAsync
     void shareHeadlineItem(
             @Path("headlineItemId") int headlineItemId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
 }
