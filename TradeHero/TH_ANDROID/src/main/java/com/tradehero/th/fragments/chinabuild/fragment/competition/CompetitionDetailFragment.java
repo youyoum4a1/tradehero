@@ -45,9 +45,9 @@ import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.test.WebViewSimpleFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -164,11 +164,11 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void initView()
     {
-
         includeMyPosition.setVisibility(userCompetitionDTO.isEnrolled ? View.VISIBLE : View.GONE);
         initCompetition();
         initRankList();
         getMySelfRank();
+        tvCompetitionDetailMore.setVisibility(userCompetitionDTO.detailUrl == null ? View.GONE : View.VISIBLE);
     }
 
     private void initRankList()
@@ -338,9 +338,11 @@ public class CompetitionDetailFragment extends DashboardFragment
     public void onDetailClicked()
     {
         Bundle bundle = new Bundle();
-        String url = "www.baidu.com";
-        WebViewFragment.putUrl(bundle, url);
-        pushFragment(WebViewFragment.class, bundle);
+        String url = userCompetitionDTO.detailUrl;
+
+        bundle.putString(WebViewSimpleFragment.BUNDLE_WEBVIEW_URL, url);
+        bundle.putString(WebViewSimpleFragment.BUNDLE_WEBVIEW_TITLE, userCompetitionDTO.name);
+        pushFragment(WebViewSimpleFragment.class, bundle);
     }
 
     @OnClick(R.id.includeMyPosition)

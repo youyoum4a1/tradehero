@@ -74,6 +74,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDiscussOr
 import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest01;
 import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest02;
 import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest03;
+import com.tradehero.th.fragments.chinabuild.fragment.test.WebViewSimpleFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotWatchFragment;
@@ -530,6 +531,7 @@ import javax.inject.Singleton;
                         ShareDialogFragment.class,
                         ShareSheetDialogLayout.class,
                         PositionTradeListAdapter.class,
+                        WebViewSimpleFragment.class,
                         //China Build End
                 },
         staticInjections =
