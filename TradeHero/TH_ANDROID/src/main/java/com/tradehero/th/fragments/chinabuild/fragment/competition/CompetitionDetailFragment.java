@@ -19,7 +19,9 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.api.competition.CompetitionDTOUtil;
@@ -39,6 +41,8 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -48,6 +52,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCache;
+import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
@@ -142,10 +147,10 @@ public class CompetitionDetailFragment extends DashboardFragment
         setHeadViewRight0("邀请好友");
     }
 
-    @Override public void onClickHeadRight0()
-    {
-        inviteFriendsToCompetition();
-    }
+    //@Override public void onClickHeadRight0()
+    //{
+    //    inviteFriendsToCompetition();
+    //}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

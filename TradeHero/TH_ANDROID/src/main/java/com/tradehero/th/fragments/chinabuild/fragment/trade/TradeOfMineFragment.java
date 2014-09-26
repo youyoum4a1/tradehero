@@ -437,6 +437,11 @@ public class TradeOfMineFragment extends DashboardFragment
 
         String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
         tvItemAllAmount.setText(valueString);
+        Timber.d("lyl all="+valueString);
+        if (cached.totalValue > 150000)
+        {
+            //ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(), getString(R.string.share_amount_total_value));
+        }
 
         Double pl = cached.plSinceInception;
         if (pl == null)

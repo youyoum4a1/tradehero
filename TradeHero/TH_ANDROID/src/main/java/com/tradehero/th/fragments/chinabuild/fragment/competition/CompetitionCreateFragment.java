@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.chinabuild.fragment.competition;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +15,21 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.SpinnerExchangeIconAdapter;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
+import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -106,7 +113,8 @@ public class CompetitionCreateFragment extends DashboardFragment
         mTransactionDialog = progressDialogUtil.show(CompetitionCreateFragment.this.getActivity(),
                 R.string.processing, R.string.alert_dialog_please_wait);
         competitionCacheLazy.get()
-                .creatUGCompetition(edtCompetitionName.getText().toString(), edtCompetitionIntro.getText().toString(), getDurationDays(),
+                .creatUGCompetition(edtCompetitionName.getText().toString(),
+                        edtCompetitionIntro.getText().toString(), getDurationDays(),
                         getExchangeIds(), callbackcreatUGC);
     }
 
