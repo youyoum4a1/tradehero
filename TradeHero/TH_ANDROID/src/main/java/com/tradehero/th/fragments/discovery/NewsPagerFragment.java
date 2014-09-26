@@ -25,6 +25,7 @@ public class NewsPagerFragment extends Fragment
     @InjectView(R.id.news_carousel) ViewPager mNewsCarousel;
     private QuickReturnListViewOnScrollListener quickReturnScrollListener;
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.previous_filter) void handlePreviousFilterClick()
     {
         int currentItem = mNewsCarousel.getCurrentItem();
@@ -32,6 +33,7 @@ public class NewsPagerFragment extends Fragment
         mNewsCarousel.setCurrentItem((currentItem + size - 1) % size, currentItem != 0);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.next_filter) void handleNextFilterClick()
     {
         int currentItem = mNewsCarousel.getCurrentItem();
@@ -51,8 +53,8 @@ public class NewsPagerFragment extends Fragment
         ButterKnife.inject(this, view);
 
         int totalPage = NewsType.values().length;
-        mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(((Fragment) this).getChildFragmentManager()));
-        mNewsCarousel.setAdapter(new DiscoveryNewsCarouselFragmentAdapter(((Fragment) this).getChildFragmentManager()));
+        mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
+        mNewsCarousel.setAdapter(new DiscoveryNewsCarouselFragmentAdapter(this.getChildFragmentManager()));
 
         // all pages need to be cached, coz they are both circle pagers
         mViewPager.setOffscreenPageLimit(totalPage);
