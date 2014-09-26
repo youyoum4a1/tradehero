@@ -124,6 +124,7 @@ public class ObjectMapperWrapper extends ObjectMapper
                 achievementCategoryCacheLazy.get().invalidate(new AchievementCategoryId(userBaseKey, userAchievementDTO.achievementDef.categoryId));
             }
             userProfileCacheLazy.get().updateXPIfNecessary(userBaseKey, userAchievementDTOs.findBiggestXPTotal());
+            userProfileCacheLazy.get().addAchievements(userBaseKey, userAchievementDTOs.size());
         }
     }
 
