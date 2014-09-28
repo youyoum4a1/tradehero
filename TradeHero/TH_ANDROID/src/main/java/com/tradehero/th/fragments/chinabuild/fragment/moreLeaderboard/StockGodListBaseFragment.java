@@ -82,13 +82,12 @@ public class StockGodListBaseFragment extends DashboardFragment
 
     @Override public void onStop()
     {
-        detachLeaderboardCacheListener();
-
         super.onStop();
     }
 
     @Override public void onDestroyView()
     {
+        detachLeaderboardCacheListener();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -184,12 +183,14 @@ public class StockGodListBaseFragment extends DashboardFragment
             //linkWith(value, true);
             //Timber.d("value:" + value);
             setListData(key, value.users);
+            listBang.onRefreshComplete();
         }
 
         @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to leaderboard", error);
             //THToast.show(R.string.error_fetch_leaderboard_info);
+            listBang.onRefreshComplete();
         }
     }
 
@@ -206,7 +207,7 @@ public class StockGodListBaseFragment extends DashboardFragment
         {
             adapter.addItems(listData);
         }
-        listBang.onRefreshComplete();
+
 
         //如果返回数据已经为空了，说明没有了下一页。
         if (listData.size() > 0)

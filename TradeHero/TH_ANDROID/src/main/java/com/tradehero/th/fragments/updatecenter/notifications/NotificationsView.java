@@ -51,6 +51,7 @@ public class NotificationsView extends BetterViewAnimator
     @InjectView(R.id.listViewLayout) RelativeLayout listViewLayout;
     @InjectView(R.id.readAllLayout) LinearLayout readAllLayout;
 
+
     @Inject Lazy<NotificationListCache> notificationListCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;
     @Inject UserProfileCache userProfileCache;

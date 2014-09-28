@@ -24,12 +24,12 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public List<Integer> freeHeroIds;
     public List<Integer> premiumHeroIds;
     public Integer followerCount;
-    /**newly added fields*/
+    /** newly added fields */
     public int allHeroCount;
     public int allFollowerCount;
     public int freeFollowerCount;
     public int paidFollowerCount;
-    /**newly added fields*/
+    /** newly added fields */
 
     public Integer ccPerMonthBalance;   // recurring monthly balance (not used, old)
     public Double ccBalance;       // non-recurring: CC spot level
@@ -45,7 +45,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public boolean emailNotificationsEnabled;
 
     public List<UserLeaderboardRankingDTO> rank;
-            // // user's top-traders ranking across all LBs
+    // // user's top-traders ranking across all LBs
 
     public boolean firstFollowAllTime;
 
@@ -128,7 +128,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
             return null;
         }
         List<UserBaseKey> heroKeys = new ArrayList<>();
-        for (Integer heroId: heroIds)
+        for (Integer heroId : heroIds)
         {
             if (heroId != null)
             {
@@ -140,7 +140,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public int getLeaderboardRanking(int leaderboardId)
     {
-        for (UserLeaderboardRankingDTO userLeaderboardRankingDTO: rank)
+        for (UserLeaderboardRankingDTO userLeaderboardRankingDTO : rank)
         {
             if (userLeaderboardRankingDTO.leaderboardId == leaderboardId)
             {
@@ -156,7 +156,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
         int count = 0;
         if (userAlertPlans != null)
         {
-            for (UserAlertPlanDTO userAlertPlanDTO: userAlertPlans)
+            for (UserAlertPlanDTO userAlertPlanDTO : userAlertPlans)
             {
                 if (userAlertPlanDTO != null && userAlertPlanDTO.alertPlan != null)
                 {
@@ -203,5 +203,17 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", userAlertPlans=" + userAlertPlans +
                 ", enrolledProviders=" + enrolledProviders +
                 '}';
+    }
+
+    public String getUnReadNotificationCount()
+    {
+        if (unreadNotificationsCount > 99)
+        {
+            return "99";
+        }
+        else
+        {
+            return String.valueOf(unreadNotificationsCount);
+        }
     }
 }

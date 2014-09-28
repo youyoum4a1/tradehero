@@ -11,6 +11,7 @@ import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
+import com.tradehero.th.adapters.NotificationListAdapter;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
@@ -59,6 +60,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryRecentN
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.AbsLeaderboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.LeaderboardFromExchangeFragment;
@@ -532,6 +534,8 @@ import javax.inject.Singleton;
                         ShareSheetDialogLayout.class,
                         PositionTradeListAdapter.class,
                         WebViewSimpleFragment.class,
+                        NotificationFragment.class,
+                        NotificationListAdapter.class,
                         //China Build End
                 },
         staticInjections =

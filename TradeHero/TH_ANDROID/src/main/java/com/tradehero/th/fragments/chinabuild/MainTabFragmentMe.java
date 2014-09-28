@@ -292,7 +292,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
 
     protected void fetchUserProfile()
     {
-        detachPortfolioCache();
+        detachUserProfileCache();
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
