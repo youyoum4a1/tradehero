@@ -62,6 +62,8 @@ public class NotificationListAdapter extends BaseAdapter
                 dataList.get(i).unread = false;
             }
         }
+
+        notifyDataSetChanged();
     }
 
     public void setAllRead()

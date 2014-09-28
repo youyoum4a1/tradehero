@@ -63,4 +63,16 @@ abstract public class AbstractDiscussionCompactDTO extends ExtendedDTO
                 ", stubKey=" + stubKey +
                 '}';
     }
+
+    public String getVoteString()
+    {
+        if (voteDirection == 1)
+        {
+            return "已赞";
+        }
+        else
+        {
+            return "" + upvoteCount;
+        }
+    }
 }

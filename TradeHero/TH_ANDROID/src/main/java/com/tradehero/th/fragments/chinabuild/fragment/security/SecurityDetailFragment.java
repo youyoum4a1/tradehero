@@ -32,6 +32,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -59,6 +60,7 @@ import com.tradehero.th.fragments.chinabuild.cache.PositionDTOKey;
 import com.tradehero.th.fragments.chinabuild.dialog.DialogFactory;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.security.ChartImageView;
@@ -1496,7 +1498,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             openUserProfile(((DiscussionDTO) getAbstractDiscussionCompactDTO()).user.id);
         }
-
+        else if (view.getId() == R.id.llTLComment)
+        {
+            AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
+            comments(dto);
+        }
         else if (view.getId() == R.id.llTLShare)
         {
             AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
@@ -1511,6 +1517,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             }
             share(strShare);
         }
+    }
+
+    public void comments(AbstractDiscussionCompactDTO dto)
+    {
+        DiscussionKey discussionKey = dto.getDiscussionKey();
+        Bundle bundle = new Bundle();
+        bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
+                discussionKey.getArgs());
+        pushFragment(DiscussSendFragment.class, bundle);
     }
 
     public void share(String strShare)
@@ -1557,7 +1572,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             if (dto instanceof NewsItemCompactDTO)
             {
                 tvUserTLContent.setText(((NewsItemCompactDTO) dto).description);
-
             }
             else if (dto instanceof DiscussionDTO)
             {
@@ -1570,7 +1584,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             }
 
             tvTLComment.setText("" + dto.commentCount);
-            tvTLPraise.setText("" + dto.upvoteCount);
+            tvTLPraise.setText(dto.getVoteString());
         }
     }
 }

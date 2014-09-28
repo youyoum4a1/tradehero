@@ -16,11 +16,14 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -94,6 +97,8 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
             @Override public void OnTimeLineCommentsClicked(int position)
             {
                 Timber.d("Comments position = " + position);
+                TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
+                comments(dto);
             }
 
             @Override public void OnTimeLineShareClied(int position)
@@ -118,6 +123,15 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
                 fetchTimeLineMore();
             }
         });
+    }
+
+    public void comments(AbstractDiscussionCompactDTO dto)
+    {
+        DiscussionKey discussionKey = dto.getDiscussionKey();
+        Bundle bundle = new Bundle();
+        bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
+                discussionKey.getArgs());
+        gotoDashboard(DiscussSendFragment.class, bundle);
     }
 
     public void share(String strShare)

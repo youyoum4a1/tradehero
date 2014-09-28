@@ -148,15 +148,20 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         {
             strShare = dto.text;
             boolean isTrade = dto.hasTrader();
-            if(isTrade)
+            if (isTrade)
             {
                 TradeDTO tradeDTO = getTradeDTO(dto.tradeId);
                 if (tradeDTO != null)
                 {
                     String securityName = dto.getMedias().get(0).displaySecurityName();
                     StringBuffer sb = new StringBuffer();
-                    sb.append("我以 ").append(tradeDTO.unitPriceRefCcy).append(" 每股的价格，购买了 ").append(tradeDTO.displayTradeQuantity()).append(" 股 ").append(
-                            securityName);
+                    sb.append("我以 ")
+                            .append(tradeDTO.unitPriceRefCcy)
+                            .append(" 每股的价格，购买了 ")
+                            .append(tradeDTO.displayTradeQuantity())
+                            .append(" 股 ")
+                            .append(
+                                    securityName);
                     return sb.toString();
                 }
             }
@@ -295,7 +300,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
             }
 
-            holder.tvTLPraise.setText("" + item.upvoteCount);
+            holder.tvTLPraise.setText(item.getVoteString());
             holder.tvTLComment.setText("" + item.commentCount);
 
             holder.llItemAll.setOnClickListener(new View.OnClickListener()
@@ -310,6 +315,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 @Override public void onClick(View view)
                 {
                     timeLineOperater.OnTimeLinePraiseClicked(position);
+                    clickedPraise(position);
                 }
             });
 
@@ -434,5 +440,21 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         public TextView title0;//买入股票
         public TextView title1;//买入价格
         public TextView title2;//买入数量
+    }
+
+    public void clickedPraise(int position)
+    {
+        TimelineItemDTO item = (TimelineItemDTO) getItem(position);
+        if (item.voteDirection == 0)
+        {
+            item.voteDirection = 1;
+            item.upvoteCount += 1;
+        }
+        else
+        {
+            item.voteDirection = 0;
+            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+        }
+        notifyDataSetChanged();
     }
 }

@@ -156,7 +156,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             }
 
             holder.tvTLPraise.setText("" + item.upvoteCount);
-            holder.tvTLComment.setText("" + item.commentCount);
+            holder.tvTLComment.setText(item.getVoteString());
 
             holder.llItemAll.setOnClickListener(new View.OnClickListener()
             {
