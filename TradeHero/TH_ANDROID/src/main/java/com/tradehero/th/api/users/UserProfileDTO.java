@@ -174,6 +174,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", id=" + id +
                 ", inviteCode=" + inviteCode +
                 ", referralCode=" + referralCode +
+                ", isVisitor=" + isVisitor +
                 ", picture='" + picture + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

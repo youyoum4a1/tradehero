@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.chinabuild.fragment.portfolio;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -30,6 +33,7 @@ import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.PositionLockedItem;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
+import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -39,6 +43,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
@@ -97,6 +102,7 @@ public class PortfolioFragment extends DashboardFragment
     public int portfolio_type = 0;
 
     private PortfolioCompactDTO defaultPortfolio;
+    @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -178,6 +184,25 @@ public class PortfolioFragment extends DashboardFragment
         else if (item instanceof PositionLockedItem)
         {
             Timber.d("Clicked follow user!!!");
+            if (mShareDialogKeyPreference.get())
+            {
+                if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor
+                        && (currentUserProfileDTO.heroIds.size() == 3) || (currentUserProfileDTO.heroIds.size() == 11))
+                {
+                    alertDialogUtil.popWithOkCancelButton(getActivity(), R.string.app_name,
+                            R.string.guest_user_dialog_summary,
+                            R.string.ok, R.string.cancel, new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialog, int which)
+                        {
+                            Bundle args = new Bundle();
+                            args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,
+                                    BindGuestUserFragment.class.getName());
+                            ActivityHelper.launchDashboard(getActivity(), args);
+                        }
+                    });
+                }
+            }
             freeFollow(showUserBaseKey);
         }
     }
@@ -578,9 +603,9 @@ public class PortfolioFragment extends DashboardFragment
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
+            currentUserProfileDTO = userProfileDTO;
             alertDialogUtilLazy.get().dismissProgressDialog();
             userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-            currentUserProfileDTO = userProfileDTO;
             fetchSimplePage(true);
         }
 

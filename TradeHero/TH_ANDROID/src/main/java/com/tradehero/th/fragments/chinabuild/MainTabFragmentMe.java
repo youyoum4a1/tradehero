@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.chinabuild;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +16,13 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
@@ -181,20 +177,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_amount_fans_num_title));
                 }
-            }
-            else if (user.allFollowerCount > 11 && user.isVisitor)
-            {
-                alertDialogUtil.get().popWithOkCancelButton(getActivity(), R.string.app_name,
-                        R.string.guest_user_dialog_summary,
-                        R.string.ok, R.string.cancel, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        Bundle args = new Bundle();
-                        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, BindGuestUserFragment.class.getName());
-                        ActivityHelper.launchDashboard(getActivity(), args);
-                    }
-                });
             }
             tvAllHero.setText(String.valueOf(user.heroIds == null ? 0 : user.heroIds.size()));
         }
