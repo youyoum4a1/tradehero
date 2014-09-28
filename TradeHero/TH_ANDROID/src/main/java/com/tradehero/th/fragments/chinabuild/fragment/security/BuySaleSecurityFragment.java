@@ -20,6 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -34,6 +35,7 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareSellDialogFragment;
 import com.tradehero.th.fragments.trade.AlertDialogUtilBuySell;
 import com.tradehero.th.misc.exception.THException;
@@ -44,6 +46,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -89,6 +92,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
     private ProgressDialog mTransactionDialog;
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
 
@@ -641,8 +645,8 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     public void setSaleView()
     {
-        llBuySaleLine5.setVisibility(View.VISIBLE);
-        llBuySaleLine7.setVisibility(View.VISIBLE);
+        //llBuySaleLine5.setVisibility(View.VISIBLE);
+        //llBuySaleLine7.setVisibility(View.VISIBLE);
         tvTitle0.setText("卖出价格：");
         tvTitle1.setText("卖出数量：");
         tvTitle6.setText("剩余股份：");
@@ -651,8 +655,8 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     public void setBuyView()
     {
-        llBuySaleLine5.setVisibility(View.GONE);
-        llBuySaleLine7.setVisibility(View.GONE);
+        //llBuySaleLine5.setVisibility(View.GONE);
+        //llBuySaleLine7.setVisibility(View.GONE);
         tvTitle0.setText("买入价格：");
         tvTitle1.setText("买入数量：");
         tvTitle6.setText("资产余额：");
@@ -726,7 +730,18 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
             if (mShareToSocialCheckBox.isChecked())
             {
-                ShareSellDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager(), getSecurityName(), securityId.getDisplayName(), tvBuySaleRate.getText().toString(), mQuantityEditText.getText().toString(), tvBuySaleMayProfit.getText().toString());
+                if (isBuy)
+                {
+                    //buy share
+                    mShareSheetTitleCache.set(getString(R.string.share_buy_dialog_summary, securityId.getDisplayName()));
+                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                            getString(R.string.share_buy_dialog_title, securityId.getDisplayName()));
+                }
+                else
+                {
+                    //sell share
+                    ShareSellDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager(), getSecurityName(), securityId.getDisplayName(), tvBuySaleRate.getText().toString(), mQuantityEditText.getText().toString(), tvBuySaleMayProfit.getText().toString());
+                }
             }
             popCurrentFragment();
             //if (buySellTransactionListener != null)

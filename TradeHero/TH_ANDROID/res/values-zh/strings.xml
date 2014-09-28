@@ -173,6 +173,8 @@
   <string name="share_amount_total_value_summary">一不小心在高端模拟炒股软件\'全民股神\'中资产已经破15W了，本人多年前夜观天象，早已看出我炒股的慧根，可谓奇才一枚。</string>
   <string name="share_amount_fans_num_title">恭喜！你已经有10个小跟班，如此魅力十足还不赶紧去炫耀一记？</string>
   <string name="share_amount_fans_num_summary">本人在高端模拟炒股软件\'全民股神\'中的粉丝量到达两位数了！邀请我开个讲座，签个名什么的都不是问题，好说好说~</string>
+  <string name="share_buy_dialog_title">我买了 %1$s 股票，求预测我是赚还是亏？</string>
+  <string name="share_buy_dialog_summary">我在全民股神购买了 %1$s 股票，各位高手怎么看？</string>
   <string name="share_score_title">这么好的炒股学习工具\n邀请你的朋友们一起来赚钱吧～</string>
   <string name="share_score_summary">我诚恳地邀请各位童鞋一起来玩超高格调的\'全民股神\'，在这儿模拟炒股绝对是培养优秀理财意识，锻炼逻辑分析能力，成就金融领域大神的好去处~</string>
   <string name="share_dialog_summary">（现在分享还可获得资金奖励哦）</string>
