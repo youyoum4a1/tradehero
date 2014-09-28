@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_blue"
@@ -46,40 +45,12 @@
       android:orientation="vertical" android:paddingTop="20dp">
 
     <TextView
-        android:id="@+id/app_version"
+        android:id="@+id/tips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="#ffffff"
-        android:textSize="@dimen/copyright_text_size"
-        tools:text="1.6.1(100)"
-        />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:textSize="@dimen/copyright_text_size"
-        android:text="@string/settings_about_copyright"
-        />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:gravity="center"
-        android:textSize="@dimen/copyright_text_size"
-        android:text="@string/splash_copyright_2"
-        />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:textSize="@dimen/copyright_text_size"
-        android:text="@string/splash_copyright_3"
+        android:textSize="@dimen/text_large"
         />
 
   </LinearLayout>

@@ -3,6 +3,8 @@ package com.tradehero.th.activities;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.mobileapptracker.MobileAppTracker;
@@ -54,6 +56,7 @@ public class SplashActivity extends SherlockActivity
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject Analytics analytics;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
+    @InjectView(R.id.tips) TextView mTipsText;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -73,10 +76,16 @@ public class SplashActivity extends SherlockActivity
         }
 
         DaggerUtils.inject(this);
+        ButterKnife.inject(this);
         currentActivityHolder.setCurrentActivity(this);
         mShareDialogKeyPreference.set(true);
         //delay this for first page is not trending fragment, now first page is home page by alex
         //dtoCacheUtil.anonymousPrefetches();
+        if (mTipsText != null)
+        {
+            String[] sa = getResources().getStringArray(R.array.loading_page_tips);
+            mTipsText.setText(sa[(int)Math.floor(Math.random()*10)]);
+        }
     }
 
     @Override protected void onResume()
