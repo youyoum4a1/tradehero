@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.chinabuild.fragment.competition;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.api.competition.CompetitionDTOUtil;
 import com.tradehero.th.api.competition.ProviderId;
@@ -43,6 +45,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.test.WebViewSimpleFragment;
@@ -94,6 +97,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    private UserProfileDTO mUserProfileDTO;
 
     @InjectView(R.id.listRanks) SecurityListView listRanks;//比赛排名
     private LeaderboardListAdapter adapter;
@@ -324,8 +328,26 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             if (!userCompetitionDTO.isEnrolled)
             {
-                //去报名
-                toJoinCompetition();//去报名
+                if (mUserProfileDTO != null && mUserProfileDTO.isVisitor)
+                {
+                    alertDialogUtil.popWithOkCancelButton(getActivity(), R.string.app_name,
+                            R.string.guest_user_dialog_summary,
+                            R.string.ok, R.string.cancel, new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialog, int which)
+                        {
+                            Bundle args = new Bundle();
+                            args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,
+                                    BindGuestUserFragment.class.getName());
+                            ActivityHelper.launchDashboard(getActivity(), args);
+                        }
+                    });
+                }
+                else
+                {
+                    //去报名
+                    toJoinCompetition();//去报名
+                }
             }
             else
             {
@@ -655,6 +677,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     private void linkWith(UserProfileDTO value)
     {
         if (value == null) return;
+        mUserProfileDTO = value;
         tvUserName.setText(value.displayName);
 
         picasso.get()
