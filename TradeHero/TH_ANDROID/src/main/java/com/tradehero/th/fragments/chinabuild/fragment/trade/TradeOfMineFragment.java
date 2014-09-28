@@ -45,6 +45,8 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
+import com.tradehero.th.persistence.prefs.ShareDialogROIValueKey;
+import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import dagger.Lazy;
@@ -88,6 +90,8 @@ public class TradeOfMineFragment extends DashboardFragment
 
     private MyTradePositionListAdapter adapter;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
+    @Inject @ShareDialogTotalValueKey BooleanPreference mShareDialogTotalValueKeyPreference;
+    @Inject @ShareDialogROIValueKey BooleanPreference mShareDialogROIValueKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @Override
@@ -444,11 +448,13 @@ public class TradeOfMineFragment extends DashboardFragment
 
         String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
         tvItemAllAmount.setText(valueString);
+        //总资产数达到15w
         if (cached.totalValue > 150000)
         {
-            if (mShareDialogKeyPreference.get())
+            if (mShareDialogKeyPreference.get() && mShareDialogTotalValueKeyPreference.get())
             {
                 mShareDialogKeyPreference.set(false);
+                mShareDialogTotalValueKeyPreference.set(false);
                 mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary));
                 ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                         getString(R.string.share_amount_total_value_title));
@@ -503,11 +509,13 @@ public class TradeOfMineFragment extends DashboardFragment
                 if (securityCompactDTO != null)
                 {
                     list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i)));
+                    //持有股票收益率涨副超过 10% 弹窗提示分享
                     if (listData.get(i).getROISinceInception() * 100 > 10)
                     {
-                        if (mShareDialogKeyPreference.get())
+                        if (mShareDialogKeyPreference.get() && mShareDialogROIValueKeyPreference.get())
                         {
                             mShareDialogKeyPreference.set(false);
+                            mShareDialogROIValueKeyPreference.set(false);
                             mShareSheetTitleCache.set(getString(
                                     R.string.share_amount_roi_value_summary));
                             ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),

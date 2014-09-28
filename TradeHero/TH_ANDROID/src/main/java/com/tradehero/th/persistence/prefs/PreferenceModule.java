@@ -47,6 +47,10 @@ public class PreferenceModule
     private static final String PREF_FIRST_SHOW_REFERRAL_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
     private static final String PREF_BIND_GUEST_USER_FLAG = "PREF_BIND_GUEST_USER_FLAG";
     private static final String PREF_SHARE_DIALOG_KEY_FLAG = "PREF_SHARE_DIALOG_KEY_FLAG";
+    private static final String PREF_SHARE_DIALOG_TOTAL_VALUE_KEY_FLAG = "PREF_SHARE_DIALOG_TOTAL_VALUE_KEY_FLAG";
+    private static final String PREF_SHARE_DIALOG_ROI_VALUE_KEY_FLAG = "PREF_SHARE_DIALOG_ROI_VALUE_KEY_FLAG";
+    private static final String PREF_SHARE_DIALOG_AFTER_SCORE_KEY_FLAG = "PREF_SHARE_DIALOG_AFTER_SCORE_KEY_FLAG";
+    private static final String PREF_SHARE_DIALOG_FOLLOWER_COUNT_KEY_FLAG = "PREF_SHARE_DIALOG_FOLLOWER_COUNT_KEY_FLAG";
     private static final String PREF_DEVICE_ID_FLAG = "PREF_DEVICE_ID_FLAG";
     private static final String PREF_SHARE_SHEET_TITLE_CACHE_FLAG = "PREF_SHARE_SHEET_TITLE_CACHE_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
@@ -174,5 +178,25 @@ public class PreferenceModule
     @Provides @Singleton @ShareDialogKey BooleanPreference provideShareDialogKeyPreference(@ForUser SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_SHARE_DIALOG_KEY_FLAG, true);
+    }
+    //总资产数达到15w
+    @Provides @Singleton @ShareDialogTotalValueKey BooleanPreference provideShareDialogTotalValueKeyPreference(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_SHARE_DIALOG_TOTAL_VALUE_KEY_FLAG, true);
+    }
+    //持有股票收益率涨副超过 10% 弹窗提示分享
+    @Provides @Singleton @ShareDialogROIValueKey BooleanPreference provideShareDialogROIValueKeyPreference(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_SHARE_DIALOG_ROI_VALUE_KEY_FLAG, true);
+    }
+    //评分后
+    @Provides @Singleton @ShareDialogAfterScoreKey BooleanPreference provideShareDialogAfterScoreKeyPreference(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_SHARE_DIALOG_AFTER_SCORE_KEY_FLAG, true);
+    }
+    //粉丝数达到8人
+    @Provides @Singleton @ShareDialogFollowerCountKey BooleanPreference provideShareDialogFollowerCountKeyPreference(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_SHARE_DIALOG_FOLLOWER_COUNT_KEY_FLAG, true);
     }
 }

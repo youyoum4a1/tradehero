@@ -43,7 +43,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.persistence.prefs.ShareDialogKey;
+import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
@@ -102,7 +102,7 @@ public class PortfolioFragment extends DashboardFragment
     public int portfolio_type = 0;
 
     private PortfolioCompactDTO defaultPortfolio;
-    @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
+    @Inject @BindGuestUser BooleanPreference mBindGuestUserDialogKeyPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -184,7 +184,7 @@ public class PortfolioFragment extends DashboardFragment
         else if (item instanceof PositionLockedItem)
         {
             Timber.d("Clicked follow user!!!");
-            if (mShareDialogKeyPreference.get())
+            if (mBindGuestUserDialogKeyPreference.get())
             {
                 if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor
                         && (currentUserProfileDTO.heroIds.size() == 3) || (currentUserProfileDTO.heroIds.size() == 11))

@@ -23,6 +23,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.prefs.ShareDialogAfterScoreKey;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     @InjectView(R.id.settings_about) RelativeLayout mAboutLayout;
     @InjectView(R.id.settings_logout) LinearLayout mLogoutLayout;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
+    @Inject @ShareDialogAfterScoreKey BooleanPreference mShareDialogAfterScoreKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @Override
@@ -86,9 +88,11 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         {
             case R.id.settings_score:
                 showAppOnMarket();
-                if (mShareDialogKeyPreference.get())
+                //评分后
+                if (mShareDialogKeyPreference.get() && mShareDialogAfterScoreKeyPreference.get())
                 {
                     mShareDialogKeyPreference.set(false);
+                    mShareDialogAfterScoreKeyPreference.set(false);
                     mShareSheetTitleCache.set(getString(R.string.share_score_summary));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_score_title));

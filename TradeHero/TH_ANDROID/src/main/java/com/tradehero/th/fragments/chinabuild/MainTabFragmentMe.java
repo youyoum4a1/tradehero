@@ -35,6 +35,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.prefs.ShareDialogFollowerCountKey;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -51,6 +52,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
+    @Inject @ShareDialogFollowerCountKey BooleanPreference mShareDialogFollowerCountKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
@@ -168,11 +170,13 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 tvMeName.setText(user.displayName);
             }
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
+            //粉丝数达到10人
             if (user.allFollowerCount > 9)
             {
-                if (mShareDialogKeyPreference.get())
+                if (mShareDialogKeyPreference.get() && mShareDialogFollowerCountKeyPreference.get())
                 {
                     mShareDialogKeyPreference.set(false);
+                    mShareDialogFollowerCountKeyPreference.set(false);
                     mShareSheetTitleCache.set(getString(R.string.share_amount_fans_num_summary));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_amount_fans_num_title));
