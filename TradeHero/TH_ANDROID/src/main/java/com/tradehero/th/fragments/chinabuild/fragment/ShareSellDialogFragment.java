@@ -48,7 +48,8 @@ public class ShareSellDialogFragment extends BaseDialogFragment
     private static String mStockNum;
     private static String mGetMoney;
 
-    public static ShareSellDialogFragment showReviewDialog(FragmentManager fragmentManager, String stockName, String stockCode, String stockUp, String stockNum, String getMoney)
+    public static ShareSellDialogFragment showSellDialog(FragmentManager fragmentManager,
+            String stockName, String stockCode, String stockUp, String stockNum, String getMoney)
     {
         ShareSellDialogFragment dialogFragment = new ShareSellDialogFragment();
         dialogFragment.show(fragmentManager, ShareSellDialogFragment.class.getName());

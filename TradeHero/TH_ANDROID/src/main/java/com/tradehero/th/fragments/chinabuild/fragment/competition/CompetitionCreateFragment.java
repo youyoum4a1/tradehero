@@ -22,6 +22,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.SpinnerExchangeIconAdapter;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
@@ -64,6 +65,7 @@ public class CompetitionCreateFragment extends DashboardFragment
 
     @Inject Lazy<CompetitionCache> competitionCacheLazy;
     private Callback<UserCompetitionDTO> callbackcreatUGC;
+    @Inject CurrentUserId currentUserId;
 
     public static final int CREATE_COMPETITION_SUCCESS = 0;
     public static final int CREATE_COMPETITION_ERROR_TITLE = 1;
@@ -283,7 +285,8 @@ public class CompetitionCreateFragment extends DashboardFragment
                 if (cbCompetitionInvite.isChecked())
                 {
                     mShareSheetTitleCache.set(getString(R.string.share_create_contest,
-                            edtCompetitionName.getText().toString()));
+                            edtCompetitionName.getText().toString(), currentUserId.get().toString(),
+                            userCompetitionDTO.id));
                     ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                             .inflate(R.layout.share_sheet_local_dialog_layout, null);
                     contentView.setLocalSocialClickedListener(

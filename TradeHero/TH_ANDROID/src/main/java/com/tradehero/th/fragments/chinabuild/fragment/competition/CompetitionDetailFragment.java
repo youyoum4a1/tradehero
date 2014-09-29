@@ -713,7 +713,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Override public void onClickHeadRight0()
     {
         mShareSheetTitleCache.set(getString(R.string.share_detial_contest,
-                userCompetitionDTO.name));
+                userCompetitionDTO.name, currentUserId.get().toString(), userCompetitionDTO.id));
         ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                 .inflate(R.layout.share_sheet_local_dialog_layout, null);
         contentView.setLocalSocialClickedListener(

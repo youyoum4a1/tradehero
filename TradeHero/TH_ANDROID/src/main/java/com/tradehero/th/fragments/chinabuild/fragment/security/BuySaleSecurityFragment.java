@@ -733,14 +733,20 @@ public class BuySaleSecurityFragment extends DashboardFragment
                 if (isBuy)
                 {
                     //buy share
-                    mShareSheetTitleCache.set(getString(R.string.share_buy_dialog_summary, securityId.getDisplayName()));
+                    mShareSheetTitleCache.set(getString(R.string.share_buy_dialog_summary,
+                            securityId.getDisplayName(), currentUserId.get().toString(),
+                            securityCompactDTO.id.toString()));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_buy_dialog_title, securityId.getDisplayName()));
                 }
                 else
                 {
                     //sell share
-                    ShareSellDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager(), getSecurityName(), securityId.getDisplayName(), tvBuySaleRate.getText().toString(), mQuantityEditText.getText().toString(), tvBuySaleMayProfit.getText().toString());
+                    ShareSellDialogFragment.showSellDialog(
+                            getActivity().getSupportFragmentManager(), getSecurityName(),
+                            securityId.getDisplayName(), tvBuySaleRate.getText().toString(),
+                            mQuantityEditText.getText().toString(),
+                            tvBuySaleMayProfit.getText().toString());
                 }
             }
             popCurrentFragment();

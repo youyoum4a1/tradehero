@@ -177,7 +177,8 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 {
                     mShareDialogKeyPreference.set(false);
                     mShareDialogFollowerCountKeyPreference.set(false);
-                    mShareSheetTitleCache.set(getString(R.string.share_amount_fans_num_summary));
+                    mShareSheetTitleCache.set(getString(R.string.share_amount_fans_num_summary,
+                            currentUserId.get().toString()));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_amount_fans_num_title));
                 }
