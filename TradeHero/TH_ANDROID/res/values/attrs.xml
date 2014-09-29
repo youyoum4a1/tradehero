@@ -107,4 +107,16 @@
     <attr name="includeVolume" format="boolean"/>
   </declare-styleable>
 
+  <declare-styleable name="AuthenticationButton">
+    <attr name="type">
+      <enum name="emailpass" value="0"/>
+      <enum name="facebook" value="1"/>
+      <enum name="twitter" value="2"/>
+      <enum name="linkedin" value="3"/>
+      <enum name="wechat" value="4"/>
+      <enum name="weibo" value="5"/>
+      <enum name="qq" value="6"/>
+    </attr>
+  </declare-styleable>
+
 </resources>

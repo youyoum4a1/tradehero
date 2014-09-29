@@ -10,10 +10,10 @@ import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 
 public enum SocialNetworkEnum
 {
-    FB(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE, "Facebook"),
-    LN(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE, "LinkedIn"),
     TH(EmailCredentialsDTO.EMAIL_AUTH_TYPE, "TradeHero"),
+    FB(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE, "Facebook"),
     TW(TwitterCredentialsDTO.TWITTER_AUTH_TYPE, "Twitter"),
+    LN(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE, "LinkedIn"),
     WECHAT(WeChatCredentialsDTO.WECHAT_AUTH_TYPE, "WeChat"),
     WB(WeiboCredentialsDTO.WEIBO_AUTH_TYPE, "WeiBo"),
     QQ(QQCredentialsDTO.QQ_AUTH_TYPE, "QQ");
@@ -46,5 +46,14 @@ public enum SocialNetworkEnum
             return name;
         }
         return super.toString();
+    }
+
+    public static SocialNetworkEnum fromIndex(int index)
+    {
+        if (index >= 0 && index <= values().length)
+        {
+            return values()[index];
+        }
+        throw new IllegalArgumentException("There is no value for index " + index);
     }
 }
