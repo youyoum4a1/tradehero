@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.QQCredentialsDTO;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
 import org.json.JSONObject;
+import rx.Observable;
 import timber.log.Timber;
 
 @Singleton
@@ -192,5 +194,10 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
         {
             onAuthorizeCancel();
         }
+    }
+
+    @Override public Observable<AuthData> logIn(Activity activity)
+    {
+        throw new RuntimeException("Not implemented");
     }
 }

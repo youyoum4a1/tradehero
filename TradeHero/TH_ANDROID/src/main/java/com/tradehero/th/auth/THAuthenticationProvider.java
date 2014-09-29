@@ -3,6 +3,7 @@ package com.tradehero.th.auth;
 import com.tradehero.th.base.JSONCredentials;
 
 public interface THAuthenticationProvider
+    extends AuthenticationProvider
 {
     public void authenticate(THAuthenticationCallback callback);
 

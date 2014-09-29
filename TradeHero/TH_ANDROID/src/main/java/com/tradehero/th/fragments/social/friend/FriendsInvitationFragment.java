@@ -31,8 +31,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.social.SocialLinkHelper;
-import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
@@ -63,7 +61,6 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     @Inject SocialTypeItemFactory socialTypeItemFactory;
     @Inject SocialNetworkFactory socialNetworkFactory;
-    @Inject SocialLinkHelperFactory socialLinkHelperFactory;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
     SocialFriendHandler socialFriendHandler;
@@ -79,7 +76,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
     private Runnable searchTask;
     private MiddleCallback<UserFriendsDTOList> searchCallback;
-    private SocialLinkHelper socialLinkHelper;
 
     private static final String KEY_BUNDLE = "key_bundle";
     private static final String KEY_LIST_TYPE = "key_list_type";
@@ -129,7 +125,6 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     @Override public void onStop()
     {
-        detachSocialLinkHelper();
         detachSearchTask();
         super.onStop();
     }
@@ -265,15 +260,6 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    protected void detachSocialLinkHelper()
-    {
-        if (socialLinkHelper != null)
-        {
-            socialLinkHelper.setSocialLinkingCallback(null);
-        }
-        socialLinkHelper = null;
-    }
-
     private void scheduleSearch()
     {
         View view = getView();
@@ -341,10 +327,10 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
     {
-        detachSocialLinkHelper();
-        socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
-        // TODO Pass a callback to be able to move to the social fragment
-        socialLinkHelper.link();
+        // FIXME/refactor: create social buttons which can emit Observable<SocialEnum>
+        //socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
+        //// TODO Pass a callback to be able to move to the social fragment
+        //socialLinkHelper.link();
     }
 
     private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork)

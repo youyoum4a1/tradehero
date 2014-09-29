@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.Window;
-import android.widget.EditText;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
+import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -23,8 +23,6 @@ import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
-import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -39,11 +37,9 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.json.JSONException;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -51,10 +47,7 @@ import timber.log.Timber;
 public class AuthenticationActivity extends BaseActivity
         implements Injector
 {
-    private Fragment currentFragment;
-
     private ProgressDialog progressDialog;
-    private TwitterCredentialsDTO twitterJson;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
@@ -63,8 +56,8 @@ public class AuthenticationActivity extends BaseActivity
     @Inject Lazy<QQUtils> qqUtils;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject CredentialsDTOFactory credentialsDTOFactory;
     private DashboardNavigator navigator;
+    @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -104,7 +97,6 @@ public class AuthenticationActivity extends BaseActivity
             progressDialog.dismiss();
         }
         analytics.closeSession();
-
         super.onPause();
     }
 
@@ -112,12 +104,13 @@ public class AuthenticationActivity extends BaseActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
-        facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
+        facebookAuthenticationProvider.onActivityResult(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
     private void authenticateWithEmail()
     {
+        Fragment currentFragment = navigator.getCurrentFragment();
         if (currentFragment instanceof EmailSignInOrUpFragment)
         {
             progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_tradehero_only);
@@ -210,52 +203,20 @@ public class AuthenticationActivity extends BaseActivity
                 }
                 // twitter does not return email for authentication user,
                 // we need to ask user for that
-                try
-                {
-                    setTwitterData((TwitterCredentialsDTO) credentialsDTOFactory.create(json));
-                }
-                catch (JSONException | ParseException e)
-                {
-                    Timber.e(e, "Failed to create twitter credentials with %s", json);
-                }
+
+
+                // FIXME/refactor: setTwitterData
+                //try
+                //{
+                //    setTwitterData((TwitterCredentialsDTO) credentialsDTOFactory.create(json));
+                //}
+                //catch (JSONException | ParseException e)
+                //{
+                //    Timber.e(e, "Failed to create twitter credentials with %s", json);
+                //}
                 progressDialog.hide();
                 navigator.pushFragment(TwitterEmailFragment.class, new Bundle());
                 return false;
-            }
-        };
-    }
-
-    private void complementEmailForTwitterAuthentication()
-    {
-        EditText txtTwitterEmail = (EditText) currentFragment.getView().findViewById(R.id.authentication_twitter_email_txt);
-        twitterJson.email = txtTwitterEmail.getText().toString();
-        progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), "Twitter"));
-        progressDialog.show();
-        THUser.logInAsyncWithJson(twitterJson, createCallbackForTwitterComplementEmail());
-    }
-
-    private LogInCallback createCallbackForTwitterComplementEmail()
-    {
-        return new LogInCallback()
-        {
-            @Override public void done(UserLoginDTO user, THException ex)
-            {
-                if (user != null)
-                {
-                    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, AnalyticsConstants.Twitter));
-                    launchDashboard(user);
-                    finish();
-                }
-                else
-                {
-                    THToast.show(ex);
-                }
-                progressDialog.dismiss();
-            }
-
-            @Override public void onStart()
-            {
-                // do nothing for now
             }
         };
     }
@@ -273,11 +234,6 @@ public class AuthenticationActivity extends BaseActivity
         startActivity(intent);
         overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
         finish();
-    }
-
-    private void setTwitterData(TwitterCredentialsDTO json)
-    {
-        twitterJson = json;
     }
     //</editor-fold>
 
@@ -377,10 +333,6 @@ public class AuthenticationActivity extends BaseActivity
 
                 case R.id.btn_twitter_signin:
                     authenticateWithTwitter();
-                    break;
-
-                case R.id.authentication_twitter_email_button:
-                    complementEmailForTwitterAuthentication();
                     break;
 
                 case R.id.btn_linkedin_signin:

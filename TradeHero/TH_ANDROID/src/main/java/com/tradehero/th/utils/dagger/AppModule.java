@@ -10,6 +10,7 @@ import com.tradehero.th.BuildTypeModule;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.auth.AuthenticationModule;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
@@ -56,6 +57,7 @@ import javax.inject.Singleton;
                 SocialNetworkAppModule.class,
                 PushModule.class,
                 BuildTypeModule.class,
+                AuthenticationModule.class
         },
         injects =
                 {

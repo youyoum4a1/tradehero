@@ -1,14 +1,16 @@
 package com.tradehero.th.utils;
 
-import android.content.Context;
+import android.app.Activity;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.TwitterAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import rx.Observable;
 
 @Singleton
-public final class TwitterUtils
+public final class TwitterUtils implements SocialAuthUtils
 {
     @Inject protected TwitterAuthenticationProvider provider;
 
@@ -18,7 +20,7 @@ public final class TwitterUtils
         THUser.registerAuthenticationProvider(provider);
     }
 
-    public void logIn(Context context, LogInCallback callback)
+    @Override public void logIn(Activity context, LogInCallback callback)
     {
         provider.with(context);
         THUser.logInWithAsync(provider.getAuthType(), callback);

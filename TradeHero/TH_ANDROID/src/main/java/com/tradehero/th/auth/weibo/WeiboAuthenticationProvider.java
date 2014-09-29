@@ -12,6 +12,7 @@ import com.sina.weibo.sdk.auth.WeiboAuth;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.base.JSONCredentials;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
+import rx.Observable;
 
 @Singleton
 public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
@@ -381,5 +383,11 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         {
             onAuthorizeError(e);
         }
+    }
+
+
+    @Override public Observable<AuthData> logIn(Activity activity)
+    {
+        throw new RuntimeException("Not implemented");
     }
 }

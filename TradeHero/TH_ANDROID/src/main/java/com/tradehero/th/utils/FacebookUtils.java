@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class FacebookUtils
+public class FacebookUtils implements SocialAuthUtils
 {
     private final FacebookAuthenticationProvider provider;
 
@@ -19,7 +19,7 @@ public class FacebookUtils
         THUser.registerAuthenticationProvider(provider);
     }
 
-    public void logIn(Activity activity, LogInCallback callback)
+    @Override public void logIn(Activity activity, LogInCallback callback)
     {
         provider.setActivity(activity);
         THUser.logInWithAsync(provider.getAuthType(), callback);

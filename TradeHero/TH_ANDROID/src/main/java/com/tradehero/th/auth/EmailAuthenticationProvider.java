@@ -1,10 +1,12 @@
 package com.tradehero.th.auth;
 
+import android.app.Activity;
 import android.util.Base64;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.base.JSONCredentials;
 import org.json.JSONException;
+import rx.Observable;
 
 public class EmailAuthenticationProvider implements THAuthenticationProvider
 {
@@ -81,5 +83,10 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
     @Override public void cancel()
     {
         throw new UnsupportedOperationException();
+    }
+
+    @Override public Observable<AuthData> logIn(Activity activity)
+    {
+        throw new RuntimeException("Not implemented");
     }
 }

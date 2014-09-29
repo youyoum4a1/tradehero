@@ -1,5 +1,6 @@
 package com.tradehero.th.auth;
 
+import android.app.Activity;
 import android.content.Context;
 import com.tradehero.th.auth.operator.LinkedIn;
 import com.tradehero.th.base.JSONCredentials;
@@ -7,6 +8,7 @@ import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
+import rx.Observable;
 
 @Singleton
 public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
@@ -144,5 +146,10 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         authData.put(CONSUMER_KEY_KEY, linkedIn.getConsumerKey());
         authData.put(CONSUMER_SECRET_KEY, linkedIn.getConsumerSecret());
         return authData;
+    }
+
+    @Override public Observable<AuthData> logIn(Activity activity)
+    {
+        throw new RuntimeException("Not implemented");
     }
 }

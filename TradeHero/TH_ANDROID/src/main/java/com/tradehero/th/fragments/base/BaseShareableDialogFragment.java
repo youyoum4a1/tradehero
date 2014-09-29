@@ -12,8 +12,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.social.SocialLinkHelper;
-import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -28,7 +26,6 @@ import timber.log.Timber;
 public class BaseShareableDialogFragment extends BaseDialogFragment
 {
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
-    @Inject SocialLinkHelperFactory socialLinkHelperFactory;
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject UserProfileCache userProfileCache;
     @Inject protected CurrentUserId currentUserId;
@@ -40,7 +37,6 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     @InjectView(R.id.btn_share_wechat) public ToggleButton mBtnShareWeChat;
 
-    SocialLinkHelper socialLinkHelper;
     public AlertDialog mSocialLinkingDialog;
 
     protected UserProfileDTO userProfileDTO;
@@ -231,25 +227,14 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
     {
-        detachSocialLinkHelper();
-        socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
-        socialLinkHelper.link(new SocialLinkingCallback(socialNetworkEnum));
+        //socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
+        //socialLinkHelper.link(new SocialLinkingCallback(socialNetworkEnum));
     }
 
     @Override public void onDestroyView()
     {
-        detachSocialLinkHelper();
         destroySocialLinkDialog();
         super.onDestroyView();
-    }
-
-    private void detachSocialLinkHelper()
-    {
-        if (socialLinkHelper != null)
-        {
-            socialLinkHelper.setSocialLinkingCallback(null);
-            socialLinkHelper = null;
-        }
     }
 
     private void destroySocialLinkDialog()

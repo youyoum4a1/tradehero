@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -12,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
@@ -24,7 +24,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
@@ -41,18 +40,14 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
-
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-
+import dagger.Lazy;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
 import javax.inject.Inject;
-
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -74,7 +69,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+
     @Inject DashboardNavigator navigator;
+    @Inject AccountManager accountManager;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -314,7 +311,8 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 navigator.popFragment();
                 if (emailCredentialsDTO != null && mainCredentialsPreference.getCredentials() instanceof EmailCredentialsDTO)
                 {
-                    THUser.saveCredentialsToUserDefaults(emailCredentialsDTO);
+                    // FIXME/refactor: use AccountManager to save user user & password
+                    // THUser.saveCredentialsToUserDefaults(emailCredentialsDTO);
                 }
             }
 

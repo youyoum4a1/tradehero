@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
+import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
@@ -17,21 +17,24 @@ import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
-
-import org.json.JSONException;
-
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
+import org.json.JSONException;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.observables.Assertions;
+import rx.android.subscriptions.AndroidSubscriptions;
+import rx.functions.Action0;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 @Singleton
@@ -48,7 +51,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     private int activityCode;
     private WeakReference<Activity> baseActivity;
     private Context applicationContext;
-    private Collection<String> permissions;
+    private List<String> permissions;
     private THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
     private String userId;
 
@@ -57,7 +60,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     @Inject public FacebookAuthenticationProvider(
             Context context,
             @FacebookAppId String applicationId,
-            @FacebookPermissions Collection<String> permissions)
+            @FacebookPermissions List<String> permissions)
     {
         PRECISE_DATE_FORMAT.setTimeZone(new SimpleTimeZone(0, "GMT"));
 
@@ -169,9 +172,10 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Activity activity = this.baseActivity.get();
-        if (activity != null && session != null)
+        Session activeSession = Session.getActiveSession();
+        if (activity != null && activeSession != null)
         {
-            this.session.onActivityResult(activity, requestCode, resultCode, data);
+            activeSession.onActivityResult(activity, requestCode, resultCode, data);
         }
     }
 
@@ -290,7 +294,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         this.activityCode = activityCode;
     }
 
-    public synchronized void setPermissions(Collection<String> permissions)
+    public synchronized void setPermissions(List<String> permissions)
     {
         this.permissions = permissions;
     }
@@ -358,8 +362,122 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         restoreAuthentication(authData);
     }
 
-    public String getUserId()
+    @Override public Observable<AuthData> logIn(Activity activity)
     {
-        return this.userId;
+        baseActivity = new WeakReference<>(activity);
+        return Observable.create(new FacebookAuthenticationSubscribe(activity, permissions))
+                .flatMap(new Func1<Session, Observable<AuthData>>()
+                {
+                    @Override public Observable<AuthData> call(Session session)
+                    {
+                        return Observable.create(new MeRequestSubscribe(session));
+                    }
+                });
+    }
+
+    private class FacebookAuthenticationSubscribe implements Observable.OnSubscribe<Session>
+    {
+        private final Activity activity;
+        private final List<String> permissions;
+
+        public FacebookAuthenticationSubscribe(Activity activity, List<String> permissions)
+        {
+            this.activity = activity;
+            this.permissions = permissions;
+        }
+
+        @Override public void call(final Subscriber<? super Session> subscriber)
+        {
+            Assertions.assertUiThread();
+            final Session.StatusCallback statusCallback = new Session.StatusCallback()
+            {
+                @Override public void call(Session session, SessionState state, Exception exception)
+                {
+                    if (state == SessionState.OPENING)
+                    {
+                        return;
+                    }
+                    if (state.isOpened())
+                    {
+                        subscriber.onNext(session);
+                    }
+                    else if (exception != null)
+                    {
+                        subscriber.onError(exception);
+                    }
+                    else
+                    {
+                        subscriber.onError(new FacebookOperationCanceledException("Action has been canceled"));
+                    }
+                }
+            };
+
+            Session activeSession = Session.getActiveSession();
+            if (activeSession == null || !activeSession.isOpened())
+            {
+                activeSession = new Session.Builder(activity)
+                        .setApplicationId(applicationId)
+                        .setTokenCachingStrategy(new SharedPreferencesTokenCachingStrategy(activity))
+                        .build();
+                Session.OpenRequest openRequest = new Session.OpenRequest(activity);
+                openRequest.setRequestCode(activityCode);
+                if (this.permissions != null)
+                {
+                    openRequest.setPermissions(new ArrayList<>(this.permissions));
+                }
+                Session.setActiveSession(activeSession);
+                openRequest.setCallback(statusCallback);
+                activeSession.openForRead(openRequest);
+
+                Subscription subscription = AndroidSubscriptions.unsubscribeInUiThread(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        Session activeSession = Session.getActiveSession();
+                        if (activeSession != null)
+                        {
+                            activeSession.removeCallback(statusCallback);
+                        }
+                    }
+                });
+
+                subscriber.add(subscription);
+            }
+            else
+            {
+                subscriber.onNext(activeSession);
+            }
+        }
+    }
+
+    private class MeRequestSubscribe implements Observable.OnSubscribe<AuthData>
+    {
+        private final Session session;
+
+        public MeRequestSubscribe(Session session)
+        {
+            this.session = session;
+        }
+
+        @Override public void call(final Subscriber<? super AuthData> subscriber)
+        {
+            Request meRequest = Request.newGraphPathRequest(session, "me", new Request.Callback()
+            {
+                @Override public void onCompleted(Response response)
+                {
+                    if (response.getError() != null)
+                    {
+                        subscriber.onError(response.getError().getException());
+                    }
+                    else
+                    {
+                        AuthData authData = new AuthData(session.getAccessToken(), session.getExpirationDate());
+                        subscriber.onNext(authData);
+                    }
+                }
+            });
+            meRequest.getParameters().putString("fields", "id");
+            meRequest.executeAsync();
+        }
     }
 }

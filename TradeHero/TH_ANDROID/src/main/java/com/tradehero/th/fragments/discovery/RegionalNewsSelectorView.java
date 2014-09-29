@@ -43,7 +43,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.OnFocusChanged;
+import butterknife.OnFocusChange;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -52,7 +52,7 @@ public class RegionalNewsSelectorView extends LinearLayout
 {
     @InjectView(R.id.news_region_selector) TextView mRegionSelector;
     @InjectView(R.id.country_filter_text_box) InstantAutoCompleteTextView mCountryFilter;
-    @OnFocusChanged(R.id.country_filter_text_box) void handleCountryFilterFocusChanged(boolean hasFocus)
+    @OnFocusChange(R.id.country_filter_text_box) void handleCountryFilterFocusChanged(boolean hasFocus)
     {
         if (hasFocus)
         {

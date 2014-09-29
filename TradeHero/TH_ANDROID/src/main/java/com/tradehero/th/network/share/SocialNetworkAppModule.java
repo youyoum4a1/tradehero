@@ -17,9 +17,10 @@ import com.tradehero.th.models.share.ShareDestinationId;
 import com.tradehero.th.models.share.ShareDestinationIndexResComparator;
 import dagger.Module;
 import dagger.Provides;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import javax.inject.Singleton;
 import timber.log.Timber;
@@ -82,9 +83,9 @@ public class SocialNetworkAppModule
         return data;
     }
 
-    @Provides @Singleton @FacebookPermissions Collection<String> provideFacebookPermissions()
+    @Provides @Singleton @FacebookPermissions List<String> provideFacebookPermissions()
     {
-        return null;
+        return Arrays.asList("public_profile", "email");
     }
 
     @Provides @Singleton IWXAPI createWXAPI(Context context)

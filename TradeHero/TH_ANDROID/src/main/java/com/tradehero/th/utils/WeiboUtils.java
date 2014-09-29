@@ -1,17 +1,18 @@
 package com.tradehero.th.utils;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import rx.Observable;
 
 @Singleton
-public class WeiboUtils {
-
+public class WeiboUtils implements SocialAuthUtils
+{
     private final WeiboAuthenticationProvider provider;
 
     @Inject
@@ -21,13 +22,14 @@ public class WeiboUtils {
         THUser.registerAuthenticationProvider(provider);
     }
 
-    public void logIn(Context context, LogInCallback callback)
+    @Override public void logIn(Activity context, LogInCallback callback)
     {
         provider.with(context);
         THUser.logInWithAsync(provider.getAuthType(), callback);
     }
 
-    public void authorizeCallBack(int requestCode, int resultCode, Intent data){
-        provider.authorizeCallBack(requestCode,resultCode,data);
+    public void authorizeCallBack(int requestCode, int resultCode, Intent data)
+    {
+        provider.authorizeCallBack(requestCode, resultCode, data);
     }
 }
