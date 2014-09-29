@@ -2,6 +2,7 @@ package com.tradehero.th.models.user.auth;
 
 import com.tradehero.th.api.form.FacebookUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import java.text.ParseException;
@@ -14,7 +15,7 @@ import timber.log.Timber;
 
 public class FacebookCredentialsDTO extends BaseCredentialsDTO
 {
-    public static final String FACEBOOK_AUTH_TYPE = "TH-Facebook";
+    public static final String FACEBOOK_AUTH_TYPE = SocialNetworkEnum.FB.getAuthHeader();
 
     @NotNull public final String id;
     @NotNull public final String accessToken;

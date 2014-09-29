@@ -2,6 +2,7 @@ package com.tradehero.th.models.user.auth;
 
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.LinkedInAuthenticationProvider;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -9,7 +10,7 @@ import org.json.JSONObject;
 
 public class LinkedinCredentialsDTO extends BaseCredentialsDTO
 {
-    public static final String LINKEDIN_AUTH_TYPE = "TH-LinkedIn";
+    public static final String LINKEDIN_AUTH_TYPE = SocialNetworkEnum.LN.getAuthHeader();
 
     @NotNull public final String token;
     @NotNull public final String tokenSecret;

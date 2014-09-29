@@ -2,6 +2,7 @@ package com.tradehero.th.models.user.auth;
 
 import com.tradehero.th.api.form.TwitterUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.TwitterAuthenticationProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +11,7 @@ import org.json.JSONObject;
 
 public class TwitterCredentialsDTO extends BaseCredentialsDTO
 {
-    public static final String TWITTER_AUTH_TYPE = "TH-Twitter";
+    public static final String TWITTER_AUTH_TYPE = SocialNetworkEnum.TW.getAuthHeader();
 
     @NotNull public final String id;
     @Nullable public String email;

@@ -4,13 +4,14 @@ import android.util.Base64;
 import com.tradehero.th.api.form.EmailUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class EmailCredentialsDTO extends BaseCredentialsDTO
 {
-    public static final String EMAIL_AUTH_TYPE = "Basic";
+    public static final String EMAIL_AUTH_TYPE = SocialNetworkEnum.TH.getAuthHeader();
 
     @NotNull public final String email;
     @NotNull public final String password;

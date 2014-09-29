@@ -1,35 +1,27 @@
 package com.tradehero.th.api.social;
 
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
-import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
-import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
-import com.tradehero.th.models.user.auth.QQCredentialsDTO;
-import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
-import com.tradehero.th.models.user.auth.WeChatCredentialsDTO;
-import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
-
 public enum SocialNetworkEnum
 {
-    TH(EmailCredentialsDTO.EMAIL_AUTH_TYPE, "TradeHero"),
-    FB(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE, "Facebook"),
-    TW(TwitterCredentialsDTO.TWITTER_AUTH_TYPE, "Twitter"),
-    LN(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE, "LinkedIn"),
-    WECHAT(WeChatCredentialsDTO.WECHAT_AUTH_TYPE, "WeChat"),
-    WB(WeiboCredentialsDTO.WEIBO_AUTH_TYPE, "WeiBo"),
-    QQ(QQCredentialsDTO.QQ_AUTH_TYPE, "QQ");
+    TH("Basic", "TradeHero"),
+    FB("TH-Facebook", "Facebook"),
+    TW("TH-Twitter", "Twitter"),
+    LN("TH-LinkedIn", "LinkedIn"),
+    WECHAT("TH-WeChat", "WeChat"),
+    WB("TH-Weibo", "WeiBo"),
+    QQ("TH-QQ", "QQ");
 
-    private final String authenticationHeader;
+    private final String authHeader;
     private final String name;
 
-    SocialNetworkEnum(String authenticationHeader, String name)
+    SocialNetworkEnum(String authHeader, String name)
     {
-        this.authenticationHeader = authenticationHeader;
+        this.authHeader = authHeader;
         this.name = name;
     }
 
-    public String getAuthenticationHeader()
+    public String getAuthHeader()
     {
-        return authenticationHeader;
+        return authHeader;
     }
 
     //@JsonValue
@@ -55,5 +47,17 @@ public enum SocialNetworkEnum
             return values()[index];
         }
         throw new IllegalArgumentException("There is no value for index " + index);
+    }
+
+    public static SocialNetworkEnum fromAuthHeader(String authHeader)
+    {
+        for (SocialNetworkEnum socialNetworkEnum: values())
+        {
+            if (socialNetworkEnum.authHeader.equals(authHeader))
+            {
+                return socialNetworkEnum;
+            }
+        }
+        throw new IllegalArgumentException("There is no value with authentication header: " + authHeader);
     }
 }

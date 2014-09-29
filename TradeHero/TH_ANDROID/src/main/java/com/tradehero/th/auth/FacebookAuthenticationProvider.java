@@ -13,6 +13,7 @@ import com.facebook.SessionState;
 import com.facebook.SharedPreferencesTokenCachingStrategy;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.base.JSONCredentials;
@@ -487,6 +488,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
 
         @Override public void call(final Subscriber<? super AuthData> subscriber)
         {
+            // TODO never create a new request twice
             Request meRequest = Request.newGraphPathRequest(session, "me", new Request.Callback()
             {
                 @Override public void onCompleted(Response response)
@@ -497,7 +499,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
                     }
                     else
                     {
-                        AuthData authData = new AuthData(session.getAccessToken(), session.getExpirationDate());
+                        AuthData authData = new AuthData(SocialNetworkEnum.FB, session.getExpirationDate(), session.getAccessToken());
                         subscriber.onNext(authData);
                     }
                 }

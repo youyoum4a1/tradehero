@@ -2,6 +2,7 @@ package com.tradehero.th.models.user.auth;
 
 import com.tradehero.th.api.form.QQUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import java.text.ParseException;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,7 @@ import org.json.JSONObject;
 
 public class QQCredentialsDTO extends BaseCredentialsDTO
 {
-    public static final String QQ_AUTH_TYPE = "TH-QQ";
+    public static final String QQ_AUTH_TYPE = SocialNetworkEnum.QQ.getAuthHeader();
 
     @NotNull public final String openId;
     @NotNull public final String accessToken;

@@ -2,6 +2,7 @@ package com.tradehero.th.models.user.auth;
 
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.WeiboUserFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -9,7 +10,7 @@ import org.json.JSONObject;
 
 public class WeiboCredentialsDTO extends BaseCredentialsDTO
 {
-    public static final String WEIBO_AUTH_TYPE = "TH-Weibo";
+    public static final String WEIBO_AUTH_TYPE = SocialNetworkEnum.WB.getAuthHeader();
 
     @NotNull public final String uid;
     @NotNull public final String token;

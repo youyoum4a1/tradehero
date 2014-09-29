@@ -1,13 +1,14 @@
 package com.tradehero.th.models.user.auth;
 
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WeChatCredentialsDTO extends BaseCredentialsDTO
 {
-    public static final String WECHAT_AUTH_TYPE = "TH-WeChat";
+    public static final String WECHAT_AUTH_TYPE = SocialNetworkEnum.WECHAT.getAuthHeader();
 
     //<editor-fold desc="Constructors">
     public WeChatCredentialsDTO()
