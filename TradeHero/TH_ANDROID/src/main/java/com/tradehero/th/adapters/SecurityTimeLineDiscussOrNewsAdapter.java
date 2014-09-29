@@ -12,17 +12,29 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 {
+
+    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
+    private MiddleCallback<DiscussionDTO> voteCallback;
     @Inject Lazy<Picasso> picasso;
     private List<AbstractDiscussionCompactDTO> listData;
 
@@ -155,8 +167,8 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                 });
             }
 
-            holder.tvTLPraise.setText("" + item.upvoteCount);
-            holder.tvTLComment.setText(item.getVoteString());
+            holder.tvTLPraise.setText(item.getVoteString());
+            holder.tvTLComment.setText("" + item.commentCount);
 
             holder.llItemAll.setOnClickListener(new View.OnClickListener()
             {
@@ -170,6 +182,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                 @Override public void onClick(View view)
                 {
                     timeLineOperater.OnTimeLinePraiseClicked(position);
+                    clickedPraise(position);
                 }
             });
 
@@ -191,6 +204,24 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         }
 
         return convertView;
+    }
+
+    public void clickedPraise(int position)
+    {
+        AbstractDiscussionCompactDTO item = (AbstractDiscussionCompactDTO) getItem(position);
+        updateVoting((item.voteDirection == 0) ? VoteDirection.UpVote : VoteDirection.UnVote, item);
+
+        if (item.voteDirection == 0)
+        {
+            item.voteDirection = 1;
+            item.upvoteCount += 1;
+        }
+        else
+        {
+            item.voteDirection = 0;
+            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+        }
+        notifyDataSetChanged();
     }
 
     static class ViewHolder
@@ -228,6 +259,60 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             Bundle bundle = new Bundle();
             bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
             getNavigator().pushFragment(UserMainPage.class, bundle);
+        }
+    }
+
+    protected void detachVoteMiddleCallback()
+    {
+        if (voteCallback != null)
+        {
+            voteCallback.setPrimaryCallback(null);
+        }
+        voteCallback = null;
+    }
+
+    private void updateVoting(VoteDirection voteDirection, AbstractDiscussionCompactDTO discussionDTO)
+    {
+        if (discussionDTO == null)
+        {
+            return;
+        }
+        DiscussionType discussionType = getDiscussionType(discussionDTO);
+
+        DiscussionVoteKey discussionVoteKey = new DiscussionVoteKey(
+                discussionType,
+                discussionDTO.id,
+                voteDirection);
+        detachVoteMiddleCallback();
+        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new VoteCallback(voteDirection));
+    }
+
+    private DiscussionType getDiscussionType(AbstractDiscussionCompactDTO discussionDTO)
+    {
+        if (discussionDTO != null && discussionDTO.getDiscussionKey() != null)
+        {
+            return discussionDTO.getDiscussionKey().getType();
+        }
+
+        throw new IllegalStateException("Unknown discussion type");
+    }
+
+    protected class VoteCallback implements Callback<DiscussionDTO>
+    {
+        //<editor-fold desc="Constructors">
+        public VoteCallback(VoteDirection voteDirection)
+        {
+        }
+        //</editor-fold>
+
+        @Override public void success(DiscussionDTO discussionDTO, Response response)
+        {
+            Timber.d("VoteCallback success");
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            Timber.d("VoteCallback failed :" + error.toString());
         }
     }
 }

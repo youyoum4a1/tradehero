@@ -32,8 +32,10 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -75,6 +77,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
@@ -92,6 +95,8 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
@@ -109,6 +114,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public final static long MILLISEC_QUOTE_REFRESH = 10000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
+
+
+    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
+    private MiddleCallback<DiscussionDTO> voteCallback;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -764,10 +773,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     private void initKey()
     {
-        discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id, 1, 2);
-        listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityCompactDTO.id), 1, 2);
-        fetchSecurityDiscuss(false);
-        fetchSecurityNews(false);
+        discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id, 1, 20);
+        listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityCompactDTO.id), 1, 20);
+        fetchSecurityDiscuss(true);
+        fetchSecurityNews(true);
     }
 
     private void linkWith(SecurityCompactDTO securityCompactDTO)
@@ -1498,6 +1507,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             openUserProfile(((DiscussionDTO) getAbstractDiscussionCompactDTO()).user.id);
         }
+        else if(view.getId() == R.id.llTLPraise)
+        {
+            clickedPraise();
+        }
         else if (view.getId() == R.id.llTLComment)
         {
             AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
@@ -1585,6 +1598,79 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
             tvTLComment.setText("" + dto.commentCount);
             tvTLPraise.setText(dto.getVoteString());
+        }
+    }
+
+    public void clickedPraise()
+    {
+        AbstractDiscussionCompactDTO item = getAbstractDiscussionCompactDTO();
+        updateVoting((item.voteDirection == 0) ? VoteDirection.UpVote : VoteDirection.UnVote, item);
+
+        if (item.voteDirection == 0)
+        {
+            item.voteDirection = 1;
+            item.upvoteCount += 1;
+        }
+        else
+        {
+            item.voteDirection = 0;
+            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+        }
+        displayDiscussOrNewsDTO();
+
+    }
+
+    protected void detachVoteMiddleCallback()
+    {
+        if (voteCallback != null)
+        {
+            voteCallback.setPrimaryCallback(null);
+        }
+        voteCallback = null;
+    }
+
+    private void updateVoting(VoteDirection voteDirection, AbstractDiscussionCompactDTO discussionDTO)
+    {
+        if (discussionDTO == null)
+        {
+            return;
+        }
+        DiscussionType discussionType = getDiscussionType(discussionDTO);
+
+        DiscussionVoteKey discussionVoteKey = new DiscussionVoteKey(
+                discussionType,
+                discussionDTO.id,
+                voteDirection);
+        detachVoteMiddleCallback();
+        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new VoteCallback(voteDirection));
+    }
+
+    private DiscussionType getDiscussionType(AbstractDiscussionCompactDTO discussionDTO)
+    {
+        if (discussionDTO != null && discussionDTO.getDiscussionKey() != null)
+        {
+            return discussionDTO.getDiscussionKey().getType();
+        }
+
+        throw new IllegalStateException("Unknown discussion type");
+    }
+
+    protected class VoteCallback implements retrofit.Callback<DiscussionDTO>
+    {
+        //<editor-fold desc="Constructors">
+        public VoteCallback(VoteDirection voteDirection)
+        {
+        }
+        //</editor-fold>
+
+        @Override public void success(DiscussionDTO discussionDTO, Response response)
+        {
+            Timber.d("VoteCallback success");
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            Timber.d("VoteCallback failed :" + error.toString());
         }
     }
 }

@@ -100,7 +100,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
 
     @Override public void onResume()
     {
-        fetchUserProfile(true);
+        fetchUserProfile(false);
         super.onResume();
     }
 
