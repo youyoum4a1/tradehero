@@ -12,9 +12,9 @@ public class LoginSignUpFormTwitterDTO extends LoginSignUpFormDTO
     public String accessTokenSecret;
 
     //<editor-fold desc="Constructors">
-    public LoginSignUpFormTwitterDTO(String deviceToken, DeviceType deviceType, String clientVersion)
+    public LoginSignUpFormTwitterDTO(String deviceToken, DeviceType deviceType, String clientVersion, String device_access_token)
     {
-        super(deviceToken, deviceType, clientVersion);
+        super(deviceToken, deviceType, clientVersion, device_access_token);
     }
     //</editor-fold>
 }

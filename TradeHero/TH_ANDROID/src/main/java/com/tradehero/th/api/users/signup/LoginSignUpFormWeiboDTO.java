@@ -10,9 +10,9 @@ public class LoginSignUpFormWeiboDTO extends LoginSignUpFormDTO
     public String accessToken;
 
     //<editor-fold desc="Constructors">
-    public LoginSignUpFormWeiboDTO(String deviceToken, DeviceType deviceType, String clientVersion)
+    public LoginSignUpFormWeiboDTO(String deviceToken, DeviceType deviceType, String clientVersion, String device_access_token)
     {
-        super(deviceToken, deviceType, clientVersion);
+        super(deviceToken, deviceType, clientVersion, device_access_token);
     }
     //</editor-fold>
 }

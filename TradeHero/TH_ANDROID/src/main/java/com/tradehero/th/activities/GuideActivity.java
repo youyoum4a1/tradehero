@@ -51,9 +51,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class GuideActivity extends Activity
-        implements
-        ViewPager.OnPageChangeListener,
+public class GuideActivity extends Activity implements ViewPager.OnPageChangeListener,
         View.OnClickListener
 {
     public static long TIMES = (long)1000000;

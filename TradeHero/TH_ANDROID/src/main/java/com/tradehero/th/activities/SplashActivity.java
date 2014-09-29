@@ -133,8 +133,7 @@ public class SplashActivity extends SherlockActivity
 
     protected void initialisation()
     {
-        analytics
-                .addEvent(new AppLaunchEvent())
+        analytics.addEvent(new AppLaunchEvent())
                 .addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
 
         if (firstLaunchPreference.get())

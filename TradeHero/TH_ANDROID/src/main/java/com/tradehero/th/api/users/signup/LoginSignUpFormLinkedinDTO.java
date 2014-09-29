@@ -12,9 +12,9 @@ public class LoginSignUpFormLinkedinDTO extends LoginSignUpFormDTO
     public String accessTokenSecret;
 
     //<editor-fold desc="Constructors">
-    public LoginSignUpFormLinkedinDTO(String deviceToken, DeviceType deviceType, String clientVersion)
+    public LoginSignUpFormLinkedinDTO(String deviceToken, DeviceType deviceType, String clientVersion, String device_access_token)
     {
-        super(deviceToken, deviceType, clientVersion);
+        super(deviceToken, deviceType, clientVersion, device_access_token);
     }
     //</editor-fold>
 }

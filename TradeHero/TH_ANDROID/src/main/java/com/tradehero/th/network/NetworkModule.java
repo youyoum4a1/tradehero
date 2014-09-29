@@ -41,7 +41,8 @@ public class NetworkModule
         return new LoginFormDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(Application.context()),
+                deviceTokenHelper.getIMEI());
     }
 
     @Provides LoginSignUpFormEmailDTO provideLoginSignUpFormEmailDTO(DeviceTokenHelper deviceTokenHelper)
@@ -49,7 +50,8 @@ public class NetworkModule
         return new LoginSignUpFormEmailDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(Application.context()),
+                deviceTokenHelper.getIMEI());
     }
 
     @Provides LoginSignUpFormFacebookDTO provideLoginSignUpFormFacebookDTO(DeviceTokenHelper deviceTokenHelper)
@@ -57,7 +59,8 @@ public class NetworkModule
         return new LoginSignUpFormFacebookDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(Application.context()),
+                deviceTokenHelper.getIMEI());
     }
 
     @Provides LoginSignUpFormLinkedinDTO provideLoginSignUpFormLinkedinDTO(DeviceTokenHelper deviceTokenHelper)
@@ -65,7 +68,8 @@ public class NetworkModule
         return new LoginSignUpFormLinkedinDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(Application.context()),
+                deviceTokenHelper.getIMEI());
     }
 
     @Provides LoginSignUpFormQQDTO provideLoginSignUpFormQQDTO(DeviceTokenHelper deviceTokenHelper)
@@ -73,7 +77,8 @@ public class NetworkModule
         return new LoginSignUpFormQQDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(Application.context()),
+                deviceTokenHelper.getIMEI());
     }
 
     @Provides LoginSignUpFormTwitterDTO provideLoginSignUpFormTwitterDTO(DeviceTokenHelper deviceTokenHelper)
@@ -81,7 +86,8 @@ public class NetworkModule
         return new LoginSignUpFormTwitterDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(Application.context()),
+                deviceTokenHelper.getIMEI());
     }
 
     @Provides LoginSignUpFormWeiboDTO provideLoginSignUpFormWeiboDTO(DeviceTokenHelper deviceTokenHelper)
@@ -89,7 +95,8 @@ public class NetworkModule
         return new LoginSignUpFormWeiboDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(Application.context()),
+                deviceTokenHelper.getIMEI());
     }
 
     @Provides LoginSignUpFormDeviceDTO provideLoginSignUpFormDeviceDTO(DeviceTokenHelper deviceTokenHelper)
@@ -97,6 +104,7 @@ public class NetworkModule
         return new LoginSignUpFormDeviceDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()));
+                VersionUtils.getVersionId(Application.context()),
+                deviceTokenHelper.getIMEI());
     }
 }

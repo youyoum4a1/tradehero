@@ -87,9 +87,10 @@ public class LoginSignUpFormDTOFactory
         }
         else if (fromForm instanceof DeviceUserFormDTO)
         {
-            LoginSignUpFormDeviceDTO weibo = loginSignUpFormDeviceDTOProvider.get();
-            weibo.deviceAccessToken = ((DeviceUserFormDTO) fromForm).deviceAccessToken;
-            created = weibo;
+            LoginSignUpFormDeviceDTO device = loginSignUpFormDeviceDTOProvider.get();
+            //weibo.device_access_token = ((DeviceUserFormDTO) fromForm).deviceAccessToken;
+            //weibo.deviceAccessToken = ((DeviceUserFormDTO) fromForm).deviceAccessToken;
+            created = device;
         }
         else
         {

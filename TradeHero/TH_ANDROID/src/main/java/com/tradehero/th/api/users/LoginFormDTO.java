@@ -10,11 +10,13 @@ public class LoginFormDTO
 
     // min. version support
     public final String clientVersion;
+    public final String device_access_token;
 
-    public LoginFormDTO(String deviceToken, DeviceType deviceType, String clientVersion)
+    public LoginFormDTO(String deviceToken, DeviceType deviceType, String clientVersion, String device_access_token)
     {
         this.deviceToken = deviceToken;
         this.clientVersion = clientVersion;
         this.clientType = deviceType;
+        this.device_access_token = device_access_token;
     }
 }
