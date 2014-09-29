@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.TabHost;
@@ -28,7 +27,6 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScro
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -48,7 +46,6 @@ import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -62,7 +59,6 @@ import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.friend.InviteCodeDialogFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -79,7 +75,6 @@ import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.tradehero.th.persistence.prefs.FirstShowInviteCodeDialog;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
@@ -132,7 +127,6 @@ public class DashboardActivity extends FragmentActivity
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
     @Inject DeviceTokenHelper deviceTokenHelper;
-    @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
     @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
     @Inject Lazy<MarketUtil> marketUtilLazy;
@@ -176,7 +170,7 @@ public class DashboardActivity extends FragmentActivity
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
-        ViewGroup dashboardWrapper = appContainer.get(this);
+        appContainer.get(this);
 
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
@@ -199,7 +193,7 @@ public class DashboardActivity extends FragmentActivity
 
         // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
-        showInviteCodeDialog();
+        showStartDialogsPlease();
 
         tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
         setupNavigator();
@@ -294,7 +288,7 @@ public class DashboardActivity extends FragmentActivity
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev)
+    public boolean dispatchTouchEvent(@NotNull MotionEvent ev)
     {
         return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
@@ -465,39 +459,17 @@ public class DashboardActivity extends FragmentActivity
         super.onDestroy();
     }
 
-    private void showInviteCodeDialog()
+    private void showStartDialogsPlease()
     {
         if (shouldShowOnBoard())
         {
             showOnboard();
         }
-        else if (shouldShowInviteCode())
-        {
-            firstShowInviteCodeDialogPreference.set(false);
-            InviteCodeDialogFragment dialogFragment = InviteCodeDialogFragment.showInviteCodeDialog(getFragmentManager());
-            dialogFragment.setDismissedListener(new DashboardOnInviteCodeDismissed());
-        }
-    }
-
-    protected boolean shouldShowInviteCode()
-    {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        return firstShowInviteCodeDialogPreference.get()
-                //&& !(THUser.getTHAuthenticationProvider() instanceof EmailAuthenticationProvider)
-                && (userProfileDTO == null || userProfileDTO.inviteCode == null || userProfileDTO.inviteCode.isEmpty());
     }
 
     @Override public void inject(Object o)
     {
         newInjector.inject(o);
-    }
-
-    protected class DashboardOnInviteCodeDismissed implements BaseDialogFragment.OnDismissedListener
-    {
-        @Override public void onDismissed(DialogInterface dialog)
-        {
-            shouldShowOnBoard();
-        }
     }
 
     protected boolean shouldShowOnBoard()
@@ -508,7 +480,8 @@ public class DashboardActivity extends FragmentActivity
                     userProfileCache.get().get(currentUserId.toUserBaseKey());
             if (currentUserProfile != null)
             {
-                if (currentUserProfile.heroIds != null && currentUserProfile.heroIds.size() > 0)
+                List<Integer> userGenHeroIds= currentUserProfile.getUserGeneratedHeroIds();
+                if (userGenHeroIds != null && userGenHeroIds.size() > 0)
                 {
                     return false;
                 }
