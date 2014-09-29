@@ -413,41 +413,67 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
             };
 
             Session activeSession = Session.getActiveSession();
-            if (activeSession == null || !activeSession.isOpened())
+
+            if (activeSession != null && activeSession.isOpened())
             {
-                activeSession = new Session.Builder(activity)
-                        .setApplicationId(applicationId)
-                        .setTokenCachingStrategy(new SharedPreferencesTokenCachingStrategy(activity))
-                        .build();
-                Session.OpenRequest openRequest = new Session.OpenRequest(activity);
-                openRequest.setRequestCode(activityCode);
-                if (this.permissions != null)
+                // if requesting permissions is just subset of activeSession.getPermissions() - existing one
+                if (isSubsetPermissions(activeSession.getPermissions(), permissions))
                 {
-                    openRequest.setPermissions(new ArrayList<>(this.permissions));
+                    subscriber.onNext(activeSession);
+                    return;
                 }
-                Session.setActiveSession(activeSession);
-                openRequest.setCallback(statusCallback);
-                activeSession.openForRead(openRequest);
-
-                Subscription subscription = AndroidSubscriptions.unsubscribeInUiThread(new Action0()
-                {
-                    @Override public void call()
-                    {
-                        Session activeSession = Session.getActiveSession();
-                        if (activeSession != null)
-                        {
-                            activeSession.removeCallback(statusCallback);
-                        }
-                    }
-                });
-
-                subscriber.add(subscription);
             }
-            else
+
+            activeSession = new Session.Builder(activity)
+                    .setApplicationId(applicationId)
+                    .setTokenCachingStrategy(new SharedPreferencesTokenCachingStrategy(activity))
+                    .build();
+            Session.OpenRequest openRequest = new Session.OpenRequest(activity);
+            openRequest.setRequestCode(activityCode);
+            if (this.permissions != null)
             {
-                subscriber.onNext(activeSession);
+                openRequest.setPermissions(new ArrayList<>(this.permissions));
+            }
+            Session.setActiveSession(activeSession);
+            openRequest.setCallback(statusCallback);
+            activeSession.openForRead(openRequest);
+
+            Subscription subscription = AndroidSubscriptions.unsubscribeInUiThread(new Action0()
+            {
+                @Override public void call()
+                {
+                    Session activeSession = Session.getActiveSession();
+                    if (activeSession != null)
+                    {
+                        activeSession.removeCallback(statusCallback);
+                    }
+                }
+            });
+
+            subscriber.add(subscription);
+        }
+    }
+
+    private static boolean isSubsetPermissions(List<String> permissions, List<String> newPermissions)
+    {
+        if (newPermissions == null)
+        {
+            return true;
+        }
+        if (permissions == null)
+        {
+            return false;
+        }
+
+        List<String> temp = new ArrayList<>(permissions);
+        for (String permission: newPermissions)
+        {
+            if (!temp.remove(permission))
+            {
+                return false;
             }
         }
+        return true;
     }
 
     private class MeRequestSubscribe implements Observable.OnSubscribe<AuthData>
