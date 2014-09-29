@@ -136,7 +136,10 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         userAchievementId = new UserAchievementId(getArguments().getBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID));
         userAchievementDTO = userAchievementCache.pop(userAchievementId);
         // TODO destroy if null?
-        Timber.e(new Exception(), "Popped UserAchievementDTO is null for %s", userAchievementId);
+        if (userAchievementDTO == null)
+        {
+            Timber.e(new Exception(), "Popped UserAchievementDTO is null for %s", userAchievementId);
+        }
         levelDefListCacheListener = createLevelDefCacheListener();
     }
 

@@ -142,7 +142,11 @@ public class LevelUpDialogFragment extends BaseDialogFragment
                 {
                     @Override public void run()
                     {
-                        getDialog().dismiss();
+                        Dialog dialog = getDialog();
+                        if (dialog != null)
+                        {
+                            dialog.dismiss();
+                        }
                     }
                 }, getResources().getInteger(R.integer.user_level_level_up_end_delay));
             }
