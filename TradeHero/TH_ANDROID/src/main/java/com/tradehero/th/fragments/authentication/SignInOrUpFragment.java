@@ -31,6 +31,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.functions.Func1;
 import rx.observers.EmptyObserver;
@@ -56,6 +57,8 @@ public class SignInOrUpFragment extends Fragment
             R.id.authentication_email_sign_up_link
     })
     AuthenticationButton[] observableViews;
+
+    private Subscription subscription;
 
     @OnClick({
             R.id.txt_term_of_service_signin,
@@ -83,13 +86,6 @@ public class SignInOrUpFragment extends Fragment
         HierarchyInjector.inject(this);
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SignIn));
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.authentication_sign_in, container, false);
@@ -100,7 +96,7 @@ public class SignInOrUpFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        Observable.from(observableViews)
+        subscription = Observable.from(observableViews)
                 .filter(new Func1<AuthenticationButton, Boolean>()
                 {
                     @Override public Boolean call(AuthenticationButton authenticationButton)
@@ -137,6 +133,19 @@ public class SignInOrUpFragment extends Fragment
                                 .subscribe(new AuthDataObserver());
                     }
                 });
+    }
+
+    @Override public void onDestroyView()
+    {
+        subscription.unsubscribe();
+        super.onDestroyView();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SignIn));
     }
 
     private void openWebPage(String url)
