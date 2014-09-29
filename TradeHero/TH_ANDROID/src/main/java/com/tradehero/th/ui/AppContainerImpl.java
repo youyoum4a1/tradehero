@@ -28,7 +28,7 @@ public class AppContainerImpl implements AppContainer
         this.resideMenuItemClickListener = resideMenuItemClickListener;
     }
 
-    @Override public ViewGroup get(final Activity activity)
+    @Override public ViewGroup wrap(final Activity activity)
     {
         this.activity = activity;
         activity.setContentView(R.layout.dashboard_with_bottom_bar);

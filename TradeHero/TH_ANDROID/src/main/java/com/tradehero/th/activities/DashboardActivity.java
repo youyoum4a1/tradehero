@@ -170,7 +170,7 @@ public class DashboardActivity extends FragmentActivity
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
-        appContainer.get(this);
+        appContainer.wrap(this);
 
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
