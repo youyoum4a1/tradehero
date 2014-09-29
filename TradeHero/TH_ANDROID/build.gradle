@@ -259,8 +259,8 @@ dependencies {
     exclude group: 'com.android.support', module: 'support-v4'
   }
 
-  compile 'com.android.support:support-v4:19.1.0'
-  //compile 'com.android.support:support-v4:19.1.0_cut-SNAPSHOT4'
+  // compile 'com.android.support:support-v4:19.1.0'
+  compile 'com.android.support:support-v4:19.1.0_cut-SNAPSHOT4'
   //compile 'com.android.support:support-v4:19.1.0_cut_port-SNAPSHOT1'
   compile ('com.github.chrisbanes.pulltorefresh:library:2.1.2-SNAPSHOT@aar') {
     exclude group: 'commons-codec', module: 'android'
@@ -301,6 +301,8 @@ dependencies {
   compile 'com.squareup.dagger:dagger:1.2.2'
   provided 'com.squareup.dagger:dagger-compiler:1.2.2'
 
+  compile 'com.netflix.rxjava:rxjava-android:0.20.4'
+
   compile 'com.jakewharton.timber:timber:2.2.2'
   compile 'com.urbanairship:urbanairship-lib:3.2.1'
 
@@ -327,7 +329,7 @@ dependencies {
   }
 
   compile 'org.ocpsoft.prettytime:prettytime:3.2.1.Final'
-  compile 'com.jakewharton:butterknife:4.0.1'
+  compile 'com.jakewharton:butterknife:5.1.2'
 
   // For Test
   androidTestCompile 'junit:junit:4.10'
