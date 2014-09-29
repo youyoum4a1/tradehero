@@ -35,6 +35,7 @@ public class AppContainerImpl implements AppContainer
 
         resideMenu.setBackground(R.drawable.parallax_bg);
         resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());
+        LayoutInflater.from(activity).inflate(R.layout.residemenu_footer, resideMenu.getFooter(), true);
 
         List<View> menuItems = new ArrayList<>();
         for (RootFragmentType tabType : RootFragmentType.forResideMenu())

@@ -266,4 +266,7 @@
   <string name="ask_for_invite_summary1">Invite your buddies and earn</string>
   <string name="ask_for_invite_summary2">10,000 TH$</string>
   <string name="ask_for_invite">Invite Friends Now !</string>
+
+  <!-- Residemenu -->
+  <string name="residemenu_footer_title">Content Partners:</string>
 </resources>
