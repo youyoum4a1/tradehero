@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_fragment"
+    >
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="10dp">
+    <com.tradehero.th.widget.MarkdownTextView
+        android:id="@+id/tvTimeLineDetailContent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dip"
+        android:textColorLink="@color/timeline_item_link"
+        android:textColor="@color/timeline_item"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="normal"
+        tools:text="Hello world!"
+        />
+  </LinearLayout>
+
+  <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+      android:id="@+id/listTimeLine"
+      android:scrollingCache="false"
+      android:fadingEdge="none"
+      android:divider="@color/gray_1"
+      android:background="@color/bg_fragment"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+  </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+
+</LinearLayout>
+

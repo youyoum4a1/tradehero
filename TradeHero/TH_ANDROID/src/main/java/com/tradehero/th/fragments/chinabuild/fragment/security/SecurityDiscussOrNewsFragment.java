@@ -32,6 +32,7 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
@@ -95,6 +96,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
             listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityDTOId), 1, 20);
         }
         newsCacheListener = createNewsCacheListener();
+        discussionListCache.invalidate(discussionListKey);
         adapter = new SecurityTimeLineDiscussOrNewsAdapter(getActivity());
     }
 
@@ -130,6 +132,8 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
             @Override public void OnTimeLineItemClicked(int position)
             {
                 Timber.d("Item position = " + position);
+                AbstractDiscussionCompactDTO dto = adapter.getItem(position);
+                enterTimeLineDetail( dto);
             }
 
             @Override public void OnTimeLinePraiseClicked(int position)
@@ -171,6 +175,13 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
                 refreshDataMore(false);
             }
         });
+    }
+
+    public void enterTimeLineDetail(AbstractDiscussionCompactDTO dto)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
+        pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 
     public void share(String strShare)

@@ -110,6 +110,7 @@
           android:text=""
           android:textSize="15sp"
           android:textColor="@color/black"
+          android:singleLine="true"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">
       </TextView>
@@ -134,6 +135,7 @@
           android:text=""
           android:textColor="@color/black"
           android:textSize="15sp"
+          android:singleLine="true"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">
       </TextView>
@@ -157,6 +159,7 @@
           android:id="@+id/tvAllFans"
           android:text=""
           android:textSize="15sp"
+          android:singleLine="true"
           android:textColor="@color/black"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">

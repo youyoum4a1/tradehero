@@ -15,4 +15,12 @@ public interface PositionService
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage);
     //</editor-fold>
+
+    //<editor-fold desc="Get One User Portfolio Positions List">
+    @GET("/users/{userId}/positions")
+    GetPositionsDTO getPositionsDirect(
+            @Path("userId") int userId,
+            @Query("pageNumber") Integer pageNumber,
+            @Query("perPage") Integer perPage);
+    //</editor-fold>
 }

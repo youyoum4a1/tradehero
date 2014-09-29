@@ -33,6 +33,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -162,6 +163,7 @@ public class UserMainPage extends DashboardFragment
             @Override public void OnTimeLineItemClicked(int position)
             {
                 Timber.d("Item position = " + position);
+                enterTimeLineDetail((TimelineItemDTO)adapter.getItem(position));
             }
 
             @Override public void OnTimeLinePraiseClicked(int position)
@@ -198,6 +200,14 @@ public class UserMainPage extends DashboardFragment
                 fetchTimeLineMore();
             }
         });
+    }
+
+    public void enterTimeLineDetail(AbstractDiscussionCompactDTO dto)
+    {
+        if(dto == null)return;
+        Bundle bundle = new Bundle();
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
+        pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 
     public void comments(AbstractDiscussionCompactDTO dto)

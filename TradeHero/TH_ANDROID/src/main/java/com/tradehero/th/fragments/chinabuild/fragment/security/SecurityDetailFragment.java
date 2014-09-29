@@ -64,6 +64,7 @@ import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.SecurityDiscussSendFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.security.ChartImageView;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
@@ -1500,10 +1501,21 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
+    public void enterTimeLineDetail(AbstractDiscussionCompactDTO dto)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
+        pushFragment(TimeLineItemDetailFragment.class, bundle);
+    }
+
     @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader})
     public void onOperaterClicked(View view)
     {
-        if (view.getId() == R.id.imgSecurityTLUserHeader)
+        if(view.getId() == R.id.llDisscurssOrNews)
+        {
+            enterTimeLineDetail(getAbstractDiscussionCompactDTO());
+        }
+        else if (view.getId() == R.id.imgSecurityTLUserHeader)
         {
             openUserProfile(((DiscussionDTO) getAbstractDiscussionCompactDTO()).user.id);
         }

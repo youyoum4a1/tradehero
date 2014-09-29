@@ -62,6 +62,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSe
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.SecurityDiscussSendFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.AbsLeaderboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.LeaderboardFromExchangeFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.LeaderboardFromIndustryFragment;
@@ -536,6 +537,7 @@ import javax.inject.Singleton;
                         WebViewSimpleFragment.class,
                         NotificationFragment.class,
                         NotificationListAdapter.class,
+                        TimeLineItemDetailFragment.class,
                         //China Build End
                 },
         staticInjections =

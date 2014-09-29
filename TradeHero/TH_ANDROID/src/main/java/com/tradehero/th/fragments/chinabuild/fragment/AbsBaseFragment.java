@@ -12,9 +12,12 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +37,9 @@ public class AbsBaseFragment extends Fragment
     private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
 
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+
 
     public void gotoDashboard(String strFragment)
     {
@@ -59,6 +65,20 @@ public class AbsBaseFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
+        userProfileCacheListener = createUserProfileFetchListener();
+        fetchUserProfile();
+    }
+
+    private void detachUserProfileCache()
+    {
+        userProfileCache.get().unregister(userProfileCacheListener);
+    }
+
+    protected void fetchUserProfile()
+    {
+        detachUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
@@ -101,6 +121,8 @@ public class AbsBaseFragment extends Fragment
     @Override public void onDestroy()
     {
         portfolioCompactListFetchListener = null;
+        userProfileCacheListener = null;
+        detachUserProfileCache();
         super.onDestroy();
     }
 
@@ -166,4 +188,29 @@ public class AbsBaseFragment extends Fragment
         }
         return null;
     }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
+    {
+        return new UserProfileFetchListener();
+    }
+
+    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            linkWithUserProfileDTO(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+
+        }
+    }
+
+    public void linkWithUserProfileDTO(UserProfileDTO value)
+    {
+
+    }
+
 }

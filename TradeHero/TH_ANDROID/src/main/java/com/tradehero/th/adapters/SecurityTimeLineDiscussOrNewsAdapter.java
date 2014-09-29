@@ -38,11 +38,19 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
     @Inject Lazy<Picasso> picasso;
     private List<AbstractDiscussionCompactDTO> listData;
 
+    public boolean isSimpleModule = false;//是否支持 赞分享等
+
     public SecurityTimeLineDiscussOrNewsAdapter(Context context)
     {
         DaggerUtils.inject(this);
         this.context = context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public SecurityTimeLineDiscussOrNewsAdapter(Context context, boolean isSimpleModule)
+    {
+        this(context);
+        this.isSimpleModule = isSimpleModule;
     }
 
     public void setListData(List<AbstractDiscussionCompactDTO> listCompactDTO)
@@ -133,12 +141,16 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                 holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
                 holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
 
+                holder.includeTLOperater = (LinearLayout) convertView.findViewById(R.id.includeTLOperater);
+
                 convertView.setTag(holder);
             }
             else
             {
                 holder = (ViewHolder) convertView.getTag();
             }
+
+            holder.includeTLOperater.setVisibility(isSimpleModule ? View.GONE : View.VISIBLE);
 
             holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
 
@@ -174,14 +186,20 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             {
                 @Override public void onClick(View view)
                 {
-                    timeLineOperater.OnTimeLineItemClicked(position);
+                    if (timeLineOperater != null)
+                    {
+                        timeLineOperater.OnTimeLineItemClicked(position);
+                    }
                 }
             });
             holder.llTLPraise.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
                 {
-                    timeLineOperater.OnTimeLinePraiseClicked(position);
+                    if (timeLineOperater != null)
+                    {
+                        timeLineOperater.OnTimeLinePraiseClicked(position);
+                    }
                     clickedPraise(position);
                 }
             });
@@ -190,7 +208,10 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             {
                 @Override public void onClick(View view)
                 {
-                    timeLineOperater.OnTimeLineCommentsClicked(position);
+                    if (timeLineOperater != null)
+                    {
+                        timeLineOperater.OnTimeLineCommentsClicked(position);
+                    }
                 }
             });
 
@@ -198,11 +219,13 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             {
                 @Override public void onClick(View view)
                 {
-                    timeLineOperater.OnTimeLineShareClied(position);
+                    if (timeLineOperater != null)
+                    {
+                        timeLineOperater.OnTimeLineShareClied(position);
+                    }
                 }
             });
         }
-
         return convertView;
     }
 
@@ -245,6 +268,8 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         public TextView tvTLComment = null;
         public TextView btnTLShare = null;
         public TextView tvTLShare = null;
+
+        public LinearLayout includeTLOperater;
     }
 
     private DashboardNavigator getNavigator()

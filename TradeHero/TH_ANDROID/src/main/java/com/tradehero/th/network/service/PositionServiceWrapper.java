@@ -47,7 +47,6 @@ import retrofit.Callback;
                     pagedOwnedPortfolioId.portfolioId,
                     pagedOwnedPortfolioId.page,
                     null);
-
         }
         else
         {
@@ -57,6 +56,18 @@ import retrofit.Callback;
                     null,
                     null);
         }
+        return returned;
+    }
+
+    @NotNull public GetPositionsDTO getPositionsDirect(int userId, int page, int perpage)
+    {
+        GetPositionsDTO returned = null;
+
+        this.positionService.getPositionsDirect(
+                userId,
+                page,
+                perpage);
+
         return returned;
     }
 
@@ -94,6 +105,22 @@ import retrofit.Callback;
                     null,
                     middleCallback);
         }
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    @NotNull public MiddleCallback<GetPositionsDTO> getPositionsDirect(
+            @NotNull int userId, int page, int perpage,
+            @Nullable Callback<GetPositionsDTO> callback)
+    {
+        MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
+
+        this.positionServiceAsync.getPositionsDirect(
+                userId,
+                page,
+                perpage,
+                middleCallback);
+
         return middleCallback;
     }
     //</editor-fold>
