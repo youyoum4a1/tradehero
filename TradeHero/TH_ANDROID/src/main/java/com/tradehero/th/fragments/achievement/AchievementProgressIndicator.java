@@ -27,20 +27,25 @@ public class AchievementProgressIndicator extends LinearLayout
     SparseArray<ViewHolder> indicatorLists = new SparseArray<>();
     private int mCurrentLevel;
 
+    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public AchievementProgressIndicator(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public AchievementProgressIndicator(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public AchievementProgressIndicator(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {

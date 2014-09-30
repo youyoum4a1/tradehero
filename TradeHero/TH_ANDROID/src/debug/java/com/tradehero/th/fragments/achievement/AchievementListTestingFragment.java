@@ -35,7 +35,6 @@ public class AchievementListTestingFragment extends DashboardFragment
 
     @Inject AchievementCategoryListCache achievementCategoryListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject AbstractAchievementDialogFragment.Creator creator;
 
     @Inject UserAchievementCache userAchievementCache;
 
@@ -59,20 +58,25 @@ public class AchievementListTestingFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
-                AchievementDefDTO achievementDefDTO = list.get(i);
-                UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
-
-                userAchievementDTO.id = i;
-
-                userAchievementDTO.achievementDef = achievementDefDTO;
-
-                userAchievementDTO.isReset = true;
-                userAchievementDTO.xpEarned = 400;
-                userAchievementDTO.xpTotal = 1030;
-
-                userAchievementCache.putAndBroadcast(userAchievementDTO);
+                onListViewItemClicked(adapterView, view, i, l);
             }
         });
+    }
+
+    protected void onListViewItemClicked(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        AchievementDefDTO achievementDefDTO = list.get(i);
+        UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
+
+        userAchievementDTO.id = i;
+
+        userAchievementDTO.achievementDef = achievementDefDTO;
+
+        userAchievementDTO.isReset = true;
+        userAchievementDTO.xpEarned = 400;
+        userAchievementDTO.xpTotal = 1030;
+
+        userAchievementCache.putAndBroadcast(userAchievementDTO);
     }
 
     private void initAdapter()
@@ -126,7 +130,6 @@ public class AchievementListTestingFragment extends DashboardFragment
 
     protected class AchievementCategoryListCacheListener implements DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList>
     {
-
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull AchievementCategoryDTOList value)
         {
             list.clear();
