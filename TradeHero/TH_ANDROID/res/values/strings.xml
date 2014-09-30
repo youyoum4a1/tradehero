@@ -280,5 +280,85 @@
   <string name="or">or</string>
   <string name="position_hold_days">%d天</string>
   <string name="competition_joined_invite">我参加了一个炒股比赛 %s ，一起来切磋下吧～</string>
+  <string name="friends_can_be_invite">%s 个好友可邀请</string>
+  <string name="friends_can_be_follow">%s 个好友可关注</string>
+  <string name="weibo_message_text_limit">[%d/140]</string>
+  <string name="weibo_message_length_error">不能超过140字</string>
+  <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！使用我的邀请码 %1$s 更有额外奖励哦！</string>
+  <string name="referral_dollars_claimed">已成功提交邀请码</string>
+
+  <string name="mark_as_all_read">全部已读</string>
+  <string name="guide_screen_login">登陆</string>
+  <string name="guide_screen_try">马上体验</string>
+  <string name="or">或者</string>
+  <string name="login_with_offical_account">使用官方账号登陆</string>
+  <string name="login_account">账号：</string>
+  <string name="login_password">密码：</string>
+  <string name="login_account_hint">手机号或邮箱</string>
+  <string name="login_password_hint">6-20位数字或字母</string>
+  <string name="agreed">已同意</string>
+  <string name="authentication_agreement">《隐私条款和服务政策》</string>
+  <string name="authentication_next">下一步</string>
+  <string name="register_diaplay_name_hint">用户名（必填）</string>
+  <string name="register_finish">完成注册</string>
+  <string name="请输入您的账号"/>
+  <string name="register_error_account">亲，邮箱是不是写错啦？</string>
+  <string name="register_error_password">密码须为6-20位字母或数字</string>
+  <string name="register_error_displayname">请输入您的用户名</string>
+  <string name="take_photo">拍照</string>
+  <string name="from_gallery">从相册选择</string>
+  <string name="settings_score">去评分</string>
+  <string name="settings_logout">退出当前账号</string>
+  <string name="settings_version">版本</string>
+  <string name="invite_friends_title">邀请好友成功登录全民股神，输入邀请码，你和TA都将获得10000虚拟资金奖励，邀请得越多奖励越多。</string>
+  <string name="invite_friends_input">输入邀请码</string>
+  <string name="invite_friends_me">我的邀请码:</string>
+  <string name="invite_code">邀请码</string>
+  <string name="submit">提交</string>
+  <string name="invite_friend_fail">您的邀请码输入有误</string>
+  <string name="copy">复制</string>
+  <string name="copy_my_invite_code_success">复制成功，快去邀请好友吧～</string>
+  <string name="follow_success">关注成功</string>
+  <string name="faster_login">快速登录</string>
+  <string name="guest_user_id">游客 ID:%1$s</string>
+  <string name="settings_my_photo">头像</string>
+  <string name="settings_my_name">名字</string>
+  <string name="settings_my_account">账号密码</string>
+  <string name="settings_my_social">账号绑定</string>
+  <string name="settings_my_profile">个人资料</string>
+  <string name="updating">更新中...</string>
+  <string name="bind_success">绑定成功</string>
+  <string name="unbind_success">解绑成功</string>
+  <string name="login_verify_code">验证码:</string>
+  <string name="login_verify_code_hint">请输入验证码</string>
+  <string name="login_get_verify_code">获取验证码</string>
+  <string name="send_verify_code_success">验证码已发送，请注意查收短信</string>
+  <string name="guest_user">游客</string>
+  <string name="guest_user_dialog_summary">您的当前身份为游客，不会保存您 的账户信息，请升级为正式用户</string>
+  <string name="bind">绑定</string>
+  <string name="share_to_social">分享到社交网络</string>
+  <string name="share_sell_title">恭喜你，盈利</string>
+  <string name="share_sell_title2">快去跟小伙伴们炫耀下吧~</string>
+  <string name="share_tips">小贴士：如果不想弹出分享界面</string>
+  <string name="share_tips2">可以在出售时把分享开关关掉</string>
+  <string name="share_sell_title_money">%1$s！</string>
+  <string name="share_sell_to_wechat_title">新一代股神闪亮登场！ \n我刚出售了 %1$s 股 %2$s %3$s 股票，
+    涨跌 %4$s 共盈利 %5$s ， \n小伙伴们快一起来赚钱吧！ \nhttp://cn.tradehero.mobi/shr/trade.html?userId=%6$s&amp;positionId=%7$s
+  </string>
+  <string name="share_amount_roi_value_title">您持有的股票收益率涨了10%\n这就是传说中的股神吗？</string>
+  <string name="share_amount_roi_value_summary">我在高端模拟炒股软件\'全民股神\'中的单笔收益到达了%1$s, 想要知道那只股票吗？叫声大神，亲切点的那种~ \nhttp://cn.tradehero.mobi/shr/yield.html?userId=%2$s&amp;positionId=%3$s</string>
+  <string name="share_amount_total_value_title">恭喜你！总资产达到15w \n你这么土豪你的朋友们知道吗？</string>
+  <string name="share_amount_total_value_summary">一不小心在高端模拟炒股软件\'全民股神\'中资产已经破15W了，本人多年前夜观天象，早已看出我炒股的慧根，可谓奇才一枚。 \nhttp://cn.tradehero.mobi/shr/assets.html?userId=%1$s</string>
+  <string name="share_amount_fans_num_title">恭喜！你已经有10个小跟班，如此魅力十足还不赶紧去炫耀一记？</string>
+  <string name="share_amount_fans_num_summary">本人在高端模拟炒股软件\'全民股神\'中的粉丝量到达两位数了！邀请我开个讲座，签个名什么的都不是问题，好说好说~ \nhttp://cn.tradehero.mobi/shr/assets.html?userId=%1$s</string>
+  <string name="share_buy_dialog_title">我买了 %1$s 股票，求预测我是赚还是亏？</string>
+  <string name="share_buy_dialog_summary">我在全民股神购买了 %1$s 股票，各位高手怎么看？ \nhttp://cn.tradehero.mobi/shr/stock.html?userId=%2$s&amp;securityId=%3$s</string>
+  <string name="share_score_title">这么好的炒股学习工具\n邀请你的朋友们一起来赚钱吧～</string>
+  <string name="share_score_summary">我诚恳地邀请各位童鞋一起来玩超高格调的\'全民股神\'，在这儿模拟炒股绝对是培养优秀理财意识，锻炼逻辑分析能力，成就金融领域大神的好去处~ \nhttp://cn.tradehero.mobi</string>
+  <string name="share_dialog_summary">（现在分享还可获得资金奖励哦）</string>
+  <string name="wechat_timeline">朋友圈</string>
+  <string name="share_create_contest">我创建了一个炒股比赛＃%1$s＃，一起来切磋下吧～ \nhttp://cn.tradehero.mobi/shr/match.html?userId=%2$s&amp;competitionId=%3$s</string>
+  <string name="share_detial_contest">我参与了一个炒股比赛＃%1$s＃，一起来切磋下吧～ \nhttp://cn.tradehero.mobi/shr/match.html?userId=%2$s&amp;competitionId=%3$s</string>
+  <string name="local_social">社区</string>
 
 </resources>

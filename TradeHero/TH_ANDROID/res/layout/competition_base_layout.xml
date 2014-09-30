@@ -35,7 +35,8 @@
       android:id="@+id/listCompetitions"
       android:scrollingCache="false"
       android:fadingEdge="none"
-      android:divider="@color/transparent"
+      android:dividerHeight="1px"
+      android:divider="@color/separate_line_color"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
   </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>

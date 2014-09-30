@@ -151,7 +151,7 @@
         android:layout_toRightOf="@id/img_bang_exchanges"
         android:textSize="@dimen/more_bang_text_size"
         android:textColor="@dimen/text_default_color"
-        android:text="@string/stockgod_leaderboard_exchange"></TextView>
+        android:text="根据交易所"></TextView>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -190,7 +190,7 @@
         android:layout_toRightOf="@id/img_bang_industry"
         android:textSize="@dimen/more_bang_text_size"
         android:textColor="@dimen/text_default_color"
-        android:text="@string/stockgod_leaderboard_industry"></TextView>
+        android:text="根据行业类别"></TextView>
 
     <ImageView
         android:layout_width="wrap_content"
