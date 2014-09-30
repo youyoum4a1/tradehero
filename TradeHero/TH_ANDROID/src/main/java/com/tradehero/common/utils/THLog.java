@@ -1,10 +1,10 @@
 package com.tradehero.common.utils;
 
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.util.Base64;
-import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.Constants;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,13 +13,13 @@ import timber.log.Timber;
 public class THLog
 {
     /** Display KeyHash which is required by Facebook Application */
-    public static void showDeveloperKeyHash()
+    public static void showDeveloperKeyHash(Context context)
     {
         if (!Constants.RELEASE)
         {
             try
             {
-                PackageInfo info = THApp.context()
+                PackageInfo info = context
                         .getPackageManager()
                         .getPackageInfo("com.tradehero.th", PackageManager.GET_SIGNATURES);
                 for (Signature signature : info.signatures)
@@ -31,7 +31,7 @@ public class THLog
             }
             catch (NullPointerException | PackageManager.NameNotFoundException | NoSuchAlgorithmException e)
             {
-                Timber.d("KeyHash Error", e.getMessage());
+                Timber.e(e, "KeyHash Error" + e.getMessage());
             }
         }
     }
