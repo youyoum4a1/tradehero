@@ -21,11 +21,14 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.prefs.ShareDialogAfterScoreKey;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -39,6 +42,8 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @Inject @ShareDialogAfterScoreKey BooleanPreference mShareDialogAfterScoreKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -73,6 +78,11 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
             mVersionCode.setText("V"+packageInfo.versionName+"."+packageInfo.versionCode);
         }
         mAboutLayout.setOnClickListener(this);
+        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        if (userProfileDTO.isVisitor)
+        {
+            mLogoutLayout.setVisibility(View.GONE);
+        }
         mLogoutLayout.setOnClickListener(this);
         return view;
     }
