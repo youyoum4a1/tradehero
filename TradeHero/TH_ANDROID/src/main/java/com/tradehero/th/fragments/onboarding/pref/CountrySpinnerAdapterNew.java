@@ -19,7 +19,7 @@ public class CountrySpinnerAdapterNew
     private int dropDownResId;
 
     //<editor-fold desc="Constructors">
-    public CountrySpinnerAdapterNew(Context context, int layoutResourceId)
+    public CountrySpinnerAdapterNew(@NotNull Context context, int layoutResourceId)
     {
         super(context);
         this.resId = layoutResourceId;
@@ -47,7 +47,7 @@ public class CountrySpinnerAdapterNew
         this.dropDownResId = resource;
     }
 
-    @Override public CountrySpinnerItemView getDropDownView(int position, View convertView, ViewGroup parent)
+    @Override public CountrySpinnerItemView getDropDownView(int position, @Nullable View convertView, ViewGroup parent)
     {
         if (convertView == null)
         {

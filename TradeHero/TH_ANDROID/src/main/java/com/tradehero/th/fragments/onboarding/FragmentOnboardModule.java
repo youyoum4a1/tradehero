@@ -1,13 +1,15 @@
 package com.tradehero.th.fragments.onboarding;
 
-import com.tradehero.th.fragments.onboarding.hero.FragmentOnboardHeroModule;
-import com.tradehero.th.fragments.onboarding.pref.FragmentOnboardPrefModule;
+import android.content.IntentFilter;
+import com.tradehero.th.fragments.onboarding.hero.FragmentOnBoardHeroModule;
+import com.tradehero.th.fragments.onboarding.pref.FragmentOnBoardPrefModule;
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
         includes = {
-                FragmentOnboardPrefModule.class,
-                FragmentOnboardHeroModule.class
+                FragmentOnBoardPrefModule.class,
+                FragmentOnBoardHeroModule.class
         },
         injects = {
                 OnBoardDialogFragment.class
@@ -15,6 +17,13 @@ import dagger.Module;
         library = true,
         complete = false
 )
-public class FragmentOnboardModule
+public class FragmentOnBoardModule
 {
+    public static final String ON_BOARD_INTENT_ACTION_NAME = "com.tradehero.th.onboard.ALERT";
+    public static final String KEY_ON_BOARD_BROADCAST = FragmentOnBoardModule.class.getName()+".onboardBroadcast";
+
+    @Provides @ForOnBoard IntentFilter providesIntentFilterOnBoard()
+    {
+        return new IntentFilter(ON_BOARD_INTENT_ACTION_NAME);
+    }
 }

@@ -9,6 +9,6 @@ import dagger.Module;
         library = true,
         complete = false
 )
-public class FragmentOnboardHeroModule
+public class FragmentOnBoardHeroModule
 {
 }

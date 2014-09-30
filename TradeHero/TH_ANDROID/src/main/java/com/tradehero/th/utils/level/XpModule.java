@@ -16,7 +16,7 @@ public class XpModule
     public static final String KEY_XP_BROADCAST = XpModule.class.getName()+".xpBroadcast";
     public static final String KEY_XP_NODE = "xpEarned";
 
-    @Provides @ForXP IntentFilter providesIntentFilterAchievement()
+    @Provides @ForXP IntentFilter providesIntentFilterXp()
     {
         return new IntentFilter(XP_INTENT_ACTION_NAME);
     }
