@@ -60,4 +60,18 @@ public class UserAchievementDTO implements DTO
         }
         return achievementDef.getAchievementsId().equals(other.achievementDef.getAchievementsId());
     }
+
+    @Override public String toString()
+    {
+        return "UserAchievementDTO{" +
+                "id=" + id +
+                ", achievedAtUtc=" + achievedAtUtc +
+                ", userId=" + userId +
+                ", xpEarned=" + xpEarned +
+                ", xpTotal=" + xpTotal +
+                ", contiguousCount=" + contiguousCount +
+                ", isReset=" + isReset +
+                ", achievementDef=" + achievementDef +
+                '}';
+    }
 }

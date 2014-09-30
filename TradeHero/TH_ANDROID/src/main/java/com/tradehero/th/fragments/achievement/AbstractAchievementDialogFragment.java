@@ -33,6 +33,7 @@ import android.widget.ViewFlipper;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.chrisbanes.colorfinder.ColorScheme;
+import com.chrisbanes.colorfinder.ColorUtils;
 import com.chrisbanes.colorfinder.DominantColorCalculator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -75,6 +76,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private static final String PROPERTY_BTN_COLOR = "btnColor";
 
     private static final int DEFAULT_FILTER_COLOR = Color.GRAY;
+    private static final float TOO_BRIGHT_CUT_OFF = 0.2f;
 
     @InjectView(R.id.achievement_content_container) ViewGroup contentContainer;
 
@@ -189,6 +191,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void updateColor(int color)
     {
+        // Darken if too bright
+        if (ColorUtils.calculateYiqLuma(color) > (256 * (1 - TOO_BRIGHT_CUT_OFF))) // 80% or brighter
+        {
+            Timber.d("Darkening from %d for %s", color, userAchievementDTO);
+            color = ColorUtils.darken(color, TOO_BRIGHT_CUT_OFF); // Add 20% black
+        }
+
         if (color != mCurrentColor)
         {
             colorValueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), mCurrentColor, color);
