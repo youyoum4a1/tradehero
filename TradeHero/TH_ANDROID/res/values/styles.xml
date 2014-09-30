@@ -570,6 +570,22 @@
     <item name="android:padding">5dp</item>
   </style>
 
+
+  <style name="TH.ResideMenuSmall">
+    <item name="android:alpha">0.5</item>
+  </style>
+
+  <style name="TH.ResideMenuSmall.Icon" parent="TH.ResideMenuSmall">
+    <item name="android:layout_width">30dp</item>
+    <item name="android:layout_height">30dp</item>
+    <item name="android:scaleType">fitCenter</item>
+  </style>
+
+  <style name="TH.ResideMenuSmall.Text" parent="TH.ResideMenuSmall">
+    <item name="android:textSize">@dimen/text_medium</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
+
   <style name="TH.Dialog" parent="android:Theme.Holo.Light.Dialog">
     <item name="android:windowBackground">@android:color/transparent</item>
     <item name="android:colorBackgroundCacheHint">@null</item>

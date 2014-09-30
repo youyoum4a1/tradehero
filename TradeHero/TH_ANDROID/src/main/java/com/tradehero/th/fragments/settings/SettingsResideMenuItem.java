@@ -14,7 +14,7 @@ import javax.inject.Inject;
 public class SettingsResideMenuItem extends LinearLayout
 {
     @Inject UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
-    @InjectView(R.id.unread_icon) ImageView unreadIcon;
+    @InjectView(R.id.unread_icon) View unreadIcon;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -40,8 +40,11 @@ public class SettingsResideMenuItem extends LinearLayout
     {
         super.onFinishInflate();
 
-        ButterKnife.inject(this);
-        HierarchyInjector.inject(this);
+        if(!isInEditMode())
+        {
+            ButterKnife.inject(this);
+            HierarchyInjector.inject(this);
+        }
     }
 
     @Override protected void onAttachedToWindow()

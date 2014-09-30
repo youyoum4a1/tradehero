@@ -40,7 +40,7 @@ public enum RootFragmentType
     CONTEST_CENTER(R.layout.tab_indicator_holo,
             R.string.dashboard_contest_center, R.string.dashboard_contest_center_key,
             R.drawable.icn_menu_contest_center, ContestCenterFragment.class),
-    STORE(R.layout.tab_indicator_holo,
+    STORE(R.layout.residemenu_item_store,
             R.string.dashboard_store, R.string.dashboard_store_key,
             R.drawable.icn_menu_store, StoreScreenFragment.class),
     SETTING(R.layout.residemenu_item_settings,
