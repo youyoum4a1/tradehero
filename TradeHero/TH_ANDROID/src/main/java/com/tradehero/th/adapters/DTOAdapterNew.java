@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.api.DTOView;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOAdapterNew<DTOType>
@@ -20,6 +21,13 @@ public class DTOAdapterNew<DTOType>
     public DTOAdapterNew(@NotNull Context context, int layoutResourceId)
     {
         super(context, layoutResourceId);
+        this.layoutResourceId = layoutResourceId;
+        this.inflater = LayoutInflater.from(context);
+    }
+
+    public DTOAdapterNew(@NotNull Context context, int layoutResourceId, @NotNull List<DTOType> objects)
+    {
+        super(context, layoutResourceId, objects);
         this.layoutResourceId = layoutResourceId;
         this.inflater = LayoutInflater.from(context);
     }
