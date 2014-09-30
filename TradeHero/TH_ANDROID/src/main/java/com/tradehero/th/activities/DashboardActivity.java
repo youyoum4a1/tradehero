@@ -122,8 +122,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         //detachNotificationFetchTask();
         //notificationFetchListener = createNotificationFetchListener();
 
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        if (currentUserId.get().toString().length() > 1)
+        {
+            userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+            userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        }
 
         //suggestUpgradeIfNecessary();
         //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list,
@@ -186,7 +189,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override protected void onStart()
     {
         super.onStart();
-        systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        //systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override protected void onResume()

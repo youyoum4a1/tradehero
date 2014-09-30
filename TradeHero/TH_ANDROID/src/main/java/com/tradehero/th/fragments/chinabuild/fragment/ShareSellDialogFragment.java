@@ -47,9 +47,12 @@ public class ShareSellDialogFragment extends BaseDialogFragment
     private static String mStockUp;
     private static String mStockNum;
     private static String mGetMoney;
+    private static String mUserId;
+    private static String mPositionId;
 
     public static ShareSellDialogFragment showSellDialog(FragmentManager fragmentManager,
-            String stockName, String stockCode, String stockUp, String stockNum, String getMoney)
+            String stockName, String stockCode, String stockUp, String stockNum, String getMoney,
+            String userId, String positionId)
     {
         ShareSellDialogFragment dialogFragment = new ShareSellDialogFragment();
         dialogFragment.show(fragmentManager, ShareSellDialogFragment.class.getName());
@@ -58,6 +61,8 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         mStockUp = stockUp;
         mStockNum = stockNum;
         mGetMoney = getMoney;
+        mUserId = userId;
+        mPositionId = positionId;
         return dialogFragment;
     }
 
@@ -93,7 +98,7 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSell;
-        weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney);
+        weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId);
         socialSharerLazy.get().share(weChatDTO);
     }
 
@@ -103,7 +108,7 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
-        weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney);
+        weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId);
         socialSharerLazy.get().share(weChatDTO);
     }
 
@@ -116,7 +121,7 @@ public class ShareSellDialogFragment extends BaseDialogFragment
             if (updatedUserProfileDTO.wbLinked)
             {
                 weiboSocialFriendHandlerProvider.get().inviteWeiboFriends(
-                        getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney),
+                        getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId),
                         currentUserId.toUserBaseKey(), new InviteFriendCallback());
             }
             else

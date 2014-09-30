@@ -233,7 +233,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Override protected void onStart()
     {
         super.onStart();
-        systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        //systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override protected void onResume()
