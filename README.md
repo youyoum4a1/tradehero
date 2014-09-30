@@ -19,7 +19,7 @@ git checkout origin/develop --track
 - To build for release, you need Crashlytics plugin. Download it from https://www.crashlytics.com/downloads/intellij and install from disk.
 - DO NOT publish app to Google Play before obfuscating it with ProGuard!!! To know how, read the proguard help page from Wiki.
 - Use common adb key, otherwise you will need to add your own keyhash to list of keyhashes on facebook developer dashboard, to do it, run
-`scripts\install_common_adbkey.bat` (Windows) or `scripts\install_common_adbkey.sh` (Mac)
+`scripts\install_common_adbkey.bat` (Windows) or `scripts/install_common_adbkey.sh` (Linux & Mac)
 
 #### Useful tip
 - Disable unnecessary logcat error output by going to Setting - Apps - All and disable exchange service
