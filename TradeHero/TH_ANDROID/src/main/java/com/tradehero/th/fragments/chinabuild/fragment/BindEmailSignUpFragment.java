@@ -235,6 +235,18 @@ public class BindEmailSignUpFragment extends EmailSignUpFragment
         getActivity().startActivity(intent);
         getActivity().overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
     }
+
+    @Override public void onClickHeadLeft()
+    {
+        if (mSwitcher.getDisplayedChild() == 1)
+        {
+            mSwitcher.setDisplayedChild(0);
+        }
+        else
+        {
+            popCurrentFragment();
+        }
+    }
 }
 
 
