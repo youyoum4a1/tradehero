@@ -349,4 +349,9 @@ public class MainTabFragmentMe extends AbsBaseFragment
         Timber.d("onTestClicked FragmentTest02");
         gotoDashboard(FragmentTest03.class.getName(), new Bundle());
     }
+
+    public void linkWithUserProfileDTO(UserProfileDTO value)
+    {
+        initUserProfile(value);
+    }
 }

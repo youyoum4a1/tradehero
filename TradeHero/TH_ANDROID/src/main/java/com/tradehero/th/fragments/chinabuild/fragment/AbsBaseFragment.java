@@ -26,7 +26,7 @@ import timber.log.Timber;
 /**
  * Created by huhaiping on 14-8-21.
  */
-public class AbsBaseFragment extends Fragment
+public abstract class AbsBaseFragment extends Fragment
 {
 
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = AbsBaseFragment.class.getName() + ".purchaseApplicablePortfolioId";
@@ -208,9 +208,8 @@ public class AbsBaseFragment extends Fragment
         }
     }
 
-    public void linkWithUserProfileDTO(UserProfileDTO value)
-    {
+   public abstract void linkWithUserProfileDTO(UserProfileDTO value);
 
-    }
+
 
 }

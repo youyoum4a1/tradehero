@@ -128,4 +128,7 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
     {
         tvCreateCompetition.setVisibility(value.isVisitor ? View.GONE : View.VISIBLE);
     }
+
+
+
 }

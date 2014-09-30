@@ -66,7 +66,7 @@ public interface CompetitionService
     );
 
     //官方比赛获取
-    @GET("/usercompetitions?page=1&perPage=20&filterType=19&sortType=1") UserCompetitionDTOList getOfficalCompetitions(
+    @GET("/usercompetitions?filterType=19&sortType=1") UserCompetitionDTOList getOfficalCompetitions(
             @Query("page") int page,
             @Query("perPage") int perPage
     );

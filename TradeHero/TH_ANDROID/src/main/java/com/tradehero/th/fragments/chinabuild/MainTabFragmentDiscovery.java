@@ -193,4 +193,8 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(),force);
     }
 
+    public void linkWithUserProfileDTO(UserProfileDTO value)
+    {
+
+    }
 }

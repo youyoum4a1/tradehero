@@ -645,7 +645,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     public void setSaleView()
     {
-        //llBuySaleLine5.setVisibility(View.VISIBLE);
+        llBuySaleLine5.setVisibility(View.VISIBLE);
         //llBuySaleLine7.setVisibility(View.VISIBLE);
         tvTitle0.setText("卖出价格：");
         tvTitle1.setText("卖出数量：");
@@ -655,7 +655,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     public void setBuyView()
     {
-        //llBuySaleLine5.setVisibility(View.GONE);
+        llBuySaleLine5.setVisibility(View.GONE);
         //llBuySaleLine7.setVisibility(View.GONE);
         tvTitle0.setText("买入价格：");
         tvTitle1.setText("买入数量：");

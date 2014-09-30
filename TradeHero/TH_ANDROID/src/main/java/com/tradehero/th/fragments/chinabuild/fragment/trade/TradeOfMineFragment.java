@@ -117,6 +117,7 @@ public class TradeOfMineFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.trade_of_mine, container, false);
         ButterKnife.inject(this, view);
         initView();
+        fetchPortfolio();
         return view;
     }
 
@@ -154,7 +155,8 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         if (item instanceof SecurityPositionItem)
         {
-            enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,((SecurityPositionItem) item).position);
+            enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
+                    ((SecurityPositionItem) item).position);
         }
         else if (item instanceof WatchPositionItem)
         {
@@ -163,7 +165,7 @@ public class TradeOfMineFragment extends DashboardFragment
         }
     }
 
-    public void enterSecurity(SecurityId securityId, String securityName,PositionDTO positionDTO)
+    public void enterSecurity(SecurityId securityId, String securityName, PositionDTO positionDTO)
     {
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
@@ -242,6 +244,8 @@ public class TradeOfMineFragment extends DashboardFragment
 
     protected void fetchPortfolio()
     {
+        if (shownPortfolioId == null) return;
+        if (portfolioFetchListener == null) return;
         detachPortfolioFetchTask();
         portfolioCache.register(shownPortfolioId, portfolioFetchListener);
         portfolioCache.getOrFetchAsync(shownPortfolioId);
@@ -518,7 +522,7 @@ public class TradeOfMineFragment extends DashboardFragment
                             mShareDialogKeyPreference.set(false);
                             mShareDialogROIValueKeyPreference.set(false);
                             mShareSheetTitleCache.set(getString(
-                                    R.string.share_amount_roi_value_summary, "10%",                                    currentUserId.get().toString(),
+                                    R.string.share_amount_roi_value_summary, "10%", currentUserId.get().toString(),
                                     String.valueOf(listData.get(i).id)));
                             ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                                     getString(R.string.share_amount_roi_value_title));
@@ -528,7 +532,6 @@ public class TradeOfMineFragment extends DashboardFragment
             }
             adapter.setSecurityPositionList(list);
         }
-
 
         if (psList != null && psList.closedPositionsCount > 0)
         {
@@ -549,6 +552,4 @@ public class TradeOfMineFragment extends DashboardFragment
             }
         }
     }
-
-
 }
