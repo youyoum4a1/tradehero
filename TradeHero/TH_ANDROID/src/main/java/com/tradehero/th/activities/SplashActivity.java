@@ -13,7 +13,7 @@ import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
-import com.tradehero.th.api.users.LoginFormDTO;
+import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.base.THApp;
@@ -47,7 +47,7 @@ public class SplashActivity extends FragmentActivity
     private AsyncTask<Void, Void, Void> initialAsyncTask;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject RequestHeaders requestHeaders;
-    @Inject Provider<LoginFormDTO> loginFormDTOProvider;
+    @Inject Provider<LoginSignUpFormDTO> loginFormDTOProvider;
     @Inject @FacebookAppId String facebookAppId;
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
 

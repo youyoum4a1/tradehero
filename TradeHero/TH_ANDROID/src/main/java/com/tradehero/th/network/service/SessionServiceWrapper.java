@@ -6,7 +6,6 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -86,14 +85,14 @@ import retrofit.Callback;
     //<editor-fold desc="Login">
     @NotNull public UserLoginDTO login(
             @NotNull String authorization,
-            @NotNull LoginFormDTO loginFormDTO)
+            @NotNull LoginSignUpFormDTO loginFormDTO)
     {
         return createUserLoginProcessor().process(sessionService.login(authorization, loginFormDTO));
     }
 
     @NotNull public MiddleCallback<UserLoginDTO> login(
             @NotNull String authorization,
-            @NotNull LoginFormDTO loginFormDTO,
+            @NotNull LoginSignUpFormDTO loginFormDTO,
             @Nullable Callback<UserLoginDTO> callback)
     {
         MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());

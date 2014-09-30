@@ -2,7 +2,6 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -19,7 +18,7 @@ interface SessionServiceAsync
     @POST("/login")
     void login(
             @Header("Authorization") String authorization,
-            @Body LoginFormDTO loginFormDTO,
+            @Body LoginSignUpFormDTO loginFormDTO,
             Callback<UserLoginDTO> callback);
     //</editor-fold>
 

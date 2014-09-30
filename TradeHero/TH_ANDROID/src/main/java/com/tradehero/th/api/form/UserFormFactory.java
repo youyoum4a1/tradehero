@@ -1,11 +1,11 @@
 package com.tradehero.th.api.form;
 
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import com.tradehero.th.models.user.auth.QQCredentialsDTO;
@@ -47,28 +47,24 @@ public class UserFormFactory
 
     private static UserFormDTO createEmptyForType(String type)
     {
-        if (type.equals(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE))
+        return createEmptyForType(SocialNetworkEnum.fromAuthHeader(type));
+    }
+
+    public static UserFormDTO createEmptyForType(SocialNetworkEnum type)
+    {
+        switch (type)
         {
-            return new FacebookUserFormDTO();
-        }
-        if (type.equals(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE))
-        {
-            return new LinkedinUserFormDTO();
-        }
-        if (type.equals(TwitterCredentialsDTO.TWITTER_AUTH_TYPE))
-        {
-            return new TwitterUserFormDTO();
-        }
-        if (type.equals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
-        {
-            return new EmailUserFormDTO();
-        }
-        if (type.equals(QQCredentialsDTO.QQ_AUTH_TYPE))
-        {
-            return new QQUserFormDTO();
-        }
-        if (type.equals(WeiboCredentialsDTO.WEIBO_AUTH_TYPE))
-        {
+            case FB:
+                return new FacebookUserFormDTO();
+            case LN:
+                return new LinkedinUserFormDTO();
+            case TW:
+                return new TwitterUserFormDTO();
+            case TH:
+                return new EmailUserFormDTO();
+            case QQ:
+                return new QQUserFormDTO();
+            case WB:
             return new WeiboUserFormDTO();
         }
 

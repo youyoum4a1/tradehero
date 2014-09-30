@@ -19,22 +19,27 @@ import com.tradehero.common.widget.AuthenticationButton;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.LoginSignUpFormDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observers.EmptyObserver;
+import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
@@ -45,6 +50,8 @@ public class SignInOrUpFragment extends Fragment
     private static final String FAKE_EMAIL = "thont@live.com";
     @Inject Analytics analytics;
     @Inject AccountManager accountManager;
+    @Inject SessionService sessionService;
+    @Inject Provider<LoginSignUpFormDTO.Builder> authenticationFormBuilderProvider;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
 
     @Optional @InjectViews({
@@ -130,7 +137,35 @@ public class SignInOrUpFragment extends Fragment
                                         return authenticationProvider.logIn(getActivity());
                                     }
                                 })
-                                .subscribe(new AuthDataObserver());
+                                .doOnNext(new AuthDataObserver())
+                                .map(new Func1<AuthData, LoginSignUpFormDTO>()
+                                {
+                                    @Override public LoginSignUpFormDTO call(AuthData authData)
+                                    {
+                                        return authenticationFormBuilderProvider.get()
+                                                .type(authData.socialNetworkEnum)
+                                                .accessToken(authData.accessToken)
+                                                .build();
+                                    }
+                                })
+                                .flatMap(new Func1<LoginSignUpFormDTO, Observable<UserLoginDTO>>()
+                                {
+                                    @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
+                                    {
+                                        return sessionService.signupAndLogin(loginSignUpFormDTO);
+                                    }
+                                })
+                                .subscribe(new Action1<UserLoginDTO>()
+                                {
+                                    @Override public void call(UserLoginDTO userLoginDTO)
+                                    {
+                                        Timber.d("dto: " + userLoginDTO);
+                                        getActivity().finish();
+
+                                        startActivity(new Intent(getActivity(), DashboardActivity.class));
+                                    }
+                                })
+                        ;
                     }
                 });
     }
@@ -138,6 +173,7 @@ public class SignInOrUpFragment extends Fragment
     @Override public void onDestroyView()
     {
         subscription.unsubscribe();
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -155,25 +191,15 @@ public class SignInOrUpFragment extends Fragment
         try
         {
             startActivity(it);
-        }
-        catch (android.content.ActivityNotFoundException e)
+        } catch (android.content.ActivityNotFoundException e)
         {
             THToast.show("Unable to open url: " + uri);
         }
     }
 
-    private class AuthDataObserver implements rx.Observer<AuthData>
+    private class AuthDataObserver implements Action1<AuthData>
     {
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-        }
-
-        @Override public void onNext(AuthData authData)
+        @Override public void call(AuthData authData)
         {
             Account account = getOrAddAccount(authData);
             accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authData.getTHToken());
@@ -187,9 +213,12 @@ public class SignInOrUpFragment extends Fragment
         Account account = accounts.length != 0 ? accounts[0] :
                 new Account(FAKE_EMAIL, PARAM_ACCOUNT_TYPE);
 
-        if (accounts.length == 0) {
+        if (accounts.length == 0)
+        {
             accountManager.addAccountExplicitly(account, authData.password, null);
-        } else {
+        }
+        else
+        {
             accountManager.setPassword(accounts[0], authData.password);
         }
         return account;
@@ -203,8 +232,5 @@ public class SignInOrUpFragment extends Fragment
         intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, PARAM_ACCOUNT_TYPE);
 
         getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
-
-        startActivity(new Intent(getActivity(), DashboardActivity.class));
     }
 }

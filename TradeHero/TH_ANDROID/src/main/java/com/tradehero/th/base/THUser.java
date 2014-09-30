@@ -15,10 +15,8 @@ import com.tradehero.th.api.form.TwitterUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.signup.LoginSignUpFormDTOFactory;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.THAuthenticationProvider;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -71,7 +69,6 @@ public class THUser
     @Inject static Lazy<DTOCacheUtil> dtoCacheUtil;
     @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
-    @Inject static LoginSignUpFormDTOFactory loginSignUpFormDTOFactory;
 
     public static void initialize()
     {
@@ -187,14 +184,7 @@ public class THUser
                         createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
                 break;
             case SignIn:
-                //use new DTO, combine login and social register
-                LoginSignUpFormDTO loginSignUpFormDTO = loginSignUpFormDTOFactory.create(userFormDTO);
-
-                // TODO save middle callback?
-                sessionServiceWrapper.get().signupAndLogin(authenticator.getAuthHeader(),
-                        loginSignUpFormDTO,
-                        createCallbackForSignInAsyncWithJson(credentialsDTO, callback));
-                break;
+                throw new RuntimeException("Refactoring ...");
         }
     }
 

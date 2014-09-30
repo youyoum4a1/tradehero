@@ -3,20 +3,34 @@ package com.tradehero.th.api.social;
 public enum SocialNetworkEnum
 {
     TH("Basic", "TradeHero"),
-    FB("TH-Facebook", "Facebook"),
-    TW("TH-Twitter", "Twitter"),
-    LN("TH-LinkedIn", "LinkedIn"),
+    FB("TH-Facebook", "Facebook", "facebook_access_token"),
+    TW("TH-Twitter", "Twitter", "twitter_access_token", "twitter_access_token_secret"),
+    LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret"),
     WECHAT("TH-WeChat", "WeChat"),
-    WB("TH-Weibo", "WeiBo"),
-    QQ("TH-QQ", "QQ");
+    WB("TH-Weibo", "WeiBo", "weibo_access_token"),
+    QQ("TH-QQ", "QQ", "qq_access_token", "qq_openid");
 
     private final String authHeader;
     private final String name;
+    private final String accessTokenName;
+    private final String accessTokenSecretName;
 
     SocialNetworkEnum(String authHeader, String name)
     {
+        this(authHeader, name, null);
+    }
+
+    SocialNetworkEnum(String authHeader, String name, String accessTokenName)
+    {
+        this(authHeader, name, accessTokenName, null);
+    }
+
+    SocialNetworkEnum(String authHeader, String name, String accessTokenName, String accessTokenSecretName)
+    {
         this.authHeader = authHeader;
         this.name = name;
+        this.accessTokenName = accessTokenName;
+        this.accessTokenSecretName = accessTokenSecretName;
     }
 
     public String getAuthHeader()
@@ -59,5 +73,15 @@ public enum SocialNetworkEnum
             }
         }
         throw new IllegalArgumentException("There is no value with authentication header: " + authHeader);
+    }
+
+    public String getAccessTokenName()
+    {
+        return accessTokenName;
+    }
+
+    public String getAccessTokenSecretName()
+    {
+        return accessTokenSecretName;
     }
 }
