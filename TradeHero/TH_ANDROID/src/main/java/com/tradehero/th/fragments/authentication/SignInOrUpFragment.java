@@ -183,7 +183,7 @@ public class SignInOrUpFragment extends Fragment
 
     private Account getOrAddAccount(AuthData authData)
     {
-        Account[] accounts = accountManager.getAccountsByType(PARAM_AUTHTOKEN_TYPE);
+        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
         Account account = accounts.length != 0 ? accounts[0] :
                 new Account(FAKE_EMAIL, PARAM_ACCOUNT_TYPE);
 
