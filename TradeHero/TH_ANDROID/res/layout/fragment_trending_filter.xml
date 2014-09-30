@@ -12,7 +12,6 @@
       android:layout_height="wrap_content"
       android:paddingTop="4dp"
       android:background="#f7ffffff"
-      android:paddingRight="@dimen/position_padding_right"
       >
 
     <ImageButton
@@ -93,6 +92,7 @@
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
           android:dropDownSelector="@drawable/basic_transparent_selector"
+          android:paddingLeft="@dimen/margin_small"
           style="@style/TH.Spinner"
           />
 

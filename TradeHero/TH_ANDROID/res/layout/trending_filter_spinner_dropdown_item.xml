@@ -6,20 +6,17 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/common_margin_10"
-    android:background="@color/white"
+    android:gravity="left|start"
+    android:padding="@dimen/margin_small"
     >
 
   <ImageView
       android:id="@+id/trending_filter_spinner_item_icon"
-      android:layout_height="24dp"
-      android:layout_width="24dp"
-      android:layout_toLeftOf="@+id/trending_filter_spinner_item_label"
-      android:layout_marginRight="@dimen/margin_small"
-      android:layout_centerVertical="true"
-      android:baselineAlignBottom="true"
+      android:layout_height="@dimen/small_icon_w_h"
+      android:layout_width="@dimen/small_icon_w_h"
       tools:src="@drawable/flag_country_round_united_states"
       android:scaleType="centerInside"
+      android:layout_marginRight="@dimen/margin_small"
       android:contentDescription="@null"
       />
 
@@ -27,9 +24,8 @@
       android:id="@+id/trending_filter_spinner_item_label"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:layout_centerInParent="true"
       android:textSize="@dimen/text_medium"
-      android:gravity="center"
+      android:layout_gravity="center"
       android:maxLines="1"
       tools:text="US NYSE - NYSE"
       />
