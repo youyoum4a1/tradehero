@@ -12,16 +12,14 @@ git checkout origin/develop --track
 
 #### Setting up workspace
 - Install Java Development Kit (JDK) 7 or later.
-- Install IntelliJ IDE (all Android and maven plugins are required)
-- Enable Maven auto import when you are asked to do that or go to Settings -> search for maven ->  "Import Maven ..."
-- Get android sdk latest version from Google
-- With each maven module which referencing an outside module (you should see something like ```<relativePath>../pom.xml</relativePath>``` in pom.xml of that project), go to referenced project and mark it as a maven project as well.
+- Install Android Studio IDE
+- Get latest version of Android SDK from Google
 - Setup all configuration ask prompted for JAVA & Android, after that, download Android 4.0 (API 14) from SDK Manager (Tool > Android > SDK Manager)
 - To make it easier working with Dagger (dependency injection module), install this plugin: https://github.com/square/dagger-intellij-plugin
 - To build for release, you need Crashlytics plugin. Download it from https://www.crashlytics.com/downloads/intellij and install from disk.
 - DO NOT publish app to Google Play before obfuscating it with ProGuard!!! To know how, read the proguard help page from Wiki.
-- If the `parent` project has an Android facet, remove the facet.
-- If a submodule, such as `facebook-android-sdk` is not detected as a Maven project, right-click on its `pom.xml` file and choose `Add as Maven project`.
+- Use common adb key, otherwise you will need to add your own keyhash to list of keyhashes on facebook developer dashboard, to do it, run
+`scripts\install_common_adbkey.bat` (Windows) or `scripts\install_common_adbkey.sh` (Mac)
 
 #### Useful tip
 - Disable unnecessary logcat error output by going to Setting - Apps - All and disable exchange service
