@@ -142,6 +142,7 @@
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
     <item name="android:actionBarTabStyle">@style/TradeHero.Dashboard.ActionBar.TabView</item>
     <item name="android:actionBarTabBarStyle">@style/TradeHero.Dashboard.ActionBar.TabBar</item>
+    <item name="android:actionBarTabTextStyle">@style/TradeHero.Dashboard.ActionBar.TabText</item>
     <item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
     <item name="android:actionBarItemBackground">@drawable/basic_transparent_selector</item>
@@ -558,6 +559,13 @@
 
   <style name="TradeHero.Dashboard.ActionBar.TabView" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
     <item name="android:background">@drawable/action_bar_tab_view</item>
+  </style>
+
+  <style name="TradeHero.Dashboard.ActionBar.TabText" parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
+    <item name="android:textColor">@color/tradehero_blue</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textStyle">normal</item>
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TabBar" parent="@android:style/Widget.Holo.Light.ActionBar.TabBar">
