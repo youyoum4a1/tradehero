@@ -1,16 +1,21 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import com.tradehero.th.api.DTOView;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapter<T, V>
 {
     protected List<T> items;
 
-    public ArrayDTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public ArrayDTOAdapter(
+            @NotNull Context context,
+            @NotNull LayoutInflater inflater,
+            @LayoutRes int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
     }

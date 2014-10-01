@@ -14,8 +14,8 @@ import org.jetbrains.annotations.Nullable;
 abstract public class DTOSetAdapter<T> extends BaseAdapter
 {
     @NotNull protected final Context context;
-    protected Set<T> set;
-    private ArrayList<T> items;
+    @NotNull protected Set<T> set;
+    @NotNull private ArrayList<T> items;
 
     //<editor-fold desc="Constructors">
     public DTOSetAdapter(@NotNull Context context)
@@ -53,7 +53,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         return new LinkedHashSet<>(objects);
     }
 
-    public void remove(T element)
+    public void remove(@NotNull T element)
     {
         set.remove(element);
         items = new ArrayList<>(set);
@@ -64,7 +64,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
      * @param newOnes
      * @return the count of effectively added elements
      */
-    public int appendTail(Collection<T> newOnes)
+    public int appendTail(@Nullable Collection<T> newOnes)
     {
         int beforeCount = set.size();
         int afterCount = beforeCount;
@@ -81,7 +81,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
      * @param newOnes
      * @return the count of effectively added elements
      */
-    public int appendHead(List<T> newOnes)
+    public int appendHead(@Nullable List<T> newOnes)
     {
         int beforeCount = set.size();
         int afterCount = beforeCount;

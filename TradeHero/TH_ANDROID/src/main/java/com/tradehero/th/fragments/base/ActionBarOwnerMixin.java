@@ -1,12 +1,12 @@
 package com.tradehero.th.fragments.base;
 
-import android.os.Bundle;
 import android.app.ActionBar;
+import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.th.R;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,7 +85,7 @@ public class ActionBarOwnerMixin
         }
     }
 
-    protected void setActionBarTitle(int titleResId)
+    protected void setActionBarTitle(@StringRes int titleResId)
     {
         if (actionBar != null)
         {
@@ -106,7 +106,7 @@ public class ActionBarOwnerMixin
         return getKeyShowHomeAsUp(fragment.getArguments());
     }
 
-    public void setActionBarSubtitle(int subTitleResId)
+    public void setActionBarSubtitle(@StringRes int subTitleResId)
     {
         if (actionBar != null)
         {
