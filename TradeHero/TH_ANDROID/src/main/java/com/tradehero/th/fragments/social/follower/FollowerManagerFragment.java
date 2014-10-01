@@ -1,9 +1,11 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -202,7 +204,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     private Fragment getCurrentFragment()
     {
-        if(mTabHost == null)
+        if (mTabHost == null)
         {
             return null;
         }
@@ -273,6 +275,9 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             {
                 graphicUtil.setBackground(mTabHost.getTabWidget().getChildAt(i), getResources().getDrawable(R.drawable.tab_indicator_ab_th));
                 tv.setTextColor(color);
+                tv.setAllCaps(false);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_small));
+                tv.setTypeface(null, Typeface.NORMAL);
             }
         }
     }
