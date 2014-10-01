@@ -13,7 +13,6 @@ import com.tradehero.th.api.form.FacebookUserFormDTO;
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
 import com.tradehero.th.api.form.TwitterUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -201,7 +200,7 @@ public class THUser
             {
                 try
                 {
-                    json.put(UserFormFactory.KEY_TYPE, authenticator.getAuthType());
+                    json.put(UserFormDTO.KEY_TYPE, authenticator.getAuthType());
                     if (callback.onSocialAuthDone(json))
                     {
                         logInAsyncWithJson(credentialsDTOFactory.create(json), callback);

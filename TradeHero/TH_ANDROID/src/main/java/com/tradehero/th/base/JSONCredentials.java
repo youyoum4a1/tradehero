@@ -1,6 +1,6 @@
 package com.tradehero.th.base;
 
-import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.form.UserFormDTO;
 import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,9 +28,9 @@ public class JSONCredentials extends JSONObject
 
     public void putProfilePicture(Map<String, Object> map)
     {
-        if (map != null && map.containsKey(UserFormFactory.KEY_PROFILE_PICTURE))
+        if (map != null && map.containsKey(UserFormDTO.KEY_PROFILE_PICTURE))
         {
-            profilePicture = (TypedOutput) map.get(UserFormFactory.KEY_PROFILE_PICTURE);
+            profilePicture = (TypedOutput) map.get(UserFormDTO.KEY_PROFILE_PICTURE);
         }
     }
 }

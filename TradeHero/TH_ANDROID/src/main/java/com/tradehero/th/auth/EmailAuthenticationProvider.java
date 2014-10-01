@@ -2,9 +2,9 @@ package com.tradehero.th.auth;
 
 import android.app.Activity;
 import android.util.Base64;
-import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import org.json.JSONException;
 import rx.Observable;
 
@@ -38,7 +38,7 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
 
     @Override public String getAuthHeaderParameter()
     {
-        if (credentials == null || !credentials.has(UserFormFactory.KEY_EMAIL) || !credentials.has(UserFormFactory.KEY_PASSWORD))
+        if (credentials == null || !credentials.has(UserFormDTO.KEY_EMAIL) || !credentials.has(UserFormDTO.KEY_PASSWORD))
         {
             throw new IllegalArgumentException("Credentials or Email or Password is null");
         }
@@ -46,7 +46,7 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
         try
         {
             authHeaderParameter = Base64.encodeToString(
-                    String.format("%1$s:%2$s", credentials.get(UserFormFactory.KEY_EMAIL), credentials.get(UserFormFactory.KEY_PASSWORD)).getBytes(),
+                    String.format("%1$s:%2$s", credentials.get(UserFormDTO.KEY_EMAIL), credentials.get(UserFormDTO.KEY_PASSWORD)).getBytes(),
                     Base64.NO_WRAP);
         }
         catch (JSONException e)

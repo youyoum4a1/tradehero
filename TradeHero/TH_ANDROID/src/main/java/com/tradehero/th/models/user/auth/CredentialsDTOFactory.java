@@ -3,7 +3,7 @@ package com.tradehero.th.models.user.auth;
 import android.text.TextUtils;
 import android.util.Base64;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.text.ParseException;
 import javax.inject.Inject;
@@ -28,12 +28,12 @@ public class CredentialsDTOFactory
     @NotNull public CredentialsDTO create(@NotNull JSONObject object) throws JSONException, ParseException
     {
         CredentialsDTO created;
-        String type = object.getString(UserFormFactory.KEY_TYPE);
+        String type = object.getString(UserFormDTO.KEY_TYPE);
         SocialNetworkEnum networkType = SocialNetworkEnum.fromAuthHeader(type);
         switch(networkType)
         {
             case TH:
-                if (object.has(UserFormFactory.KEY_DISPLAY_NAME))
+                if (object.has(UserFormDTO.KEY_DISPLAY_NAME))
                 {
                     created = new SignUpEmailCredentialsDTO(object);
                 }

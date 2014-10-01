@@ -1,7 +1,6 @@
 package com.tradehero.th.models.user.auth;
 
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.base.JSONCredentials;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,18 +20,18 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
     public SignUpEmailCredentialsDTO(@NotNull JSONObject object) throws JSONException
     {
         super(object);
-        displayName = object.getString(UserFormFactory.KEY_DISPLAY_NAME);
-        if (object.has(UserFormFactory.KEY_INVITE_CODE))
+        displayName = object.getString(UserFormDTO.KEY_DISPLAY_NAME);
+        if (object.has(UserFormDTO.KEY_INVITE_CODE))
         {
-            inviteCode = object.getString(UserFormFactory.KEY_INVITE_CODE);
+            inviteCode = object.getString(UserFormDTO.KEY_INVITE_CODE);
         }
-        if (object.has(UserFormFactory.KEY_FIRST_NAME))
+        if (object.has(UserFormDTO.KEY_FIRST_NAME))
         {
-            firstName = object.getString(UserFormFactory.KEY_FIRST_NAME);
+            firstName = object.getString(UserFormDTO.KEY_FIRST_NAME);
         }
-        if (object.has(UserFormFactory.KEY_LAST_NAME))
+        if (object.has(UserFormDTO.KEY_LAST_NAME))
         {
-            lastName = object.getString(UserFormFactory.KEY_LAST_NAME);
+            lastName = object.getString(UserFormDTO.KEY_LAST_NAME);
         }
         if (object instanceof JSONCredentials)
         {
@@ -50,10 +49,10 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
     @Override protected void populate(@NotNull JSONObject object) throws JSONException
     {
         super.populate(object);
-        object.put(UserFormFactory.KEY_DISPLAY_NAME, displayName);
-        object.put(UserFormFactory.KEY_INVITE_CODE, inviteCode);
-        object.put(UserFormFactory.KEY_FIRST_NAME, firstName);
-        object.put(UserFormFactory.KEY_LAST_NAME, lastName);
+        object.put(UserFormDTO.KEY_DISPLAY_NAME, displayName);
+        object.put(UserFormDTO.KEY_INVITE_CODE, inviteCode);
+        object.put(UserFormDTO.KEY_FIRST_NAME, firstName);
+        object.put(UserFormDTO.KEY_LAST_NAME, lastName);
     }
 
     @Override @NotNull public UserFormDTO createUserFormDTO()

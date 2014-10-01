@@ -21,6 +21,8 @@ import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.auth.AuthenticationProvider;
+import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -31,6 +33,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
+import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,7 +50,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject Analytics analytics;
     @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;
-    @Inject protected SocialConnectSettingViewHolderContainer socialConnectSettingViewHolderContainer;
     @Inject protected SendLoveViewHolder sendLoveViewHolder;
     @Inject protected SendFeedbackViewHolder sendFeedbackViewHolder;
     @Inject protected FaqViewHolder faqViewHolder;
@@ -65,6 +67,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected ResetHelpScreensViewHolder resetHelpScreensViewHolder;
     @Inject protected ClearCacheViewHolder clearCacheViewHolder;
     @Inject protected AboutPrefViewHolder aboutPrefViewHolder;
+    @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
 
     private SocialNetworkEnum socialNetworkToConnectTo;
 
@@ -151,8 +154,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Settings));
         if (socialNetworkToConnectTo != null)
         {
-            socialConnectSettingViewHolderContainer.changeSharing(socialNetworkToConnectTo, true);
+            // TODO/refactor
+            authenticationProviderMap.get(socialNetworkToConnectTo);
             socialNetworkToConnectTo = null;
+            throw new RuntimeException("Not implemented");
         }
     }
 
@@ -175,7 +180,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         faqViewHolder.destroyViews();
         sendFeedbackViewHolder.destroyViews();
         sendLoveViewHolder.destroyViews();
-        socialConnectSettingViewHolderContainer.destroyViews();
         topBannerSettingViewHolder.destroyViews();
 
         super.onDestroyView();
@@ -200,7 +204,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         faqViewHolder = null;
         sendFeedbackViewHolder = null;
         sendLoveViewHolder = null;
-        socialConnectSettingViewHolderContainer = null;
         topBannerSettingViewHolder = null;
 
         super.onDestroy();
@@ -209,9 +212,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void initPreferenceClickHandlers()
     {
         topBannerSettingViewHolder.initViews(this);
-
-        // Sharing
-        socialConnectSettingViewHolderContainer.initViews(this);
 
         // General
         sendLoveViewHolder.initViews(this);

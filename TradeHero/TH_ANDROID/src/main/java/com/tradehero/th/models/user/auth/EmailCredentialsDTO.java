@@ -3,7 +3,6 @@ package com.tradehero.th.models.user.auth;
 import android.util.Base64;
 import com.tradehero.th.api.form.EmailUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -19,8 +18,8 @@ public class EmailCredentialsDTO extends BaseCredentialsDTO
     //<editor-fold desc="Constructors">
     public EmailCredentialsDTO(@NotNull JSONObject object) throws JSONException
     {
-        this(object.getString(UserFormFactory.KEY_EMAIL),
-                object.getString(UserFormFactory.KEY_PASSWORD));
+        this(object.getString(UserFormDTO.KEY_EMAIL),
+                object.getString(UserFormDTO.KEY_PASSWORD));
     }
 
     public EmailCredentialsDTO(@NotNull String email, @NotNull String password)
@@ -46,8 +45,8 @@ public class EmailCredentialsDTO extends BaseCredentialsDTO
     @Override protected void populate(@NotNull JSONObject object) throws JSONException
     {
         super.populate(object);
-        object.put(UserFormFactory.KEY_EMAIL, email);
-        object.put(UserFormFactory.KEY_PASSWORD, password);
+        object.put(UserFormDTO.KEY_EMAIL, email);
+        object.put(UserFormDTO.KEY_PASSWORD, password);
     }
 
     @Override @NotNull public UserFormDTO createUserFormDTO()

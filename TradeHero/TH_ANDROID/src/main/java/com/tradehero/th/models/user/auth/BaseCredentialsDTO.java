@@ -1,6 +1,6 @@
 package com.tradehero.th.models.user.auth;
 
-import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.base.JSONCredentials;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -24,6 +24,6 @@ abstract public class BaseCredentialsDTO implements CredentialsDTO
 
     protected void populate(@NotNull JSONObject object) throws JSONException
     {
-        object.put(UserFormFactory.KEY_TYPE, getAuthType());
+        object.put(UserFormDTO.KEY_TYPE, getAuthType());
     }
 }

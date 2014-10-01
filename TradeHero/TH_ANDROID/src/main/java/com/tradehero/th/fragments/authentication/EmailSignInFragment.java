@@ -11,7 +11,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -161,8 +161,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @Override protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = super.getUserFormMap();
-        map.put(UserFormFactory.KEY_EMAIL, email.getText().toString());
-        map.put(UserFormFactory.KEY_PASSWORD, password.getText().toString());
+        map.put(UserFormDTO.KEY_EMAIL, email.getText().toString());
+        map.put(UserFormDTO.KEY_PASSWORD, password.getText().toString());
         return map;
     }
 

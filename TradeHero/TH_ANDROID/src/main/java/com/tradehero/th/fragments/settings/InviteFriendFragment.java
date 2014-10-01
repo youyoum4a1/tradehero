@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.Editable;
@@ -25,7 +24,6 @@ import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteContactEntryDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -33,9 +31,7 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -145,41 +141,7 @@ public class InviteFriendFragment extends DashboardFragment
                 // TODO failed
             }
         };
-        socialNetworkCallback = new LogInCallback()
-        {
-            @Override public void done(UserLoginDTO user, THException ex)
-            {
-                if (!isDetached())
-                {
-                    getProgressDialog().dismiss();
-                }
-            }
 
-            @Override public boolean onSocialAuthDone(JSONCredentials json)
-            {
-                detachMiddleCallbackConnect();
-                middleCallbackConnect = socialServiceWrapper.connect(
-                        currentUserId.toUserBaseKey(),
-                        UserFormFactory.create(json),
-                        createSocialConnectCallback());
-                FragmentActivity activity = getActivity();
-                if (!isDetached() && activity != null && !activity.isFinishing())
-                {
-                    progressDialog.setMessage(getString(
-                            R.string.authentication_connecting_tradehero,
-                            currentSocialNetworkConnect.getName()));
-                }
-                return true;
-            }
-
-            @Override public void onStart()
-            {
-                if (!isDetached())
-                {
-                    getProgressDialog().show();
-                }
-            }
-        };
         searchTextWatcher = new TextWatcher()
         {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after)

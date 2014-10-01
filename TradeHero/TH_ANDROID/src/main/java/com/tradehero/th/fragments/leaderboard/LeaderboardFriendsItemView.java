@@ -22,7 +22,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
@@ -30,25 +30,21 @@ import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.auth.AccessTokenForm;
+import com.tradehero.th.auth.AuthData;
+import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.misc.callback.MiddleLogInCallback;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -60,6 +56,10 @@ import javax.inject.Provider;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class LeaderboardFriendsItemView extends RelativeLayout
         implements DTOView<UserFriendsDTO>, View.OnClickListener
@@ -74,24 +74,24 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     @Nullable private UserFriendsDTO userFriendsDTO;
     private MiddleCallback<BaseResponseDTO> middleCallbackInvite;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
-    private MiddleLogInCallback middleTrackbackFacebook;
     private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfileDTO;
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Provider<Activity> activityProvider;
-    @Inject Lazy<FacebookUtils> facebookUtils;
+    @Inject Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-    @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
+    @Inject SocialService socialService;
+    @Inject Provider<UserFormDTO.Builder> userFormDTOBuilderProvider;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
     @Inject Analytics analytics;
     @Inject DashboardNavigator dashboardNavigator;
+    private Subscription facebookInvitationSubscription;
 
     public LeaderboardFriendsItemView(Context context, AttributeSet attrs)
     {
@@ -121,8 +121,11 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         avatar.setOnClickListener(null);
         inviteBtn.setOnClickListener(null);
-        detachTrackbackFacebook();
         detachMiddleCallbackInvite();
+        if (facebookInvitationSubscription != null)
+        {
+            facebookInvitationSubscription.unsubscribe();
+        }
         super.onDetachedFromWindow();
     }
 
@@ -283,10 +286,27 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
             if (Session.getActiveSession() == null)
             {
-                detachTrackbackFacebook();
-                middleTrackbackFacebook = new MiddleLogInCallback(new TrackFacebookCallback());
-                facebookUtils.get().logIn(activityProvider.get(),
-                        middleTrackbackFacebook);
+                facebookInvitationSubscription = facebookAuthenticationProvider.get().logIn(activityProvider.get())
+                        .flatMap(new Func1<AuthData, Observable<UserProfileDTO>>()
+                        {
+                            @Override public Observable<UserProfileDTO> call(AuthData authData)
+                            {
+                                return socialService.connectRx(
+                                        currentUserId.get(), new AccessTokenForm(authData));
+                                // FIXME/refactor show progress bar while doing this
+                                //progressDialog.setMessage(getContext().getString(
+                                //        R.string.authentication_connecting_tradehero,
+                                //        "Facebook"));
+                            }
+                        })
+                        .subscribe(new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO userProfileDTO)
+                            {
+                                userProfileCacheLazy.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
+                                invite();
+                            }
+                        });
             }
             else
             {
@@ -371,40 +391,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
     }
 
-    private void detachTrackbackFacebook()
-    {
-        if (middleTrackbackFacebook != null)
-        {
-            middleTrackbackFacebook.setInnerCallback(null);
-        }
-        middleTrackbackFacebook = null;
-    }
-
-    private class TrackFacebookCallback extends LogInCallback
-    {
-        @Override public void done(UserLoginDTO user, THException ex)
-        {
-            getProgressDialog().dismiss();
-        }
-
-        @Override public void onStart()
-        {
-            getProgressDialog().show();
-        }
-
-        @Override public boolean onSocialAuthDone(JSONCredentials json)
-        {
-            detachMiddleCallbackConnect();
-            middleCallbackConnect = socialServiceWrapperLazy.get().connect(
-                    currentUserId.toUserBaseKey(), UserFormFactory.create(json),
-                    new SocialLinkingCallback());
-            progressDialog.setMessage(getContext().getString(
-                    R.string.authentication_connecting_tradehero,
-                    "Facebook"));
-            return false;
-        }
-    }
-
     private ProgressDialog getProgressDialog()
     {
         if (progressDialog != null)
@@ -426,24 +412,5 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             middleCallbackConnect.setPrimaryCallback(null);
         }
         middleCallbackConnect = null;
-    }
-
-    private class SocialLinkingCallback extends THCallback<UserProfileDTO>
-    {
-        @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-        {
-            userProfileCacheLazy.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
-            invite();
-        }
-
-        @Override protected void failure(THException ex)
-        {
-            THToast.show(ex);
-        }
-
-        @Override protected void finish()
-        {
-            getProgressDialog().dismiss();
-        }
     }
 }

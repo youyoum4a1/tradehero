@@ -9,7 +9,7 @@ import butterknife.ButterKnife;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.utils.DeviceUtil;
@@ -77,7 +77,7 @@ abstract public class EmailSignInOrUpFragment extends Fragment
     protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = new HashMap<>();
-        map.put(UserFormFactory.KEY_TYPE, EmailCredentialsDTO.EMAIL_AUTH_TYPE);
+        map.put(UserFormDTO.KEY_TYPE, EmailCredentialsDTO.EMAIL_AUTH_TYPE);
         return map;
     }
 }

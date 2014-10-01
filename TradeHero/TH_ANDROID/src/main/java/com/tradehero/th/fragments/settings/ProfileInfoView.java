@@ -23,7 +23,6 @@ import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromAdapter;
@@ -31,6 +30,7 @@ import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTOFactory;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromLibraryDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -38,7 +38,6 @@ import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.BitmapForProfileFactory;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
@@ -263,16 +262,16 @@ public class ProfileInfoView extends LinearLayout
 
     public void populateUserFormMap(Map<String, Object> map)
     {
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_EMAIL, email.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD, password.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_INVITE_CODE, referralCode.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, firstName.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
+        populateUserFormMapFromEditable(map, UserFormDTO.KEY_EMAIL, email.getText());
+        populateUserFormMapFromEditable(map, UserFormDTO.KEY_PASSWORD, password.getText());
+        populateUserFormMapFromEditable(map, UserFormDTO.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
+        populateUserFormMapFromEditable(map, UserFormDTO.KEY_DISPLAY_NAME, displayName.getText());
+        populateUserFormMapFromEditable(map, UserFormDTO.KEY_INVITE_CODE, referralCode.getText());
+        populateUserFormMapFromEditable(map, UserFormDTO.KEY_FIRST_NAME, firstName.getText());
+        populateUserFormMapFromEditable(map, UserFormDTO.KEY_LAST_NAME, lastName.getText());
         if (newImagePath != null)
         {
-            map.put(UserFormFactory.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
+            map.put(UserFormDTO.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
         }
     }
 

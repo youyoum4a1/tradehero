@@ -10,30 +10,31 @@ import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.AccessTokenForm;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
-import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class SocialFriendHandlerFacebook extends SocialFriendHandler
@@ -42,8 +43,9 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
 
     @NotNull final ProgressDialogUtil dialogUtil;
-    @NotNull final FacebookUtils facebookUtils;
     @NotNull final SocialServiceWrapper socialServiceWrapper;
+    @NotNull private final FacebookAuthenticationProvider facebookAuthenticationProvider;
+    @NotNull final SocialService socialService;
     @NotNull final UserProfileCache userProfileCache;
     @NotNull private final Provider<Activity> activityProvider;
 
@@ -56,15 +58,18 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     @Inject public SocialFriendHandlerFacebook(
             @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull ProgressDialogUtil dialogUtil,
-            @NotNull FacebookUtils facebookUtils,
             @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull FacebookAuthenticationProvider facebookAuthenticationProvider,
+            @NotNull SocialService socialService,
             @NotNull UserProfileCache userProfileCache,
             @NotNull Provider<Activity> activityProvider)
     {
         super(userServiceWrapper);
+        this.userServiceWrapper = userServiceWrapper;
         this.dialogUtil = dialogUtil;
-        this.facebookUtils = facebookUtils;
         this.socialServiceWrapper = socialServiceWrapper;
+        this.facebookAuthenticationProvider = facebookAuthenticationProvider;
+        this.socialService = socialService;
         this.userProfileCache = userProfileCache;
         this.activityProvider = activityProvider;
     }
@@ -95,36 +100,31 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
 
     private void login(final UserBaseKey userKey)
     {
-        LogInCallback socialNetworkCallback = new LogInCallback()
-        {
-            @Override public void done(UserLoginDTO user, THException ex)
-            {
-                Timber.d("login done");
-                dialogUtil.dismiss(activityProvider.get());
-            }
+        // TODO/refactor
+        facebookAuthenticationProvider.logIn(activityProvider.get())
+                .flatMap(new Func1<AuthData, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(AuthData authData)
+                    {
+                        return socialService.connectRx(userKey.getUserId(), new AccessTokenForm(authData));
+                    }
+                })
+                .subscribe(new Observer<UserProfileDTO>()
+                {
+                    @Override public void onCompleted()
+                    {
+                    }
 
-            @Override public boolean onSocialAuthDone(JSONCredentials json)
-            {
-                Timber.d("login onSocialAuthDone");
-                //detachMiddleCallbackConnect();
-                socialServiceWrapper.connect(
-                        userKey,
-                        UserFormFactory.create(json),
-                        new SocialLinkingCallback());
+                    @Override public void onError(Throwable e)
+                    {
+                        new SocialLinkingCallback().failure(new THException(e));
+                    }
 
-                progressDialog.setMessage(activityProvider.get().getString(
-                        R.string.authentication_connecting_tradehero,
-                        SocialNetworkEnum.FB.getName()));
-                return false;
-            }
-
-            @Override public void onStart()
-            {
-                Timber.d("login onStart");
-                progressDialog = dialogUtil.show(activityProvider.get(), null, null);
-            }
-        };
-        facebookUtils.logIn(activityProvider.get(), socialNetworkCallback);
+                    @Override public void onNext(UserProfileDTO userProfileDTO)
+                    {
+                        new SocialLinkingCallback().success(userProfileDTO, (Response) null);
+                    }
+                });
     }
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
@@ -149,13 +149,6 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
             progressDialog.dismiss();
         }
     }
-
-    @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
-
-    //private Session getFacebookSession()
-    //{
-    //    return facebookAuthenticationProvider.getSession();
-    //}
 
     private void sendRequestDialog(Activity activity, List<UserFriendsDTO> friendsDTOs)
     {

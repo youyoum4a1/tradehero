@@ -20,7 +20,6 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -29,24 +28,24 @@ import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.auth.AccessTokenForm;
+import com.tradehero.th.auth.AuthData;
+import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.fragments.social.friend.RequestCallback;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
@@ -57,6 +56,8 @@ import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observable;
+import rx.functions.Func1;
 
 @Routable({
         "refer-friend/:socialId/:socialUserId",
@@ -70,11 +71,12 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject MainCredentialsPreference mainCredentialsPreference;
 
     @Inject AlertDialogUtil alertDialogUtil;
-    @Inject Lazy<FacebookUtils> facebookUtils;
+    @Inject Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Provider<Activity> activityProvider;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
+    @Inject SocialService socialService;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject CurrentUserId currentUserId;
@@ -235,8 +237,16 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             if (Session.getActiveSession() == null)
             {
-                facebookUtils.get().logIn(activityProvider.get(),
-                        new TrackFacebookCallback());
+                // FIXME/refactor
+                facebookAuthenticationProvider.get()
+                        .logIn(activityProvider.get())
+                        .flatMap(new Func1<AuthData, Observable<UserProfileDTO>>()
+                        {
+                            @Override public Observable<UserProfileDTO> call(AuthData authData)
+                            {
+                                return socialService.connectRx(currentUserId.get(), new AccessTokenForm(authData));
+                            }
+                        });
             }
             else
             {
@@ -334,31 +344,6 @@ public final class HomeFragment extends BaseWebViewFragment
         }
     }
 
-    private class TrackFacebookCallback extends LogInCallback
-    {
-        @Override public void done(UserLoginDTO user, THException ex)
-        {
-            getProgressDialog().dismiss();
-        }
-
-        @Override public void onStart()
-        {
-            getProgressDialog().show();
-        }
-
-        @Override public boolean onSocialAuthDone(JSONCredentials json)
-        {
-            detachMiddleCallbackConnect();
-            middleCallbackConnect = socialServiceWrapperLazy.get().connect(
-                    currentUserId.toUserBaseKey(), UserFormFactory.create(json),
-                    new SocialLinkingCallback());
-            progressDialog.setMessage(getActivity().getString(
-                    R.string.authentication_connecting_tradehero,
-                    "Facebook"));
-            return true;
-        }
-    }
-
     private ProgressDialog getProgressDialog()
     {
         if (progressDialog != null)
@@ -371,15 +356,6 @@ public final class HomeFragment extends BaseWebViewFragment
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();
         return progressDialog;
-    }
-
-    protected void detachMiddleCallbackConnect()
-    {
-        if (middleCallbackConnect != null)
-        {
-            middleCallbackConnect.setPrimaryCallback(null);
-        }
-        middleCallbackConnect = null;
     }
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
