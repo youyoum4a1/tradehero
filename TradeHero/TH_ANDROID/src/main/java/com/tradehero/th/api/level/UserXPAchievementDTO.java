@@ -7,6 +7,7 @@ import com.tradehero.th.utils.level.XpModule;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class UserXPAchievementDTO implements DTO, BroadcastData
 {
@@ -20,8 +21,9 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
     public String subText;
     public int xpEarned;
     public int xpTotal;
-    public List<UserXPMultiplierDTO> multiplier;
+    @Nullable public List<UserXPMultiplierDTO> multiplier;
 
+    //<editor-fold desc="Constructors">
     public UserXPAchievementDTO()
     {
         super();
@@ -59,6 +61,7 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
             }
         }
     }
+    //</editor-fold>
 
     @NotNull @Override public Bundle getArgs()
     {

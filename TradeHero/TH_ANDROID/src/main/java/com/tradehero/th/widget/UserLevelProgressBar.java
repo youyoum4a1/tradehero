@@ -47,7 +47,7 @@ public class UserLevelProgressBar extends RelativeLayout
 
     private int mCurrentXP = -1;
     @Nullable private UserLevelProgressBarLevelUpListener userLevelProgressBarLevelUpListener;
-    private UserLevelProgressBarListener userLevelProgressBarListener;
+    @Nullable private UserLevelProgressBarListener userLevelProgressBarListener;
 
     private float mMsPerXP = MS_PER_XP;
     private AnimatorSet mIncrementAnimatorSet;
@@ -375,7 +375,7 @@ public class UserLevelProgressBar extends RelativeLayout
         this.userLevelProgressBarLevelUpListener = userLevelProgressBarLevelUpListener;
     }
 
-    public void setUserLevelProgressBarListener(UserLevelProgressBarListener userLevelProgressBarListener)
+    public void setUserLevelProgressBarListener(@Nullable UserLevelProgressBarListener userLevelProgressBarListener)
     {
         this.userLevelProgressBarListener = userLevelProgressBarListener;
     }
