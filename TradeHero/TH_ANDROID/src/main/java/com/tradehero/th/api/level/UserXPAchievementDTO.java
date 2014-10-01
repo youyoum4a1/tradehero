@@ -5,9 +5,9 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.utils.broadcast.BroadcastData;
 import com.tradehero.th.utils.level.XpModule;
 import java.util.ArrayList;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class UserXPAchievementDTO implements DTO, BroadcastData
 {
@@ -21,7 +21,7 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
     public String subText;
     public int xpEarned;
     public int xpTotal;
-    @Nullable public List<UserXPMultiplierDTO> multiplier;
+    @Nullable public UserXPMultiplierDTOList multiplier;
 
     //<editor-fold desc="Constructors">
     public UserXPAchievementDTO()
@@ -54,7 +54,7 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
         if (b.containsKey(KEY_MULTIPLIERS))
         {
             ArrayList<Bundle> bundles = b.getParcelableArrayList(KEY_MULTIPLIERS);
-            multiplier = new ArrayList<>();
+            multiplier = new UserXPMultiplierDTOList();
             for (Bundle multi : bundles)
             {
                 multiplier.add(new UserXPMultiplierDTO(multi));
@@ -95,9 +95,10 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
 
     public int getBaseXp()
     {
+        int baseXp;
         if(multiplier != null && !multiplier.isEmpty())
         {
-            int baseXp = xpTotal;
+            baseXp = xpTotal;
             for (UserXPMultiplierDTO multiplierDTO : multiplier)
             {
                 baseXp -= xpEarned * multiplierDTO.multiplier;
@@ -106,7 +107,23 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
         }
         else
         {
-            return xpTotal - xpEarned;
+            baseXp = xpTotal - xpEarned;
         }
+        if (baseXp < 0)
+        {
+            Timber.e(new Exception(), "BaseXp=0 for %s", this);
+        }
+        return baseXp;
+    }
+
+    @Override public String toString()
+    {
+        return "UserXPAchievementDTO{" +
+                "text='" + text + '\'' +
+                ", subText='" + subText + '\'' +
+                ", xpEarned=" + xpEarned +
+                ", xpTotal=" + xpTotal +
+                ", multiplier=" + multiplier +
+                '}';
     }
 }

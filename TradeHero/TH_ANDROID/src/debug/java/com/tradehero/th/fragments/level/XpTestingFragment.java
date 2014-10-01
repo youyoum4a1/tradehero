@@ -14,9 +14,9 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.level.UserXPMultiplierDTO;
+import com.tradehero.th.api.level.UserXPMultiplierDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -57,7 +57,7 @@ public class XpTestingFragment extends DashboardFragment
             userXPAchievementDTO.text = xpReason.getText().toString();
             userXPAchievementDTO.xpEarned = xp;
             userXPAchievementDTO.xpTotal = Integer.parseInt(xpFrom.getText().toString()) + xp;
-            userXPAchievementDTO.multiplier = new ArrayList<>();
+            userXPAchievementDTO.multiplier = new UserXPMultiplierDTOList();
             xp = parseMultipliers(userXPAchievementDTO.multiplier, xp, xpM1Reason, xpM1Value);
             xp = parseMultipliers(userXPAchievementDTO.multiplier, xp, xpM2Reason, xpM2Value);
             xp = parseMultipliers(userXPAchievementDTO.multiplier, xp, xpM3Reason, xpM3Value);
