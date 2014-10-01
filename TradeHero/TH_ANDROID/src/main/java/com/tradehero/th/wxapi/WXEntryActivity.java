@@ -24,7 +24,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
-import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.share.TrackShareDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
@@ -63,7 +63,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private Injector newInjector;
     private WeChatDTO weChatDTO;
     private Bitmap mBitmap;
-    private MiddleCallback<BaseResponseDTO> trackShareMiddleCallback;
+    private MiddleCallback<TrackShareDTO> trackShareMiddleCallback;
 
     @Inject CurrentUserId currentUserId;
     @Inject IWXAPI mWeChatApi;
@@ -281,9 +281,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         super.onDestroy();
     }
 
-    private class TrackShareCallback implements Callback<BaseResponseDTO>
+    private class TrackShareCallback implements Callback<TrackShareDTO>
     {
-        @Override public void success(BaseResponseDTO response, Response response2)
+        @Override public void success(TrackShareDTO response, Response response2)
         {
             // do nothing for now
             finish();

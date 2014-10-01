@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.share.TrackShareDTO;
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -27,19 +27,19 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Track Share">
-    public BaseResponseDTO trackShare(
+    public TrackShareDTO trackShare(
             @NotNull UserBaseKey userId,
             @NotNull WeChatTrackShareFormDTO weChatTrackShareFormDTO)
     {
         return weChatService.trackShare(userId.key, weChatTrackShareFormDTO);
     }
 
-    public BaseMiddleCallback<BaseResponseDTO> trackShare(
+    public BaseMiddleCallback<TrackShareDTO> trackShare(
             @NotNull UserBaseKey userId,
             @NotNull WeChatTrackShareFormDTO weChatTrackShareFormDTO,
-            @Nullable Callback<BaseResponseDTO> callback)
+            @Nullable Callback<TrackShareDTO> callback)
     {
-        BaseMiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        BaseMiddleCallback<TrackShareDTO> middleCallback = new BaseMiddleCallback<>(callback);
         weChatServiceAsync.trackShare(userId.key, weChatTrackShareFormDTO, middleCallback);
         return middleCallback;
     }
