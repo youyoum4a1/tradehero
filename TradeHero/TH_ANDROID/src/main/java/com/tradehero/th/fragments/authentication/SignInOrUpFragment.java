@@ -25,7 +25,7 @@ import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.network.service.SessionService;
+import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -50,7 +50,7 @@ public class SignInOrUpFragment extends Fragment
     private static final String FAKE_EMAIL = "thont@live.com";
     @Inject Analytics analytics;
     @Inject AccountManager accountManager;
-    @Inject SessionService sessionService;
+    @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject Provider<LoginSignUpFormDTO.Builder> authenticationFormBuilderProvider;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
 
@@ -152,7 +152,7 @@ public class SignInOrUpFragment extends Fragment
                                 {
                                     @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
                                     {
-                                        return sessionService.signupAndLogin(loginSignUpFormDTO);
+                                        return sessionServiceWrapper.signupAndLogin(loginSignUpFormDTO);
                                     }
                                 })
                                 .subscribe(new Action1<UserLoginDTO>()

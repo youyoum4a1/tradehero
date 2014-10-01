@@ -10,7 +10,6 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.Header;
 import retrofit.http.POST;
-import rx.Observable;
 
 public interface SessionService
 {
@@ -26,9 +25,6 @@ public interface SessionService
     UserLoginDTO signupAndLogin(
             @Header("Authorization") String authorization,
             @Body LoginSignUpFormDTO loginSignUpFormDTO);
-
-    @POST("/signupAndLogin")
-    Observable<UserLoginDTO> signupAndLogin(@Body LoginSignUpFormDTO loginSignUpFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Update Authorization Tokens">

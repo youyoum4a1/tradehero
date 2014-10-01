@@ -25,12 +25,14 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class SessionServiceWrapper
 {
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final SessionService sessionService;
     @NotNull private final SessionServiceAsync sessionServiceAsync;
+    @NotNull private final SessionServiceRx sessionServiceRx;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final DTOCacheUtil dtoCacheUtil;
     @NotNull private final Context context;
@@ -42,6 +44,7 @@ import retrofit.Callback;
             @NotNull CurrentUserId currentUserId,
             @NotNull SessionService sessionService,
             @NotNull SessionServiceAsync sessionServiceAsync,
+            @NotNull SessionServiceRx sessionServiceRx,
             @NotNull UserProfileCache userProfileCache,
             @NotNull DTOCacheUtil dtoCacheUtil,
             @NotNull Context context,
@@ -51,6 +54,7 @@ import retrofit.Callback;
         this.currentUserId = currentUserId;
         this.sessionService = sessionService;
         this.sessionServiceAsync = sessionServiceAsync;
+        this.sessionServiceRx = sessionServiceRx;
         this.userProfileCache = userProfileCache;
         this.dtoCacheUtil = dtoCacheUtil;
         this.context = context;
@@ -60,7 +64,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
-    @NotNull protected DTOProcessor<UserLoginDTO> createUserLoginProcessor()
+    @NotNull protected DTOProcessorUserLogin createUserLoginProcessor()
     {
         return new DTOProcessorUserLogin(
                 systemStatusCache.get(),
@@ -106,7 +110,7 @@ import retrofit.Callback;
             @NotNull String authorization,
             @NotNull LoginSignUpFormDTO loginSignUpFormDTO)
     {
-        return sessionService.signupAndLogin(authorization, loginSignUpFormDTO);
+        return createUserLoginProcessor().process(sessionService.signupAndLogin(authorization, loginSignUpFormDTO));
     }
 
     @NotNull public MiddleCallback<UserLoginDTO> signupAndLogin(
@@ -117,6 +121,12 @@ import retrofit.Callback;
         MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());
         sessionServiceAsync.signupAndLogin(authorization, loginSignUpFormDTO, middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<UserLoginDTO> signupAndLogin(@NotNull LoginSignUpFormDTO loginSignUpFormDTO)
+    {
+        return sessionServiceRx.signupAndLogin(loginSignUpFormDTO)
+                .map(createUserLoginProcessor());
     }
     //</editor-fold>
 
