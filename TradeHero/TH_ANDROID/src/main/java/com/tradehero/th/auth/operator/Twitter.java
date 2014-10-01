@@ -1,28 +1,37 @@
 package com.tradehero.th.auth.operator;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.net.Uri;
+import android.webkit.CookieSyncManager;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.OAuthDialog;
-import com.tradehero.th.auth.THAuthenticationProvider;
-import com.tradehero.th.auth.operator.twitter.TwitterConstants;
-import com.tradehero.th.auth.operator.twitter.TwitterFlowResultHandler;
-import com.tradehero.th.auth.operator.twitter.TwitterGetTokenTask;
-import com.tradehero.th.auth.operator.twitter.TwitterOAuthDialog;
-import com.tradehero.th.auth.operator.twitter.TwitterOAuthDialogTask;
+import java.util.concurrent.CancellationException;
 import javax.inject.Inject;
-import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuth;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
-import oauth.signpost.http.HttpParameters;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class Twitter extends SocialOperator
 {
-    @NotNull private final OAuthProvider provider;
-    @Nullable private String userId;
-    @Nullable private String screenName;
+    private static final String REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token";
+    private static final String AUTHORIZE_URL = "https://api.twitter.com/oauth/authorize";
+    private static final String ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
+    private static final String CALLBACK_URL = "twitter-oauth://complete";
+
+    private static final String SERVICE_URL_ID = "api.twitter";
+    private static final String USER_ID_PARAM = "user_id";
+    private static final String SCREEN_NAME_PARAM = "screen_name";
+
+    private final OAuthProvider provider;
+    private final CommonsHttpOAuthConsumer consumer;
 
     @Inject public Twitter(
             @ConsumerKey("Twitter") String consumerKey,
@@ -30,153 +39,106 @@ public class Twitter extends SocialOperator
     {
         super(consumerKey, consumerSecret);
         provider = new CommonsHttpOAuthProvider(
-                TwitterConstants.REQUEST_TOKEN_URL,
-                TwitterConstants.ACCESS_TOKEN_URL,
-                TwitterConstants.AUTHORIZE_URL);
+                REQUEST_TOKEN_URL,
+                ACCESS_TOKEN_URL,
+                AUTHORIZE_URL);
+
+        consumer = new CommonsHttpOAuthConsumer(getConsumerKey(), getConsumerSecret());
     }
 
-    //<editor-fold desc="Accessors">
-    public String getUserId()
+    public Observable<AuthData> authorize(final Context context)
     {
-        return this.userId;
-    }
-
-    public void setUserId(String userId)
-    {
-        this.userId = userId;
-    }
-
-    public String getScreenName()
-    {
-        return this.screenName;
-    }
-
-    public void setScreenName(String screenName)
-    {
-        this.screenName = screenName;
-    }
-    //</editor-fold>
-
-    public void authorize(
-            @NotNull final Context context,
-            @NotNull final THAuthenticationProvider.THAuthenticationCallback callback)
-    {
-        if (getConsumerKey().isEmpty() || getConsumerSecret().isEmpty())
-        {
-            throw new IllegalStateException(
-                    "Twitter must be initialized with a consumer key and secret before authorization.");
-        }
-        final OAuthConsumer consumer = new CommonsHttpOAuthConsumer(getConsumerKey(), getConsumerSecret());
-        AsyncTask<Void, Void, String> task = createOAuthDialogTask(context, callback, consumer);
-        task.execute();
-    }
-
-    private AsyncTask<Void, Void, String> createOAuthDialogTask(
-            @NotNull final Context context,
-            @NotNull final THAuthenticationProvider.THAuthenticationCallback callback,
-            @NotNull final OAuthConsumer consumer)
-    {
-        return new TwitterOAuthDialogTask(provider, context, consumer)
-        {
-            @Override protected void onPreExecute()
-            {
-                super.onPreExecute();
-                showProgress();
-            }
-
-            @Override protected OAuthDialog createTaskOAuthDialog(
-                    @NotNull Context context,
-                    @NotNull String result,
-                    @NotNull OAuthConsumer consumer)
-            {
-                return createOAuthDialog(context, callback, result, consumer);
-            }
-
-            @Override protected void onPostExecute(String result)
-            {
-                hideProgress();
-                super.onPostExecute(result);
-            }
-
-            @Override protected void onPostExecuteError(@NotNull Throwable error)
-            {
-                callback.onError(error);
-            }
-        };
-    }
-
-    @NotNull private OAuthDialog createOAuthDialog(
-            @NotNull final Context context,
-            @NotNull final THAuthenticationProvider.THAuthenticationCallback callback,
-            @NotNull String result,
-            @NotNull final OAuthConsumer consumer)
-    {
-        return new TwitterOAuthDialog(
-                context,
-                result,
-                createTwitterFlowResultHandler(
-                        callback,
-                        consumer));
-    }
-
-    @NotNull private TwitterFlowResultHandler createTwitterFlowResultHandler(
-            @NotNull THAuthenticationProvider.THAuthenticationCallback callback,
-            @NotNull OAuthConsumer consumer)
-    {
-        return new TwitterFlowResultHandler(callback, consumer)
-        {
-            @Override @NotNull protected AsyncTask<Void, Void, HttpParameters> createFlowGetTokenTask(
-                    @NotNull OAuthConsumer consumer,
-                    @NotNull String verifier,
-                    @NotNull THAuthenticationProvider.THAuthenticationCallback callback)
-            {
-                return createGetTokenTask(consumer, verifier, callback);
-            }
-        };
-    }
-
-    @NotNull private TwitterGetTokenTask createGetTokenTask(
-            @NotNull final OAuthConsumer consumer,
-            @NotNull final String verifier,
-            @NotNull final THAuthenticationProvider.THAuthenticationCallback callback)
-    {
-        return new TwitterGetTokenTask(provider, consumer, verifier)
-        {
-            @Override protected void onPreExecute()
-            {
-                super.onPreExecute();
-                showProgress();
-            }
-
-            @Override protected void onPostExecute(HttpParameters result)
-            {
-                super.onPostExecute(result);
-                hideProgress();
-                // noinspection ThrowableResultOfMethodCallIgnored
-                if (getError() == null)
+        return createRequestTokenObservable(context)
+                .flatMap(new Func1<String, Observable<AuthData>>()
                 {
-                    // since all parameters is stored as field of
-                    // twitter object, json is not needed
-                    callback.onSuccess(null);
+                    @Override public Observable<AuthData> call(String s)
+                    {
+                        return createRetrieveTokenObservable(s);
+                    }
+                });
+    }
+
+    private Observable<String> createRequestTokenObservable(final Context context)
+    {
+        return Observable.create(new Observable.OnSubscribe<String>()
+        {
+
+            @Override public void call(Subscriber<? super String> subscriber)
+            {
+                try
+                {
+                    String requestToken = provider.retrieveRequestToken(consumer, CALLBACK_URL);
+                    CookieSyncManager.createInstance(context);
+                    subscriber.onNext(requestToken);
+                    subscriber.onCompleted();
+                } catch (Throwable e)
+                {
+                    subscriber.onError(e);
                 }
             }
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<String, Observable<String>>()
+                {
+                    @Override public Observable<String> call(final String tokenRequestUrl)
+                    {
+                        return Observable.create(new Observable.OnSubscribe<String>()
+                        {
+                            @Override public void call(final Subscriber<? super String> subscriber)
+                            {
+                                OAuthDialog dialog = new OAuthDialog(context, tokenRequestUrl, CALLBACK_URL, SERVICE_URL_ID, new OAuthDialog.FlowResultHandler()
+                                {
+                                    @Override public void onCancel()
+                                    {
+                                        subscriber.onError(new CancellationException());
+                                    }
 
-            @Override protected void onPostExecuteError(@NotNull Throwable error)
-            {
-                callback.onError(error);
-            }
+                                    @Override public void onError(int errorCode, String description, String failingUrl)
+                                    {
+                                        // TODO better exception
+                                        subscriber.onError(new Exception("Authorization fail!"));
+                                    }
 
-            @Override protected void onPostExecuteResult(
-                    String token,
-                    String tokenSecret,
-                    String screenName,
-                    String userId)
+                                    @Override public void onComplete(String callbackUrl)
+                                    {
+                                        CookieSyncManager.getInstance().sync();
+                                        Uri uri = Uri.parse(callbackUrl);
+                                        final String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
+                                        if (verifier == null)
+                                        {
+                                            subscriber.onError(new Exception("Verifier is empty"));
+                                            return;
+                                        }
+                                        subscriber.onNext(verifier);
+                                        subscriber.onCompleted();
+                                    }
+                                });
+                                dialog.show();
+                            }
+                        });
+                    }
+                }).observeOn(Schedulers.io());
+    }
+
+    private Observable<AuthData> createRetrieveTokenObservable(final String verifier)
+    {
+        return Observable.create(new Observable.OnSubscribe<AuthData>()
+        {
+            @Override public void call(Subscriber<? super AuthData> subscriber)
             {
-                Twitter.this.setAuthToken(token);
-                Twitter.this.setAuthTokenSecret(tokenSecret);
-                Twitter.this.setScreenName(screenName);
-                Twitter.this.setUserId(userId);
+                try
+                {
+                    Timber.d("Verifier: " + verifier);
+                    provider.retrieveAccessToken(consumer, verifier);
+                    // TODO lot of information can be extracted from response parameters
+                    provider.getResponseParameters();
+                    subscriber.onNext(new AuthData(SocialNetworkEnum.TW, null, consumer.getToken(), consumer.getTokenSecret()));
+                }
+                catch (Throwable e)
+                {
+                    subscriber.onError(e);
+                }
             }
-        };
+        }).observeOn(AndroidSchedulers.mainThread());
     }
 }

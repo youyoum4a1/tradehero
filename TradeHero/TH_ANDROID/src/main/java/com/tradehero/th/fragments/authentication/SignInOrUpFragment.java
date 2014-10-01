@@ -25,6 +25,7 @@ import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -34,6 +35,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.functions.Action1;
@@ -145,6 +147,7 @@ public class SignInOrUpFragment extends Fragment
                                         return authenticationFormBuilderProvider.get()
                                                 .type(authData.socialNetworkEnum)
                                                 .accessToken(authData.accessToken)
+                                                .tokenSecret(authData.accessTokenSecret)
                                                 .build();
                                     }
                                 })
@@ -155,9 +158,18 @@ public class SignInOrUpFragment extends Fragment
                                         return sessionServiceWrapper.signupAndLogin(loginSignUpFormDTO);
                                     }
                                 })
-                                .subscribe(new Action1<UserLoginDTO>()
+                                .subscribe(new Observer<UserLoginDTO>()
                                 {
-                                    @Override public void call(UserLoginDTO userLoginDTO)
+                                    @Override public void onCompleted()
+                                    {
+                                    }
+
+                                    @Override public void onError(Throwable e)
+                                    {
+                                        THToast.show(new THException(e));
+                                    }
+
+                                    @Override public void onNext(UserLoginDTO userLoginDTO)
                                     {
                                         Timber.d("dto: " + userLoginDTO);
                                         getActivity().finish();
