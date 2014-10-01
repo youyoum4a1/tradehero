@@ -49,6 +49,13 @@ public class AuthData
 
     public final String getTHToken()
     {
-        return String.format("%s %s", socialNetworkEnum.getAuthHeader(), accessToken);
+        StringBuilder sb = new StringBuilder(socialNetworkEnum.getAuthHeader())
+                .append(" ")
+                .append(accessToken);
+        if (accessTokenSecret != null)
+        {
+            sb.append(":").append(accessTokenSecret);
+        }
+        return sb.toString();
     }
 }
