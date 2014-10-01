@@ -558,7 +558,7 @@
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TabView" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
-    <item name="android:background">@drawable/action_bar_tab_view</item>
+    <item name="android:background">@drawable/tab_indicator_ab_th</item>
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TabText" parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
