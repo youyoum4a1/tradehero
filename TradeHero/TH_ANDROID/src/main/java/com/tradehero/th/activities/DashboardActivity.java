@@ -39,6 +39,7 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
@@ -83,7 +84,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.achievement.AchievementModule;
@@ -121,7 +121,6 @@ public class DashboardActivity extends BaseActivity
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
     private Integer restoreRequestCode;
 
-    @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -143,6 +142,7 @@ public class DashboardActivity extends BaseActivity
     @Inject @ForAchievement IntentFilter achievementIntentFilter;
     @Inject @ForXP IntentFilter xpIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
+    @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
@@ -546,7 +546,7 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
+        facebookAuthenticationProvider.onActivityResult(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);

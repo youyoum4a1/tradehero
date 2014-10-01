@@ -32,9 +32,11 @@ import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.AccessTokenForm;
+import com.tradehero.th.auth.AuthData;
+import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.loaders.FriendListLoader;
-import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -43,7 +45,6 @@ import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -54,6 +55,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.functions.Func1;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -67,10 +72,9 @@ public class InviteFriendFragment extends DashboardFragment
     @Inject SocialServiceWrapper socialServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject Lazy<SocialService> socialService;
+    @Inject SocialService socialService;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
-    @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
@@ -94,10 +98,10 @@ public class InviteFriendFragment extends DashboardFragment
 
     private LoaderManager.LoaderCallbacks<List<UserFriendsDTO>> contactListLoaderCallback;
     private THCallback<BaseResponseDTO> inviteFriendCallback;
-    private LogInCallback socialNetworkCallback;
     private TextWatcher searchTextWatcher;
     private AdapterView.OnItemClickListener itemClickListener;
     private CompoundButton.OnCheckedChangeListener onToggleFriendListListener;
+    private FacebookAuthenticationProvider facebookAuthenticationProvider;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -363,7 +367,6 @@ public class InviteFriendFragment extends DashboardFragment
     {
         contactListLoaderCallback = null;
         inviteFriendCallback = null;
-        socialNetworkCallback = null;
         searchTextWatcher = null;
         itemClickListener = null;
         onToggleFriendListListener = null;
@@ -505,19 +508,39 @@ public class InviteFriendFragment extends DashboardFragment
                 currentSocialNetworkConnect = SocialNetworkEnum.LN;
 
                 getProgressDialog().show();
-                linkedInUtils.get().logIn(getActivity(), socialNetworkCallback);
+                // linkedInUtils.get().logIn(getActivity(), socialNetworkCallback);
+                // FIXME/refactor
+                throw new RuntimeException("FIXME/refactor");
             }
             else if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
             {
                 currentSocialNetworkConnect = SocialNetworkEnum.FB;
-                facebookUtils.get().logIn(getActivity(), socialNetworkCallback);
+                facebookAuthenticationProvider.logIn(getActivity())
+                        .flatMap(new Func1<AuthData, Observable<UserProfileDTO>>()
+                        {
+                            @Override public Observable<UserProfileDTO> call(AuthData authData)
+                            {
+                                return socialService.connectRx(currentUserId.get(), new AccessTokenForm(authData));
+                            }
+                        })
+                        .subscribe(new Observer<UserProfileDTO>()
+                        {
+                            @Override public void onCompleted()
+                            {
+                            }
+
+                            @Override public void onError(Throwable e)
+                            {
+                                new SocialLinkingCallback().failure(new THException(e));
+                            }
+
+                            @Override public void onNext(UserProfileDTO userProfileDTO)
+                            {
+                                new SocialLinkingCallback().success(userProfileDTO, (Response) null);
+                            }
+                        });
             }
         }
-    }
-
-    private THCallback<UserProfileDTO> createSocialConnectCallback()
-    {
-        return new SocialLinkingCallback();
     }
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>

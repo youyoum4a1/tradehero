@@ -23,7 +23,6 @@ import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
@@ -49,7 +48,6 @@ public class AuthenticationActivity extends BaseActivity
 {
     private ProgressDialog progressDialog;
 
-    @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
@@ -176,7 +174,10 @@ public class AuthenticationActivity extends BaseActivity
     {
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Facebook));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
-        facebookUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Facebook));
+
+        // FIXME/refactor
+        facebookAuthenticationProvider.logIn(this);
+        throw new RuntimeException("FIXME/refactor");
     }
 
     public void authenticateWithTwitter()
