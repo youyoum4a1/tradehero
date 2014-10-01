@@ -43,6 +43,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.PreRoutable;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.THTabView;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -257,8 +258,7 @@ public class UpdateCenterFragment extends DashboardFragment
         for (UpdateCenterTabType tabTitle : types)
         {
             args = new Bundle(args);
-            TitleTabView tabView = (TitleTabView) LayoutInflater.from(getActivity())
-                    .inflate(R.layout.message_tab_item, mTabHost.getTabWidget(), false);
+            THTabView tabView = THTabView.inflateWith(mTabHost.getTabWidget());
             String title = getString(tabTitle.titleRes, 0);
             tabView.setTitle(title);
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
@@ -310,8 +310,8 @@ public class UpdateCenterFragment extends DashboardFragment
 
     private void changeTabTitleNumber(@NotNull UpdateCenterTabType tabType, int number)
     {
-        @NotNull TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
-        tabView.setTitleNumber(number);
+        @NotNull THTabView tabView = (THTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
+        tabView.setNumber(number);
     }
 
     @Override public void onTitleNumberChanged(@NotNull UpdateCenterTabType tabType, int number)

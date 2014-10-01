@@ -572,6 +572,26 @@
     <item name="android:background">@android:color/white</item>
   </style>
 
+
+  <style name="TradeHero.TabView">
+    <item name="android:gravity">center_horizontal</item>
+    <item name="android:paddingLeft">16dip</item>
+    <item name="android:paddingRight">16dip</item>
+    <item name="android:background">@drawable/tab_indicator_ab_th</item>
+    <item name="android:layout_width">0dip</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:minWidth">80dip</item>
+  </style>
+
+  <style name="TradeHero.TabText">
+    <item name="android:textColor">@color/tradehero_blue</item>
+    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textStyle">normal</item>
+    <item name="android:ellipsize">marquee</item>
+    <item name="android:maxLines">2</item>
+    <item name="android:maxWidth">180dip</item>
+  </style>
+
   <style name="TH.ContentPartnersLogo">
     <item name="android:minWidth">80dp</item>
     <item name="android:scaleType">fitCenter</item>

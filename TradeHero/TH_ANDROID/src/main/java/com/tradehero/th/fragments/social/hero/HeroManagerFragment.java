@@ -1,16 +1,13 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.common.billing.ProductPurchase;
@@ -29,6 +26,7 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.widget.THTabView;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +87,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             addTab(resourceDTO);
         }
-        setTitleColor();
         mTabHost.getTabWidget().setBackgroundColor(Color.WHITE);
         return mTabHost;
     }
@@ -101,35 +98,13 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
         String title = MessageFormat.format(getString(resourceDTO.heroTabTitleRes), 0);
 
-        TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
+        THTabView tabIndicator =
+                (THTabView) LayoutInflater.from(getActivity()).inflate(R.layout.th_tab_indicator, mTabHost.getTabWidget(), false);
+        tabIndicator.setTitle(title);
+
+        TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabIndicator);
         tabSpecList.add(tabSpec);
         mTabHost.addTab(tabSpec, resourceDTO.heroContentFragmentClass, args);
-    }
-
-    //TODO should make FragmentTabHost more generic
-    private void setTitleColor()
-    {
-        int color = getResources().getColor(R.color.tradehero_blue);
-        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++)
-        {
-
-            final TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i)
-                    .findViewById(android.R.id.title);
-
-            // Look for the title view to ensure this is an indicator and not a divider.(I didn't know, it would return divider too, so I was getting an NPE)
-            if (tv == null)
-            {
-                continue;
-            }
-            else
-            {
-                graphicUtil.setBackground(mTabHost.getTabWidget().getChildAt(i), getResources().getDrawable(R.drawable.tab_indicator_ab_th));
-                tv.setTextColor(color);
-                tv.setAllCaps(false);
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_small));
-                tv.setTypeface(null, Typeface.NORMAL);
-            }
-        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -176,15 +151,13 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             return;
         }
-        TabHost.TabSpec tabSpec = tabSpecList.get(resourceDTO.heroTabIndex);
         int titleRes = resourceDTO.heroTabTitleRes;
         String title = MessageFormat.format(getString(titleRes), number);
-        tabSpec.setIndicator(title);
 
-        TextView tv = (TextView) mTabHost.getTabWidget()
-                .getChildAt(resourceDTO.heroTabIndex)
-                .findViewById(android.R.id.title);
-        tv.setText(title);
+        THTabView tv = (THTabView) mTabHost.getTabWidget()
+                .getChildAt(resourceDTO.heroTabIndex);
+
+        tv.setTitle(title);
     }
 
     @Override public void onHerosLoaded(HeroTypeResourceDTO resourceDTO, HeroDTOExtWrapper value)

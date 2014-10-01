@@ -11,6 +11,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TabHost;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.widget.THTabView;
 import java.util.Collection;
 
 public class DashboardTabHost extends TabHost
@@ -48,8 +49,10 @@ public class DashboardTabHost extends TabHost
 
     private void addNewTab(RootFragmentType tabType)
     {
+        THTabView indicator = THTabView.inflateWith(getTabWidget());
+        indicator.setIcon(tabType.drawableResId);
         addTab(makeTabSpec(tabType)
-                .setIndicator("", getResources().getDrawable(tabType.drawableResId)));
+                .setIndicator(indicator));
     }
 
     @Override public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
