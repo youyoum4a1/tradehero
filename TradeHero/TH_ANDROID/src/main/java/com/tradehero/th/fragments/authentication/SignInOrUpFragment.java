@@ -134,7 +134,8 @@ public class SignInOrUpFragment extends Fragment
                 {
                     @Override public void call(SocialNetworkEnum socialNetworkEnum)
                     {
-                        progressDialog = ProgressDialog.show(getActivity(), socialNetworkEnum.getName(), socialNetworkEnum.getName(), true);
+                        progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+                                getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()), true);
                     }
                 })
                 .map(new Func1<SocialNetworkEnum, AuthenticationProvider>()
@@ -152,6 +153,13 @@ public class SignInOrUpFragment extends Fragment
                     }
                 })
                 .doOnNext(new AuthDataObserver())
+                .doOnNext(new Action1<AuthData>()
+                {
+                    @Override public void call(AuthData authData)
+                    {
+                        progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
+                    }
+                })
                 .map(new Func1<AuthData, LoginSignUpFormDTO>()
                 {
                     @Override public LoginSignUpFormDTO call(AuthData authData)

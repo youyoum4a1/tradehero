@@ -25,7 +25,8 @@
   <string name="authentication_forgot_password">Forgot your password ?</string>
   <string name="authentication_forgot_password_email">Email</string>
 
-  <string name="authentication_connecting_tradehero">Authenticated with %s, connecting to TradeHero</string>
+  <string name="authentication_connecting_tradehero">Authenticated using %s, connecting to TradeHero</string>
+  <string name="authentication_connecting_to">Connecting to %s</string>
   <string name="authentication_connecting_tradehero_only">Processing</string>
 
   <string name="authentication_setting_is_current_login">This is your current login</string>
