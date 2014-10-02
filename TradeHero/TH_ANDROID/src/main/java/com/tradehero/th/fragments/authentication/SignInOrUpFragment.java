@@ -35,12 +35,11 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.Observer;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
@@ -68,6 +67,7 @@ public class SignInOrUpFragment extends Fragment
     AuthenticationButton[] observableViews;
 
     private Subscription subscription;
+    private Observable<UserLoginDTO> authenticationObservable;
 
     @OnClick({
             R.id.txt_term_of_service_signin,
@@ -105,7 +105,7 @@ public class SignInOrUpFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        subscription = Observable.from(observableViews)
+        authenticationObservable = Observable.from(observableViews)
                 .filter(new Func1<AuthenticationButton, Boolean>()
                 {
                     @Override public Boolean call(AuthenticationButton authenticationButton)
@@ -113,87 +113,92 @@ public class SignInOrUpFragment extends Fragment
                         return authenticationButton != null;
                     }
                 })
-                .subscribe(new EmptyObserver<AuthenticationButton>()
+                .flatMap(new Func1<AuthenticationButton, Observable<SocialNetworkEnum>>()
                 {
-                    @Override public void onNext(AuthenticationButton authenticationButton)
+                    @Override public Observable<SocialNetworkEnum> call(AuthenticationButton authenticationButton)
                     {
-                        ViewObservable.clicks(authenticationButton, false)
+                        return ViewObservable.clicks(authenticationButton, false)
                                 .map(new Func1<AuthenticationButton, SocialNetworkEnum>()
                                 {
                                     @Override public SocialNetworkEnum call(AuthenticationButton view)
                                     {
                                         return view.getType();
                                     }
-                                })
-                                .map(new Func1<SocialNetworkEnum, AuthenticationProvider>()
-                                {
-                                    @Override public AuthenticationProvider call(SocialNetworkEnum socialNetworkEnum)
-                                    {
-                                        return enumToAuthProviderMap.get(socialNetworkEnum);
-                                    }
-                                })
-                                .flatMap(new Func1<AuthenticationProvider, Observable<AuthData>>()
-                                {
-                                    @Override public Observable<AuthData> call(AuthenticationProvider authenticationProvider)
-                                    {
-                                        return authenticationProvider.logIn(getActivity());
-                                    }
-                                })
-                                .doOnNext(new AuthDataObserver())
-                                .map(new Func1<AuthData, LoginSignUpFormDTO>()
-                                {
-                                    @Override public LoginSignUpFormDTO call(AuthData authData)
-                                    {
-                                        return authenticationFormBuilderProvider.get()
-                                                .type(authData.socialNetworkEnum)
-                                                .accessToken(authData.accessToken)
-                                                .tokenSecret(authData.accessTokenSecret)
-                                                .build();
-                                    }
-                                })
-                                .flatMap(new Func1<LoginSignUpFormDTO, Observable<UserLoginDTO>>()
-                                {
-                                    @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
-                                    {
-                                        return sessionServiceWrapper.signupAndLogin(loginSignUpFormDTO);
-                                    }
-                                })
-                                .subscribe(new Observer<UserLoginDTO>()
-                                {
-                                    @Override public void onCompleted()
-                                    {
-                                    }
-
-                                    @Override public void onError(Throwable e)
-                                    {
-                                        THToast.show(new THException(e));
-                                    }
-
-                                    @Override public void onNext(UserLoginDTO userLoginDTO)
-                                    {
-                                        Timber.d("dto: " + userLoginDTO);
-                                        getActivity().finish();
-
-                                        startActivity(new Intent(getActivity(), DashboardActivity.class));
-                                    }
-                                })
-                        ;
+                                });
                     }
-                });
+                })
+                .map(new Func1<SocialNetworkEnum, AuthenticationProvider>()
+                {
+                    @Override public AuthenticationProvider call(SocialNetworkEnum socialNetworkEnum)
+                    {
+                        return enumToAuthProviderMap.get(socialNetworkEnum);
+                    }
+                })
+                .flatMap(new Func1<AuthenticationProvider, Observable<AuthData>>()
+                {
+                    @Override public Observable<AuthData> call(AuthenticationProvider authenticationProvider)
+                    {
+                        return authenticationProvider.logIn(getActivity());
+                    }
+                })
+                .doOnNext(new AuthDataObserver())
+                .map(new Func1<AuthData, LoginSignUpFormDTO>()
+                {
+                    @Override public LoginSignUpFormDTO call(AuthData authData)
+                    {
+                        return authenticationFormBuilderProvider.get()
+                                .type(authData.socialNetworkEnum)
+                                .accessToken(authData.accessToken)
+                                .tokenSecret(authData.accessTokenSecret)
+                                .build();
+                    }
+                })
+                .flatMap(new Func1<LoginSignUpFormDTO, Observable<UserLoginDTO>>()
+                {
+                    @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
+                    {
+                        return sessionServiceWrapper.signupAndLogin(loginSignUpFormDTO);
+                    }
+                })
+        ;
     }
 
-    @Override public void onDestroyView()
+    @Override public void onDestroy()
     {
-        subscription.unsubscribe();
         ButterKnife.reset(this);
-        super.onDestroyView();
+        super.onDestroy();
     }
 
     @Override public void onResume()
     {
         super.onResume();
-
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.SignIn));
+
+        subscription = authenticationObservable.subscribe(new Subscriber<UserLoginDTO>()
+        {
+            @Override public void onCompleted()
+            {
+            }
+
+            @Override public void onError(Throwable e)
+            {
+                THToast.show(new THException(e));
+            }
+
+            @Override public void onNext(UserLoginDTO userLoginDTO)
+            {
+                Timber.d("dto: " + userLoginDTO);
+                getActivity().finish();
+
+                startActivity(new Intent(getActivity(), DashboardActivity.class));
+            }
+        });
+    }
+
+    @Override public void onPause()
+    {
+        subscription.unsubscribe();
+        super.onPause();
     }
 
     private void openWebPage(String url)
