@@ -1,6 +1,7 @@
 package com.tradehero.th.auth;
 
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import dagger.Module;
 import dagger.Provides;

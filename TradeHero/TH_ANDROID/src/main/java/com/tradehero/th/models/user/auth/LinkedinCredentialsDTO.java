@@ -3,7 +3,7 @@ package com.tradehero.th.models.user.auth;
 import com.tradehero.th.api.form.LinkedinUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.auth.LinkedInAuthenticationProvider;
+import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;

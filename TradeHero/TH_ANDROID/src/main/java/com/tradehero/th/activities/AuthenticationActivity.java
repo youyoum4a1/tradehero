@@ -12,6 +12,7 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
+import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -56,6 +57,7 @@ public class AuthenticationActivity extends BaseActivity
     @Inject ProgressDialogUtil progressDialogUtil;
     private DashboardNavigator navigator;
     @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
+    @Inject LinkedInAuthenticationProvider linkedInAuthenticationProvider;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -167,7 +169,9 @@ public class AuthenticationActivity extends BaseActivity
     {
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Linkedin));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
-        linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Linkedin));
+        //linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Linkedin));
+
+        linkedInAuthenticationProvider.logIn(this);
     }
 
     public void authenticateWithFacebook()
