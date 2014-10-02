@@ -6,4 +6,6 @@
   <string name="achievements">Achievements</string>
   <string name="achievement_share">Share!</string>
   <string name="achievement_shared">Shared!</string>
+  <string name="achievement_share_failed">Failed, try again?</string>
+  <string name="achievement_sharing">Sharing…</string>
 </resources>
