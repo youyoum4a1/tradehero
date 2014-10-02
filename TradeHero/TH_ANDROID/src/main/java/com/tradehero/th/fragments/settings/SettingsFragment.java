@@ -203,15 +203,15 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
     }
 
-    private void waitAndMoveTo(final ListView listView, final int index)
+    private void waitAndMoveTo(@NotNull final ListView listView, final int index)
     {
-        new Timer().schedule(new TimerTask()
+        listView.post(new Runnable()
         {
             @Override public void run()
             {
                 listView.smoothScrollToPosition(index);
             }
-        }, 500);
+        });
     }
 
     @Override public void onResume()
