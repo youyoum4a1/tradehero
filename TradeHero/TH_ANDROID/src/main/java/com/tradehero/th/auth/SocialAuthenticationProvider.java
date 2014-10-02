@@ -66,7 +66,9 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
             return cachedObservable;
         }
 
-        return cachedObservables.put(activity, createAuthDataObservable(activity));
+        cachedObservable = createAuthDataObservable(activity);
+        cachedObservables.put(activity, cachedObservable);
+        return cachedObservable;
     }
 
     protected abstract Observable<AuthData> createAuthDataObservable(Activity activity);
