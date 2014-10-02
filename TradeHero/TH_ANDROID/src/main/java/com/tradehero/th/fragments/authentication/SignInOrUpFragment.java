@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +37,14 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.Subscriber;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
@@ -49,8 +52,6 @@ import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
 public class SignInOrUpFragment extends Fragment
 {
-    // TODO not to fake this :)
-    private static final String FAKE_EMAIL = "thont@live.com";
     @Inject Analytics analytics;
     @Inject AccountManager accountManager;
     @Inject SessionServiceWrapper sessionServiceWrapper;
@@ -69,7 +70,7 @@ public class SignInOrUpFragment extends Fragment
     AuthenticationButton[] observableViews;
 
     private Subscription subscription;
-    private Observable<UserLoginDTO> authenticationObservable;
+    private Observable<Pair<AuthData, UserLoginDTO>> authenticationObservable;
     private ProgressDialog progressDialog;
 
     @OnClick({
@@ -152,7 +153,7 @@ public class SignInOrUpFragment extends Fragment
                         return authenticationProvider.logIn(getActivity());
                     }
                 })
-                .doOnNext(new AuthDataObserver())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<AuthData>()
                 {
                     @Override public void call(AuthData authData)
@@ -165,17 +166,24 @@ public class SignInOrUpFragment extends Fragment
                     @Override public LoginSignUpFormDTO call(AuthData authData)
                     {
                         return authenticationFormBuilderProvider.get()
-                                .type(authData.socialNetworkEnum)
-                                .accessToken(authData.accessToken)
-                                .tokenSecret(authData.accessTokenSecret)
+                                .authData(authData)
                                 .build();
                     }
                 })
-                .flatMap(new Func1<LoginSignUpFormDTO, Observable<UserLoginDTO>>()
+                .flatMap(new Func1<LoginSignUpFormDTO, Observable<Pair<AuthData, UserLoginDTO>>>()
                 {
-                    @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
+                    @Override public Observable<Pair<AuthData, UserLoginDTO>> call(LoginSignUpFormDTO loginSignUpFormDTO)
                     {
-                        return sessionServiceWrapper.signupAndLogin(loginSignUpFormDTO);
+                        Observable<UserLoginDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(loginSignUpFormDTO.authData
+                                    .getTHToken(), loginSignUpFormDTO);
+                        return Observable.zip(Observable.just(loginSignUpFormDTO.authData), userLoginDTOObservable,
+                                new Func2<AuthData, UserLoginDTO, Pair<AuthData, UserLoginDTO>>()
+                                {
+                                    @Override public Pair<AuthData, UserLoginDTO> call(AuthData authData, UserLoginDTO userLoginDTO)
+                                    {
+                                        return Pair.create(authData, userLoginDTO);
+                                    }
+                                });
                     }
                 })
                 .doOnUnsubscribe(new Action0()
@@ -184,8 +192,7 @@ public class SignInOrUpFragment extends Fragment
                     {
                         progressDialog.dismiss();
                     }
-                })
-        ;
+                });
     }
 
     @Override public void onDestroy()
@@ -199,25 +206,7 @@ public class SignInOrUpFragment extends Fragment
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.SignIn));
 
-        subscription = authenticationObservable.subscribe(new Subscriber<UserLoginDTO>()
-        {
-            @Override public void onCompleted()
-            {
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                THToast.show(new THException(e));
-            }
-
-            @Override public void onNext(UserLoginDTO userLoginDTO)
-            {
-                Timber.d("dto: " + userLoginDTO);
-                getActivity().finish();
-
-                startActivity(new Intent(getActivity(), DashboardActivity.class));
-            }
-        });
+        subscription = authenticationObservable.subscribe(new AuthDataObserver());
     }
 
     @Override public void onPause()
@@ -233,46 +222,58 @@ public class SignInOrUpFragment extends Fragment
         try
         {
             startActivity(it);
-        } catch (android.content.ActivityNotFoundException e)
+        }
+        catch (android.content.ActivityNotFoundException e)
         {
             THToast.show("Unable to open url: " + uri);
         }
     }
 
-    private class AuthDataObserver implements Action1<AuthData>
+    private class AuthDataObserver implements Observer<Pair<AuthData, UserLoginDTO>>
     {
-        @Override public void call(AuthData authData)
+        @Override public void onCompleted() {}
+
+        @Override public void onError(Throwable e)
         {
-            Account account = getOrAddAccount(authData);
-            accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authData.getTHToken());
-            finishAuthentication(authData);
+            Timber.d(e, "Error");
+            THToast.show(new THException(e));
+        }
+
+        @Override public void onNext(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
+        {
+            Account account = getOrAddAccount(authDataUserLoginDTOPair);
+            accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authDataUserLoginDTOPair.first.getTHToken());
+            finishAuthentication(authDataUserLoginDTOPair);
         }
     }
 
-    private Account getOrAddAccount(AuthData authData)
+    private Account getOrAddAccount(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
     {
         Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
         Account account = accounts.length != 0 ? accounts[0] :
-                new Account(FAKE_EMAIL, PARAM_ACCOUNT_TYPE);
+                new Account(authDataUserLoginDTOPair.second.profileDTO.email, PARAM_ACCOUNT_TYPE);
 
+        String password = authDataUserLoginDTOPair.first.password;
         if (accounts.length == 0)
         {
-            accountManager.addAccountExplicitly(account, authData.password, null);
+            accountManager.addAccountExplicitly(account, password, null);
         }
         else
         {
-            accountManager.setPassword(accounts[0], authData.password);
+            accountManager.setPassword(accounts[0], password);
         }
         return account;
     }
 
-    private void finishAuthentication(AuthData authData)
+    private void finishAuthentication(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
     {
         Intent intent = new Intent();
-        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, FAKE_EMAIL);
-        intent.putExtra(AccountManager.KEY_AUTHTOKEN, authData.getTHToken());
+        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, authDataUserLoginDTOPair.second.profileDTO.email);
+        intent.putExtra(AccountManager.KEY_AUTHTOKEN, authDataUserLoginDTOPair.first.getTHToken());
         intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, PARAM_ACCOUNT_TYPE);
 
         getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+        startActivity(new Intent(getActivity(), DashboardActivity.class));
     }
 }

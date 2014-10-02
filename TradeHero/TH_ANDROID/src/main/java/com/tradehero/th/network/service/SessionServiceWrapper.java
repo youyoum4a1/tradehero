@@ -123,9 +123,9 @@ import rx.Observable;
         return middleCallback;
     }
 
-    @NotNull public Observable<UserLoginDTO> signupAndLogin(@NotNull LoginSignUpFormDTO loginSignUpFormDTO)
+    @NotNull public Observable<UserLoginDTO> signupAndLoginRx(@NotNull String authorizationHeader, @NotNull LoginSignUpFormDTO loginSignUpFormDTO)
     {
-        return sessionServiceRx.signupAndLogin(loginSignUpFormDTO)
+        return sessionServiceRx.signupAndLogin(authorizationHeader, loginSignUpFormDTO)
                 .map(createUserLoginProcessor());
     }
     //</editor-fold>
