@@ -31,11 +31,14 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton public class SecurityServiceWrapper
 {
     @NotNull private final SecurityService securityService;
     @NotNull private final SecurityServiceAsync securityServiceAsync;
+    @NotNull private final SecurityServiceRx securityServiceRx;
     @NotNull private final ProviderServiceWrapper providerServiceWrapper;
     @NotNull private final SecurityPositionDetailCache securityPositionDetailCache;
     @NotNull private final SecurityCompactCache securityCompactCache;
@@ -46,6 +49,7 @@ import retrofit.Callback;
     @Inject public SecurityServiceWrapper(
             @NotNull SecurityService securityService,
             @NotNull SecurityServiceAsync securityServiceAsync,
+            @NotNull SecurityServiceRx securityServiceRx,
             @NotNull ProviderServiceWrapper providerServiceWrapper,
             @NotNull SecurityPositionDetailCache securityPositionDetailCache,
             @NotNull SecurityCompactCache securityCompactCache,
@@ -55,6 +59,7 @@ import retrofit.Callback;
         super();
         this.securityService = securityService;
         this.securityServiceAsync = securityServiceAsync;
+        this.securityServiceRx = securityServiceRx;
         this.providerServiceWrapper = providerServiceWrapper;
         this.securityPositionDetailCache = securityPositionDetailCache;
         this.securityCompactCache = securityCompactCache;
@@ -228,6 +233,81 @@ import retrofit.Callback;
             throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
         }
         return middleCallback;
+    }
+
+    public Observable<SecurityCompactDTO> getSecuritiesRx(@NotNull SecurityListType key)
+    {
+        Observable<SecurityCompactDTOList> received;
+        if (key instanceof TrendingSecurityListType)
+        {
+            TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
+            if (trendingKey instanceof TrendingBasicSecurityListType)
+            {
+                received = this.securityServiceRx.getTrendingSecurities(
+                        trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            //else if (trendingKey instanceof TrendingPriceSecurityListType)
+            //{
+            //    received =  this.securityServiceRx.getTrendingSecuritiesByPrice(
+            //            trendingKey.exchange,
+            //            trendingKey.getPage(),
+            //            trendingKey.perPage);
+            //}
+            //else if (trendingKey instanceof TrendingVolumeSecurityListType)
+            //{
+            //    received =  this.securityServiceRx.getTrendingSecuritiesByVolume(
+            //            trendingKey.exchange,
+            //            trendingKey.getPage(),
+            //            trendingKey.perPage);
+            //}
+            //else if (trendingKey instanceof TrendingAllSecurityListType)
+            //{
+            //    received =  this.securityServiceRx.getTrendingSecuritiesAllInExchange(
+            //            trendingKey.exchange,
+            //            trendingKey.getPage(),
+            //            trendingKey.perPage);
+            //}
+            else
+            {
+                throw new IllegalArgumentException("Unhandled type " + ((Object) trendingKey).getClass().getName());
+            }
+        }
+        //else if (key instanceof SearchSecurityListType)
+        //{
+        //    SearchSecurityListType searchKey = (SearchSecurityListType) key;
+        //    received =  this.securityServiceRx.searchSecurities(
+        //            searchKey.searchString,
+        //            searchKey.getPage(),
+        //            searchKey.perPage);
+        //}
+        //else if (key instanceof ProviderSecurityListType)
+        //{
+        //    received =  providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key);
+        //}
+        //else if (key instanceof ExchangeSectorSecurityListType)
+        //{
+        //    ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
+        //    received = this.securityService.getBySectorAndExchange(
+        //            exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
+        //            exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
+        //            key.page,
+        //            key.perPage);
+        //}
+        else
+        {
+            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
+        }
+        return received
+                .flatMap(new Func1<SecurityCompactDTOList, Observable<SecurityCompactDTO>>()
+                {
+                    @Override public Observable<SecurityCompactDTO> call(
+                            @NotNull SecurityCompactDTOList securityCompactDTOs)
+                    {
+                        return Observable.from(securityCompactDTOs);
+                    }
+                });
     }
     //</editor-fold>
 

@@ -104,6 +104,11 @@ public class RetrofitProtectedModule
         return adapter.create(SecurityServiceAsync.class);
     }
 
+    @Provides @Singleton SecurityServiceRx provideSecurityServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(SecurityServiceRx.class);
+    }
+
     @Provides @Singleton SessionServiceAsync provideSessionServiceAsync(RestAdapter adapter)
     {
         return adapter.create(SessionServiceAsync.class);
