@@ -1,11 +1,9 @@
 package com.tradehero.th.auth;
 
 import android.app.Activity;
-import android.content.Context;
 import com.tradehero.th.auth.operator.Twitter;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
-import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -48,9 +46,8 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
         throw new RuntimeException("Not implemented");
     }
 
-    @Override public Observable<AuthData> logIn(Activity activity)
+    @Override protected Observable<AuthData> createAuthDataObservable(Activity activity)
     {
-        baseContext = new WeakReference<Context>(activity);
         return twitter.authorize(activity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

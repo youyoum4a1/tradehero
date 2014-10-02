@@ -207,7 +207,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         return authData;
     }
 
-    @Override public Observable<AuthData> logIn(final Activity activity)
+    @Override public Observable<AuthData> createAuthDataObservable(final Activity activity)
     {
         return Observable.just(1)
                 .observeOn(Schedulers.io())

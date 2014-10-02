@@ -196,7 +196,7 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
         }
     }
 
-    @Override public Observable<AuthData> logIn(Activity activity)
+    @Override protected Observable<AuthData> createAuthDataObservable(Activity activity)
     {
         throw new RuntimeException("Not implemented");
     }

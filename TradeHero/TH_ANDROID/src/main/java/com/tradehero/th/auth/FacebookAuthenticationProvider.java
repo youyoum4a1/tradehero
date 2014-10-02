@@ -39,7 +39,7 @@ import rx.functions.Func1;
 import timber.log.Timber;
 
 @Singleton
-public class FacebookAuthenticationProvider implements THAuthenticationProvider
+public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 {
     public static final DateFormat PRECISE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
     public static final String ACCESS_TOKEN_KEY =  "access_token";
@@ -50,7 +50,6 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     private SessionDefaultAudience defaultAudience;
     private final String applicationId;
     private int activityCode;
-    private WeakReference<Activity> baseActivity;
     private Context applicationContext;
     private List<String> permissions;
     private THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
@@ -66,7 +65,6 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         PRECISE_DATE_FORMAT.setTimeZone(new SimpleTimeZone(0, "GMT"));
 
         this.activityCode = 32665;
-        this.baseActivity = new WeakReference<>(null);
         this.permissions = permissions;
 
         this.applicationId = applicationId;
@@ -363,9 +361,8 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         restoreAuthentication(authData);
     }
 
-    @Override public Observable<AuthData> logIn(Activity activity)
+    @Override public Observable<AuthData> createAuthDataObservable(Activity activity)
     {
-        baseActivity = new WeakReference<>(activity);
         return Observable.create(new FacebookAuthenticationSubscribe(activity, permissions))
                 .flatMap(new Func1<Session, Observable<AuthData>>()
                 {

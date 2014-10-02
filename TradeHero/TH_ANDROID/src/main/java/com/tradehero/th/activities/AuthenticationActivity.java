@@ -171,6 +171,7 @@ public class AuthenticationActivity extends BaseActivity
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
         //linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Linkedin));
 
+        // FIXME/refactor
         linkedInAuthenticationProvider.logIn(this);
     }
 
@@ -181,6 +182,7 @@ public class AuthenticationActivity extends BaseActivity
 
         // FIXME/refactor
         facebookAuthenticationProvider.logIn(this);
+
         throw new RuntimeException("FIXME/refactor");
     }
 

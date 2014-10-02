@@ -1,7 +1,11 @@
 package com.tradehero.th.auth;
 
+import android.app.Activity;
 import android.content.Context;
 import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
+import rx.Observable;
 
 public abstract class SocialAuthenticationProvider implements THAuthenticationProvider
 {
@@ -12,6 +16,10 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
     public static final String AUTH_TOKEN_KEY = "auth_token";
     public static final String CONSUMER_KEY_KEY = "consumer_key";
     public static final String CONSUMER_SECRET_KEY = "consumer_secret";
+
+    // TODO make it private when the refactor is done
+    protected WeakReference<Activity> baseActivity;
+    private Map<Activity, Observable<AuthData>> cachedObservables = new WeakHashMap<>();
 
     protected WeakReference<Context> baseContext;
     protected THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
@@ -47,4 +55,19 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
     {
         return getAuthType() + " " + getAuthHeaderParameter();
     }
+
+    @Override
+    public final Observable<AuthData> logIn(Activity activity)
+    {
+        baseActivity = new WeakReference<>(activity);
+        Observable<AuthData> cachedObservable = cachedObservables.get(activity);
+        if (cachedObservable != null)
+        {
+            return cachedObservable;
+        }
+
+        return cachedObservables.put(activity, createAuthDataObservable(activity));
+    }
+
+    protected abstract Observable<AuthData> createAuthDataObservable(Activity activity);
 }
