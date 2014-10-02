@@ -42,10 +42,8 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialService;
-import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -69,11 +67,9 @@ public class InviteFriendFragment extends DashboardFragment
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
     private static final int CONTACT_LOADER_ID = 0;
 
-    @Inject SocialServiceWrapper socialServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject SocialService socialService;
-    @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;

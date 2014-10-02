@@ -24,7 +24,6 @@ import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
@@ -50,7 +49,6 @@ public class AuthenticationActivity extends BaseActivity
     private ProgressDialog progressDialog;
 
     @Inject Lazy<TwitterUtils> twitterUtils;
-    @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
     @Inject Analytics analytics;
@@ -169,7 +167,6 @@ public class AuthenticationActivity extends BaseActivity
     {
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Linkedin));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
-        //linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Linkedin));
 
         // FIXME/refactor
         linkedInAuthenticationProvider.logIn(this);
