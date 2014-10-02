@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.authentication;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -68,6 +70,7 @@ public class SignInOrUpFragment extends Fragment
 
     private Subscription subscription;
     private Observable<UserLoginDTO> authenticationObservable;
+    private ProgressDialog progressDialog;
 
     @OnClick({
             R.id.txt_term_of_service_signin,
@@ -113,18 +116,25 @@ public class SignInOrUpFragment extends Fragment
                         return authenticationButton != null;
                     }
                 })
-                .flatMap(new Func1<AuthenticationButton, Observable<SocialNetworkEnum>>()
+                .flatMap(new Func1<AuthenticationButton, Observable<AuthenticationButton>>()
                 {
-                    @Override public Observable<SocialNetworkEnum> call(AuthenticationButton authenticationButton)
+                    @Override public Observable<AuthenticationButton> call(AuthenticationButton authenticationButton)
                     {
-                        return ViewObservable.clicks(authenticationButton, false)
-                                .map(new Func1<AuthenticationButton, SocialNetworkEnum>()
-                                {
-                                    @Override public SocialNetworkEnum call(AuthenticationButton view)
-                                    {
-                                        return view.getType();
-                                    }
-                                });
+                        return ViewObservable.clicks(authenticationButton, false);
+                    }
+                })
+                .map(new Func1<AuthenticationButton, SocialNetworkEnum>()
+                {
+                    @Override public SocialNetworkEnum call(AuthenticationButton view)
+                    {
+                        return view.getType();
+                    }
+                })
+                .doOnNext(new Action1<SocialNetworkEnum>()
+                {
+                    @Override public void call(SocialNetworkEnum socialNetworkEnum)
+                    {
+                        progressDialog = ProgressDialog.show(getActivity(), socialNetworkEnum.getName(), socialNetworkEnum.getName(), true);
                     }
                 })
                 .map(new Func1<SocialNetworkEnum, AuthenticationProvider>()
@@ -158,6 +168,13 @@ public class SignInOrUpFragment extends Fragment
                     @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
                     {
                         return sessionServiceWrapper.signupAndLogin(loginSignUpFormDTO);
+                    }
+                })
+                .doOnUnsubscribe(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        progressDialog.dismiss();
                     }
                 })
         ;
