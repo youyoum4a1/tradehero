@@ -1,14 +1,10 @@
 package com.tradehero.th.auth.operator;
 
 import android.content.Context;
-import android.net.Uri;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.auth.OAuthDialog;
-import java.util.concurrent.CancellationException;
 import javax.inject.Inject;
-import oauth.signpost.OAuth;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
@@ -82,42 +78,10 @@ public class Twitter extends SocialOperator
                 {
                     @Override public Observable<String> call(final String tokenRequestUrl)
                     {
-                        return Observable.create(new Observable.OnSubscribe<String>()
-                        {
-                            @Override public void call(final Subscriber<? super String> subscriber)
-                            {
-                                OAuthDialog dialog = new OAuthDialog(context, tokenRequestUrl, CALLBACK_URL, SERVICE_URL_ID, new OAuthDialog.FlowResultHandler()
-                                {
-                                    @Override public void onCancel()
-                                    {
-                                        subscriber.onError(new CancellationException());
-                                    }
-
-                                    @Override public void onError(int errorCode, String description, String failingUrl)
-                                    {
-                                        // TODO better exception
-                                        subscriber.onError(new Exception("Authorization fail!"));
-                                    }
-
-                                    @Override public void onComplete(String callbackUrl)
-                                    {
-                                        CookieSyncManager.getInstance().sync();
-                                        Uri uri = Uri.parse(callbackUrl);
-                                        final String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
-                                        if (verifier == null)
-                                        {
-                                            subscriber.onError(new Exception("Verifier is empty"));
-                                            return;
-                                        }
-                                        subscriber.onNext(verifier);
-                                        subscriber.onCompleted();
-                                    }
-                                });
-                                dialog.show();
-                            }
-                        });
+                        return Observable.create(new OperatorOAuthDialog(context, tokenRequestUrl, CALLBACK_URL, SERVICE_URL_ID));
                     }
-                }).observeOn(Schedulers.io());
+                })
+                .observeOn(Schedulers.io());
     }
 
     private Observable<AuthData> createRetrieveTokenObservable(final String verifier)
@@ -133,6 +97,7 @@ public class Twitter extends SocialOperator
                     // TODO lot of information can be extracted from response parameters
                     provider.getResponseParameters();
                     subscriber.onNext(new AuthData(SocialNetworkEnum.TW, null, consumer.getToken(), consumer.getTokenSecret()));
+                    subscriber.onCompleted();
                 }
                 catch (Throwable e)
                 {
