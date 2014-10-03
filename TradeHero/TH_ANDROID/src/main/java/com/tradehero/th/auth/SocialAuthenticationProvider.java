@@ -59,17 +59,23 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
     @Override
     public final Observable<AuthData> logIn(Activity activity)
     {
+        // FIXME use caching
         baseActivity = new WeakReference<>(activity);
-        Observable<AuthData> cachedObservable = cachedObservables.get(activity);
-        if (cachedObservable != null)
-        {
-            return cachedObservable;
-        }
+        Observable<AuthData> cachedObservable;// = cachedObservables.get(activity);
+        //if (cachedObservable != null)
+        //{
+        //    return cachedObservable;
+        //}
 
         cachedObservable = createAuthDataObservable(activity);
-        cachedObservables.put(activity, cachedObservable);
+        //cachedObservables.put(activity, cachedObservable);
         return cachedObservable;
     }
 
     protected abstract Observable<AuthData> createAuthDataObservable(Activity activity);
+
+    protected void clearCachedObservables()
+    {
+        cachedObservables.clear();
+    }
 }

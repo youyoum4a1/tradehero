@@ -296,6 +296,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
     public synchronized void setPermissions(List<String> permissions)
     {
         this.permissions = permissions;
+        clearCachedObservables();
     }
 
     @Override public boolean restoreAuthentication(JSONCredentials authData)
