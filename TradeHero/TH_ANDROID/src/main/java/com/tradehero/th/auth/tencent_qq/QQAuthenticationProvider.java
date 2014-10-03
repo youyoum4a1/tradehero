@@ -20,28 +20,22 @@ import timber.log.Timber;
 @Singleton
 public class QQAuthenticationProvider extends SocialAuthenticationProvider
 {
-    private final String APP_ID = "1101331512";
     private static final String SCOPE = "all";
-    private Tencent mTencent;
+    private final Tencent mTencent;
     private QQAppAuthData mAccessToken;
 
     public static final String KEY_ACCESS_TOKEN = "qq_access_token";
     public static final String KEY_OPEN_ID = "qq_openid";
 
     //<editor-fold desc="Constructors">
-    @Inject public QQAuthenticationProvider()
+    @Inject public QQAuthenticationProvider(Tencent tencent)
     {
+        this.mTencent = tencent;
     }
     //</editor-fold>
 
     @Override
     public void authenticate(THAuthenticationCallback callback)
-    {
-        Timber.d("windy QQ authenticate!");
-        doAuthenticate(callback);
-    }
-
-    private void doAuthenticate(THAuthenticationCallback callback)
     {
         if (callback == null)
         {
@@ -55,14 +49,8 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
 
         callback.onStart();
 
-        createQQAuth();
-    }
-
-    private void createQQAuth()
-    {
         Context context = baseContext.get();
-        mTencent = Tencent.createInstance(APP_ID, context.getApplicationContext());
-        mTencent.logout((Activity) context);
+        mTencent.logout(context);
         if (!mTencent.isSessionValid())
         {
             IUiListener listener = new BaseUiListener()

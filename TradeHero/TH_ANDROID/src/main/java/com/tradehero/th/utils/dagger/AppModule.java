@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
+import com.tencent.tauth.Tencent;
 import com.tradehero.FlavorModule;
 import com.tradehero.th.BuildTypeModule;
 import com.tradehero.th.activities.GuideActivity;
@@ -90,6 +91,8 @@ import javax.inject.Singleton;
 )
 public class AppModule
 {
+    private static final String TENCENT_APP_ID = "1101331512";
+
     private final THApp THApp;
 
     public AppModule(THApp THApp)
@@ -137,5 +140,10 @@ public class AppModule
     NetworkInfo provideNetworkInfo(ConnectivityManager connectivityManager)
     {
         return connectivityManager.getActiveNetworkInfo();
+    }
+    
+    @Provides @Singleton Tencent provideTencentAuth(Context context)
+    {
+        return Tencent.createInstance(TENCENT_APP_ID, context);
     }
 }
