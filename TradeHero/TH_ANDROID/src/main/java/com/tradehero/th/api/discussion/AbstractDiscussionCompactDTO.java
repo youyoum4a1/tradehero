@@ -20,7 +20,7 @@ abstract public class AbstractDiscussionCompactDTO extends ExtendedDTO
      * Identifies the stub discussion that this discussion replaces.
      */
     @JsonIgnore
-    public DiscussionKey stubKey;
+    @Nullable public DiscussionKey stubKey;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionCompactDTO()

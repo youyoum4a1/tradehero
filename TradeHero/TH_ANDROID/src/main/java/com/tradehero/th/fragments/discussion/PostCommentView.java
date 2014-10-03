@@ -8,7 +8,9 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -22,20 +24,15 @@ import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
-
-import org.jetbrains.annotations.NotNull;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -60,10 +57,11 @@ public class PostCommentView extends RelativeLayout
     @InjectView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
     @InjectView(R.id.post_comment_text) EditText commentText;
 
-    private MiddleCallbackWeakList<DiscussionDTO> postCommentMiddleCallbacks;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    @NotNull private MiddleCallbackWeakList<DiscussionDTO> postCommentMiddleCallbacks;
 
     @Inject MessageServiceWrapper messageServiceWrapper;
-    private MessageType messageType = null;
+    @Nullable private MessageType messageType = null;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject CurrentUserId currentUserId;
 
@@ -156,6 +154,7 @@ public class PostCommentView extends RelativeLayout
         return nextStubKey;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.post_comment_action_submit)
     protected void postComment()
     {
@@ -279,17 +278,7 @@ public class PostCommentView extends RelativeLayout
     protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
         setPosted();
-        fixHackDiscussion(discussionDTO);
         notifyCommentPosted(discussionDTO);
-    }
-
-    // HACK
-    protected void fixHackDiscussion(DiscussionDTO discussionDTO)
-    {
-        if (discussionDTO != null && discussionDTO.userId <= 0)
-        {
-            discussionDTO.userId = currentUserId.toUserBaseKey().key;
-        }
     }
 
     protected void notifyCommentPosted(DiscussionDTO discussionDTO)

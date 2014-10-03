@@ -25,7 +25,7 @@ abstract public class ViewDTOSetAdapter<T, ViewType extends View & DTOView<T>>
     }
     //</editor-fold>
 
-    @Override public ViewType getView(int position, View convertView, ViewGroup parent)
+    @Override public ViewType getView(int position, @Nullable View convertView, ViewGroup parent)
     {
         if (convertView == null)
         {
