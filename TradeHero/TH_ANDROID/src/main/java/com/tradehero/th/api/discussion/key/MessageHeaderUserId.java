@@ -59,4 +59,12 @@ public class MessageHeaderUserId extends MessageHeaderId
         return super.equalFields(other) &&
                 userBaseKey == null ? other.userBaseKey == null : userBaseKey.equals(other.userBaseKey);
     }
+
+    @Override public String toString()
+    {
+        return "MessageHeaderUserId{" +
+                super.toString() +
+                ", userBaseKey=" + userBaseKey +
+                '}';
+    }
 }

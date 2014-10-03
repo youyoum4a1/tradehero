@@ -50,4 +50,14 @@ public class MessageHeaderCache extends StraightDTOCacheNew<MessageHeaderId, Mes
         }
         return values;
     }
+
+    public void setUnread(@NotNull MessageHeaderId messageHeaderId, boolean unread)
+    {
+        MessageHeaderDTO messageHeaderDTO = get(messageHeaderId);
+        if (messageHeaderDTO != null && messageHeaderDTO.unread)
+        {
+            messageHeaderDTO.unread = unread;
+            put(messageHeaderId, messageHeaderDTO);
+        }
+    }
 }

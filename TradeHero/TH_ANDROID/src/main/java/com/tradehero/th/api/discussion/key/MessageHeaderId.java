@@ -62,4 +62,11 @@ public class MessageHeaderId implements DTOKey
     {
         putCommentId(args, commentId);
     }
+
+    @Override public String toString()
+    {
+        return "MessageHeaderId{" +
+                "commentId=" + commentId +
+                '}';
+    }
 }

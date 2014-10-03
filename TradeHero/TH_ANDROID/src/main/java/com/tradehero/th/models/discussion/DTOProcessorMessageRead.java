@@ -1,7 +1,6 @@
 package com.tradehero.th.models.discussion;
 
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.DTOProcessor;
@@ -32,11 +31,7 @@ public class DTOProcessorMessageRead implements DTOProcessor<BaseResponseDTO>
 
     @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
-        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
-        if (messageHeaderDTO != null && messageHeaderDTO.unread)
-        {
-            messageHeaderDTO.unread = false;
-        }
+        messageHeaderCache.setUnread(messageHeaderId, true);
         userProfileCache.getOrFetchAsync(readerId, true);
         return value;
     }
