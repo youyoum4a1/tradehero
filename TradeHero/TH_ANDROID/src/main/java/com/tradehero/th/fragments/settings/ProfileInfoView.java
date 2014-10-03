@@ -74,27 +74,15 @@ public class ProfileInfoView extends LinearLayout
     private String newImagePath;
     private Listener listener;
 
-    //<editor-fold desc="Constructors">
-    public ProfileInfoView(Context context)
-    {
-        super(context);
-    }
-
     public ProfileInfoView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        HierarchyInjector.inject(this);
     }
-
-    public ProfileInfoView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-    }
-    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 
@@ -116,112 +104,12 @@ public class ProfileInfoView extends LinearLayout
         this.listener = listener;
     }
 
-    public void forceValidateFields()
-    {
-        if (email != null && email.getVisibility() == VISIBLE)
-        {
-            email.forceValidate();
-        }
-        if (password != null && password.getVisibility() == VISIBLE)
-        {
-            password.forceValidate();
-        }
-        if (confirmPassword != null && confirmPassword.getVisibility() == VISIBLE)
-        {
-            confirmPassword.forceValidate();
-        }
-        if (displayName != null)
-        {
-            displayName.forceValidate();
-        }
-    }
-
     public boolean areFieldsValid()
     {
         return (email == null || email.getVisibility() == GONE || email.isValid()) &&
                 (password == null || password.getVisibility() == GONE || password.isValid()) &&
                 (confirmPassword == null || confirmPassword.getVisibility() == GONE || confirmPassword.isValid()) &&
                 (displayName == null || displayName.isValid());
-    }
-
-    public void setOnTouchListenerOnFields(View.OnTouchListener touchListener)
-    {
-        if (email != null)
-        {
-            email.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (password != null)
-        {
-            password.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (confirmPassword != null)
-        {
-            confirmPassword.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (displayName != null)
-        {
-            displayName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (firstName != null)
-        {
-            firstName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (lastName != null)
-        {
-            lastName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-    }
-
-    public void addValidationListenerOnFields(ValidationListener listener)
-    {
-        if (email != null)
-        {
-            email.setListener(listener);
-        }
-        if (password != null)
-        {
-            password.setListener(listener);
-        }
-        if (confirmPassword != null)
-        {
-            confirmPassword.setListener(listener);
-        }
-        if (displayName != null)
-        {
-            displayName.setListener(listener);
-        }
-    }
-
-    public void removeAllListenersOnFields()
-    {
-        if (email != null)
-        {
-            email.setListener(null);
-        }
-        if (password != null)
-        {
-            password.setListener(null);
-        }
-        if (confirmPassword != null)
-        {
-            confirmPassword.setListener(null);
-        }
-        if (displayName != null)
-        {
-            displayName.setListener(null);
-        }
-    }
-
-    public void setNullOnFields()
-    {
-        email = null;
-        password = null;
-        confirmPassword = null;
-        displayName = null;
-        referralCode = null;
-        firstName = null;
-        lastName = null;
-        progressDialog = null;
     }
 
     public void handleDataFromLibrary(Intent data)

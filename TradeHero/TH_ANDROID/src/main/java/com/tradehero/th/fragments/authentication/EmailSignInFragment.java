@@ -12,7 +12,6 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthData;
@@ -32,14 +31,21 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+import com.tradehero.th.widget.ValidationListener;
+import com.tradehero.th.widget.ValidationMessage;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.subjects.PublishSubject;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
+    private final PublishSubject<ValidationMessage> emailValidationSubject = PublishSubject.create();
+    private final PublishSubject<ValidationMessage> passwordValidationSubject = PublishSubject.create();
+
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
 
@@ -51,6 +57,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @InjectView(R.id.authentication_sign_in_email) SelfValidatedText email;
     @InjectView(R.id.et_pwd_login) ValidatedPasswordText password;
     @InjectView(R.id.btn_login) View loginButton;
+    private Observable<ValidationMessage> validationObservable;
 
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
@@ -124,12 +131,37 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Override protected void initSetup(View view)
     {
-        ButterKnife.inject(this, view);
         if (!Constants.RELEASE)
         {
             email.setText(getString(R.string.test_email));
             password.setText(getString(R.string.test_password));
         }
+        email.setValidationListener(new ValidationListener()
+        {
+            @Override public void notifyValidation(ValidationMessage status)
+            {
+                emailValidationSubject.onNext(status);
+            }
+        });
+
+        password.setValidationListener(new ValidationListener()
+        {
+            @Override public void notifyValidation(ValidationMessage status)
+            {
+                passwordValidationSubject.onNext(status);
+            }
+        });
+
+        validationObservable = Observable.merge(emailValidationSubject, passwordValidationSubject)
+                .last()
+                .first(new Func1<ValidationMessage, Boolean>()
+                {
+                    @Override public Boolean call(ValidationMessage validationMessage)
+                    {
+                        return validationMessage.getStatus();
+                    }
+                })
+                .asObservable();
     }
 
     @Override public void onDestroyView()
@@ -146,12 +178,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             middleCallbackForgotPassword.setPrimaryCallback(null);
         }
         middleCallbackForgotPassword = null;
-    }
-
-    @Override protected void forceValidateFields()
-    {
-        email.forceValidate();
-        password.forceValidate();
     }
 
     @Override public boolean areFieldsValid()
@@ -205,13 +231,12 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     public Observable<AuthData> obtainAuthData()
     {
-        return ViewObservable.clicks(loginButton, false)
-                .map(new Func1<View, AuthData>()
-                {
-                    @Override public AuthData call(View view)
-                    {
-                        return new AuthData(email.getText().toString(), password.getText().toString());
-                    }
-                });
+        return Observable.combineLatest(ViewObservable.clicks(loginButton, false), validationObservable, new Func2<View, ValidationMessage, AuthData>()
+        {
+            @Override public AuthData call(View view, ValidationMessage validationMessage)
+            {
+                return new AuthData(email.getText().toString(), password.getText().toString());
+            }
+        });
     }
 }

@@ -75,10 +75,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
 
     @Override protected void initSetup(View view)
     {
-        FocusableOnTouchListener touchListener = new FocusableOnTouchListener();
-
-        this.profileView.setOnTouchListenerOnFields(touchListener);
-        this.profileView.addValidationListenerOnFields(this);
         this.profileView.setListener(new EmailSignUpProfileViewListener());
     }
 
@@ -129,18 +125,10 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
     {
         if (this.profileView != null)
         {
-            this.profileView.setOnTouchListenerOnFields(null);
-            this.profileView.removeAllListenersOnFields();
-            this.profileView.setNullOnFields();
             this.profileView.setListener(null);
         }
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override protected void forceValidateFields()
-    {
-        this.profileView.forceValidateFields();
     }
 
     @Override public boolean areFieldsValid()

@@ -19,13 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 abstract public class EmailSignInOrUpFragment extends Fragment
-        implements ValidationListener
 {
     abstract public int getDefaultViewId();
 
     abstract protected void initSetup(View view);
-
-    abstract protected void forceValidateFields();
 
     abstract public boolean areFieldsValid();
 
@@ -41,19 +38,9 @@ abstract public class EmailSignInOrUpFragment extends Fragment
         initSetup(view);
     }
 
-    @Override public void notifyValidation(ValidationMessage message)
-    {
-        if (message != null && !message.getStatus() && message.getMessage() != null)
-        {
-            THToast.show(message.getMessage());
-        }
-    }
-
     protected void handleSignInOrUpButtonClicked(View view)
     {
         DeviceUtil.dismissKeyboard(view);
-
-        forceValidateFields();
 
         if (!OnlineStateReceiver.isOnline(getActivity()))
         {

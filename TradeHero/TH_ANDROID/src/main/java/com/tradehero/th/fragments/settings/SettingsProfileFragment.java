@@ -89,8 +89,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
         profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
 
-        profileView.setOnTouchListenerOnFields(touchListener);
-        profileView.addValidationListenerOnFields(this);
         profileView.setListener(createProfileViewListener());
 
         updateButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
@@ -114,9 +112,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         if (profileView != null)
         {
-            profileView.setOnTouchListenerOnFields(null);
-            profileView.removeAllListenersOnFields();
-            profileView.setNullOnFields();
             profileView.setListener(null);
         }
         profileView = null;
@@ -165,11 +160,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 askImageFromLibrary();
                 break;
         }
-    }
-
-    protected void forceValidateFields()
-    {
-        profileView.forceValidateFields();
     }
 
     public boolean areFieldsValid()
@@ -265,7 +255,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     private void updateProfile(View view)
     {
         DeviceUtil.dismissKeyboard(view);
-        forceValidateFields();
 
         if (!OnlineStateReceiver.isOnline(getActivity()))
         {

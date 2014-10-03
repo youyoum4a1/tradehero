@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -36,6 +36,7 @@
       android:inputType="textEmailAddress"
       style="@style/TradeHero.Authentication.EditText"
       android:textSize="@dimen/common_text_size_30"
+      app:minTextLength="3"
       android:background="@drawable/authentication_edit_text">
 
     <requestFocus/>
