@@ -234,6 +234,7 @@ public class MessageServiceWrapper
     {
         return new DTOProcessorDiscussionCreate(
                 discussionDTOFactory,
+                currentUserId,
                 discussionCache.get(),
                 userMessagingRelationshipCache.get(),
                 stubKey);
