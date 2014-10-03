@@ -176,7 +176,7 @@ public class PrivateDiscussionView extends DiscussionView
         return new PrivateDiscussionViewDiscussionCacheListener();
     }
 
-    protected void linkWithInitiating(PrivateDiscussionDTO discussionDTO, boolean andDisplay)
+    protected void linkWithInitiating(DiscussionDTO discussionDTO, boolean andDisplay)
     {
         this.initiatingDiscussion = discussionDTO;
         int topicId;
@@ -275,10 +275,10 @@ public class PrivateDiscussionView extends DiscussionView
     {
         @Override public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value)
         {
-            //Check with instanceof to avoid ClassCastException.
-            if(value instanceof PrivateDiscussionDTO)
+            // Check with instanceof to avoid ClassCastException.
+            if(value instanceof DiscussionDTO)
             {
-                linkWithInitiating((PrivateDiscussionDTO) value, true);
+                linkWithInitiating((DiscussionDTO) value, true);
             }
         }
 
