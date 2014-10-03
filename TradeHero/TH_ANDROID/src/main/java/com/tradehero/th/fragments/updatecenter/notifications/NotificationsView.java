@@ -18,6 +18,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.th.BottomTabs;
+import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -26,6 +28,7 @@ import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import com.tradehero.th.api.notification.PaginatedNotificationListKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
@@ -33,6 +36,7 @@ import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.utils.EndlessScrollingHelper;
+import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -53,6 +57,8 @@ public class NotificationsView extends BetterViewAnimator
     @Inject Lazy<NotificationListCache> notificationListCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;
     @Inject CurrentUserId currentUserId;
+    @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsListViewScrollListener;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     private PaginatedNotificationListKey paginatedNotificationListKey;
     private boolean loading;
@@ -109,7 +115,6 @@ public class NotificationsView extends BetterViewAnimator
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
 
         if (notificationListFetchListener == null)
         {
@@ -128,12 +133,21 @@ public class NotificationsView extends BetterViewAnimator
         notificationList.setEmptyView(emptyView);
 
         // scroll event will activate fetch task automatically
-        notificationList.setOnScrollListener(new NotificationListOnScrollListener());
+        notificationList.setOnScrollListener(
+                new MultiScrollListener(new NotificationListOnScrollListener(), dashboardBottomTabsListViewScrollListener));
 
         createOnRefreshListener();
         notificationList.setOnRefreshListener(notificationPullToRefreshListener);
 
         fetchNextPageIfNecessary();
+
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                readAllLayout.setTranslationY(y);
+            }
+        });
     }
 
     @OnClick(R.id.readAllLayout)
@@ -166,6 +180,8 @@ public class NotificationsView extends BetterViewAnimator
         notificationList.setOnScrollListener(null);
         notificationList.setOnRefreshListener((PullToRefreshBase.OnRefreshListener) null);
         notificationList.setOnItemClickListener(null);
+
+        dashboardTabHost.setOnTranslate(null);
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -212,7 +228,7 @@ public class NotificationsView extends BetterViewAnimator
         notificationListAdapter.clear();
         notificationListAdapter.addAll(notificationKeyList);
         notificationListAdapter.notifyDataSetChanged();
-        setReadAllLayoutVisable();
+        setReadAllLayoutVisible();
         Timber.d("resetContent");
     }
 
@@ -302,7 +318,7 @@ public class NotificationsView extends BetterViewAnimator
                 }
                 notificationListAdapter.addAll(value.getData());
                 notificationListAdapter.notifyDataSetChanged();
-                setReadAllLayoutVisable();
+                setReadAllLayoutVisible();
             }
         }
 
@@ -396,7 +412,7 @@ public class NotificationsView extends BetterViewAnimator
         {
             Timber.d("NotificationMarkAsReadAllCallback success");
             setAllNotificationRead();
-            setReadAllLayoutVisable();
+            setReadAllLayoutVisible();
             requestUpdateTabCounter();
         }
 
@@ -439,9 +455,9 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    private void setReadAllLayoutVisable()
+    private void setReadAllLayoutVisible()
     {
-        boolean haveUnread = false;
+        boolean haveUnread = true;
         int itemCount = notificationListAdapter.getCount();
         for (int i = 0; i < itemCount; i++)
         {

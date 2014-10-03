@@ -224,6 +224,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
+        leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -301,6 +302,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         leaderboardMarkUserListAdapter = null;
 
         leaderboardMarkUserListView.setOnRefreshListener((LeaderboardMarkUserListAdapter) null);
+        leaderboardMarkUserListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }

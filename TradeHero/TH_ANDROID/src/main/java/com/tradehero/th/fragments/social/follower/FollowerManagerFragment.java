@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
@@ -21,6 +22,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
@@ -59,6 +61,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     public static void putHeroId(Bundle args, UserBaseKey heroId)
     {
@@ -151,6 +154,24 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         super.onViewCreated(view, savedInstanceState);
         setMessageLayoutShown(true);
         showSendMessageLayoutIfNecessary();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                broadcastView.setTranslationY(y);
+            }
+        });
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        dashboardTabHost.setOnTranslate(null);
     }
 
     @Override public void onDestroyView()

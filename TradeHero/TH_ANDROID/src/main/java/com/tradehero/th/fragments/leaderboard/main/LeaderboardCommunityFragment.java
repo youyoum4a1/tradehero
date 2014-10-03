@@ -7,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -15,7 +14,6 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
@@ -50,7 +48,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +64,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject Analytics analytics;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
     @Inject UserProfileCache userProfileCache;
-    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -98,7 +94,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        leaderboardDefListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener));
+        leaderboardDefListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onStart()

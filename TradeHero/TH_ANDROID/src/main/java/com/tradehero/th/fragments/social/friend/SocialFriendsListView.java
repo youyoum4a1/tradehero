@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.social.friend;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -28,6 +29,8 @@ public class SocialFriendsListView extends RelativeLayout {
     TextView emptyView;
     @InjectView(R.id.error)
     View errorView;
+    @InjectView(R.id.social_follow_invite_all_container)
+    ViewGroup inviteFollowAllContainer;
 
     private OnClickListener onClickListener;
 

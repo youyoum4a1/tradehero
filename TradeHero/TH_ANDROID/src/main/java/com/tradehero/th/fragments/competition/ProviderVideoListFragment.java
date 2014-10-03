@@ -70,6 +70,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         helpVideoListCacheListener = new ProviderVideoListFragmentVideoListCacheListener();
         providerVideoAdapter = new ProviderVideoAdapter(getActivity(), R.layout.help_video_item_view);
         videoListView.setAdapter(providerVideoAdapter);
+        videoListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     //<editor-fold desc="ActionBar">
@@ -111,6 +112,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
     {
         providerVideoAdapter = null;
         videoListView.setEmptyView(null);
+        videoListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }

@@ -90,6 +90,16 @@ public class DashboardTabHost extends TabHost
         }
     }
 
+    public void animateHide()
+    {
+        animate().translationYBy(getResources().getDimensionPixelSize(R.dimen.dashboard_tabhost_height)).start();
+    }
+
+    public void animateShow()
+    {
+        animate().translationY(0).start();
+    }
+
     @Override public void setTranslationY(float translationY)
     {
         if (onTranslateListener != null)

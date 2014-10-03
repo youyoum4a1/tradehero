@@ -56,7 +56,7 @@ public class ContestCenterFragment extends DashboardFragment
         {
             args = new Bundle(args);
             THTabView tabView = THTabView.inflateWith(mTabHost.getTabWidget());
-            String title = getString(tabTitle.titleRes, 0);
+            String title = getString(tabTitle.titleRes);
             tabView.setTitle(title);
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
             mTabHost.addTab(tabSpec, tabTitle.tabClass, args);

@@ -7,10 +7,14 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
@@ -22,8 +26,10 @@ public class SecurityDiscussionFragment extends DashboardFragment
 
     @Inject DiscussionListCacheNew discussionListCache;
     @InjectView(R.id.stock_discussion_view) SecurityDiscussionView securityDiscussionView;
+    @InjectView(R.id.security_discussion_add) View buttonAdd;
     private SecurityId securityId;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     public static void putSecurityId(Bundle args, SecurityId securityId)
     {
@@ -44,6 +50,7 @@ public class SecurityDiscussionFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.security_discussion, container, false);
         ButterKnife.inject(this, view);
+        securityDiscussionView.setScrollListener(dashboardBottomTabsListViewScrollListener.get());
         return view;
     }
 
@@ -86,5 +93,11 @@ public class SecurityDiscussionFragment extends DashboardFragment
             discussionListCache.invalidateAllForDiscussionType(DiscussionType.SECURITY);
         }
         super.onDestroy();
+    }
+
+    @Override public void onDestroyView()
+    {
+        securityDiscussionView.removeScrollListener();
+        super.onDestroyView();
     }
 }

@@ -18,8 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.staff.StaffDTO;
 import com.tradehero.th.models.staff.StaffDTOFactory;
@@ -37,6 +39,7 @@ public class AboutFragment extends DashboardFragment
     @Inject Analytics analytics;
     @Inject StaffDTOFactory staffDTOFactory;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     private ObjectAnimator rotateAnimator;
     private ObjectAnimator scrollAnimator;
@@ -123,6 +126,13 @@ public class AboutFragment extends DashboardFragment
     {
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_About));
+        dashboardTabHost.animateHide();
+    }
+
+    @Override public void onPause()
+    {
+        dashboardTabHost.animateShow();
+        super.onPause();
     }
 
     private void scrollToBottom()

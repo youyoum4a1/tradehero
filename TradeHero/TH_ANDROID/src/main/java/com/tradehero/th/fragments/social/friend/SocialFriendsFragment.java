@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -26,6 +27,7 @@ import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.social.friend.FriendsListCache;
@@ -51,6 +53,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     protected SocialFriendHandler socialFriendHandler;
     @Nullable protected MiddleCallback<UserProfileDTO> followFriendsMiddleCallback;
@@ -109,6 +112,12 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         this.friendsListCacheListener = null;
         super.onDestroy();
+    }
+
+    @Override public void onDestroyView()
+    {
+        friendsRootView.listView.setOnScrollListener(null);
+        super.onDestroyView();
     }
 
     protected void detachFriendsListCache()
@@ -366,6 +375,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         friendsRootView.setFollowAllViewVisible(canFollow());
         friendsRootView.setInviteAllViewVisible(canInviteAll());
         friendsRootView.setFollowOrInivteActionClickListener(this);
+        friendsRootView.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         displayLoadingView();
 
         if (friendsListKey == null)
@@ -724,10 +734,23 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                friendsRootView.inviteFollowAllContainer.setTranslationY(y);
+            }
+        });
+    }
+
     @Override public void onPause()
     {
         super.onPause();
         // TODO test for nullity instead of try-catch
+        dashboardTabHost.setOnTranslate(null);
         try
         {
             InputMethodManager inputMethodManager;

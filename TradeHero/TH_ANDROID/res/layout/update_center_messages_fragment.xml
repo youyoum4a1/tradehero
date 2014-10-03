@@ -14,22 +14,13 @@
       android:layout_height="match_parent"
       >
 
-    <include
-        android:id="@+id/readAllLayout"
-        android:visibility="gone"
-        layout="@layout/read_all_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        />
-
     <com.handmark.pulltorefresh.library.PullToRefreshSwipeListView xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/message_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingTop="@dimen/message_center_vertical_margin"
-        android:paddingBottom="@dimen/message_center_vertical_margin"
+        android:paddingBottom="@dimen/clickable_element_min_dimen"
         swipe:swipeFrontView="@id/swipelist_frontview"
         swipe:swipeBackView="@id/swipelist_backview"
         swipe:swipeCloseAllItemsWhenMoveList="true"
@@ -41,9 +32,18 @@
         ptr:ptrMode="pullFromStart"
         ptr:ptrScrollingWhileRefreshingEnabled="true"
         ptr:ptrListViewExtrasEnabled="false"
-        android:layout_above="@id/readAllLayout"
         android:fadingEdge="none"
         android:scrollbars="none"
+        />
+
+    <include
+        android:id="@+id/readAllLayout"
+        android:visibility="gone"
+        layout="@layout/read_all_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dashboard_tabhost_height"
         />
 
 

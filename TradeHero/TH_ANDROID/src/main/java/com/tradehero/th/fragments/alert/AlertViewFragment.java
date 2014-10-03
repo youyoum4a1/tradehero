@@ -140,6 +140,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         alertEventAdapter = new AlertEventAdapter(getActivity(),
                 R.layout.alert_event_item_view);
         priceChangeHistoryList.setAdapter(alertEventAdapter);
+        priceChangeHistoryList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override protected void initViews(View view)
@@ -181,6 +182,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         detachAlertFetchTask();
         detachAlertUpdateMiddleCallback();
         priceChangeHistoryList.removeHeaderView(headerView);
+        priceChangeHistoryList.setOnScrollListener(null);
         alertToggle.setOnCheckedChangeListener(null);
         alertToggle.setOnClickListener(null);
         super.onDestroyView();

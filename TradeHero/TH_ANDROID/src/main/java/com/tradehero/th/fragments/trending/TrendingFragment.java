@@ -147,7 +147,7 @@ public class TrendingFragment extends SecurityListFragment
         QuickReturnListViewOnScrollListener filterQuickReturnScrollListener =
                 new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, filterSelectorView,
                         -trendingFilterHeight, null, 0);
-        return new MultiScrollListener(listViewScrollListener, dashboardBottomTabsScrollListener, filterQuickReturnScrollListener);
+        return new MultiScrollListener(listViewScrollListener, dashboardBottomTabsListViewScrollListener.get(), filterQuickReturnScrollListener);
     }
 
     @Override public void onResume()

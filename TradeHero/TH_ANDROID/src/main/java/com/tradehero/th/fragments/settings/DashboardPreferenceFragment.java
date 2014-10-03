@@ -6,7 +6,9 @@ import android.support.v4.preference.PreferenceFragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.AbsListView;
 import com.special.residemenu.ResideMenu;
+import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 
@@ -18,6 +20,7 @@ public class DashboardPreferenceFragment extends PreferenceFragment
 {
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabsQuickReturnListViewListener protected Lazy<AbsListView.OnScrollListener> dashboardBottomTabsScrollListener;
     private ActionBarOwnerMixin actionBarOwnerMixin;
 
     @Override public void onCreate(Bundle paramBundle)

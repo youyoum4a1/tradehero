@@ -59,6 +59,7 @@ public class AchievementListFragment extends DashboardFragment
         displayProgress();
         init();
         initAdapter();
+        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         achievementCategoryListCacheListener = createAchievementCategoryListCacheListener();
     }
 
@@ -135,6 +136,7 @@ public class AchievementListFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        listView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }

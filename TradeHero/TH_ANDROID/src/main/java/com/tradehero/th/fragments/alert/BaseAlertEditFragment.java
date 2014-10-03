@@ -23,6 +23,7 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.NotifyingStickyScrollView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
@@ -63,6 +64,8 @@ import timber.log.Timber;
 
 abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 {
+    @InjectView(R.id.alert_scroll_view) NotifyingStickyScrollView scrollView;
+
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.company_name) TextView companyName;
@@ -178,6 +181,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Override protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
+        scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -208,6 +212,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
+        scrollView.setOnScrollChangedListener(null);
         targetPriceToggle.setOnCheckedChangeListener(null);
         targetPercentageChangeToggle.setOnCheckedChangeListener(null);
         percentageSeekBar.setOnSeekBarChangeListener(null);

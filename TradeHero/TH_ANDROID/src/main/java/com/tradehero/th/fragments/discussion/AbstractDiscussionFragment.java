@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +22,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
 
     @Inject @NotNull protected DiscussionKeyFactory discussionKeyFactory;
+    @Inject @BottomTabs protected DashboardTabHost dashboardTabHost;
 
     private DiscussionKey discussionKey;
 
@@ -48,6 +51,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         ButterKnife.inject(this, view);
+        discussionView.discussionList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -61,6 +65,10 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
     @Override public void onDestroyView()
     {
+        if (discussionView != null)
+        {
+            discussionView.discussionList.setOnScrollListener(null);
+        }
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -73,6 +81,23 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         {
             linkWith(discussionKey, true);
         }
+
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                if (discussionView.postCommentView != null)
+                {
+                    discussionView.postCommentView.setTranslationY(y);
+                }
+            }
+        });
+    }
+
+    @Override public void onPause()
+    {
+        dashboardTabHost.setOnTranslate(null);
+        super.onPause();
     }
 
     public DiscussionKey getDiscussionKey()

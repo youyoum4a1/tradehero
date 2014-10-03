@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -25,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
-    private ListView transactionListView;
+    @InjectView(R.id.transaction_list) ListView transactionListView;
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
     private ProgressDialog progressDialog;
 
@@ -54,9 +56,10 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_settings_transaction_history, container, false);
-        transactionListView = (ListView)view.findViewById(R.id.transaction_list);
+        ButterKnife.inject(this, view);
         transactionListViewAdapter = new SettingsTransactionHistoryAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.fragment_settings_transaction_history_adapter);
         transactionListView.setAdapter(transactionListViewAdapter);
+        transactionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
 
         progressDialog = progressDialogUtil.show(
                 getActivity(),
@@ -87,6 +90,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         {
             transactionListView.setAdapter(null);
             transactionListView.setOnItemClickListener(null);
+            transactionListView.setOnScrollListener(null);
             transactionListView = null;
         }
 
