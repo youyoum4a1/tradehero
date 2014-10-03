@@ -1,6 +1,7 @@
 package com.tradehero.th.network.share;
 
 import android.content.Context;
+import com.facebook.FacebookPermissionsConstants;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tradehero.th.R;
@@ -85,7 +86,7 @@ public class SocialNetworkAppModule
 
     @Provides @Singleton @FacebookPermissions List<String> provideFacebookPermissions()
     {
-        return Arrays.asList("public_profile", "email");
+        return Arrays.asList(FacebookPermissionsConstants.PUBLIC_PROFILE, FacebookPermissionsConstants.EMAIL);
     }
 
     @Provides @Singleton IWXAPI createWXAPI(Context context)
