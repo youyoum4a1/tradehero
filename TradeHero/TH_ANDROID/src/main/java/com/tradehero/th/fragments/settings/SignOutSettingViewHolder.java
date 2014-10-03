@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,10 +9,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -141,10 +142,16 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         @Override
         public void success(UserProfileDTO o, Response response)
         {
-            // FIXME/refactor: clear accounts in AccountManager
+            Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
+            if (accounts != null)
+            {
+                for (Account account: accounts)
+                {
+                    accountManager.removeAccount(account, null, null);
+                }
+            }
+
             dismissProgressDialog();
-            // TODO move these lines into MiddleCallbackLogout?
-            ActivityHelper.launchAuthentication(activity);
         }
 
         @Override public void failure(RetrofitError error)
