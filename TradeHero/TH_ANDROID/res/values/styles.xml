@@ -142,6 +142,7 @@
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
     <item name="android:actionBarTabStyle">@style/TradeHero.Dashboard.ActionBar.TabView</item>
     <item name="android:actionBarTabBarStyle">@style/TradeHero.Dashboard.ActionBar.TabBar</item>
+    <item name="android:actionBarTabTextStyle">@style/TradeHero.Dashboard.ActionBar.TabText</item>
     <item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
     <item name="android:actionBarItemBackground">@drawable/basic_transparent_selector</item>
@@ -557,11 +558,60 @@
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TabView" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
-    <item name="android:background">@drawable/action_bar_tab_view</item>
+    <item name="android:background">@drawable/tab_indicator_ab_th</item>
+  </style>
+
+  <style name="TradeHero.Dashboard.ActionBar.TabText" parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
+    <item name="android:textColor">@color/tradehero_blue</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textStyle">normal</item>
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TabBar" parent="@android:style/Widget.Holo.Light.ActionBar.TabBar">
     <item name="android:background">@android:color/white</item>
+  </style>
+
+
+  <style name="TradeHero.TabView">
+    <item name="android:gravity">center_horizontal</item>
+    <item name="android:paddingLeft">16dip</item>
+    <item name="android:paddingRight">16dip</item>
+    <item name="android:background">@drawable/tab_indicator_ab_th</item>
+    <item name="android:layout_width">0dip</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:minWidth">80dip</item>
+  </style>
+
+  <style name="TradeHero.TabText">
+    <item name="android:textColor">@color/tradehero_blue</item>
+    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textStyle">normal</item>
+    <item name="android:ellipsize">marquee</item>
+    <item name="android:maxLines">2</item>
+    <item name="android:maxWidth">180dip</item>
+  </style>
+
+  <style name="TH.ContentPartnersLogo">
+    <item name="android:minWidth">80dp</item>
+    <item name="android:scaleType">fitCenter</item>
+    <item name="android:padding">5dp</item>
+  </style>
+
+
+  <style name="TH.ResideMenuSmall">
+    <item name="android:alpha">0.5</item>
+  </style>
+
+  <style name="TH.ResideMenuSmall.Icon" parent="TH.ResideMenuSmall">
+    <item name="android:layout_width">30dp</item>
+    <item name="android:layout_height">30dp</item>
+    <item name="android:scaleType">fitCenter</item>
+  </style>
+
+  <style name="TH.ResideMenuSmall.Text" parent="TH.ResideMenuSmall">
+    <item name="android:textSize">@dimen/text_medium</item>
+    <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="TH.Dialog" parent="android:Theme.Holo.Light.Dialog">
@@ -577,9 +627,9 @@
     <item name="android:windowCloseOnTouchOutside">true</item>
   </style>
 
-    <style name="TH.onBoardDialog" parent="TH.Dialog">
-        <item name="android:windowCloseOnTouchOutside">true</item>
-    </style>
+  <style name="TH.onBoardDialog" parent="TH.Dialog">
+      <item name="android:windowCloseOnTouchOutside">true</item>
+  </style>
 
   <style name="TradeHero.CarouselNavigationButton">
     <item name="android:layout_width">wrap_content</item>

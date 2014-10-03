@@ -1,12 +1,12 @@
 package com.tradehero.th.models.discussion;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
-import retrofit.client.Response;
 
 public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
 {
@@ -27,9 +27,9 @@ public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
     }
     //</editor-fold>
 
-    @Override public Response process(Response value)
+    @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
-        Response processed = super.process(value);
+        BaseResponseDTO processed = super.process(value);
         messageHeaderListCache.invalidateKeysThatList(messageHeaderId);
         return processed;
     }

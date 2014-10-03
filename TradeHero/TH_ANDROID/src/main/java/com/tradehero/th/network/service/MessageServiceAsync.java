@@ -1,12 +1,12 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import retrofit.Callback;
-import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -65,7 +65,7 @@ interface MessageServiceAsync
             @Path("commentId") int commentId,
             @Path("senderUserId") int senderUserId,
             @Path("recipientUserId") int recipientUserId,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Read Message">
@@ -74,11 +74,11 @@ interface MessageServiceAsync
             @Path("commentId") int commentId,
             @Path("senderUserId") int senderUserId,
             @Path("recipientUserId") int recipientUserId,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Read All Message">
     @POST("/messages/read/-1")
-    void readAllMessage(Callback<Response> callback);
+    void readAllMessage(Callback<BaseResponseDTO> callback);
     //</editor-fold>
 }

@@ -49,4 +49,17 @@ public class BaseArrayList<T> extends ArrayList<T>
         }
         return null;
     }
+
+    public StringBuilder createStringBuilder()
+    {
+        StringBuilder sb = new StringBuilder("[");
+        String separator = "";
+        for (T item : this)
+        {
+            sb.append(separator).append(item);
+            separator = ", ";
+        }
+        sb.append("]");
+        return sb;
+    }
 }

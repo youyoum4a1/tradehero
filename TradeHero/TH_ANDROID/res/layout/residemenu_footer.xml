@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    tools:background="@color/black"
+    >
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/white"
+      android:text="@string/residemenu_footer_title"
+      android:alpha="0.4"
+      android:textSize="@dimen/text_xxsmall"
+      android:layout_marginLeft="@dimen/margin_xsmall"
+      android:layout_marginStart="@dimen/margin_xsmall"
+      />
+
+  <HorizontalScrollView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        >
+
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.ContentPartnersLogo"
+          android:src="@drawable/logo_tmf_white"
+          />
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.ContentPartnersLogo"
+          android:src="@drawable/logo_yahoo_white"
+          />
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.ContentPartnersLogo"
+          android:src="@drawable/logo_repustate_white"
+          />
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.ContentPartnersLogo"
+          android:src="@drawable/logo_google_white"
+          />
+
+    </LinearLayout>
+  </HorizontalScrollView>
+
+</LinearLayout>

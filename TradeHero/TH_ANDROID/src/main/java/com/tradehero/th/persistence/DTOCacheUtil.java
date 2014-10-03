@@ -23,6 +23,7 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
 import com.tradehero.th.persistence.achievement.QuestBonusListCache;
+import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -63,6 +64,7 @@ import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -75,6 +77,8 @@ import org.jetbrains.annotations.Nullable;
     protected final CurrentUserId currentUserId;
 
     //<editor-fold desc="Caches">
+    protected final Lazy<AchievementCategoryCache> achievementCategoryCacheLazy;
+    protected final Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy;
     protected final Lazy<AlertCache> alertCache;
     protected final Lazy<AlertCompactCache> alertCompactCache;
     protected final Lazy<AlertCompactListCache> alertCompactListCache;
@@ -90,6 +94,7 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     protected final Lazy<LeaderboardPositionIdCache> leaderboardPositionIdCache;
     protected final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
+    protected final Lazy<LevelDefListCache> levelDefListCache;
     protected final Lazy<MessageHeaderCache> messageHeaderCache;
     protected final Lazy<MessageHeaderListCache> messageListCache;
     protected final Lazy<NotificationCache> notificationCache;
@@ -103,32 +108,32 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<ProductPurchaseCache> productPurchaseCache;
     protected final Lazy<ProviderCache> providerCache;
     protected final Lazy<ProviderListCache> providerListCache;
+    protected final Lazy<QuestBonusListCache> questBonusListCacheLazy;
     protected final Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     protected final Lazy<SecurityCompactListCache> securityCompactListCache;
     protected final Lazy<SystemStatusCache> systemStatusCache;
     protected final Lazy<TradeCache> tradeCache;
     protected final Lazy<TradeListCache> tradeListCache;
     protected final Lazy<TranslationTokenCache> translationTokenCache;
+    protected final Lazy<UserAchievementCache> userAchievementCache;
     protected final Lazy<UserProfileCache> userProfileCache;
     protected final Lazy<UserFollowerCache> userFollowerCache;
     protected final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     protected final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     protected final Lazy<WatchlistPositionCache> watchlistPositionCache;
-    protected final Lazy<LevelDefListCache> levelDefListCache;
-
-    protected final Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy;
-    protected final Lazy<AchievementCategoryCache> achievementCategoryCacheLazy;
-    protected final Lazy<QuestBonusListCache> questBonusListCacheLazy;
     //</editor-fold>
 
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     protected final StringPreference serverEndpointPreference;
+    @NotNull protected final BroadcastUtils broadcastUtils;
     @NotNull protected final UserBaseDTOUtil userBaseDTOUtil;
     @NotNull protected final Context context;
 
     //<editor-fold desc="Constructors">
     @Inject public DTOCacheUtil(
             CurrentUserId currentUserId,
+            Lazy<AchievementCategoryCache> achievementCategoryCacheLazy,
+            Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy,
             Lazy<AlertCache> alertCache,
             Lazy<AlertCompactCache> alertCompactCache,
             Lazy<AlertCompactListCache> alertCompactListCache,
@@ -144,6 +149,7 @@ import org.jetbrains.annotations.Nullable;
             Lazy<LeaderboardDefListCache> leaderboardDefListCache,
             Lazy<LeaderboardPositionIdCache> leaderboardPositionIdCache,
             Lazy<LeaderboardFriendsCache> leaderboardFriendsCache, Lazy<MessageHeaderCache> messageHeaderCache,
+            Lazy<LevelDefListCache> levelDefListCacheLazy,
             Lazy<MessageHeaderListCache> messageListCache,
             Lazy<NotificationCache> notificationCache,
             Lazy<NotificationListCache> notificationListCache,
@@ -162,21 +168,22 @@ import org.jetbrains.annotations.Nullable;
             Lazy<TradeCache> tradeCache,
             Lazy<TradeListCache> tradeListCache,
             Lazy<TranslationTokenCache> translationTokenCache,
+            Lazy<UserAchievementCache> userAchievementCache,
             Lazy<UserProfileCache> userProfileCache,
             Lazy<UserFollowerCache> userFollowerCache,
             Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
             Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
             Lazy<WatchlistPositionCache> watchlistPositionCache,
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
-            Lazy<LevelDefListCache> levelDefListCacheLazy,
-            Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy,
-            Lazy<AchievementCategoryCache> achievementCategoryCacheLazy,
             Lazy<QuestBonusListCache> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
+            @NotNull BroadcastUtils broadcastUtils,
             @NotNull UserBaseDTOUtil userBaseDTOUtil,
             @NotNull Context context)
     {
         this.currentUserId = currentUserId;
+        this.achievementCategoryCacheLazy = achievementCategoryCacheLazy;
+        this.achievementCategoryListCacheLazy = achievementCategoryListCacheLazy;
         this.alertCache = alertCache;
         this.alertCompactCache = alertCompactCache;
         this.alertCompactListCache = alertCompactListCache;
@@ -192,6 +199,7 @@ import org.jetbrains.annotations.Nullable;
         this.leaderboardDefListCache = leaderboardDefListCache;
         this.leaderboardPositionIdCache = leaderboardPositionIdCache;
         this.leaderboardFriendsCache = leaderboardFriendsCache;
+        this.levelDefListCache = levelDefListCacheLazy;
         this.messageHeaderCache = messageHeaderCache;
         this.messageListCache = messageListCache;
         this.notificationCache = notificationCache;
@@ -205,12 +213,14 @@ import org.jetbrains.annotations.Nullable;
         this.productPurchaseCache = productPurchaseCache;
         this.providerCache = providerCache;
         this.providerListCache = providerListCache;
+        this.questBonusListCacheLazy = questBonusListCacheLazy;
         this.securityPositionDetailCache = securityPositionDetailCache;
         this.securityCompactListCache = securityCompactListCache;
         this.systemStatusCache = systemStatusCache;
         this.tradeCache = tradeCache;
         this.tradeListCache = tradeListCache;
         this.translationTokenCache = translationTokenCache;
+        this.userAchievementCache = userAchievementCache;
         this.userProfileCache = userProfileCache;
         this.userFollowerCache = userFollowerCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
@@ -218,17 +228,16 @@ import org.jetbrains.annotations.Nullable;
         this.watchlistPositionCache = watchlistPositionCache;
         this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
+        this.broadcastUtils = broadcastUtils;
         this.userBaseDTOUtil = userBaseDTOUtil;
-        this.levelDefListCache = levelDefListCacheLazy;
-        this.achievementCategoryCacheLazy = achievementCategoryCacheLazy;
-        this.achievementCategoryListCacheLazy = achievementCategoryListCacheLazy;
-        this.questBonusListCacheLazy = questBonusListCacheLazy;
         this.context = context;
     }
     //</editor-fold>
 
     public void clearUserRelatedCaches()
     {
+        achievementCategoryCacheLazy.get().invalidateAll();
+        achievementCategoryListCacheLazy.get().invalidateAll();
         alertCache.get().invalidateAll();
         alertCompactCache.get().invalidateAll();
         alertCompactListCache.get().invalidateAll();
@@ -261,6 +270,7 @@ import org.jetbrains.annotations.Nullable;
         systemStatusCache.get().invalidateAll();
         tradeCache.get().invalidateAll();
         tradeListCache.get().invalidateAll();
+        userAchievementCache.get().invalidateAll();
         userProfileCache.get().invalidateAll();
         userFollowerCache.get().invalidateAll();
         userMessagingRelationshipCache.get().invalidateAll();
@@ -272,8 +282,7 @@ import org.jetbrains.annotations.Nullable;
         warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
 
-        achievementCategoryListCacheLazy.get().invalidateAll();
-        achievementCategoryCacheLazy.get().invalidateAll();
+        broadcastUtils.clear();
     }
 
     public void anonymousPrefetches()

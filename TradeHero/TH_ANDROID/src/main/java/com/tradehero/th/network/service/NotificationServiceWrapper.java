@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.notification.NotificationListKey;
@@ -18,7 +19,6 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import retrofit.client.Response;
 
 @Singleton
 public class NotificationServiceWrapper
@@ -75,7 +75,7 @@ public class NotificationServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Mark As Read">
-    @NotNull private DTOProcessor<Response> createNotificationReadDTOProcessor(
+    @NotNull private DTOProcessor<BaseResponseDTO> createNotificationReadDTOProcessor(
             @NotNull final UserBaseKey readerId,
             @NotNull NotificationKey pushKey)
     {
@@ -86,7 +86,7 @@ public class NotificationServiceWrapper
                 userProfileCache.get());
     }
 
-    public Response markAsRead(
+    public BaseResponseDTO markAsRead(
             @NotNull final UserBaseKey readerId,
             @NotNull NotificationKey pushKey)
     {
@@ -94,19 +94,19 @@ public class NotificationServiceWrapper
                 notificationService.markAsRead(pushKey.key));
     }
 
-    @NotNull public MiddleCallback<Response> markAsRead(
+    @NotNull public MiddleCallback<BaseResponseDTO> markAsRead(
             @NotNull final UserBaseKey readerId,
             @NotNull NotificationKey pushKey,
-            @Nullable Callback<Response> callback)
+            @Nullable Callback<BaseResponseDTO> callback)
     {
-        BaseMiddleCallback<Response> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationReadDTOProcessor(readerId, pushKey));
+        BaseMiddleCallback<BaseResponseDTO> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationReadDTOProcessor(readerId, pushKey));
         notificationServiceAsync.markAsRead(pushKey.key, readMiddleCallback);
         return readMiddleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Mark As Read All">
-    @NotNull private DTOProcessor<Response> createNotificationAllReadDTOProcessor(@NotNull UserBaseKey readerId)
+    @NotNull private DTOProcessor<BaseResponseDTO> createNotificationAllReadDTOProcessor(@NotNull UserBaseKey readerId)
     {
         return new DTOProcessorNotificationAllRead(
                 notificationCache.get(),
@@ -114,17 +114,17 @@ public class NotificationServiceWrapper
                 userProfileCache.get());
     }
 
-    public Response markAsReadAll(@NotNull final UserBaseKey readerId)
+    public BaseResponseDTO markAsReadAll(@NotNull final UserBaseKey readerId)
     {
         return createNotificationAllReadDTOProcessor(readerId).process(
                 notificationService.markAsReadAll());
     }
 
-    @NotNull public MiddleCallback<Response> markAsReadAll(
+    @NotNull public MiddleCallback<BaseResponseDTO> markAsReadAll(
             @NotNull final UserBaseKey readerId,
-            @Nullable Callback<Response> callback)
+            @Nullable Callback<BaseResponseDTO> callback)
     {
-        BaseMiddleCallback<Response> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationAllReadDTOProcessor(readerId));
+        BaseMiddleCallback<BaseResponseDTO> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationAllReadDTOProcessor(readerId));
         notificationServiceAsync.markAsReadAll(readMiddleCallback);
         return readMiddleCallback;
     }

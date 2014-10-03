@@ -13,10 +13,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -25,14 +23,11 @@ import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserNextLevelBadge;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
+import org.jetbrains.annotations.Nullable;
 
 public class UserLevelProgressBar extends RelativeLayout
 {
@@ -51,8 +46,8 @@ public class UserLevelProgressBar extends RelativeLayout
     @Inject @ForUserNextLevelBadge Transformation nextLevelBadgeTransformation;
 
     private int mCurrentXP = -1;
-    private UserLevelProgressBarLevelUpListener userLevelProgressBarLevelUpListener;
-    private UserLevelProgressBarListener userLevelProgressBarListener;
+    @Nullable private UserLevelProgressBarLevelUpListener userLevelProgressBarLevelUpListener;
+    @Nullable private UserLevelProgressBarListener userLevelProgressBarListener;
 
     private float mMsPerXP = MS_PER_XP;
     private AnimatorSet mIncrementAnimatorSet;
@@ -336,10 +331,8 @@ public class UserLevelProgressBar extends RelativeLayout
     {
         return new Animator.AnimatorListener()
         {
-
             @Override public void onAnimationStart(Animator animator)
             {
-
             }
 
             @Override public void onAnimationEnd(Animator animator)
@@ -359,12 +352,10 @@ public class UserLevelProgressBar extends RelativeLayout
 
             @Override public void onAnimationCancel(Animator animator)
             {
-
             }
 
             @Override public void onAnimationRepeat(Animator animator)
             {
-
             }
         };
     }
@@ -379,12 +370,12 @@ public class UserLevelProgressBar extends RelativeLayout
         return diff;
     }
 
-    public void setUserLevelProgressBarLevelUpListener(UserLevelProgressBarLevelUpListener userLevelProgressBarLevelUpListener)
+    public void setUserLevelProgressBarLevelUpListener(@Nullable UserLevelProgressBarLevelUpListener userLevelProgressBarLevelUpListener)
     {
         this.userLevelProgressBarLevelUpListener = userLevelProgressBarLevelUpListener;
     }
 
-    public void setUserLevelProgressBarListener(UserLevelProgressBarListener userLevelProgressBarListener)
+    public void setUserLevelProgressBarListener(@Nullable UserLevelProgressBarListener userLevelProgressBarListener)
     {
         this.userLevelProgressBarListener = userLevelProgressBarListener;
     }

@@ -82,4 +82,18 @@ import org.jetbrains.annotations.NotNull;
             put(userBaseKey, userProfileDTO);
         }
     }
+
+    public void addAchievements(@NotNull UserBaseKey userBaseKey, int count)
+    {
+        if (count <= 0)
+        {
+            throw new IllegalArgumentException("Cannot handle count=" + count);
+        }
+        UserProfileDTO userProfileDTO = get(userBaseKey);
+        if(userProfileDTO != null)
+        {
+            userProfileDTO.achievementCount += count;
+            put(userBaseKey, userProfileDTO);
+        }
+    }
 }

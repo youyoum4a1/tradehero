@@ -1,10 +1,10 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import java.util.Map;
 import retrofit.Callback;
-import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -25,8 +25,8 @@ interface NotificationServiceAsync
     @POST("/notifications/read/{readPushId}")
     void markAsRead(
             @Path("readPushId") int readPushId,
-            Callback<Response> callback);
+            Callback<BaseResponseDTO> callback);
 
     @POST("/notifications/read/-1")
-    void markAsReadAll(Callback<Response> callback);
+    void markAsReadAll(Callback<BaseResponseDTO> callback);
 }

@@ -1,15 +1,18 @@
 package com.tradehero.th.models.intent.competition;
 
+import android.content.Context;
 import android.content.Intent;
 import com.tradehero.th.R;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class ProviderIntentFactory extends THIntentSubFactory<ProviderIntent>
 {
-    @Inject public ProviderIntentFactory()
+    @Inject public ProviderIntentFactory(@NotNull Context context)
     {
+        super(context.getResources());
     }
 
     @Override public String getHost()
@@ -42,8 +45,9 @@ public class ProviderIntentFactory extends THIntentSubFactory<ProviderIntent>
         if (action.equals(getString(R.string.intent_action_provider_pages)))
         {
             providerIntent = new ProviderPageIntent(
-                    ProviderPageIntent.getProviderId(pathSegments),
-                    ProviderPageIntent.getForwardUriPath(pathSegments));
+                    resources,
+                    ProviderPageIntent.getProviderId(resources, pathSegments),
+                    ProviderPageIntent.getForwardUriPath(resources, pathSegments));
         }
 
         return providerIntent;

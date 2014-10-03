@@ -1,15 +1,14 @@
 package com.tradehero.th.models.discussion;
 
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
-import retrofit.client.Response;
 
-public class DTOProcessorMessageRead implements DTOProcessor<Response>
+public class DTOProcessorMessageRead implements DTOProcessor<BaseResponseDTO>
 {
     @NotNull private final MessageHeaderCache messageHeaderCache;
     @NotNull private final UserProfileCache userProfileCache;
@@ -30,13 +29,9 @@ public class DTOProcessorMessageRead implements DTOProcessor<Response>
     }
     //</editor-fold>
 
-    @Override public Response process(Response value)
+    @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
-        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
-        if (messageHeaderDTO != null && messageHeaderDTO.unread)
-        {
-            messageHeaderDTO.unread = false;
-        }
+        messageHeaderCache.setUnread(messageHeaderId, true);
         userProfileCache.getOrFetchAsync(readerId, true);
         return value;
     }

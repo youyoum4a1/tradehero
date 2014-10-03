@@ -191,5 +191,6 @@
   <dimen name="discovery_news_carousel_motleyfool_logo_height">60dp</dimen>
   <dimen name="discovery_news_carousel_spinner_width">250dp</dimen>
   <dimen name="country_search_margin">5dp</dimen>
-  <dimen name="dashboard_tabhost_height">50dp</dimen>
+  <dimen name="dashboard_tabhost_height">48dp</dimen>
+  <dimen name="dashboard_red_dot_dimen">5dp</dimen>
 </resources>

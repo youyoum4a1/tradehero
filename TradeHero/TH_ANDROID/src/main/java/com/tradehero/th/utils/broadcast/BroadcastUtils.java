@@ -66,4 +66,10 @@ import org.jetbrains.annotations.NotNull;
             isProcessing.set(false);
         }
     }
+
+    public void clear()
+    {
+        broadcastQueue.clear();
+        isProcessing.set(false);
+    }
 }

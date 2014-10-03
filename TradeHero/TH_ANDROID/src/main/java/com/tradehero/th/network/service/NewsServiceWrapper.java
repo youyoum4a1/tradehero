@@ -25,6 +25,7 @@ import retrofit.Callback;
     @NotNull private final NewsService newsService;
     @NotNull private final NewsServiceAsync newsServiceAsync;
 
+    //<editor-fold desc="Constructors">
     @Inject public NewsServiceWrapper(
             @NotNull NewsService newsService,
             @NotNull NewsServiceAsync newsServiceAsync)
@@ -32,6 +33,7 @@ import retrofit.Callback;
         this.newsService = newsService;
         this.newsServiceAsync = newsServiceAsync;
     }
+    //</editor-fold>
 
     public PaginatedDTO<CountryLanguagePairDTO> getCountryLanguagePairs()
     {

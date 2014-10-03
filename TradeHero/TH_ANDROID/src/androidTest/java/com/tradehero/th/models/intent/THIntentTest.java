@@ -1,6 +1,7 @@
 package com.tradehero.th.models.intent;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
@@ -15,69 +16,70 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class THIntentTest
 {
+    private Resources resources;
+
     @Before public void setUp()
     {
-        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
+        resources = Robolectric.getShadowApplication().getApplicationContext().getResources();
     }
 
     @After public void tearDown()
     {
-        THIntent.context = null;
     }
 
     @Test public void defaultActionIsView()
     {
         assertThat(THIntent.getDefaultAction()).isEqualTo(Intent.ACTION_VIEW);
-        assertThat(new SimpleTHIntent().getAction()).isEqualTo(Intent.ACTION_VIEW);
+        assertThat(new SimpleTHIntent(resources).getAction()).isEqualTo(Intent.ACTION_VIEW);
     }
 
     @Test public void constructorSetsPath()
     {
-        THIntent intent = new SimpleTHIntent();
+        THIntent intent = new SimpleTHIntent(resources);
         assertThat(intent.getData() + "").isEqualTo("tradehero://");
     }
 
     @Test public void canConvertStringAndInteger()
     {
-        assertThat(THIntent.getString(R.string.intent_scheme)).isEqualTo("tradehero");
-        assertThat(THIntent.getString(R.string.intent_uri_base, THIntent.getString(R.string.intent_scheme))).isEqualTo("tradehero://");
+        assertThat(resources.getString(R.string.intent_scheme)).isEqualTo("tradehero");
+        assertThat(resources.getString(R.string.intent_uri_base, resources.getString(R.string.intent_scheme))).isEqualTo("tradehero://");
 
-        assertThat(THIntent.getInteger(R.integer.intent_uri_path_index_action)).isEqualTo(0);
+        assertThat(resources.getInteger(R.integer.intent_uri_path_index_action)).isEqualTo(0);
     }
 
     @Test public void baseUriPathIsFixed()
     {
-        assertThat(THIntent.getBaseUriPath()).isEqualTo("tradehero://");
+        assertThat(THIntent.getBaseUriPath(resources)).isEqualTo("tradehero://");
     }
 
     @Test public void uriPathIsFixed()
     {
-        assertThat(new SimpleTHIntent().getUriPath()).isEqualTo("tradehero://");
+        assertThat(new SimpleTHIntent(resources).getUriPath()).isEqualTo("tradehero://");
     }
 
     @Test public void uriIsParsed()
     {
-        Uri uri = new SimpleTHIntent().getUri();
+        Uri uri = new SimpleTHIntent(resources).getUri();
         assertThat(uri.getScheme()).isEqualTo("tradehero");
     }
 
     @Test public void hostUriIsWellFormed()
     {
-        assertThat(THIntent.getHostUriPath(R.string.intent_host_profile)).isEqualTo("tradehero://profile");
+        assertThat(THIntent.getHostUriPath(resources, R.string.intent_host_profile)).isEqualTo("tradehero://profile");
     }
 
     @Test public void actionUriIsWellFormed()
     {
-        assertThat(THIntent.getActionUriPath(R.string.intent_host_profile, R.string.intent_action_portfolio_open)).isEqualTo("tradehero://profile/open");
+        assertThat(THIntent.getActionUriPath(resources, R.string.intent_host_profile, R.string.intent_action_portfolio_open)).isEqualTo("tradehero://profile/open");
     }
 
     @Test public void actionFragmentIsNull()
     {
-        assertThat(new SimpleTHIntent().getActionFragment()).isNull();
+        assertThat(new SimpleTHIntent(resources).getActionFragment()).isNull();
     }
 
     @Test public void getBundleIsEmpty()
     {
-        assertThat(new SimpleTHIntent().getBundle().size()).isEqualTo(0);
+        assertThat(new SimpleTHIntent(resources).getBundle().size()).isEqualTo(0);
     }
 }

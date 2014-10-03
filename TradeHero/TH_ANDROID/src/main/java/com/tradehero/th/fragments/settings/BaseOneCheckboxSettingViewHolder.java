@@ -34,4 +34,15 @@ abstract public class BaseOneCheckboxSettingViewHolder extends BaseSettingViewHo
 
     abstract protected int getStringKeyResId();
     abstract protected boolean changeStatus(boolean enable);
+
+    @Override public boolean isUnread()
+    {
+        return (clickablePref instanceof ShowUnreadPreference)
+                && !((ShowUnreadPreference) clickablePref).isVisited();
+    }
+
+    @Override public Preference getPreference()
+    {
+        return clickablePref;
+    }
 }

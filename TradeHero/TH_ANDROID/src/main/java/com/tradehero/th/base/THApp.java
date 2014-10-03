@@ -10,7 +10,6 @@ import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
-import com.tradehero.th.inject.Injector;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
@@ -53,7 +52,7 @@ public class THApp extends PApplication
 
         pushNotificationManager.initialise();
 
-        THLog.showDeveloperKeyHash();
+        THLog.showDeveloperKeyHash(this);
     }
 
     private void buildObjectGraphAndInject()

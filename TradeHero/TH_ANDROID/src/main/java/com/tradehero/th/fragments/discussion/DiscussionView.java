@@ -348,7 +348,13 @@ public class DiscussionView extends FrameLayout
         {
             try
             {
+                //noinspection unchecked
                 ((DTOView<DiscussionKey>) topicView).display(discussionKey);
+
+                if (discussionListAdapter != null)
+                {
+                    discussionListAdapter.remove(discussionKey);
+                }
             }
             catch (ClassCastException ex)
             {

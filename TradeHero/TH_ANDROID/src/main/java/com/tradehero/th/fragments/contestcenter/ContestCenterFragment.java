@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.updatecenter.TitleTabView;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.widget.THTabView;
 import javax.inject.Inject;
 
 public class ContestCenterFragment extends DashboardFragment
@@ -20,7 +20,6 @@ public class ContestCenterFragment extends DashboardFragment
     @Inject GraphicUtil graphicUtil;
 
     private static final int FRAGMENT_LAYOUT_ID = 10001;
-    private FragmentTabHost mTabHost;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -32,7 +31,7 @@ public class ContestCenterFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(getString(R.string.dashboard_contest_center));
+        setActionBarTitle(R.string.dashboard_contest_center);
     }
 
     @Override
@@ -55,8 +54,7 @@ public class ContestCenterFragment extends DashboardFragment
         for (ContestCenterTabType tabTitle : types)
         {
             args = new Bundle(args);
-            TitleTabView tabView = (TitleTabView) LayoutInflater.from(getActivity())
-                    .inflate(R.layout.message_tab_item, mTabHost.getTabWidget(), false);
+            THTabView tabView = THTabView.inflateWith(mTabHost.getTabWidget());
             String title = getString(tabTitle.titleRes, 0);
             tabView.setTitle(title);
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);

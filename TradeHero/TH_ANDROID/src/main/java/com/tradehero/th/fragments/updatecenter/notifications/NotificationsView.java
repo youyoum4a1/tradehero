@@ -19,6 +19,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.notification.NotificationListKey;
@@ -26,12 +27,11 @@ import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import com.tradehero.th.api.notification.PaginatedNotificationListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import dagger.Lazy;
 import java.util.List;
@@ -52,14 +52,13 @@ public class NotificationsView extends BetterViewAnimator
 
     @Inject Lazy<NotificationListCache> notificationListCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;
-    @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
 
     private PaginatedNotificationListKey paginatedNotificationListKey;
     private boolean loading;
     private int nextPageDelta;
 
-    @NotNull private MiddleCallbackWeakList<Response> middleCallbacks;
+    @NotNull private MiddleCallbackWeakList<BaseResponseDTO> middleCallbacks;
     private DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO> notificationListFetchListener;
     private DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO> notificationListRefreshListener;
     private NotificationListKey notificationListKey;
@@ -67,12 +66,14 @@ public class NotificationsView extends BetterViewAnimator
     private PullToRefreshBase.OnRefreshListener<ListView> notificationPullToRefreshListener;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public NotificationsView(Context context)
     {
         super(context);
         init();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public NotificationsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -363,14 +364,14 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    protected Callback<Response> createMarkNotificationAsReadCallback()
+    protected Callback<BaseResponseDTO> createMarkNotificationAsReadCallback()
     {
         return new NotificationMarkAsReadCallback();
     }
 
-    protected class NotificationMarkAsReadCallback implements Callback<Response>
+    protected class NotificationMarkAsReadCallback implements Callback<BaseResponseDTO>
     {
-        @Override public void success(Response response, Response response2)
+        @Override public void success(BaseResponseDTO response, Response response2)
         {
             if (notificationListAdapter != null)
             {
@@ -384,14 +385,14 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    protected Callback<Response> createMarkNotificationAsReadAllCallback()
+    protected Callback<BaseResponseDTO> createMarkNotificationAsReadAllCallback()
     {
         return new NotificationMarkAsReadAllCallback();
     }
 
-    protected class NotificationMarkAsReadAllCallback implements Callback<Response>
+    protected class NotificationMarkAsReadAllCallback implements Callback<BaseResponseDTO>
     {
-        @Override public void success(Response response, Response response2)
+        @Override public void success(BaseResponseDTO response, Response response2)
         {
             Timber.d("NotificationMarkAsReadAllCallback success");
             setAllNotificationRead();

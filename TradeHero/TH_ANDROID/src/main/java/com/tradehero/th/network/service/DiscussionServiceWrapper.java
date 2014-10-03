@@ -12,6 +12,7 @@ import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussion;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussionReply;
@@ -33,6 +34,7 @@ import retrofit.Callback;
     @NotNull private final DiscussionServiceAsync discussionServiceAsync;
     @NotNull private final DiscussionKeyFactory discussionKeyFactory;
     @NotNull private final DiscussionDTOFactory discussionDTOFactory;
+    @NotNull private final CurrentUserId currentUserId;
 
     // It has to be lazy to avoid infinite dependency
     @NotNull private final Lazy<DiscussionListCacheNew> discussionListCache;
@@ -45,6 +47,7 @@ import retrofit.Callback;
             @NotNull DiscussionServiceAsync discussionServiceAsync,
             @NotNull DiscussionKeyFactory discussionKeyFactory,
             @NotNull DiscussionDTOFactory discussionDTOFactory,
+            @NotNull CurrentUserId currentUserId,
             @NotNull Lazy<DiscussionListCacheNew> discussionListCache,
             @NotNull Lazy<DiscussionCache> discussionCache,
             @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache)
@@ -53,6 +56,7 @@ import retrofit.Callback;
         this.discussionServiceAsync = discussionServiceAsync;
         this.discussionKeyFactory = discussionKeyFactory;
         this.discussionDTOFactory = discussionDTOFactory;
+        this.currentUserId = currentUserId;
         this.discussionCache = discussionCache;
         this.discussionListCache = discussionListCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
@@ -69,12 +73,13 @@ import retrofit.Callback;
             @Nullable DiscussionKey stubKey)
     {
         return new DTOProcessorDiscussionReply(
-                discussionListCache.get(),
                 discussionDTOFactory,
+                currentUserId,
                 discussionCache.get(),
                 userMessagingRelationshipCache.get(),
-                initiatingKey,
-                stubKey);
+                stubKey,
+                discussionListCache.get(),
+                initiatingKey);
     }
     //</editor-fold>
 

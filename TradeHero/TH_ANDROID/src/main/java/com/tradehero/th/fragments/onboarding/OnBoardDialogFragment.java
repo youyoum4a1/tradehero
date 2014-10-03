@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding;
 
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,7 @@ import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,6 +56,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject ExchangeSectorCompactListCache exchangeSectorCompactListCache;
     @Inject LeaderboardUserListCache leaderboardUserListCache;
     @Inject DashboardNavigator navigator;
+    @Inject BroadcastUtils broadcastUtils;
 
     @InjectView(R.id.next_button) Button nextButton;
     @InjectView(R.id.done_button) Button doneButton;
@@ -219,6 +222,12 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         stockViewHolder.detachView();
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+        broadcastUtils.nextPlease();
     }
 
     @SuppressWarnings("UnusedDeclaration")

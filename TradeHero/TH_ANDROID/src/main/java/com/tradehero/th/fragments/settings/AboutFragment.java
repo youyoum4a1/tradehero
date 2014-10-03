@@ -1,17 +1,21 @@
 package com.tradehero.th.fragments.settings;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
+import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
@@ -28,25 +32,62 @@ public class AboutFragment extends DashboardFragment
 {
     @InjectView(R.id.main_content_wrapper) View mainContentWrapper;
     @InjectView(R.id.staff_list_holder) LinearLayout staffList;
+    @InjectView(R.id.about_scroll) ScrollView scrollView;
 
     @Inject Analytics analytics;
     @Inject StaffDTOFactory staffDTOFactory;
     @Inject DashboardNavigator navigator;
+
+    private ObjectAnimator rotateAnimator;
+    private ObjectAnimator scrollAnimator;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_about, container, false);
         ButterKnife.inject(this, view);
-
+        mainContentWrapper.setPadding(mainContentWrapper.getPaddingLeft(), mainContentWrapper.getPaddingTop(), mainContentWrapper.getPaddingRight(), container.getMeasuredHeight());
         initStaffList();
         return view;
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        scrollView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override public boolean onTouch(View v, MotionEvent event)
+            {
+                return true;
+            }
+        });
+
+        PropertyValuesHolder pvRtX = PropertyValuesHolder.ofFloat(View.ROTATION_X, 0f, 30f);
+        rotateAnimator = ObjectAnimator.ofPropertyValuesHolder(scrollView, pvRtX);
+        rotateAnimator.setDuration(getResources().getInteger(R.integer.about_screen_rotation_duration));
+        rotateAnimator.addListener(new AnimatorListenerAdapter()
+        {
+            @Override public void onAnimationStart(Animator animation)
+            {
+                super.onAnimationStart(animation);
+            }
+
+            @Override public void onAnimationEnd(Animator animation)
+            {
+                super.onAnimationEnd(animation);
+                scrollToBottom();
+            }
+        });
+        rotateAnimator.setStartDelay(getResources().getInteger(R.integer.about_screen_rotation_delay));
+        rotateAnimator.start();
+
     }
 
     private void initStaffList()
     {
         staffList.removeAllViews();
-        for (StaffDTO staffDTO: staffDTOFactory.getTradeHeroStaffers(getResources()))
+        for (StaffDTO staffDTO : staffDTOFactory.getTradeHeroStaffers(getResources()))
         {
             StaffTitleView staffTitleView = (StaffTitleView) getActivity().getLayoutInflater().inflate(R.layout.staff_view, null);
             staffTitleView.setStaffDTO(staffDTO);
@@ -81,46 +122,40 @@ public class AboutFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_About));
+    }
 
-        AnimationSet set = new AnimationSet(false);
-
-        TranslateAnimation translateAnimation = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, 0f,
-                Animation.RELATIVE_TO_PARENT, 0f,
-                Animation.RELATIVE_TO_SELF, 0f,
-                Animation.RELATIVE_TO_SELF, -1.5f);
-        set.addAnimation(translateAnimation);
-
-        Rotate3dAnimation rotateAnimation = new Rotate3dAnimation(0f, 10f, 0f, 0f, 0f, 0f);
-        rotateAnimation.setDuration(getResources().getInteger(R.integer.duration_shrink_inflate));
-        set.addAnimation(rotateAnimation);
-
-        set.setDuration(getResources().getInteger(R.integer.duration_shrink_inflate));
-        set.setAnimationListener(new Animation.AnimationListener()
+    private void scrollToBottom()
+    {
+        if(scrollView != null)
         {
-            @Override public void onAnimationStart(Animation animation)
+            scrollAnimator = ObjectAnimator.ofInt(scrollView, "scrollY", 0, staffList.getBottom());
+            scrollAnimator.setInterpolator(new LinearInterpolator());
+            scrollAnimator.addListener(new AnimatorListenerAdapter()
             {
-            }
-
-            @Override public void onAnimationEnd(Animation animation)
-            {
-                navigator.popFragment();
-            }
-
-            @Override public void onAnimationRepeat(Animation animation)
-            {
-            }
-        });
-        set.setStartOffset(3000);
-
-        mainContentWrapper.startAnimation(set);
+                @Override public void onAnimationEnd(Animator animation)
+                {
+                    super.onAnimationEnd(animation);
+                    navigator.popFragment();
+                }
+            });
+            scrollAnimator.setDuration(getResources().getInteger(R.integer.about_screen_scroll_duration));
+            scrollAnimator.start();
+        }
     }
 
     @Override public void onDestroyView()
     {
-        mainContentWrapper.setAnimation(null);
+        if(rotateAnimator != null)
+        {
+            rotateAnimator.removeAllListeners();
+            rotateAnimator = null;
+        }
+        if(scrollAnimator != null)
+        {
+            scrollAnimator.removeAllListeners();
+            scrollAnimator = null;
+        }
         super.onDestroyView();
     }
 }

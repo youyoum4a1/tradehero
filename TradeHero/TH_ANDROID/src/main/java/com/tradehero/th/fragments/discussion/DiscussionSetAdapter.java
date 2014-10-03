@@ -40,7 +40,7 @@ abstract public class DiscussionSetAdapter
         return created;
     }
 
-    public void appendTail(DiscussionDTO newElement)
+    public void appendTail(@Nullable DiscussionDTO newElement)
     {
         if (newElement != null)
         {

@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
@@ -32,6 +31,7 @@ import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.widget.THTabView;
 import dagger.Lazy;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -202,7 +202,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     private Fragment getCurrentFragment()
     {
-        if(mTabHost == null)
+        if (mTabHost == null)
         {
             return null;
         }
@@ -234,7 +234,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             addTab(resourceDTO);
         }
-        setTitleColor();
         mTabHost.getTabWidget().setBackgroundColor(Color.WHITE);
         return mTabHost;
     }
@@ -250,40 +249,19 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         FollowerManagerTabFragment.putHeroId(args, heroId);
 
         String title = MessageFormat.format(getString(resourceDTO.followerTabTitleRes), 0);
-
-        TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(title);
+        THTabView tabIndicator =
+                THTabView.inflateWith(mTabHost.getTabWidget());
+        tabIndicator.setTitle(title);
+        TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabIndicator);
         mTabHost.addTab(tabSpec, resourceDTO.followerContentFragmentClass, args);
-    }
-
-    private void setTitleColor()
-    {
-        int color = getResources().getColor(R.color.tradehero_blue);
-        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++)
-        {
-
-            final TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i)
-                    .findViewById(android.R.id.title);
-
-            // Look for the title view to ensure this is an indicator and not a divider.(I didn't know, it would return divider too, so I was getting an NPE)
-            if (tv == null)
-            {
-                continue;
-            }
-            else
-            {
-                graphicUtil.setBackground(mTabHost.getTabWidget().getChildAt(i), getResources().getDrawable(R.drawable.tab_indicator_ab_th));
-                tv.setTextColor(color);
-            }
-        }
     }
 
     private void changeTabTitle(HeroTypeResourceDTO resourceDTO, int count)
     {
-        TextView titleView = (TextView) mTabHost.getTabWidget()
-                .getChildTabViewAt(resourceDTO.followerTabIndex)
-                .findViewById(android.R.id.title);
+        THTabView titleView = (THTabView) mTabHost.getTabWidget()
+                .getChildTabViewAt(resourceDTO.followerTabIndex);
         String title = MessageFormat.format(getString(resourceDTO.followerTabTitleRes), count);
-        titleView.setText(title);
+        titleView.setTitle(title);
     }
 
     @Override public void onFollowerLoaded(int page, FollowerSummaryDTO value)

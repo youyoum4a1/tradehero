@@ -16,6 +16,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
@@ -250,55 +251,40 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    private void updateMessageCacheReadStatus(int messageId)
-    {
-        // mark it as read in the cache
-        MessageHeaderId messageHeaderId = new MessageHeaderId(messageId);
-        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
-        if (messageHeaderDTO != null && messageHeaderDTO.unread)
-        {
-            messageHeaderDTO.unread = false;
-            messageHeaderCache.put(messageHeaderId, messageHeaderDTO);
-        }
-    }
-
     private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
     {
-        updateMessageCacheReadStatus(messageHeaderDTO.id);
+        messageHeaderCache.setUnread(messageHeaderDTO.getDTOKey(), true);
         messageServiceWrapper.get().readMessage(
                 messageHeaderDTO.getDTOKey(),
                 messageHeaderDTO.getSenderId(),
                 messageHeaderDTO.getRecipientId(),
                 messageHeaderDTO.getDTOKey(),
                 currentUserId.toUserBaseKey(),
-                createMessageAsReadCallback(messageHeaderDTO.id));
+                createMessageAsReadCallback(messageHeaderDTO.getDTOKey()));
     }
 
-    private Callback<Response> createMessageAsReadCallback(int pushId)
+    private Callback<BaseResponseDTO> createMessageAsReadCallback(MessageHeaderId messageHeaderId)
     {
-        return new MessageMarkAsReadCallback(pushId);
+        return new MessageMarkAsReadCallback(messageHeaderId);
     }
 
-    private class MessageMarkAsReadCallback implements Callback<Response>
+    private class MessageMarkAsReadCallback implements Callback<BaseResponseDTO>
     {
-        private final int messageId;
+        private final MessageHeaderId messageHeaderId;
 
-        public MessageMarkAsReadCallback(int messageId)
+        public MessageMarkAsReadCallback(MessageHeaderId messageHeaderId)
         {
-            this.messageId = messageId;
+            this.messageHeaderId = messageHeaderId;
         }
 
-        @Override public void success(Response response, Response response2)
+        @Override public void success(BaseResponseDTO response, Response response2)
         {
-            if (response.getStatus() == 200)
-            {
-                updateMessageCacheReadStatus(messageId);
-            }
+            // Nothing to do
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            Timber.d("Report failure for Message: %d", messageId);
+            Timber.d("Report failure for Message: %d", messageHeaderId);
         }
     }
 
@@ -324,7 +310,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
         @Override public void onErrorThrown(@NotNull MessageHeaderId key, @NotNull Throwable error)
         {
-            THToast.show(new THException(error));
+            if (error instanceof RetrofitError)
+            {
+                THToast.show(new THException(error));
+            }
         }
     }
 }

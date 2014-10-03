@@ -1,5 +1,8 @@
 package com.tradehero.th.fragments.dashboard;
 
+import android.support.annotation.DrawableRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 
 import com.tradehero.th.R;
@@ -22,6 +25,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public enum RootFragmentType
 {
@@ -40,7 +45,7 @@ public enum RootFragmentType
     CONTEST_CENTER(R.layout.tab_indicator_holo,
             R.string.dashboard_contest_center, R.string.dashboard_contest_center_key,
             R.drawable.icn_menu_contest_center, ContestCenterFragment.class),
-    STORE(R.layout.tab_indicator_holo,
+    STORE(R.layout.residemenu_item_store,
             R.string.dashboard_store, R.string.dashboard_store_key,
             R.drawable.icn_menu_store, StoreScreenFragment.class),
     SETTING(R.layout.residemenu_item_settings,
@@ -56,20 +61,20 @@ public enum RootFragmentType
             R.string.dashboard_divider, R.string.dashboard_divider_key,
             R.drawable.icn_menu_settings, null);
 
-    private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
+    @LayoutRes private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
 
-    public final int viewResId;
-    public final int stringResId;
-    public final int stringKeyResId;
-    public final int drawableResId;
-    public final Class<? extends Fragment> fragmentClass;
+    @LayoutRes public final int viewResId;
+    @StringRes public final int stringResId;
+    @StringRes public final int stringKeyResId;
+    @DrawableRes public final int drawableResId;
+    @Nullable public final Class<? extends Fragment> fragmentClass;
 
     private RootFragmentType(
-            int viewResId,
-            int stringResId,
-            int stringKeyResId,
-            int drawableResId,
-            Class<? extends Fragment> fragmentClass)
+            @LayoutRes int viewResId,
+            @StringRes int stringResId,
+            @StringRes int stringKeyResId,
+            @DrawableRes int drawableResId,
+            @Nullable Class<? extends Fragment> fragmentClass)
     {
         this.viewResId = viewResId;
         this.stringResId = stringResId;
@@ -100,7 +105,7 @@ public enum RootFragmentType
         return Collections.unmodifiableCollection(forBottomBar);
     }
 
-    private static void addAdminMenuIfNeeded(List<RootFragmentType> forResideMenu)
+    private static void addAdminMenuIfNeeded(@NotNull List<RootFragmentType> forResideMenu)
     {
         if (!Constants.RELEASE)
         {
@@ -108,7 +113,7 @@ public enum RootFragmentType
         }
     }
 
-    public static RootFragmentType getInitialTab()
+    @NotNull public static RootFragmentType getInitialTab()
     {
         return RootFragmentType.ME;
     }

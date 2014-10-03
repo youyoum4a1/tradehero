@@ -2,8 +2,8 @@ package com.tradehero.th.api.users;
 
 import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.route.RouteProperty;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.api.users.specific.UserBaseKeyConstants;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,11 +57,6 @@ public class UserBaseKey extends AbstractIntegerDTOKey
 
     @JsonIgnore public boolean isOfficialAccount()
     {
-        return key.equals(UserBaseKeyConstants.OFFICIAL_TRADEHERO)
-                || key.equals(UserBaseKeyConstants.OFFICIAL_COMMUNITY_MANAGER)
-                || key.equals(UserBaseKeyConstants.OFFICIAL_TRADE_MASTER)
-                || key.equals(UserBaseKeyConstants.OFFICIAL_ACCOUNT_4)
-                || key.equals(UserBaseKeyConstants.OFFICIAL_ACCOUNT_5)
-                || key.equals(UserBaseKeyConstants.OFFICIAL_ACCOUNT_6);
+        return UserBaseKeyConstants.isOfficialId(key);
     }
 }

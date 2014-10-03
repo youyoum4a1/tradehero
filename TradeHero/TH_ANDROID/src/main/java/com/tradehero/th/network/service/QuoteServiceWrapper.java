@@ -18,6 +18,7 @@ import retrofit.client.Response;
     @NotNull private final QuoteService quoteService;
     @NotNull private final QuoteServiceAsync quoteServiceAsync;
 
+    //<editor-fold desc="Constructors">
     @Inject public QuoteServiceWrapper(
             @NotNull QuoteService quoteService,
             @NotNull QuoteServiceAsync quoteServiceAsync)
@@ -26,6 +27,7 @@ import retrofit.client.Response;
         this.quoteService = quoteService;
         this.quoteServiceAsync = quoteServiceAsync;
     }
+    //</editor-fold>
 
     private void basicCheck(SecurityId securityId)
     {

@@ -6,10 +6,12 @@ import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
+import com.tradehero.th.api.users.specific.UserBaseKeyConstants;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class UserProfileDTO extends UserProfileCompactDTO
 {
@@ -19,9 +21,9 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public String location;
     public String website;
 
-    public List<Integer> heroIds;
-    public List<Integer> freeHeroIds;
-    public List<Integer> premiumHeroIds;
+    @Nullable public List<Integer> heroIds;
+    @Nullable public List<Integer> freeHeroIds;
+    @Nullable public List<Integer> premiumHeroIds;
     public Integer followerCount;
     /**newly added fields*/
     public int allHeroCount;
@@ -125,6 +127,23 @@ public class UserProfileDTO extends UserProfileCompactDTO
             }
         }
         return UserProfileDTOUtil.IS_NOT_FOLLOWER;
+    }
+
+    @Nullable public List<Integer> getUserGeneratedHeroIds()
+    {
+        if (heroIds == null)
+        {
+            return null;
+        }
+        List<Integer> userGenerated = new ArrayList<>();
+        for (Integer heroId : heroIds)
+        {
+            if (!UserBaseKeyConstants.isOfficialId(heroId))
+            {
+                userGenerated.add(heroId);
+            }
+        }
+        return userGenerated;
     }
 
     public List<UserBaseKey> getHeroBaseKeys()

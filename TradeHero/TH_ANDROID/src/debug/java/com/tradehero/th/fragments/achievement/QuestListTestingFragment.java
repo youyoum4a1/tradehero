@@ -10,10 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -38,7 +38,7 @@ import timber.log.Timber;
 
 public class QuestListTestingFragment extends DashboardFragment
 {
-    @InjectView(android.R.id.list) protected ListView listView;
+    @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
     @InjectView(android.R.id.empty) protected ProgressBar emptyView;
 
     @Inject QuestBonusListCache questBonusListCache;
@@ -73,7 +73,7 @@ public class QuestListTestingFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
-                QuestBonusDTO questBonusDTO = list.get(i - listView.getHeaderViewsCount());
+                QuestBonusDTO questBonusDTO = list.get(i - listView.getRefreshableView().getHeaderViewsCount());
 
                 MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()),
                         (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));
@@ -94,7 +94,7 @@ public class QuestListTestingFragment extends DashboardFragment
             }
         });
 
-        listView.addHeaderView(createHeaderView());
+        listView.getRefreshableView().addHeaderView(createHeaderView());
     }
 
     private View createHeaderView()

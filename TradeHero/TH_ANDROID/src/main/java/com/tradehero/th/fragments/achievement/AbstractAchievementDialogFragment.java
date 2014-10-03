@@ -33,16 +33,20 @@ import android.widget.ViewFlipper;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.chrisbanes.colorfinder.ColorScheme;
+import com.chrisbanes.colorfinder.ColorUtils;
 import com.chrisbanes.colorfinder.DominantColorCalculator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
@@ -50,6 +54,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
@@ -64,6 +69,9 @@ import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
 {
@@ -74,6 +82,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private static final String PROPERTY_BTN_COLOR = "btnColor";
 
     private static final int DEFAULT_FILTER_COLOR = Color.GRAY;
+    private static final float TOO_BRIGHT_CUT_OFF = 0.2f;
+
+    public static final int SHARE_PANEL_DEFAULT_INDEX = 0;
+    public static final int SHARE_PANEL_SHARED_INDEX = 1;
+    public static final int SHARE_PANEL_FAILED_INDEX = 2;
+    public static final int SHARE_PANEL_SHARING_INDEX = 3;
 
     @InjectView(R.id.achievement_content_container) ViewGroup contentContainer;
 
@@ -102,20 +116,21 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Inject LevelDefListCache levelDefListCache;
 
     @Inject AchievementServiceWrapper achievementServiceWrapper;
+    @Nullable MiddleCallback<BaseResponseDTO> middleCallbackShareAchievement;
     @Inject AchievementShareFormDTOFactory achievementShareFormDTOFactory;
 
     @Inject BroadcastUtils broadcastUtils;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject Lazy<WeChatDTOFactory> weChatDTOFactoryLazy;
 
-    protected UserAchievementId userAchievementId;
-    protected UserAchievementDTO userAchievementDTO;
+    @NotNull protected UserAchievementId userAchievementId;
+    @Nullable protected UserAchievementDTO userAchievementDTO;
     protected int mCurrentColor = DEFAULT_FILTER_COLOR;
     private ValueAnimator colorValueAnimator;
     private ObjectAnimator btnColorAnimation;
     private ValueAnimator mAnim;
-    private LevelDefListId mLevelDefListId = new LevelDefListId();
-    private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> levelDefListCacheListener;
+    @NotNull private LevelDefListId mLevelDefListId = new LevelDefListId();
+    @Nullable private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> levelDefListCacheListener;
     private Callback mBadgeCallback;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -126,20 +141,25 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         d.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         d.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        return d;
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
         init();
+        return d;
     }
 
     protected void init()
     {
         userAchievementId = new UserAchievementId(getArguments().getBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID));
         userAchievementDTO = userAchievementCache.pop(userAchievementId);
+        // TODO destroy if null?
+        if (userAchievementDTO == null)
+        {
+            Timber.e(new Exception(), "Popped UserAchievementDTO is null for %s", userAchievementId);
+        }
         levelDefListCacheListener = createLevelDefCacheListener();
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         initView();
     }
 
@@ -169,12 +189,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void updateColor(@Nullable ColorScheme colorScheme)
     {
-        if (colorScheme == null)
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null && colorScheme == null)
         {
             int color = graphicUtil.parseColor(userAchievementDTO.achievementDef.hexColor, Color.BLACK);
             updateColor(color);
         }
-        else
+        else if (colorScheme != null)
         {
             updateColor(colorScheme.primaryAccent);
         }
@@ -182,6 +203,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void updateColor(int color)
     {
+        // Darken if too bright
+        if (ColorUtils.calculateYiqLuma(color) > (256 * (1 - TOO_BRIGHT_CUT_OFF))) // 80% or brighter
+        {
+            Timber.d("Darkening from %d for %s", color, userAchievementDTO);
+            color = ColorUtils.darken(color, TOO_BRIGHT_CUT_OFF); // Add 20% black
+        }
+
         if (color != mCurrentColor)
         {
             colorValueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), mCurrentColor, color);
@@ -225,12 +253,18 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void displayHeader()
     {
-        header.setText(userAchievementDTO.achievementDef.header);
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null)
+        {
+            header.setText(userAchievementDTOCopy.achievementDef.header);
+        }
     }
 
     private void displayBadge()
     {
-        if (!StringUtils.isNullOrEmpty(userAchievementDTO.achievementDef.visual))
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null
+        && !StringUtils.isNullOrEmpty(userAchievementDTOCopy.achievementDef.visual))
         {
             if (mBadgeCallback == null)
             {
@@ -248,7 +282,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                 };
             }
 
-            picasso.load(userAchievementDTO.achievementDef.visual)
+            picasso.load(userAchievementDTOCopy.achievementDef.visual)
                     .placeholder(R.drawable.achievement_unlocked_placeholder)
                     .fit()
                     .centerInside()
@@ -271,19 +305,46 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void showShareSuccess()
     {
-        //No need to hold reference to middle callback since we did not pass a listener
-        List<SocialNetworkEnum> shareTos = getEnabledSharePreferences();
-        if (shareTos.contains(SocialNetworkEnum.WECHAT))
+        shareFlipper.setDisplayedChild(SHARE_PANEL_SHARED_INDEX);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick({R.id.achievement_share_failed, R.id.achievement_shared})
+    protected void showSharePanel()
+    {
+        shareFlipper.setDisplayedChild(SHARE_PANEL_DEFAULT_INDEX);
+    }
+
+    private void share()
+    {
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null)
         {
-            WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), userAchievementDTO);
-            socialSharerLazy.get().share(weChatDTO);
+            List<SocialNetworkEnum> shareTos = getEnabledSharePreferences();
+            if (shareTos.contains(SocialNetworkEnum.WECHAT))
+            {
+                WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), userAchievementDTOCopy);
+                socialSharerLazy.get().setSharedListener(createSocialSharedListener());
+                socialSharerLazy.get().share(weChatDTO);
+            }
+            detachMiddleCallbackShareAchievement();
+            middleCallbackShareAchievement = achievementServiceWrapper.shareAchievement(
+                    achievementShareFormDTOFactory.createFrom(
+                            getEnabledSharePreferences(),
+                            userAchievementDTO),
+                    createShareAchievementCallback());
+            showSharing();
         }
-        achievementServiceWrapper.shareAchievement(
-                achievementShareFormDTOFactory.createFrom(
-                        getEnabledSharePreferences(),
-                        userAchievementDTO),
-                null);
-        shareFlipper.setDisplayedChild(1);
+    }
+
+    private void showSharing()
+    {
+        shareFlipper.setDisplayedChild(SHARE_PANEL_SHARING_INDEX);
+    }
+
+    private void showShareFailed()
+    {
+        shareFlipper.setDisplayedChild(SHARE_PANEL_FAILED_INDEX);
     }
 
     private void playRotatingAnimation()
@@ -312,8 +373,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     protected void onCreatePropertyValuesHolder(List<PropertyValuesHolder> propertyValuesHolders)
     {
-        PropertyValuesHolder xp = PropertyValuesHolder.ofInt(PROPERTY_XP_EARNED, 0, userAchievementDTO.xpEarned);
-        propertyValuesHolders.add(xp);
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null)
+        {
+            PropertyValuesHolder xp = PropertyValuesHolder.ofInt(PROPERTY_XP_EARNED, 0, userAchievementDTOCopy.xpEarned);
+            propertyValuesHolders.add(xp);
+        }
     }
 
     private void displayPulse()
@@ -339,28 +404,37 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void setDrawingCacheEnabled(View... views)
     {
-        for (int i = 0; i < views.length; i++)
+        for(View v : views)
         {
-            View v = views[i];
             v.setDrawingCacheEnabled(true);
         }
     }
 
     private void displayTitle()
     {
-        title.setText(userAchievementDTO.achievementDef.thName);
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null)
+        {
+            title.setText(userAchievementDTOCopy.achievementDef.thName);
+        }
     }
 
     private void displayText()
     {
-        description.setText(Html.fromHtml(userAchievementDTO.achievementDef.text));
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null)
+        {
+            description.setText(Html.fromHtml(userAchievementDTOCopy.achievementDef.text));
+        }
     }
 
     private void displaySubText()
     {
-        if (userAchievementDTO.achievementDef.subText != null)
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null
+                && userAchievementDTOCopy.achievementDef.subText != null)
         {
-            moreDescription.setText(Html.fromHtml(userAchievementDTO.achievementDef.subText));
+            moreDescription.setText(Html.fromHtml(userAchievementDTOCopy.achievementDef.subText));
         }
         else
         {
@@ -370,7 +444,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void displayXpEarned(int xp)
     {
-        xpEarned.setText(getString(R.string.achievement_xp_earned_format, THSignedNumber.builder(xp).relevantDigitCount(1).withOutSign().build().toString()));
+        xpEarned.setText(
+                getString(R.string.achievement_xp_earned_format, THSignedNumber.builder(xp).relevantDigitCount(1).withOutSign().build().toString()));
     }
 
     private void setShareButtonColor()
@@ -391,7 +466,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         btnColorAnimation.setDuration(getResources().getInteger(R.integer.achievement_share_button_animation_duration));
         btnColorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
         {
-            @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+            @Override public void onAnimationUpdate(@NotNull ValueAnimator valueAnimator)
             {
                 int color = (Integer) valueAnimator.getAnimatedValue(PROPERTY_BTN_COLOR);
                 StateListDrawable drawable = graphicUtil.createStateListDrawable(getActivity(), color);
@@ -419,8 +494,11 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
                             @Override public void onDismiss(View view, Object token)
                             {
-                                removeDialogAnimation();
-                                getDialog().dismiss();
+                                if (getDialog() != null)
+                                {
+                                    removeDialogAnimation();
+                                    getDialog().dismiss();
+                                }
                             }
                         }));
     }
@@ -430,16 +508,20 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         getDialog().getWindow().setWindowAnimations(R.style.TH_Achievement_Dialog_NoAnimation);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_achievement_share)
     public void shareButtonClicked()
     {
         if (!getEnabledSharePreferences().isEmpty())
         {
-            showShareSuccess();
+            share();
         }
         else
         {
-            alertDialogUtil.popWithNegativeButton(getActivity(), R.string.link_select_one_social, R.string.link_select_one_social_description,
+            alertDialogUtil.popWithNegativeButton(
+                    getActivity(),
+                    R.string.link_select_one_social,
+                    R.string.link_select_one_social_description,
                     R.string.ok);
         }
     }
@@ -448,12 +530,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         contentContainer.setOnTouchListener(null);
         super.onPause();
-    }
-
-    @Override public void onDestroy()
-    {
-        levelDefListCacheListener = null;
-        super.onDestroy();
     }
 
     @Override public void onDestroyView()
@@ -477,7 +553,25 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         mBadgeCallback = null;
         levelDefListCache.unregister(levelDefListCacheListener);
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
+
+        socialSharerLazy.get().setSharedListener(null);
+        detachMiddleCallbackShareAchievement();
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        levelDefListCacheListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachMiddleCallbackShareAchievement()
+    {
+        if (middleCallbackShareAchievement != null)
+        {
+            middleCallbackShareAchievement.setPrimaryCallback(null);
+            middleCallbackShareAchievement = null;
+        }
     }
 
     private void cleanupAnimation(ValueAnimator animator)
@@ -497,13 +591,14 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         broadcastUtils.nextPlease();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.achievement_dummy_container)
     public void onOutsideContentClicked()
     {
         getDialog().dismiss();
     }
 
-    protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
+    @NotNull protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
     {
         return new AbstractAchievementValueAnimatorUpdateListener();
     }
@@ -517,30 +612,31 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
     }
 
-    private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> createLevelDefCacheListener()
+    @NotNull private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> createLevelDefCacheListener()
     {
         return new LevelDefListListener();
     }
 
     protected class LevelDefListListener implements DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList>
     {
-
         @Override public void onDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
         {
             userLevelProgressBar.setLevelDefDTOList(value);
-            userLevelProgressBar.startsWith(userAchievementDTO.getBaseExp());
-            userLevelProgressBar.increment(userAchievementDTO.xpEarned);
+            UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+            if (userAchievementDTOCopy != null)
+            {
+                userLevelProgressBar.startsWith(userAchievementDTOCopy.getBaseExp());
+                userLevelProgressBar.increment(userAchievementDTOCopy.xpEarned);
+            }
         }
 
         @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
         {
-
         }
     }
 
     protected class LevelUpListener implements UserLevelProgressBar.UserLevelProgressBarLevelUpListener
     {
-
         @Override public void onLevelUp(LevelDefDTO fromLevel, LevelDefDTO toLevel)
         {
             LevelUpDialogFragment levelUpDialogFragment = LevelUpDialogFragment.newInstance(fromLevel.getId(), toLevel.getId());
@@ -583,6 +679,47 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             }
             dialogFragment.setArguments(args);
             return dialogFragment;
+        }
+    }
+
+    protected SocialSharer.OnSharedListener createSocialSharedListener()
+    {
+        return new ShareAchievementListener();
+    }
+
+    protected class ShareAchievementListener implements SocialSharer.OnSharedListener
+    {
+        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+        {
+            throw new IllegalStateException("It should have been taken care of at the network button press");
+        }
+
+        @Override public void onShared(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO)
+        {
+            showShareSuccess();
+        }
+
+        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
+        {
+            showShareFailed();
+        }
+    }
+
+    protected retrofit.Callback<BaseResponseDTO> createShareAchievementCallback()
+    {
+        return new ShareAchievementCallback();
+    }
+
+    protected class ShareAchievementCallback implements retrofit.Callback<BaseResponseDTO>
+    {
+        @Override public void success(BaseResponseDTO baseResponseDTO, Response response)
+        {
+            showShareSuccess();
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            showShareFailed();
         }
     }
 }

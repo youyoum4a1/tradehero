@@ -12,10 +12,8 @@
     tools:background="@color/black">
 
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
         android:contentDescription="@null"
-        android:scaleType="centerCrop"
+        style="@style/TH.ResideMenuSmall.Icon"
         android:src="@drawable/icn_menu_settings"
         tools:background="@color/red" />
 
@@ -23,16 +21,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_small"
-        android:textColor="@color/white"
-        android:textSize="18sp"
+        style="@style/TH.ResideMenuSmall.Text"
         android:text="@string/dashboard_menu_settings" />
 
-    <ImageView
+    <View
         android:id="@+id/unread_icon"
-        android:layout_width="@dimen/margin_small"
-        android:layout_height="@dimen/margin_small"
+        android:layout_width="@dimen/dashboard_red_dot_dimen"
+        android:layout_height="@dimen/dashboard_red_dot_dimen"
         android:layout_marginLeft="@dimen/margin_small"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
         android:background="@drawable/red_circle" />
 </com.tradehero.th.fragments.settings.SettingsResideMenuItem>

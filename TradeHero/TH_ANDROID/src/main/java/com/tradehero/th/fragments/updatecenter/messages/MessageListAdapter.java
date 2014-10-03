@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, MessageItemViewWrapper>
 {
-    private final int layoutResourceId;
+    @LayoutRes private final int layoutResourceId;
     private MessageItemViewWrapper.OnElementClickedListener elementClickedListener;
     @Nullable private Comparator<MessageHeaderDTO> comparator;
 
@@ -22,7 +23,7 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, Mess
     public MessageListAdapter(
             @NotNull Context context,
             @Nullable Collection<MessageHeaderDTO> objects,
-            int layoutResourceId,
+            @LayoutRes int layoutResourceId,
             @Nullable Comparator<MessageHeaderDTO> comparator)
     {
         super(context, objects);
@@ -56,7 +57,7 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, Mess
         return view;
     }
 
-    @Override protected int getViewResId(int position)
+    @Override @LayoutRes protected int getViewResId(int position)
     {
         return layoutResourceId;
     }

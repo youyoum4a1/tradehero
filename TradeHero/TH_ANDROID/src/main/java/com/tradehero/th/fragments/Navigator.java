@@ -163,7 +163,7 @@ class Navigator<ActivityType extends Activity>
 
     public boolean isBackStackEmpty()
     {
-        return manager.getBackStackEntryCount() == 0;
+        return manager.getBackStackEntryCount() <= 1;
     }
 
     protected void resetBackPressCount()

@@ -34,4 +34,15 @@ abstract public class OneSettingViewHolder extends BaseSettingViewHolder
 
     abstract protected int getStringKeyResId();
     abstract protected void handlePrefClicked();
+
+    @Override public boolean isUnread()
+    {
+        return (clickablePref instanceof ShowUnreadPreference)
+                && !((ShowUnreadPreference) clickablePref).isVisited();
+    }
+
+    @Override public Preference getPreference()
+    {
+        return clickablePref;
+    }
 }

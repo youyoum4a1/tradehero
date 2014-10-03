@@ -1,12 +1,12 @@
 package com.tradehero.th.models.intent.competition;
 
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
-import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
@@ -20,28 +20,29 @@ import static org.junit.Assert.assertTrue;
 @RunWith(THRobolectricTestRunner.class)
 public class OneProviderIntentTest
 {
+    private Resources resources;
+
     @Before public void setUp()
     {
-        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
+        resources = Robolectric.getShadowApplication().getApplicationContext().getResources();
     }
 
     @After public void tearDown()
     {
-        THIntent.context = null;
     }
 
     @Test public void providerActionUriPathIsWellFormed()
     {
         ProviderId useless = new ProviderId(234);
         ProviderId providerId = new ProviderId(567);
-        assertEquals("tradehero://providers/567/pages", new SimpleOneProviderIntent(useless).getProviderActionUriPath(providerId));
+        assertEquals("tradehero://providers/567/pages", new SimpleOneProviderIntent(resources, useless).getProviderActionUriPath(providerId));
     }
 
     @Test public void providerActionUriIsWellFormed()
     {
         ProviderId useless = new ProviderId(234);
         ProviderId providerId = new ProviderId(567);
-        OneProviderIntent intent = new SimpleOneProviderIntent(useless);
+        OneProviderIntent intent = new SimpleOneProviderIntent(resources, useless);
         Uri uri = intent.getProviderActionUri(providerId);
         List<String> pathSegments = uri.getPathSegments();
 
@@ -55,7 +56,7 @@ public class OneProviderIntentTest
     @Test public void constructorPlacesPath()
     {
         ProviderId providerId = new ProviderId(567);
-        OneProviderIntent intent = new SimpleOneProviderIntent(providerId);
+        OneProviderIntent intent = new SimpleOneProviderIntent(resources, providerId);
         Uri uri = intent.getData();
 
         assertEquals("tradehero://providers/567/pages", uri + "");
@@ -64,22 +65,22 @@ public class OneProviderIntentTest
         assertEquals("tradehero", uri.getScheme());
         assertEquals("providers", uri.getHost());
         assertEquals(2, pathSegments.size());
-        assertEquals(567, Integer.parseInt(pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_provider_path_index_id))));
-        assertEquals("pages", pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_provider_path_index_action)));
+        assertEquals(567, Integer.parseInt(pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_id))));
+        assertEquals("pages", pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_action)));
     }
 
     @Test public void uriParserIsOk()
     {
         ProviderId providerId = new ProviderId(567);
-        OneProviderIntent intent = new SimpleOneProviderIntent(providerId);
+        OneProviderIntent intent = new SimpleOneProviderIntent(resources, providerId);
         Uri uri = intent.getData();
-        assertTrue(providerId.equals(OneProviderIntent.getProviderId(uri)));
+        assertTrue(providerId.equals(OneProviderIntent.getProviderId(resources, uri)));
     }
 
     @Test public void getProviderIdReturnsCorrect()
     {
         ProviderId providerId = new ProviderId(567);
-        OneProviderIntent intent = new SimpleOneProviderIntent(providerId);
+        OneProviderIntent intent = new SimpleOneProviderIntent(resources, providerId);
 
         assertTrue(providerId.equals(intent.getProviderId()));
     }
@@ -87,7 +88,7 @@ public class OneProviderIntentTest
     @Test public void bundleIsCorrect()
     {
         ProviderId providerId = new ProviderId(567);
-        OneProviderIntent intent = new SimpleOneProviderIntent(providerId);
+        OneProviderIntent intent = new SimpleOneProviderIntent(resources, providerId);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
         assertEquals(567, (int) CompetitionFragment.getProviderId(bundle).key);
@@ -96,7 +97,7 @@ public class OneProviderIntentTest
     @Test public void populateBundleKeepsExisting()
     {
         ProviderId providerId = new ProviderId(567);
-        OneProviderIntent intent = new SimpleOneProviderIntent(providerId);
+        OneProviderIntent intent = new SimpleOneProviderIntent(resources, providerId);
         Bundle bundle = new Bundle();
         bundle.putString("Whoo", "bah");
         intent.populate(bundle);

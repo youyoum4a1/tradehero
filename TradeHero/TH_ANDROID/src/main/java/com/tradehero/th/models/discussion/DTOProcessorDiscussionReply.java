@@ -4,6 +4,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
@@ -17,14 +18,15 @@ public class DTOProcessorDiscussionReply extends DTOProcessorDiscussionCreate
 
     //<editor-fold desc="Constructors">
     public DTOProcessorDiscussionReply(
-            @NotNull DiscussionListCacheNew discussionListCache,
             @NotNull DiscussionDTOFactory discussionDTOFactory,
+            @NotNull CurrentUserId currentUserId,
             @NotNull DiscussionCache discussionCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
-            @NotNull DiscussionKey initiatingKey,
-            @Nullable DiscussionKey stubKey)
+            @Nullable DiscussionKey stubKey,
+            @NotNull DiscussionListCacheNew discussionListCache,
+            @NotNull DiscussionKey initiatingKey)
     {
-        super(discussionDTOFactory, discussionCache, userMessagingRelationshipCache, stubKey);
+        super(discussionDTOFactory, currentUserId, discussionCache, userMessagingRelationshipCache, stubKey);
         this.discussionListCache = discussionListCache;
         this.initiatingKey = initiatingKey;
     }

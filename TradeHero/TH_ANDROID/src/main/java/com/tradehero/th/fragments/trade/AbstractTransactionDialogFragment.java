@@ -324,6 +324,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         });
 
         updateTransactionDialog();
+        displayAddCashButton();
     }
 
     protected void dismissTransactionProgress()
@@ -465,6 +466,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         if (andDisplay)
         {
             updateTransactionDialog();
+            displayAddCashButton();
         }
     }
 
@@ -480,6 +482,17 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         {
             buttonSetCopy.setEnabled(isQuickButtonEnabled());
             buttonSetCopy.setMaxPrice(getQuickButtonMaxValue());
+        }
+    }
+
+    public void displayAddCashButton()
+    {
+        if (mBtnAddCash != null)
+        {
+            mBtnAddCash.setVisibility(
+                    (portfolioCompactDTO != null && portfolioCompactDTO.isAllowedAddCash())
+                    ? View.VISIBLE
+                    : View.GONE);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +82,7 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
         return set;
     }
 
-    @Override protected int getViewResId(int position)
+    @Override @LayoutRes protected int getViewResId(int position)
     {
         return alertResId;
     }

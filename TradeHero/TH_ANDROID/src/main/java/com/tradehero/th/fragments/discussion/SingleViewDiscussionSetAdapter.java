@@ -1,28 +1,36 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.support.annotation.LayoutRes;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SingleViewDiscussionSetAdapter extends DiscussionSetAdapter
 {
-    public final int layoutResId;
+    @LayoutRes public final int layoutResId;
 
-    public SingleViewDiscussionSetAdapter(Context context, int layoutResId)
+    //<editor-fold desc="Constructors">
+    public SingleViewDiscussionSetAdapter(
+            @NotNull Context context,
+            @LayoutRes int layoutResId)
     {
         super(context);
         this.layoutResId = layoutResId;
     }
 
-    public SingleViewDiscussionSetAdapter(Context context,
-            Collection<DiscussionKey> objects, int layoutResId)
+    public SingleViewDiscussionSetAdapter(
+            @NotNull Context context,
+            @Nullable Collection<DiscussionKey> objects,
+            @LayoutRes int layoutResId)
     {
         super(context, objects);
         this.layoutResId = layoutResId;
     }
+    //</editor-fold>
 
-    @Override protected int getViewResId(int position)
+    @Override @LayoutRes protected int getViewResId(int position)
     {
         return layoutResId;
     }

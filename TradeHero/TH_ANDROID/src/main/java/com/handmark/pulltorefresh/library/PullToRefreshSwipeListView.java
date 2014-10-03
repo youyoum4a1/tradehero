@@ -16,21 +16,25 @@ import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
 public class PullToRefreshSwipeListView extends PullToRefreshListViewBase<SwipeListView>
 {
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public PullToRefreshSwipeListView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PullToRefreshSwipeListView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PullToRefreshSwipeListView(Context context, Mode mode)
     {
         super(context, mode);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PullToRefreshSwipeListView(Context context, Mode mode, AnimationStyle style)
     {
         super(context, mode, style);

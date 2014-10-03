@@ -20,8 +20,8 @@ public class AchievementDefDTO implements DTO
     @Nullable public String subText;
     public int achievementLevel;
     public String category;
-    public String hexColor;
-    public String header;
+    @NotNull public String hexColor;
+    @NotNull public String header;
     public int contiguousMax;
     public boolean isQuest;
     public int categoryId;

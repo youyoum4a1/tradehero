@@ -1,5 +1,6 @@
 package com.tradehero.th.models.intent.competition;
 
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
@@ -8,6 +9,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
 
+import org.jetbrains.annotations.NotNull;
 import retrofit.Endpoint;
 
 public class ProviderPageIntent extends OneProviderIntent
@@ -15,28 +17,35 @@ public class ProviderPageIntent extends OneProviderIntent
     @Inject Endpoint apiServer;
 
     //<editor-fold desc="Constructors">
-    public ProviderPageIntent(ProviderId providerId, String uri)
+    public ProviderPageIntent(
+            @NotNull Resources resources,
+            @NotNull ProviderId providerId,
+            @NotNull String uri)
     {
-        super();
+        super(resources);
         setData(getProviderActionUri(providerId, uri));
 
         DaggerUtils.inject(this);
     }
     //</editor-fold>
 
-    public Uri getProviderActionUri(ProviderId providerId, String uri)
+    @NotNull public Uri getProviderActionUri(
+            @NotNull ProviderId providerId,
+            @NotNull String uri)
     {
         return Uri.parse(getProviderActionUriPath(providerId, uri));
     }
 
-    public String getProviderActionUriPath(ProviderId portfolioId, String uri)
+    @NotNull public String getProviderActionUriPath(
+            @NotNull ProviderId portfolioId,
+            @NotNull String uri)
     {
-        return getString(
+        return resources.getString(
                 getIntentActionUriResId(),
-                getString(R.string.intent_scheme),
-                getString(R.string.intent_host_providers),
+                resources.getString(R.string.intent_scheme),
+                resources.getString(R.string.intent_host_providers),
                 portfolioId.key,
-                getString(getIntentProviderAction()),
+                resources.getString(getIntentProviderAction()),
                 Uri.encode(Uri.encode(uri)));
     }
 
@@ -55,7 +64,7 @@ public class ProviderPageIntent extends OneProviderIntent
         return R.string.intent_uri_action_provider_page;
     }
 
-    public String getCompleteForwardUriPath()
+    @NotNull public String getCompleteForwardUriPath()
     {
         String path = getForwardUriPath();
         Uri forwardUri = Uri.parse(path);
@@ -69,19 +78,26 @@ public class ProviderPageIntent extends OneProviderIntent
         }
     }
 
-    public String getForwardUriPath()
+    @NotNull public String getForwardUriPath()
     {
-        return getForwardUriPath(getData());
+        return getForwardUriPath(resources, getData());
     }
 
-    public static String getForwardUriPath(Uri data)
+    @NotNull public static String getForwardUriPath(
+            @NotNull Resources resources,
+            @NotNull Uri data)
     {
-        return getForwardUriPath(data.getPathSegments());
+        return getForwardUriPath(resources, data.getPathSegments());
     }
 
-    public static String getForwardUriPath(List<String> pathSegments)
+    @NotNull public static String getForwardUriPath(
+            @NotNull Resources resources,
+            @NotNull List<String> pathSegments)
     {
         // Only 1 decode is necessary here as the getDataPathSegments already does one.
-        return Uri.decode(pathSegments.get(getInteger(R.integer.intent_uri_action_provider_path_index_encoded_page)));
+        return Uri.decode(
+                pathSegments.get(
+                        resources.getInteger(
+                                R.integer.intent_uri_action_provider_path_index_encoded_page)));
     }
 }

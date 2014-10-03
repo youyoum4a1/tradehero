@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding.pref;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
@@ -15,11 +16,11 @@ import org.jetbrains.annotations.Nullable;
 public class CountrySpinnerAdapterNew
         extends ViewDTOSetAdapter<Country, CountrySpinnerItemView>
 {
-    private int resId;
-    private int dropDownResId;
+    @LayoutRes private int resId;
+    @LayoutRes private int dropDownResId;
 
     //<editor-fold desc="Constructors">
-    public CountrySpinnerAdapterNew(Context context, int layoutResourceId)
+    public CountrySpinnerAdapterNew(@NotNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context);
         this.resId = layoutResourceId;
@@ -37,17 +38,17 @@ public class CountrySpinnerAdapterNew
         return created;
     }
 
-    @Override protected int getViewResId(int position)
+    @Override @LayoutRes protected int getViewResId(int position)
     {
         return resId;
     }
 
-    public void setDropDownViewResource(int resource)
+    public void setDropDownViewResource(@LayoutRes int resource)
     {
         this.dropDownResId = resource;
     }
 
-    @Override public CountrySpinnerItemView getDropDownView(int position, View convertView, ViewGroup parent)
+    @Override public CountrySpinnerItemView getDropDownView(int position, @Nullable View convertView, ViewGroup parent)
     {
         if (convertView == null)
         {

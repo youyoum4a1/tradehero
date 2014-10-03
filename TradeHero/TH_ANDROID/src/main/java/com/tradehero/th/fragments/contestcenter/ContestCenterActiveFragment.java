@@ -24,7 +24,7 @@ public class ContestCenterActiveFragment extends ContestCenterBaseFragment
         contestListView.setAdapter(contestListAdapter);
     }
 
-    @Override public ContestCenterTabType getCCTabType()
+    @Override @NotNull public ContestCenterTabType getCCTabType()
     {
         return ContestCenterTabType.ACTIVE;
     }

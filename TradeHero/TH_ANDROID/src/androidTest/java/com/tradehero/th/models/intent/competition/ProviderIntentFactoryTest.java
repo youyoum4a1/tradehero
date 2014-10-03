@@ -3,7 +3,6 @@ package com.tradehero.th.models.intent.competition;
 import android.content.Intent;
 import android.net.Uri;
 import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.models.intent.THIntent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,17 +17,15 @@ public class ProviderIntentFactoryTest
 {
     @Before public void setUp()
     {
-        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
     }
 
     @After public void tearDown()
     {
-        THIntent.context = null;
     }
 
     @Test public void createsPageIntent()
     {
-        ProviderIntentFactory factory = new ProviderIntentFactory();
+        ProviderIntentFactory factory = new ProviderIntentFactory(Robolectric.getShadowApplication().getApplicationContext());
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tradehero://providers/456/pages/%252Fcompetitionpages%252Frules%253FproviderId%253D789%2526userId%253D234"));
         ProviderIntent pageIntent = factory.create(intent);
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.models.intent.competition;
 
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,35 +8,38 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class OneProviderIntent extends ProviderIntent
 {
     //<editor-fold desc="Constructors">
-    protected OneProviderIntent()
+    protected OneProviderIntent(@NotNull Resources resources)
     {
-        super();
+        super(resources);
     }
 
-    protected OneProviderIntent(ProviderId providerId)
+    protected OneProviderIntent(
+            @NotNull Resources resources,
+            @NotNull ProviderId providerId)
     {
-        super();
+        super(resources);
         setData(getProviderActionUri(providerId));
     }
     //</editor-fold>
 
-    public Uri getProviderActionUri(ProviderId providerId)
+    @NotNull public Uri getProviderActionUri(@NotNull ProviderId providerId)
     {
         return Uri.parse(getProviderActionUriPath(providerId));
     }
 
-    public String getProviderActionUriPath(ProviderId portfolioId)
+    @NotNull public String getProviderActionUriPath(@NotNull ProviderId portfolioId)
     {
-        return getString(
+        return resources.getString(
                 getIntentActionUriResId(),
-                getString(R.string.intent_scheme),
-                getString(R.string.intent_host_providers),
+                resources.getString(R.string.intent_scheme),
+                resources.getString(R.string.intent_host_providers),
                 portfolioId.key,
-                getString(getIntentProviderAction()));
+                resources.getString(getIntentProviderAction()));
     }
 
     public int getIntentActionUriResId()
@@ -47,22 +51,26 @@ abstract public class OneProviderIntent extends ProviderIntent
 
     public ProviderId getProviderId()
     {
-        return getProviderId(getData());
+        return getProviderId(resources, getData());
     }
 
-    public static ProviderId getProviderId(Uri data)
+    public static ProviderId getProviderId(
+            @NotNull Resources resources,
+            @NotNull Uri data)
     {
-        return getProviderId(data.getPathSegments());
+        return getProviderId(resources, data.getPathSegments());
     }
 
-    public static ProviderId getProviderId(List<String> pathSegments)
+    public static ProviderId getProviderId(
+            @NotNull Resources resources,
+            @NotNull List<String> pathSegments)
     {
-        return new ProviderId(Integer.parseInt(pathSegments.get(getInteger(R.integer.intent_uri_action_provider_path_index_id))));
+        return new ProviderId(Integer.parseInt(pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_id))));
     }
 
     @Override abstract public Class<? extends Fragment> getActionFragment();
 
-    @Override public void populate(Bundle bundle)
+    @Override public void populate(@NotNull Bundle bundle)
     {
         super.populate(bundle);
         CompetitionFragment.putProviderId(bundle, getProviderId());

@@ -64,8 +64,9 @@ public class OnBoardPickHeroViewHolder
         switcher.setDisplayedChild(LIST_VIEW_ID);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnItemClick(R.id.heros_list)
-    void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+    void onItemClick(@NotNull AdapterView<?> adapterView, View view, int position, long l)
     {
         SelectableUserDTO value = (SelectableUserDTO) adapterView.getItemAtPosition(position);
         value.selected = !value.selected;

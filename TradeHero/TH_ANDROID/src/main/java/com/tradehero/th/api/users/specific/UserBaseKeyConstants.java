@@ -8,4 +8,14 @@ public class UserBaseKeyConstants
     public static final int OFFICIAL_ACCOUNT_4 = 570750;
     public static final int OFFICIAL_ACCOUNT_5 = 570758;
     public static final int OFFICIAL_ACCOUNT_6 = 570762;
+
+    public static boolean isOfficialId(int id)
+    {
+        return id == OFFICIAL_TRADEHERO
+                || id == OFFICIAL_COMMUNITY_MANAGER
+                || id == OFFICIAL_TRADE_MASTER
+                || id == OFFICIAL_ACCOUNT_4
+                || id == OFFICIAL_ACCOUNT_5
+                || id == OFFICIAL_ACCOUNT_6;
+    }
 }

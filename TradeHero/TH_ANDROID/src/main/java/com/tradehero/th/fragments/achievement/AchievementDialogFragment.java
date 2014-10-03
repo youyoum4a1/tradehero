@@ -11,9 +11,9 @@ import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
+import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
 import java.util.List;
@@ -64,9 +64,13 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
     @Override protected void onCreatePropertyValuesHolder(List<PropertyValuesHolder> propertyValuesHolders)
     {
         super.onCreatePropertyValuesHolder(propertyValuesHolders);
-        PropertyValuesHolder dollar =
-                PropertyValuesHolder.ofFloat(PROPERTY_DOLLARS_EARNED, 0f, (float) userAchievementDTO.achievementDef.virtualDollars);
-        propertyValuesHolders.add(dollar);
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null)
+        {
+            PropertyValuesHolder dollar =
+                    PropertyValuesHolder.ofFloat(PROPERTY_DOLLARS_EARNED, 0f, (float) userAchievementDTOCopy.achievementDef.virtualDollars);
+            propertyValuesHolders.add(dollar);
+        }
     }
 
     @Override protected void handleBadgeSuccess()
@@ -92,18 +96,22 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         super.onDestroyView();
     }
 
-    @Override protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
+    @Override @NotNull protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
     {
         return new AchievementValueAnimatorUpdateListener();
     }
 
     private void attachCategoryCacheListener()
     {
-        AchievementCategoryId achievementCategoryId =
-                new AchievementCategoryId(currentUserId.toUserBaseKey(), userAchievementDTO.achievementDef.categoryId);
-        achievementCategoryCache.register(achievementCategoryId,
-                mCategoryCacheListener);
-        achievementCategoryCache.getOrFetchAsync(achievementCategoryId);
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null)
+        {
+            AchievementCategoryId achievementCategoryId =
+                    new AchievementCategoryId(currentUserId.toUserBaseKey(), userAchievementDTO.achievementDef.categoryId);
+            achievementCategoryCache.register(achievementCategoryId,
+                    mCategoryCacheListener);
+            achievementCategoryCache.getOrFetchAsync(achievementCategoryId);
+        }
     }
 
     private void detachCategoryCacheListener()
@@ -119,22 +127,24 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     private class CategoryCacheListener implements DTOCacheNew.Listener<AchievementCategoryId, AchievementCategoryDTO>
     {
-
         @Override public void onDTOReceived(@NotNull AchievementCategoryId key, @NotNull AchievementCategoryDTO value)
         {
-            achievementProgressIndicator.setAchievementDef(value.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
-            achievementProgressIndicator.animateCurrentLevel();
+            UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+            if (userAchievementDTOCopy != null)
+            {
+                achievementProgressIndicator.setAchievementDef(value.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
+                achievementProgressIndicator.animateCurrentLevel();
+            }
         }
 
         @Override public void onErrorThrown(@NotNull AchievementCategoryId key, @NotNull Throwable error)
         {
-
         }
     }
 
     protected class AchievementValueAnimatorUpdateListener extends AbstractAchievementValueAnimatorUpdateListener
     {
-        @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+        @Override public void onAnimationUpdate(@NotNull ValueAnimator valueAnimator)
         {
             super.onAnimationUpdate(valueAnimator);
             float value = (Float) valueAnimator.getAnimatedValue(PROPERTY_DOLLARS_EARNED);

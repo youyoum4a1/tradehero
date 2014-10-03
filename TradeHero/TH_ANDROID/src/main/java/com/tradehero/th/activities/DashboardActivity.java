@@ -15,7 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.TabHost;
@@ -39,6 +38,7 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -47,7 +47,6 @@ import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -55,13 +54,14 @@ import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.tradehero.th.fragments.onboarding.ForOnBoard;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
+import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.friend.InviteCodeDialogFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -76,7 +76,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.tradehero.th.persistence.prefs.FirstShowInviteCodeDialog;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
@@ -88,6 +87,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.achievement.ForAchievement;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.level.ForXP;
 import com.tradehero.th.utils.level.XpModule;
@@ -124,11 +124,10 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtilLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
-    @Inject @FirstShowInviteCodeDialog BooleanPreference firstShowInviteCodeDialogPreference;
-    @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject SystemStatusCache systemStatusCache;
     @Inject Lazy<MarketUtil> marketUtilLazy;
 
@@ -139,8 +138,10 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject Analytics analytics;
     @Inject LocalBroadcastManager localBroadcastManager;
+    @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
     @Inject @ForAchievement IntentFilter achievementIntentFilter;
     @Inject @ForXP IntentFilter xpIntentFilter;
+    @Inject @ForOnBoard IntentFilter onBoardIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
 
@@ -153,6 +154,7 @@ public class DashboardActivity extends BaseActivity
     private int tabHostHeight;
     private BroadcastReceiver mAchievementBroadcastReceiver;
     private BroadcastReceiver mXPBroadcastReceiver;
+    private BroadcastReceiver onBoardBroadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -168,7 +170,7 @@ public class DashboardActivity extends BaseActivity
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
-        ViewGroup dashboardWrapper = appContainer.get(this);
+        appContainer.wrap(this);
 
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
@@ -191,7 +193,7 @@ public class DashboardActivity extends BaseActivity
 
         // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
-        showInviteCodeDialog();
+        showStartDialogsPlease();
 
         tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
         setupNavigator();
@@ -267,7 +269,6 @@ public class DashboardActivity extends BaseActivity
                         abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
                     }
                 }
-
             }
         };
 
@@ -283,10 +284,18 @@ public class DashboardActivity extends BaseActivity
                 }
             }
         };
+
+        onBoardBroadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
+            }
+        };
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev)
+    public boolean dispatchTouchEvent(@NotNull MotionEvent ev)
     {
         return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
@@ -394,6 +403,7 @@ public class DashboardActivity extends BaseActivity
         analytics.openSession();
         localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, achievementIntentFilter);
         localBroadcastManager.registerReceiver(mXPBroadcastReceiver, xpIntentFilter);
+        localBroadcastManager.registerReceiver(onBoardBroadcastReceiver, onBoardIntentFilter);
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -427,6 +437,7 @@ public class DashboardActivity extends BaseActivity
         analytics.closeSession();
         localBroadcastManager.unregisterReceiver(mAchievementBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(mXPBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(onBoardBroadcastReceiver);
         super.onPause();
     }
 
@@ -439,6 +450,13 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onDestroy()
     {
+        purchaseRestorerFinishedListener = null;
+        notificationFetchListener = null;
+
+        mAchievementBroadcastReceiver = null;
+        mXPBroadcastReceiver = null;
+        onBoardBroadcastReceiver = null;
+
         THBillingInteractor billingInteractorCopy = billingInteractor.get();
         if (billingInteractorCopy != null && restoreRequestCode != null)
         {
@@ -451,32 +469,16 @@ public class DashboardActivity extends BaseActivity
         }
         navigator = null;
 
-        purchaseRestorerFinishedListener = null;
-        notificationFetchListener = null;
-
         super.onDestroy();
     }
 
-    private void showInviteCodeDialog()
+    private void showStartDialogsPlease()
     {
-        if (shouldShowOnBoard())
+        if (userProfileDTOUtilLazy.get().shouldShowOnBoard(
+                userProfileCache.get().get(currentUserId.toUserBaseKey())))
         {
-            showOnboard();
+            broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
         }
-        else if (shouldShowInviteCode())
-        {
-            firstShowInviteCodeDialogPreference.set(false);
-            InviteCodeDialogFragment dialogFragment = InviteCodeDialogFragment.showInviteCodeDialog(getFragmentManager());
-            dialogFragment.setDismissedListener(new DashboardOnInviteCodeDismissed());
-        }
-    }
-
-    protected boolean shouldShowInviteCode()
-    {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        return firstShowInviteCodeDialogPreference.get()
-                //&& !(THUser.getTHAuthenticationProvider() instanceof EmailAuthenticationProvider)
-                && (userProfileDTO == null || userProfileDTO.inviteCode == null || userProfileDTO.inviteCode.isEmpty());
     }
 
     @Override protected List<Object> getModules()
@@ -484,43 +486,6 @@ public class DashboardActivity extends BaseActivity
         List<Object> superModules = new ArrayList<>(super.getModules());
         superModules.add(new DashboardActivityModule());
         return superModules;
-    }
-
-    protected class DashboardOnInviteCodeDismissed implements BaseDialogFragment.OnDismissedListener
-    {
-        @Override public void onDismissed(DialogInterface dialog)
-        {
-            shouldShowOnBoard();
-        }
-    }
-
-    protected boolean shouldShowOnBoard()
-    {
-        if (firstShowOnBoardDialogPreference.isItTime())
-        {
-            UserProfileDTO currentUserProfile =
-                    userProfileCache.get().get(currentUserId.toUserBaseKey());
-            if (currentUserProfile != null)
-            {
-                if (currentUserProfile.heroIds != null && currentUserProfile.heroIds.size() > 0)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    protected void showOnboard()
-    {
-        if (shouldShowOnBoard())
-        {
-            OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
-        }
     }
 
     private void launchActions()

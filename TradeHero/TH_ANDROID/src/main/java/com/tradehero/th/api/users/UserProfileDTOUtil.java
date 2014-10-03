@@ -5,12 +5,13 @@ import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
-
-import org.jetbrains.annotations.NotNull;
-
+import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class UserProfileDTOUtil extends UserBaseDTOUtil
 {
@@ -19,17 +20,20 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     public final static int IS_FREE_FOLLOWER = 1;
     public final static int IS_PREMIUM_FOLLOWER = 2;
 
-    @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
-    @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @NotNull protected final SecurityAlertKnowledge securityAlertKnowledge;
+    @NotNull protected final PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @NotNull protected final TimingIntervalPreference firstShowOnBoardDialogPreference;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileDTOUtil(
             @NotNull SecurityAlertKnowledge securityAlertKnowledge,
-            @NotNull PortfolioCompactDTOUtil portfolioCompactDTOUtil)
+            @NotNull PortfolioCompactDTOUtil portfolioCompactDTOUtil,
+            @NotNull @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference)
     {
         super();
         this.securityAlertKnowledge = securityAlertKnowledge;
         this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
+        this.firstShowOnBoardDialogPreference = firstShowOnBoardDialogPreference;
     }
     //</editor-fold>
 
@@ -78,5 +82,25 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
             }
         }
         return subscribedAlerts;
+    }
+
+    public boolean shouldShowOnBoard(@Nullable UserProfileDTO currentUserProfile)
+    {
+        if (firstShowOnBoardDialogPreference.isItTime())
+        {
+            if (currentUserProfile != null)
+            {
+                List<Integer> userGenHeroIds= currentUserProfile.getUserGeneratedHeroIds();
+                if (userGenHeroIds != null && userGenHeroIds.size() > 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.tradehero.th.models.intent.competition;
 
+import android.content.res.Resources;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.models.intent.THIntent;
@@ -14,29 +15,30 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class ProviderIntentTest
 {
+    private Resources resources;
+
     @Before public void setUp()
     {
-        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
+        resources = Robolectric.getShadowApplication().getApplicationContext().getResources();
     }
 
     @After public void tearDown()
     {
-        THIntent.context = null;
     }
 
     @Test public void constructorSetsPath()
     {
-        THIntent intent = new ProviderIntent();
+        THIntent intent = new ProviderIntent(resources);
         assertThat(intent.getData() + "").isEqualTo("tradehero://providers");
     }
 
     @Test public void uriPathIsWellFormed()
     {
-        assertThat(new ProviderIntent().getUriPath()).isEqualTo("tradehero://providers");
+        assertThat(new ProviderIntent(resources).getUriPath()).isEqualTo("tradehero://providers");
     }
 
     @Test public void typeIsDashboard()
     {
-        assertThat(new ProviderIntent().getDashboardType()).isEqualTo(RootFragmentType.COMMUNITY);
+        assertThat(new ProviderIntent(resources).getDashboardType()).isEqualTo(RootFragmentType.COMMUNITY);
     }
 }

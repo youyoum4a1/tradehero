@@ -73,6 +73,11 @@ public class PortfolioCompactDTO implements DTO
         return providerId == null && !isWatchlist;
     }
 
+    @JsonIgnore public boolean isAllowedAddCash()
+    {
+        return isDefault();
+    }
+
     @JsonIgnore public double getTotalExtraCash()
     {
         return totalExtraCashGiven + totalExtraCashPurchased;

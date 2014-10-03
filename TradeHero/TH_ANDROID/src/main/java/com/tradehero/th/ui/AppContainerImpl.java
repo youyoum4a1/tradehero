@@ -28,13 +28,14 @@ public class AppContainerImpl implements AppContainer
         this.resideMenuItemClickListener = resideMenuItemClickListener;
     }
 
-    @Override public ViewGroup get(final Activity activity)
+    @Override public ViewGroup wrap(final Activity activity)
     {
         this.activity = activity;
         activity.setContentView(R.layout.dashboard_with_bottom_bar);
 
         resideMenu.setBackground(R.drawable.parallax_bg);
         resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());
+        LayoutInflater.from(activity).inflate(R.layout.residemenu_footer, resideMenu.getFooter(), true);
 
         List<View> menuItems = new ArrayList<>();
         for (RootFragmentType tabType : RootFragmentType.forResideMenu())

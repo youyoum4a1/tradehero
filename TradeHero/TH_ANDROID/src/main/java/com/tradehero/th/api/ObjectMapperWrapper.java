@@ -116,14 +116,11 @@ public class ObjectMapperWrapper extends ObjectMapper
                 });
         if (userAchievementDTOs != null)
         {
-            userAchievementCacheLazy.get().put(userAchievementDTOs);
+            userAchievementCacheLazy.get().putNonDefDuplicates(userAchievementDTOs);
             UserBaseKey userBaseKey = currentUserIdLazy.get().toUserBaseKey();
             achievementCategoryListCacheLazy.get().invalidate(userBaseKey);
-            for (UserAchievementDTO userAchievementDTO : userAchievementDTOs)
-            {
-                achievementCategoryCacheLazy.get().invalidate(new AchievementCategoryId(userBaseKey, userAchievementDTO.achievementDef.categoryId));
-            }
             userProfileCacheLazy.get().updateXPIfNecessary(userBaseKey, userAchievementDTOs.findBiggestXPTotal());
+            userProfileCacheLazy.get().addAchievements(userBaseKey, userAchievementDTOs.size());
         }
     }
 

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.fragments.watchlist.WatchlistItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
+    android:background="@color/orange"
     >
 
   <RelativeLayout
@@ -10,6 +12,7 @@
       android:tag="back"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
+      android:background="@color/gray_1"
       >
 
     <Button
@@ -21,6 +24,7 @@
         android:textColor="@color/white"
         android:id="@+id/position_watchlist_delete"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:text="@string/watchlist_delete"/>
 
     <Button
@@ -32,6 +36,7 @@
         android:background="@color/gray_normal"
         android:textColor="@color/white"
         android:layout_toLeftOf="@id/position_watchlist_delete"
+        android:layout_toStartOf="@id/position_watchlist_delete"
         android:text="@string/watchlist_more"/>
 
   </RelativeLayout>
@@ -42,7 +47,8 @@
       android:orientation="horizontal"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/white">
+      android:background="@color/white"
+      >
 
     <ImageView
         android:id="@+id/stock_logo"
@@ -52,6 +58,7 @@
         android:layout_margin="2dp"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
+        tools:src="@drawable/google_play_store"
         />
 
     <RelativeLayout
@@ -72,7 +79,7 @@
           android:textStyle="bold"
           android:maxLines="1"
           android:layout_alignParentTop="true"
-          android:text="@null"
+          tools:text="SHA:601899"
           />
 
       <TextView
@@ -82,7 +89,7 @@
           android:textSize="@dimen/watchlist_item_shares_font_size"
           android:maxLines="1"
           android:layout_below="@id/stock_symbol"
-          android:text="@null"
+          tools:text="12"
           />
 
       <TextView
@@ -93,7 +100,7 @@
           android:layout_below="@id/number_of_shares"
           android:textSize="@dimen/watchlist_item_shares_font_size"
           android:textColor="@color/text_gray_normal"
-          android:text="@null"
+          tools:text="Zijin Mining Group Co., Ltd"
           />
 
     </RelativeLayout>
@@ -105,9 +112,9 @@
         android:layout_weight="1"
         android:layout_height="match_parent"
         android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:layout_alignParentRight="true"
         >
 
       <TextView
@@ -117,6 +124,8 @@
           android:maxLines="1"
           android:layout_alignParentTop="true"
           android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
+          tools:text="CNY 2.41"
           />
 
       <TextView
@@ -126,6 +135,8 @@
           android:maxLines="1"
           android:layout_below="@id/position_last_amount"
           android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
+          tools:text="+4.149%"
           />
 
     </RelativeLayout>

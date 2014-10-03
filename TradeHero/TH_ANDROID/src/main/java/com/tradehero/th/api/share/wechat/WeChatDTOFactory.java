@@ -14,9 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class WeChatDTOFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public WeChatDTOFactory()
     {
     }
+    //</editor-fold>
 
     @NotNull public WeChatDTO createFrom(@NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
@@ -29,17 +31,15 @@ public class WeChatDTOFactory
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = userAchievementDTO.id;
-        String dollars = THSignedNumber.builder(userAchievementDTO.achievementDef.virtualDollars).relevantDigitCount(1).withOutSign().toString();
-        String xp = THSignedNumber.builder(userAchievementDTO.xpEarned).relevantDigitCount(1).withOutSign().toString();
         if(userAchievementDTO.achievementDef.isQuest)
         {
             weChatDTO.type = WeChatMessageType.QuestBonus;
-            weChatDTO.title = context.getString(R.string.share_to_wechat_quest_bonus_text, userAchievementDTO.achievementDef.thName, dollars, xp);
+            weChatDTO.title = context.getString(R.string.share_to_wechat_quest_bonus_text, userAchievementDTO.achievementDef.thName);
         }
         else
         {
             weChatDTO.type = WeChatMessageType.Achievement;
-            weChatDTO.title = context.getString(R.string.share_to_wechat_achievement_text, userAchievementDTO.achievementDef.thName, dollars, xp);
+            weChatDTO.title = context.getString(R.string.share_to_wechat_achievement_text, userAchievementDTO.achievementDef.thName);
         }
         weChatDTO.imageURL = userAchievementDTO.achievementDef.visual;
         return weChatDTO;

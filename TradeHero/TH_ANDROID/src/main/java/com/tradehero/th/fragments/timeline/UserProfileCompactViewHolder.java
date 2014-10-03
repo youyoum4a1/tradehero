@@ -116,11 +116,11 @@ public class UserProfileCompactViewHolder
     {
         if (roiSinceInception != null)
         {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null
-                    && userProfileDTO.portfolio.roiSinceInception != null)
+            if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
+                double roi = userProfileDTO.portfolio.roiSinceInception != null ? userProfileDTO.portfolio.roiSinceInception : 0;
                 THSignedNumber thRoiSinceInception = THSignedPercentage
-                        .builder(userProfileDTO.portfolio.roiSinceInception * 100)
+                        .builder(roi * 100)
                         .withSign()
                         .signTypeArrow()
                         .build();

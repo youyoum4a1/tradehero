@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 public class MessageServiceStub implements MessageService
@@ -94,19 +94,19 @@ public class MessageServiceStub implements MessageService
         throw new IllegalArgumentException("Implement it");
     }
 
-    @Override public Response deleteMessage(int commentId, int senderUserId,
+    @Override public BaseResponseDTO deleteMessage(int commentId, int senderUserId,
             int recipientUserId)
     {
         throw new RuntimeException("Not implemented");
     }
 
-    @Override public Response readMessage(int commentId, int senderUserId,
+    @Override public BaseResponseDTO readMessage(int commentId, int senderUserId,
             int recipientUserId)
     {
         throw new RuntimeException("Not implemented");
     }
 
-    @Override public Response readAllMessage()
+    @Override public BaseResponseDTO readAllMessage()
     {
         throw new RuntimeException("Not implemented");
     }

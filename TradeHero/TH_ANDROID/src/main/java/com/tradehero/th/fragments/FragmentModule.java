@@ -14,11 +14,11 @@ import com.tradehero.th.fragments.home.FragmentHomeModule;
 import com.tradehero.th.fragments.leaderboard.FragmentLeaderboardModule;
 import com.tradehero.th.fragments.location.FragmentLocationModule;
 import com.tradehero.th.fragments.news.FragmentNewsModule;
-import com.tradehero.th.fragments.onboarding.FragmentOnboardModule;
+import com.tradehero.th.fragments.onboarding.FragmentOnBoardModule;
 import com.tradehero.th.fragments.portfolio.FragmentPortfolioModule;
 import com.tradehero.th.fragments.position.FragmentPositionModule;
 import com.tradehero.th.fragments.security.FragmentSecurityModule;
-import com.tradehero.th.fragments.settings.FragmentSettingModule;
+import com.tradehero.th.fragments.settings.FragmentSettingUIModule;
 import com.tradehero.th.fragments.social.FragmentSocialModule;
 import com.tradehero.th.fragments.timeline.FragmentTimelineModule;
 import com.tradehero.th.fragments.trade.FragmentTradeModule;
@@ -34,7 +34,7 @@ import dagger.Module;
                 FragmentTimelineModule.class,
                 FragmentLeaderboardModule.class,
                 FragmentHomeModule.class,
-                FragmentSettingModule.class,
+                FragmentSettingUIModule.class,
                 FragmentTradeModule.class,
                 FragmentSocialModule.class,
                 FragmentAlertModule.class,
@@ -55,7 +55,7 @@ import dagger.Module;
                 FragmentEducationModule.class,
                 FragmentTranslationModule.class,
                 FragmentAuthenticationModule.class,
-                FragmentOnboardModule.class,
+                FragmentOnBoardModule.class,
                 FragmentAchievementModule.class,
         },
         injects = {
