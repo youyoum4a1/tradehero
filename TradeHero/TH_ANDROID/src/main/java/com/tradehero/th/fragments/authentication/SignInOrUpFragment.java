@@ -190,7 +190,10 @@ public class SignInOrUpFragment extends Fragment
                 {
                     @Override public void call()
                     {
-                        progressDialog.dismiss();
+                        if (progressDialog != null)
+                        {
+                            progressDialog.dismiss();
+                        }
                     }
                 });
     }
