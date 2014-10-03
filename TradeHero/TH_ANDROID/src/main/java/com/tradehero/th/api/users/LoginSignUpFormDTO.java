@@ -17,6 +17,7 @@ public class LoginSignUpFormDTO
 {
     @JsonIgnore
     public final AuthData authData;
+    private final String email;
     //region static fields
     public final boolean useOnlyHeroCount;
     public final String deviceToken;
@@ -37,12 +38,14 @@ public class LoginSignUpFormDTO
 
     public LoginSignUpFormDTO(
             AuthData authData,
+            String email,
             boolean useOnlyHeroCount,
             String deviceToken,
             DeviceType clientType,
             String clientVersion)
     {
         this.authData = authData;
+        this.email = email;
         this.useOnlyHeroCount = useOnlyHeroCount;
         this.deviceToken = deviceToken;
         this.clientType = clientType;
@@ -55,6 +58,7 @@ public class LoginSignUpFormDTO
         private final String versionId;
         private final boolean useOnlyHeroCount;
         private AuthData authData;
+        private String email;
 
         @Inject public Builder(Context context, @SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
         {
@@ -70,10 +74,16 @@ public class LoginSignUpFormDTO
             return this;
         }
 
+        public Builder email(String email)
+        {
+            this.email = email;
+            return this;
+        }
+
         public LoginSignUpFormDTO build()
         {
             ensureSaneDefaults();
-            return new LoginSignUpFormDTO(authData, useOnlyHeroCount, savedPushIdentifier.get(), Constants.DEVICE_TYPE, versionId);
+            return new LoginSignUpFormDTO(authData, email, useOnlyHeroCount, savedPushIdentifier.get(), Constants.DEVICE_TYPE, versionId);
         }
 
         private void ensureSaneDefaults()

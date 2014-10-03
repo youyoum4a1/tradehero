@@ -26,6 +26,7 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
@@ -39,12 +40,14 @@ import javax.inject.Provider;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
@@ -53,6 +56,7 @@ import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 public class SignInOrUpFragment extends Fragment
 {
     @Inject Analytics analytics;
+    @Inject DashboardNavigator dashboardNavigator;
     @Inject AccountManager accountManager;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject Provider<LoginSignUpFormDTO.Builder> authenticationFormBuilderProvider;
@@ -174,8 +178,11 @@ public class SignInOrUpFragment extends Fragment
                 {
                     @Override public Observable<Pair<AuthData, UserLoginDTO>> call(LoginSignUpFormDTO loginSignUpFormDTO)
                     {
-                        Observable<UserLoginDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(loginSignUpFormDTO.authData
-                                    .getTHToken(), loginSignUpFormDTO);
+                        Observable<UserLoginDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
+                                loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .onErrorResumeNext(new OperatorSignUpAndLoginFallback(loginSignUpFormDTO.authData));
                         return Observable.zip(Observable.just(loginSignUpFormDTO.authData), userLoginDTOObservable,
                                 new Func2<AuthData, UserLoginDTO, Pair<AuthData, UserLoginDTO>>()
                                 {
@@ -200,6 +207,7 @@ public class SignInOrUpFragment extends Fragment
 
     @Override public void onDestroy()
     {
+        subscription.unsubscribe();
         ButterKnife.reset(this);
         super.onDestroy();
     }
@@ -209,13 +217,10 @@ public class SignInOrUpFragment extends Fragment
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.SignIn));
 
-        subscription = authenticationObservable.subscribe(new AuthDataObserver());
-    }
-
-    @Override public void onPause()
-    {
-        subscription.unsubscribe();
-        super.onPause();
+        if (subscription == null || subscription.isUnsubscribed())
+        {
+            subscription = authenticationObservable.subscribe(new AuthDataObserver());
+        }
     }
 
     private void openWebPage(String url)
@@ -278,5 +283,51 @@ public class SignInOrUpFragment extends Fragment
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
         startActivity(new Intent(getActivity(), DashboardActivity.class));
+    }
+
+    private class OperatorSignUpAndLoginFallback
+            implements Func1<Throwable, Observable<UserLoginDTO>>
+    {
+        private final AuthData authData;
+
+        public OperatorSignUpAndLoginFallback(AuthData authData)
+        {
+            this.authData = authData;
+        }
+
+        @Override public Observable<UserLoginDTO> call(Throwable throwable)
+        {
+            TwitterEmailFragment twitterEmailFragment = dashboardNavigator.pushFragment(TwitterEmailFragment.class);
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
+            return twitterEmailFragment.obtainEmail()
+                    .map(new Func1<String, LoginSignUpFormDTO>()
+                    {
+                        @Override public LoginSignUpFormDTO call(String email)
+                        {
+                            return authenticationFormBuilderProvider.get()
+                                    .authData(authData)
+                                    .email(email)
+                                    .build();
+                        }
+                    })
+                    .flatMap(new Func1<LoginSignUpFormDTO, Observable<UserLoginDTO>>()
+                    {
+                        @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
+                        {
+                            return sessionServiceWrapper.signupAndLoginRx(
+                                    loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO);
+                        }
+                    })
+                    .doOnNext(new Action1<UserLoginDTO>()
+                    {
+                        @Override public void call(UserLoginDTO userLoginDTO)
+                        {
+                            progressDialog.show();
+                        }
+                    });
+        }
     }
 }

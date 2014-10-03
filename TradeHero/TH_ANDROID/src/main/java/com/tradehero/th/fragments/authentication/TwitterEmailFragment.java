@@ -15,22 +15,15 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
+import rx.Observable;
+import rx.android.observables.ViewObservable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class TwitterEmailFragment extends Fragment
 {
-    private TwitterCredentialsDTO twitterJson;
-
     @InjectView(R.id.authentication_twitter_email_txt) EditText twitterEmail;
-
-    @OnClick(R.id.authentication_twitter_email_button) void handleTwitterEmailButtonClicked()
-    {
-        twitterJson.email = twitterEmail.getText().toString();
-        THUser.logInAsyncWithJson(twitterJson, createCallbackForTwitterComplementEmail());
-
-        // FIXME/refactor progressDialog from AuthenticationActivity
-        //progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), "Twitter"));
-        //progressDialog.show();
-    }
+    @InjectView(R.id.authentication_twitter_email_button) View twitterConfirm;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -43,30 +36,15 @@ public class TwitterEmailFragment extends Fragment
         ButterKnife.inject(this, view);
     }
 
-    private LogInCallback createCallbackForTwitterComplementEmail()
+    public Observable<String> obtainEmail()
     {
-        return new LogInCallback()
-        {
-            @Override public void done(UserLoginDTO user, THException ex)
-            {
-                // FIXME/refactor
-                //if (user != null)
-                //{
-                //    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, AnalyticsConstants.Twitter));
-                //    launchDashboard(user);
-                //    finish();
-                //}
-                //else
-                //{
-                //    THToast.show(ex);
-                //}
-                //progressDialog.dismiss();
-            }
-
-            @Override public void onStart()
-            {
-                // do nothing for now
-            }
-        };
+        return ViewObservable.clicks(twitterConfirm, false)
+                .map(new Func1<View, String>()
+                {
+                    @Override public String call(View view)
+                    {
+                        return twitterEmail.getText().toString();
+                    }
+                });
     }
 }

@@ -12,6 +12,7 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
+import com.tradehero.th.auth.TwitterAuthenticationProvider;
 import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THUser;
@@ -26,7 +27,6 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
-import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -48,7 +48,6 @@ public class AuthenticationActivity extends BaseActivity
 {
     private ProgressDialog progressDialog;
 
-    @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
     @Inject Analytics analytics;
@@ -56,6 +55,7 @@ public class AuthenticationActivity extends BaseActivity
     private DashboardNavigator navigator;
     @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
     @Inject LinkedInAuthenticationProvider linkedInAuthenticationProvider;
+    @Inject TwitterAuthenticationProvider twitterAuthenticationProvider;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -187,7 +187,10 @@ public class AuthenticationActivity extends BaseActivity
     {
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Twitter));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
-        twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
+        // FIXME/refactor
+        twitterAuthenticationProvider.logIn(this);
+
+        throw new RuntimeException("FIXME/refactor");
     }
 
     private SocialAuthenticationCallback createTwitterAuthenticationCallback()
