@@ -187,9 +187,9 @@ public class SignInOrUpFragment extends Fragment
                         AuthData authData = loginSignUpFormDTO.authData;
                         Observable<UserLoginDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
                                 authData.getTHToken(), loginSignUpFormDTO)
-                                .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData))
                                 .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData));
 
                         return Observable.zip(Observable.just(authData), userLoginDTOObservable,
                                 new Func2<AuthData, UserLoginDTO, Pair<AuthData, UserLoginDTO>>()
@@ -331,6 +331,8 @@ public class SignInOrUpFragment extends Fragment
                                         loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO);
                             }
                         })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<UserLoginDTO>()
                         {
                             @Override public void call(UserLoginDTO userLoginDTO)
