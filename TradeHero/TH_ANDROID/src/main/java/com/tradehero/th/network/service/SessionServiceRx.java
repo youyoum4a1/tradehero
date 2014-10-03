@@ -10,6 +10,11 @@ import rx.Observable;
 interface SessionServiceRx
 {
     //<editor-fold desc="Login and social register">
+    @POST("/login")
+    Observable<UserLoginDTO> login(
+            @Header("Authorization") String authorization,
+            @Body LoginSignUpFormDTO loginFormDTO);
+
     @POST("/signupAndLogin")
     Observable<UserLoginDTO> signupAndLogin(
             @Header("Authorization") String authorization, @Body LoginSignUpFormDTO loginSignUpFormDTO);

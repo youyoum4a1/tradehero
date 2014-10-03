@@ -12,8 +12,10 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.callback.THCallback;
@@ -32,6 +34,9 @@ import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import java.util.Map;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.android.observables.ViewObservable;
+import rx.functions.Func1;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
@@ -45,11 +50,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @InjectView(R.id.authentication_sign_in_email) SelfValidatedText email;
     @InjectView(R.id.et_pwd_login) ValidatedPasswordText password;
-
-    @OnClick(R.id.btn_login) void handleSignInButtonClicked(View view)
-    {
-        handleSignInOrUpButtonClicked(view);
-    }
+    @InjectView(R.id.btn_login) View loginButton;
 
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
@@ -200,5 +201,17 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                 mProgressDialog.dismiss();
             }
         };
+    }
+
+    public Observable<AuthData> obtainAuthData()
+    {
+        return ViewObservable.clicks(loginButton, false)
+                .map(new Func1<View, AuthData>()
+                {
+                    @Override public AuthData call(View view)
+                    {
+                        return new AuthData(email.getText().toString(), password.getText().toString());
+                    }
+                });
     }
 }

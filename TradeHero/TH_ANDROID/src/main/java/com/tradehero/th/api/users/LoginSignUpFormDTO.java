@@ -92,6 +92,11 @@ public class LoginSignUpFormDTO
             {
                 throw new IllegalStateException("authData should not be null");
             }
+
+            if (email == null)
+            {
+                email = authData.email;
+            }
         }
     }
 }

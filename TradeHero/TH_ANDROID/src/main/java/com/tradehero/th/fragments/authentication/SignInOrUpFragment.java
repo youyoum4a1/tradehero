@@ -139,8 +139,11 @@ public class SignInOrUpFragment extends Fragment
                 {
                     @Override public void call(SocialNetworkEnum socialNetworkEnum)
                     {
-                        progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                                getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()), true);
+                        if (socialNetworkEnum != SocialNetworkEnum.TH)
+                        {
+                            progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+                                    getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()), true);
+                        }
                     }
                 })
                 .map(new Func1<SocialNetworkEnum, AuthenticationProvider>()
@@ -162,7 +165,10 @@ public class SignInOrUpFragment extends Fragment
                 {
                     @Override public void call(AuthData authData)
                     {
-                        progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
+                        if (progressDialog != null)
+                        {
+                            progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
+                        }
                     }
                 })
                 .map(new Func1<AuthData, LoginSignUpFormDTO>()
@@ -178,12 +184,14 @@ public class SignInOrUpFragment extends Fragment
                 {
                     @Override public Observable<Pair<AuthData, UserLoginDTO>> call(LoginSignUpFormDTO loginSignUpFormDTO)
                     {
+                        AuthData authData = loginSignUpFormDTO.authData;
                         Observable<UserLoginDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
-                                loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO)
+                                authData.getTHToken(), loginSignUpFormDTO)
+                                .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData))
                                 .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .onErrorResumeNext(new OperatorSignUpAndLoginFallback(loginSignUpFormDTO.authData));
-                        return Observable.zip(Observable.just(loginSignUpFormDTO.authData), userLoginDTOObservable,
+                                .observeOn(AndroidSchedulers.mainThread());
+
+                        return Observable.zip(Observable.just(authData), userLoginDTOObservable,
                                 new Func2<AuthData, UserLoginDTO, Pair<AuthData, UserLoginDTO>>()
                                 {
                                     @Override public Pair<AuthData, UserLoginDTO> call(AuthData authData, UserLoginDTO userLoginDTO)
@@ -297,37 +305,42 @@ public class SignInOrUpFragment extends Fragment
 
         @Override public Observable<UserLoginDTO> call(Throwable throwable)
         {
-            TwitterEmailFragment twitterEmailFragment = dashboardNavigator.pushFragment(TwitterEmailFragment.class);
-            if (progressDialog != null)
+            if (authData.socialNetworkEnum == SocialNetworkEnum.TW)
             {
-                progressDialog.hide();
+                TwitterEmailFragment twitterEmailFragment = dashboardNavigator.pushFragment(TwitterEmailFragment.class);
+                if (progressDialog != null)
+                {
+                    progressDialog.hide();
+                }
+                return twitterEmailFragment.obtainEmail()
+                        .map(new Func1<String, LoginSignUpFormDTO>()
+                        {
+                            @Override public LoginSignUpFormDTO call(String email)
+                            {
+                                return authenticationFormBuilderProvider.get()
+                                        .authData(authData)
+                                        .email(email)
+                                        .build();
+                            }
+                        })
+                        .flatMap(new Func1<LoginSignUpFormDTO, Observable<UserLoginDTO>>()
+                        {
+                            @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
+                            {
+                                return sessionServiceWrapper.signupAndLoginRx(
+                                        loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO);
+                            }
+                        })
+                        .doOnNext(new Action1<UserLoginDTO>()
+                        {
+                            @Override public void call(UserLoginDTO userLoginDTO)
+                            {
+                                progressDialog.show();
+                            }
+                        });
             }
-            return twitterEmailFragment.obtainEmail()
-                    .map(new Func1<String, LoginSignUpFormDTO>()
-                    {
-                        @Override public LoginSignUpFormDTO call(String email)
-                        {
-                            return authenticationFormBuilderProvider.get()
-                                    .authData(authData)
-                                    .email(email)
-                                    .build();
-                        }
-                    })
-                    .flatMap(new Func1<LoginSignUpFormDTO, Observable<UserLoginDTO>>()
-                    {
-                        @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
-                        {
-                            return sessionServiceWrapper.signupAndLoginRx(
-                                    loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO);
-                        }
-                    })
-                    .doOnNext(new Action1<UserLoginDTO>()
-                    {
-                        @Override public void call(UserLoginDTO userLoginDTO)
-                        {
-                            progressDialog.show();
-                        }
-                    });
+
+            throw new RuntimeException(throwable);
         }
     }
 }

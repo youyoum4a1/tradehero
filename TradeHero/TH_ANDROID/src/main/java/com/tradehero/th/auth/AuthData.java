@@ -1,5 +1,7 @@
 package com.tradehero.th.auth;
 
+import android.util.Base64;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.Collections;
 import java.util.Date;
@@ -13,6 +15,19 @@ public class AuthData
     public final String accessTokenSecret;
     public final String password;
     public final Date expirationDate;
+    public final String email;
+
+    public AuthData(String email, String password)
+    {
+        this.socialNetworkEnum = SocialNetworkEnum.TH;
+        this.password = password;
+        this.expirationDate = null;
+        this.accessToken = Base64.encodeToString(
+                String.format("%s:%s", email, password).getBytes(),
+                Base64.NO_WRAP);
+        this.email = email;
+        this.accessTokenSecret = null;
+    }
 
     public AuthData(SocialNetworkEnum socialNetworkEnum, Date expirationDate, String accessToken)
     {
@@ -31,6 +46,7 @@ public class AuthData
         this.accessTokenSecret = accessTokenSecret;
         this.password = password;
         this.expirationDate = expirationDate;
+        this.email = null;
     }
 
     public final Map<String, String> getTokenMap()

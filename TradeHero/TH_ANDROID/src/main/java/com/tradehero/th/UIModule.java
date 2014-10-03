@@ -1,6 +1,7 @@
 package com.tradehero.th;
 
 import com.tradehero.th.activities.ActivityModule;
+import com.tradehero.th.auth.AuthenticationModule;
 import com.tradehero.th.billing.BillingUIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardResideMenu;
@@ -32,6 +33,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 BillingUIModule.class,
                 IntentDaggerModule.class,
                 BuildTypeUIModule.class,
+                AuthenticationModule.class
         },
         injects = {
                 FollowUserAssistant.class,

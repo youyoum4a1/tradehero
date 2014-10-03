@@ -15,6 +15,7 @@ import com.tradehero.th.base.THApp;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.filter.FilterModule;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -56,8 +57,7 @@ import javax.inject.Singleton;
                 BillingModule.class,
                 SocialNetworkAppModule.class,
                 PushModule.class,
-                BuildTypeModule.class,
-                AuthenticationModule.class
+                BuildTypeModule.class
         },
         injects =
                 {

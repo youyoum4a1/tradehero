@@ -94,6 +94,13 @@ import rx.Observable;
         return createUserLoginProcessor().process(sessionService.login(authorization, loginFormDTO));
     }
 
+    @NotNull public Observable<UserLoginDTO> loginRx(
+            @NotNull String authorization,
+            @NotNull LoginSignUpFormDTO loginFormDTO)
+    {
+        return sessionServiceRx.login(authorization, loginFormDTO);
+    }
+
     @NotNull public MiddleCallback<UserLoginDTO> login(
             @NotNull String authorization,
             @NotNull LoginSignUpFormDTO loginFormDTO,
@@ -125,8 +132,17 @@ import rx.Observable;
 
     @NotNull public Observable<UserLoginDTO> signupAndLoginRx(@NotNull String authorizationHeader, @NotNull LoginSignUpFormDTO loginSignUpFormDTO)
     {
-        return sessionServiceRx.signupAndLogin(authorizationHeader, loginSignUpFormDTO)
-                .map(createUserLoginProcessor());
+        Observable<UserLoginDTO> userLoginDTOObservable;
+        switch (loginSignUpFormDTO.authData.socialNetworkEnum)
+        {
+            case TH:
+                userLoginDTOObservable = sessionServiceRx.login(authorizationHeader, loginSignUpFormDTO);
+                break;
+            default:
+                userLoginDTOObservable = sessionServiceRx.signupAndLogin(authorizationHeader, loginSignUpFormDTO);
+        }
+
+        return userLoginDTOObservable.doOnNext(createUserLoginProcessor());
     }
     //</editor-fold>
 

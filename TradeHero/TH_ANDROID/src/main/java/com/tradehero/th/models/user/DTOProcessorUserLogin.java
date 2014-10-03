@@ -10,10 +10,11 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
-    , Func1<UserLoginDTO, UserLoginDTO> // TODO remove when changed DTOProcessor
+    , Action1<UserLoginDTO> // TODO remove when changed DTOProcessor
 {
     @NotNull private final SystemStatusCache systemStatusCache;
     @NotNull private final DTOProcessorSignInUpUserProfile processorSignInUp;
@@ -53,8 +54,8 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
         return value;
     }
 
-    @Override public UserLoginDTO call(UserLoginDTO userLoginDTO)
+    @Override public void call(UserLoginDTO userLoginDTO)
     {
-        return process(userLoginDTO);
+        process(userLoginDTO);
     }
 }

@@ -4,21 +4,25 @@ import android.app.Activity;
 import android.util.Base64;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.authentication.EmailSignInFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import org.json.JSONException;
 import rx.Observable;
 
+@Singleton
 public class EmailAuthenticationProvider implements THAuthenticationProvider
 {
     private static JSONCredentials credentials;
+    private final Provider<DashboardNavigator> dashboardNavigatorProvider;
 
-    public EmailAuthenticationProvider()
+    @Inject public EmailAuthenticationProvider(Provider<DashboardNavigator> dashboardNavigatorProvider)
     {
-    }
-
-    public EmailAuthenticationProvider(JSONCredentials credentials)
-    {
-        setCredentials (credentials);
+        this.dashboardNavigatorProvider = dashboardNavigatorProvider;
     }
 
     public static void setCredentials (JSONCredentials credentials)
@@ -87,6 +91,7 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
 
     @Override public Observable<AuthData> logIn(Activity activity)
     {
-        throw new RuntimeException("Not implemented");
+        EmailSignInFragment emailSignInFragment = dashboardNavigatorProvider.get().pushFragment(EmailSignInFragment.class);
+        return emailSignInFragment.obtainAuthData();
     }
 }
