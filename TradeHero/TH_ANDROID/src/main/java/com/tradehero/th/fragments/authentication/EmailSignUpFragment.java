@@ -48,7 +48,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
 
     @OnClick(R.id.authentication_sign_up_button) void handleSignUpButtonClicked(View view)
     {
-        THUser.clearCurrentUser();
         handleSignInOrUpButtonClicked(view);
     }
 

@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.View;
 import android.view.Window;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -15,11 +14,8 @@ import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.TwitterAuthenticationProvider;
 import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
-import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.inject.Injector;
@@ -116,32 +112,12 @@ public class AuthenticationActivity extends BaseActivity
             JSONCredentials createdJson = castedFragment.getUserFormJSON();
             EmailAuthenticationProvider.setCredentials(createdJson);
             //AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
-            //THUser.setAuthenticationMode(authenticationMode);
             //THUser.logInWithAsync(EmailCredentialsDTO.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));
         }
         else
         {
             throw new IllegalArgumentException("Expected an EmailSignUpFragment or EmailSignInFragment");
         }
-    }
-
-    private LogInCallback createCallbackForEmailSign(final AuthenticationMode authenticationMode)
-    {
-        final boolean isSigningUp = authenticationMode == AuthenticationMode.SignUp;
-        return new SocialAuthenticationCallback(AnalyticsConstants.Email)
-        {
-            private final boolean signingUp = isSigningUp;
-
-            @Override public boolean isSigningUp()
-            {
-                return signingUp;
-            }
-
-            @Override public boolean onSocialAuthDone(JSONCredentials json)
-            {
-                return true;
-            }
-        };
     }
 
     //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">
@@ -310,52 +286,6 @@ public class AuthenticationActivity extends BaseActivity
         }
     }
 
-    public class OnAuthenticationButtonClicked implements View.OnClickListener
-    {
-        @Override public void onClick(View view)
-        {
-            //TODO maybe shouldn't clear user information here
-            THUser.clearCurrentUser();
-            switch (view.getId())
-            {
-                case R.id.authentication_sign_up_button:
-                    navigator.pushFragment(SignInOrUpFragment.class, new Bundle());
-                    break;
-
-                case R.id.authentication_email_sign_in_link:
-                    navigator.pushFragment(EmailSignInFragment.class, new Bundle());
-                    break;
-
-                case R.id.authentication_email_sign_up_link:
-                    navigator.pushFragment(EmailSignUpFragment.class, new Bundle());
-                    break;
-
-                case R.id.btn_login:
-                    authenticateWithEmail();
-                    break;
-
-                case R.id.btn_facebook_signin:
-                    authenticateWithFacebook();
-                    break;
-
-                case R.id.btn_twitter_signin:
-                    authenticateWithTwitter();
-                    break;
-
-                case R.id.btn_linkedin_signin:
-                    authenticateWithLinkedIn();
-                    break;
-                case R.id.btn_weibo_signin:
-                    authenticateWithWeibo();
-                    break;
-
-                case R.id.btn_qq_signin:
-                    authenticateWithQQ();
-                    break;
-            }
-        }
-    }
-
     @Module(
             addsTo = AppModule.class,
             library = true,
@@ -364,11 +294,6 @@ public class AuthenticationActivity extends BaseActivity
     )
     public class AuthenticationActivityModule
     {
-        @Provides View.OnClickListener provideOnAuthenticationButtonClickListener()
-        {
-            return new OnAuthenticationButtonClicked();
-        }
-
         @Provides DashboardNavigator provideDashboardNavigator()
         {
             return navigator;

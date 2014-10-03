@@ -45,8 +45,6 @@ public class THApp extends PApplication
 
         DaggerUtils.setObjectGraph(objectGraph);
 
-        THUser.initialize();
-
         pushNotificationManager.initialise();
 
         THLog.showDeveloperKeyHash(this);
