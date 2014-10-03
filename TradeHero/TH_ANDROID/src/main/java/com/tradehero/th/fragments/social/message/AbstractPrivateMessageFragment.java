@@ -284,7 +284,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            Timber.d("Report failure for Message: %d", messageHeaderId);
+            Timber.d("Report failure for Message: %s", messageHeaderId);
         }
     }
 
