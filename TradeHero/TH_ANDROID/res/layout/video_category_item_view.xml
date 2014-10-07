@@ -38,7 +38,7 @@
       android:textColor="@color/white"
       android:layout_centerInParent="true"
       android:layout_below="@id/video_category_name"
-      android:gravity="center"
+      style="@style/TH.Loading_Empty_Text"
       android:layout_alignBottom="@id/video_gallery"/>
 
   <ProgressBar

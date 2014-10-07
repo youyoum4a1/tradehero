@@ -42,7 +42,7 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:padding="@dimen/preference_fragment_padding_side"
-      android:gravity="center"
+      style="@style/TH.Loading_Empty_Text"
       android:visibility="gone" />
 
   <RelativeLayout android:id="@+id/button_bar"

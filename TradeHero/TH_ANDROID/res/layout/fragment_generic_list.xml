@@ -6,6 +6,16 @@
     android:background="@color/white"
     android:layout_height="match_parent">
 
+  <TextView
+      android:id="@android:id/empty"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/empty_achievement_list"
+      android:layout_centerInParent="true"
+      style="@style/TH.Loading_Empty_Text"
+      android:visibility="gone"
+      />
+
   <com.handmark.pulltorefresh.library.PullToRefreshListView
       android:id="@+id/generic_ptr_list"
       android:layout_width="match_parent"
@@ -18,7 +28,7 @@
       android:cacheColorHint="@android:color/transparent"/>
 
   <ProgressBar
-      android:id="@android:id/empty"
+      android:id="@android:id/progress"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"

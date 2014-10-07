@@ -28,7 +28,8 @@ public class AchievementListFragment extends DashboardFragment
     private static final String BUNDLE_KEY_USER_ID = AchievementListFragment.class.getName() + ".userId";
 
     @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
-    @InjectView(android.R.id.empty) protected ProgressBar emptyView;
+    @InjectView(android.R.id.progress) protected ProgressBar progressBar;
+    @InjectView(android.R.id.empty) protected View emptyView;
 
     protected AchievementListAdapter achievementListAdapter;
 
@@ -57,6 +58,7 @@ public class AchievementListFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         displayProgress();
+        hideEmpty();
         init();
         initAdapter();
         achievementCategoryListCacheListener = createAchievementCategoryListCacheListener();
@@ -107,6 +109,7 @@ public class AchievementListFragment extends DashboardFragment
 
     protected void attachAndFetchAchievementCategoryListener(boolean forceUpdate)
     {
+        hideEmpty();
         detachAchievementCategoryListener();
         achievementCategoryListCache.register(shownUserId, achievementCategoryListCacheListener);
         achievementCategoryListCache.getOrFetchAsync(shownUserId, forceUpdate);
@@ -114,10 +117,20 @@ public class AchievementListFragment extends DashboardFragment
 
     private void displayProgress()
     {
-        emptyView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress()
+    {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void displayEmpty()
+    {
+        emptyView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEmpty()
     {
         emptyView.setVisibility(View.GONE);
     }
@@ -153,6 +166,10 @@ public class AchievementListFragment extends DashboardFragment
             achievementListAdapter.addAll(value);
             achievementListAdapter.notifyDataSetChanged();
             hideProgress();
+            if(achievementListAdapter.isEmpty())
+            {
+                displayEmpty();
+            }
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
@@ -161,6 +178,7 @@ public class AchievementListFragment extends DashboardFragment
             THToast.show(getString(R.string.error_fetch_achievements));
             Timber.e("Error fetching the list of competition info cell %s", key, error);
             hideProgress();
+            displayEmpty();
         }
     }
 }

@@ -49,10 +49,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
         android:id="@android:id/empty"
         android:text="@string/notification_list_empty"
-        android:gravity="center"
+        style="@style/TH.Loading_Empty_Text"
         />
 
   </com.tradehero.th.fragments.updatecenter.notifications.NotificationsView>

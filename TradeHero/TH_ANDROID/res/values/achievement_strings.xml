@@ -8,4 +8,5 @@
   <string name="achievement_shared">Shared!</string>
   <string name="achievement_share_failed">Failed, try again?</string>
   <string name="achievement_sharing">Sharing…</string>
+  <string name="empty_achievement_list">Sorry, there are no achievements for now.</string>
 </resources>
