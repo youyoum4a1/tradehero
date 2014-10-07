@@ -60,10 +60,11 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject PortfolioCache portfolioCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
+    @Inject DashboardNavigator navigator;
 
-    private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
-    private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionRefreshListener;
-    private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionRefreshListener;
+    @Nullable private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
 
     @InjectView(R.id.watchlist_position_list_header) WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
     @InjectView(R.id.pull_to_refresh_watchlist_listview) PullToRefreshSwipeListView watchlistPositionListView;
@@ -77,7 +78,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
     private WatchlistPositionDTOList watchlistPositionDTOs;
-    @Inject DashboardNavigator navigator;
 
     public static void putOwnedPortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -169,7 +169,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
     }
 
-    private void initPullToRefreshListView(View view)
+    private void initPullToRefreshListView(@SuppressWarnings("UnusedParameters") View view)
     {
         watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<SwipeListView>()
         {
@@ -339,7 +339,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         // TODO discover why sometimes we would get a mismatch
         if (position < watchListAdapter.getCount())
         {
-            WatchlistPositionDTO watchlistPositionDTO = (WatchlistPositionDTO) watchListAdapter.getItem(position);
+            WatchlistPositionDTO watchlistPositionDTO = watchListAdapter.getItem(position);
             Bundle args = new Bundle();
             if (watchlistPositionDTO != null)
             {

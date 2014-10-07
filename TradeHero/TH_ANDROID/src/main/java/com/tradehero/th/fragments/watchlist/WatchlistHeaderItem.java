@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -18,16 +19,13 @@ public class WatchlistHeaderItem extends TwoStateView
     private String secondValue;
 
     //<editor-fold desc="Constructors">
-    public WatchlistHeaderItem(Context context)
-    {
-        super(context);
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public WatchlistHeaderItem(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public WatchlistHeaderItem(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -52,9 +50,30 @@ public class WatchlistHeaderItem extends TwoStateView
         });
     }
 
+    public void setTitle(@StringRes int title)
+    {
+        setTitle(getContext().getString(title));
+    }
+
+    public void setTitle(String text)
+    {
+        setFirstTitle(text);
+        setSecondTitle(text);
+    }
+
+    public void setFirstTitle(@StringRes int firstTitle)
+    {
+        setFirstTitle(getContext().getString(firstTitle));
+    }
+
     public void setFirstTitle(String firstTitle)
     {
         this.firstTitle = firstTitle;
+    }
+
+    public void setSecondTitle(@StringRes int secondTitle)
+    {
+        setSecondValue(getContext().getString(secondTitle));
     }
 
     public void setSecondTitle(String secondTitle)
@@ -93,12 +112,6 @@ public class WatchlistHeaderItem extends TwoStateView
         {
             value.setText(isFirstState() ? firstValue : secondValue);
         }
-    }
-
-    public void setTitle(String text)
-    {
-        setFirstTitle(text);
-        setSecondTitle(text);
     }
 
     public void setFirstValue(String firstValue)
