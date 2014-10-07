@@ -4,6 +4,8 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.AccessTokenForm;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -13,6 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
+import rx.functions.Func1;
 
 @Singleton public class SocialServiceWrapper
 {
@@ -39,6 +42,22 @@ import retrofit.Callback;
     public UserProfileDTO connect(UserBaseKey userBaseKey, UserFormDTO userFormDTO)
     {
         return createConnectDTOProcessor().process(socialService.connect(userBaseKey.key, userFormDTO));
+    }
+
+    public UserProfileDTO connect(UserBaseKey userBaseKey, AccessTokenForm userFormDTO)
+    {
+        return createConnectDTOProcessor().process(socialService.connect(userBaseKey.key, userFormDTO));
+    }
+
+    public Func1<AuthData, UserProfileDTO> connectFunc1(final UserBaseKey userBaseKey)
+    {
+        return new Func1<AuthData, UserProfileDTO>()
+        {
+            @Override public UserProfileDTO call(AuthData accessTokenForm)
+            {
+                return connect(userBaseKey, new AccessTokenForm(accessTokenForm));
+            }
+        };
     }
 
     public MiddleCallback<UserProfileDTO> connect(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)

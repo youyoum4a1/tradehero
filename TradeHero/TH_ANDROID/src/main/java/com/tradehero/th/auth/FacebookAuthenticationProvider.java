@@ -28,6 +28,8 @@ import java.util.Locale;
 import java.util.SimpleTimeZone;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import rx.Observable;
 import rx.Subscriber;
@@ -293,9 +295,15 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         this.activityCode = activityCode;
     }
 
-    public synchronized void setPermissions(List<String> permissions)
+    public synchronized void setPermissions(@Nullable List<String> permissions)
     {
         this.permissions = permissions;
+        clearCachedObservables();
+    }
+
+    public void addPermission(@NotNull String permission)
+    {
+        this.permissions.add(permission);
         clearCachedObservables();
     }
 

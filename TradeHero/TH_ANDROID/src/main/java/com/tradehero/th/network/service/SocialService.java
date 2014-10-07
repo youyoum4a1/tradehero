@@ -18,6 +18,11 @@ public interface SocialService
             @Body UserFormDTO userFormDTO);
 
     @POST("/users/{userId}/connect")
+    UserProfileDTO connect(
+            @Path("userId") int userId,
+            @Body AccessTokenForm userFormDTO);
+
+    @POST("/users/{userId}/connect")
     Observable<UserProfileDTO> connectRx(
             @Path("userId") int userId,
             @Body AccessTokenForm userFormDTO);
