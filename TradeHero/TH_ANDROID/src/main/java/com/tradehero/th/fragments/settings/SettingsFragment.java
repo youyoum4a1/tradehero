@@ -226,6 +226,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
     }
 
+    @Override public void onStop()
+    {
+        getView().findViewById(android.R.id.list).removeCallbacks(null);
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         allSettingViewHolders.destroyViews();
