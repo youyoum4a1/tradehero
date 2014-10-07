@@ -17,6 +17,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 public class ContestContentView extends RelativeLayout
         implements DTOView<ContestPageDTO>
@@ -24,7 +25,7 @@ public class ContestContentView extends RelativeLayout
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<ProviderCache> providerCache;
     private ContestPageDTO communityPageDTO;
-    private ProviderDTO providerDTO;
+    @Nullable private ProviderDTO providerDTO;
 
     @InjectView(R.id.img_provider) ImageView imgActionProvider;
     @InjectView(R.id.tv_action_name) TextView tvActionName;
@@ -35,11 +36,13 @@ public class ContestContentView extends RelativeLayout
     @InjectView(R.id.tv_action_roi) TextView tvActionRoi;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public ContestContentView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ContestContentView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -60,7 +63,7 @@ public class ContestContentView extends RelativeLayout
         displayView();
     }
 
-    @Override public void display(ContestPageDTO dto)
+    @Override public void display(@Nullable ContestPageDTO dto)
     {
         this.communityPageDTO = dto;
         if (communityPageDTO != null)
@@ -69,7 +72,7 @@ public class ContestContentView extends RelativeLayout
         }
     }
 
-    private void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    private void linkWith(@Nullable ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
         if (andDisplay)

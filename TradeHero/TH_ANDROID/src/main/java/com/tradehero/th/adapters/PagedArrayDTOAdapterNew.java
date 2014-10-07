@@ -1,6 +1,7 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import com.tradehero.th.api.DTOView;
 import java.util.List;
@@ -14,7 +15,7 @@ public class PagedArrayDTOAdapterNew<
     protected Integer lastPageLoaded;
 
     //<editor-fold desc="Constructors">
-    public PagedArrayDTOAdapterNew(@NotNull Context context, int layoutResourceId)
+    public PagedArrayDTOAdapterNew(@NotNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
@@ -31,7 +32,7 @@ public class PagedArrayDTOAdapterNew<
         this.lastPageLoaded = null;
     }
 
-    public void addPage(int page, List<DTOType> dtos)
+    public void addPage(int page, @NotNull List<DTOType> dtos)
     {
         this.lastPageLoaded = page;
         addAll(dtos);

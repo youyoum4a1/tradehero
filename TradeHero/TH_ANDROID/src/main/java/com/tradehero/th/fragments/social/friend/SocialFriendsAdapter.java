@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
@@ -19,13 +20,17 @@ import timber.log.Timber;
 public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListItemDTO, SocialFriendItemView>
 {
     protected NameFilter filterToUse;
-    private int mLayoutItemResId;
-    private int mLayoutHeaderResId;
+    @LayoutRes private int mLayoutItemResId;
+    @LayoutRes private int mLayoutHeaderResId;
     @Nullable private SocialFriendUserView.OnElementClickListener elementClickedListener;
-    private List<SocialFriendListItemDTO> mArrayList;
+    @NotNull private List<SocialFriendListItemDTO> mArrayList;
 
     //<editor-fold desc="Constructors">
-    public SocialFriendsAdapter(@NotNull Context context, List<SocialFriendListItemDTO> objects, int layoutItemResId, int layoutHeaderResId)
+    public SocialFriendsAdapter(
+            @NotNull Context context,
+            @NotNull List<SocialFriendListItemDTO> objects,
+            @LayoutRes int layoutItemResId,
+            @LayoutRes int layoutHeaderResId)
     {
         super(context, 0);
         addAll(objects);
@@ -57,7 +62,7 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
         return getItem(position) instanceof SocialFriendListItemUserDTO;
     }
 
-    @Override public int getViewResId(int position)
+    @Override @LayoutRes public int getViewResId(int position)
     {
         SocialFriendListItemDTO item = getItem(position);
         if (item instanceof SocialFriendListItemHeaderDTO)
@@ -131,7 +136,7 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
         }
     }
 
-    public void setItemsToShow(List<SocialFriendListItemDTO> showItems)
+    public void setItemsToShow(@NotNull List<SocialFriendListItemDTO> showItems)
     {
         super.clear();
         super.addAll(showItems);

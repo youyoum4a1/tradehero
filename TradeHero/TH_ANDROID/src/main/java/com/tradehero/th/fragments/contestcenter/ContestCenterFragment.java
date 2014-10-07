@@ -20,7 +20,6 @@ public class ContestCenterFragment extends DashboardFragment
     @Inject GraphicUtil graphicUtil;
 
     private static final int FRAGMENT_LAYOUT_ID = 10001;
-    private FragmentTabHost mTabHost;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -32,7 +31,7 @@ public class ContestCenterFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(getString(R.string.dashboard_contest_center));
+        setActionBarTitle(R.string.dashboard_contest_center);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdAsc;
@@ -19,14 +20,17 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
     public static final int ITEM_TYPE_MINE = 0;
     public static final int ITEM_TYPE_OTHER = 1;
 
-    public final int mineResId;
-    public final int otherResId;
+    @LayoutRes public final int mineResId;
+    @LayoutRes public final int otherResId;
 
     @Inject DiscussionCache discussionCache;
     @Inject CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    public PrivateDiscussionSetAdapter(@NotNull Context context, int mineResId, int otherResId)
+    public PrivateDiscussionSetAdapter(
+            @NotNull Context context,
+            @LayoutRes int mineResId,
+            @LayoutRes int otherResId)
     {
         super(context);
         this.mineResId = mineResId;
@@ -55,7 +59,7 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
         return isMine(position) ? ITEM_TYPE_MINE : ITEM_TYPE_OTHER;
     }
 
-    @Override protected int getViewResId(int position)
+    @Override @LayoutRes protected int getViewResId(int position)
     {
         switch(getItemViewType(position))
         {
@@ -72,7 +76,7 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
         return isMine((AbstractDiscussionDTO) discussionCache.get(getItem(position)));
     }
 
-    protected boolean isMine(AbstractDiscussionDTO discussionDTO)
+    protected boolean isMine(@Nullable AbstractDiscussionDTO discussionDTO)
     {
         return discussionDTO == null ||
                 (currentUserId.toUserBaseKey().key.equals(discussionDTO.userId));

@@ -39,7 +39,7 @@ import timber.log.Timber;
 public class QuestListTestingFragment extends DashboardFragment
 {
     @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
-    @InjectView(android.R.id.empty) protected ProgressBar emptyView;
+    @InjectView(android.R.id.progress) protected ProgressBar emptyView;
 
     @Inject QuestBonusListCache questBonusListCache;
     @Inject AbstractAchievementDialogFragment.Creator creator;

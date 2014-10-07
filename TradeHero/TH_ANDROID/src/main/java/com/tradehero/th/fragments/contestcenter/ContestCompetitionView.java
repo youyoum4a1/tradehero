@@ -9,10 +9,11 @@ import com.squareup.widgets.AspectRatioImageView;
 import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.persistence.competition.ProviderCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class ContestCompetitionView extends AspectRatioImageView
@@ -20,15 +21,17 @@ public class ContestCompetitionView extends AspectRatioImageView
 {
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<ProviderCache> providerCache;
-    private ContestPageDTO contestPageDTO;
-    private ProviderDTO providerDTO;
+    @Nullable private ContestPageDTO contestPageDTO;
+    @Nullable private ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public ContestCompetitionView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ContestCompetitionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -55,7 +58,7 @@ public class ContestCompetitionView extends AspectRatioImageView
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(ContestPageDTO dto)
+    @Override public void display(@Nullable ContestPageDTO dto)
     {
         this.contestPageDTO = dto;
         if (contestPageDTO != null)
@@ -64,7 +67,7 @@ public class ContestCompetitionView extends AspectRatioImageView
         }
     }
 
-    private void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    private void linkWith(@Nullable ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
         if (andDisplay)

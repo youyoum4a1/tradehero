@@ -27,7 +27,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/empty_video_list"
-      android:layout_gravity="center"
+      style="@style/TH.Loading_Empty_Text"
       android:visibility="invisible"
       />
 </com.tradehero.common.widget.BetterViewAnimator>

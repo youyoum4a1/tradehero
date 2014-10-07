@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.contestcenter;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     @InjectView(android.R.id.list) StickyListHeadersListView contestListView;
 
     public ContestItemAdapter contestListAdapter;
-    private int currentDisplayedChildLayoutId;
+    @IdRes private int currentDisplayedChildLayoutId;
     public ProviderDTOList providerDTOs;
     private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListFetchListener;
     private BaseWebViewFragment webFragment;
@@ -135,6 +136,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         setContestCenterScreen(R.id.error);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.error)
     protected void handleErrorClicked()
     {
@@ -142,7 +144,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         loadContestData();
     }
 
-    public void setContestCenterScreen(int viewId)
+    public void setContestCenterScreen(@IdRes int viewId)
     {
         if (contest_center_content_screen != null)
         {
@@ -298,5 +300,5 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     abstract public void recreateAdapter();
 
-    public abstract ContestCenterTabType getCCTabType();
+    @NotNull public abstract ContestCenterTabType getCCTabType();
 }

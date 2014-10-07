@@ -1,6 +1,7 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +47,7 @@ public class THTabView extends LinearLayout
         icon.setImageResource(drawableResId);
     }
 
-    public void setTitle(int textResId)
+    public void setTitle(@StringRes int textResId)
     {
         titleView.setText(getResources().getString(textResId));
     }

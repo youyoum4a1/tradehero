@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.DTOAdapterNew;
@@ -142,7 +143,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         return ITEM_TYPE_PORTFOLIO;
     }
 
-    @Override public int getViewResId(int position)
+    @Override @LayoutRes public int getViewResId(int position)
     {
         return this.viewTypeToResId[getItemViewType(position)];
     }

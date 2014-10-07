@@ -74,12 +74,11 @@
 
   </LinearLayout>
   <TextView
-      style="@style/TH.Loading_Empty_Text"
       android:id="@android:id/empty"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_centerInParent="true"
-      android:gravity="center"
+      style="@style/TH.Loading_Empty_Text"
       android:text="@string/social_friend_empty"
       android:visibility="gone"
       />

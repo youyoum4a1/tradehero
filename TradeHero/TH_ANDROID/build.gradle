@@ -309,6 +309,7 @@ dependencies {
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
 
   compile 'org.jetbrains:annotations:13.0'
+  compile 'com.android.support:support-annotations:20.0.0'
   compile 'com.crashlytics.android:crashlytics:1.1.10+'
 
   compile ('oauth.signpost:signpost-core:1.2.1.2') {

@@ -33,7 +33,7 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
         }
     }
 
-    @Override public ContestCenterTabType getCCTabType()
+    @Override @NotNull public ContestCenterTabType getCCTabType()
     {
         return ContestCenterTabType.JOINED;
     }

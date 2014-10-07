@@ -18,16 +18,19 @@ public class PrivatePostCommentView extends PostCommentView
     private UserBaseKey recipient;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public PrivatePostCommentView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PrivatePostCommentView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public PrivatePostCommentView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);

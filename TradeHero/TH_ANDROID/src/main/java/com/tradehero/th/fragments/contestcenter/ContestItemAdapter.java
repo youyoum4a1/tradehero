@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.contestcenter;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +20,13 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
     public static final int TYPE_VIP = 1;
     public static final int TYPE_HEADER = 2;
 
-    @NotNull private Integer[] typeToResIds;
+    @NotNull @LayoutRes private Integer[] typeToResIds;
 
     //<editor-fold desc="Constructors">
     public ContestItemAdapter(
             @NotNull Context context,
-            int vipViewResourceId,
-            int normalViewResourceId)
+            @LayoutRes int vipViewResourceId,
+            @LayoutRes int normalViewResourceId)
     {
         super(context, 0);
         typeToResIds = new Integer[3];
@@ -63,7 +64,7 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
         throw new IllegalArgumentException("Unhandled item " + item);
     }
 
-    public int getItemViewResId(int position)
+    @LayoutRes public int getItemViewResId(int position)
     {
         return typeToResIds[getItemViewType(position)];
     }

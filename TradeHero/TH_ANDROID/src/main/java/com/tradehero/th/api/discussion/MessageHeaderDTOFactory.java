@@ -1,15 +1,18 @@
 package com.tradehero.th.api.discussion;
 
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class MessageHeaderDTOFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public MessageHeaderDTOFactory()
     {
         super();
     }
+    //</editor-fold>
 
-    public MessageHeaderDTO create(DiscussionDTO from)
+    @NotNull public MessageHeaderDTO create(@NotNull DiscussionDTO from)
     {
         MessageHeaderDTO created = new MessageHeaderDTO();
         created.discussionType = from.type;

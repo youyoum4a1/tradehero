@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
@@ -28,6 +30,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -171,16 +175,40 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Override public void onStart()
     {
         super.onStart();
+        moveToFirstUnread();
+    }
+
+    public void moveToFirstUnread()
+    {
         if (unreadSettingPreferenceHolder.hasUnread())
         {
             ListView listView = (ListView) getView().findViewById(android.R.id.list);
+            BaseAdapter adapter = (BaseAdapter) listView.getAdapter();
             SettingViewHolder unreadHolder = allSettingViewHolders.getFirstUnread();
             if (unreadHolder != null)
             {
                 Preference toShow = unreadHolder.getPreference();
-                // TODO move to unread one
+                for (int index = 0; index < adapter.getCount(); index++)
+                {
+                    if (/*(Preference) */adapter.getItem(index) == toShow)
+                    {
+                        waitAndMoveTo(listView, index);
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    private void waitAndMoveTo(@NotNull final ListView listView, final int index)
+    {
+        listView.post(new Runnable()
+        {
+            @Override public void run()
+            {
+                listView.smoothScrollToPosition(index);
+            }
+        });
     }
 
     @Override public void onResume()
@@ -193,6 +221,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             socialConnectSettingViewHolderContainer.changeSharing(socialNetworkToConnectTo, true);
             socialNetworkToConnectTo = null;
         }
+    }
+
+    @Override public void onStop()
+    {
+        getView().findViewById(android.R.id.list).removeCallbacks(null);
+        super.onStop();
     }
 
     @Override public void onDestroyView()

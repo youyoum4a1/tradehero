@@ -1,20 +1,24 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.api.DTOView;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class DTOAdapter<T, V extends DTOView<T>> extends ArrayAdapter
 {
-    protected final LayoutInflater inflater;
-    protected final Context context;
-    protected int layoutResourceId;
+    @NotNull protected final LayoutInflater inflater;
+    @NotNull protected final Context context;
+    @LayoutRes protected int layoutResourceId;
 
     //<editor-fold desc="Constructors">
-    public DTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public DTOAdapter(@NotNull Context context,
+            @NotNull LayoutInflater inflater,
+            @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
         this.context = context;
@@ -45,7 +49,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends ArrayAdapter
         return convertView;
     }
 
-    public void setLayoutResourceId(int layoutResourceId)
+    public void setLayoutResourceId(@LayoutRes int layoutResourceId)
     {
         this.layoutResourceId = layoutResourceId;
     }

@@ -228,7 +228,7 @@ public class RetrofitModule
 
     @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)
     {
-        return builder.setEndpoint(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
+        return builder.setEndpoint(NetworkConstants.getEndPointInUse())
                 .setRequestInterceptor(requestHeaders)
                 .build()
                 .create(HomeService.class);

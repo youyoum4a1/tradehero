@@ -1,23 +1,26 @@
 package com.tradehero.th.api.competition.specific;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ProviderSpecificResourcesDTO
 {
-    public int mainCompetitionFragmentTitleResId;
-    public int notJoinedBannerImageResId;
-    public int joinedBannerImageResId;
+    @StringRes public int mainCompetitionFragmentTitleResId;
+    @DrawableRes public int notJoinedBannerImageResId;
+    @DrawableRes public int joinedBannerImageResId;
 
-    public int tradeNowBtnImageResId;
+    @DrawableRes public int tradeNowBtnImageResId;
 
-    public int helpVideoListFragmentTitleResId;
-    public int helpVideoLinkBackgroundResId;
-    public int helpVideoLinkTextColourResId;
+    @StringRes public int helpVideoListFragmentTitleResId;
+    @DrawableRes public int helpVideoLinkBackgroundResId;
+    @ColorRes public int helpVideoLinkTextColourResId;
 
-    public int timedHeaderLeaderboardTitleResId;
-    public int competitionPortfolioTitleResId;
+    @StringRes public int timedHeaderLeaderboardTitleResId;
+    @StringRes public int competitionPortfolioTitleResId;
 
-    public int securityListFragmentTitleResId;
+    @StringRes public int securityListFragmentTitleResId;
 
     //<editor-fold desc="Constructors">
     public ProviderSpecificResourcesDTO()
@@ -26,7 +29,7 @@ public class ProviderSpecificResourcesDTO
     }
     //</editor-fold>
 
-    @JsonIgnore public int getJoinBannerResId(boolean isJoined)
+    @JsonIgnore @DrawableRes public int getJoinBannerResId(boolean isJoined)
     {
         return isJoined ? joinedBannerImageResId : notJoinedBannerImageResId;
     }

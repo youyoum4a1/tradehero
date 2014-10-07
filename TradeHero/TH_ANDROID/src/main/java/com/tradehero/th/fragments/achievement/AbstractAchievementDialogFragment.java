@@ -39,11 +39,14 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
@@ -51,6 +54,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
@@ -65,6 +69,8 @@ import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
@@ -77,6 +83,11 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private static final int DEFAULT_FILTER_COLOR = Color.GRAY;
     private static final float TOO_BRIGHT_CUT_OFF = 0.2f;
+
+    public static final int SHARE_PANEL_DEFAULT_INDEX = 0;
+    public static final int SHARE_PANEL_SHARED_INDEX = 1;
+    public static final int SHARE_PANEL_FAILED_INDEX = 2;
+    public static final int SHARE_PANEL_SHARING_INDEX = 3;
 
     @InjectView(R.id.achievement_content_container) ViewGroup contentContainer;
 
@@ -105,6 +116,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Inject LevelDefListCache levelDefListCache;
 
     @Inject AchievementServiceWrapper achievementServiceWrapper;
+    @Nullable MiddleCallback<BaseResponseDTO> middleCallbackShareAchievement;
     @Inject AchievementShareFormDTOFactory achievementShareFormDTOFactory;
 
     @Inject BroadcastUtils broadcastUtils;
@@ -293,6 +305,18 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void showShareSuccess()
     {
+        shareFlipper.setDisplayedChild(SHARE_PANEL_SHARED_INDEX);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick({R.id.achievement_share_failed, R.id.achievement_shared})
+    protected void showSharePanel()
+    {
+        shareFlipper.setDisplayedChild(SHARE_PANEL_DEFAULT_INDEX);
+    }
+
+    private void share()
+    {
         UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
         if (userAchievementDTOCopy != null)
         {
@@ -300,16 +324,27 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             if (shareTos.contains(SocialNetworkEnum.WECHAT))
             {
                 WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), userAchievementDTOCopy);
+                socialSharerLazy.get().setSharedListener(createSocialSharedListener());
                 socialSharerLazy.get().share(weChatDTO);
             }
-            //No need to hold reference to middle callback since we did not pass a listener
-            achievementServiceWrapper.shareAchievement(
+            detachMiddleCallbackShareAchievement();
+            middleCallbackShareAchievement = achievementServiceWrapper.shareAchievement(
                     achievementShareFormDTOFactory.createFrom(
                             getEnabledSharePreferences(),
                             userAchievementDTO),
-                    null);
-            shareFlipper.setDisplayedChild(1);
+                    createShareAchievementCallback());
+            showSharing();
         }
+    }
+
+    private void showSharing()
+    {
+        shareFlipper.setDisplayedChild(SHARE_PANEL_SHARING_INDEX);
+    }
+
+    private void showShareFailed()
+    {
+        shareFlipper.setDisplayedChild(SHARE_PANEL_FAILED_INDEX);
     }
 
     private void playRotatingAnimation()
@@ -479,7 +514,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         if (!getEnabledSharePreferences().isEmpty())
         {
-            showShareSuccess();
+            share();
         }
         else
         {
@@ -518,6 +553,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         mBadgeCallback = null;
         levelDefListCache.unregister(levelDefListCacheListener);
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
+
+        socialSharerLazy.get().setSharedListener(null);
+        detachMiddleCallbackShareAchievement();
         super.onDestroyView();
     }
 
@@ -525,6 +563,15 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         levelDefListCacheListener = null;
         super.onDestroy();
+    }
+
+    protected void detachMiddleCallbackShareAchievement()
+    {
+        if (middleCallbackShareAchievement != null)
+        {
+            middleCallbackShareAchievement.setPrimaryCallback(null);
+            middleCallbackShareAchievement = null;
+        }
     }
 
     private void cleanupAnimation(ValueAnimator animator)
@@ -632,6 +679,47 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             }
             dialogFragment.setArguments(args);
             return dialogFragment;
+        }
+    }
+
+    protected SocialSharer.OnSharedListener createSocialSharedListener()
+    {
+        return new ShareAchievementListener();
+    }
+
+    protected class ShareAchievementListener implements SocialSharer.OnSharedListener
+    {
+        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+        {
+            throw new IllegalStateException("It should have been taken care of at the network button press");
+        }
+
+        @Override public void onShared(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO)
+        {
+            showShareSuccess();
+        }
+
+        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
+        {
+            showShareFailed();
+        }
+    }
+
+    protected retrofit.Callback<BaseResponseDTO> createShareAchievementCallback()
+    {
+        return new ShareAchievementCallback();
+    }
+
+    protected class ShareAchievementCallback implements retrofit.Callback<BaseResponseDTO>
+    {
+        @Override public void success(BaseResponseDTO baseResponseDTO, Response response)
+        {
+            showShareSuccess();
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            showShareFailed();
         }
     }
 }

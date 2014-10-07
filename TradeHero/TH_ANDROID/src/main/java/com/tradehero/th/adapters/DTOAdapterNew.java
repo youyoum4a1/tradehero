@@ -1,6 +1,7 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,11 @@ public class DTOAdapterNew<DTOType>
 {
     protected static final int DEFAULT_VIEW_TYPE = 0;
 
-    protected int layoutResourceId;
-    private LayoutInflater inflater;
+    @LayoutRes protected int layoutResourceId;
+    @NotNull private LayoutInflater inflater;
 
     //<editor-fold desc="Constructors">
-    public DTOAdapterNew(@NotNull Context context, int layoutResourceId)
+    public DTOAdapterNew(@NotNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
         this.layoutResourceId = layoutResourceId;
@@ -61,7 +62,7 @@ public class DTOAdapterNew<DTOType>
         return DEFAULT_VIEW_TYPE;
     }
 
-    public int getViewResId(@SuppressWarnings("UnusedParameters") int position)
+    @LayoutRes public int getViewResId(@SuppressWarnings("UnusedParameters") int position)
     {
         return layoutResourceId;
     }

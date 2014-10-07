@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.base;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -105,12 +106,12 @@ public class BaseFragment extends Fragment
         actionBarOwnerMixin.setActionBarTitle(string);
     }
 
-    protected final void setActionBarTitle(int stringResId)
+    protected final void setActionBarTitle(@StringRes int stringResId)
     {
         actionBarOwnerMixin.setActionBarTitle(stringResId);
     }
 
-    protected void setActionBarSubtitle(int subTitleResId)
+    protected void setActionBarSubtitle(@StringRes int subTitleResId)
     {
         actionBarOwnerMixin.setActionBarSubtitle(subTitleResId);
     }
