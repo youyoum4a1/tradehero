@@ -7,15 +7,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorUpdateUserProfileDeep extends DTOProcessorUpdateUserProfile
 {
-    @NotNull private final HomeContentCache homeContentCache;
-
     //<editor-fold desc="Constructors">
     public DTOProcessorUpdateUserProfileDeep(
             @NotNull UserProfileCache userProfileCache,
             @NotNull HomeContentCache homeContentCache)
     {
-        super(userProfileCache);
-        this.homeContentCache = homeContentCache;
+        super(userProfileCache, homeContentCache);
     }
     //</editor-fold>
 

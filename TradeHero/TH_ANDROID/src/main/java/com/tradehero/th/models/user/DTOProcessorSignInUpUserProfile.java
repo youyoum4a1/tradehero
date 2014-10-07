@@ -3,6 +3,7 @@ package com.tradehero.th.models.user;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,10 +15,11 @@ public class DTOProcessorSignInUpUserProfile extends DTOProcessorUpdateUserProfi
     //<editor-fold desc="Constructors">
     public DTOProcessorSignInUpUserProfile(
             @NotNull UserProfileCache userProfileCache,
+            @NotNull HomeContentCache homeContentCache,
             @NotNull CurrentUserId currentUserId,
             @NotNull DTOCacheUtil dtoCacheUtil)
     {
-        super(userProfileCache);
+        super(userProfileCache, homeContentCache);
         this.currentUserId = currentUserId;
         this.dtoCacheUtil = dtoCacheUtil;
     }

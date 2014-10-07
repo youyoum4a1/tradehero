@@ -15,6 +15,7 @@ import com.tradehero.th.models.user.DTOProcessorAddCash;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -37,6 +38,7 @@ import retrofit.Callback;
     @NotNull private final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @NotNull private final Lazy<PortfolioCompactCache> portfolioCompactCache;
     @NotNull private final Lazy<PortfolioCache> portfolioCache;
+    @NotNull private final Lazy<HomeContentCache> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioServiceWrapper(
@@ -45,7 +47,8 @@ import retrofit.Callback;
             @NotNull UserProfileCache userProfileCache,
             @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
             @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
-            @NotNull Lazy<PortfolioCache> portfolioCache)
+            @NotNull Lazy<PortfolioCache> portfolioCache,
+            @NotNull Lazy<HomeContentCache> homeContentCache)
     {
         super();
         this.portfolioService = portfolioService;
@@ -54,6 +57,7 @@ import retrofit.Callback;
         this.portfolioCompactListCache = portfolioCompactListCache;
         this.portfolioCompactCache = portfolioCompactCache;
         this.portfolioCache = portfolioCache;
+        this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
@@ -121,7 +125,7 @@ import retrofit.Callback;
     //<editor-fold desc="Reset Cash">
     protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
+        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get());
     }
 
     @NotNull public UserProfileDTO resetPortfolio(
@@ -146,6 +150,7 @@ import retrofit.Callback;
     protected DTOProcessor<UserProfileDTO> createAddCashProcessor(OwnedPortfolioId ownedPortfolioId)
     {
         return new DTOProcessorAddCash(userProfileCache,
+                homeContentCache.get(),
                 portfolioCompactListCache.get(),
                 portfolioCompactCache.get(),
                 portfolioCache.get(),

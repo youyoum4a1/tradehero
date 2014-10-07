@@ -8,6 +8,7 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,20 +20,23 @@ import retrofit.Callback;
     @NotNull private final SocialService socialService;
     @NotNull private final SocialServiceAsync socialServiceAsync;
     @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final HomeContentCache homeContentCache;
 
     @Inject public SocialServiceWrapper(
             @NotNull SocialService socialService,
             @NotNull SocialServiceAsync socialServiceAsync,
-            @NotNull UserProfileCache userProfileCache)
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull HomeContentCache homeContentCache)
     {
         this.socialService = socialService;
         this.socialServiceAsync = socialServiceAsync;
         this.userProfileCache = userProfileCache;
+        this.homeContentCache = homeContentCache;
     }
 
     protected DTOProcessor<UserProfileDTO> createConnectDTOProcessor()
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
+        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache);
     }
 
     //<editor-fold desc="Connect">

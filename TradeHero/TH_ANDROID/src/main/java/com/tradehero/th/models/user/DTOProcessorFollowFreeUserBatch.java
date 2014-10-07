@@ -3,6 +3,7 @@ package com.tradehero.th.models.user;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
@@ -22,13 +23,14 @@ public class DTOProcessorFollowFreeUserBatch extends DTOProcessorUpdateUserProfi
     //<editor-fold desc="Constructors">
     public DTOProcessorFollowFreeUserBatch(
             @NotNull UserProfileCache userProfileCache,
+            @NotNull HomeContentCache homeContentCache,
             @NotNull HeroListCache heroListCache,
             @NotNull GetPositionsCache getPositionsCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
             @NotNull AllowableRecipientPaginatedCache allowableRecipientPaginatedCache,
             @NotNull BatchFollowFormDTO followFormDTO)
     {
-        super(userProfileCache);
+        super(userProfileCache, homeContentCache);
         this.heroListCache = heroListCache;
         this.getPositionsCache = getPositionsCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;

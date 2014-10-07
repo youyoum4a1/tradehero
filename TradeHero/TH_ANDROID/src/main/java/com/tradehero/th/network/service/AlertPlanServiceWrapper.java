@@ -9,6 +9,7 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,17 +26,20 @@ public class AlertPlanServiceWrapper
     @NotNull protected final AlertPlanService alertPlanService;
     @NotNull protected final AlertPlanServiceAsync alertPlanServiceAsync;
     @NotNull protected final UserProfileCache userProfileCache;
+    @NotNull protected final HomeContentCache homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AlertPlanServiceWrapper(
             @NotNull AlertPlanService alertPlanService,
             @NotNull AlertPlanServiceAsync alertPlanServiceAsync,
-            @NotNull UserProfileCache userProfileCache)
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull HomeContentCache homeContentCache)
     {
         super();
         this.alertPlanService = alertPlanService;
         this.alertPlanServiceAsync = alertPlanServiceAsync;
         this.userProfileCache = userProfileCache;
+        this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
@@ -112,6 +116,6 @@ public class AlertPlanServiceWrapper
 
     protected DTOProcessor<UserProfileDTO> createDTOProcessorUserProfile()
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
+        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache);
     }
 }

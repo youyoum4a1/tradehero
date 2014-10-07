@@ -117,6 +117,7 @@ import retrofit.Callback;
     {
         return new DTOProcessorSignInUpUserProfile(
                 userProfileCache.get(),
+                homeContentCache.get(),
                 currentUserId,
                 dtoCacheUtil);
     }
@@ -674,6 +675,7 @@ import retrofit.Callback;
     {
         return new DTOProcessorFollowFreeUserBatch(
                 userProfileCache.get(),
+                homeContentCache.get(),
                 heroListCache.get(),
                 getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
@@ -726,7 +728,7 @@ import retrofit.Callback;
     //<editor-fold desc="Add Credit">
     @NotNull protected DTOProcessor<UserProfileDTO> createAddCreditProfileProcessor()
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache.get());
+        return new DTOProcessorUpdateUserProfile(userProfileCache.get(), homeContentCache.get());
     }
 
     public UserProfileDTO addCredit(
@@ -752,6 +754,7 @@ import retrofit.Callback;
     {
         return new DTOProcessorFollowPremiumUser(
                 userProfileCache.get(),
+                homeContentCache.get(),
                 heroListCache.get(),
                 getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
@@ -795,6 +798,7 @@ import retrofit.Callback;
     {
         return new DTOProcessorFollowFreeUser(
                 userProfileCache.get(),
+                homeContentCache.get(),
                 heroListCache.get(),
                 getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
@@ -823,6 +827,7 @@ import retrofit.Callback;
     {
         return new DTOProcessorUnfollowUser(
                 userProfileCache.get(),
+                homeContentCache.get(),
                 heroListCache.get(),
                 getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
