@@ -38,9 +38,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -201,6 +199,14 @@ public class SignInOrUpFragment extends Fragment
                                 });
                     }
                 })
+                .doOnError(new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        Timber.d(throwable, "Error");
+                        THToast.show(new THException(throwable));
+                    }
+                })
                 .doOnUnsubscribe(new Action0()
                 {
                     @Override public void call()
@@ -210,7 +216,9 @@ public class SignInOrUpFragment extends Fragment
                             progressDialog.dismiss();
                         }
                     }
-                });
+                })
+                .retry()
+        ;
     }
 
     @Override public void onDestroy()
@@ -245,17 +253,9 @@ public class SignInOrUpFragment extends Fragment
         }
     }
 
-    private class AuthDataObserver implements Observer<Pair<AuthData, UserLoginDTO>>
+    private class AuthDataObserver implements Action1<Pair<AuthData, UserLoginDTO>>
     {
-        @Override public void onCompleted() {}
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.d(e, "Error");
-            THToast.show(new THException(e));
-        }
-
-        @Override public void onNext(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
+        @Override public void call(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
         {
             Account account = getOrAddAccount(authDataUserLoginDTOPair);
             accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authDataUserLoginDTOPair.first.getTHToken());
