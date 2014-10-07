@@ -105,6 +105,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
                     }
             );
             viewContainer.followerList.setAdapter(followerListAdapter);
+            viewContainer.followerList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         }
         displayProgress(true);
     }
@@ -149,6 +150,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         if (this.viewContainer.followerList != null)
         {
             this.viewContainer.followerList.setOnItemClickListener(null);
+            viewContainer.followerList.setOnScrollListener(null);
         }
         this.viewContainer = null;
         this.followerListAdapter = null;

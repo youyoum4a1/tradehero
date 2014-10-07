@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.ScrollView;
+import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.common.utils.SDKUtils;
 import java.util.ArrayList;
 
@@ -15,9 +16,12 @@ import java.util.ArrayList;
  * Taken from https://github.com/emilsjolander/StickyScrollViewItems Feel sorry for the author but he does not make it a maven module, I have no
  * other choice :3
  *
+ * Combined with https://github.com/lawloretienne/QuickReturn to allow scroll listener
+ *
  * @author Emil Sjlander - sjolander.emil@gmail.com
+ * @author Etienne Lawlor - lawloretienne@gmail.com
  */
-public class StickyScrollView extends ScrollView
+public class NotifyingStickyScrollView extends ScrollView
 {
 
     /**
@@ -43,6 +47,11 @@ public class StickyScrollView extends ScrollView
     private boolean clippingToPadding;
     private boolean clipToPaddingHasBeenSet;
 
+    // region Member Variables
+    private boolean mIsOverScrollEnabled = true;
+    private NotifyingScrollView.OnScrollChangedListener mOnScrollChangedListener;
+    // endregion
+
     private final Runnable invalidateRunnable = new Runnable()
     {
 
@@ -61,17 +70,17 @@ public class StickyScrollView extends ScrollView
         }
     };
 
-    public StickyScrollView(Context context)
+    public NotifyingStickyScrollView(Context context)
     {
         this(context, null);
     }
 
-    public StickyScrollView(Context context, AttributeSet attrs)
+    public NotifyingStickyScrollView(Context context, AttributeSet attrs)
     {
         this(context, attrs, android.R.attr.scrollViewStyle);
     }
 
-    public StickyScrollView(Context context, AttributeSet attrs, int defStyle)
+    public NotifyingStickyScrollView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
         setup();
@@ -270,6 +279,9 @@ public class StickyScrollView extends ScrollView
     {
         super.onScrollChanged(l, t, oldl, oldt);
         doTheStickyThing();
+        if (mOnScrollChangedListener != null) {
+            mOnScrollChangedListener.onScrollChanged(this, l, t, oldl, oldt);
+        }
     }
 
     private void doTheStickyThing()
@@ -424,4 +436,33 @@ public class StickyScrollView extends ScrollView
             v.startAnimation(anim);
         }
     }
+
+    @Override
+    protected boolean overScrollBy(int deltaX, int deltaY, int scrollX, int scrollY, int scrollRangeX, int scrollRangeY,
+            int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent) {
+        return super.overScrollBy(
+                deltaX,
+                deltaY,
+                scrollX,
+                scrollY,
+                scrollRangeX,
+                scrollRangeY,
+                mIsOverScrollEnabled ? maxOverScrollX : 0,
+                mIsOverScrollEnabled ? maxOverScrollY : 0,
+                isTouchEvent);
+    }
+
+    // region Helper Methods
+    public void setOnScrollChangedListener(NotifyingScrollView.OnScrollChangedListener listener) {
+        mOnScrollChangedListener = listener;
+    }
+
+    public void setOverScrollEnabled(boolean enabled) {
+        mIsOverScrollEnabled = enabled;
+    }
+
+    public boolean isOverScrollEnabled() {
+        return mIsOverScrollEnabled;
+    }
+    // endregion
 }

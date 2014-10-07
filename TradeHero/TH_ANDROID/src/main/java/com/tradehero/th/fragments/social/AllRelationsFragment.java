@@ -90,6 +90,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
                 createFollowRequestedListener());
         mRelationsListView.setAdapter(mRelationsListItemAdapter);
         mRelationsListView.setOnItemClickListener(this);
+        mRelationsListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -115,6 +116,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         detachAllowableRecipientTask();
         mRelationsListView.setAdapter(null);
         mRelationsListView.setOnItemClickListener(null);
+        mRelationsListView.setOnScrollListener(null);
         mRelationsListView = null;
         mRelationsListItemAdapter.clear();
         mRelationsListItemAdapter.setPremiumFollowRequestedListener(null);

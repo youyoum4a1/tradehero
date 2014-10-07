@@ -29,13 +29,6 @@
       android:fadingEdge="none"
       android:scrollbars="none"
       />
-  <ListView
-      android:id="@+id/position_list"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:clipToPadding="false"
-      android:visibility="gone"
-      />
 
   <TextView
       style="@style/TH.Loading_Error_Text"

@@ -12,23 +12,25 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
@@ -51,6 +53,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     private ChartDTO chartDTO;
     @Nullable private WarrantDTO warrantDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
+
+    @InjectView(R.id.chart_scroll_view) @Optional NotifyingScrollView scrollView;
+
     @InjectView(R.id.close) @Optional protected Button mCloseButton;
 
     @InjectView(R.id.chart_image_wrapper) @Optional protected BetterViewAnimator chartImageWrapper;
@@ -82,6 +87,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @Inject Picasso picasso;
     @Inject ChartDTOFactory chartDTOFactory;
     @Inject Analytics analytics;
+    @Inject @BottomTabsQuickReturnScrollViewListener protected NotifyingScrollView.OnScrollChangedListener
+            dashboardBottomTabScrollViewScrollListener;
     private Runnable chooseChartImageSizeTask;
     private Callback chartImageCallback;
 
@@ -183,6 +190,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
                 Timber.d("Load chartImage error");
             }
         };
+
+        if(scrollView != null)
+        {
+            scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener);
+        }
+
         return view;
     }
 
@@ -219,6 +232,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             mCloseButton.setOnClickListener(null);
             mCloseButton = null;
+        }
+        if(scrollView != null)
+        {
+            scrollView.setOnScrollChangedListener(null);
         }
         chartImageCallback = null;
         ButterKnife.reset(this);
@@ -438,7 +455,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 int warrantTypeStringResId;
-                switch(warrantDTO.getWarrantType())
+                switch (warrantDTO.getWarrantType())
                 {
                     case CALL:
                         warrantTypeStringResId = R.string.warrant_type_call;

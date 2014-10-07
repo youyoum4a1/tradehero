@@ -83,6 +83,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         if (listView != null)
         {
             listView.setAdapter(storeItemAdapter);
+            listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         }
     }
 
@@ -115,6 +116,10 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public void onDestroyView()
     {
         storeItemAdapter = null;
+        if(listView != null)
+        {
+            listView.setOnScrollListener(null);
+        }
         ButterKnife.reset(this);
         super.onDestroyView();
     }

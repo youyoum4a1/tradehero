@@ -60,6 +60,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         listView.setAdapter(itemAdapter);
         listView.setEmptyView(emptyView);
+        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onResume()
@@ -72,6 +73,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     {
         detachTokenCache();
         listView.setEmptyView(null);
+        listView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }

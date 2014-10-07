@@ -75,6 +75,7 @@ public class LocationListFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         listView.setAdapter(mListAdapter);
+        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -105,6 +106,7 @@ public class LocationListFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        listView.setOnScrollListener(null);
         listView.setEmptyView(null);
         ButterKnife.reset(this);
         progressDialog = null;

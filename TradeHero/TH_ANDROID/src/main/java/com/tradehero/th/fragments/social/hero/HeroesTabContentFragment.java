@@ -142,6 +142,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         setListShown(false);
         this.infoFetcher.setUserProfileListener(new HeroManagerUserProfileCacheListener());
         this.infoFetcher.setHeroListListener(new HeroManagerHeroListCacheListener());
+        this.viewContainer.heroListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     protected HeroListItemView.OnHeroStatusButtonClickedListener createHeroStatusButtonClickedListener()
@@ -253,6 +254,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         if (this.viewContainer.heroListView != null)
         {
             this.viewContainer.heroListView.setOnItemClickListener(null);
+            this.viewContainer.heroListView.setOnScrollListener(null);
         }
         this.viewContainer = null;
 

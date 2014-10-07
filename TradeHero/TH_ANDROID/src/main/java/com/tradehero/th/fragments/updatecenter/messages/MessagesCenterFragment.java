@@ -20,6 +20,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.route.Routable;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DirtyNewFirstMessageHeaderDTOComparator;
@@ -32,6 +33,7 @@ import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -48,6 +50,7 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -85,6 +88,7 @@ public class MessagesCenterFragment extends DashboardFragment
     private boolean hasMorePage = true;
     @Nullable private BroadcastReceiver broadcastReceiver;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -131,12 +135,23 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onResume();
 
         registerMessageReceiver();
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                if(messagesView != null && messagesView.readAllLayout != null)
+                {
+                    messagesView.readAllLayout.setTranslationY(y);
+                }
+            }
+        });
         Timber.d("onResume");
     }
 
     @Override public void onPause()
     {
         Timber.d("onPause");
+        dashboardTabHost.setOnTranslate(null);
         unregisterMessageReceiver();
         super.onPause();
     }
@@ -196,6 +211,7 @@ public class MessagesCenterFragment extends DashboardFragment
         detachFetchMessageRefreshTask();
         SwipeListView swipeListView = messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
+        swipeListView.setOnScrollListener(null);
         swipeListener = null;
         messagesView = null;
         if (messageListAdapter != null)
@@ -331,11 +347,10 @@ public class MessagesCenterFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         this.messagesView = (MessagesView) view;
         SwipeListView listView = messagesView.getListView();
-        listView.setOnScrollListener(new OnScrollListener(null));
-        SwipeListView swipeListView = listView;
+        listView.setOnScrollListener(new MultiScrollListener(new OnScrollListener(null), dashboardBottomTabsListViewScrollListener.get()));
 
         this.swipeListener = new SwipeListener();
-        swipeListView.setSwipeListViewListener(swipeListener);
+        listView.setSwipeListViewListener(swipeListener);
 
         messagesView.pullToRefreshSwipeListView.setOnRefreshListener(this);
 
@@ -345,6 +360,8 @@ public class MessagesCenterFragment extends DashboardFragment
                     new MessageListKey(MessageListKey.FIRST_PAGE);
         }
         setReadAllLayoutClickListener();
+
+
     }
 
     private void getOrFetchMessages()

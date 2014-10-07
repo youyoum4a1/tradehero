@@ -111,6 +111,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
             });
             alertListView.setAdapter(alertListItemAdapter);
             alertListView.addFooterView(footerView);
+            alertListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         }
 
         displayAlertCount();
@@ -154,6 +155,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         if (alertListView != null)
         {
             alertListView.setOnItemClickListener(null);
+            alertListView.setOnScrollListener(null);
         }
         alertListView = null;
 

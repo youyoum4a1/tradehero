@@ -30,7 +30,7 @@
       android:orientation="horizontal"
       android:layout_alignParentBottom="true"
       android:id="@+id/send_message_layout"
-      android:background="#aaa"
+      android:background="@color/transparent"
       android:visibility="gone">
 
     <com.tradehero.common.widget.CenterImageTextButton
@@ -46,10 +46,8 @@
         android:textColor="@color/white"
         android:background="@drawable/message_button_bg_selector"
         android:paddingBottom="5dp"
+        android:layout_marginBottom="@dimen/dashboard_tabhost_height"
         />
-    <!--android:background="@drawable/message_button_bg_selector"
-    style="?android:borderlessButtonStyle"
-    -->
 
     <com.tradehero.common.widget.CenterImageTextButton
         android:id="@+id/send_message_whisper"

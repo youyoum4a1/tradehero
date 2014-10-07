@@ -7,6 +7,7 @@ import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -26,13 +27,14 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.EndlessScrollingHelper;
+import com.tradehero.th.widget.MultiScrollListener;
 import java.util.Collection;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class SecurityDiscussionView extends BetterViewAnimator
-    implements DTOView<SecurityId>, DiscussionListCacheNew.DiscussionKeyListListener
+        implements DTOView<SecurityId>, DiscussionListCacheNew.DiscussionKeyListListener
 {
     @InjectView(android.R.id.list) AbsListView securityDiscussionList;
     @InjectView(android.R.id.empty) View emptyView;
@@ -93,9 +95,19 @@ public class SecurityDiscussionView extends BetterViewAnimator
         }
         securityDiscussionList.setEmptyView(emptyView);
         securityDiscussionList.setAdapter(securityDiscussionAdapter);
-        securityDiscussionList.setOnScrollListener(securityDiscussionListScrollListener);
 
         setDisplayedChildByLayoutId(progressBar.getId());
+    }
+
+    public void setScrollListener(AbsListView.OnScrollListener onScrollListener)
+    {
+        securityDiscussionList.setOnScrollListener(
+                new MultiScrollListener(securityDiscussionListScrollListener, onScrollListener));
+    }
+
+    public void removeScrollListener()
+    {
+        securityDiscussionList.setOnScrollListener(null);
     }
 
     @Override protected void onDetachedFromWindow()

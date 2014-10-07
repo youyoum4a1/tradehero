@@ -106,6 +106,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     @Override protected void initViews(View view)
     {
+        if(leaderboardMarkUserListView != null)
+        {
+            leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        }
     }
 
     protected void inflateHeaderView(@NotNull LayoutInflater inflater, ViewGroup container)
@@ -180,6 +184,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         {
             leaderboardMarkUserListView.setAdapter(null);
             leaderboardMarkUserListView.setOnItemClickListener(null);
+            leaderboardMarkUserListView.setOnScrollListener(null);
             leaderboardMarkUserListView = null;
         }
         if (leaderboardFriendsUserListAdapter != null)

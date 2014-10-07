@@ -15,7 +15,7 @@ import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.th.BottomTabs;
+import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
@@ -56,7 +56,7 @@ public class NewsHeadlineFragment extends Fragment
     @Inject DashboardNavigator navigator;
     @Inject DiscussionCache discussionCache;
     @Inject NewsItemCompactListCacheNew newsItemCompactListCache;
-    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
+    @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     private int mDisplayedViewId;
     private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> mFeaturedNewsListener;
@@ -69,6 +69,7 @@ public class NewsHeadlineFragment extends Fragment
         super();
     }
 
+    //TODO move this to setArgs
     public NewsHeadlineFragment(NewsItemListKey newsItemListKey)
     {
         this.newsItemListKey = newsItemListKey;

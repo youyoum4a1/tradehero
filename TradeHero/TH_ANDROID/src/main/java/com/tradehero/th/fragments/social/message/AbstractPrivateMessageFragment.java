@@ -27,6 +27,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -61,6 +62,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
 
+    @InjectView(R.id.discussion_comment_widget) protected PrivatePostCommentView postWidget;
     @InjectView(R.id.private_message_empty) protected TextView emptyHint;
     @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
@@ -136,6 +138,19 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.onResume();
         fetchCorrespondentProfile();
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                postWidget.setTranslationY(y);
+            }
+        });
+    }
+
+    @Override public void onPause()
+    {
+        dashboardTabHost.setOnTranslate(null);
+        super.onPause();
     }
 
     @Override public void onDetach()

@@ -8,12 +8,15 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.common.utils.SDKUtils;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.NetworkConstants;
 import java.util.Map;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
@@ -28,6 +31,8 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     protected THIntentPassedListener thIntentPassedListener;
     protected THWebViewClient thWebViewClient;
     protected THWebChromeClient webChromeClient;
+
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     public static void putUrl(@NotNull Bundle args, @NotNull String url)
     {
@@ -105,6 +110,18 @@ abstract public class BaseWebViewFragment extends DashboardFragment
 
     protected void onProgressChanged(WebView view, int newProgress)
     {
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        dashboardTabHost.animateHide();
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        dashboardTabHost.animateShow();
     }
 
     @Override public void onDestroyView()

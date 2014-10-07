@@ -16,7 +16,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
@@ -30,7 +29,6 @@ import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,7 +45,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
-    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject Analytics analytics;
     @Inject protected UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
     @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;
@@ -154,7 +151,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     (int) getResources().getDimension(R.dimen.setting_padding_top),
                     (int) getResources().getDimension(R.dimen.setting_padding_right),
                     (int) getResources().getDimension(R.dimen.setting_padding_bottom));
-            listView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener));
+            listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         }
 
         return view;
