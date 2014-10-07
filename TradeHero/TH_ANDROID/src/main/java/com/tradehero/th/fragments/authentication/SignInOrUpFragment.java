@@ -24,8 +24,8 @@ import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -43,7 +43,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class SignInOrUpFragment extends Fragment
 {
@@ -68,6 +67,7 @@ public class SignInOrUpFragment extends Fragment
     private Subscription subscription;
     private Observable<Pair<AuthData, UserLoginDTO>> authenticationObservable;
     private ProgressDialog progressDialog;
+    @Inject Provider<ToastOnErrorAction> toastOnErrorActionProvider;
 
     @OnClick({
             R.id.txt_term_of_service_signin,
@@ -194,14 +194,7 @@ public class SignInOrUpFragment extends Fragment
                                 .observeOn(AndroidSchedulers.mainThread());
                     }
                 })
-                .doOnError(new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable throwable)
-                    {
-                        Timber.d(throwable, "Error");
-                        THToast.show(new THException(throwable));
-                    }
-                })
+                .doOnError(toastOnErrorActionProvider.get())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(new Action0()
                 {
@@ -290,6 +283,8 @@ public class SignInOrUpFragment extends Fragment
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(toastOnErrorActionProvider.get())
+                        .retry()
                         .doOnNext(new Action1<UserLoginDTO>()
                         {
                             @Override public void call(UserLoginDTO userLoginDTO)
