@@ -35,7 +35,7 @@ abstract public class BaseSearchFragment<
 {
     private final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = BaseSearchFragment.class.getName() + ".currentSearchString";
 
-    @Inject Context doNotRemoveOtherwiseFails; // Do not remove otherwise fails
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     @InjectView(R.id.search_empty_textview) protected TextView searchEmptyTextView;
     @InjectView(R.id.search_empty_textview_wrapper) protected View searchEmptyTextViewWrapper;

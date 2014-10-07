@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,10 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 {
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_discussion, container, false);

@@ -6,5 +6,5 @@ import javax.inject.Inject;
 
 public class LearningFragment extends VideoCategoriesFragment
 {
-    @Inject Context doNotRemoveOtherwiseFails; // Do not remove otherwise fails
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 }

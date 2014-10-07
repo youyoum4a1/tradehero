@@ -2,16 +2,20 @@
 package com.tradehero.th.fragments.web;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import com.tradehero.th.R;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class WebViewFragment extends BaseWebViewFragment
 {
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+
     @Override protected int getLayoutResId()
     {
         return R.layout.fragment_webview;

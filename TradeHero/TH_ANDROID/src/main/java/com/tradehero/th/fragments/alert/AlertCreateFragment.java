@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.alert;
 
+import android.content.Context;
 import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -7,11 +8,14 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
+
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     private MiddleCallback<AlertCompactDTO> middleCallbackCreateAlertCompactDTO;
 

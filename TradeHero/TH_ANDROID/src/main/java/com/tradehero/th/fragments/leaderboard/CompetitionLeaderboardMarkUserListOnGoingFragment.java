@@ -6,8 +6,7 @@ import javax.inject.Inject;
 
 public class CompetitionLeaderboardMarkUserListOnGoingFragment extends CompetitionLeaderboardMarkUserListFragment
 {
-    // DON'T DELETE FOLLOWING LINE, this dummy injection is used to trick dagger to generate InjectAdapter for this class
-    @Inject Context ignored;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     @Override protected int getHeaderViewResId()
     {
