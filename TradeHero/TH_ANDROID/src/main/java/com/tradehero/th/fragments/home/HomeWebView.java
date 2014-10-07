@@ -7,11 +7,10 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.user.auth.CredentialsDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +22,7 @@ public final class HomeWebView extends WebView
     @Inject HomeContentCache homeContentCache;
     @Inject DTOCacheUtil dtoCacheUtil;
 
-    private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
 
     //region Constructors
     public HomeWebView(Context context, AttributeSet attrs)
@@ -52,6 +51,7 @@ public final class HomeWebView extends WebView
 
     private void forceReloadWebView()
     {
+        detachHomeCacheListener();
         homeContentCacheListener = createHomeContentCacheListener();
         homeContentCache.register(currentUserId.toUserBaseKey(), homeContentCacheListener);
         homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
@@ -69,25 +69,10 @@ public final class HomeWebView extends WebView
         homeContentCache.unregister(currentUserId.toUserBaseKey(), homeContentCacheListener);
     }
 
-    private void reloadWebView()
-    {
-        reloadWebView(homeContentCache.get(currentUserId.toUserBaseKey()));
-    }
-
-    private void reloadWebView(@Nullable HomeContentDTO homeContentDTO)
+    private void reloadWebView(@NotNull HomeContentDTO homeContentDTO)
     {
         String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
-
-        if (homeContentDTO != null)
-        {
-            Timber.d("Getting home app data from cache!");
-            loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
-        }
-    }
-
-    public String createTypedAuthParameters(@NotNull CredentialsDTO credentialsDTO)
-    {
-        return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
+        loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
     }
 
     //<editor-fold desc="Listeners">
@@ -112,7 +97,7 @@ public final class HomeWebView extends WebView
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            // do nothing
+            Timber.e(error, "Failed fetching home page for key %s", key);
         }
     }
     //</editor-fold>
