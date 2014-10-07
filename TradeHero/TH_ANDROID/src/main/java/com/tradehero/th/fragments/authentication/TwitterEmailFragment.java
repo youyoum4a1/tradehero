@@ -13,11 +13,14 @@ import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.subjects.PublishSubject;
 
 public class TwitterEmailFragment extends Fragment
 {
     @InjectView(R.id.authentication_twitter_email_txt) EditText twitterEmail;
     @InjectView(R.id.authentication_twitter_email_button) View twitterConfirm;
+
+    private PublishSubject<String> loginRequestSubject = PublishSubject.create();
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -28,11 +31,8 @@ public class TwitterEmailFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-    }
 
-    public Observable<String> obtainEmail()
-    {
-        return ViewObservable.clicks(twitterConfirm, false)
+        ViewObservable.clicks(twitterConfirm, false)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<View, String>()
                 {
@@ -40,6 +40,18 @@ public class TwitterEmailFragment extends Fragment
                     {
                         return twitterEmail.getText().toString();
                     }
-                });
+                })
+                .subscribe(loginRequestSubject);
+    }
+
+    @Override public void onDetach()
+    {
+        loginRequestSubject.onCompleted();
+        super.onDetach();
+    }
+
+    public Observable<String> obtainEmail()
+    {
+        return loginRequestSubject.asObservable();
     }
 }

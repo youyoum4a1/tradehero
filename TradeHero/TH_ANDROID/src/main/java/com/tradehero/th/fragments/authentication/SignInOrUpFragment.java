@@ -291,6 +291,15 @@ public class SignInOrUpFragment extends Fragment
                             {
                                 progressDialog.show();
                             }
+                        })
+                        .doOnCompleted(new Action0()
+                        {
+                            @Override public void call()
+                            {
+                                // TODO this is a hack to re-subscribe after being un-subscribed by onError
+                                subscription = authenticationObservable.subscribe(authDataActionProvider.get());
+                                throw new RuntimeException(getString(R.string.error_canceled));
+                            }
                         });
             }
 
