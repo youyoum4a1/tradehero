@@ -1,8 +1,5 @@
 package com.tradehero.th.fragments.authentication;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +16,6 @@ import butterknife.Optional;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.AuthenticationButton;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -39,6 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.observables.Assertions;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -48,17 +45,14 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
-import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
-
 public class SignInOrUpFragment extends Fragment
 {
     @Inject Analytics analytics;
     @Inject DashboardNavigator dashboardNavigator;
-    @Inject AccountManager accountManager;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject Provider<LoginSignUpFormDTO.Builder> authenticationFormBuilderProvider;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
+    @Inject Provider<AuthDataAction> authDataActionProvider;
 
     @Optional @InjectViews({
             R.id.btn_facebook_signin,
@@ -158,7 +152,6 @@ public class SignInOrUpFragment extends Fragment
                         return authenticationProvider.logIn(getActivity());
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<AuthData>()
                 {
                     @Override public void call(AuthData authData)
@@ -185,7 +178,7 @@ public class SignInOrUpFragment extends Fragment
                         AuthData authData = loginSignUpFormDTO.authData;
                         Observable<UserLoginDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
                                 authData.getTHToken(), loginSignUpFormDTO)
-                                .subscribeOn(Schedulers.io())
+                                .subscribeOn(AndroidSchedulers.mainThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData));
 
@@ -196,7 +189,9 @@ public class SignInOrUpFragment extends Fragment
                                     {
                                         return Pair.create(authData, userLoginDTO);
                                     }
-                                });
+                                })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
                     }
                 })
                 .doOnError(new Action1<Throwable>()
@@ -207,6 +202,7 @@ public class SignInOrUpFragment extends Fragment
                         THToast.show(new THException(throwable));
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(new Action0()
                 {
                     @Override public void call()
@@ -235,7 +231,7 @@ public class SignInOrUpFragment extends Fragment
 
         if (subscription == null || subscription.isUnsubscribed())
         {
-            subscription = authenticationObservable.subscribe(new AuthDataObserver());
+            subscription = authenticationObservable.subscribe(authDataActionProvider.get());
         }
     }
 
@@ -253,46 +249,6 @@ public class SignInOrUpFragment extends Fragment
         }
     }
 
-    private class AuthDataObserver implements Action1<Pair<AuthData, UserLoginDTO>>
-    {
-        @Override public void call(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
-        {
-            Account account = getOrAddAccount(authDataUserLoginDTOPair);
-            accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authDataUserLoginDTOPair.first.getTHToken());
-            finishAuthentication(authDataUserLoginDTOPair);
-        }
-    }
-
-    private Account getOrAddAccount(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
-    {
-        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
-        Account account = accounts.length != 0 ? accounts[0] :
-                new Account(authDataUserLoginDTOPair.second.profileDTO.email, PARAM_ACCOUNT_TYPE);
-
-        String password = authDataUserLoginDTOPair.first.password;
-        if (accounts.length == 0)
-        {
-            accountManager.addAccountExplicitly(account, password, null);
-        }
-        else
-        {
-            accountManager.setPassword(accounts[0], password);
-        }
-        return account;
-    }
-
-    private void finishAuthentication(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
-    {
-        Intent intent = new Intent();
-        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, authDataUserLoginDTOPair.second.profileDTO.email);
-        intent.putExtra(AccountManager.KEY_AUTHTOKEN, authDataUserLoginDTOPair.first.getTHToken());
-        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, PARAM_ACCOUNT_TYPE);
-
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
-        startActivity(new Intent(getActivity(), DashboardActivity.class));
-    }
-
     private class OperatorSignUpAndLoginFallback
             implements Func1<Throwable, Observable<UserLoginDTO>>
     {
@@ -305,6 +261,7 @@ public class SignInOrUpFragment extends Fragment
 
         @Override public Observable<UserLoginDTO> call(Throwable throwable)
         {
+            Assertions.assertUiThread();
             if (authData.socialNetworkEnum == SocialNetworkEnum.TW)
             {
                 TwitterEmailFragment twitterEmailFragment = dashboardNavigator.pushFragment(TwitterEmailFragment.class);

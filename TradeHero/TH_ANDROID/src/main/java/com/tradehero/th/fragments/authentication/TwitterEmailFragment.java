@@ -8,16 +8,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserLoginDTO;
-import com.tradehero.th.base.THUser;
-import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
-import rx.functions.Action1;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
 public class TwitterEmailFragment extends Fragment
@@ -39,6 +33,7 @@ public class TwitterEmailFragment extends Fragment
     public Observable<String> obtainEmail()
     {
         return ViewObservable.clicks(twitterConfirm, false)
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<View, String>()
                 {
                     @Override public String call(View view)
