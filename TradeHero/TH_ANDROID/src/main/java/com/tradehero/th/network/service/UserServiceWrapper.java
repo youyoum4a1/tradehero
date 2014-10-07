@@ -41,6 +41,7 @@ import com.tradehero.th.models.user.DTOProcessorUnfollowUser;
 import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
+import com.tradehero.th.models.user.DTOProcessorUpdateUserProfileDeep;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
@@ -49,6 +50,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
@@ -76,6 +78,7 @@ import retrofit.Callback;
     @NotNull private final Lazy<ProviderListCache> providerListCache;
     @NotNull private final Lazy<ProviderCache> providerCache;
     @NotNull private final Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache;
+    @NotNull private final Lazy<HomeContentCache> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
@@ -90,7 +93,8 @@ import retrofit.Callback;
             @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache,
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull Lazy<ProviderCache> providerCache,
-            @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache)
+            @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache,
+            @NotNull Lazy<HomeContentCache> homeContentCache)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
@@ -104,6 +108,7 @@ import retrofit.Callback;
         this.providerListCache = providerListCache;
         this.providerCache = providerCache;
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
+        this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
@@ -234,7 +239,7 @@ import retrofit.Callback;
     //<editor-fold desc="Update Profile">
     @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache.get());
+        return new DTOProcessorUpdateUserProfileDeep(userProfileCache.get(), homeContentCache.get());
     }
 
     public UserProfileDTO updateProfile(
@@ -719,11 +724,16 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Add Credit">
+    @NotNull protected DTOProcessor<UserProfileDTO> createAddCreditProfileProcessor()
+    {
+        return new DTOProcessorUpdateUserProfile(userProfileCache.get());
+    }
+
     public UserProfileDTO addCredit(
             @NotNull UserBaseKey userKey,
             @Nullable PurchaseReportDTO purchaseDTO)
     {
-        return createUpdateProfileProcessor().process(userService.addCredit(userKey.key, purchaseDTO));
+        return createAddCreditProfileProcessor().process(userService.addCredit(userKey.key, purchaseDTO));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> addCredit(
@@ -731,7 +741,7 @@ import retrofit.Callback;
             @Nullable PurchaseReportDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createAddCreditProfileProcessor());
         userServiceAsync.addCredit(userKey.key, purchaseDTO, middleCallback);
         return middleCallback;
     }
