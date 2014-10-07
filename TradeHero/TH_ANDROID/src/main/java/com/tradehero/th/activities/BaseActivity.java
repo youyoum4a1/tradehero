@@ -3,6 +3,7 @@ package com.tradehero.th.activities;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -12,6 +13,7 @@ import com.tradehero.th.inject.Injector;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.Module;
+import dagger.Provides;
 import java.util.Arrays;
 import java.util.List;
 
@@ -93,5 +95,9 @@ public class BaseActivity extends FragmentActivity
     )
     public class BaseActivityModule
     {
+        @Provides Activity provideActivity()
+        {
+            return BaseActivity.this;
+        }
     }
 }

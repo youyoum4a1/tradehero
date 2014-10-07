@@ -1,6 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,7 +25,6 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScro
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -76,9 +74,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
-import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -594,11 +590,6 @@ public class DashboardActivity extends BaseActivity
     )
     public class DashboardActivityModule
     {
-        @Provides Activity provideActivity()
-        {
-            return DashboardActivity.this;
-        }
-
         @Provides DashboardNavigator provideDashboardNavigator()
         {
             return navigator;
