@@ -35,7 +35,7 @@ public class DTOProcessorMessageRead implements DTOProcessor<BaseResponseDTO>
 
     @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
-        messageHeaderCache.setUnread(messageHeaderId, true);
+        messageHeaderCache.setUnread(messageHeaderId, false);
         userProfileCache.getOrFetchAsync(readerId, true);
         homeContentCache.invalidate(readerId);
         return value;

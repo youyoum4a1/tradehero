@@ -70,7 +70,6 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<DiscussionListCacheNew> discussionListCache;
     @Inject Lazy<DiscussionCache> discussionCache;
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
 
@@ -282,7 +281,6 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         MessageHeaderDTO messageHeaderDTO = getListAdapter().getItem(position);
         Timber.d("pushMessageFragment=%s", messageHeaderDTO);
-        //updateReadStatus(messageHeaderDTO);
 
         if (messageHeaderDTO != null)
         {
@@ -717,30 +715,6 @@ public class MessagesCenterFragment extends DashboardFragment
     private void unsetMarkAsReadMiddleCallbacks()
     {
         middleCallbackList.detach();
-    }
-
-    private void updateReadStatus(@Nullable MessageHeaderDTO messageHeaderDTO)
-    {
-        if (messageHeaderDTO != null && messageHeaderDTO.unread)
-        {
-            reportMessageRead(messageHeaderDTO);
-        }
-    }
-
-    private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
-    {
-        if (messageListAdapter == null)
-        {
-            return;
-        }
-        for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; ++i)
-        {
-            MessageHeaderDTO messageHeaderDTO = messageListAdapter.getItem(i);
-            if (messageHeaderDTO != null && messageHeaderDTO.unread)
-            {
-                reportMessageRead(messageHeaderDTO);
-            }
-        }
     }
 
     private void reportMessageRead(@NotNull MessageHeaderDTO messageHeaderDTO)

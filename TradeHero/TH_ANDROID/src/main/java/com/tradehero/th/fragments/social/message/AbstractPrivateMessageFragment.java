@@ -253,7 +253,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
     {
-        messageHeaderCache.setUnread(messageHeaderDTO.getDTOKey(), true);
+        messageHeaderCache.setUnread(messageHeaderDTO.getDTOKey(), false);
         messageServiceWrapper.get().readMessage(
                 messageHeaderDTO.getDTOKey(),
                 messageHeaderDTO.getSenderId(),
