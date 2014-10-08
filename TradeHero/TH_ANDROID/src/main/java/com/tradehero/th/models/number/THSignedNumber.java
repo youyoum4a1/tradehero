@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class THSignedNumber
 {
-    public static final int DESIRED_RELEVANT_DIGIT_COUNT = 4;
+    public static final int DESIRED_RELEVANT_DIGIT_COUNT = 2;
 
     //<editor-fold desc="Constants">
     public static final int TYPE_SIGN_ARROW = 0;
@@ -153,10 +153,11 @@ public class THSignedNumber
 
     protected String createPlainNumber()
     {
-        int precision = getPrecisionFromNumber();
-
+        //int precision = getPrecisionFromNumber();
+        int precision = 2;
         DecimalFormat df = new DecimalFormat(getStringFormat(precision).toString());
         String formatted = df.format(Math.abs(value));
+
         return removeTrailingZeros(formatted);
     }
 
@@ -193,6 +194,15 @@ public class THSignedNumber
                 sb.append('#');
             }
         }
+        //sb.append("#,###");
+        //if (precision > 0)
+        //{
+        //    sb.append('.');
+        //    for (int i = 0; i < precision; ++i)
+        //    {
+        //        sb.append('#');
+        //    }
+        //}
         return sb;
     }
 

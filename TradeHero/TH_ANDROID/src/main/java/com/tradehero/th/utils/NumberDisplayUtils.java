@@ -3,23 +3,24 @@ package com.tradehero.th.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import com.tradehero.th.R;
+import com.tradehero.th.base.Application;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class NumberDisplayUtils
 {
     @NotNull private final Context context;
-    protected final int[] SUFFIX_IDS =
-    {
-        R.string.number_presentation_unit_suffix,
-        R.string.number_presentation_thousand_suffix,
-        R.string.number_presentation_million_suffix,
-        R.string.number_presentation_billion_suffix,
-        R.string.number_presentation_trillion_suffix
-    };
+    static protected final int[] SUFFIX_IDS =
+            {
+                    R.string.number_presentation_unit_suffix,
+                    R.string.number_presentation_thousand_suffix,
+                    R.string.number_presentation_million_suffix,
+                    R.string.number_presentation_billion_suffix,
+                    R.string.number_presentation_trillion_suffix
+            };
 
     // These suffixes are used in tests...
-    protected final String[] FALLBACK_SUFFIXES = {"", "k", "M", "B", "Tr"};
+    protected final static String[] FALLBACK_SUFFIXES = {"", "k", "M", "B", "Tr"};
 
     //<editor-fold desc="Constructors">
     @Inject public NumberDisplayUtils(@NotNull Context context)
@@ -28,12 +29,12 @@ public class NumberDisplayUtils
     }
     //</editor-fold>
 
-    public String formatWithRelevantDigits(double number, int relevantDigits)
+    public static String formatWithRelevantDigits(double number, int relevantDigits)
     {
         return formatWithRelevantDigits(number, relevantDigits, null);
     }
 
-    public String formatWithRelevantDigits(double number, int relevantDigits, String prefix)
+    public static String formatWithRelevantDigits(double number, int relevantDigits, String prefix)
     {
         double absVal = Math.abs(number);
         if (absVal > 999999999999999d)
@@ -71,9 +72,8 @@ public class NumberDisplayUtils
         String suffix;
         try
         {
-            suffix = context.getResources().getString(SUFFIX_IDS[suffixIndex]);
-        }
-        catch (Resources.NotFoundException e)
+            suffix = Application.context().getResources().getString(SUFFIX_IDS[suffixIndex]);
+        } catch (Resources.NotFoundException e)
         {
             suffix = FALLBACK_SUFFIXES[suffixIndex];
         }
@@ -86,5 +86,24 @@ public class NumberDisplayUtils
         {
             return String.format("%,." + desiredDecimal + "f%s", reducedNumber, suffix);
         }
+    }
+
+    public static String getString(double money)
+    {
+        if (money < 10000)
+        {
+            return "" + money;
+        }
+        StringBuffer sb = new StringBuffer();
+
+        if (money / 100000000 > 1)
+        {
+            sb.append(money / 100000000 + "亿");
+        }
+        else if (money / 10000 > 1)
+        {
+            sb.append(Math.round(money / 10000) + "万");
+        }
+        return sb.toString();
     }
 }

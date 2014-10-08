@@ -94,8 +94,7 @@ public class PositionDTO extends PositionDTOCompact
         {
             numberToDisplay += unrealizedPLRefCcy;
         }
-
-        return numberToDisplay;
+        return Math.round(numberToDisplay);
     }
 
     public static List<PositionDTOKey> getPositionDTOKeys(List<PositionDTO> positionDTOs)

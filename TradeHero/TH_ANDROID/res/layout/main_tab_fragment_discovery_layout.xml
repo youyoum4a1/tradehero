@@ -5,55 +5,102 @@
     android:layout_height="fill_parent">
 
 
-  <LinearLayout
-      android:orientation="vertical"
+  <!--<LinearLayout-->
+  <!--android:orientation="vertical"-->
+  <!--android:layout_width="fill_parent"-->
+  <!--android:layout_height="fill_parent">-->
+
+  <!--<RelativeLayout-->
+  <!--android:background="@color/tab_head_bg"-->
+  <!--android:layout_width="fill_parent"-->
+  <!--android:layout_height="@dimen/tab_main_indicator_height">-->
+
+  <!--<Button-->
+  <!--android:id="@+id/btnNotification"-->
+  <!--android:layout_alignParentRight="true"-->
+  <!--android:layout_height="48dp"-->
+  <!--android:layout_width="48dp"-->
+  <!--android:layout_marginRight="5dp"-->
+  <!--android:layout_marginLeft="5dp"-->
+  <!--android:layout_centerInParent="true"-->
+  <!--android:background="@drawable/icon_notification_xml"-->
+  <!--/>-->
+  <!--<TextView-->
+  <!--android:id="@+id/tvNotificationCount"-->
+  <!--android:layout_width="15dp"-->
+  <!--android:layout_height="15dp"-->
+  <!--android:layout_toRightOf="@id/btnNotification"-->
+  <!--android:background="@drawable/icon_bg_count"-->
+  <!--android:textColor="@color/white"-->
+  <!--android:gravity="center"-->
+  <!--android:layout_marginLeft="-25dp"-->
+  <!--android:layout_marginTop="10dp"-->
+  <!--android:textSize="8sp"-->
+  <!--android:text="">-->
+  <!--</TextView>-->
+
+  <!--<com.viewpagerindicator.TabPageIndicator-->
+  <!--android:id="@+id/indicator"-->
+  <!--android:layout_toLeftOf="@id/btnNotification"-->
+  <!--android:layout_height="fill_parent"-->
+  <!--android:layout_width="fill_parent"-->
+  <!--/>-->
+
+  <!--</RelativeLayout>-->
+  <!--<android.support.v4.view.ViewPager-->
+  <!--android:id="@+id/pager"-->
+  <!--android:layout_width="fill_parent"-->
+  <!--android:layout_height="0dp"-->
+  <!--android:layout_weight="1"-->
+  <!--/>-->
+  <!--</LinearLayout>-->
+
+
+  <RelativeLayout
+      android:id="@+id/rlHead"
       android:layout_width="fill_parent"
-      android:layout_height="fill_parent">
+      android:layout_height="48dp">
 
-    <RelativeLayout
-        android:background="@color/tab_head_bg"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/tab_main_indicator_height">
+    <include layout="@layout/custom_head_layout"/>
 
-      <Button
-          android:id="@+id/btnNotification"
-          android:layout_alignParentRight="true"
-          android:layout_height="48dp"
-          android:layout_width="48dp"
-          android:layout_marginRight="5dp"
-          android:layout_marginLeft="5dp"
-          android:layout_centerInParent="true"
-          android:background="@drawable/icon_notification_xml"
-          />
-      <TextView
-          android:id="@+id/tvNotificationCount"
-          android:layout_width="15dp"
-          android:layout_height="15dp"
-          android:layout_toRightOf="@id/btnNotification"
-          android:background="@drawable/icon_bg_count"
-          android:textColor="@color/white"
-          android:gravity="center"
-          android:layout_marginLeft="-25dp"
-          android:layout_marginTop="10dp"
-          android:textSize="8sp"
-          android:text="">
-      </TextView>
-
-      <com.viewpagerindicator.TabPageIndicator
-          android:id="@+id/indicator"
-          android:layout_toLeftOf="@id/btnNotification"
-          android:layout_height="fill_parent"
-          android:layout_width="fill_parent"
-          />
-
-    </RelativeLayout>
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+    <Button
+        android:id="@+id/btnNotification"
+        android:layout_alignParentRight="true"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/icon_notification_xml"
         />
-  </LinearLayout>
+    <TextView
+        android:id="@+id/tvNotificationCount"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_toRightOf="@id/btnNotification"
+        android:background="@drawable/icon_bg_count"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:layout_marginLeft="-25dp"
+        android:layout_marginTop="10dp"
+        android:textSize="8sp"
+        android:text="">
+    </TextView>
+  </RelativeLayout>
+
+  <com.viewpagerindicator.TabPageIndicator
+      android:id="@+id/indicator"
+      android:visibility="gone"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      />
+  <android.support.v4.view.ViewPager
+      android:id="@+id/pager"
+      android:layout_width="fill_parent"
+      android:layout_below="@id/rlHead"
+      android:layout_height="fill_parent"
+      />
+
 
   <TextView
       android:id="@+id/tvCreateTimeLine"

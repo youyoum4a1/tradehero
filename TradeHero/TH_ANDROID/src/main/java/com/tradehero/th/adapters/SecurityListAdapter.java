@@ -13,6 +13,7 @@ import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.NumberDisplayUtils;
 
 public class SecurityListAdapter extends BaseAdapter
 {
@@ -92,17 +93,18 @@ public class SecurityListAdapter extends BaseAdapter
             }
 
             holder.tvSecurityName.setText(item.name);
-            if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_WATCH)
+            if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT)
             {
-                holder.tvSecurityExtroInfo.setText(context.getResources().getString(R.string.people_watched, item.watchCount));
+                holder.tvSecurityExtroInfo.setVisibility(View.GONE);
+                //holder.tvSecurityExtroInfo.setText(context.getResources().getString(R.string.people_watched, item.watchCount));
             }
-            else if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD)
+            else  if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD)
             {
                 holder.tvSecurityExtroInfo.setText(context.getResources().getString(R.string.people_holded, item.holdCount));
             }
             else if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT)
             {
-                holder.tvSecurityExtroInfo.setText(context.getResources().getString(R.string.security_market_cap_usd, "" + item.marketCapRefUSD));
+                holder.tvSecurityExtroInfo.setText(context.getResources().getString(R.string.security_market_cap_usd, "" + NumberDisplayUtils.getString(item.marketCapRefUSD)));
             }
             else if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION
                     || securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH)

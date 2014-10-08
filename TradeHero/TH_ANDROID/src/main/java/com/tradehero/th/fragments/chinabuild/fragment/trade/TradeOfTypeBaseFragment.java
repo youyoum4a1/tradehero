@@ -44,6 +44,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     public DTOCacheNew.Listener<ExchangeListType, ExchangeCompactDTOList> exchangeListTypeCacheListener;
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeCacheListener;
 
+
     public SpinnerExchangeIconAdapter spinnerIconAdapter;
     public AdapterView.OnItemSelectedListener spinnerSelectListener;
 
@@ -92,7 +93,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     {
         fetchExchangeList();
         initListView();
-
     }
 
     private void initListView()
@@ -147,6 +147,8 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         SecurityListType key = new TrendingAllSecurityListType(getTradeType(), getStrExchangeName(), currentPage + 1, ITEMS_PER_PAGE);
         securityCompactListCache.get().register(key, securityListTypeCacheListener);
         securityCompactListCache.get().getOrFetchAsync(key, true);
+
+        Timber.d("windy::: type: "+((TrendingAllSecurityListType)key).type);
     }
 
     public String getStrExchangeName()
@@ -156,7 +158,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     public int getTradeType()
     {
-        return TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_WATCH;
+        return TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD;
     }
 
     private void detachSecurityListCache()
@@ -293,8 +295,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         spinnerIconAdapter = new SpinnerExchangeIconAdapter(getActivity(), strExchangeList, countryList);
         spinnerExchange.setAdapter(spinnerIconAdapter);
         spinnerExchange.setOnItemSelectedListener(spinnerSelectListener);
-        //getExchangSecurity(0);
-        //spinnerExchange.performItemClick(spinnerExchange, 0, spinnerExchange.getItemIdAtPosition(0));
+        spinnerExchange.setSelection(17);
     }
 
     private void getExchangSecurity(int position)

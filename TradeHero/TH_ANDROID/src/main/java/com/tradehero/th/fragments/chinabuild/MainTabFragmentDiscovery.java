@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -34,16 +35,19 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
 {
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
-    @InjectView(R.id.btnNotification) Button btnNotification;
-
     private FragmentPagerAdapter adapter;
 
+    @InjectView(R.id.btnNotification) Button btnNotification;
     @InjectView(R.id.tvCreateTimeLine) TextView tvCreateTimeLine;
     @InjectView(R.id.tvNotificationCount) TextView tvNotificationCount;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
+    @InjectView(R.id.rlCustomHeadView) RelativeLayout rlCustomHeadLayout;
+    @InjectView(R.id.tvHeadLeft) TextView tvHeadLeft;
+    @InjectView(R.id.tvHeadMiddleMain) TextView tvHeadTitle;
+    @InjectView(R.id.tvHeadRight0) TextView tvHeadRight;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -68,6 +72,11 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(5);
         indicator.setViewPager(pager);
+
+        rlCustomHeadLayout.setVisibility(View.VISIBLE);
+        tvHeadLeft.setVisibility(View.GONE);
+        tvHeadTitle.setVisibility(View.VISIBLE);
+        tvHeadTitle.setText("最新动态");
     }
 
     @OnClick(R.id.btnNotification)
@@ -104,7 +113,9 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
         super.onResume();
     }
 
-    private static final String[] CONTENT = new String[] {"最新动态", "热门话题", "股神动态"};
+    private static final String[] CONTENT = new String[] {"最新动态"
+            //, "热门话题", "股神动态"
+    };
 
     class CustomAdapter extends FragmentPagerAdapter
     {
@@ -181,6 +192,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
             tvNotificationCount.setVisibility(View.GONE);
         }
     }
+
     private void detachUserProfileCache()
     {
         userProfileCache.get().unregister(userProfileCacheListener);
@@ -190,7 +202,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
     {
         detachUserProfileCache();
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(),force);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
 
     public void linkWithUserProfileDTO(UserProfileDTO value)

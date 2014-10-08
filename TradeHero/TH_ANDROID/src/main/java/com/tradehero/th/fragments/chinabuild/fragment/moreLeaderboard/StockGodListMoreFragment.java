@@ -20,8 +20,8 @@ public class StockGodListMoreFragment extends DashboardFragment
     @InjectView(R.id.rlMoreBangAll) RelativeLayout rlMoreBangAll;
     @InjectView(R.id.rlMoreBangSeason) RelativeLayout rlMoreBangSeason;
     @InjectView(R.id.rlMoreBang6Month) RelativeLayout rlMoreBang6Month;
-    @InjectView(R.id.rlMoreBangExchange) RelativeLayout rlMoreBangExchange;
-    @InjectView(R.id.rlMoreBangIndustry) RelativeLayout rlMoreBangIndustry;
+    //@InjectView(R.id.rlMoreBangExchange) RelativeLayout rlMoreBangExchange;
+    //@InjectView(R.id.rlMoreBangIndustry) RelativeLayout rlMoreBangIndustry;
 
     //private AdapterStockGod adapterStockGod;
 
@@ -73,18 +73,21 @@ public class StockGodListMoreFragment extends DashboardFragment
 
     }
 
-    @OnClick({R.id.rlMoreBangAll, R.id.rlMoreBangSeason, R.id.rlMoreBang6Month, R.id.rlMoreBangExchange, R.id.rlMoreBangIndustry})
+    @OnClick({R.id.rlMoreBangAll, R.id.rlMoreBangSeason, R.id.rlMoreBang6Month,
+            //R.id.rlMoreBangExchange, R.id.rlMoreBangIndustry
+            }
+    )
     public void onMoreBangClick(View view)
     {
         Bundle bundle = new Bundle();
         switch (view.getId())
         {
-            case R.id.rlMoreBangIndustry://按行业类别
-                gotoDashboard(LeaderboardFromIndustryFragment.class.getName());
-                break;
-            case R.id.rlMoreBangExchange://按交易所
-                gotoDashboard(LeaderboardFromExchangeFragment.class.getName());
-                break;
+            //case R.id.rlMoreBangIndustry://按行业类别
+            //    gotoDashboard(LeaderboardFromIndustryFragment.class.getName());
+            //    break;
+            //case R.id.rlMoreBangExchange://按交易所
+            //    gotoDashboard(LeaderboardFromExchangeFragment.class.getName());
+            //    break;
             case R.id.rlMoreBangAll://总盈利榜（英雄榜 MostSkill）
                 bundle.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
                 gotoDashboard(StockGodListBaseFragment.class.getName(), bundle);

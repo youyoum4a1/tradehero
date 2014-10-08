@@ -294,7 +294,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             child.setSelected(isSelected);
             if (isSelected)
             {
-                ((TextView)child).setTextSize(15);
+                ((TextView)child).setTextSize(14);
             }
             else
             {

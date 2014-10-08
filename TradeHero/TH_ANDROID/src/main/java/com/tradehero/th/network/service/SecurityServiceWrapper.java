@@ -32,6 +32,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import timber.log.Timber;
 
 @Singleton public class SecurityServiceWrapper
 {
@@ -137,6 +138,7 @@ import retrofit.Callback;
             else if (trendingKey instanceof TrendingAllSecurityListType)
             {
                 SecurityCompactExtraDTOList data = null;
+                Timber.d("windy::: --> " + ((TrendingAllSecurityListType) trendingKey).type);
                 if (((TrendingAllSecurityListType) trendingKey).type == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_WATCH)
                 {
                     data = this.securityService.getTrendingSecuritiesAllInExchangeWatch(
@@ -175,6 +177,13 @@ import retrofit.Callback;
                             trendingKey.getPage(),
                             trendingKey.perPage);
                     return dataCompetition;
+                }
+                else if (((TrendingAllSecurityListType) trendingKey).type == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT)
+                {
+                    data = this.securityService.getTrendingSecuritiesAllInRisePercent(
+                            trendingKey.exchange,
+                            trendingKey.getPage(),
+                            trendingKey.perPage);
                 }
                 received = processFromExtraData(data);
             }

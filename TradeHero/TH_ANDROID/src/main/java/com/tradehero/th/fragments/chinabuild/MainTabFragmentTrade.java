@@ -18,8 +18,8 @@ import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotWatchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfMineFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfRisePercentFragment;
 import com.viewpagerindicator.TabPageIndicator;
 import timber.log.Timber;
 
@@ -61,8 +61,6 @@ public class MainTabFragmentTrade extends AbsBaseFragment
         gotoDashboard(SearchFragment.class.getName());
     }
 
-
-
     @Override public void onStop()
     {
         super.onStop();
@@ -84,7 +82,7 @@ public class MainTabFragmentTrade extends AbsBaseFragment
         super.onResume();
     }
 
-    private static final String[] CONTENT = new String[] {"我的交易", "热门关注", "热门持有", "中国概念"};
+    private static final String[] CONTENT = new String[] {"我的交易", "热门持有", "涨幅榜单", "中国概念"};
 
     class CustomAdapter extends FragmentPagerAdapter
     {
@@ -102,10 +100,10 @@ public class MainTabFragmentTrade extends AbsBaseFragment
                     return new TradeOfMineFragment();
 
                 case 1:
-                    return new TradeOfHotWatchFragment();
+                    return new TradeOfHotHoldFragment();
 
                 case 2:
-                    return new TradeOfHotHoldFragment();
+                    return new TradeOfRisePercentFragment();
 
                 case 3:
                     return new TradeOfChinaConceptFragment();

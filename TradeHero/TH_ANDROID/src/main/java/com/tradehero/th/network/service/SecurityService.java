@@ -45,7 +45,11 @@ public interface SecurityService
     //http://localhost/api/securities/trendingHold?exchange=SHA
     //http://localhost/api/securities/trendingWatch?exchange=SHA
 
-    //@GET("/securities/trendingExchange/")
+    @GET("/securities/trendingRisePercent/") SecurityCompactExtraDTOList getTrendingSecuritiesAllInRisePercent(
+            @Query("exchange") String exchange,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+
     @GET("/securities/trendingWatch/") SecurityCompactExtraDTOList getTrendingSecuritiesAllInExchangeWatch(
             @Query("exchange") String exchange,
             @Query("page") Integer page,

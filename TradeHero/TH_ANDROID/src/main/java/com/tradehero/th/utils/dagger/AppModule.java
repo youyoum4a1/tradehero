@@ -82,6 +82,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptF
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotWatchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfMineFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfRisePercentFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfTypeBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
@@ -462,6 +463,7 @@ import javax.inject.Singleton;
                         TradeOfTypeBaseFragment.class,
                         TradeOfChinaConceptFragment.class,
                         TradeOfHotWatchFragment.class,
+                        TradeOfRisePercentFragment.class,
                         TradeOfHotHoldFragment.class,
 
                         DiscoveryHotTopicFragment.class,
