@@ -65,7 +65,8 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
             @FacebookPermissions List<String> permissions)
     {
         PRECISE_DATE_FORMAT.setTimeZone(new SimpleTimeZone(0, "GMT"));
-
+        
+        this.baseActivity = new WeakReference<>(null);
         this.activityCode = 32665;
         this.permissions = permissions;
 
