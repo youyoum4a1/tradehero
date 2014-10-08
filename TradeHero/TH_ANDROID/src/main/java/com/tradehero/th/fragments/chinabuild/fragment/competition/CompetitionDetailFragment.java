@@ -276,7 +276,6 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         //ButterKnife.reset(this);
-
         detachCompetitionLeaderboardCache();
         detachPortfolioCompactNewCache();
         detachUserProfileCache();

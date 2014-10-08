@@ -121,18 +121,17 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/tvCompetitionROITitle"
             android:singleLine="true"
-            android:text="+2.3%"/>
+            android:text="- -"/>
 
 
         <TextView
             android:id="@+id/tvCompetitionJumpValue"
-            android:textColor="@color/red"
             android:textSize="15sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:singleLine="true"
-            android:text="+3"/>
+            android:text="- -"/>
 
         <TextView
             android:id="@+id/tvCompetitionJumpTitle"

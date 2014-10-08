@@ -32,6 +32,24 @@ public class UserCompetitionDTO implements DTO, Serializable
     public int userCount;
     public ExchangeDTOList exchanges;
     public boolean isOfficial;
+    public int rankRise;
+    public double roi;
+
+    public String getRankRise()
+    {
+        if (rankRise > 0)
+        {
+            return " + " + rankRise;
+        }
+        else if (rankRise < 0)
+        {
+            return " - " + rankRise;
+        }
+        else
+        {
+            return "" + rankRise;
+        }
+    }
 
     public String getUserCounter()
     {

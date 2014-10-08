@@ -16,6 +16,8 @@ import com.tradehero.th.fragments.chinabuild.data.CompetitionHeadItem;
 import com.tradehero.th.fragments.chinabuild.data.CompetitionInterface;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionUtils;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -271,6 +273,14 @@ public class CompetitionListAdapter extends BaseAdapter
                     holder.rlCompetitionDataExtroMine.setVisibility(View.VISIBLE);
                     holder.rlCompetitionDataExtroOffical.setVisibility(View.GONE);
                 }
+
+                THSignedNumber roi = THSignedPercentage.builder(((CompetitionDataItem) data).userCompetitionDTO.roi * 100)
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                holder.tvCompetitionROIValue.setText(roi.toString());
+                holder.tvCompetitionROIValue.setTextColor(context.getResources().getColor(roi.getColorResId()));
+                holder.tvCompetitionJumpValue.setText(((CompetitionDataItem) data).userCompetitionDTO.getRankRise());
             }
         }
         return convertView;
