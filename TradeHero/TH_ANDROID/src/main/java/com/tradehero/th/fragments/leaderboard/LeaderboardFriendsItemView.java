@@ -12,17 +12,13 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Session;
-import com.facebook.widget.WebDialog;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
@@ -31,35 +27,30 @@ import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AccessTokenForm;
-import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
+import java.util.Arrays;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import rx.Observable;
+import rx.Observer;
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
+import timber.log.Timber;
 
 public class LeaderboardFriendsItemView extends RelativeLayout
         implements DTOView<UserFriendsDTO>, View.OnClickListener
@@ -74,18 +65,13 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     @Nullable private UserFriendsDTO userFriendsDTO;
     private MiddleCallback<BaseResponseDTO> middleCallbackInvite;
-    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfileDTO;
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Provider<Activity> activityProvider;
-    @Inject Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider;
+    @Inject Lazy<SocialFriendHandlerFacebook> socialFriendHandlerFacebookLazy;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-    @Inject SocialService socialService;
-    @Inject Provider<UserFormDTO.Builder> userFormDTOBuilderProvider;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
@@ -284,86 +270,39 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
         {
             analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
-            if (Session.getActiveSession() == null)
-            {
-                facebookInvitationSubscription = facebookAuthenticationProvider.get().logIn(activityProvider.get())
-                        .flatMap(new Func1<AuthData, Observable<UserProfileDTO>>()
-                        {
-                            @Override public Observable<UserProfileDTO> call(AuthData authData)
-                            {
-                                return socialService.connectRx(
-                                        currentUserId.get(), new AccessTokenForm(authData));
-                                // FIXME/refactor show progress bar while doing this
-                                //progressDialog.setMessage(getContext().getString(
-                                //        R.string.authentication_connecting_tradehero,
-                                //        "Facebook"));
-                            }
-                        })
-                        .subscribe(new Action1<UserProfileDTO>()
-                        {
-                            @Override public void call(UserProfileDTO userProfileDTO)
-                            {
-                                userProfileCacheLazy.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
-                                invite();
-                            }
-                        });
-            }
-            else
-            {
-                sendRequestDialogFacebook();
-            }
-        }
-    }
-
-    private void sendRequestDialogFacebook()
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(((UserFriendsFacebookDTO) userFriendsDTO).fbId);
-
-        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
-        {
-            Bundle params = new Bundle();
-            String messageToFacebookFriends = getContext().getString(
-                    R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
-            //if (messageToFacebookFriends.length() > 60)
-            //{
-            //    messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-            //}
-
-            params.putString("message", messageToFacebookFriends);
-            params.putString("to", stringBuilder.toString());
-
-            WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                activityProvider.get(), Session.getActiveSession(), params))
-                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
+            socialFriendHandlerFacebookLazy.get()
+                    .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO))
+                    .subscribe(new Observer<Bundle>()
                     {
-                        @Override
-                        public void onComplete(Bundle values, FacebookException error)
+                        @Override public void onCompleted()
                         {
-                            if (error != null)
+                            Timber.d("completed");
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            if (e instanceof FacebookOperationCanceledException)
                             {
-                                if (error instanceof FacebookOperationCanceledException)
-                                {
-                                    THToast.show(R.string.invite_friend_request_canceled);
-                                }
+                                THToast.show(R.string.invite_friend_request_canceled);
+                            }
+                            Timber.e(e, "error");
+                        }
+
+                        @Override public void onNext(Bundle bundle)
+                        {
+                            final String requestId = bundle.getString("request");
+                            if (requestId != null)
+                            {
+                                THToast.show(R.string.invite_friend_request_sent);
                             }
                             else
                             {
-                                final String requestId = values.getString("request");
-                                if (requestId != null)
-                                {
-                                    THToast.show(R.string.invite_friend_request_sent);
-                                }
-                                else
-                                {
-                                    THToast.show(R.string.invite_friend_request_canceled);
-                                }
+                                THToast.show(R.string.invite_friend_request_canceled);
                             }
+
+                            Timber.d("next %s", bundle);
                         }
-                    })
-                    .build();
-            requestsDialog.show();
+                    });
         }
     }
 
@@ -403,14 +342,5 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();
         return progressDialog;
-    }
-
-    protected void detachMiddleCallbackConnect()
-    {
-        if (middleCallbackConnect != null)
-        {
-            middleCallbackConnect.setPrimaryCallback(null);
-        }
-        middleCallbackConnect = null;
     }
 }
