@@ -39,7 +39,7 @@ public class OperatorOAuthDialog implements Observable.OnSubscribe<String>
             @Override public void onError(int errorCode, String description, String failingUrl)
             {
                 // TODO better exception
-                subscriber.onError(new Exception("Authorization fail!"));
+                subscriber.onError(new CancellationException("Authorization fail!"));
             }
 
             @Override public void onComplete(String callbackUrl)
@@ -49,7 +49,7 @@ public class OperatorOAuthDialog implements Observable.OnSubscribe<String>
                 final String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
                 if (verifier == null)
                 {
-                    subscriber.onError(new Exception("Verifier is empty"));
+                    subscriber.onError(new CancellationException("Verifier is empty"));
                     return;
                 }
                 subscriber.onNext(verifier);

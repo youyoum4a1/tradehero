@@ -31,6 +31,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
@@ -42,6 +43,7 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 
 public class SignInOrUpFragment extends Fragment
@@ -207,8 +209,7 @@ public class SignInOrUpFragment extends Fragment
                         }
                     }
                 })
-                .retry()
-        ;
+                .doOnNext(authDataActionProvider.get());
     }
 
     @Override public void onDestroy()
@@ -225,8 +226,23 @@ public class SignInOrUpFragment extends Fragment
 
         if (subscription == null || subscription.isUnsubscribed())
         {
-            subscription = authenticationObservable.subscribe(authDataActionProvider.get());
+            resubscribe();
         }
+    }
+
+    // TODO better with Observable#retry() ?
+    private void resubscribe()
+    {
+        subscription = authenticationObservable.subscribe(new EmptyObserver<Pair<AuthData, UserLoginDTO>>()
+        {
+            @Override public void onError(Throwable e)
+            {
+                if (e instanceof CancellationException)
+                {
+                    resubscribe();
+                }
+            }
+        });
     }
 
     private void openWebPage(String url)
@@ -297,9 +313,7 @@ public class SignInOrUpFragment extends Fragment
                         {
                             @Override public void call()
                             {
-                                // TODO this is a hack to re-subscribe after being un-subscribed by onError
-                                subscription = authenticationObservable.subscribe(authDataActionProvider.get());
-                                throw new RuntimeException(getString(R.string.error_canceled));
+                                resubscribe();
                             }
                         });
             }

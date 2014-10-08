@@ -34,6 +34,7 @@ import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
@@ -185,7 +186,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Override public void onDestroy()
     {
-        authDataSubject.onCompleted();
+        authDataSubject.onError(new CancellationException(getString(R.string.error_canceled)));
         super.onDestroy();
     }
 
