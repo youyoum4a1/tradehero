@@ -6,7 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Pair;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.users.UserLoginDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import javax.inject.Inject;
 import rx.functions.Action1;
@@ -14,7 +14,7 @@ import rx.functions.Action1;
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
-public class AuthDataAction implements Action1<Pair<AuthData, UserLoginDTO>>
+public class AuthDataAction implements Action1<Pair<AuthData, UserProfileDTO>>
 {
     private final Activity activity;
     private final AccountManager accountManager;
@@ -25,18 +25,18 @@ public class AuthDataAction implements Action1<Pair<AuthData, UserLoginDTO>>
         this.accountManager = accountManager;
     }
 
-    @Override public void call(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
+    @Override public void call(Pair<AuthData, UserProfileDTO> authDataUserProfileDTOPair)
     {
-        Account account = getOrAddAccount(authDataUserLoginDTOPair);
-        accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authDataUserLoginDTOPair.first.getTHToken());
-        finishAuthentication(authDataUserLoginDTOPair);
+        Account account = getOrAddAccount(authDataUserProfileDTOPair);
+        accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authDataUserProfileDTOPair.first.getTHToken());
+        finishAuthentication(authDataUserProfileDTOPair);
     }
 
-    private Account getOrAddAccount(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
+    private Account getOrAddAccount(Pair<AuthData, UserProfileDTO> authDataUserLoginDTOPair)
     {
         Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
         Account account = accounts.length != 0 ? accounts[0] :
-                new Account(authDataUserLoginDTOPair.second.profileDTO.email, PARAM_ACCOUNT_TYPE);
+                new Account(authDataUserLoginDTOPair.second.email, PARAM_ACCOUNT_TYPE);
 
         String password = authDataUserLoginDTOPair.first.password;
         if (accounts.length == 0)
@@ -50,10 +50,10 @@ public class AuthDataAction implements Action1<Pair<AuthData, UserLoginDTO>>
         return account;
     }
 
-    private void finishAuthentication(Pair<AuthData, UserLoginDTO> authDataUserLoginDTOPair)
+    private void finishAuthentication(Pair<AuthData, UserProfileDTO> authDataUserLoginDTOPair)
     {
         Intent intent = new Intent();
-        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, authDataUserLoginDTOPair.second.profileDTO.email);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, authDataUserLoginDTOPair.second.email);
         intent.putExtra(AccountManager.KEY_AUTHTOKEN, authDataUserLoginDTOPair.first.getTHToken());
         intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, PARAM_ACCOUNT_TYPE);
 

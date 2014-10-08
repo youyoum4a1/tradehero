@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,11 +27,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromAdapter;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTOFactory;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromLibraryDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
@@ -42,12 +39,12 @@ import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
-import com.tradehero.th.widget.ValidationListener;
 import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
+import rx.Observable;
 import timber.log.Timber;
 
 public class ProfileInfoView extends LinearLayout
@@ -61,18 +58,17 @@ public class ProfileInfoView extends LinearLayout
     @InjectView(R.id.et_lastname) EditText lastName;
     @InjectView(R.id.image_optional) @Optional ImageView profileImage;
 
-    @Inject ChooseImageFromDTOFactory chooseImageFromDTOFactory;
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject @AuthHeader Lazy<String> authenticationHeader;
+    @Inject Activity activity;
 
     ProgressDialog progressDialog;
     private UserProfileDTO userProfileDTO;
     private String newImagePath;
-    private Listener listener;
 
     public ProfileInfoView(Context context, AttributeSet attrs)
     {
@@ -97,11 +93,6 @@ public class ProfileInfoView extends LinearLayout
     {
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
-    }
-
-    public void setListener(Listener listener)
-    {
-        this.listener = listener;
     }
 
     public boolean areFieldsValid()
@@ -172,8 +163,7 @@ public class ProfileInfoView extends LinearLayout
             {
                 created = bitmapTypedOutputFactory.createForProfilePhoto(
                         getResources(), bitmapForProfileFactory, newImagePath);
-            }
-            catch (OutOfMemoryError e)
+            } catch (OutOfMemoryError e)
             {
                 THToast.show(R.string.error_decode_image_memory);
             }
@@ -295,7 +285,7 @@ public class ProfileInfoView extends LinearLayout
     {
         if (credentials == null)
         {
-            Timber.e(new NullPointerException("credentials were null current auth type " +  authenticationHeader.get()), "");
+            Timber.e(new NullPointerException("credentials were null current auth type " + authenticationHeader.get()), "");
             THToast.show(R.string.error_fetch_your_user_profile);
         }
         else
@@ -313,8 +303,7 @@ public class ProfileInfoView extends LinearLayout
                 {
                     passwordValue = credentials.getString("password");
                 }
-            }
-            catch (JSONException e)
+            } catch (JSONException e)
             {
                 Timber.e(e, "populateCredentials");
             }
@@ -336,68 +325,49 @@ public class ProfileInfoView extends LinearLayout
     @OnClick(R.id.image_optional) @Optional
     protected void showImageFromDialog()
     {
-        ChooseImageFromAdapter adapter = new ChooseImageFromAdapter(
-                getContext(),
-                R.layout.choose_from_item);
-        adapter.addAll(chooseImageFromDTOFactory.getAll(getContext()));
-        alertDialogUtil.popWithNegativeButton(getContext(),
-                getContext().getString(R.string.user_profile_choose_image_from_choice),
-                null, getContext().getString(R.string.cancel),
-                adapter, createChooseImageDialogClickListener(),
-                null);
+        ImagePickerView imagePickerView = (ImagePickerView) LayoutInflater.from(getContext())
+                .inflate(R.layout.image_picker, null);
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setTitle(R.string.user_profile_choose_image_from_choice)
+                .setNegativeButton(R.string.cancel, null)
+                .setView(imagePickerView)
+                .create();
+        alertDialog.show();
     }
 
-    protected void handleChooseImage(ChooseImageFromDTO chooseImageFrom)
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (chooseImageFrom instanceof ChooseImageFromCameraDTO)
+        // handle image upload
+        if (resultCode == Activity.RESULT_OK)
         {
-            notifyImageFromCameraRequested();
+            if ((requestCode == ImagePickerView.REQUEST_CAMERA || requestCode == ImagePickerView.REQUEST_GALLERY) && data != null)
+            {
+                try
+                {
+                    handleDataFromLibrary(data);
+                }
+                catch (OutOfMemoryError e)
+                {
+                    THToast.show(R.string.error_decode_image_memory);
+                } catch (Exception e)
+                {
+                    THToast.show(R.string.error_fetch_image_library);
+                    Timber.e(e, "Failed to extract image from library");
+                }
+            }
+            else if (requestCode == ImagePickerView.REQUEST_GALLERY)
+            {
+                Timber.e(new Exception("Got null data from library"), "");
+            }
         }
-        else if (chooseImageFrom instanceof ChooseImageFromLibraryDTO)
+        else if (resultCode != Activity.RESULT_CANCELED)
         {
-            notifyImageFromLibraryRequested();
-        }
-        else
-        {
-            Timber.e(new Exception("unhandled ChooseFrom type " + chooseImageFrom), "");
-        }
-    }
-
-    protected void notifyImageFromCameraRequested()
-    {
-        Listener listenerCopy = listener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onImageFromCameraRequested();
-        }
-    }
-
-    protected void notifyImageFromLibraryRequested()
-    {
-        Listener listenerCopy = listener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onImageFromLibraryRequested();
+            Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
         }
     }
 
-    protected AlertDialogUtil.OnClickListener<ChooseImageFromDTO> createChooseImageDialogClickListener()
+    public Observable<UserFormDTO> obtainUserFormDTO()
     {
-        return new ProfileInfoViewChooseImageDialogClickListener();
-    }
-
-    protected class ProfileInfoViewChooseImageDialogClickListener implements AlertDialogUtil.OnClickListener<ChooseImageFromDTO>
-    {
-        @Override public void onClick(ChooseImageFromDTO which)
-        {
-            handleChooseImage(which);
-        }
-    }
-
-    public static interface Listener
-    {
-        void onUpdateRequested();
-        void onImageFromCameraRequested();
-        void onImageFromLibraryRequested();
+        return null;
     }
 }

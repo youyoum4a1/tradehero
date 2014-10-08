@@ -30,7 +30,7 @@
       app:type="emailpass"
       />
 
-  <com.tradehero.common.widget.AuthenticationButton
+  <Button
       android:id="@+id/authentication_email_sign_up_link"
       style="@style/TradeHero.SocialAuthenticationButton"
       android:drawableLeft="@drawable/settings_email_noti"
@@ -38,7 +38,6 @@
       android:text="@string/email_register"
       android:textColor="@color/black"
       android:shadowColor="@color/white"
-      app:type="emailpass_signup"
       />
 
 </merge>

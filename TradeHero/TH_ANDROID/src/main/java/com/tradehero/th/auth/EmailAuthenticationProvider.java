@@ -1,13 +1,11 @@
 package com.tradehero.th.auth;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.util.Base64;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
-import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -92,16 +90,7 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
 
     @Override public Observable<AuthData> logIn(Activity activity)
     {
-        Fragment emailSignInFragment = dashboardNavigatorProvider.get().pushFragment(getAuthenticationFragment());
-        if (emailSignInFragment instanceof EmailSignInFragment)
-        {
-            return ((EmailSignInFragment) emailSignInFragment).obtainAuthData();
-        }
-        return ((EmailSignUpFragment) emailSignInFragment).obtainAuthData();
-    }
-
-    protected Class<? extends Fragment> getAuthenticationFragment()
-    {
-        return EmailSignInFragment.class;
+        EmailSignInFragment emailSignInFragment = dashboardNavigatorProvider.get().pushFragment(EmailSignInFragment.class);
+        return emailSignInFragment.obtainAuthData();
     }
 }

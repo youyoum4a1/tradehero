@@ -19,6 +19,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
@@ -55,19 +56,23 @@ public class SignInOrUpFragment extends Fragment
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
     @Inject Provider<AuthDataAction> authDataActionProvider;
 
+    @OnClick(R.id.authentication_email_sign_up_link) void handleSignUpButtonClick()
+    {
+        dashboardNavigator.pushFragment(EmailSignUpFragment.class);
+    }
+
     @Optional @InjectViews({
             R.id.btn_facebook_signin,
             R.id.btn_twitter_signin,
             R.id.btn_linkedin_signin,
             R.id.btn_weibo_signin,
             R.id.btn_qq_signin,
-            R.id.authentication_email_sign_in_link,
-            R.id.authentication_email_sign_up_link
+            R.id.authentication_email_sign_in_link
     })
     AuthenticationButton[] observableViews;
 
     private Subscription subscription;
-    private Observable<Pair<AuthData, UserLoginDTO>> authenticationObservable;
+    private Observable<Pair<AuthData, UserProfileDTO>> authenticationObservable;
     private ProgressDialog progressDialog;
     @Inject Provider<ToastOnErrorAction> toastOnErrorActionProvider;
 
@@ -133,7 +138,7 @@ public class SignInOrUpFragment extends Fragment
                 {
                     @Override public void call(SocialNetworkEnum socialNetworkEnum)
                     {
-                        if (socialNetworkEnum != SocialNetworkEnum.TH && socialNetworkEnum != SocialNetworkEnum.TH_SIGNUP)
+                        if (socialNetworkEnum != SocialNetworkEnum.TH)
                         {
                             progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
                                     getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()), true);
@@ -174,21 +179,28 @@ public class SignInOrUpFragment extends Fragment
                                 .build();
                     }
                 })
-                .flatMap(new Func1<LoginSignUpFormDTO, Observable<Pair<AuthData, UserLoginDTO>>>()
+                .flatMap(new Func1<LoginSignUpFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
                 {
-                    @Override public Observable<Pair<AuthData, UserLoginDTO>> call(LoginSignUpFormDTO loginSignUpFormDTO)
+                    @Override public Observable<Pair<AuthData, UserProfileDTO>> call(LoginSignUpFormDTO loginSignUpFormDTO)
                     {
                         AuthData authData = loginSignUpFormDTO.authData;
-                        Observable<UserLoginDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
+                        Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
                                 authData.getTHToken(), loginSignUpFormDTO)
                                 .subscribeOn(AndroidSchedulers.mainThread())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData));
+                                .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData))
+                                .map(new Func1<UserLoginDTO, UserProfileDTO>()
+                                {
+                                    @Override public UserProfileDTO call(UserLoginDTO userLoginDTO)
+                                    {
+                                        return userLoginDTO.profileDTO;
+                                    }
+                                });
 
                         return Observable.zip(Observable.just(authData), userLoginDTOObservable,
-                                new Func2<AuthData, UserLoginDTO, Pair<AuthData, UserLoginDTO>>()
+                                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
                                 {
-                                    @Override public Pair<AuthData, UserLoginDTO> call(AuthData authData, UserLoginDTO userLoginDTO)
+                                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData authData, UserProfileDTO userLoginDTO)
                                     {
                                         return Pair.create(authData, userLoginDTO);
                                     }
@@ -233,7 +245,7 @@ public class SignInOrUpFragment extends Fragment
     // TODO better with Observable#retry() ?
     private void resubscribe()
     {
-        subscription = authenticationObservable.subscribe(new EmptyObserver<Pair<AuthData, UserLoginDTO>>()
+        subscription = authenticationObservable.subscribe(new EmptyObserver<Pair<AuthData, UserProfileDTO>>()
         {
             @Override public void onError(Throwable e)
             {
@@ -259,8 +271,7 @@ public class SignInOrUpFragment extends Fragment
         }
     }
 
-    private class OperatorSignUpAndLoginFallback
-            implements Func1<Throwable, Observable<UserLoginDTO>>
+    private class OperatorSignUpAndLoginFallback implements Func1<Throwable, Observable<UserLoginDTO>>
     {
         private final AuthData authData;
 

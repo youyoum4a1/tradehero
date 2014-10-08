@@ -141,6 +141,10 @@ public class RetrofitProtectedModule
         return adapter.create(TranslationTokenServiceAsync.class);
     }
 
+    @Provides @Singleton UserServiceRx provideUserServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(UserServiceRx.class);
+    }
     @Provides @Singleton UserServiceAsync provideUserService(RestAdapter adapter)
     {
         return adapter.create(UserServiceAsync.class);

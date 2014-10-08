@@ -7,6 +7,7 @@ import dagger.Module;
                 AdminSettingsFragment.class,
                 SettingsProfileFragment.class,
                 ProfileInfoView.class,
+                ImagePickerView.class,
                 SettingsReferralCodeFragment.class,
                 AboutFragment.class,
                 SettingsFragment.class,

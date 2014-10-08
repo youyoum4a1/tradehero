@@ -89,8 +89,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
         profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
 
-        profileView.setListener(createProfileViewListener());
-
         updateButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         updateButton.setText(R.string.update);
         updateButton.setOnClickListener(this);
@@ -110,10 +108,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     @Override public void onDestroyView()
     {
-        if (profileView != null)
-        {
-            profileView.setListener(null);
-        }
         profileView = null;
         if (updateButton != null)
         {
@@ -356,28 +350,29 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         }
     }
 
-    protected ProfileInfoView.Listener createProfileViewListener()
-    {
-        return new SettingsProfileViewListener();
-    }
-
-    protected class SettingsProfileViewListener implements ProfileInfoView.Listener
-    {
-        @Override public void onUpdateRequested()
-        {
-            // TODO
-        }
-
-        @Override public void onImageFromCameraRequested()
-        {
-            askImageFromCamera();
-        }
-
-        @Override public void onImageFromLibraryRequested()
-        {
-            askImageFromLibrary();
-        }
-    }
+    // FIXME/refactor
+    //protected ProfileInfoView.Listener createProfileViewListener()
+    //{
+    //    return new SettingsProfileViewListener();
+    //}
+    //
+    //protected class SettingsProfileViewListener implements ProfileInfoView.Listener
+    //{
+    //    @Override public void onUpdateRequested()
+    //    {
+    //        // TODO
+    //    }
+    //
+    //    @Override public void onImageFromCameraRequested()
+    //    {
+    //        askImageFromCamera();
+    //    }
+    //
+    //    @Override public void onImageFromLibraryRequested()
+    //    {
+    //        askImageFromLibrary();
+    //    }
+    //}
 }
 
 

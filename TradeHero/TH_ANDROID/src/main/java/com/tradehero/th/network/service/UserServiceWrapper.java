@@ -61,11 +61,14 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
+import rx.functions.Action1;
 
 @Singleton public class UserServiceWrapper
 {
     @NotNull private final UserService userService;
     @NotNull private final UserServiceAsync userServiceAsync;
+    @NotNull private final UserServiceRx userServiceRx;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final DTOCacheUtil dtoCacheUtil;
     @NotNull private final Lazy<UserProfileCache> userProfileCache;
@@ -81,6 +84,7 @@ import retrofit.Callback;
     @Inject public UserServiceWrapper(
             @NotNull UserService userService,
             @NotNull UserServiceAsync userServiceAsync,
+            @NotNull UserServiceRx userServiceRx,
             @NotNull CurrentUserId currentUserId,
             @NotNull DTOCacheUtil dtoCacheUtil,
             @NotNull Lazy<UserProfileCache> userProfileCache,
@@ -104,6 +108,7 @@ import retrofit.Callback;
         this.providerListCache = providerListCache;
         this.providerCache = providerCache;
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
+        this.userServiceRx = userServiceRx;
     }
     //</editor-fold>
 
@@ -159,6 +164,59 @@ import retrofit.Callback;
                     userFormDTO.profilePicture);
         }
         return createSignInUpProfileProcessor().process(created);
+    }
+
+    public Observable<UserProfileDTO> signUpWithEmailRx(
+            String authorization,
+            UserFormDTO userFormDTO)
+    {
+        Observable<UserProfileDTO> created;
+        if (userFormDTO.profilePicture == null)
+        {
+            created = userServiceRx.signUpWithEmail(
+                    authorization,
+                    userFormDTO.biography,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.location,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.username,
+                    userFormDTO.website);
+        }
+        else
+        {
+            created = userServiceRx.signUpWithEmail(
+                    authorization,
+                    userFormDTO.biography,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.location,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.username,
+                    userFormDTO.website,
+                    userFormDTO.profilePicture);
+        }
+
+        created.doOnNext(new Action1<UserProfileDTO>()
+        {
+            @Override public void call(UserProfileDTO userProfileDTO)
+            {
+                createSignInUpProfileProcessor().process(userProfileDTO);
+            }
+        });
+        return created;
     }
 
     public MiddleCallback<UserProfileDTO> signUpWithEmail(

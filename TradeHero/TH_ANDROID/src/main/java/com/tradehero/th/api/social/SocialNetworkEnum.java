@@ -8,7 +8,6 @@ package com.tradehero.th.api.social;
 public enum SocialNetworkEnum
 {
     TH("Basic", "TradeHero"),
-    TH_SIGNUP("Basic", "TradeHero"),
     FB("TH-Facebook", "Facebook", "facebook_access_token"),
     TW("TH-Twitter", "Twitter", "twitter_access_token", "twitter_access_token_secret"),
     LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret"),

@@ -1,8 +1,9 @@
 package com.tradehero.th.fragments.authentication;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,54 +11,49 @@ import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
 import javax.inject.Inject;
 import rx.Observable;
-import timber.log.Timber;
+import rx.Subscription;
+import rx.android.observables.ViewObservable;
+import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.observers.EmptyObserver;
 
 /**
  * Register using email.
  */
-public class EmailSignUpFragment extends EmailSignInOrUpFragment
+public class EmailSignUpFragment extends Fragment
 {
-    //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
-    private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
-    private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
-
     @Inject Analytics analytics;
     @Inject DashboardNavigator navigator;
+    @Inject UserServiceWrapper userServiceWrapper;
+    @Inject AuthDataAction authDataAction;
+    @Inject ToastOnErrorAction toastOnErrorAction;
 
     @InjectView(R.id.profile_info) ProfileInfoView profileView;
     @InjectView(R.id.authentication_sign_up_email) EditText emailEditText;
+    @InjectView(R.id.authentication_sign_up_button) View signUpButton;
+
+    private Observable<Pair<AuthData, UserProfileDTO>> signUpObservable;
+    private Subscription subscription;
 
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
         navigator.popFragment();
-    }
-
-    @OnClick(R.id.authentication_sign_up_button) void handleSignUpButtonClicked(View view)
-    {
-        handleSignInOrUpButtonClicked(view);
-    }
-
-    @OnClick(R.id.image_optional) void handleImageOptionClicked()
-    {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/jpeg");
-        startActivityForResult(intent, REQUEST_GALLERY);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -70,111 +66,75 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
     }
 
-    public int getDefaultViewId()
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return R.layout.authentication_email_sign_up;
-    }
-
-    @Override protected void initSetup(View view)
-    {
-        this.profileView.setListener(new EmailSignUpProfileViewListener());
+        return inflater.inflate(R.layout.authentication_email_sign_up, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+
         DeviceUtil.showKeyboardDelayed(emailEditText);
+
+        signUpObservable = ViewObservable.clicks(signUpButton, false)
+                .flatMap(new Func1<View, Observable<UserFormDTO>>()
+                {
+                    @Override public Observable<UserFormDTO> call(View view)
+                    {
+                        return profileView.obtainUserFormDTO();
+                    }
+                })
+                .flatMap(new Func1<UserFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
+                {
+                    @Override public Observable<Pair<AuthData, UserProfileDTO>> call(UserFormDTO userFormDTO)
+                    {
+                        final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
+                        final Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.signUpWithEmailRx(authData.getTHToken(),
+                                userFormDTO);
+                        return Observable.zip(Observable.just(authData), userProfileDTOObservable, new Func2<AuthData, UserProfileDTO,
+                                Pair<AuthData, UserProfileDTO>>()
+                        {
+                            @Override public Pair<AuthData, UserProfileDTO> call(AuthData authData, UserProfileDTO userProfileDTO)
+                            {
+                                return Pair.create(authData, userProfileDTO);
+                            }
+                        });
+                    }
+                })
+                .doOnNext(authDataAction)
+                .doOnError(toastOnErrorAction)
+        ;
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK)
-        {
-            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
-            {
-                try
-                {
-                    if (profileView != null)
-                    {
-                        profileView.handleDataFromLibrary(data);
-                    }
-                }
-                catch (OutOfMemoryError e)
-                {
-                    THToast.show(R.string.error_decode_image_memory);
-                }
-                catch (Exception e)
-                {
-                    THToast.show(R.string.error_fetch_image_library);
-                    Timber.e(e, "Failed to extract image from library");
-                }
-            }
-            else if (requestCode == REQUEST_GALLERY)
-            {
-                Timber.e(new Exception("Got null data from library"), "");
-            }
-        }
-        else if (resultCode != Activity.RESULT_CANCELED)
-        {
-            Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
-        }
+        profileView.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override public void onDestroyView()
     {
-        if (this.profileView != null)
-        {
-            this.profileView.setListener(null);
-        }
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    @Override public boolean areFieldsValid()
+    @Override public void onResume()
     {
-        return this.profileView.areFieldsValid();
+        super.onResume();
+
+        subscription = signUpObservable.subscribe(new EmptyObserver<Pair<AuthData, UserProfileDTO>>());
     }
 
-    @Override protected Map<String, Object> getUserFormMap()
+    @Override public void onPause()
     {
-        Map<String, Object> map = super.getUserFormMap();
-        this.profileView.populateUserFormMap(map);
-        return map;
-    }
-
-    @Override public Observable<AuthData> obtainAuthData()
-    {
-        return null;
-    }
-
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        return inflater.inflate(getDefaultViewId(), container, false);
-    }
-
-    protected class EmailSignUpProfileViewListener implements ProfileInfoView.Listener
-    {
-        @Override public void onUpdateRequested()
+        if (subscription != null && !subscription.isUnsubscribed())
         {
-            // TODO
+            subscription.unsubscribe();
         }
 
-        @Override public void onImageFromCameraRequested()
-        {
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            //cameraIntent.setType("image/jpeg");
-            startActivityForResult(cameraIntent, REQUEST_CAMERA);
-        }
-
-        @Override public void onImageFromLibraryRequested()
-        {
-            Intent libraryIntent = new Intent(Intent.ACTION_PICK);
-            libraryIntent.setType("image/jpeg");
-            startActivityForResult(libraryIntent, REQUEST_GALLERY);
-        }
+        super.onPause();
     }
 }
 
