@@ -6,7 +6,7 @@ import com.tradehero.th.fragments.authentication.FragmentAuthenticationModule;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.FragmentBillingModule;
 import com.tradehero.th.fragments.competition.FragmentCompetitionModule;
-import com.tradehero.th.fragments.contestcenter.FragmentContestCenter;
+import com.tradehero.th.fragments.contestcenter.FragmentContestCenterModule;
 import com.tradehero.th.fragments.discovery.FragmentDiscoveryModule;
 import com.tradehero.th.fragments.discussion.FragmentDiscussionModule;
 import com.tradehero.th.fragments.education.FragmentEducationModule;
@@ -44,7 +44,7 @@ import dagger.Module;
                 FragmentPositionModule.class,
                 FragmentUpdateCenterModule.class,
                 FragmentPortfolioModule.class,
-                FragmentContestCenter.class,
+                FragmentContestCenterModule.class,
                 FragmentNewsModule.class,
                 FragmentTrendingModule.class,
                 FragmentWatchlistModule.class,

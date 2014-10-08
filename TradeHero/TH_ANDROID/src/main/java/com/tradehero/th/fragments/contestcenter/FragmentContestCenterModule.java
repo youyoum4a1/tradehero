@@ -16,6 +16,6 @@ import dagger.Module;
         library = true,
         complete = false
 )
-public class FragmentContestCenter
+public class FragmentContestCenterModule
 {
 }

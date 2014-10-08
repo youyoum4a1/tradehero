@@ -1,11 +1,15 @@
 package com.tradehero.th.fragments.contestcenter;
 
+import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
 {
+    @Inject Context doNotRemoveOrItFails;
+
     @Override public void recreateAdapter()
     {
         setContestCenterScreen(android.R.id.list);
