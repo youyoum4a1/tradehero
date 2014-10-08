@@ -18,6 +18,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.InjectRoute;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -37,6 +38,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
@@ -112,11 +114,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected THRouter thRouter;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
     @InjectView(R.id.follow_button) Button mFollowButton;
     @InjectView(R.id.message_button) Button mSendMsgButton;
+    @InjectView(R.id.follow_message_container) ViewGroup btnContainer;
 
     @InjectRoute UserBaseKey shownUserBaseKey;
 
@@ -351,6 +355,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         fetchMessageThreadHeader();
 
         displayTab();
+
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                btnContainer.setTranslationY(y);
+            }
+        });
     }
 
     @Override public void onPause()
@@ -359,6 +371,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
         }
+        dashboardTabHost.setOnTranslate(null);
         super.onPause();
     }
 
