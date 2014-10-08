@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
@@ -14,6 +13,7 @@ import com.facebook.SharedPreferencesTokenCachingStrategy;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.auth.facebook.SubscriberCallback;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.base.JSONCredentials;
@@ -357,7 +357,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 
     @Override public Observable<AuthData> createAuthDataObservable(Activity activity)
     {
-        return Observable.create(new FacebookAuthenticationSubscribe(activity, permissions))
+        return createSessionObservable(activity)
                 .flatMap(new Func1<Session, Observable<AuthData>>()
                 {
                     @Override public Observable<AuthData> call(Session session)
@@ -365,6 +365,11 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
                         return Observable.create(new MeRequestSubscribe(session));
                     }
                 });
+    }
+
+    public Observable<Session> createSessionObservable(Activity activity)
+    {
+        return Observable.create(new FacebookAuthenticationSubscribe(activity, permissions));
     }
 
     private class FacebookAuthenticationSubscribe implements Observable.OnSubscribe<Session>
@@ -381,28 +386,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         @Override public void call(final Subscriber<? super Session> subscriber)
         {
             Assertions.assertUiThread();
-            final Session.StatusCallback statusCallback = new Session.StatusCallback()
-            {
-                @Override public void call(Session session, SessionState state, Exception exception)
-                {
-                    if (state == SessionState.OPENING)
-                    {
-                        return;
-                    }
-                    if (state.isOpened())
-                    {
-                        subscriber.onNext(session);
-                    }
-                    else if (exception != null)
-                    {
-                        subscriber.onError(exception);
-                    }
-                    else
-                    {
-                        subscriber.onError(new FacebookOperationCanceledException("Action has been canceled"));
-                    }
-                }
-            };
+            final Session.StatusCallback statusCallback = new SubscriberCallback(subscriber);
 
             Session activeSession = Session.getActiveSession();
 
