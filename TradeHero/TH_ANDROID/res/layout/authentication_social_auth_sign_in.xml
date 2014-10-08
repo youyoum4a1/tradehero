@@ -38,7 +38,7 @@
       android:text="@string/email_register"
       android:textColor="@color/black"
       android:shadowColor="@color/white"
-      app:type="emailpass"
+      app:type="emailpass_signup"
       />
 
 </merge>

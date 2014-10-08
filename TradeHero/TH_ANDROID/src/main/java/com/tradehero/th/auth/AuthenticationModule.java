@@ -22,7 +22,8 @@ public class AuthenticationModule
             TwitterAuthenticationProvider twitterAuthenticationProvider,
             LinkedInAuthenticationProvider linkedInAuthenticationProvider,
             WeiboAuthenticationProvider weiboAuthenticationProvider,
-            EmailAuthenticationProvider emailAuthenticationProvider
+            EmailAuthenticationProvider emailAuthenticationProvider,
+            EmailSignUpAuthenticationProvider emailSignUpAuthenticationProvider
     )
     {
         Map<SocialNetworkEnum, AuthenticationProvider> enumToUtilMap = new HashMap<>();
@@ -31,6 +32,7 @@ public class AuthenticationModule
         enumToUtilMap.put(SocialNetworkEnum.LN, linkedInAuthenticationProvider);
         enumToUtilMap.put(SocialNetworkEnum.WB, weiboAuthenticationProvider);
         enumToUtilMap.put(SocialNetworkEnum.TH, emailAuthenticationProvider);
+        enumToUtilMap.put(SocialNetworkEnum.TH_SIGNUP, emailSignUpAuthenticationProvider);
         return Collections.unmodifiableMap(enumToUtilMap);
     }
 }

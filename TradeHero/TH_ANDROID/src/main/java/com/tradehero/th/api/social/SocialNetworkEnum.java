@@ -1,8 +1,14 @@
 package com.tradehero.th.api.social;
 
+/**
+ * List of social network or 3rd party that provide authentication, this implementation is closely linked with https://github
+ * .com/TradeHero/TH_ANDROID/blob/db4a33ee064f4e1c15a4b2b796165add706ab106/TradeHero/TH_ANDROID/res/values/attrs.xml#L110-120 by the order of login
+ * mechanism.
+ */
 public enum SocialNetworkEnum
 {
     TH("Basic", "TradeHero"),
+    TH_SIGNUP("Basic", "TradeHero"),
     FB("TH-Facebook", "Facebook", "facebook_access_token"),
     TW("TH-Twitter", "Twitter", "twitter_access_token", "twitter_access_token_secret"),
     LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret"),

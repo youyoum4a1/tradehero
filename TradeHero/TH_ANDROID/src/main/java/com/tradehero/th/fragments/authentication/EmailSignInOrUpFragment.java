@@ -10,13 +10,13 @@ import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.widget.ValidationListener;
-import com.tradehero.th.widget.ValidationMessage;
 import java.util.HashMap;
 import java.util.Map;
+import rx.Observable;
 
 abstract public class EmailSignInOrUpFragment extends Fragment
 {
@@ -67,4 +67,6 @@ abstract public class EmailSignInOrUpFragment extends Fragment
         map.put(UserFormDTO.KEY_TYPE, EmailCredentialsDTO.EMAIL_AUTH_TYPE);
         return map;
     }
+
+    public abstract Observable<AuthData> obtainAuthData();
 }

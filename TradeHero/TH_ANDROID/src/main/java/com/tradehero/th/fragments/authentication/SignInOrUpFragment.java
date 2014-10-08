@@ -133,7 +133,7 @@ public class SignInOrUpFragment extends Fragment
                 {
                     @Override public void call(SocialNetworkEnum socialNetworkEnum)
                     {
-                        if (socialNetworkEnum != SocialNetworkEnum.TH)
+                        if (socialNetworkEnum != SocialNetworkEnum.TH && socialNetworkEnum != SocialNetworkEnum.TH_SIGNUP)
                         {
                             progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
                                     getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()), true);

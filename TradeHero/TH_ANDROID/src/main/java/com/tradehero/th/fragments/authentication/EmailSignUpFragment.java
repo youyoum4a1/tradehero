@@ -10,9 +10,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.base.THUser;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DeviceUtil;
@@ -24,6 +23,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
+import rx.Observable;
 import timber.log.Timber;
 
 /**
@@ -141,6 +141,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
         Map<String, Object> map = super.getUserFormMap();
         this.profileView.populateUserFormMap(map);
         return map;
+    }
+
+    @Override public Observable<AuthData> obtainAuthData()
+    {
+        return null;
     }
 
     protected class EmailSignUpProfileViewListener implements ProfileInfoView.Listener
