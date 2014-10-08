@@ -42,9 +42,12 @@ import com.tradehero.th.widget.ValidatedPasswordText;
 import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.json.JSONException;
 import org.json.JSONObject;
 import rx.Observable;
+import rx.android.observables.ViewObservable;
+import rx.functions.Func8;
 import timber.log.Timber;
 
 public class ProfileInfoView extends LinearLayout
@@ -65,6 +68,7 @@ public class ProfileInfoView extends LinearLayout
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject @AuthHeader Lazy<String> authenticationHeader;
     @Inject Activity activity;
+    @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
 
     ProgressDialog progressDialog;
     private UserProfileDTO userProfileDTO;
@@ -128,15 +132,14 @@ public class ProfileInfoView extends LinearLayout
 
     public UserFormDTO createForm()
     {
-        UserFormDTO created = new UserFormDTO();
-        created.email = getTextValue(email);
-        created.password = getTextValue(password);
-        created.passwordConfirmation = getTextValue(confirmPassword);
-        created.displayName = getTextValue(displayName);
-        created.firstName = getTextValue(firstName);
-        created.lastName = getTextValue(lastName);
-        created.profilePicture = safeCreateProfilePhoto();
-        return created;
+        return userFormBuilderProvider.get()
+                .email(getTextValue(email))
+                .password(getTextValue(password))
+                .displayName(getTextValue(displayName))
+                .firstName(getTextValue(firstName))
+                .lastName(getTextValue(lastName))
+                .profilePicture(safeCreateProfilePhoto())
+                .build();
     }
 
     public void populateUserFormMap(Map<String, Object> map)
@@ -368,6 +371,33 @@ public class ProfileInfoView extends LinearLayout
 
     public Observable<UserFormDTO> obtainUserFormDTO()
     {
-        return null;
+        return Observable.combineLatest(
+                ViewObservable.text(email),
+                ViewObservable.text(password),
+                ViewObservable.text(confirmPassword),
+                ViewObservable.text(displayName),
+                ViewObservable.text(referralCode),
+                ViewObservable.text(firstName),
+                ViewObservable.text(lastName),
+                Observable.just(profileImage),
+                new Func8<ServerValidatedEmailText, ValidatedPasswordText, MatchingPasswordText, ServerValidatedUsernameText, EditText, EditText, EditText, ImageView, UserFormDTO>()
+                {
+                    @Override public UserFormDTO call(ServerValidatedEmailText serverValidatedEmailText, ValidatedPasswordText validatedPasswordText,
+                            MatchingPasswordText matchingPasswordText, ServerValidatedUsernameText serverValidatedUsernameText, EditText referralCode,
+                            EditText firstName, EditText lastName, ImageView profileImage)
+                    {
+                        serverValidatedEmailText.forceValidate();
+                        validatedPasswordText.forceValidate();
+                        matchingPasswordText.forceValidate();
+                        serverValidatedUsernameText.forceValidate();
+                        return userFormBuilderProvider.get()
+                                .email(serverValidatedEmailText.getText().toString())
+                                .password(validatedPasswordText.getText().toString())
+                                .displayName(serverValidatedUsernameText.getText().toString())
+                                .build();
+                    }
+                }
+
+        );
     }
 }

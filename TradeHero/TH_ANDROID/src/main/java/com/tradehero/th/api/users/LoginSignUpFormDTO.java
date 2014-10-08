@@ -17,7 +17,7 @@ public class LoginSignUpFormDTO
 {
     @JsonIgnore
     public final AuthData authData;
-    private final String email;
+    public final String email;
     //region static fields
     public final boolean useOnlyHeroCount;
     public final String deviceToken;
@@ -52,15 +52,17 @@ public class LoginSignUpFormDTO
         this.clientVersion = clientVersion;
     }
 
-    public static class Builder
+    public abstract static class Builder<T extends Builder<T>>
     {
-        private final StringPreference savedPushIdentifier;
-        private final String versionId;
-        private final boolean useOnlyHeroCount;
-        private AuthData authData;
-        private String email;
+        protected final StringPreference savedPushIdentifier;
+        protected final String versionId;
+        protected final boolean useOnlyHeroCount;
+        protected AuthData authData;
+        protected String email;
 
-        @Inject public Builder(Context context, @SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
+        protected abstract T self();
+
+        public Builder(Context context, @SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
         {
             this.versionId = VersionUtils.getVersionId(context);
             this.savedPushIdentifier = savedPushIdentifier;
@@ -68,16 +70,16 @@ public class LoginSignUpFormDTO
             this.useOnlyHeroCount = false;
         }
 
-        public Builder authData(AuthData authData)
+        public T authData(AuthData authData)
         {
             this.authData = authData;
-            return this;
+            return self();
         }
 
-        public Builder email(String email)
+        public T email(String email)
         {
             this.email = email;
-            return this;
+            return self();
         }
 
         public LoginSignUpFormDTO build()
@@ -97,6 +99,19 @@ public class LoginSignUpFormDTO
             {
                 email = authData.email;
             }
+        }
+    }
+
+    public static class Builder2 extends Builder<Builder2>
+    {
+        @Inject public Builder2(Context context, @SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
+        {
+            super(context, savedPushIdentifier);
+        }
+
+        @Override protected Builder2 self()
+        {
+            return this;
         }
     }
 }

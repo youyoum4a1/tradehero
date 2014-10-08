@@ -17,7 +17,6 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -189,21 +188,6 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
     public int getActivityCode()
     {
         return this.activityCode;
-    }
-
-    @Override public String getAuthType()
-    {
-        return FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE;
-    }
-
-    @Override public String getAuthHeader()
-    {
-        return getAuthType() + " " + getAuthHeaderParameter ();
-    }
-
-    @Override public String getAuthHeaderParameter()
-    {
-        return this.session.getAccessToken();
     }
 
     public Facebook getFacebook()

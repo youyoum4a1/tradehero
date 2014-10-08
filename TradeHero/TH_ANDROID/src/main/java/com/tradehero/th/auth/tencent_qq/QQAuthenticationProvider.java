@@ -9,7 +9,6 @@ import com.tencent.tauth.UiError;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.models.user.auth.QQCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
@@ -125,20 +124,6 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     public boolean restoreAuthentication(JSONCredentials paramJSONObject)
     {
         return false;
-    }
-
-    @Override
-    public String getAuthType()
-    {
-        return QQCredentialsDTO.QQ_AUTH_TYPE;
-    }
-
-    @Override
-    public String getAuthHeaderParameter()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append(mAccessToken.openid).append(":").append(mAccessToken.access_token);
-        return sb.toString();
     }
 
     public void authorizeCallBack(int requestCode, int resultCode, Intent data)

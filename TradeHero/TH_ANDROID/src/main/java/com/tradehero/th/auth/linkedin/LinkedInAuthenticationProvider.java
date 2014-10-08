@@ -11,7 +11,6 @@ import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.LinkedIn;
 import com.tradehero.th.auth.operator.OperatorOAuthDialog;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import javax.inject.Inject;
@@ -182,18 +181,6 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         {
         }
         return false;
-    }
-
-    @Override public String getAuthType()
-    {
-        return LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE;
-    }
-
-    @Override public String getAuthHeaderParameter()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append(linkedIn.getAuthToken()).append(":").append(linkedIn.getAuthTokenSecret());
-        return  sb.toString();
     }
 
     public JSONCredentials getAuthData(String authToken, String authTokenSecret)

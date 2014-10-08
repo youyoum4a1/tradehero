@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+// FIXME/refactor to be removed
 public class CredentialsDTOFactory
 {
     //<editor-fold desc="Constructors">
@@ -30,39 +31,23 @@ public class CredentialsDTOFactory
         CredentialsDTO created;
         String type = object.getString(UserFormDTO.KEY_TYPE);
         SocialNetworkEnum networkType = SocialNetworkEnum.fromAuthHeader(type);
+
         switch(networkType)
         {
             case TH:
-                if (object.has(UserFormDTO.KEY_DISPLAY_NAME))
-                {
-                    created = new SignUpEmailCredentialsDTO(object);
-                }
-                else
-                {
-                    created = new EmailCredentialsDTO(object);
-                }
-                break;
-
             case FB:
-                created = new FacebookCredentialsDTO(object);
-                break;
-
             case LN:
-                created = new LinkedinCredentialsDTO(object);
-                break;
-
             case TW:
-                created = new TwitterCredentialsDTO(object);
-                break;
-
-            // TODO WeChat
-
             case QQ:
-                created = new QQCredentialsDTO(object);
-                break;
-
             case WB:
-                created = new WeiboCredentialsDTO(object);
+                //if (object.has(UserFormDTO.KEY_DISPLAY_NAME))
+                //{
+                //    created = new SignUpEmailCredentialsDTO(object);
+                //}
+                //else
+                //{
+                    created = new EmailCredentialsDTO(object);
+                //}
                 break;
 
             default:

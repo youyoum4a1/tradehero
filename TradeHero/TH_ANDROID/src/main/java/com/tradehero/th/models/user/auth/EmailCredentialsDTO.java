@@ -1,7 +1,6 @@
 package com.tradehero.th.models.user.auth;
 
 import android.util.Base64;
-import com.tradehero.th.api.form.EmailUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import org.jetbrains.annotations.NotNull;
@@ -51,10 +50,9 @@ public class EmailCredentialsDTO extends BaseCredentialsDTO
 
     @Override @NotNull public UserFormDTO createUserFormDTO()
     {
-        UserFormDTO userFormDTO = new EmailUserFormDTO();
-        userFormDTO.email = email;
-        userFormDTO.password = password;
-        userFormDTO.passwordConfirmation = password;
-        return userFormDTO;
+        return new UserFormDTO.Builder2(null, null)
+                .email(email)
+                .password(password)
+                .build();
     }
 }

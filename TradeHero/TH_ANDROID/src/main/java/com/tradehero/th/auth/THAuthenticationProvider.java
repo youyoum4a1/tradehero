@@ -19,12 +19,6 @@ public interface THAuthenticationProvider
 
     public void cancel();
 
-    public String getAuthType();
-
-    String getAuthHeader();
-
-    String getAuthHeaderParameter ();
-
     public static interface THAuthenticationCallback
     {
         public void onStart();

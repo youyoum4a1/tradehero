@@ -3,7 +3,6 @@ package com.tradehero.th.auth;
 import android.app.Activity;
 import com.tradehero.th.auth.operator.Twitter;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -29,16 +28,6 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
     {
         twitter.setAuthToken(null);
         twitter.setAuthTokenSecret(null);
-    }
-
-    @Override public String getAuthType()
-    {
-        return TwitterCredentialsDTO.TWITTER_AUTH_TYPE;
-    }
-
-    @Override public String getAuthHeaderParameter()
-    {
-        return twitter.getAuthToken() + ":" + twitter.getAuthTokenSecret();
     }
 
     @Override public boolean restoreAuthentication(JSONCredentials authData)

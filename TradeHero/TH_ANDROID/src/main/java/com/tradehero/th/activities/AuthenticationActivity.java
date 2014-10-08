@@ -10,6 +10,8 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.TwitterAuthenticationProvider;
 import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
+import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
+import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
@@ -18,8 +20,6 @@ import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.QQUtils;
-import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -40,8 +40,8 @@ public class AuthenticationActivity extends BaseActivity
 {
     private ProgressDialog progressDialog;
 
-    @Inject Lazy<WeiboUtils> weiboUtils;
-    @Inject Lazy<QQUtils> qqUtils;
+    @Inject Lazy<WeiboAuthenticationProvider> weiboAuthenticationProviderLazy;
+    @Inject Lazy<QQAuthenticationProvider> qqUtils;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     private DashboardNavigator navigator;
@@ -95,27 +95,10 @@ public class AuthenticationActivity extends BaseActivity
         super.onActivityResult(requestCode, resultCode, data);
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
         facebookAuthenticationProvider.onActivityResult(requestCode, resultCode, data);
-        weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
+        weiboAuthenticationProviderLazy.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
     //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">
-
-    /**
-     * Chinese
-     */
-    public void authenticateWithWeibo()
-    {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.WeiBo));
-        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_weibo);
-        weiboUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.WeiBo));
-    }
-
-    public void authenticateWithQQ()
-    {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.QQ));
-        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_qq);
-        qqUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.QQ));
-    }
 
     public void authenticateWithLinkedIn()
     {

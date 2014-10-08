@@ -57,6 +57,7 @@ import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,6 +70,7 @@ import rx.functions.Action1;
     @NotNull private final UserService userService;
     @NotNull private final UserServiceAsync userServiceAsync;
     @NotNull private final UserServiceRx userServiceRx;
+    @NotNull private final Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final DTOCacheUtil dtoCacheUtil;
     @NotNull private final Lazy<UserProfileCache> userProfileCache;
@@ -94,7 +96,9 @@ import rx.functions.Action1;
             @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache,
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull Lazy<ProviderCache> providerCache,
-            @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache)
+            @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache,
+            @NotNull Provider<UserFormDTO.Builder2> userFormBuilderProvider
+    )
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
@@ -109,6 +113,7 @@ import rx.functions.Action1;
         this.providerCache = providerCache;
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
         this.userServiceRx = userServiceRx;
+        this.userFormBuilderProvider = userFormBuilderProvider;
     }
     //</editor-fold>
 
@@ -392,8 +397,9 @@ import rx.functions.Action1;
             @NotNull UserBaseKey userBaseKey,
             @NotNull Boolean emailNotificationsEnabled)
     {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
+        UserFormDTO userFormDTO = userFormBuilderProvider.get()
+                .emailNotificationsEnabled(emailNotificationsEnabled)
+                .build();
         return this.updateProfile(userBaseKey, userFormDTO);
     }
 
@@ -402,8 +408,9 @@ import rx.functions.Action1;
             @NotNull Boolean emailNotificationsEnabled,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
+        UserFormDTO userFormDTO = userFormBuilderProvider.get()
+                .emailNotificationsEnabled(emailNotificationsEnabled)
+                .build();
         return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
 
@@ -411,8 +418,9 @@ import rx.functions.Action1;
             @NotNull UserBaseKey userBaseKey,
             @NotNull Boolean pushNotificationsEnabled)
     {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
+        UserFormDTO userFormDTO = userFormBuilderProvider.get()
+                .pushNotificationsEnabled(pushNotificationsEnabled)
+                .build();
         return this.updateProfile(userBaseKey, userFormDTO);
     }
 
@@ -421,8 +429,9 @@ import rx.functions.Action1;
             @NotNull Boolean pushNotificationsEnabled,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
+        UserFormDTO userFormDTO = userFormBuilderProvider.get()
+                .pushNotificationsEnabled(pushNotificationsEnabled)
+                .build();
         return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
     //</editor-fold>

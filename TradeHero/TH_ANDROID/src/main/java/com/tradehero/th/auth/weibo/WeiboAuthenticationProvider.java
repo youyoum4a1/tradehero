@@ -16,7 +16,6 @@ import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -76,21 +75,6 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
             deauthenticate();
         }
         return valid;
-    }
-
-    @Override
-    public String getAuthType() {
-        return WeiboCredentialsDTO.WEIBO_AUTH_TYPE;
-    }
-
-    @Override public String getAuthHeader()
-    {
-        return getAuthType() + " " + getAuthHeaderParameter();
-    }
-
-    @Override public String getAuthHeaderParameter()
-    {
-        return this.mAccessToken.getToken();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////

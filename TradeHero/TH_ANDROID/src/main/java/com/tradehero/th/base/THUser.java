@@ -3,45 +3,24 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.DialogInterface;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.form.FacebookUserFormDTO;
-import com.tradehero.th.api.form.LinkedinUserFormDTO;
-import com.tradehero.th.api.form.TwitterUserFormDTO;
-import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.users.UserLoginDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.THAuthenticationProvider;
 import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
-import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
-import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.th.models.user.auth.QQCredentialsDTO;
-import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
-import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import org.json.JSONException;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 public class THUser
@@ -63,174 +42,18 @@ public class THUser
 
     public static void logInWithAsync(String authType, LogInCallback callback)
     {
-        if (!authenticationProviders.containsKey(authType))
-        {
-            throw new IllegalArgumentException("No authentication provider could be found for the provided authType");
-        }
-        authenticator = authenticationProviders.get(authType);
-        logInWithAsync(authenticationProviders.get(authType), callback);
+        //FIXME/refactor to be replaced
     }
 
     public static void logInAsyncWithJson(final CredentialsDTO credentialsDTO, final LogInCallback callback)
     {
-        final UserFormDTO userFormDTO = credentialsDTO.createUserFormDTO();
-
-        if (userFormDTO == null)
-        {
-            // input error, unable to parse as json data
-            THToast.show(R.string.authentication_error_creating_signup_form);
-            return;
-        }
-
-        if (userFormDTO.deviceToken == null)
-        {
-            userFormDTO.deviceToken = savedPushIdentifier.get().get();
-        }
-
-        if (authenticationMode == null)
-        {
-            authenticationMode = AuthenticationMode.SignIn;
-        }
-
-        if (authenticationMode == AuthenticationMode.SignIn &&
-                (userFormDTO instanceof FacebookUserFormDTO ||
-                        userFormDTO instanceof LinkedinUserFormDTO ||
-                        userFormDTO instanceof TwitterUserFormDTO))
-        {
-            mainCredentialsPreference.setCredentials(credentialsDTO);
-            sessionServiceWrapper.get().updateAuthorizationTokens(userFormDTO, new Callback<BaseResponseDTO>()
-            {
-                @Override
-                public void success(BaseResponseDTO response, Response response2)
-                {
-                    authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
-                }
-
-                @Override
-                public void failure(RetrofitError error)
-                {
-                    THToast.show(new THException(error));
-                }
-            });
-        }
-        else
-        {
-            authenticateWithNewCredential(credentialsDTO, callback, userFormDTO);
-        }
+        //FIXME/refactor to be replaced with the new one
     }
 
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
     {
-        authenticationProviders.put(provider.getAuthType(), provider);
-    }
-
-    private static void logInWithAsync(final THAuthenticationProvider authenticator, final LogInCallback callback)
-    {
-        CredentialsDTO savedCredentials = typedCredentials.get(authenticator.getAuthType());
-        if (savedCredentials != null)
-        {
-            callback.onStart();
-            JSONCredentials jsonCredentials = null;
-            try
-            {
-                jsonCredentials = savedCredentials.createJSON();
-                if (authenticator.restoreAuthentication(jsonCredentials))
-                {
-                    if (callback.onSocialAuthDone(jsonCredentials))
-                    {
-                        logInAsyncWithJson(savedCredentials, callback);
-                    }
-                    return;
-                }
-            }
-            catch (JSONException e)
-            {
-                Timber.e(e, "Failed to convert credentials %s", savedCredentials);
-            }
-        }
-        THAuthenticationProvider.THAuthenticationCallback outerCallback = createCallbackForLogInWithAsync (callback);
-        authenticator.authenticate(outerCallback);
-    }
-
-    private static void authenticateWithNewCredential(CredentialsDTO credentialsDTO, LogInCallback callback, UserFormDTO userFormDTO)
-    {
-        switch (authenticationMode)
-        {
-            case SignUpWithEmail:
-                Timber.d("SignUpWithEmail Auth Header " + authenticator.getAuthHeader());
-                userServiceWrapper.get().signUpWithEmail(
-                        authenticator.getAuthHeader(),
-                        userFormDTO,
-                        createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
-                break;
-            case SignUp:
-                Timber.d("SignUp Auth Header "+authenticator.getAuthHeader());
-                userServiceWrapper.get().signUp(
-                        authenticator.getAuthHeader(),
-                        userFormDTO,
-                        createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
-                break;
-            case SignIn:
-                throw new RuntimeException("Refactoring ...");
-        }
-    }
-
-    private static THAuthenticationProvider.THAuthenticationCallback createCallbackForLogInWithAsync (final LogInCallback callback)
-    {
-        return new THAuthenticationProvider.THAuthenticationCallback()
-        {
-            @Override public void onStart()
-            {
-                callback.onStart();
-            }
-
-            @Override public void onSuccess(JSONCredentials json)
-            {
-                try
-                {
-                    json.put(UserFormDTO.KEY_TYPE, authenticator.getAuthType());
-                    if (callback.onSocialAuthDone(json))
-                    {
-                        logInAsyncWithJson(credentialsDTOFactory.create(json), callback);
-                    }
-                }
-                catch (JSONException|ParseException ex)
-                {
-                    Timber.e(ex, "Failed to onsuccess");
-                }
-            }
-
-            @Override public void onCancel()
-            {
-                callback.done(null, ExceptionCode.UserCanceled.toException());
-            }
-
-            @Override public void onError(Throwable throwable)
-            {
-                callback.done(null, new THException(throwable));
-            }
-        };
-    }
-
-    private static THCallback<UserProfileDTO> createCallbackForSignUpAsyncWithJson(final CredentialsDTO credentialsDTO, final LogInCallback callback)
-    {
-        return new THCallback<UserProfileDTO>()
-        {
-            @Override public void success(UserProfileDTO userProfileDTO, THResponse response)
-            {
-                saveCredentialsToUserDefaults(credentialsDTO);
-
-                UserLoginDTO userLoginDTO = new UserLoginDTO();
-                userLoginDTO.profileDTO = userProfileDTO;
-                callback.done(userLoginDTO, null);
-            }
-
-            @Override public void failure(THException error)
-            {
-                checkNeedForUpgrade(error);
-                callback.done(null, error);
-            }
-        };
+        // FIXME/refactor to be removed
+        //authenticationProviders.put(provider.getAuthType(), provider);
     }
 
     private static void checkNeedForUpgrade(THException error)
@@ -268,35 +91,6 @@ public class THUser
 
             // FIXME since currentActivityHolder has been removed, refactor THUser
             final Activity currentActivity = null; // activityProvider.get();
-
-            if (currentActivity instanceof AuthenticationActivity)
-            {
-                if (credentialsDTO instanceof FacebookCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithFacebook();
-                    return;
-                }
-                if (credentialsDTO instanceof LinkedinCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithLinkedIn();
-                    return;
-                }
-                if (credentialsDTO instanceof QQCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithQQ();
-                    return;
-                }
-                if (credentialsDTO instanceof TwitterCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithTwitter();
-                    return;
-                }
-                if (credentialsDTO instanceof WeiboCredentialsDTO)
-                {
-                    ((AuthenticationActivity) currentActivity).authenticateWithWeibo();
-                    return;
-                }
-            }
 
             alertDialogUtil.get().popWithOkCancelButton(currentActivity,
                     R.string.please_update_token_title,

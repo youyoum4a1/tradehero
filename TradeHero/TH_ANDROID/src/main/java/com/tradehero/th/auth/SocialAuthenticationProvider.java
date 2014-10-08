@@ -51,11 +51,6 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
         }
     }
 
-    @Override public String getAuthHeader()
-    {
-        return getAuthType() + " " + getAuthHeaderParameter();
-    }
-
     @Override
     public final Observable<AuthData> logIn(Activity activity)
     {
