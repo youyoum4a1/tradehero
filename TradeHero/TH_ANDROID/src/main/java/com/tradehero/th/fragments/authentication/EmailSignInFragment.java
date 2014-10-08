@@ -38,13 +38,11 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.subjects.PublishSubject;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
-    private final PublishSubject<ValidationMessage> emailValidationSubject = PublishSubject.create();
-    private final PublishSubject<ValidationMessage> passwordValidationSubject = PublishSubject.create();
+    private PublishSubject<AuthData> authDataSubject = PublishSubject.create();
 
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
@@ -136,6 +134,10 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             email.setText(getString(R.string.test_email));
             password.setText(getString(R.string.test_password));
         }
+
+        final PublishSubject<ValidationMessage> emailValidationSubject = PublishSubject.create();
+        final PublishSubject<ValidationMessage> passwordValidationSubject = PublishSubject.create();
+
         email.setValidationListener(new ValidationListener()
         {
             @Override public void notifyValidation(ValidationMessage status)
@@ -162,6 +164,16 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                     }
                 })
                 .asObservable();
+
+        ViewObservable.clicks(loginButton, false)
+                .map(new Func1<View, AuthData>()
+                {
+                    @Override public AuthData call(View view)
+                    {
+                        return new AuthData(email.getText().toString(), password.getText().toString());
+                    }
+                })
+                .subscribe(authDataSubject);
     }
 
     @Override public void onDestroyView()
@@ -169,6 +181,12 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         detachMiddleCallbackForgotPassword();
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        authDataSubject.onCompleted();
+        super.onDestroy();
     }
 
     protected void detachMiddleCallbackForgotPassword()
@@ -231,12 +249,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     public Observable<AuthData> obtainAuthData()
     {
-        return Observable.combineLatest(ViewObservable.clicks(loginButton, false), validationObservable, new Func2<View, ValidationMessage, AuthData>()
-        {
-            @Override public AuthData call(View view, ValidationMessage validationMessage)
-            {
-                return new AuthData(email.getText().toString(), password.getText().toString());
-            }
-        });
+        return authDataSubject.asObservable();
     }
 }
