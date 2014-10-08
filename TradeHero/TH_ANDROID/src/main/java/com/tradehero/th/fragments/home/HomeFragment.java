@@ -38,14 +38,11 @@ import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
@@ -68,15 +65,11 @@ public final class HomeFragment extends BaseWebViewFragment
     @InjectView(android.R.id.progress) View progressBar;
     @InjectView(R.id.main_content_wrapper) BetterViewAnimator mainContentWrapper;
 
-    @Inject MainCredentialsPreference mainCredentialsPreference;
-
-    @Inject AlertDialogUtil alertDialogUtil;
     @Inject Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Provider<Activity> activityProvider;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
-    @Inject SocialService socialService;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject CurrentUserId currentUserId;
@@ -244,7 +237,9 @@ public final class HomeFragment extends BaseWebViewFragment
                         {
                             @Override public Observable<UserProfileDTO> call(AuthData authData)
                             {
-                                return socialService.connectRx(currentUserId.get(), new AccessTokenForm(authData));
+                                return socialServiceWrapperLazy.get().connectRx(
+                                        currentUserId.toUserBaseKey(),
+                                        new AccessTokenForm(authData));
                             }
                         });
             }
@@ -268,56 +263,61 @@ public final class HomeFragment extends BaseWebViewFragment
 
     private void sendRequestDialogFacebook()
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(((UserFriendsFacebookDTO) userFriendsDTO).fbId);
-
-        Bundle params = new Bundle();
         UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
-            String messageToFacebookFriends = getActivity().getString(
-                    R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
-            //if (messageToFacebookFriends.length() > 60)
-            //{
-            //    messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-            //}
+            sendRequestDialogFacebook(userProfileDTO);
+        }
+    }
 
-            params.putString("message", messageToFacebookFriends);
-            params.putString("to", stringBuilder.toString());
+    private void sendRequestDialogFacebook(@NotNull UserProfileDTO userProfileDTO)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(((UserFriendsFacebookDTO) userFriendsDTO).fbId);
 
-            WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                    activityProvider.get(), Session.getActiveSession(),
-                    params))
-                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
+        String messageToFacebookFriends = getActivity().getString(
+                R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
+        //if (messageToFacebookFriends.length() > 60)
+        //{
+        //    messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+        //}
+
+        Bundle params = new Bundle();
+        params.putString("message", messageToFacebookFriends);
+        params.putString("to", stringBuilder.toString());
+
+        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
+                activityProvider.get(), Session.getActiveSession(),
+                params))
+                .setOnCompleteListener(new WebDialog.OnCompleteListener()
+                {
+                    @Override
+                    public void onComplete(Bundle values, FacebookException error)
                     {
-                        @Override
-                        public void onComplete(Bundle values, FacebookException error)
+                        if (error != null)
                         {
-                            if (error != null)
+                            if (error instanceof FacebookOperationCanceledException)
                             {
-                                if (error instanceof FacebookOperationCanceledException)
-                                {
-                                    THToast.show(R.string.invite_friend_request_canceled);
-                                }
+                                THToast.show(R.string.invite_friend_request_canceled);
+                            }
+                        }
+                        else
+                        {
+                            final String requestId = values.getString("request");
+                            if (requestId != null)
+                            {
+                                THToast.show(R.string.invite_friend_request_sent);
+                                invite(userFriendsDTO);
                             }
                             else
                             {
-                                final String requestId = values.getString("request");
-                                if (requestId != null)
-                                {
-                                    THToast.show(R.string.invite_friend_request_sent);
-                                    invite(userFriendsDTO);
-                                }
-                                else
-                                {
-                                    THToast.show(R.string.invite_friend_request_canceled);
-                                }
+                                THToast.show(R.string.invite_friend_request_canceled);
                             }
                         }
-                    })
-                    .build();
-            requestsDialog.show();
-        }
+                    }
+                })
+                .build();
+        requestsDialog.show();
     }
 
     private void detachMiddleCallbackInvite()
