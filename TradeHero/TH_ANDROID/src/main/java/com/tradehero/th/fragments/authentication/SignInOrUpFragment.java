@@ -152,6 +152,7 @@ public class SignInOrUpFragment extends Fragment
                         return authenticationProvider.logIn(getActivity());
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<AuthData>()
                 {
                     @Override public void call(AuthData authData)
