@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
+import rx.Observable;
 import rx.functions.Func1;
 
 @Singleton public class SocialServiceWrapper
@@ -39,17 +40,17 @@ import rx.functions.Func1;
     }
 
     //<editor-fold desc="Connect">
-    public UserProfileDTO connect(UserBaseKey userBaseKey, UserFormDTO userFormDTO)
+    public UserProfileDTO connect(@NotNull UserBaseKey userBaseKey, UserFormDTO userFormDTO)
     {
         return createConnectDTOProcessor().process(socialService.connect(userBaseKey.key, userFormDTO));
     }
 
-    public UserProfileDTO connect(UserBaseKey userBaseKey, AccessTokenForm userFormDTO)
+    public UserProfileDTO connect(@NotNull UserBaseKey userBaseKey, AccessTokenForm userFormDTO)
     {
         return createConnectDTOProcessor().process(socialService.connect(userBaseKey.key, userFormDTO));
     }
 
-    public Func1<AuthData, UserProfileDTO> connectFunc1(final UserBaseKey userBaseKey)
+    public Func1<AuthData, UserProfileDTO> connectFunc1(@NotNull final UserBaseKey userBaseKey)
     {
         return new Func1<AuthData, UserProfileDTO>()
         {
@@ -60,7 +61,19 @@ import rx.functions.Func1;
         };
     }
 
-    public MiddleCallback<UserProfileDTO> connect(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
+    public Observable<UserProfileDTO> connectRx(@NotNull UserBaseKey userBaseKey, AccessTokenForm userFormDTO)
+    {
+        return socialService.connectRx(userBaseKey.key, userFormDTO)
+                .map(new Func1<UserProfileDTO, UserProfileDTO>()
+                {
+                    @Override public UserProfileDTO call(UserProfileDTO userProfileDTO)
+                    {
+                        return createConnectDTOProcessor().process(userProfileDTO);
+                    }
+                });
+    }
+
+    public MiddleCallback<UserProfileDTO> connect(@NotNull UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createConnectDTOProcessor());
         socialServiceAsync.connect(userBaseKey.key, userFormDTO, middleCallback);
@@ -69,12 +82,12 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Disconnect">
-    public UserProfileDTO disconnect(UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
+    public UserProfileDTO disconnect(@NotNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
     {
         return createConnectDTOProcessor().process(socialService.disconnect(userBaseKey.key, socialNetworkFormDTO));
     }
 
-    public MiddleCallback<UserProfileDTO> disconnect(UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO, Callback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> disconnect(@NotNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO, Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createConnectDTOProcessor());
         socialServiceAsync.disconnect(userBaseKey.key, socialNetworkFormDTO, middleCallback);
