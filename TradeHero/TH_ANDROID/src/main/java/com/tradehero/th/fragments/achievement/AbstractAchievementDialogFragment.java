@@ -262,9 +262,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void displayBadge()
     {
-        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        final UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
         if (userAchievementDTOCopy != null
-        && !StringUtils.isNullOrEmpty(userAchievementDTOCopy.achievementDef.visual))
+                && !StringUtils.isNullOrEmpty(userAchievementDTOCopy.achievementDef.visual))
         {
             if (mBadgeCallback == null)
             {
@@ -277,7 +277,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
                     @Override public void onError()
                     {
-
+                        Timber.e("Unable to load image for %s : %s", userAchievementDTOCopy.achievementDef.thName,
+                                userAchievementDTOCopy.achievementDef.visual);
                     }
                 };
             }
@@ -306,6 +307,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private void showShareSuccess()
     {
         shareFlipper.setDisplayedChild(SHARE_PANEL_SHARED_INDEX);
+        shareFlipper.setEnabled(false);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -323,28 +325,35 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             List<SocialNetworkEnum> shareTos = getEnabledSharePreferences();
             if (shareTos.contains(SocialNetworkEnum.WECHAT))
             {
+                shareTos.remove(SocialNetworkEnum.WECHAT);
                 WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), userAchievementDTOCopy);
                 socialSharerLazy.get().setSharedListener(createSocialSharedListener());
                 socialSharerLazy.get().share(weChatDTO);
             }
-            detachMiddleCallbackShareAchievement();
-            middleCallbackShareAchievement = achievementServiceWrapper.shareAchievement(
-                    achievementShareFormDTOFactory.createFrom(
-                            getEnabledSharePreferences(),
-                            userAchievementDTO),
-                    createShareAchievementCallback());
-            showSharing();
+            if (!shareTos.isEmpty())
+            {
+                //If only there are other social network to share to other than WeChat.
+                detachMiddleCallbackShareAchievement();
+                middleCallbackShareAchievement = achievementServiceWrapper.shareAchievement(
+                        achievementShareFormDTOFactory.createFrom(
+                                getEnabledSharePreferences(),
+                                userAchievementDTO),
+                        createShareAchievementCallback());
+                showSharing();
+            }
         }
     }
 
     private void showSharing()
     {
         shareFlipper.setDisplayedChild(SHARE_PANEL_SHARING_INDEX);
+        shareFlipper.setEnabled(false);
     }
 
     private void showShareFailed()
     {
         shareFlipper.setDisplayedChild(SHARE_PANEL_FAILED_INDEX);
+        shareFlipper.setEnabled(true);
     }
 
     private void playRotatingAnimation()
@@ -404,7 +413,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void setDrawingCacheEnabled(View... views)
     {
-        for(View v : views)
+        for (View v : views)
         {
             v.setDrawingCacheEnabled(true);
         }

@@ -78,12 +78,10 @@
         android:layout_gravity="center"
         />
 
-    <TextView
+    <ProgressBar
         android:id="@+id/achievement_sharing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/achievement_share_failed"
-        android:textSize="@dimen/text_xlarge"
         android:gravity="center"
         android:layout_gravity="center"
         />
