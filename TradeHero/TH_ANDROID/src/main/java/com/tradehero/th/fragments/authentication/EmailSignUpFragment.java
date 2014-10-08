@@ -3,7 +3,9 @@ package com.tradehero.th.fragments.authentication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -68,7 +70,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
     }
 
-    @Override public int getDefaultViewId()
+    public int getDefaultViewId()
     {
         return R.layout.authentication_email_sign_up;
     }
@@ -146,6 +148,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
     @Override public Observable<AuthData> obtainAuthData()
     {
         return null;
+    }
+
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        return inflater.inflate(getDefaultViewId(), container, false);
     }
 
     protected class EmailSignUpProfileViewListener implements ProfileInfoView.Listener

@@ -4,14 +4,16 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthData;
@@ -31,19 +33,20 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
-import com.tradehero.th.widget.ValidationListener;
-import com.tradehero.th.widget.ValidationMessage;
-import java.util.Map;
+import com.tradehero.th.widget.ValidatedText;
 import java.util.concurrent.CancellationException;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.observers.EmptyObserver;
 import rx.subjects.PublishSubject;
 
-public class EmailSignInFragment extends EmailSignInOrUpFragment
+public class EmailSignInFragment extends Fragment
 {
-    private PublishSubject<AuthData> authDataSubject = PublishSubject.create();
+    private PublishSubject<AuthData> authDataSubject;
 
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
@@ -56,13 +59,15 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @InjectView(R.id.authentication_sign_in_email) SelfValidatedText email;
     @InjectView(R.id.et_pwd_login) ValidatedPasswordText password;
     @InjectView(R.id.btn_login) View loginButton;
-    private Observable<ValidationMessage> validationObservable;
+    Subscription validationSubscription;
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
         navigator.popFragment();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_sign_in_forgot_password) void showForgotPasswordUI()
     {
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -115,62 +120,58 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         HierarchyInjector.inject(this);
         analytics.tagScreen(AnalyticsConstants.Login_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+        authDataSubject = PublishSubject.create();
+    }
+
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.authentication_email_sign_in, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
+        initSetup(view);
         DeviceUtil.showKeyboardDelayed(email);
     }
 
-    @Override public int getDefaultViewId()
-    {
-        return R.layout.authentication_email_sign_in;
-    }
-
-    @Override protected void initSetup(View view)
+    protected void initSetup(View view)
     {
         if (!Constants.RELEASE)
         {
             email.setText(getString(R.string.test_email));
             password.setText(getString(R.string.test_password));
+            loginButton.setEnabled(true);
         }
 
-        final PublishSubject<ValidationMessage> emailValidationSubject = PublishSubject.create();
-        final PublishSubject<ValidationMessage> passwordValidationSubject = PublishSubject.create();
-
-        email.setValidationListener(new ValidationListener()
-        {
-            @Override public void notifyValidation(ValidationMessage status)
-            {
-                emailValidationSubject.onNext(status);
-            }
-        });
-
-        password.setValidationListener(new ValidationListener()
-        {
-            @Override public void notifyValidation(ValidationMessage status)
-            {
-                passwordValidationSubject.onNext(status);
-            }
-        });
-
-        validationObservable = Observable.merge(emailValidationSubject, passwordValidationSubject)
-                .last()
-                .first(new Func1<ValidationMessage, Boolean>()
+        validationSubscription = Observable.combineLatest(
+                ViewObservable.text(email),
+                ViewObservable.text(password),
+                new Func2<ValidatedText, ValidatedText, Pair<Boolean, Boolean>>()
                 {
-                    @Override public Boolean call(ValidationMessage validationMessage)
+                    @Override public Pair<Boolean, Boolean> call(ValidatedText email, ValidatedText password)
                     {
-                        return validationMessage.getStatus();
+                        email.forceValidate();
+                        password.forceValidate();
+                        return Pair.create(email.isValid(), password.isValid());
                     }
                 })
-                .asObservable();
+                .subscribe(new EmptyObserver<Pair<Boolean, Boolean>>()
+                {
+                    @Override public void onNext(Pair<Boolean, Boolean> args)
+                    {
+                        loginButton.setEnabled(args.first && args.second);
+                        super.onNext(args);
+                    }
+                });
 
         ViewObservable.clicks(loginButton, false)
                 .map(new Func1<View, AuthData>()
                 {
                     @Override public AuthData call(View view)
                     {
+                        DeviceUtil.dismissKeyboard(view);
                         return new AuthData(email.getText().toString(), password.getText().toString());
                     }
                 })
@@ -179,6 +180,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Override public void onDestroyView()
     {
+        validationSubscription.unsubscribe();
+        validationSubscription = null;
         detachMiddleCallbackForgotPassword();
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -187,6 +190,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @Override public void onDestroy()
     {
         authDataSubject.onError(new CancellationException(getString(R.string.error_canceled)));
+        authDataSubject = null;
         super.onDestroy();
     }
 
@@ -197,19 +201,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             middleCallbackForgotPassword.setPrimaryCallback(null);
         }
         middleCallbackForgotPassword = null;
-    }
-
-    @Override public boolean areFieldsValid()
-    {
-        return email.isValid() && password.isValid();
-    }
-
-    @Override protected Map<String, Object> getUserFormMap()
-    {
-        Map<String, Object> map = super.getUserFormMap();
-        map.put(UserFormDTO.KEY_EMAIL, email.getText().toString());
-        map.put(UserFormDTO.KEY_PASSWORD, password.getText().toString());
-        return map;
     }
 
     private void doForgotPassword(String email)

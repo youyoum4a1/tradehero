@@ -2,9 +2,7 @@ package com.tradehero.th.fragments.authentication;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
@@ -20,16 +18,9 @@ import rx.Observable;
 
 abstract public class EmailSignInOrUpFragment extends Fragment
 {
-    abstract public int getDefaultViewId();
-
     abstract protected void initSetup(View view);
 
     abstract public boolean areFieldsValid();
-
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        return inflater.inflate(getDefaultViewId(), container, false);
-    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {

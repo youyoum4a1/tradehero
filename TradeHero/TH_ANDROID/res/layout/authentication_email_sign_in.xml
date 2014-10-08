@@ -72,7 +72,9 @@
       android:text="@string/authentication_login"
       android:textColor="@color/white"
       android:textSize="@dimen/common_text_size_30"
-      android:textStyle="bold"/>
+      android:textStyle="bold"
+      android:enabled="false"
+      />
 
   <TextView
       android:id="@+id/authentication_sign_in_forgot_password"
