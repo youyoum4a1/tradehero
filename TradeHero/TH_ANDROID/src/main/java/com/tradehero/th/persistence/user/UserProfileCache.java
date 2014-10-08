@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.user;
 
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -13,8 +14,10 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import rx.Observable;
 
 @Singleton public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
+    implements DTOCache<UserBaseKey, UserProfileDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -95,5 +98,15 @@ import org.jetbrains.annotations.NotNull;
             userProfileDTO.achievementCount += count;
             put(userBaseKey, userProfileDTO);
         }
+    }
+
+    @NotNull @Override public Observable<UserProfileDTO> createObservable(@NotNull UserBaseKey key)
+    {
+        UserProfileDTO cached = get(key);
+        if (cached != null)
+        {
+            return Observable.just(cached);
+        }
+        return userServiceWrapper.get().getUserRx(key);
     }
 }

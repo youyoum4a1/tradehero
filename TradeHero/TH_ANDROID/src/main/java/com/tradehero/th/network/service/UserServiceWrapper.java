@@ -549,6 +549,11 @@ import rx.functions.Action1;
         return userService.getUser(userKey.key);
     }
 
+    public Observable<UserProfileDTO> getUserRx(@NotNull UserBaseKey userKey)
+    {
+        return userService.getUserRx(userKey.key);
+    }
+
     @NotNull public MiddleCallback<UserProfileDTO> getUser(
             @NotNull UserBaseKey userKey,
             @Nullable Callback<UserProfileDTO> callback)

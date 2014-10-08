@@ -37,6 +37,7 @@ import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.mime.TypedOutput;
+import rx.Observable;
 
 public interface UserService
 {
@@ -142,6 +143,9 @@ public interface UserService
 
     //<editor-fold desc="Get User">
     @GET("/users/{userId}") UserProfileDTO getUser(
+            @Path("userId") int userId);
+
+    @GET("/users/{userId}") Observable<UserProfileDTO> getUserRx(
             @Path("userId") int userId);
     //</editor-fold>
 
