@@ -21,6 +21,8 @@
         />
     <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
         android:id="@+id/listNotification"
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        ptr:ptrHeaderTextColor="@color/black"
         android:scrollingCache="false"
         android:fadingEdge="none"
         android:dividerHeight="1px"

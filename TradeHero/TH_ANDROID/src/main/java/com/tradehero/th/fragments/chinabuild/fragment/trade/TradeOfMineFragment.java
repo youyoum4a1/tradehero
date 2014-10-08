@@ -98,6 +98,7 @@ public class TradeOfMineFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        adapter = new MyTradePositionListAdapter(getActivity());
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         userWatchlistPositionFetchListener = createWatchlistListener();
         userWatchlistPositionRefreshListener = createRefreshWatchlistListener();
@@ -123,7 +124,7 @@ public class TradeOfMineFragment extends DashboardFragment
 
     public void initView()
     {
-        adapter = new MyTradePositionListAdapter(getActivity());
+
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
 

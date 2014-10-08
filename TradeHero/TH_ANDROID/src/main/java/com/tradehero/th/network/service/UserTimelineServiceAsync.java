@@ -48,7 +48,8 @@ interface UserTimelineServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline"> /users/552948/timeline?maxCount=10&type=original&includeComment=true
-    @GET("/users/{userId}/timeline?type=original&includeComment=true&includeTrade=true")
+    //@GET("/users/{userId}/timeline?type=original&includeComment=true&includeTrade=true")
+    @GET("/users/{userId}/timeline?type=original&includeComment=true")
     void getTimelineSquare(
             @Path("userId") int userId,
             @Query("maxCount") Integer maxCount,

@@ -73,6 +73,7 @@ public class TimelineDTO
 
     public List<TradeDTO> getTrades()
     {
+        if(trades == null)return null;
         return Collections.unmodifiableList(trades);
     }
 

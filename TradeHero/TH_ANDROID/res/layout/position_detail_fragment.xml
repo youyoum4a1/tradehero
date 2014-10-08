@@ -134,6 +134,8 @@
     </LinearLayout>
 
     <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        ptr:ptrHeaderTextColor="@color/black"
         android:id="@+id/listTrade"
         android:scrollingCache="false"
         android:fadingEdge="none"

@@ -88,8 +88,10 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         securities.addAll(timelineDTO.getSecurities());
         enhancedItems.addAll(timelineDTO.getEnhancedItems());
         comments.addAll(timelineDTO.getComments());
-        trades.addAll(timelineDTO.getTrades());
-
+        if(timelineDTO.getTrades()!=null)
+        {
+            trades.addAll(timelineDTO.getTrades());
+        }
         parseEnhancedItemsUserInfo();
     }
 
