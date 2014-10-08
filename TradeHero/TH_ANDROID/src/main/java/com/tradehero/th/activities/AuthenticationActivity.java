@@ -3,19 +3,15 @@ package com.tradehero.th.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.Window;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserLoginDTO;
-import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.TwitterAuthenticationProvider;
 import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
 import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.inject.Injector;
@@ -100,24 +96,6 @@ public class AuthenticationActivity extends BaseActivity
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
         facebookAuthenticationProvider.onActivityResult(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
-    }
-
-    private void authenticateWithEmail()
-    {
-        Fragment currentFragment = navigator.getCurrentFragment();
-        if (currentFragment instanceof EmailSignInOrUpFragment)
-        {
-            progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_tradehero_only);
-            EmailSignInOrUpFragment castedFragment = (EmailSignInOrUpFragment) currentFragment;
-            JSONCredentials createdJson = castedFragment.getUserFormJSON();
-            EmailAuthenticationProvider.setCredentials(createdJson);
-            //AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
-            //THUser.logInWithAsync(EmailCredentialsDTO.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));
-        }
-        else
-        {
-            throw new IllegalArgumentException("Expected an EmailSignUpFragment or EmailSignInFragment");
-        }
     }
 
     //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">

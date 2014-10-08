@@ -8,7 +8,6 @@ import dagger.Module;
 @Module(
         injects = {
                 SignInOrUpFragment.class,
-                EmailSignInOrUpFragment.class,
                 EmailSignInFragment.class,
                 EmailSignUpFragment.class
         },
