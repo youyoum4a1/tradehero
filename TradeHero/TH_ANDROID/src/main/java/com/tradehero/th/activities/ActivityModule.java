@@ -5,6 +5,7 @@ import dagger.Module;
 
 @Module(
         injects = {
+                SplashActivity.class,
                 DashboardActivity.class,
                 AuthenticationActivity.class,
                 WXEntryActivity.class

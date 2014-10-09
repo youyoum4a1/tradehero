@@ -43,7 +43,12 @@
         android:name=".activities.SplashActivity"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
-        android:theme="@style/AppBaseTheme.NoActionBar2"/>
+        android:theme="@style/AppBaseTheme.NoActionBar2">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
 
     <activity
         android:name=".activities.AuthenticationActivity"
@@ -69,9 +74,6 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
 
         <!--<action android:name="com.android.vending.billing.IN_APP_NOTIFY" />-->
         <!--<action android:name="com.android.vending.billing.RESPONSE_CODE" />-->
