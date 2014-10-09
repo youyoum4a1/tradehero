@@ -13,7 +13,6 @@ import dagger.Module;
                 SettingsFragment.class,
                 AskForReviewDialogFragment.class,
                 AskForInviteDialogFragment.class,
-                InviteFriendFragment.class,
                 UserFriendDTOView.class,
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
