@@ -18,15 +18,12 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -44,13 +41,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
 
-    @Inject UserServiceWrapper userServiceWrapper;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
     @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject Analytics analytics;
     @Inject protected UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
+    @Inject protected SocialConnectSettingViewHolderContainer socialConnectSettingViewHolderContainer;
     @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;
     @Inject protected SendLoveViewHolder sendLoveViewHolder;
     @Inject protected SendFeedbackViewHolder sendFeedbackViewHolder;
@@ -79,16 +76,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         args.putString(KEY_SOCIAL_NETWORK_TO_CONNECT, socialNetwork.name());
     }
 
-    public static void putSocialNetworkToConnect(@NotNull Bundle args, @Nullable SocialShareFormDTO shareFormDTO)
-    {
-        if (shareFormDTO instanceof TimelineItemShareFormDTO &&
-                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO != null &&
-                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork != null)
-        {
-            putSocialNetworkToConnect(args, ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork);
-        }
-    }
-
     @Nullable public static SocialNetworkEnum getSocialNetworkToConnect(@Nullable Bundle args)
     {
         if (args == null)
@@ -114,6 +101,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         this.allSettingViewHolders = new SettingViewHolderList();
         allSettingViewHolders.add(topBannerSettingViewHolder);
+        // Sharing
+        allSettingViewHolders.add(socialConnectSettingViewHolderContainer);
         // General
         allSettingViewHolders.add(sendLoveViewHolder);
         allSettingViewHolders.add(sendFeedbackViewHolder);
@@ -252,6 +241,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         faqViewHolder = null;
         sendFeedbackViewHolder = null;
         sendLoveViewHolder = null;
+        socialConnectSettingViewHolderContainer = null;
         topBannerSettingViewHolder = null;
 
         allSettingViewHolders.clear();
