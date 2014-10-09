@@ -13,19 +13,6 @@ import retrofit.mime.TypedOutput;
 
 public class UserFormDTO extends LoginSignUpFormDTO
 {
-    public static final String KEY_TYPE = "type";
-    public static final String KEY_EMAIL = "email";
-    public static final String KEY_USERNAME = "username";
-    public static final String KEY_PASSWORD = "password";
-    public static final String KEY_PASSWORD_CONFIRM = "confirmPassword";
-    public static final String KEY_DISPLAY_NAME = "displayName";
-    public static final String KEY_INVITE_CODE = "inviteCode";
-    public static final String KEY_FIRST_NAME = "firstName";
-    public static final String KEY_LAST_NAME = "lastName";
-    public static final String KEY_EMAIL_NOTIFICATION_ENABLED = "emailNotificationsEnabled";
-    public static final String KEY_PUSH_NOTIFICATION_ENABLED = "pushNotificationsEnabled";
-    public static final String KEY_PROFILE_PICTURE = "profilePicture";
-
     public final String username;
     public final String password;
     public final String passwordConfirmation;

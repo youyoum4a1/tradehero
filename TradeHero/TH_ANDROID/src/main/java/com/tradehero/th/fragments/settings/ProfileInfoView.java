@@ -9,13 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -39,7 +37,6 @@ import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
@@ -65,7 +62,6 @@ public class ProfileInfoView extends LinearLayout
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
-    @Inject Activity activity;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @Inject AccountManager accountManager;
 
@@ -130,33 +126,6 @@ public class ProfileInfoView extends LinearLayout
         displayProfileImage();
     }
 
-    public UserFormDTO createForm()
-    {
-        return userFormBuilderProvider.get()
-                .email(getTextValue(email))
-                .password(getTextValue(password))
-                .displayName(getTextValue(displayName))
-                .firstName(getTextValue(firstName))
-                .lastName(getTextValue(lastName))
-                .profilePicture(safeCreateProfilePhoto())
-                .build();
-    }
-
-    public void populateUserFormMap(Map<String, Object> map)
-    {
-        populateUserFormMapFromEditable(map, UserFormDTO.KEY_EMAIL, email.getText());
-        populateUserFormMapFromEditable(map, UserFormDTO.KEY_PASSWORD, password.getText());
-        populateUserFormMapFromEditable(map, UserFormDTO.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
-        populateUserFormMapFromEditable(map, UserFormDTO.KEY_DISPLAY_NAME, displayName.getText());
-        populateUserFormMapFromEditable(map, UserFormDTO.KEY_INVITE_CODE, referralCode.getText());
-        populateUserFormMapFromEditable(map, UserFormDTO.KEY_FIRST_NAME, firstName.getText());
-        populateUserFormMapFromEditable(map, UserFormDTO.KEY_LAST_NAME, lastName.getText());
-        if (newImagePath != null)
-        {
-            map.put(UserFormDTO.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
-        }
-    }
-
     protected BitmapTypedOutput safeCreateProfilePhoto()
     {
         BitmapTypedOutput created = null;
@@ -166,32 +135,13 @@ public class ProfileInfoView extends LinearLayout
             {
                 created = bitmapTypedOutputFactory.createForProfilePhoto(
                         getResources(), bitmapForProfileFactory, newImagePath);
-            } catch (OutOfMemoryError e)
+            }
+            catch (OutOfMemoryError e)
             {
                 THToast.show(R.string.error_decode_image_memory);
             }
         }
         return created;
-    }
-
-    private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
-    {
-        if (toPick != null)
-        {
-            toFill.put(key, toPick.toString());
-        }
-    }
-
-    private String getTextValue(TextView textView)
-    {
-        if (textView != null)
-        {
-            return textView.getText().toString();
-        }
-        else
-        {
-            return null;
-        }
     }
 
     public void populate(UserProfileDTO userProfileDTO)
@@ -214,6 +164,7 @@ public class ProfileInfoView extends LinearLayout
         displayProfileImage();
     }
 
+    //region Display user information
     public void displayProfileImage()
     {
         if (newImagePath != null)
@@ -282,6 +233,7 @@ public class ProfileInfoView extends LinearLayout
                     .into(profileImage);
         }
     }
+    //endregion
 
     private void populateCredentials()
     {
@@ -388,6 +340,7 @@ public class ProfileInfoView extends LinearLayout
                                 .inviteCode(referralCode.getText().toString())
                                 .firstName(firstName.getText().toString())
                                 .lastName(lastName.getText().toString())
+                                .profilePicture(safeCreateProfilePhoto())
                                 .build();
                     }
                 }
