@@ -31,8 +31,6 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import dagger.Lazy;
-import java.util.Date;
-import java.util.Random;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
@@ -45,10 +43,6 @@ import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
 {
-    //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
-    private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
-    private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
-
     protected Button updateButton;
     private ProfileInfoView profileView;
     private EditText referralCodeEditText;
@@ -76,8 +70,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     protected void initSetup(View view)
     {
-        FocusableOnTouchListener touchListener = new FocusableOnTouchListener();
-
         profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
 
         updateButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
@@ -151,7 +143,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
         if (resultCode == Activity.RESULT_OK)
         {
-            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
+            if ((requestCode == ImagePickerView.REQUEST_CAMERA || requestCode == ImagePickerView.REQUEST_GALLERY) && data != null)
             {
                 try
                 {
@@ -170,7 +162,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     Timber.e(e, "Failed to extract image from library");
                 }
             }
-            else if (requestCode == REQUEST_GALLERY)
+            else if (requestCode == ImagePickerView.REQUEST_GALLERY)
             {
                 Timber.e(new Exception("Got null data from library"), "");
             }
@@ -263,7 +255,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         libraryIntent.setType("image/jpeg");
         try
         {
-            startActivityForResult(libraryIntent, REQUEST_GALLERY);
+            startActivityForResult(libraryIntent, ImagePickerView.REQUEST_GALLERY);
         }
         catch (ActivityNotFoundException e)
         {
