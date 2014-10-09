@@ -1,24 +1,18 @@
 package com.tradehero.th.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
-import com.tradehero.th.auth.TwitterAuthenticationProvider;
-import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
-import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
 import com.tradehero.th.inject.Injector;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import dagger.Module;
@@ -31,16 +25,11 @@ import timber.log.Timber;
 public class AuthenticationActivity extends BaseActivity
         implements Injector
 {
-    private ProgressDialog progressDialog;
-
     @Inject Lazy<WeiboAuthenticationProvider> weiboAuthenticationProviderLazy;
-    @Inject Lazy<QQAuthenticationProvider> qqUtils;
     @Inject Analytics analytics;
-    @Inject ProgressDialogUtil progressDialogUtil;
-    private DashboardNavigator navigator;
     @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
-    @Inject LinkedInAuthenticationProvider linkedInAuthenticationProvider;
-    @Inject TwitterAuthenticationProvider twitterAuthenticationProvider;
+
+    private DashboardNavigator navigator;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,10 +64,6 @@ public class AuthenticationActivity extends BaseActivity
 
     @Override protected void onPause()
     {
-        if (progressDialog != null)
-        {
-            progressDialog.dismiss();
-        }
         analytics.closeSession();
         super.onPause();
     }
@@ -92,36 +77,6 @@ public class AuthenticationActivity extends BaseActivity
     }
 
     //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">
-
-    public void authenticateWithLinkedIn()
-    {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Linkedin));
-        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
-
-        // FIXME/refactor
-        linkedInAuthenticationProvider.logIn(this);
-    }
-
-    public void authenticateWithFacebook()
-    {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Facebook));
-        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
-
-        // FIXME/refactor
-        facebookAuthenticationProvider.logIn(this);
-
-        throw new RuntimeException("FIXME/refactor");
-    }
-
-    public void authenticateWithTwitter()
-    {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Twitter));
-        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
-        // FIXME/refactor
-        twitterAuthenticationProvider.logIn(this);
-
-        throw new RuntimeException("FIXME/refactor");
-    }
 
     private void launchDashboard(UserLoginDTO userLoginDTO)
     {
