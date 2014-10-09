@@ -30,9 +30,12 @@ import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.NotifyingWebView;
+import com.tradehero.common.widget.QuickReturnWebViewOnScrollChangedListener;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
+import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
@@ -649,5 +652,11 @@ public class DashboardActivity extends FragmentActivity
         {
             return new QuickReturnScrollViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
         }
+
+        @Provides @BottomTabsQuickReturnWebViewListener NotifyingWebView.OnScrollChangedListener provideQuickReturnWebViewOnScrollListener()
+        {
+            return new QuickReturnWebViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
+        }
+
     }
 }

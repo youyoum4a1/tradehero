@@ -4,18 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <WebView
+    <com.tradehero.common.widget.NotifyingWebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fadeScrollbars="true"
         android:scrollbarStyle="insideOverlay" />
 
-    <!--ProgressBar
-        android:id="@+id/progress"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" /-->
 </RelativeLayout>

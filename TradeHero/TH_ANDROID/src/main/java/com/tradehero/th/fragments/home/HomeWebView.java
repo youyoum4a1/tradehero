@@ -2,8 +2,8 @@ package com.tradehero.th.fragments.home;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.webkit.WebView;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.widget.NotifyingWebView;
 import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public final class HomeWebView extends WebView
+public final class HomeWebView extends NotifyingWebView
 {
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
