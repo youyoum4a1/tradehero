@@ -113,12 +113,14 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
                 return userProfileCompactDTO.fbLinked;
             case LN:
                 return userProfileCompactDTO.liLinked;
+            case QQ:
+                return userProfileCompactDTO.qqLinked;
+            case TH:
+                return userProfileCompactDTO.thLinked;
             case TW:
                 return userProfileCompactDTO.twLinked;
             case WB:
                 return userProfileCompactDTO.wbLinked;
-            case QQ:
-                return userProfileCompactDTO.qqLinked;
             default:
                 return false;
         }
