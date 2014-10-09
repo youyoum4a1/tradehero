@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,8 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
+import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -29,6 +30,10 @@ import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.auth.AuthenticationProvider;
+import com.tradehero.th.auth.SocialAuth;
+import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -40,6 +45,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -47,11 +53,12 @@ import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("refer-friends")
 public class FriendsInvitationFragment extends DashboardFragment
-        implements AdapterView.OnItemClickListener, SocialFriendUserView.OnElementClickListener
+        implements SocialFriendUserView.OnElementClickListener
 {
     @InjectView(R.id.search_social_friends) EditText searchTextView;
     @InjectView(R.id.social_friend_type_list) ListView socialListView;
@@ -65,7 +72,9 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     SocialFriendHandler socialFriendHandler;
     SocialFriendHandlerFacebook socialFriendHandlerFacebook;
+    @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtil;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
@@ -133,7 +142,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     public void onDestroyView()
     {
         savedState = saveState();
-
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -179,7 +188,6 @@ public class FriendsInvitationFragment extends DashboardFragment
         List<SocialTypeItem> socialTypeItemList = socialTypeItemFactory.getSocialTypeList();
         SocialTypeListAdapter adapter = new SocialTypeListAdapter(getActivity(), 0, socialTypeItemList);
         socialListView.setAdapter(adapter);
-        socialListView.setOnItemClickListener(this);
         showSocialTypeList();
     }
 
@@ -207,13 +215,13 @@ public class FriendsInvitationFragment extends DashboardFragment
         showSearchList();
     }
 
-    @Override
+    @OnItemClick(R.id.social_friend_type_list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
         if(item.socialNetwork == SocialNetworkEnum.WECHAT)
         {
-            inviteWechatFriends();
+            inviteWeChatFriends();
             return;
         }
 
@@ -230,7 +238,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    private void inviteWechatFriends()
+    private void inviteWeChatFriends()
     {
         UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
@@ -243,7 +251,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    private void canclePendingSearchTask()
+    private void cancelPendingSearchTask()
     {
         View view = getView();
         if (view != null && searchTask != null)
@@ -325,37 +333,31 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
+    private void linkSocialNetwork(final SocialNetworkEnum socialNetworkEnum)
     {
         // FIXME/refactor: create social buttons which can emit Observable<SocialEnum>
         //socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
         //// TODO Pass a callback to be able to move to the social fragment
         //socialLinkHelper.link();
+
+        ((SocialAuthenticationProvider) authenticationProviders.get(socialNetworkEnum))
+                .socialLink(getActivity())
+                .subscribe(new EmptyObserver<UserProfileDTO>()
+                {
+                    @Override public void onNext(UserProfileDTO args)
+                    {
+                        super.onNext(args);
+                        pushSocialInvitationFragment(socialNetworkEnum);
+                    }
+                });
     }
 
     private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork)
     {
         UserProfileDTO updatedUserProfileDTO =
                 userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (updatedUserProfileDTO != null)
-        {
-            switch (socialNetwork)
-            {
-                case FB:
-                    return updatedUserProfileDTO.fbLinked;
-                case LN:
-                    return updatedUserProfileDTO.liLinked;
-                case TW:
-                    return updatedUserProfileDTO.twLinked;
-                case WB:
-                    return updatedUserProfileDTO.wbLinked;
-                case QQ:
-                    return updatedUserProfileDTO.qqLinked;
-                default:
-                    return false;
-            }
-        }
-        return false;
+        return updatedUserProfileDTO != null &&
+            userProfileDTOUtil.get().checkLinkedStatus(updatedUserProfileDTO, socialNetwork);
     }
 
     @Override
@@ -538,7 +540,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         @Override
         public void afterTextChanged(Editable s)
         {
-            canclePendingSearchTask();
+            cancelPendingSearchTask();
             if (s != null && s.toString().trim().length() > 0)
             {
                 scheduleSearch();
