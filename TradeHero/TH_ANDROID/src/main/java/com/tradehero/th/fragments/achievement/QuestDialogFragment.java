@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.widget.QuestIndicatorGroupView;
+import com.tradehero.th.widget.QuestIndicatorGroupView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
