@@ -202,6 +202,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
                 if (isSubsetPermissions(activeSession.getPermissions(), permissions))
                 {
                     subscriber.onNext(activeSession);
+                    subscriber.onCompleted();
                     return;
                 }
             }
@@ -282,6 +283,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
                     {
                         AuthData authData = new AuthData(SocialNetworkEnum.FB, session.getExpirationDate(), session.getAccessToken());
                         subscriber.onNext(authData);
+                        subscriber.onCompleted();
                     }
                 }
             });

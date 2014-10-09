@@ -31,15 +31,16 @@ public class SubscriberCallback implements Session.StatusCallback
         }
         if (state.isOpened())
         {
-            subscriber.onNext(session);
+            subscriberCopy.onNext(session);
+            subscriberCopy.onCompleted();
         }
         else if (exception != null)
         {
-            subscriber.onError(exception);
+            subscriberCopy.onError(exception);
         }
         else
         {
-            subscriber.onError(new FacebookOperationCanceledException("Action has been canceled"));
+            subscriberCopy.onError(new FacebookOperationCanceledException("Action has been canceled"));
         }
     }
 }
