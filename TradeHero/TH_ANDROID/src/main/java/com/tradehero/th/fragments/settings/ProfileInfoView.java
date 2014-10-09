@@ -86,7 +86,10 @@ public class ProfileInfoView extends LinearLayout
         super.onAttachedToWindow();
         ButterKnife.inject(this);
         displayProfileImage();
-        populateCredentials();
+        if (!isInEditMode())
+        {
+            populateCredentials();
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -295,7 +298,8 @@ public class ProfileInfoView extends LinearLayout
                 catch (OutOfMemoryError e)
                 {
                     THToast.show(R.string.error_decode_image_memory);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     THToast.show(R.string.error_fetch_image_library);
                     Timber.e(e, "Failed to extract image from library");
@@ -308,20 +312,20 @@ public class ProfileInfoView extends LinearLayout
         }
         else if (resultCode != Activity.RESULT_CANCELED)
         {
-            Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
+            Timber.e(new Exception("Failed to get image from library, resultCode: " + resultCode), "");
         }
     }
 
     public Observable<UserFormDTO> obtainUserFormDTO()
     {
         return Observable.combineLatest(
-                ViewObservable.text(email),
-                ViewObservable.text(password),
-                ViewObservable.text(confirmPassword),
-                ViewObservable.text(displayName),
-                ViewObservable.text(referralCode),
-                ViewObservable.text(firstName),
-                ViewObservable.text(lastName),
+                ViewObservable.text(email, true),
+                ViewObservable.text(password, true),
+                ViewObservable.text(confirmPassword, true),
+                ViewObservable.text(displayName, true),
+                ViewObservable.text(referralCode, true),
+                ViewObservable.text(firstName, true),
+                ViewObservable.text(lastName, true),
                 Observable.just(profileImage),
                 new Func8<ServerValidatedEmailText, ValidatedPasswordText, MatchingPasswordText, ServerValidatedUsernameText, EditText, EditText, EditText, ImageView, UserFormDTO>()
                 {

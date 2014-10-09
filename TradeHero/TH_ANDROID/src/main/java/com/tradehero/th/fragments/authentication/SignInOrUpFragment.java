@@ -59,6 +59,7 @@ public class SignInOrUpFragment extends Fragment
     @OnClick(R.id.authentication_email_sign_up_link) void handleSignUpButtonClick()
     {
         dashboardNavigator.pushFragment(EmailSignUpFragment.class);
+        subscription.unsubscribe();
     }
 
     @Optional @InjectViews({
@@ -224,10 +225,11 @@ public class SignInOrUpFragment extends Fragment
                 .doOnNext(authDataActionProvider.get());
     }
 
-    @Override public void onDestroyView()
+    @Override public void onDestroy()
     {
+        subscription.unsubscribe();
         ButterKnife.reset(this);
-        super.onDestroyView();
+        super.onDestroy();
     }
 
     @Override public void onResume()
@@ -239,12 +241,6 @@ public class SignInOrUpFragment extends Fragment
         {
             resubscribe();
         }
-    }
-
-    @Override public void onPause()
-    {
-        subscription.unsubscribe();
-        super.onPause();
     }
 
     // TODO better with Observable#retry() ?
