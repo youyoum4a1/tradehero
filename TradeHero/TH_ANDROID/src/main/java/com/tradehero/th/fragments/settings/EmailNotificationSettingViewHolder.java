@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.support.annotation.StringRes;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -24,7 +25,7 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
     }
     //</editor-fold>
 
-    @Override protected int getStringKeyResId()
+    @StringRes @Override protected int getStringKeyResId()
     {
         return R.string.key_settings_notifications_email;
     }

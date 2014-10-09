@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.support.annotation.StringRes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +33,7 @@ abstract public class BaseOneCheckboxSettingViewHolder extends BaseSettingViewHo
         super.destroyViews();
     }
 
-    abstract protected int getStringKeyResId();
+    @StringRes abstract protected int getStringKeyResId();
     abstract protected boolean changeStatus(boolean enable);
 
     @Override public boolean isUnread()
