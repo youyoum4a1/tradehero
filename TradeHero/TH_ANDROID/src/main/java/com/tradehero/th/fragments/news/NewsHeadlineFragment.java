@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -12,6 +13,7 @@ import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -53,6 +55,8 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
+
+    @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardTabListViewScrollListener;
 
     @Nullable private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
     private NewsHeadlineAdapter adapter;
@@ -142,6 +146,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
                     }
                 }
             });
+            listView.setOnScrollListener(dashboardTabListViewScrollListener);
         }
     }
 
@@ -169,6 +174,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         if (listView != null)
         {
             listView.setOnItemClickListener(null);
+            listView.setOnScrollListener(null);
         }
         listView = null;
         adapter = null;

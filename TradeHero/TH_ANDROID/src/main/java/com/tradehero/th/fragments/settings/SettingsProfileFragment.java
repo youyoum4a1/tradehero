@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import butterknife.InjectView;
+import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
@@ -46,9 +48,10 @@ import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
 {
-    protected Button updateButton;
-    private ProfileInfoView profileView;
-    private EditText referralCodeEditText;
+    @InjectView(R.id.authentication_sign_up_button) protected Button updateButton;
+    @InjectView(R.id.sign_up_form_wrapper) protected NotifyingScrollView scrollView;
+    @InjectView(R.id.profile_info) protected ProfileInfoView profileView;
+    @InjectView(R.id.authentication_sign_up_referral_code) protected EditText referralCodeEditText;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -79,10 +82,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         updateButton.setText(R.string.update);
         updateButton.setOnClickListener(this);
 
-        referralCodeEditText = (EditText) view.findViewById(R.id.authentication_sign_up_referral_code);
         referralCodeEditText.setVisibility(View.GONE);
 
-        //signupButton.setOnTouchListener(this);
+        scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
     }
 
     @Override public void onStop()
@@ -102,6 +104,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         {
             updateButton.setOnClickListener(null);
         }
+        scrollView.setOnScrollChangedListener(null);
         updateButton = null;
         referralCodeEditText = null;
         super.onDestroyView();

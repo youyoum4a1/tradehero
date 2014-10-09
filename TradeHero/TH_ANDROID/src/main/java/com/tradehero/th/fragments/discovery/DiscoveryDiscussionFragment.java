@@ -13,7 +13,7 @@ import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.th.BottomTabs;
+import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
@@ -34,7 +34,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
     @InjectView(android.R.id.progress) ProgressBar mProgressBar;
     @InjectView(R.id.timeline_list_view) PullToRefreshListView mTimelineListView;
-    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
+    @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     private int mDisplayedViewId;
     private SubTimelineAdapter mTimelineAdapter;

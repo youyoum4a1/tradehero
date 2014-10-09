@@ -42,10 +42,12 @@
         />
 
     <LinearLayout
+        android:id="@+id/follow_message_container"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dashboard_tabhost_height"
         android:alpha="0.95">
 
       <Button

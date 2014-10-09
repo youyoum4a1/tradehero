@@ -45,7 +45,6 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     @Override protected void displayUserIsNotRanked()
     {
         super.displayUserIsNotRanked();
-        lbmuDisplayName.setText(R.string.leaderboard_not_ranked);
 
         String rule = getContext().getString(R.string.leaderboard_see_competition_rules);
 
@@ -63,10 +62,6 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     @Override public void linkWith(@NotNull UserBaseDTO userBaseDTO)
     {
         super.linkWith(userBaseDTO);
-        if (getCurrentRank() == null)
-        {
-            lbmuDisplayName.setText(R.string.leaderboard_not_ranked);
-        }
     }
 
     private ForegroundColorSpan createTextColorSpan()

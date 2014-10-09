@@ -1,4 +1,4 @@
-package com.tradehero.common.widget;
+package com.tradehero.th.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

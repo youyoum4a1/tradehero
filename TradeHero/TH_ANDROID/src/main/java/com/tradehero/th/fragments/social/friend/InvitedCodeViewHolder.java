@@ -107,6 +107,7 @@ public class InvitedCodeViewHolder
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_send_code)
     public void submitInviteCode()
     {
@@ -131,13 +132,15 @@ public class InvitedCodeViewHolder
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            if ((new THException(retrofitError)).getMessage().contains("Already invited"))
+            THException exception = new THException(retrofitError);
+            String message = exception.getMessage();
+            if (message != null && message.contains("Already invited"))
             {
                 showSubmitDone();
             }
             else
             {
-                THToast.show(new THException(retrofitError));
+                THToast.show(exception);
                 viewSwitcher.setDisplayedChild(VIEW_ENTER_CODE);
             }
             notifyParentCallbackFailure(retrofitError);

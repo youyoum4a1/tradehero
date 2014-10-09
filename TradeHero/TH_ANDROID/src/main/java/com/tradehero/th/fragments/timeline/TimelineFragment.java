@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -39,6 +38,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
@@ -67,7 +67,6 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         implements UserProfileCompactViewHolder.OnProfileClickedListener
 {
     private static final String USER_BASE_KEY_BUNDLE_KEY = TimelineFragment.class.getName() + ".userBaseKey";
-    @Inject @BottomTabs AbsListView.OnScrollListener dashboardTabBarScrollListener;
 
     public static void putUserBaseKey(Bundle bundle, UserBaseKey userBaseKey)
     {
@@ -116,11 +114,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected THRouter thRouter;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
     @InjectView(R.id.follow_button) Button mFollowButton;
     @InjectView(R.id.message_button) Button mSendMsgButton;
+    @InjectView(R.id.follow_message_container) ViewGroup btnContainer;
 
     @InjectRoute UserBaseKey shownUserBaseKey;
 
@@ -275,7 +275,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             timelineListView.addFooterView(loadingView);
         }
-        timelineListView.setOnScrollListener(new MultiScrollListener(dashboardTabBarScrollListener));
+        timelineListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
 
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         displayablePortfolioFetchAssistant.setFetchedListener(
@@ -355,6 +355,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         fetchMessageThreadHeader();
 
         displayTab();
+
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                btnContainer.setTranslationY(y);
+            }
+        });
     }
 
     @Override public void onPause()
@@ -363,6 +371,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
         }
+        dashboardTabHost.setOnTranslate(null);
         super.onPause();
     }
 

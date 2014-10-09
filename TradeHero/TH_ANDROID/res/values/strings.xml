@@ -58,7 +58,7 @@
   <string name="broadcast_message_title">Broadcast Message</string>
   <string name="broadcast_message_action_send">Send</string>
   <string name="broadcast_message_change_type_hint">Choose follower to send message</string>
-  <string name="broadcast_message_no_follower_hint">Sorry,you cannot send message because you don\'t have such type follower</string>
+  <string name="broadcast_message_no_follower_hint">Sorry, you cannot send any message because you don\'t have such follower type</string>
   <string name="broadcast_message_content_length_hint">The message cannot be empty</string>
   <string name="broadcast_message_sending_hint">Sending message…</string>
   <string name="broadcast_message_waiting">Waiting</string>
@@ -71,13 +71,13 @@
   <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
   <string name="security_discussion_add">+ Start a New Discussion</string>
   <string name="post">Post</string>
-  <string name="discussion_new_post_hint">how do you feel about %s?</string>
+  <string name="discussion_new_post_hint">How do you feel about %s?</string>
   <string name="error_discussion_empty_post">Discussion cannot be empty</string>
   <string name="at">"@"</string>
   <string name="hashtag">$</string>
   <string name="discussion_edit_post_subtitle">on %s</string>
   <string name="team_credit">Made with love in Singapore and Shanghai</string>
-  <string name="about_screen_secure_by">Secure by:</string>
+  <string name="about_screen_secure_by">Secured by:</string>
   <string name="about_screen_text_processing_by">Text processing by:</string>
   <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
   <string name="send_fake_push" translatable="false">Send a fake PushNotification</string>
@@ -262,6 +262,7 @@
   <string name="regional_news">Regional News</string>
   <string name="motley_fool">Motley Fool</string>
   <string name="global_news">Global News</string>
+  <string name="search_regional_hint">Search country</string>
   <string name="ask_for_invite_title">More Fun with Friends !</string>
   <string name="ask_for_invite_summary1">Invite your buddies and earn</string>
   <string name="ask_for_invite_summary2">10,000 TH$</string>

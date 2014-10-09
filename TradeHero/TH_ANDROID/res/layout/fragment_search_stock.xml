@@ -52,7 +52,7 @@
           android:id="@+id/search_empty_textview"
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
-          android:textSize="@dimen/text_xxxlarge"
+          style="@style/TH.Loading_Empty_Text"
           android:text="@string/trending_search_no_people_found"
           />
 

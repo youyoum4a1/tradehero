@@ -17,14 +17,15 @@ public class MessageHeaderCache extends StraightDTOCacheNew<MessageHeaderId, Mes
 {
     @NotNull private final MessageServiceWrapper messageServiceWrapper;
 
-    @Inject
-    public MessageHeaderCache(
+    //<editor-fold desc="Constructors">
+    @Inject public MessageHeaderCache(
             @SingleCacheMaxSize IntPreference maxSize,
             @NotNull MessageServiceWrapper messageServiceWrapper)
     {
         super(maxSize.get());
         this.messageServiceWrapper = messageServiceWrapper;
     }
+    //</editor-fold>
 
     @Override @NotNull public MessageHeaderDTO fetch(@NotNull MessageHeaderId key) throws Throwable
     {

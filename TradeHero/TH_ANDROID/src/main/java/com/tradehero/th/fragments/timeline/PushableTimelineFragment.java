@@ -3,16 +3,15 @@ package com.tradehero.th.fragments.timeline;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 public class PushableTimelineFragment extends TimelineFragment
 {
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
-    @Inject Analytics analytics;
 
     @Override protected void initViews(View view)
     {

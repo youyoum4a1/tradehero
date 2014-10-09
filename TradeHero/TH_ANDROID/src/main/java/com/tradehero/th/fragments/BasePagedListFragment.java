@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -18,7 +17,6 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
 import com.tradehero.th.api.DTOView;
@@ -49,7 +47,6 @@ abstract public class BasePagedListFragment<
 
     @Inject protected Analytics analytics;
     @Inject protected THRouter thRouter;
-    @Inject @BottomTabs AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     @InjectView(R.id.search_empty_container) protected View emptyContainer;
     @InjectView(R.id.listview) protected ListView listView;
@@ -105,7 +102,7 @@ abstract public class BasePagedListFragment<
 
         if (listView != null)
         {
-            listView.setOnScrollListener(new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsScrollListener));
+            listView.setOnScrollListener(new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsListViewScrollListener.get()));
             listView.setEmptyView(emptyContainer);
             listView.setAdapter(itemViewAdapter);
         }

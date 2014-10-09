@@ -141,6 +141,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             if (tradeListView != null)
             {
                 tradeListView.setAdapter(adapter);
+                tradeListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
             }
         }
     }
@@ -181,6 +182,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         detachSecurityActionDialog();
         securityAlertAssistant.setOnPopulatedListener(null);
         adapter = null;
+        tradeListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }

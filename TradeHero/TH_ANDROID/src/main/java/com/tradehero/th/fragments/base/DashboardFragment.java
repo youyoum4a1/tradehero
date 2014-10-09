@@ -5,7 +5,11 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.AbsListView;
+import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
+import com.tradehero.th.BottomTabsQuickReturnListViewListener;
+import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -20,6 +24,10 @@ abstract public class DashboardFragment extends BaseFragment
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected DashboardNavigator navigator;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+
+    @Inject @BottomTabsQuickReturnListViewListener protected Lazy<AbsListView.OnScrollListener> dashboardBottomTabsListViewScrollListener;
+    @Inject @BottomTabsQuickReturnScrollViewListener protected Lazy<NotifyingScrollView.OnScrollChangedListener>
+            dashboardBottomTabScrollViewScrollListener;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {

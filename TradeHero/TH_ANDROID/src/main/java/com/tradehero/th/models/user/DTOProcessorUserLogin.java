@@ -7,6 +7,7 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
@@ -23,12 +24,14 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
     public DTOProcessorUserLogin(
             @NotNull SystemStatusCache systemStatusCache,
             @NotNull UserProfileCache userProfileCache,
+            @NotNull HomeContentCache homeContentCache,
             @NotNull CurrentUserId currentUserId,
             @NotNull DTOCacheUtil dtoCacheUtil)
     {
         this.systemStatusCache = systemStatusCache;
         this.processorSignInUp = new DTOProcessorSignInUpUserProfile(
                 userProfileCache,
+                homeContentCache,
                 currentUserId,
                 dtoCacheUtil);
     }

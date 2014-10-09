@@ -90,7 +90,7 @@ public class PositionListFragment
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
 
-    @InjectView(R.id.position_list) protected ListView positionsListView;
+    //@InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.pull_to_refresh_position_list) PullToRefreshListView pullToRefreshListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
@@ -194,8 +194,8 @@ public class PositionListFragment
                 createPositionItemAdapter();
             }
 
-            positionsListView.setAdapter(positionItemAdapter);
-
+            //positionsListView.setAdapter(positionItemAdapter);
+            pullToRefreshListView.setAdapter(positionItemAdapter);
             initPullToRefreshListView(view);
 
             // portfolio header
@@ -203,6 +203,8 @@ public class PositionListFragment
             int headerLayoutId = headerFactory.get().layoutIdFor(getPositionsDTOKey);
             headerStub.setLayoutResource(headerLayoutId);
             portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
+            pullToRefreshListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+
         }
         showLoadingView(true);
     }
@@ -378,9 +380,9 @@ public class PositionListFragment
             portfolioHeaderView.setTimelineRequestedListener(null);
         }
 
-        if (positionsListView != null)
+        if (pullToRefreshListView.getRefreshableView() != null)
         {
-            firstPositionVisible = positionsListView.getFirstVisiblePosition();
+            firstPositionVisible = pullToRefreshListView.getRefreshableView().getFirstVisiblePosition();
         }
         super.onPause();
     }
@@ -405,10 +407,10 @@ public class PositionListFragment
 
     @Override public void onDestroyView()
     {
-        if (positionsListView != null)
+        if (pullToRefreshListView != null)
         {
-            positionsListView.setOnScrollListener(null);
-            positionsListView.setOnTouchListener(null);
+            pullToRefreshListView.setOnScrollListener(null);
+            pullToRefreshListView.setOnTouchListener(null);
         }
         positionItemAdapter = null;
 

@@ -11,6 +11,7 @@
       android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
       android:padding="6dp"
+      android:layout_marginBottom="@dimen/dashboard_tabhost_height"
       android:background="@drawable/timeline_discussion_edit_widget_background"
       >
 

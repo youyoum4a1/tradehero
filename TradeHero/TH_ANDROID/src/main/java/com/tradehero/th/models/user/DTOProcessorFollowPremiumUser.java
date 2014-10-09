@@ -2,6 +2,7 @@ package com.tradehero.th.models.user;
 
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
@@ -17,6 +18,7 @@ public class DTOProcessorFollowPremiumUser extends AbstractDTOProcessorFollowUse
     //<editor-fold desc="Constructors">
     public DTOProcessorFollowPremiumUser(
             @NotNull UserProfileCache userProfileCache,
+            @NotNull HomeContentCache homeContentCache,
             @NotNull HeroListCache heroListCache,
             @NotNull GetPositionsCache getPositionsCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
@@ -25,6 +27,7 @@ public class DTOProcessorFollowPremiumUser extends AbstractDTOProcessorFollowUse
             @NotNull UserBaseKey heroId)
     {
         super(userProfileCache,
+                homeContentCache,
                 heroListCache,
                 getPositionsCache,
                 userMessagingRelationshipCache,

@@ -16,6 +16,7 @@ import com.tradehero.th.models.user.DTOProcessorUserLogin;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -38,6 +39,7 @@ import rx.Observable;
     @NotNull private final Context context;
     @NotNull private final StringPreference savedPushDeviceIdentifier;
     @NotNull private final Lazy<SystemStatusCache> systemStatusCache;
+    @NotNull private final Lazy<HomeContentCache> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public SessionServiceWrapper(
@@ -49,7 +51,8 @@ import rx.Observable;
             @NotNull DTOCacheUtil dtoCacheUtil,
             @NotNull Context context,
             @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
-            @NotNull Lazy<SystemStatusCache> systemStatusCache)
+            @NotNull Lazy<SystemStatusCache> systemStatusCache,
+            @NotNull Lazy<HomeContentCache> homeContentCache)
     {
         this.currentUserId = currentUserId;
         this.sessionService = sessionService;
@@ -60,6 +63,7 @@ import rx.Observable;
         this.context = context;
         this.savedPushDeviceIdentifier = savedPushDeviceIdentifier;
         this.systemStatusCache = systemStatusCache;
+        this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
@@ -69,13 +73,14 @@ import rx.Observable;
         return new DTOProcessorUserLogin(
                 systemStatusCache.get(),
                 userProfileCache,
+                homeContentCache.get(),
                 currentUserId,
                 dtoCacheUtil);
     }
 
     @NotNull protected DTOProcessor<UserProfileDTO> createUpdateDeviceProcessor()
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
+        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get());
     }
 
     @NotNull protected DTOProcessor<UserProfileDTO> createLogoutProcessor()

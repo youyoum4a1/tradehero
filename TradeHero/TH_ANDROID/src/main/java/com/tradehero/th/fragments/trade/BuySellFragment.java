@@ -33,6 +33,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
@@ -51,6 +52,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
@@ -163,6 +165,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject Analytics analytics;
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -291,6 +294,14 @@ public class BuySellFragment extends AbstractBuySellFragment
             abstractTransactionDialogFragment.populateComment();
             abstractTransactionDialogFragment.getDialog().show();
         }
+
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                mBuySellBtnContainer.setTranslationY(y);
+            }
+        });
     }
 
     @Override public void onPause()
@@ -298,6 +309,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(chartImageButtonClickReceiver);
         selectedPageIndex = mBottomViewPager.getCurrentItem();
+        dashboardTabHost.setOnTranslate(null);
         super.onPause();
     }
 

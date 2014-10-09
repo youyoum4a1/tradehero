@@ -22,14 +22,6 @@
         android:id="@+id/listViewLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-      <include
-          android:id="@+id/readAllLayout"
-          android:visibility="gone"
-          layout="@layout/read_all_layout"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_alignParentBottom="true"
-          />
 
       <com.handmark.pulltorefresh.library.PullToRefreshListView
           android:id="@+id/notification_pull_to_refresh_list"
@@ -37,10 +29,18 @@
           android:layout_height="match_parent"
           android:clipToPadding="false"
           android:paddingTop="@dimen/notification_vertical_margin"
-          android:paddingBottom="@dimen/notification_vertical_margin"
-          android:layout_above="@id/readAllLayout"
+          android:paddingBottom="@dimen/clickable_element_min_dimen"
           />
 
+      <include
+          android:id="@+id/readAllLayout"
+          android:visibility="gone"
+          layout="@layout/read_all_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_marginBottom="@dimen/dashboard_tabhost_height"
+          />
 
     </RelativeLayout>
 
@@ -49,10 +49,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
         android:id="@android:id/empty"
         android:text="@string/notification_list_empty"
-        android:gravity="center"
+        style="@style/TH.Loading_Empty_Text"
         />
 
   </com.tradehero.th.fragments.updatecenter.notifications.NotificationsView>

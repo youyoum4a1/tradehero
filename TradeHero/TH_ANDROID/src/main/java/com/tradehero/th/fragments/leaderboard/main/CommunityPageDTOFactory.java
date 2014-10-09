@@ -35,7 +35,7 @@ class CommunityPageDTOFactory
         for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
         {
             key = leaderboardDefListKeyFactory.createFrom(type);
-            Timber.e("Type %s, key %s", type, key);
+            Timber.d("Type %s, key %s", type, key);
             if (key != null)
             {
                 cached = leaderboardDefListCache.get(key);

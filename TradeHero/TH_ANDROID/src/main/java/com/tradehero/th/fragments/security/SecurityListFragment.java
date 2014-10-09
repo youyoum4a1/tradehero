@@ -19,7 +19,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -55,7 +54,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected int firstVisiblePosition = 0;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject @BottomTabs protected AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -101,7 +99,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     protected AbsListView.OnScrollListener createListViewScrollListener()
     {
-        return new MultiScrollListener(listViewScrollListener, dashboardBottomTabsScrollListener);
+        return new MultiScrollListener(listViewScrollListener, dashboardBottomTabsListViewScrollListener.get());
     }
 
     abstract protected ListAdapter createSecurityItemViewAdapter();

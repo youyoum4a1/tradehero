@@ -31,7 +31,7 @@ import timber.log.Timber;
 public class AchievementListTestingFragment extends DashboardFragment
 {
     @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
-    @InjectView(android.R.id.empty) protected ProgressBar emptyView;
+    @InjectView(android.R.id.progress) protected ProgressBar progressBar;
 
     @Inject AchievementCategoryListCache achievementCategoryListCache;
     @Inject CurrentUserId currentUserId;

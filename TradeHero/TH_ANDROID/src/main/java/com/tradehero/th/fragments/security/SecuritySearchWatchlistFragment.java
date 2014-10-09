@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 public class SecuritySearchWatchlistFragment extends SecuritySearchFragment
 {
-    @Inject Context doNotRemoveOtherwiseFails; // Do not remove otherwise fails
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     @Override protected void pushTradeFragmentIn(SecurityId securityId)
     {

@@ -22,11 +22,18 @@ import butterknife.InjectView;
 import com.crashlytics.android.Crashlytics;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
+import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.NotifyingWebView;
+import com.tradehero.common.widget.QuickReturnWebViewOnScrollChangedListener;
 import com.tradehero.th.BottomTabs;
+import com.tradehero.th.BottomTabsQuickReturnListViewListener;
+import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
+import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
@@ -231,13 +238,6 @@ public class DashboardActivity extends BaseActivity
         final View mainContent = findViewById(R.id.realtabcontent);
         dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
         dashboardTabHost.setup();
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                mainContent.setPadding(0, 0, 0, tabHostHeight - (int) y);
-            }
-        });
         dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
             @Override public void onTabChanged(String tabId)
@@ -255,12 +255,12 @@ public class DashboardActivity extends BaseActivity
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                if(intent != null && intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID) != null)
+                if (intent != null && intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID) != null)
                 {
                     Bundle bundle = intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID);
                     UserAchievementId userAchievementId = new UserAchievementId(bundle);
                     AbstractAchievementDialogFragment abstractAchievementDialogFragment = achievementDialogCreator.newInstance(userAchievementId);
-                    if(abstractAchievementDialogFragment != null)
+                    if (abstractAchievementDialogFragment != null)
                     {
                         abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
                     }
@@ -272,7 +272,7 @@ public class DashboardActivity extends BaseActivity
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                if(intent != null && intent.getBundleExtra(XpModule.KEY_XP_BROADCAST) != null)
+                if (intent != null && intent.getBundleExtra(XpModule.KEY_XP_BROADCAST) != null)
                 {
                     Bundle b = intent.getBundleExtra(XpModule.KEY_XP_BROADCAST);
                     UserXPAchievementDTO userXPAchievementDTO = new UserXPAchievementDTO(b);
@@ -328,16 +328,16 @@ public class DashboardActivity extends BaseActivity
         if (getIntent() != null && getIntent().getBooleanExtra(UserLoginDTO.SUGGEST_UPGRADE, false))
         {
             alertDialogUtil.get().popWithOkCancelButton(
-                this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now,
-                R.string.later,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
+                    this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now,
+                    R.string.later,
+                    new DialogInterface.OnClickListener()
                     {
-                        THToast.show(R.string.update_guide);
-                        marketUtilLazy.get().showAppOnMarket(DashboardActivity.this);
-                    }
-                });
+                        @Override public void onClick(DialogInterface dialog, int which)
+                        {
+                            THToast.show(R.string.update_guide);
+                            marketUtilLazy.get().showAppOnMarket(DashboardActivity.this);
+                        }
+                    });
         }
     }
 
@@ -624,9 +624,27 @@ public class DashboardActivity extends BaseActivity
             return router;
         }
 
-        @Provides @BottomTabs AbsListView.OnScrollListener provideDashboardBottomTabScrollListener()
+        @Provides @BottomTabs DashboardTabHost provideDashboardBottomBar()
         {
-            return new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
+            return dashboardTabHost;
         }
+
+        @Provides @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener provideDashboardBottomTabScrollListener()
+        {
+            QuickReturnListViewOnScrollListener listener =  new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
+            listener.setCanSlideInIdleScrollState(true);
+            return listener;
+        }
+
+        @Provides @BottomTabsQuickReturnScrollViewListener NotifyingScrollView.OnScrollChangedListener provideQuickReturnListViewOnScrollListener()
+        {
+            return new QuickReturnScrollViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
+        }
+
+        @Provides @BottomTabsQuickReturnWebViewListener NotifyingWebView.OnScrollChangedListener provideQuickReturnWebViewOnScrollListener()
+        {
+            return new QuickReturnWebViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
+        }
+
     }
 }

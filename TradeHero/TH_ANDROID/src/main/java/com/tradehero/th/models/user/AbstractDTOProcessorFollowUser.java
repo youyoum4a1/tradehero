@@ -2,6 +2,7 @@ package com.tradehero.th.models.user;
 
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
@@ -20,13 +21,14 @@ abstract public class AbstractDTOProcessorFollowUser extends DTOProcessorUpdateU
     //<editor-fold desc="Constructors">
     public AbstractDTOProcessorFollowUser(
             @NotNull UserProfileCache userProfileCache,
+            @NotNull HomeContentCache homeContentCache,
             @NotNull HeroListCache heroListCache,
             @NotNull GetPositionsCache getPositionsCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
             @NotNull UserBaseKey followerId,
             @NotNull UserBaseKey heroId)
     {
-        super(userProfileCache);
+        super(userProfileCache, homeContentCache);
         this.heroListCache = heroListCache;
         this.getPositionsCache = getPositionsCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;

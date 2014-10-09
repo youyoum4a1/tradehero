@@ -245,7 +245,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         dismiss();
         submitStockWatchlist();
         userProfileCache.invalidate(currentUserId.toUserBaseKey());
-        navigator.goToTab(RootFragmentType.CONTEST_CENTER);
         navigator.goToTab(RootFragmentType.ME);
         firstShowOnBoardDialogPreference.justHandled();
     }

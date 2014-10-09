@@ -185,6 +185,8 @@ public class FriendsInvitationFragment extends DashboardFragment
     private void initView(View rootView)
     {
         searchTextView.addTextChangedListener(new SearchTextWatcher());
+        socialListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        friendsListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     private void bindSocialTypeData()

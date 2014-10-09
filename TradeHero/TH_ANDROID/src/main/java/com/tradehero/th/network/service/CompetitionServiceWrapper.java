@@ -12,6 +12,7 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,21 +25,24 @@ import retrofit.Callback;
     @NotNull private final CompetitionService competitionService;
     @NotNull private final CompetitionServiceAsync competitionServiceAsync;
     @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final HomeContentCache homeContentCache;
 
     @Inject public CompetitionServiceWrapper(
             @NotNull CompetitionService competitionService,
             @NotNull CompetitionServiceAsync competitionServiceAsync,
-            @NotNull UserProfileCache userProfileCache)
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull HomeContentCache homeContentCache)
     {
         super();
         this.competitionService = competitionService;
         this.competitionServiceAsync = competitionServiceAsync;
         this.userProfileCache = userProfileCache;
+        this.homeContentCache = homeContentCache;
     }
 
     protected DTOProcessor<UserProfileDTO> createDTOProcessorUserProfile()
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
+        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache);
     }
 
     //<editor-fold desc="Get Competitions">

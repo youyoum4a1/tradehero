@@ -47,6 +47,8 @@ public class XpToast extends RelativeLayout
 
     @NotNull private ArrayDeque<LevelAnimationDefinition> levelAnimationDefinitions = new ArrayDeque<>();
     private LevelAnimationDefinition currentLevelAnimationDefinition;
+    @Nullable private UserXPAchievementDTO xpToBePlayed;
+    private boolean isLevelDefError;
 
     //<editor-fold desc="Constructors">
     public XpToast(@NotNull Context context, AttributeSet attrs)
@@ -96,14 +98,32 @@ public class XpToast extends RelativeLayout
         mLevelDefListCacheListener = null;
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
         userLevelProgressBar.setUserLevelProgressBarListener(null);
+        isLevelDefError = false;
         super.onDetachedFromWindow();
     }
 
     public void showWhenReady(@NotNull UserXPAchievementDTO userXPAchievementDTO)
     {
-        userLevelProgressBar.startsWith(userXPAchievementDTO.getBaseXp());
+        cleanUp();
         populateAnimationLists(userXPAchievementDTO);
-        showAll();
+        if (userLevelProgressBar.getLevelDefDTOList() != null && !userLevelProgressBar.getLevelDefDTOList().isEmpty())
+        {
+            setAndPlay(userXPAchievementDTO);
+        }
+        else if (isLevelDefError)
+        {
+            hideAndReleaseFlag();
+        }
+        else
+        {
+            this.xpToBePlayed = userXPAchievementDTO;
+        }
+    }
+
+    private void setAndPlay(@NotNull UserXPAchievementDTO userXPAchievementDTO)
+    {
+        userLevelProgressBar.startsWith(userXPAchievementDTO.getBaseXp());
+        playAllAnimations();
     }
 
     private void populateAnimationLists(@NotNull UserXPAchievementDTO userXPAchievementDTO)
@@ -113,7 +133,7 @@ public class XpToast extends RelativeLayout
         if (userXPAchievementDTO.multiplier != null && !userXPAchievementDTO.multiplier.isEmpty())
         {
             int from = l0.to();
-            for (int i = 0 ; i < userXPAchievementDTO.multiplier.size(); i++)
+            for (int i = 0; i < userXPAchievementDTO.multiplier.size(); i++)
             {
                 UserXPMultiplierDTO userXPMultiplierDTO = userXPAchievementDTO.multiplier.get(i);
                 int to = (i == 0 ? userXPMultiplierDTO.xpTotal : from + userXPMultiplierDTO.xpTotal);
@@ -125,7 +145,7 @@ public class XpToast extends RelativeLayout
         }
     }
 
-    private void showAll()
+    private void playAllAnimations()
     {
         displayXPEarned(0);
         xpValue.clearAnimation();
@@ -178,8 +198,7 @@ public class XpToast extends RelativeLayout
 
     public void hide()
     {
-        currentLevelAnimationDefinition = null;
-        levelAnimationDefinitions.clear();
+        cleanUp();
         Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.zoom_out);
         a.setAnimationListener(new Animation.AnimationListener()
         {
@@ -189,8 +208,7 @@ public class XpToast extends RelativeLayout
 
             @Override public void onAnimationEnd(Animation animation)
             {
-                setVisibility(View.GONE);
-                broadcastUtils.nextPlease();
+                hideAndReleaseFlag();
             }
 
             @Override public void onAnimationRepeat(Animation animation)
@@ -201,11 +219,28 @@ public class XpToast extends RelativeLayout
         startAnimation(a);
     }
 
+    private void hideAndReleaseFlag()
+    {
+        setVisibility(View.GONE);
+        broadcastUtils.nextPlease();
+    }
+
+    private void cleanUp()
+    {
+        currentLevelAnimationDefinition = null;
+        xpToBePlayed = null;
+        levelAnimationDefinitions.clear();
+    }
+
     private void setLevelDefList(@NotNull LevelDefDTOList levelDefList)
     {
         if (userLevelProgressBar != null)
         {
             userLevelProgressBar.setLevelDefDTOList(levelDefList);
+            if (xpToBePlayed != null)
+            {
+                showWhenReady(xpToBePlayed);
+            }
         }
     }
 
@@ -271,6 +306,11 @@ public class XpToast extends RelativeLayout
 
         @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
         {
+            Timber.e("Unable to get xp level definition: %s", error);
+            //Release flag from broadcast utils.
+            isLevelDefError = true;
+            cleanUp();
+            hideAndReleaseFlag();
         }
     }
 

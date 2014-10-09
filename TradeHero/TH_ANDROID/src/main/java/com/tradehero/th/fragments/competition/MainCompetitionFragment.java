@@ -21,6 +21,7 @@ import com.tradehero.common.utils.SimpleCounterUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
@@ -36,6 +37,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
@@ -86,6 +88,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     @RouteProperty("providerId") Integer routedProviderId;
 
@@ -128,6 +131,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (this.listView != null)
         {
             this.listView.setOnItemClickListener(createAdapterViewItemClickListener());
+            this.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         }
         createAdapter();
     }
@@ -168,7 +172,20 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             this.webViewFragment.setThIntentPassedListener(null);
         }
+        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                btnTradeNow.setTranslationY(y);
+            }
+        });
         this.webViewFragment = null;
+    }
+
+    @Override public void onPause()
+    {
+        dashboardTabHost.setOnTranslate(null);
+        super.onPause();
     }
 
     @Override public void onStop()
@@ -184,6 +201,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (this.listView != null)
         {
             this.listView.setOnItemClickListener(null);
+            this.listView.setOnScrollListener(null);
         }
         if (this.competitionZoneListItemAdapter != null)
         {

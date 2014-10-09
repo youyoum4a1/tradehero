@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -66,6 +67,8 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     {
         initPreferenceClickHandlers();
         initDefaultValue();
+        ListView listView = (ListView) view.findViewById(android.R.id.list);
+        listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         super.onViewCreated(view, savedInstanceState);
     }
 

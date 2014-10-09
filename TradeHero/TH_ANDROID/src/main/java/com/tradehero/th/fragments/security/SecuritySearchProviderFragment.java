@@ -12,7 +12,7 @@ public class SecuritySearchProviderFragment extends SecuritySearchFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = SecuritySearchProviderFragment.class.getName() + ".providerId";
 
-    @Inject Context doNotRemoveOtherwiseFails; // Do not remove otherwise fails
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
     @NotNull protected ProviderId providerId;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)

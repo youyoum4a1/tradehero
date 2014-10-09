@@ -174,6 +174,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     {
         super.onStart();
         contestListView.setOnItemClickListener(createItemClickListener());
+        contestListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         if (currentDisplayedChildLayoutId != 0)
         {
             setContestCenterScreen(currentDisplayedChildLayoutId);
@@ -185,6 +186,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         detachProviderListFetchTask();
         currentDisplayedChildLayoutId = contest_center_content_screen.getDisplayedChildLayoutId();
         contestListView.setOnItemClickListener(null);
+        contestListView.setOnScrollListener(null);
         super.onStop();
     }
 

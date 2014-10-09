@@ -27,13 +27,6 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
-    public WatchlistPortfolioHeaderView(Context context)
-    {
-        super(context);
-        init();
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
     public WatchlistPortfolioHeaderView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -72,13 +65,13 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         valuation = (WatchlistHeaderItem) container.getChildAt(0);
         if (valuation != null)
         {
-            valuation.setFirstTitle(getContext().getString(R.string.watchlist_current_value));
-            valuation.setSecondTitle(getContext().getString(R.string.watchlist_original_value));
+            valuation.setFirstTitle(R.string.watchlist_current_value);
+            valuation.setSecondTitle(R.string.watchlist_original_value);
         }
         gainLoss = (WatchlistHeaderItem) container.getChildAt(1);
         if (gainLoss != null)
         {
-            gainLoss.setTitle(getContext().getString(R.string.watchlist_gain_loss));
+            gainLoss.setTitle(R.string.watchlist_gain_loss);
         }
 
         marking = (TextView) findViewById(R.id.watchlist_position_list_marking);
@@ -123,10 +116,11 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         Double totalValueUsd = getTotalValueUsd();
         Double totalInvestedUsd = getTotalInvestedUsd();
 
-        if (totalValueUsd == null || totalInvestedUsd == null)
+        if (totalValueUsd == null || totalInvestedUsd == null || totalInvestedUsd.equals(0d))
         {
-            gainLoss.setFirstTitle("-");
-            gainLoss.setSecondTitle("-");
+            gainLoss.setTitle(R.string.watchlist_gain);
+            gainLoss.setFirstValue("-");
+            gainLoss.setSecondValue("-");
         }
         else
         {
@@ -139,7 +133,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
             THSignedNumber secondNumber = THSignedMoney.builder(absoluteGain).build();
             gainLoss.setFirstValue(firstNumber.toString());
             gainLoss.setSecondValue(secondNumber.toString());
-            gainLoss.setTitle(getContext().getString(absoluteGain >= 0 ? R.string.watchlist_gain : R.string.watchlist_loss));
+            gainLoss.setTitle(absoluteGain >= 0 ? R.string.watchlist_gain : R.string.watchlist_loss);
         }
         gainLoss.invalidate();
     }

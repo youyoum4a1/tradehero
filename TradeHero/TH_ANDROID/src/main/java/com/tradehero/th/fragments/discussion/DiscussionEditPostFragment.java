@@ -20,6 +20,7 @@ import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.text.Span;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -35,6 +36,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
@@ -74,6 +76,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject DiscussionCache discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
     @Inject DashboardNavigator navigator;
+    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
@@ -116,6 +119,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
         super.onDestroyOptionsMenu();
     }
+
+
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -266,6 +271,14 @@ public class DiscussionEditPostFragment extends DashboardFragment
             @Nullable Object extraInput = selectionFragment.getSelectedItem();
             handleExtraInput(extraInput);
         }
+
+        dashboardTabHost.animateHide();
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        dashboardTabHost.animateShow();
     }
 
     private void handleExtraInput(@Nullable Object extraInput)

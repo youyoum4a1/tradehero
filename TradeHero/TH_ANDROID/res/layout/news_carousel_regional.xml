@@ -37,6 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
+        android:hint="@string/search_regional_hint"
         />
   </com.tradehero.common.widget.BetterViewAnimator>
 </com.tradehero.th.fragments.discovery.RegionalNewsSelectorView>
