@@ -85,7 +85,7 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
         cachedObservables.clear();
     }
 
-    @Override public Observable<UserProfileDTO> socialLink(
+    @NotNull public Observable<UserProfileDTO> socialLink(
             @NotNull Activity activity)
     {
         return logIn(activity)
