@@ -5,15 +5,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -29,12 +28,13 @@ import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
-import java.util.Timer;
-import java.util.TimerTask;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
@@ -278,14 +278,14 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             e.printStackTrace();
         }
-        if (packageInfo != null)
-        {
-            timeStr = (String) DateFormat.format(
-                    getActivity().getString(R.string.data_format_d_mmm_yyyy_kk_mm),
-                    packageInfo.lastUpdateTime);
-            timeStr = timeStr + "(" + packageInfo.lastUpdateTime + ")";
-            version.setSummary(timeStr);
-        }
+//        if (packageInfo != null)
+//        {
+//            timeStr = (String) DateFormat.format(
+//                    getActivity().getString(R.string.data_format_d_mmm_yyyy_kk_mm),
+//                    packageInfo.lastUpdateTime);
+//            timeStr = timeStr + "(" + packageInfo.lastUpdateTime + ")";
+//            version.setSummary(timeStr);
+//        }
         version.setTitle(VersionUtils.getVersionId(getActivity()) + " - " + serverPath);
     }
 }
