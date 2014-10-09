@@ -1,5 +1,6 @@
 package com.tradehero.th.api.users;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
@@ -59,7 +60,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public int unreadMessageThreadsCount;
     public int unreadNotificationsCount;
 
-    public int tradesSharedCount_FB;
+    @JsonProperty("tradesSharedCount_FB")
+    public int tradesSharedCountFB;
     public String referralCode;
     public String inviteCode;
 
@@ -226,7 +228,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", firstFollowAllTime=" + firstFollowAllTime +
                 ", useTHPrice=" + useTHPrice +
                 ", alertCount=" + alertCount +
-                ", tradesSharedCount_FB=" + tradesSharedCount_FB +
+                ", tradesSharedCountFB=" + tradesSharedCountFB +
                 ", userAlertPlans=" + userAlertPlans +
                 '}';
     }
