@@ -1,5 +1,8 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.StringRes;
+import com.tradehero.th.R;
+
 /**
  * List of social network or 3rd party that provide authentication, this implementation is closely linked with https://github
  * .com/TradeHero/TH_ANDROID/blob/db4a33ee064f4e1c15a4b2b796165add706ab106/TradeHero/TH_ANDROID/res/values/attrs.xml#L110-120 by the order of login
@@ -7,35 +10,46 @@ package com.tradehero.th.api.social;
  */
 public enum SocialNetworkEnum
 {
-    TH("Basic", "TradeHero"),
-    FB("TH-Facebook", "Facebook", "facebook_access_token"),
-    TW("TH-Twitter", "Twitter", "twitter_access_token", "twitter_access_token_secret"),
-    LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret"),
-    WECHAT("TH-WeChat", "WeChat"),
-    WB("TH-Weibo", "WeiBo", "weibo_access_token"),
-    QQ("TH-QQ", "QQ", "qq_access_token", "qq_openid");
+    TH("Basic", "TradeHero", R.string.app_name),
+    FB("TH-Facebook", "Facebook", "facebook_access_token", R.string.facebook),
+    TW("TH-Twitter", "Twitter", "twitter_access_token", "twitter_access_token_secret", R.string.twitter),
+    LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret", R.string.linkedin),
+    WECHAT("TH-WeChat", "WeChat", R.string.wechat),
+    WB("TH-Weibo", "WeiBo", "weibo_access_token", R.string.sina_weibo),
+    QQ("TH-QQ", "QQ", "qq_access_token", "qq_openid", R.string.tencent_qq);
 
     private final String authHeader;
     private final String name;
     private final String accessTokenName;
     private final String accessTokenSecretName;
+    @StringRes public final int nameResId;
 
-    SocialNetworkEnum(String authHeader, String name)
+    SocialNetworkEnum(String authHeader,
+            String name,
+            @StringRes int nameResId)
     {
-        this(authHeader, name, null);
+        this(authHeader, name, null, nameResId);
     }
 
-    SocialNetworkEnum(String authHeader, String name, String accessTokenName)
+    SocialNetworkEnum(String authHeader,
+            String name,
+            String accessTokenName,
+            @StringRes int nameResId)
     {
-        this(authHeader, name, accessTokenName, null);
+        this(authHeader, name, accessTokenName, null, nameResId);
     }
 
-    SocialNetworkEnum(String authHeader, String name, String accessTokenName, String accessTokenSecretName)
+    SocialNetworkEnum(String authHeader,
+            String name,
+            String accessTokenName,
+            String accessTokenSecretName,
+            @StringRes int nameResId)
     {
         this.authHeader = authHeader;
         this.name = name;
         this.accessTokenName = accessTokenName;
         this.accessTokenSecretName = accessTokenSecretName;
+        this.nameResId = nameResId;
     }
 
     public String getAuthHeader()
