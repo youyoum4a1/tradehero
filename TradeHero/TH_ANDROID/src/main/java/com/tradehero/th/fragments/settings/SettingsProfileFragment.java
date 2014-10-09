@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +21,14 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.AuthDataAction;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.rx.MakePairFunc2;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
@@ -36,9 +39,9 @@ import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -218,24 +221,27 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             profileView.progressDialog.setCancelable(true);
 
             updateProfileSubscription = profileView.obtainUserFormDTO()
-                    .flatMap(new Func1<UserFormDTO, Observable<UserProfileDTO>>()
+                    .flatMap(new Func1<UserFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
                     {
-                        @Override public Observable<UserProfileDTO> call(UserFormDTO userFormDTO)
+                        @Override public Observable<Pair<AuthData, UserProfileDTO>> call(UserFormDTO userFormDTO)
                         {
-                            return userServiceWrapper.get().updateProfileRx(currentUserId.toUserBaseKey(), userFormDTO);
+                            final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
+                            Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.get().updateProfileRx(currentUserId
+                                .toUserBaseKey(), userFormDTO);
+                            return Observable.zip(Observable.just(authData), userProfileDTOObservable, new MakePairFunc2<AuthData, UserProfileDTO>());
                         }
                     })
-                    .doOnNext(new Action1<UserProfileDTO>()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
                     {
-                        @Override public void call(UserProfileDTO userProfileDTO)
+                        @Override public void call(Pair<AuthData, UserProfileDTO> userProfileDTO)
                         {
                             profileView.progressDialog.hide(); // Before otherwise it is reset
                             THToast.show(R.string.settings_update_profile_successful);
                             navigator.popFragment();
                         }
                     })
-                    // FIXME/refactor create or update account in AccountManager with email & password
-                    .subscribe(new EmptyObserver<UserProfileDTO>());
+                    .subscribe(authDataActionProvider.get());
         }
     }
 

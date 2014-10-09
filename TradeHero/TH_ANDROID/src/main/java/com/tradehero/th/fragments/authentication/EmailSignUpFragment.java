@@ -104,6 +104,7 @@ public class EmailSignUpFragment extends Fragment
                     }
                 })
                 .doOnNext(authDataAction)
+                .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(toastOnErrorAction)
         ;
     }

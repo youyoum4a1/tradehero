@@ -5,9 +5,10 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Pair;
-import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
+import com.tradehero.th.utils.StringUtils;
 import javax.inject.Inject;
 import rx.functions.Action1;
 
@@ -28,7 +29,11 @@ public class AuthDataAction implements Action1<Pair<AuthData, UserProfileDTO>>
     @Override public void call(Pair<AuthData, UserProfileDTO> authDataUserProfileDTOPair)
     {
         Account account = getOrAddAccount(authDataUserProfileDTOPair);
-        accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authDataUserProfileDTOPair.first.getTHToken());
+        AuthData authData = authDataUserProfileDTOPair.first;
+        if (authData.socialNetworkEnum != SocialNetworkEnum.TH || !StringUtils.isNullOrEmpty(authData.password))
+        {
+            accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authDataUserProfileDTOPair.first.getTHToken());
+        }
         finishAuthentication(authDataUserProfileDTOPair);
     }
 
@@ -43,7 +48,7 @@ public class AuthDataAction implements Action1<Pair<AuthData, UserProfileDTO>>
         {
             accountManager.addAccountExplicitly(account, password, null);
         }
-        else
+        else if (!StringUtils.isNullOrEmpty(password))
         {
             accountManager.setPassword(accounts[0], password);
         }
@@ -58,7 +63,5 @@ public class AuthDataAction implements Action1<Pair<AuthData, UserProfileDTO>>
         intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, PARAM_ACCOUNT_TYPE);
 
         activity.setResult(Activity.RESULT_OK, intent);
-        activity.finish();
-        activity.startActivity(new Intent(activity, DashboardActivity.class));
     }
 }

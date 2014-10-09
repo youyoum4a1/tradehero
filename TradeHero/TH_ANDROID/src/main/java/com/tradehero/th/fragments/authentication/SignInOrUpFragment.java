@@ -222,7 +222,9 @@ public class SignInOrUpFragment extends Fragment
                         }
                     }
                 })
-                .doOnNext(authDataActionProvider.get());
+                .doOnNext(authDataActionProvider.get())
+                .doOnNext(new OpenDashboardAction(getActivity()))
+        ;
     }
 
     @Override public void onDestroy()
