@@ -224,11 +224,10 @@ public class SignInOrUpFragment extends Fragment
                 .doOnNext(authDataActionProvider.get());
     }
 
-    @Override public void onDestroy()
+    @Override public void onDestroyView()
     {
-        subscription.unsubscribe();
         ButterKnife.reset(this);
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     @Override public void onResume()
@@ -240,6 +239,12 @@ public class SignInOrUpFragment extends Fragment
         {
             resubscribe();
         }
+    }
+
+    @Override public void onPause()
+    {
+        subscription.unsubscribe();
+        super.onPause();
     }
 
     // TODO better with Observable#retry() ?
