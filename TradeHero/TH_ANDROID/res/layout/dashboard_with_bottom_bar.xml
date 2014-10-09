@@ -15,6 +15,7 @@
       android:paddingLeft="0dp"
       android:paddingRight="0dp"
       >
+
   </FrameLayout>
 
   <com.tradehero.th.fragments.DashboardTabHost
