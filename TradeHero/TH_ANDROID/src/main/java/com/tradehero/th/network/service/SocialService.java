@@ -33,5 +33,10 @@ public interface SocialService
     UserProfileDTO disconnect(
             @Path("userId") int userId,
             @Body SocialNetworkFormDTO socialNetworkFormDTO);
+
+    @POST("/users/{userId}/disconnect")
+    Observable<UserProfileDTO> disconnectRx(
+            @Path("userId") int userId,
+            @Body SocialNetworkFormDTO socialNetworkFormDTO);
     //</editor-fold>
 }

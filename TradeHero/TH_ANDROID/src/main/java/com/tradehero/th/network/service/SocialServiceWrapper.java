@@ -7,7 +7,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AccessTokenForm;
 import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -39,7 +38,7 @@ import rx.functions.Func1;
         this.currentUserId = currentUserId;
     }
 
-    @NotNull protected DTOProcessor<UserProfileDTO> createConnectDTOProcessor()
+    @NotNull protected DTOProcessorUpdateUserProfile createConnectDTOProcessor()
     {
         return new DTOProcessorUpdateUserProfile(userProfileCache);
     }
@@ -95,6 +94,12 @@ import rx.functions.Func1;
     public UserProfileDTO disconnect(@NotNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
     {
         return createConnectDTOProcessor().process(socialService.disconnect(userBaseKey.key, socialNetworkFormDTO));
+    }
+
+    public Observable<UserProfileDTO> disconnectRx(@NotNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
+    {
+        return socialService.disconnectRx(userBaseKey.key, socialNetworkFormDTO)
+                .doOnNext(createConnectDTOProcessor());
     }
 
     public MiddleCallback<UserProfileDTO> disconnect(@NotNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO, Callback<UserProfileDTO> callback)
