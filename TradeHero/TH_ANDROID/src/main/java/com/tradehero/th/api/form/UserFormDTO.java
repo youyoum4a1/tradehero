@@ -48,7 +48,8 @@ public class UserFormDTO extends LoginSignUpFormDTO
 
     public UserFormDTO(AuthData authData, String email, boolean useOnlyHeroCount, String deviceToken,
             DeviceType clientType, String clientVersion, String username, String password, String passwordConfirmation, String firstName,
-            String lastName, String displayName, String inviteCode)
+            String lastName, String displayName, String inviteCode, BitmapTypedOutput profilePicture, Boolean pushNotificationsEnabled,
+            Boolean emailNotificationsEnabled)
     {
         super(authData, email, useOnlyHeroCount, deviceToken, clientType, clientVersion);
         this.username = username;
@@ -58,6 +59,9 @@ public class UserFormDTO extends LoginSignUpFormDTO
         this.lastName = lastName;
         this.displayName = displayName;
         this.inviteCode = inviteCode;
+        this.profilePicture = profilePicture;
+        this.pushNotificationsEnabled = pushNotificationsEnabled;
+        this.emailNotificationsEnabled = emailNotificationsEnabled;
     }
 
     @Override public String toString()
@@ -83,7 +87,7 @@ public class UserFormDTO extends LoginSignUpFormDTO
     public static abstract class Builder<T extends Builder<T>> extends LoginSignUpFormDTO.Builder<T>
     {
         private String password;
-        private boolean pushNotificationsEnabled;
+        private Boolean pushNotificationsEnabled;
         private Boolean emailNotificationsEnabled;
         private String displayName;
         private String firstName;
@@ -99,7 +103,7 @@ public class UserFormDTO extends LoginSignUpFormDTO
         public UserFormDTO build()
         {
             return new UserFormDTO(authData, email, useOnlyHeroCount, savedPushIdentifier.get(), Constants.DEVICE_TYPE, versionId, displayName, password,
-                    password, firstName, lastName, displayName, inviteCode);
+                    password, firstName, lastName, displayName, inviteCode, profilePicture, pushNotificationsEnabled, emailNotificationsEnabled);
         }
 
         public T password(String password)
@@ -108,13 +112,13 @@ public class UserFormDTO extends LoginSignUpFormDTO
             return self();
         }
 
-        public T pushNotificationsEnabled(boolean pushNotificationsEnabled)
+        public T pushNotificationsEnabled(Boolean pushNotificationsEnabled)
         {
             this.pushNotificationsEnabled = pushNotificationsEnabled;
             return self();
         }
 
-        public T emailNotificationsEnabled(Boolean emailNotificationsEnabled)
+        public T emailNotificationsEnabled(boolean emailNotificationsEnabled)
         {
             this.emailNotificationsEnabled = emailNotificationsEnabled;
             return self();
