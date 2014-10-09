@@ -11,6 +11,7 @@ import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.LinkedIn;
 import com.tradehero.th.auth.operator.OperatorOAuthDialog;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.network.service.SocialLinker;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import javax.inject.Inject;
@@ -48,10 +49,12 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
     @NotNull final CommonsHttpOAuthConsumer oAuthConsumer;
 
     @Inject public LinkedInAuthenticationProvider(
+            @NotNull SocialLinker socialLinker,
             LinkedIn linkedIn,
             @ConsumerKey("LinkedIn") @NotNull String consumerKey,
             @ConsumerSecret("LinkedIn") @NotNull String consumerSecret)
     {
+        super(socialLinker);
         this.linkedIn = linkedIn;
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;

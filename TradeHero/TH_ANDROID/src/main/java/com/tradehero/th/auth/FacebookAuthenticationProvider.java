@@ -17,6 +17,7 @@ import com.tradehero.th.auth.facebook.SubscriberCallback;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.network.service.SocialLinker;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -59,10 +60,12 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
     // TODO not use injection of Context as this instance is a singleton.
     // Use Provider<Activity> instead
     @Inject public FacebookAuthenticationProvider(
+            @NotNull SocialLinker socialLinker,
             Context context,
             @FacebookAppId String applicationId,
             @FacebookPermissions List<String> permissions)
     {
+        super(socialLinker);
         PRECISE_DATE_FORMAT.setTimeZone(new SimpleTimeZone(0, "GMT"));
         
         this.baseActivity = new WeakReference<>(null);

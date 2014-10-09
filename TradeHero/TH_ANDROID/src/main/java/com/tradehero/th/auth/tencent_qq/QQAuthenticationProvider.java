@@ -9,8 +9,10 @@ import com.tencent.tauth.UiError;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.network.service.SocialLinker;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import rx.Observable;
@@ -27,8 +29,9 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     public static final String KEY_OPEN_ID = "qq_openid";
 
     //<editor-fold desc="Constructors">
-    @Inject public QQAuthenticationProvider(Tencent tencent)
+    @Inject public QQAuthenticationProvider(@NotNull SocialLinker socialLinker, Tencent tencent)
     {
+        super(socialLinker);
         this.mTencent = tencent;
     }
     //</editor-fold>

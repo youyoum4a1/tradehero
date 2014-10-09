@@ -2,10 +2,14 @@ package com.tradehero.th.auth;
 
 import android.app.Activity;
 import android.content.Context;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.network.service.SocialLinker;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
+import org.jetbrains.annotations.NotNull;
 import rx.Observable;
+import rx.functions.Func1;
 
 public abstract class SocialAuthenticationProvider implements THAuthenticationProvider
 {
@@ -23,6 +27,13 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
 
     protected WeakReference<Context> baseContext;
     protected THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
+
+    @NotNull protected final SocialLinker socialLinker;
+
+    protected SocialAuthenticationProvider(@NotNull SocialLinker socialLinker)
+    {
+        this.socialLinker = socialLinker;
+    }
 
     public SocialAuthenticationProvider with(Context context)
     {
@@ -72,5 +83,18 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
     protected void clearCachedObservables()
     {
         cachedObservables.clear();
+    }
+
+    @Override public Observable<UserProfileDTO> socialLink(
+            @NotNull Activity activity)
+    {
+        return logIn(activity)
+                .flatMap(new Func1<AuthData, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(AuthData authData)
+                    {
+                        return socialLinker.link(new AccessTokenForm(authData));
+                    }
+                });
     }
 }
