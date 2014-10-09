@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.social.friend;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -50,6 +52,7 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -85,6 +88,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
     private Runnable searchTask;
     private MiddleCallback<UserFriendsDTOList> searchCallback;
+    @Nullable AlertDialog socialLinkingDialog;
 
     private static final String KEY_BUNDLE = "key_bundle";
     private static final String KEY_LIST_TYPE = "key_list_type";
@@ -218,7 +222,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @OnItemClick(R.id.social_friend_type_list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
+        final SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
         if(item.socialNetwork == SocialNetworkEnum.WECHAT)
         {
             inviteWeChatFriends();
@@ -232,9 +236,34 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
         else
         {
-            THToast.show(R.string.friend_link_social_network);
-            //pushSettingsFragment();
-            linkSocialNetwork(item.socialNetwork);
+            socialLinkingDialog = alertDialogUtil.popWithOkCancelButton(
+                    getActivity(),
+                    getString(R.string.link, item.socialNetwork.getName()),
+                    getString(R.string.link_description, item.socialNetwork.getName()),
+                    R.string.link_now,
+                    R.string.later,
+                    new DialogInterface.OnClickListener()//Ok
+                    {
+                        @Override public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            linkSocialNetwork(item.socialNetwork);
+                        }
+                    },
+                    new DialogInterface.OnClickListener()//Cancel
+                    {
+                        @Override public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            alertDialogUtil.dismissProgressDialog();
+                        }
+                    },
+                    new DialogInterface.OnDismissListener()
+                    {
+                        @Override public void onDismiss(DialogInterface dialogInterface)
+                        {
+                            dismissSocialLinkDialog();
+                        }
+                    }
+            );
         }
     }
 
@@ -266,6 +295,15 @@ public class FriendsInvitationFragment extends DashboardFragment
         {
             searchCallback.setPrimaryCallback(null);
         }
+    }
+
+    private void dismissSocialLinkDialog()
+    {
+        if (socialLinkingDialog != null && socialLinkingDialog.isShowing())
+        {
+            socialLinkingDialog.dismiss();
+        }
+        socialLinkingDialog = null;
     }
 
     private void scheduleSearch()
