@@ -68,6 +68,7 @@ public class TimelineDTO
 
     public List<DiscussionDTO> getComments()
     {
+        if(comments == null)return null;
         return Collections.unmodifiableList(comments);
     }
 

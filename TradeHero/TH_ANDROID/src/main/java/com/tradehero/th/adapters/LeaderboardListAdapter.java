@@ -17,6 +17,7 @@ import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.NumberDisplayUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -136,7 +137,7 @@ public class LeaderboardListAdapter extends BaseAdapter
             {//显示 总资产
                 //土豪榜
                 holder.tvUserExtraTitle.setText(context.getString(R.string.user_tatal_wealth));
-                holder.tvUserExtraValue.setText(String.valueOf(item.totalWealth));
+                holder.tvUserExtraValue.setText(NumberDisplayUtils.getString(item.totalWealth));
             }
             else
             {//显示 ROI
