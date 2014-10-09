@@ -1,5 +1,7 @@
 package com.tradehero.th.persistence.prefs;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
@@ -7,14 +9,9 @@ import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceDTOFactory;
 import com.tradehero.th.models.share.preference.SocialShareSetPreference;
-import com.tradehero.th.models.user.auth.CredentialsDTO;
-import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
-import com.tradehero.th.models.user.auth.CredentialsSetPreference;
-import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import com.urbanairship.push.PushManager;
@@ -24,6 +21,9 @@ import java.util.HashSet;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
+import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
+import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
+
 @Module(
         injects = {
         },
@@ -32,11 +32,6 @@ import org.jetbrains.annotations.NotNull;
 )
 public class PreferenceModule
 {
-    @Deprecated
-    private static final String PREF_CURRENT_SESSION_TOKEN_KEY = "PREF_CURRENT_SESSION_TOKEN_KEY";
-    @Deprecated
-    private static final String PREF_CURRENT_AUTHENTICATION_TYPE_KEY = "PREF_CURRENT_AUTHENTICATION_TYPE_KEY";
-
     private static final String PREF_MAIN_CREDENTIALS_KEY = "PREF_MAIN_CREDENTIALS_KEY";
     private static final String PREF_SAVED_CREDENTIALS_KEY = "PREF_SAVED_CREDENTIALS_KEY";
     private static final String PREF_RESET_HELP_SCREENS = "PREF_RESET_HELP_SCREENS";
@@ -63,49 +58,6 @@ public class PreferenceModule
     @Provides @Singleton @ForApp SharedPreferences provideAppSharePreferences(Context context)
     {
         return context.getSharedPreferences(APP_PREFERENCE_KEY, Context.MODE_PRIVATE);
-    }
-
-    @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(@ForUser SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
-    {
-        MainCredentialsPreference newPrefs = new MainCredentialsPreference(credentialsDTOFactory, sharedPreferences, PREF_MAIN_CREDENTIALS_KEY, "");
-
-        { // TODO remove eventually. This is for transitioning the old credentials
-            StringPreference oldTypePrefs = new StringPreference(sharedPreferences, PREF_CURRENT_AUTHENTICATION_TYPE_KEY, "");
-            StringPreference oldTokenPrefs = new StringPreference(sharedPreferences, PREF_CURRENT_SESSION_TOKEN_KEY, "");
-            CredentialsDTO oldCredentials = new CredentialsDTOFactory().createFromOldSessionToken(oldTypePrefs.get(), oldTokenPrefs);
-            if (oldCredentials != null)
-            {
-                newPrefs.setCredentials(oldCredentials);
-            }
-            oldTypePrefs.delete();
-            oldTokenPrefs.delete();
-        }
-        return newPrefs;
-    }
-
-    @Provides @AuthHeader String provideAuthenticationHeader(MainCredentialsPreference mainCredentialsPreference)
-    {
-        CredentialsDTO currentCredentials = mainCredentialsPreference.getCredentials();
-        if (currentCredentials != null)
-        {
-            return String.format("%1$s %2$s", currentCredentials.getAuthType(), currentCredentials.getAuthHeaderParameter());
-        }
-        return null;
-    }
-
-    @Provides @Singleton @SavedCredentials StringPreference provideMainCredentialsPreference(MainCredentialsPreference mainCredentialsPreference)
-    {
-        return mainCredentialsPreference;
-    }
-
-    @Provides @Singleton CredentialsSetPreference provideSavedPrefCredentials(@ForUser SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
-    {
-        return new CredentialsSetPreference(credentialsDTOFactory, sharedPreferences, PREF_SAVED_CREDENTIALS_KEY, new HashSet<String>());
-    }
-
-    @Provides @Singleton @SavedCredentials StringSetPreference provideSavedPrefCredentials(CredentialsSetPreference credentialsSetPreference)
-    {
-        return credentialsSetPreference;
     }
 
     @Provides @Singleton SocialShareSetPreference provideSocialSharePref(
@@ -178,5 +130,23 @@ public class PreferenceModule
             @ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_IS_VISITED_REFERRAL_CODE_SETTINGS_FLAG, false);
+    }
+
+    @Provides @AuthHeader String provideAuthenticationHeader(final AccountManager accountManager)
+    {
+        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        if (accounts.length != 0)
+        {
+            for (Account account: accounts)
+            {
+                String token = accountManager.peekAuthToken(account, PARAM_AUTHTOKEN_TYPE);
+                if (token != null)
+                {
+                    return token;
+                }
+            }
+        }
+
+        return null;
     }
 }

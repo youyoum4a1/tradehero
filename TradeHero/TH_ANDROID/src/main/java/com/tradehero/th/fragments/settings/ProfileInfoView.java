@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -31,24 +33,21 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
-import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
-import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.json.JSONException;
-import org.json.JSONObject;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.functions.Func8;
 import timber.log.Timber;
+
+import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 
 public class ProfileInfoView extends LinearLayout
 {
@@ -66,9 +65,9 @@ public class ProfileInfoView extends LinearLayout
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
-    @Inject @AuthHeader Lazy<String> authenticationHeader;
     @Inject Activity activity;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
+    @Inject AccountManager accountManager;
 
     ProgressDialog progressDialog;
     private UserProfileDTO userProfileDTO;
@@ -91,6 +90,7 @@ public class ProfileInfoView extends LinearLayout
         super.onAttachedToWindow();
         ButterKnife.inject(this);
         displayProfileImage();
+        populateCredentials();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -283,46 +283,37 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
-    // TODO pass something else
-    public void populateCredentials(JSONObject credentials)
+    private void populateCredentials()
     {
-        if (credentials == null)
-        {
-            Timber.e(new NullPointerException("credentials were null current auth type " + authenticationHeader.get()), "");
-            THToast.show(R.string.error_fetch_your_user_profile);
-        }
-        else
+        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        if (accounts != null && accounts.length > 0)
         {
             String emailValue = null, passwordValue = null;
-            try
+            for (Account account: accounts)
             {
-                // We test here just to reduce the number of errors sent to Crashlytics
-                if (credentials.has("email"))
+                if (account.name != null)
                 {
-                    emailValue = credentials.getString("email");
-                    this.email.setText(emailValue);
+                    String currentPassword = accountManager.getPassword(account);
+                    if (currentPassword != null)
+                    {
+                        emailValue = account.name;
+                        passwordValue = currentPassword;
+
+                        // TODO what if we have more than 1 account with both email & pass
+                        break;
+                    }
+
+                    emailValue = account.name;
                 }
-                if (credentials.has("password"))
-                {
-                    passwordValue = credentials.getString("password");
-                }
-            } catch (JSONException e)
-            {
-                Timber.e(e, "populateCredentials");
             }
+
+            this.email.setText(emailValue);
             this.password.setText(passwordValue);
             this.confirmPassword.setText(passwordValue);
 
             this.password.setValidateOnlyIfNotEmpty(passwordValue == null);
             this.confirmPassword.setValidateOnlyIfNotEmpty(passwordValue == null);
         }
-    }
-
-    public EmailCredentialsDTO getEmailCredentialsDTO()
-    {
-        return new EmailCredentialsDTO(
-                email.getText().toString(),
-                password.getText().toString());
     }
 
     @OnClick(R.id.image_optional) @Optional
@@ -394,6 +385,9 @@ public class ProfileInfoView extends LinearLayout
                                 .email(serverValidatedEmailText.getText().toString())
                                 .password(validatedPasswordText.getText().toString())
                                 .displayName(serverValidatedUsernameText.getText().toString())
+                                .inviteCode(referralCode.getText().toString())
+                                .firstName(firstName.getText().toString())
+                                .lastName(lastName.getText().toString())
                                 .build();
                     }
                 }

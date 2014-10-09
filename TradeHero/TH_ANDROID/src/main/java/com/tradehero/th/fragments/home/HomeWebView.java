@@ -7,7 +7,6 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.utils.Constants;
@@ -83,11 +82,6 @@ public final class HomeWebView extends WebView
             Timber.d("Getting home app data from cache!");
             loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
         }
-    }
-
-    public String createTypedAuthParameters(@NotNull CredentialsDTO credentialsDTO)
-    {
-        return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
     }
 
     //<editor-fold desc="Listeners">

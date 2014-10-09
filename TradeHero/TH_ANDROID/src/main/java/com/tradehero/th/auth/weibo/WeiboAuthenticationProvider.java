@@ -15,12 +15,10 @@ import com.sina.weibo.sdk.exception.WeiboException;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
-import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.network.service.SocialLinker;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
 import rx.Observable;
 
 @Singleton
@@ -50,35 +48,6 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         this.mAuthData = authData;
     }
     //</editor-fold>
-
-    @Override
-    public void authenticate(THAuthenticationCallback callback)
-    {
-        //this.mCallback = callback;
-        doAuthenticate(callback);
-    }
-
-    @Override
-    public void deauthenticate()
-    {
-        doDeauthenticate();
-    }
-
-    @Override
-    public boolean restoreAuthentication(JSONCredentials paramJSONObject)
-    {
-        if (paramJSONObject == null)
-        {
-            deauthenticate();
-            return false;
-        }
-        boolean valid = isTokenValid(paramJSONObject);
-        if (!valid)
-        {
-            deauthenticate();
-        }
-        return valid;
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -254,12 +223,8 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
 
     private void onAnthorizeSuccess(Oauth2AccessToken token)
     {
-        this.mAccessToken = token;
-        if (checkContext() && currentOperationCallback != null)
-        {
-            currentOperationCallback.onSuccess(buildTokenData(token));
-            currentOperationCallback = null;
-        }
+        // TODO check
+        throw new RuntimeException("To be checked");
     }
 
     private void onAuthorizeStart()
@@ -289,45 +254,8 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         //        }
     }
 
-    private JSONCredentials buildTokenData(Oauth2AccessToken token)
-    {
-        JSONCredentials obj = null;
-        try
-        {
-            obj = new JSONCredentials();
-            obj.put(KEY_UID, token.getUid());
-            obj.put(KEY_ACCESS_TOKEN, token.getToken());
-            obj.put(KEY_EXPIRES_IN, token.getExpiresTime());
-        }
-        catch (JSONException e)
-        {
-        }
-        return obj;
-    }
-
-    private boolean isTokenValid(JSONCredentials obj)
-    {
-        try
-        {
-            String uid = obj.getString(KEY_UID);
-            String accessToken = obj.getString(KEY_ACCESS_TOKEN);
-            long expiresIn = obj.getLong(KEY_EXPIRES_IN);
-
-            Oauth2AccessToken token = new Oauth2AccessToken();
-            token.setUid(uid);
-            token.setToken(accessToken);
-            token.setExpiresTime(expiresIn);
-            return token.isSessionValid();
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     /**
-     * 微博认证授权回调类。 1. SSO 授权时，需要在 {@link #onActivityResult} 中调用 {@link SsoHandler#authorizeCallBack}
+     * 微博认证授权回调类。 1. SSO 授权时，需要在 {@link android.app.Activity#onActivityResult} 中调用 {@link SsoHandler#authorizeCallBack}
      * 后， 该回调才会被执行。 2. 非 SSO 授权时，当授权结束后，该回调就会被执行。 当授权成功后，请保存该 access_token、expires_in、uid 等信息到
      * SharedPreferences 中。
      */

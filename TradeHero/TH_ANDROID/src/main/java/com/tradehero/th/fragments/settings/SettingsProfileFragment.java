@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.settings;
 
-import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -21,19 +20,11 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.EmailAuthenticationProvider;
-import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.authentication.AuthDataAction;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.auth.CredentialsDTO;
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
-import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -41,12 +32,15 @@ import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import dagger.Lazy;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -63,14 +57,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject @AuthHeader String authenticationHeader;
-    @Inject MainCredentialsPreference mainCredentialsPreference;
-
-    private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-
     @Inject DashboardNavigator navigator;
-    @Inject AccountManager accountManager;
+    @Inject Provider<AuthDataAction> authDataActionProvider;
+
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    private Subscription updateProfileSubscription;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -79,7 +70,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         initSetup(view);
         setHasOptionsMenu(true);
 
-        this.populateCurrentUser();
+        populateCurrentUser();
         return view;
     }
 
@@ -101,8 +92,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     @Override public void onStop()
     {
-        detachMiddleCallbackUpdateUserProfile();
         detachUserProfileCache();
+        if (updateProfileSubscription != null && !updateProfileSubscription.isUnsubscribed())
+        {
+            updateProfileSubscription.unsubscribe();
+        }
         super.onStop();
     }
 
@@ -121,17 +115,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        detachMiddleCallbackUpdateUserProfile();
         detachUserProfileCache();
-    }
-
-    private void detachMiddleCallbackUpdateUserProfile()
-    {
-        if (middleCallbackUpdateUserProfile != null)
-        {
-            middleCallbackUpdateUserProfile.setPrimaryCallback(null);
-        }
-        middleCallbackUpdateUserProfile = null;
     }
 
     private void detachUserProfileCache()
@@ -159,19 +143,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     public boolean areFieldsValid()
     {
         return profileView.areFieldsValid();
-    }
-
-    protected Map<String, Object> getUserFormMap()
-    {
-        Map<String, Object> map = new HashMap<>();
-        map.put(UserFormDTO.KEY_TYPE, EmailCredentialsDTO.EMAIL_AUTH_TYPE);
-        profileView.populateUserFormMap(map);
-        return map;
-    }
-
-    public JSONCredentials getUserFormJSON()
-    {
-        return new JSONCredentials(getUserFormMap());
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -216,18 +187,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         userProfileCacheListener = createUserProfileCacheListener();
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
-        try
-        {
-            CredentialsDTO credentials = mainCredentialsPreference.getCredentials();
-            if (credentials != null)
-            {
-                this.profileView.populateCredentials(credentials.createJSON());
-            }
-        }
-        catch (JSONException e)
-        {
-            Timber.e(e, "Failed to populate current user %s", authenticationHeader);
-        }
     }
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
@@ -265,44 +224,27 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
             profileView.progressDialog.setCancelable(true);
-            EmailCredentialsDTO emailCredentialsDTO = profileView.getEmailCredentialsDTO();
-            EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
 
-            UserFormDTO userFormDTO = profileView.createForm();
-            if (userFormDTO == null)
-            {
-                return;
-            }
-
-            detachMiddleCallbackUpdateUserProfile();
-            middleCallbackUpdateUserProfile = userServiceWrapper.get().updateProfile(
-                    currentUserId.toUserBaseKey(),
-                    userFormDTO,
-                    createUpdateUserProfileCallback(emailCredentialsDTO));
+            updateProfileSubscription = profileView.obtainUserFormDTO()
+                    .flatMap(new Func1<UserFormDTO, Observable<UserProfileDTO>>()
+                    {
+                        @Override public Observable<UserProfileDTO> call(UserFormDTO userFormDTO)
+                        {
+                            return userServiceWrapper.get().updateProfileRx(currentUserId.toUserBaseKey(), userFormDTO);
+                        }
+                    })
+                    .doOnNext(new Action1<UserProfileDTO>()
+                    {
+                        @Override public void call(UserProfileDTO userProfileDTO)
+                        {
+                            profileView.progressDialog.hide(); // Before otherwise it is reset
+                            THToast.show(R.string.settings_update_profile_successful);
+                            navigator.popFragment();
+                        }
+                    })
+                    // FIXME/refactor create or update account in AccountManager with email & password
+                    .subscribe(new EmptyObserver<UserProfileDTO>());
         }
-    }
-
-    private THCallback<UserProfileDTO> createUpdateUserProfileCallback(final EmailCredentialsDTO emailCredentialsDTO)
-    {
-        return new THCallback<UserProfileDTO>()
-        {
-            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-            {
-                profileView.progressDialog.hide(); // Before otherwise it is reset
-                THToast.show(R.string.settings_update_profile_successful);
-                navigator.popFragment();
-                if (emailCredentialsDTO != null && mainCredentialsPreference.getCredentials() instanceof EmailCredentialsDTO)
-                {
-                    // FIXME/refactor: use AccountManager to save user user & password
-                    // THUser.saveCredentialsToUserDefaults(emailCredentialsDTO);
-                }
-            }
-
-            @Override protected void failure(THException ex)
-            {
-                THToast.show(ex.getMessage());
-            }
-        };
     }
 
     public String getPath(Uri uri)
@@ -329,19 +271,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         }
     }
 
-    protected void askImageFromCamera()
-    {
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        try
-        {
-            startActivityForResult(cameraIntent, REQUEST_CAMERA);
-        }
-        catch (ActivityNotFoundException e)
-        {
-            THToast.show(R.string.error_launch_camera);
-        }
-    }
-
     @Override public void notifyValidation(ValidationMessage message)
     {
         if (message != null && !message.getStatus() && message.getMessage() != null)
@@ -349,30 +278,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             THToast.show(message.getMessage());
         }
     }
-
-    // FIXME/refactor
-    //protected ProfileInfoView.Listener createProfileViewListener()
-    //{
-    //    return new SettingsProfileViewListener();
-    //}
-    //
-    //protected class SettingsProfileViewListener implements ProfileInfoView.Listener
-    //{
-    //    @Override public void onUpdateRequested()
-    //    {
-    //        // TODO
-    //    }
-    //
-    //    @Override public void onImageFromCameraRequested()
-    //    {
-    //        askImageFromCamera();
-    //    }
-    //
-    //    @Override public void onImageFromLibraryRequested()
-    //    {
-    //        askImageFromLibrary();
-    //    }
-    //}
 }
 
 

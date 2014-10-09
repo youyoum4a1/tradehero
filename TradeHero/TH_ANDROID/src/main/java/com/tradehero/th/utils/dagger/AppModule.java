@@ -11,12 +11,9 @@ import com.tradehero.th.BuildTypeModule;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.auth.AuthenticationModule;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -81,10 +78,6 @@ import javax.inject.Singleton;
                         GuideActivity.class,
 
                         ObjectMapperWrapper.class,
-                },
-        staticInjections =
-                {
-                        THUser.class,
                 },
         complete = false,
         library = true // TODO remove this line

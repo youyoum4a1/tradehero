@@ -3,12 +3,10 @@ package com.tradehero.th.network.retrofit;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
-import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 import retrofit.RequestInterceptor;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
@@ -53,10 +51,5 @@ public class RequestHeaders implements RequestInterceptor
                 request.addHeader(Constants.AUTHORIZATION, token);
             }
         }
-    }
-
-    public String createTypedAuthParameters(@NotNull CredentialsDTO credentialsDTO)
-    {
-        return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
     }
 }

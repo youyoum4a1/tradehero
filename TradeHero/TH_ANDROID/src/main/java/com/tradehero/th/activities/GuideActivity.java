@@ -91,7 +91,7 @@ public class GuideActivity extends Activity
     {
         Intent launchIntent = new Intent(Intent.ACTION_MAIN);
         launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        launchIntent.setComponent(new ComponentName(getPackageName(), SplashActivity.class.getName()));
+        launchIntent.setComponent(new ComponentName(getPackageName(), AuthenticationActivity.class.getName()));
         launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         return launchIntent;
     }
@@ -166,7 +166,7 @@ public class GuideActivity extends Activity
     private void removeShortcut()
     {
 
-        Intent shortcutIntent = new Intent(getApplicationContext(), SplashActivity.class);
+        Intent shortcutIntent = new Intent(getApplicationContext(), AuthenticationActivity.class);
         shortcutIntent.setAction(Intent.ACTION_MAIN);
 
         Intent addIntent = new Intent();

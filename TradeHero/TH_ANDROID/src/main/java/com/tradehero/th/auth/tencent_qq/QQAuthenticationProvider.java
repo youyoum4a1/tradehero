@@ -8,7 +8,6 @@ import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.network.service.SocialLinker;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,70 +35,6 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     }
     //</editor-fold>
 
-    @Override
-    public void authenticate(THAuthenticationCallback callback)
-    {
-        if (callback == null)
-        {
-            return;
-        }
-        if (currentOperationCallback != null)
-        {
-            onAuthorizeCancel();
-        }
-        currentOperationCallback = callback;
-
-        callback.onStart();
-
-        Context context = baseContext.get();
-        mTencent.logout(context);
-        if (!mTencent.isSessionValid())
-        {
-            IUiListener listener = new BaseUiListener()
-            {
-                @Override
-                protected void doComplete(JSONObject values)
-                {
-                    QQAppAuthData token = QQAppAuthData.parseAccessToken(values);
-                    onAnthorizeSuccess(token);
-                }
-            };
-            mTencent.login((Activity) context, SCOPE, listener);
-        }
-        else
-        {
-            QQAppAuthData token = new QQAppAuthData();
-            token.openid = mTencent.getOpenId();
-            token.access_token = mTencent.getAccessToken();
-            onAnthorizeSuccess(token);
-        }
-    }
-
-    private void onAnthorizeSuccess(QQAppAuthData qqData)
-    {
-        this.mAccessToken = qqData;
-        if (checkContext() && currentOperationCallback != null)
-        {
-            currentOperationCallback.onSuccess(buildTokenData(qqData));
-            currentOperationCallback = null;
-        }
-    }
-
-    private JSONCredentials buildTokenData(QQAppAuthData data)
-    {
-        JSONCredentials obj = null;
-        try
-        {
-            obj = new JSONCredentials();
-            obj.put(QQAuthenticationProvider.KEY_OPEN_ID, data.openid);
-            obj.put(QQAuthenticationProvider.KEY_ACCESS_TOKEN, data.access_token);
-        }
-        catch (JSONException e)
-        {
-        }
-        return obj;
-    }
-
     private boolean checkContext()
     {
         if (baseContext != null && baseContext.get() != null)
@@ -117,16 +52,6 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     {
         handleCancel(currentOperationCallback);
         currentOperationCallback = null;
-    }
-
-    @Override public void deauthenticate()
-    {
-    }
-
-    @Override
-    public boolean restoreAuthentication(JSONCredentials paramJSONObject)
-    {
-        return false;
     }
 
     public void authorizeCallBack(int requestCode, int resultCode, Intent data)

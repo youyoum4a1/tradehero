@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
@@ -12,13 +11,9 @@ import com.tradehero.th.auth.TwitterAuthenticationProvider;
 import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
 import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
-import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
-import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.inject.Injector;
-import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -31,8 +26,6 @@ import dagger.Provides;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 public class AuthenticationActivity extends BaseActivity
@@ -130,41 +123,6 @@ public class AuthenticationActivity extends BaseActivity
         throw new RuntimeException("FIXME/refactor");
     }
 
-    private SocialAuthenticationCallback createTwitterAuthenticationCallback()
-    {
-        return new SocialAuthenticationCallback(AnalyticsConstants.Twitter)
-        {
-            @Override public boolean isSigningUp()
-            {
-                return /*!(currentFragment instanceof SignInFragment)*/ false;
-            }
-
-            @Override public boolean onSocialAuthDone(JSONCredentials json)
-            {
-                if (super.onSocialAuthDone(json))
-                {
-                    return true;
-                }
-                // twitter does not return email for authentication user,
-                // we need to ask user for that
-
-
-                // FIXME/refactor: setTwitterData
-                //try
-                //{
-                //    setTwitterData((TwitterCredentialsDTO) credentialsDTOFactory.create(json));
-                //}
-                //catch (JSONException | ParseException e)
-                //{
-                //    Timber.e(e, "Failed to create twitter credentials with %s", json);
-                //}
-                progressDialog.hide();
-                navigator.pushFragment(TwitterEmailFragment.class, new Bundle());
-                return false;
-            }
-        };
-    }
-
     private void launchDashboard(UserLoginDTO userLoginDTO)
     {
         Intent intent = new Intent(this, DashboardActivity.class);
@@ -184,67 +142,6 @@ public class AuthenticationActivity extends BaseActivity
     @Override protected boolean requireLogin()
     {
         return false;
-    }
-
-    private class SocialAuthenticationCallback extends LogInCallback
-    {
-        private final String providerName;
-
-        public SocialAuthenticationCallback(String providerName)
-        {
-            this.providerName = providerName;
-        }
-
-        @Override public void done(UserLoginDTO user, THException ex)
-        {
-            Throwable cause;
-            Response response;
-            if (user != null)
-            {
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, providerName));
-                launchDashboard(user);
-            }
-            else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
-                    (response = ((RetrofitError) cause).getResponse()) != null && response.getStatus() == 403) // Forbidden
-            {
-                THToast.show(R.string.authentication_not_registered);
-            }
-            else
-            {
-                THToast.show(ex);
-            }
-
-            progressDialog.hide();
-        }
-
-        @Override public boolean onSocialAuthDone(JSONCredentials json)
-        {
-            if (!isSigningUp())
-            {
-                // HACK
-                if (!AnalyticsConstants.Email.equals(providerName))
-                {
-                    progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), providerName));
-                }
-                else
-                {
-                    progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero_only));
-                }
-                progressDialog.show();
-                return true;
-            }
-            return false;
-        }
-
-        @Override public void onStart()
-        {
-            progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero_only));
-        }
-
-        public boolean isSigningUp()
-        {
-            return false;
-        }
     }
 
     @Module(

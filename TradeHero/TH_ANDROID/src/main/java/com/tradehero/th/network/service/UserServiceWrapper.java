@@ -64,6 +64,7 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 @Singleton public class UserServiceWrapper
 {
@@ -391,6 +392,58 @@ import rx.functions.Action1;
                     middleCallback);
         }
         return middleCallback;
+    }
+
+    public Observable<UserProfileDTO> updateProfileRx(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserFormDTO userFormDTO)
+    {
+        Observable<UserProfileDTO> created;
+        if (userFormDTO.profilePicture == null)
+        {
+            created = userServiceRx.updateProfileRx(
+                    userBaseKey.key,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.username,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.biography,
+                    userFormDTO.location,
+                    userFormDTO.website);
+        }
+        else
+        {
+            created = userServiceRx.updateProfileRx(
+                    userBaseKey.key,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.username,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.biography,
+                    userFormDTO.location,
+                    userFormDTO.website,
+                    userFormDTO.profilePicture);
+        }
+
+        return created.map(new Func1<UserProfileDTO, UserProfileDTO>()
+        {
+            @Override public UserProfileDTO call(UserProfileDTO userProfileDTO)
+            {
+                return createUpdateProfileProcessor().process(userProfileDTO);
+            }
+        });
     }
 
     public UserProfileDTO updateProfilePropertyEmailNotifications(

@@ -7,8 +7,7 @@ import dagger.Module;
         injects = {
                 DashboardActivity.class,
                 AuthenticationActivity.class,
-                WXEntryActivity.class,
-                SplashActivity.class,
+                WXEntryActivity.class
         },
         staticInjections = {
         },

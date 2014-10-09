@@ -62,7 +62,7 @@ public class LoginSignUpFormDTO
 
         protected abstract T self();
 
-        public Builder(Context context, @SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
+        public Builder(Context context, StringPreference savedPushIdentifier)
         {
             this.versionId = VersionUtils.getVersionId(context);
             this.savedPushIdentifier = savedPushIdentifier;

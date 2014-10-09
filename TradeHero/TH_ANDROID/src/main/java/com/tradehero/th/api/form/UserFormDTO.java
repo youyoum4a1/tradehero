@@ -95,7 +95,7 @@ public class UserFormDTO extends LoginSignUpFormDTO
         private BitmapTypedOutput profilePicture;
         private String inviteCode;
 
-        public Builder(Context context, @SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
+        public Builder(Context context, StringPreference savedPushIdentifier)
         {
             super(context, savedPushIdentifier);
         }
