@@ -17,12 +17,12 @@ import org.jetbrains.annotations.NotNull;
     public static final int DEFAULT_MAX_SIZE = 1;
 
     @NotNull private final Lazy<SessionServiceWrapper> sessionService;
-    @NotNull private final Provider<LoginSignUpFormDTO.Builder> loginFormDTOBuilderProvider;
+    @NotNull private final Provider<LoginSignUpFormDTO.Builder2> loginFormDTOBuilderProvider;
     private final String authenticationHeader;
 
     @Inject public SystemStatusCache(
             @NotNull Lazy<SessionServiceWrapper> sessionService,
-            @NotNull Provider<LoginSignUpFormDTO.Builder> loginFormDTOBuilderProvider,
+            @NotNull Provider<LoginSignUpFormDTO.Builder2> loginFormDTOBuilderProvider,
             @AuthHeader String authenticationHeader)
     {
         super(DEFAULT_MAX_SIZE);

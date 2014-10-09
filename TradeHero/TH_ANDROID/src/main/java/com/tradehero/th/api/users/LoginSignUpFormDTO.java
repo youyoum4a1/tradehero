@@ -52,7 +52,7 @@ public class LoginSignUpFormDTO
         this.clientVersion = clientVersion;
     }
 
-    public abstract static class Builder<T extends Builder<T>>
+    protected abstract static class Builder<T extends Builder<T>>
     {
         protected final StringPreference savedPushIdentifier;
         protected final String versionId;

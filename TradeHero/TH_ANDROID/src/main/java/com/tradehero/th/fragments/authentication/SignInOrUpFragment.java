@@ -52,7 +52,7 @@ public class SignInOrUpFragment extends Fragment
     @Inject Analytics analytics;
     @Inject DashboardNavigator dashboardNavigator;
     @Inject SessionServiceWrapper sessionServiceWrapper;
-    @Inject Provider<LoginSignUpFormDTO.Builder> authenticationFormBuilderProvider;
+    @Inject Provider<LoginSignUpFormDTO.Builder2> authenticationFormBuilderProvider;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
     @Inject Provider<AuthDataAction> authDataActionProvider;
 
