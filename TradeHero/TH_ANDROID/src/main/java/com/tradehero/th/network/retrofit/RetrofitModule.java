@@ -50,7 +50,9 @@ import com.tradehero.th.network.service.QuoteService;
 import com.tradehero.th.network.service.RetrofitProtectedModule;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SessionService;
+import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.network.service.SocialService;
+import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.TradeService;
 import com.tradehero.th.network.service.TranslationServiceBing;
 import com.tradehero.th.network.service.TranslationTokenService;
@@ -368,4 +370,8 @@ public class RetrofitModule
         return hostNameVerifier;
     }
 
+    @Provides @Singleton SocialLinker provideSocialLinker(SocialServiceWrapper socialServiceWrapper)
+    {
+        return socialServiceWrapper;
+    }
 }
