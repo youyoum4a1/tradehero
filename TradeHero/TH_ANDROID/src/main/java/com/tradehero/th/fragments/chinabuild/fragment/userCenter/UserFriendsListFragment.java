@@ -259,7 +259,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         private void onFinish()
         {
             listView.onRefreshComplete();
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listFriends);
         }
     }
 

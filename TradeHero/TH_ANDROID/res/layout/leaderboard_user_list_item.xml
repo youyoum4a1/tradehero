@@ -21,8 +21,8 @@
   <LinearLayout
       android:id="@+id/llRank"
       android:layout_centerVertical="true"
-      android:layout_marginLeft="@dimen/right_arrow_margin"
-      android:layout_marginRight="@dimen/right_arrow_margin"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
       android:gravity="center"
       android:layout_width="48dp"
       android:layout_height="48dp">
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1"
-        android:textColor="@color/text_gray_normal"
+        android:textColor="#c8c7cc"
         android:textSize="24sp"/>
   </LinearLayout>
 
@@ -89,7 +89,6 @@
       android:layout_alignParentBottom="true"
       android:layout_toRightOf="@id/llRank"
       android:background="@color/separate_line_color"/>
-
 
 
 </RelativeLayout>

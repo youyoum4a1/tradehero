@@ -5,10 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp"
+    android:padding="10dp"
     android:background="@drawable/listview_item_selector"
     android:id="@+id/llItemAll"
     android:orientation="vertical"
@@ -177,7 +174,6 @@
     </LinearLayout>
   </LinearLayout>
   <include
-      android:layout_marginTop="10dp"
       android:id="@+id/includeTLOperater"
       layout="@layout/timeline_operater_line"
       android:layout_below="@id/title0"/>

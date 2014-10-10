@@ -91,7 +91,7 @@
   <color name="main_tab_text_color_active">#1789d5</color>
   <color name="main_tab_text_color_default">#949494</color>
 
-  <color name="separate_line_color">#aaaaaa</color>
+  <color name="separate_line_color">#d3d2d6</color>
 
   <color name="bg_fragment">#FFFFFF</color>
   <color name="orange_color">#FFAE00</color>
