@@ -1,11 +1,15 @@
 package com.tradehero.th.persistence.achievement;
 
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.broadcast.BroadcastTaskNew;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -20,15 +24,21 @@ import timber.log.Timber;
 
     @NotNull private final AchievementServiceWrapper achievementServiceWrapper;
     @NotNull private final BroadcastUtils broadcastUtils;
+    @NotNull private final Lazy<CurrentUserId> currentUserId;
+    @NotNull private final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserAchievementCache(
             @NotNull AchievementServiceWrapper achievementServiceWrapper,
-            @NotNull BroadcastUtils broadcastUtils)
+            @NotNull BroadcastUtils broadcastUtils,
+            @NotNull Lazy<CurrentUserId> currentUserId,
+            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache)
     {
         super(DEFAULT_SIZE);
         this.achievementServiceWrapper = achievementServiceWrapper;
         this.broadcastUtils = broadcastUtils;
+        this.currentUserId = currentUserId;
+        this.portfolioCompactListCache = portfolioCompactListCache;
     }
     //</editor-fold>
 
@@ -78,6 +88,7 @@ import timber.log.Timber;
     {
         put(userAchievementDTO.getUserAchievementId(), userAchievementDTO);
         final UserAchievementId userAchievementId = userAchievementDTO.getUserAchievementId();
+        clearPortfolioCaches(userAchievementDTO.achievementDef);
         return broadcastUtils.enqueue(userAchievementId);
     }
 
@@ -91,5 +102,13 @@ import timber.log.Timber;
             }
         }
         return false;
+    }
+
+    public void clearPortfolioCaches(@NotNull AchievementDefDTO achievementDefDTO)
+    {
+        if (achievementDefDTO.virtualDollars != 0)
+        {
+            portfolioCompactListCache.get().invalidate(currentUserId.get().toUserBaseKey());
+        }
     }
 }
