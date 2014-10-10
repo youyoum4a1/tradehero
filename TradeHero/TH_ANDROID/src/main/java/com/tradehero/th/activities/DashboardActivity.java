@@ -44,7 +44,6 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
-import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
@@ -123,7 +122,6 @@ public class DashboardActivity extends BaseActivity
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
     private Integer restoreRequestCode;
 
-    @Inject Lazy<WeiboAuthenticationProvider> weiboAuthenticationProviderLazy;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtilLazy;
@@ -508,7 +506,6 @@ public class DashboardActivity extends BaseActivity
         facebookAuthenticationProvider.onActivityResult(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
-        weiboAuthenticationProviderLazy.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
     @Override public void openMenu()
