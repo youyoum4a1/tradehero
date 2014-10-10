@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
@@ -48,18 +49,15 @@ abstract public class DashboardFragment extends BaseFragment
         }
     }
 
-
     public void onClickHeadLeft()
     {
         popCurrentFragment();
     }
 
-
     public void onClickHeadRight0()
     {
 
     }
-
 
     public void onClickHeadRight1()
     {
@@ -124,10 +122,22 @@ abstract public class DashboardFragment extends BaseFragment
     {
         if (tvHeadRight0 != null)
         {
-            if(right!=null){right.setBounds(0, 0, right.getMinimumWidth(), right.getMinimumHeight());}
-            if(left!=null){left.setBounds(0, 0, left.getMinimumWidth(), left.getMinimumHeight());}
-            if(top!=null){top.setBounds(0, 0, top.getMinimumWidth(), top.getMinimumHeight());}
-            if(bottom!=null){bottom.setBounds(0, 0, bottom.getMinimumWidth(), bottom.getMinimumHeight());}
+            if (right != null)
+            {
+                right.setBounds(0, 0, right.getMinimumWidth(), right.getMinimumHeight());
+            }
+            if (left != null)
+            {
+                left.setBounds(0, 0, left.getMinimumWidth(), left.getMinimumHeight());
+            }
+            if (top != null)
+            {
+                top.setBounds(0, 0, top.getMinimumWidth(), top.getMinimumHeight());
+            }
+            if (bottom != null)
+            {
+                bottom.setBounds(0, 0, bottom.getMinimumWidth(), bottom.getMinimumHeight());
+            }
             tvHeadRight0.setCompoundDrawables(left, top, right, bottom);
         }
     }
@@ -262,7 +272,6 @@ abstract public class DashboardFragment extends BaseFragment
                     onClickHeadRight1();
                 }
             });
-
         }
     }
 
@@ -374,5 +383,17 @@ abstract public class DashboardFragment extends BaseFragment
     public void setLeftButtonOnClickListener(View.OnClickListener listener)
     {
         tvHeadLeft.setOnClickListener(listener);
+    }
+
+    public void closeInputMethod()
+    {
+        try
+        {
+            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e)
+        {
+
+        }
     }
 }

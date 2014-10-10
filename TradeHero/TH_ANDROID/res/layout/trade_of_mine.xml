@@ -51,24 +51,24 @@
           android:id="@+id/tvWatchListItemROI"
           style="@style/trade_of_me_value_text"
           android:textSize="20sp"
-          android:text=""/>
+          android:text=" - -"/>
       <TextView
           android:layout_below="@id/tvWatchListItemROI"
           android:id="@+id/tvWatchListItemAllAmount"
           style="@style/trade_of_me_value_text"
           android:textColor="@color/black"
-          android:text=""/>
+          android:text=" - -"/>
       <TextView
           android:layout_below="@id/tvWatchListItemAllAmount"
           android:id="@+id/tvWatchListItemDynamicAmount"
           style="@style/trade_of_me_value_text"
-          android:text=""/>
+          android:text=" - -"/>
       <TextView
           android:layout_below="@id/tvWatchListItemDynamicAmount"
           android:id="@+id/tvWatchListItemCash"
           style="@style/trade_of_me_value_text"
           android:textColor="@color/black"
-          android:text=""/>
+          android:text=" - -"/>
 
     </RelativeLayout>
     <LinearLayout
@@ -93,6 +93,18 @@
     </LinearLayout>
   </LinearLayout>
 
+  <com.tradehero.common.widget.BetterViewAnimator
+      android:id="@+id/bvaViewAll"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+
+  <ProgressBar
+      android:id="@android:id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      />
+
   <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       ptr:ptrHeaderTextColor="@color/black"
@@ -105,6 +117,6 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
   </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
-
+  </com.tradehero.common.widget.BetterViewAnimator>
 </LinearLayout>
 

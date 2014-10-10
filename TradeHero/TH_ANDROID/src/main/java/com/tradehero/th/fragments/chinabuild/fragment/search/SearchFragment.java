@@ -202,6 +202,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         detachSecurityHotListCache();
         detachSecurityListCache();
         ButterKnife.reset(this);
+        closeInputMethod();
         super.onDestroyView();
     }
 

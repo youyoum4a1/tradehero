@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -16,6 +17,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -81,6 +83,8 @@ public class TradeOfMineFragment extends DashboardFragment
     @InjectView(R.id.tvWatchListItemDynamicAmount) TextView tvItemDynamicAmount;
     @InjectView(R.id.tvWatchListItemCash) TextView tvItemCash;
 
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.tradeMyPositionList) SecurityListView listView;
 
     private OwnedPortfolioId shownPortfolioId;
@@ -119,6 +123,14 @@ public class TradeOfMineFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         initView();
         fetchPortfolio();
+        if (adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeMyPositionList);
+        }
         return view;
     }
 
@@ -344,21 +356,19 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
         {
-            //displayWatchlist(value);
             Timber.d("");
             initWatchList(value);
-            finish();
+            onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            //watchlistPositionListView.onRefreshComplete();
-            //THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
-            finish();
+            onFinish();
         }
 
-        private void finish()
+        private void onFinish()
         {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeMyPositionList);
             listView.onRefreshComplete();
         }
     }

@@ -3,9 +3,22 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/contest_center_content_screen"
+    android:background="@color/bg_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+
+<com.tradehero.common.widget.BetterViewAnimator
+      android:id="@+id/bvaViewAll"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+
+  <ProgressBar
+      android:id="@android:id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      />
 
   <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
@@ -19,6 +32,6 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
   </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
-
+</com.tradehero.common.widget.BetterViewAnimator>
 </LinearLayout>
 

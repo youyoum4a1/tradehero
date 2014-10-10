@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -13,6 +14,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
@@ -49,6 +51,9 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
 
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
 
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
+
     private UserTimeLineAdapter adapter;
 
     private Dialog mShareSheetDialog;
@@ -75,6 +80,16 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         fetchTimeLine();
         initView();
+
+        if (adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
+        }
+
         return view;
     }
 
@@ -222,13 +237,19 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
                 adapter.addItems(timelineDTO);
                 adapter.notifyDataSetChanged();
             }
-            listTimeLine.onRefreshComplete();
+            onFinish();
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
+            onFinish();
+        }
+
+        public void onFinish()
+        {
             listTimeLine.onRefreshComplete();
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
         }
     }
 }

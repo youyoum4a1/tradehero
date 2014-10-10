@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -12,6 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -39,7 +41,8 @@ import timber.log.Timber;
  */
 public class PositionDetailFragment extends DashboardFragment
 {
-    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = PositionDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
+    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+            PositionDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
     private static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = PositionDetailFragment.class.getName() + ".positionDTOKey";
 
     @Inject Lazy<PositionCache> positionCache;
@@ -47,20 +50,21 @@ public class PositionDetailFragment extends DashboardFragment
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
 
-
     protected PositionDTOKey positionDTOKey;
     protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> fetchPositionListener;
     protected PositionDTO positionDTO;
     protected TradeDTOList tradeDTOList;
     private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
 
-    @InjectView(R.id.listTrade) SecurityListView listView;
     @InjectView(R.id.tvPositionTotalCcy) TextView tvPositionTotalCcy;//累计盈亏
     @InjectView(R.id.tvPositionSumAmont) TextView tvPositionSumAmont;//总投资
     @InjectView(R.id.tvPositionStartTime) TextView tvPositionStartTime;//建仓时间
     @InjectView(R.id.tvPositionLastTime) TextView tvPositionLastTime;//最后交易
     @InjectView(R.id.tvPositionHoldTime) TextView tvPositionHoldTime;//持有时间
 
+    @InjectView(R.id.listTrade) SecurityListView listView;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
 
     private PositionTradeListAdapter adapter;
 
@@ -109,8 +113,17 @@ public class PositionDetailFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.position_detail_fragment, container, false);
         ButterKnife.inject(this, view);
 
-
         initListView();
+
+        if (adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
+        }
+
         return view;
     }
 
@@ -201,11 +214,12 @@ public class PositionDetailFragment extends DashboardFragment
                 .signTypeArrow()
                 .build();
         tvPositionTotalCcy.setTextColor(getResources().getColor(roi.getColorResId()));
-        tvPositionTotalCcy.setText(""+positionDTO.getTotalScoreOfTrade() + "("+roi.toString()+")");
-        tvPositionSumAmont.setText(""+Math.round(positionDTO.sumInvestedAmountRefCcy));
+        tvPositionTotalCcy.setText("" + positionDTO.getTotalScoreOfTrade() + "(" + roi.toString() + ")");
+        tvPositionSumAmont.setText("" + Math.round(positionDTO.sumInvestedAmountRefCcy));
         tvPositionStartTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.earliestTradeUtc));
         tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));
-        tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc,positionDTO.getLatestHoldDate())));
+        tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,
+                DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.getLatestHoldDate())));
     }
 
     protected void fetchTrades()
@@ -229,12 +243,18 @@ public class PositionDetailFragment extends DashboardFragment
         @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
         {
             linkWith(tradeDTOs, true);
+            onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull OwnedPositionId key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_trade_list_info);
-            Timber.e("Error fetching the list of trades %s", key, error);
+            onFinish();
+        }
+
+        public void onFinish()
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
         }
     }
 

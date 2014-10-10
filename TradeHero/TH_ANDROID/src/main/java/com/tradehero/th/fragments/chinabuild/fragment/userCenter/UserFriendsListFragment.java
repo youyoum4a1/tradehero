@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -14,6 +15,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.UserFriendsListAdapter;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
@@ -25,8 +27,6 @@ import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragmen
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
-import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -52,11 +52,12 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
 
     @Inject protected HeroManagerInfoFetcher heroInfoFetcher;
     @InjectView(R.id.listFriends) SecurityListView listView;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
 
     protected UserProfileCompactDTO selectedItem;
 
     private UserFriendsListAdapter adapter;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -83,7 +84,16 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
 
         initView();
         fetchUserFriendList();
-        startLoadding();
+
+        if (adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listFriends);
+        }
+
         return view;
     }
 
@@ -157,14 +167,6 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         {
             fetchHeros();
             fetchFollowers();
-        }
-    }
-
-    public void startLoadding()
-    {
-        if (getActivity() != null)
-        {
-            alertDialogUtilLazy.get().showProgressDialog(getActivity(), "加载中");
         }
     }
 
@@ -244,21 +246,20 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
         {
             followerSummaryDTO = value;
-            Timber.d("onDTOReceived");
             initFollowerData(value);
-            finish();
+            onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_follower);
-            finish();
+            onFinish();
         }
 
-        private void finish()
+        private void onFinish()
         {
             listView.onRefreshComplete();
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
         }
     }
 
@@ -270,20 +271,20 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             //displayProgress(false);
             Timber.d("");
             initHeroData(value);
-            finish();
+            onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
 
             THToast.show(R.string.error_fetch_hero);
-            finish();
+            onFinish();
         }
 
-        private void finish()
+        private void onFinish()
         {
             listView.onRefreshComplete();
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listFriends);
         }
     }
 
@@ -301,6 +302,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         }
         this.followerInfoFetcher = null;
     }
+
     protected void detachHeroFetcher()
     {
         //if (this.heroInfoFetcher != null)

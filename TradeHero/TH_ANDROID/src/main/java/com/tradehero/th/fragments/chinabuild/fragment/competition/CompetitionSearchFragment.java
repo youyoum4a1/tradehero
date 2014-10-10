@@ -148,6 +148,7 @@ public class CompetitionSearchFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         //ButterKnife.reset(this);
+        closeInputMethod();
         super.onDestroyView();
     }
 

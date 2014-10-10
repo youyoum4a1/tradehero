@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -19,6 +20,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -53,6 +55,8 @@ public class CompetitionBaseFragment extends DashboardFragment
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerVip;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerMine;
 
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
 
     @InjectView(R.id.listCompetitions) SecurityListView listCompetitions;//比赛列表
     @InjectView(R.id.llCompetitionAdv) RelativeLayout llCompetitionAdv;//广告栏
@@ -90,6 +94,16 @@ public class CompetitionBaseFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.competition_base_layout, container, false);
         ButterKnife.inject(this, view);
         initListView();
+
+        if (adapterList.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listCompetitions);
+        }
+
         return view;
     }
 
@@ -441,15 +455,18 @@ public class CompetitionBaseFragment extends DashboardFragment
             {
                 initMyCompetition(key, value);
             }
-            if(listCompetitions!=null)
-            {
-                listCompetitions.onRefreshComplete();
-            }
+            onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull CompetitionListType key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.fetch_error));
+            onFinish();
+        }
+
+        public void onFinish()
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listCompetitions);
             if(listCompetitions!=null)
             {
                 listCompetitions.onRefreshComplete();

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -13,6 +14,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
@@ -38,8 +40,6 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
-import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -68,13 +68,13 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
     public static final int TYPE_DISCUSS = 0;
     public static final int TYPE_NEWS = 1;
 
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-
     @Inject NewsItemCompactListCacheNew newsTitleCache;
     @Nullable private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
 
     private SecurityTimeLineDiscussOrNewsAdapter adapter;
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
 
     private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
@@ -116,9 +116,18 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
 
         if (adapter.getCount() == 0)
         {
-            startLoadding();
             refreshData(false);
         }
+
+        if (adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
+        }
+
         return view;
     }
 
@@ -133,7 +142,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
             {
                 Timber.d("Item position = " + position);
                 AbstractDiscussionCompactDTO dto = adapter.getItem(position);
-                enterTimeLineDetail( dto);
+                enterTimeLineDetail(dto);
             }
 
             @Override public void OnTimeLinePraiseClicked(int position)
@@ -226,21 +235,6 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
         }
     }
 
-    public void startLoadding()
-    {
-        //alertDialogUtilLazy.get().dismissProgressDialog();
-        if (getActivity() != null)
-        {
-            alertDialogUtilLazy.get().showProgressDialog(getActivity(), "加载中");
-        }
-    }
-
-    public void endLoading()
-    {
-        alertDialogUtilLazy.get().dismissProgressDialog();
-        listTimeLine.onRefreshComplete();
-    }
-
     @Override public void onStop()
     {
         super.onStop();
@@ -277,7 +271,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
                 @NotNull PaginatedDTO<NewsItemCompactDTO> value)
         {
             linkWith(key, value);
-            finish();
+            onFinish();
         }
 
         @Override public void onDTOReceived(
@@ -285,7 +279,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
                 @NotNull PaginatedDTO<NewsItemCompactDTO> value)
         {
             linkWith(key, value);
-            finish();
+            onFinish();
         }
 
         @Override public void onErrorThrown(
@@ -293,12 +287,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
                 @NotNull Throwable error)
         {
             //THToast.show("");
-            finish();
-        }
-
-        public void finish()
-        {
-            endLoading();
+            onFinish();
         }
     }
 
@@ -382,12 +371,18 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
             discussionListKey.page += 1;
         }
 
-        endLoading();
+        onFinish();
     }
 
     @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)
     {
         Timber.d(error.getMessage());
-        endLoading();
+        onFinish();
+    }
+
+    public void onFinish()
+    {
+        betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
+        listTimeLine.onRefreshComplete();
     }
 }

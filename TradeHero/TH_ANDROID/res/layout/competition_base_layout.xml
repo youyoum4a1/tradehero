@@ -31,6 +31,17 @@
         />
   </RelativeLayout>
 
+  <com.tradehero.common.widget.BetterViewAnimator
+      android:id="@+id/bvaViewAll"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+
+  <ProgressBar
+      android:id="@android:id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      />
   <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       ptr:ptrHeaderTextColor="@color/black"
@@ -43,6 +54,7 @@
       android:layout_height="fill_parent">
   </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
 
+  </com.tradehero.common.widget.BetterViewAnimator>
 
 </LinearLayout>
 

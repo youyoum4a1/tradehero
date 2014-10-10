@@ -201,7 +201,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachSecurityListCache();
-
+        closeInputMethod();
         //ButterKnife.reset(this);
         super.onDestroyView();
     }
