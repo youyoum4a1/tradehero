@@ -30,13 +30,15 @@ class Navigator<ActivityType extends Activity>
     protected final FragmentManager manager;
     private int fragmentContentId;
     private int backPressedCount;
+    private final int minimumBackstackSize;
 
     //<editor-fold desc="Constructors">
-    public Navigator(ActivityType activity, FragmentManager manager, int fragmentContentId)
+    public Navigator(ActivityType activity, FragmentManager manager, int fragmentContentId, int minimumBackstackSize)
     {
         this.activity = activity;
         this.manager = manager;
         this.fragmentContentId = fragmentContentId;
+        this.minimumBackstackSize = minimumBackstackSize;
     }
     //</editor-fold>
 
@@ -129,7 +131,7 @@ class Navigator<ActivityType extends Activity>
 
             if (isBackStackEmpty())
             {
-                if (backPressedCount > 0)
+                if (backPressedCount >= minimumBackstackSize)
                 {
                     resetBackPressCount();
                     activity.finish();
@@ -163,7 +165,7 @@ class Navigator<ActivityType extends Activity>
 
     public boolean isBackStackEmpty()
     {
-        return manager.getBackStackEntryCount() <= 1;
+        return manager.getBackStackEntryCount() <= minimumBackstackSize;
     }
 
     protected void resetBackPressCount()

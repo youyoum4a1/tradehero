@@ -45,7 +45,7 @@ public class AuthenticationActivity extends BaseActivity
 
     private void setupNavigator()
     {
-        navigator = new DashboardNavigator(this, R.id.fragment_content, SignInOrUpFragment.class);
+        navigator = new DashboardNavigator(this, R.id.fragment_content, SignInOrUpFragment.class, 0);
     }
 
     @Override protected void onResume()
