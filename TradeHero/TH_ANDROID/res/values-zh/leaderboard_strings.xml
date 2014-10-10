@@ -4,6 +4,7 @@
   <string name="leaderboard_community_by_exchange">根据交易所</string>
   <string name="leaderboard_community_by_sector">根据行业类别</string>
   <string name="leaderboard_community_friends">朋友</string>
+  <string name="leaderboard_community_invite_friends">邀请朋友</string>
   <string name="leaderboard_community_leaderboards">英雄榜</string>
   <string name="leaderboard_community_exchange">交易所</string>
   <string name="leaderboard_community_sector">行业</string>
@@ -46,9 +47,15 @@
   <string name="leaderboard_friend_empty_text_invite_friends">… 与英雄更加紧密！好成绩，要和好朋友一起分享。连接微博、看看你在朋友中排第几</string>
   <string name="leaderboard_connect_accounts">连接账号…</string>
   <string name="leaderboard_follow">@string/follow</string>
+
   <string name="error_fetch_leaderboard_def_list_key">获取英雄榜定义列表出现错误</string>
+  <string name="error_fetch_leaderboard_def">读取排行榜信息出错</string>
+  <string name="error_fetch_leaderboard_info">读取当前排行信息出错</string>
+  <string name="error_fetch_user_on_leaderboard">读取你的个人排行信息出错</string>
+
   <string name="leaderboard_community_followers">粉丝</string>
   <string name="leaderboard_community_heros">英雄</string>
+
   <string name="leaderboard_community_hero_premium">{0,choice,0#高级|0&lt;高级({0})}</string>
   <string name="leaderboard_community_hero_free">{0,choice,0#普通|0&lt;普通({0})}</string>
   <string name="leaderboard_community_hero_all">{0,choice,0#所有|0&lt;所有({0})}</string>
@@ -56,4 +63,6 @@
   <string name="follower_type_premium">高级粉丝</string>
   <string name="follower_type_free">普通粉丝</string>
   <string name="follower_type_all">所有粉丝</string>
+
+  <string name="leaderboard_see_competition_rules">查看比赛规则</string>
 </resources>

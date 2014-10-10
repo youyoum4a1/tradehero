@@ -57,7 +57,7 @@
   <string name="sign_prefix_positive">+</string>
   <string name="sign_prefix_negative">-</string>
   <string name="sign_prefix_zero"/>
-  <string name="percentage_suffix">%</string>
+  <string name="percentage_suffix" translatable="false">%</string>
 
   <!-- TradeHero URLs -->
   <string name="th_faq_url">http://www.tradehero.mobi/faq</string>

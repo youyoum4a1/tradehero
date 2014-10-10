@@ -51,10 +51,10 @@
 
   <string name="share_success">分享成功</string>
 
-  <!--<string name="market_on_board_error_fetch_exchange_sector">There was an error fetching the list of exchanges and sectors</string>-->
-  <!--<string name="market_on_board_exchange_interested">Which exchange are you most interested in?</string>-->
-  <!--<string name="market_on_board_sector_interested">Which sector are you most interested in?</string>-->
-  <!--<string name="market_on_board_country_from">What country are you from?</string>-->
+  <string name="market_on_board_error_fetch_exchange_sector">获取交易分类信息列表出错。</string>
+  <string name="market_on_board_exchange_interested">你最喜欢哪个交易所？</string>
+  <string name="market_on_board_sector_interested">你最关注哪类股票信息？</string>
+  <string name="market_on_board_country_from">你来自哪里？</string>
   <string name="security_on_board_select_invitation_title">建议您 ...</string>
   <string name="security_on_board_select_invitation_come_on">关注这些股票 !</string>
 
