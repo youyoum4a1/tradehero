@@ -10,6 +10,7 @@ import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
 import com.tradehero.th.inject.Injector;
+import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -28,6 +29,7 @@ public class AuthenticationActivity extends BaseActivity
     @Inject Lazy<WeiboAuthenticationProvider> weiboAuthenticationProviderLazy;
     @Inject Analytics analytics;
     @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
+    @Inject DTOCacheUtil dtoCacheUtil;
 
     private DashboardNavigator navigator;
 
@@ -38,6 +40,7 @@ public class AuthenticationActivity extends BaseActivity
         setContentView(R.layout.authentication_layout);
 
         setupNavigator();
+        dtoCacheUtil.clearUserRelatedCaches();
     }
 
     private void setupNavigator()

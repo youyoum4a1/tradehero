@@ -220,14 +220,13 @@ import rx.functions.Func1;
                     userFormDTO.profilePicture);
         }
 
-        created.doOnNext(new Action1<UserProfileDTO>()
+        return created.doOnNext(new Action1<UserProfileDTO>()
         {
             @Override public void call(UserProfileDTO userProfileDTO)
             {
                 createSignInUpProfileProcessor().process(userProfileDTO);
             }
         });
-        return created;
     }
 
     public MiddleCallback<UserProfileDTO> signUpWithEmail(

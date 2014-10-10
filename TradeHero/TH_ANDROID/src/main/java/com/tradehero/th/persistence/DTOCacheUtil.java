@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
@@ -125,6 +127,7 @@ import org.jetbrains.annotations.Nullable;
 
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     protected final StringPreference serverEndpointPreference;
+    protected final SharedPreferences userSharedPreferences;
     @NotNull protected final BroadcastUtils broadcastUtils;
     @NotNull protected final UserBaseDTOUtil userBaseDTOUtil;
     @NotNull protected final Context context;
@@ -177,6 +180,7 @@ import org.jetbrains.annotations.Nullable;
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
             Lazy<QuestBonusListCache> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
+            @ForUser SharedPreferences userSharedPreferences,
             @NotNull BroadcastUtils broadcastUtils,
             @NotNull UserBaseDTOUtil userBaseDTOUtil,
             @NotNull Context context)
@@ -228,6 +232,7 @@ import org.jetbrains.annotations.Nullable;
         this.watchlistPositionCache = watchlistPositionCache;
         this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
+        this.userSharedPreferences = userSharedPreferences;
         this.broadcastUtils = broadcastUtils;
         this.userBaseDTOUtil = userBaseDTOUtil;
         this.context = context;
@@ -281,6 +286,7 @@ import org.jetbrains.annotations.Nullable;
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
+        userSharedPreferences.edit().clear().apply();
 
         broadcastUtils.clear();
     }
