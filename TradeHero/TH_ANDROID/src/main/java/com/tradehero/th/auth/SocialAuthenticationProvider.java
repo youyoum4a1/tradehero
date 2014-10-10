@@ -13,14 +13,6 @@ import rx.functions.Func1;
 
 public abstract class SocialAuthenticationProvider implements THAuthenticationProvider
 {
-    public static final String SCREEN_NAME_KEY = "screen_name";
-    public static final String ID_KEY = "id";
-    public static final String EMAIL_KEY = "email";
-    public static final String AUTH_TOKEN_SECRET_KEY = "auth_token_secret";
-    public static final String AUTH_TOKEN_KEY = "auth_token";
-    public static final String CONSUMER_KEY_KEY = "consumer_key";
-    public static final String CONSUMER_SECRET_KEY = "consumer_secret";
-
     // TODO make it private when the refactor is done
     protected WeakReference<Activity> baseActivity;
     private Map<Activity, Observable<AuthData>> cachedObservables = new WeakHashMap<>();

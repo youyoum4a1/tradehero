@@ -254,6 +254,11 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         //        }
     }
 
+    @Override public void logout()
+    {
+        throw new RuntimeException("Not implemented");
+    }
+
     /**
      * 微博认证授权回调类。 1. SSO 授权时，需要在 {@link android.app.Activity#onActivityResult} 中调用 {@link SsoHandler#authorizeCallBack}
      * 后， 该回调才会被执行。 2. 非 SSO 授权时，当授权结束后，该回调就会被执行。 当授权成功后，请保存该 access_token、expires_in、uid 等信息到

@@ -28,4 +28,9 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
         EmailSignInFragment emailSignInFragment = dashboardNavigatorProvider.get().pushFragment(EmailSignInFragment.class);
         return emailSignInFragment.obtainAuthData();
     }
+
+    @Override public void logout()
+    {
+        // do nothing
+    }
 }

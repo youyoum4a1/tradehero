@@ -7,7 +7,7 @@ import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionDefaultAudience;
-import com.facebook.SharedPreferencesTokenCachingStrategy;
+import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.facebook.SubscriberCallback;
@@ -46,6 +46,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
     private final String applicationId;
     private int activityCode;
     private Context applicationContext;
+    @NotNull private final TokenCachingStrategy tokenCachingStrategy;
     private List<String> permissions;
     private THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
     private String userId;
@@ -55,10 +56,12 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
     @Inject public FacebookAuthenticationProvider(
             @NotNull SocialLinker socialLinker,
             Context context,
+            @NotNull TokenCachingStrategy tokenCachingStrategy,
             @FacebookAppId String applicationId,
             @FacebookPermissions List<String> permissions)
     {
         super(socialLinker);
+        this.tokenCachingStrategy = tokenCachingStrategy;
         PRECISE_DATE_FORMAT.setTimeZone(new SimpleTimeZone(0, "GMT"));
         
         this.baseActivity = new WeakReference<>(null);
@@ -178,6 +181,17 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         return Observable.create(new FacebookAuthenticationSubscribe(activity, permissions));
     }
 
+    @Override public void logout()
+    {
+        Session session = Session.getActiveSession();
+        if (session != null && !session.isClosed())
+        {
+            session.closeAndClearTokenInformation();
+        }
+
+        tokenCachingStrategy.clear();
+    }
+
     private class FacebookAuthenticationSubscribe implements Observable.OnSubscribe<Session>
     {
         private final Activity activity;
@@ -209,7 +223,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 
             activeSession = new Session.Builder(activity)
                     .setApplicationId(applicationId)
-                    .setTokenCachingStrategy(new SharedPreferencesTokenCachingStrategy(activity))
+                    .setTokenCachingStrategy(tokenCachingStrategy)
                     .build();
             Session.OpenRequest openRequest = new Session.OpenRequest(activity);
             openRequest.setRequestCode(activityCode);

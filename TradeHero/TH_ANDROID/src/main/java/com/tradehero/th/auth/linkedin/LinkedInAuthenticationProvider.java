@@ -7,7 +7,6 @@ import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ConsumerKey;
 import com.tradehero.th.auth.operator.ConsumerSecret;
-import com.tradehero.th.auth.operator.LinkedIn;
 import com.tradehero.th.auth.operator.OperatorOAuthDialog;
 import com.tradehero.th.network.service.SocialLinker;
 import java.io.UnsupportedEncodingException;
@@ -38,8 +37,6 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
     private static final String CALLBACK_URL = "x-oauthflow-linkedin://callback";
     private static final String SERVICE_URL_ID = "www.linkedin";
 
-    private final LinkedIn linkedIn;
-
     @NotNull final String consumerKey;
     @NotNull final String consumerSecret;
     @NotNull final CommonsHttpOAuthProvider oAuthProvider;
@@ -47,12 +44,10 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 
     @Inject public LinkedInAuthenticationProvider(
             @NotNull SocialLinker socialLinker,
-            LinkedIn linkedIn,
             @ConsumerKey("LinkedIn") @NotNull String consumerKey,
             @ConsumerSecret("LinkedIn") @NotNull String consumerSecret)
     {
         super(socialLinker);
-        this.linkedIn = linkedIn;
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
         this.oAuthProvider = createOAuthProvider();
@@ -80,12 +75,6 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
     @NotNull private CommonsHttpOAuthConsumer createOAuthConsumer()
     {
         return new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
-    }
-
-    private void deauthenticate()
-    {
-        linkedIn.setAuthToken(null);
-        linkedIn.setAuthTokenSecret(null);
     }
 
     @Override public Observable<AuthData> createAuthDataObservable(final Activity activity)
@@ -145,5 +134,10 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
                         }
                     }
                 });
+    }
+
+    @Override public void logout()
+    {
+        oAuthConsumer.setTokenWithSecret(null, null);
     }
 }

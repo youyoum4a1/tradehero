@@ -59,6 +59,11 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
         Timber.d("windy requestCode = " + requestCode + "resultCode = " + resultCode + "data = " + data.toString());
     }
 
+    @Override public void logout()
+    {
+        throw new RuntimeException("Not implemented");
+    }
+
     private class BaseUiListener implements IUiListener
     {
 

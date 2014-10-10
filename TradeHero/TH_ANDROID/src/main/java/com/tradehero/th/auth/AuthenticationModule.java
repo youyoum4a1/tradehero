@@ -1,5 +1,8 @@
 package com.tradehero.th.auth;
 
+import android.content.Context;
+import com.facebook.SharedPreferencesTokenCachingStrategy;
+import com.facebook.TokenCachingStrategy;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
@@ -32,5 +35,10 @@ public class AuthenticationModule
         enumToUtilMap.put(SocialNetworkEnum.WB, weiboAuthenticationProvider);
         enumToUtilMap.put(SocialNetworkEnum.TH, emailAuthenticationProvider);
         return Collections.unmodifiableMap(enumToUtilMap);
+    }
+
+    @Provides @Singleton TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
+    {
+        return new SharedPreferencesTokenCachingStrategy(context);
     }
 }
