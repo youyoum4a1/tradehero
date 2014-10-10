@@ -5,6 +5,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ForSocialToken;
 import com.tradehero.th.activities.ForUpgrade;
 import com.tradehero.th.api.http.ResponseErrorCode;
 import com.tradehero.th.misc.exception.THException;
@@ -26,16 +27,19 @@ public class RetrofitErrorHandlerLogger implements ErrorHandler
     @NotNull final Lazy<RetrofitHelper> retrofitHelper;
     @NotNull final Lazy<LocalBroadcastManager> localBroadcastManager;
     @NotNull final Provider<Intent> upgradeIntentProvider;
+    @NotNull final Provider<Intent> socialTokenIntentProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public RetrofitErrorHandlerLogger(
             @NotNull Lazy<RetrofitHelper> retrofitHelper,
             @NotNull Lazy<LocalBroadcastManager> localBroadcastManager,
-            @NotNull @ForUpgrade Provider<Intent> upgradeIntentProvider)
+            @NotNull @ForUpgrade Provider<Intent> upgradeIntentProvider,
+            @NotNull @ForSocialToken Provider<Intent> socialTokenIntentProvider)
     {
         this.retrofitHelper = retrofitHelper;
         this.localBroadcastManager = localBroadcastManager;
         this.upgradeIntentProvider = upgradeIntentProvider;
+        this.socialTokenIntentProvider = socialTokenIntentProvider;
     }
     //</editor-fold>
 
@@ -88,17 +92,19 @@ public class RetrofitErrorHandlerLogger implements ErrorHandler
                     switch (errorCode)
                     {
                         case OutDatedVersion:
+                            THToast.show(R.string.upgrade_needed);
                             localBroadcastManager.get().sendBroadcast(upgradeIntentProvider.get());
                             return;
 
                         case ExpiredSocialToken:
                             THToast.show(R.string.please_update_token_description);
+                            localBroadcastManager.get().sendBroadcast(socialTokenIntentProvider.get());
                             return;
                     }
                 }
             }
         }
-        Timber.e(new Exception(), "Response not handled, headers: %s, responseCodeHeader: %s, codeHeaderValue: %s", headers, responseCodeHeader, codeHeaderValue);
+        Timber.e(new Exception(), "Response 417 not handled, headers: %s, responseCodeHeader: %s, codeHeaderValue: %s", headers, responseCodeHeader, codeHeaderValue);
         THToast.show(R.string.error_unknown);
     }
 }

@@ -26,7 +26,6 @@ import dagger.Provides;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 
 public class BaseActivity extends FragmentActivity
         implements OnAccountsUpdateListener, Injector
@@ -36,7 +35,9 @@ public class BaseActivity extends FragmentActivity
 
     @Inject protected LocalBroadcastManager localBroadcastManager;
     @Inject @ForUpgrade IntentFilter upgradeIntentFilter;
-    @NotNull BroadcastReceiver upgradeRequiredBroadcastListener;
+    BroadcastReceiver upgradeRequiredBroadcastListener;
+    @Inject @ForSocialToken IntentFilter socialTokenIntentFilter;
+    BroadcastReceiver socialTokenBroadcastListener;
     @Inject Lazy<MarketUtil> marketUtil;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
 
@@ -50,6 +51,7 @@ public class BaseActivity extends FragmentActivity
 
         accountManager = AccountManager.get(this);
         upgradeRequiredBroadcastListener = new UpgradeRequiredListener();
+        socialTokenBroadcastListener = new SocialTokenListener();
     }
 
     protected List<Object> getModules()
@@ -66,6 +68,7 @@ public class BaseActivity extends FragmentActivity
             accountManager.addOnAccountsUpdatedListener(this, null, true);
         }
         localBroadcastManager.registerReceiver(upgradeRequiredBroadcastListener, upgradeIntentFilter);
+        localBroadcastManager.registerReceiver(socialTokenBroadcastListener, socialTokenIntentFilter);
     }
 
     @Override protected void onPause()
@@ -73,6 +76,7 @@ public class BaseActivity extends FragmentActivity
         super.onPause();
 
         localBroadcastManager.unregisterReceiver(upgradeRequiredBroadcastListener);
+        localBroadcastManager.unregisterReceiver(socialTokenBroadcastListener);
         if (requireLogin())
         {
             accountManager.removeOnAccountsUpdatedListener(this);
@@ -81,6 +85,7 @@ public class BaseActivity extends FragmentActivity
 
     @Override protected void onDestroy()
     {
+        socialTokenBroadcastListener = null;
         upgradeRequiredBroadcastListener = null;
         super.onDestroy();
     }
@@ -130,6 +135,14 @@ public class BaseActivity extends FragmentActivity
                         finish();
                     }
                 });
+    }
+
+    protected class SocialTokenListener extends BroadcastReceiver
+    {
+        @Override public void onReceive(Context context, Intent intent)
+        {
+            ActivityHelper.launchAuthentication(BaseActivity.this);
+        }
     }
 
     @Override public void inject(Object o)
