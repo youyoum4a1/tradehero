@@ -4,7 +4,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -180,17 +179,17 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Update Authorization Tokens">
-    @NotNull BaseResponseDTO updateAuthorizationTokens(@NotNull UserFormDTO userFormDTO)
+    @NotNull public BaseResponseDTO updateAuthorizationTokens(@NotNull LoginSignUpFormDTO userFormDTO)
     {
-        return sessionService.updateAuthorizationTokens(userFormDTO);
+        return sessionService.updateAuthorizationTokens(userFormDTO.authData.getTHToken(), userFormDTO);
     }
 
     @NotNull public MiddleCallback<BaseResponseDTO> updateAuthorizationTokens(
-            @NotNull UserFormDTO userFormDTO,
+            @NotNull LoginSignUpFormDTO userFormDTO,
             @Nullable Callback<BaseResponseDTO> callback)
     {
         MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        sessionServiceAsync.updateAuthorizationTokens(userFormDTO, middleCallback);
+        sessionServiceAsync.updateAuthorizationTokens(userFormDTO.authData.getTHToken(), userFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

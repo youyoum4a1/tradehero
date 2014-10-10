@@ -25,6 +25,7 @@ import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.Constants;
@@ -140,7 +141,8 @@ public class SignInOrUpFragment extends Fragment
                     @Override public void call(SocialNetworkEnum socialNetworkEnum)
                     {
                         progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                                getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()), socialNetworkEnum != SocialNetworkEnum.TH);
+                                getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),
+                                socialNetworkEnum != SocialNetworkEnum.TH);
                         if (socialNetworkEnum == SocialNetworkEnum.TH)
                         {
                             progressDialog.hide();
@@ -188,11 +190,31 @@ public class SignInOrUpFragment extends Fragment
                 })
                 .flatMap(new Func1<LoginSignUpFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
                 {
-                    @Override public Observable<Pair<AuthData, UserProfileDTO>> call(LoginSignUpFormDTO loginSignUpFormDTO)
+                    @Override public Observable<Pair<AuthData, UserProfileDTO>> call(final LoginSignUpFormDTO loginSignUpFormDTO)
                     {
                         AuthData authData = loginSignUpFormDTO.authData;
                         Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
                                 authData.getTHToken(), loginSignUpFormDTO)
+                                .retry(new Func2<Integer, Throwable, Boolean>()
+                                {
+                                    @Override public Boolean call(Integer integer, Throwable throwable)
+                                    {
+                                        THException thException = new THException(throwable);
+                                        if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
+                                        {
+                                            try
+                                            {
+                                                sessionServiceWrapper.updateAuthorizationTokens(loginSignUpFormDTO);
+                                                return true;
+                                            }
+                                            catch (Exception ignored)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        return false;
+                                    }
+                                })
                                 .subscribeOn(AndroidSchedulers.mainThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData))
@@ -292,6 +314,7 @@ public class SignInOrUpFragment extends Fragment
         @Override public Observable<UserLoginDTO> call(Throwable throwable)
         {
             Assertions.assertUiThread();
+
             if (authData.socialNetworkEnum == SocialNetworkEnum.TW)
             {
                 TwitterEmailFragment twitterEmailFragment = dashboardNavigator.pushFragment(TwitterEmailFragment.class);
@@ -337,7 +360,7 @@ public class SignInOrUpFragment extends Fragment
                             }
                         });
             }
-
+            
             throw new RuntimeException(throwable);
         }
     }

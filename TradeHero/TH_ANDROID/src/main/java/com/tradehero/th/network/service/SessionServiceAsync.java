@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -33,7 +32,8 @@ interface SessionServiceAsync
     //<editor-fold desc="Update Authorization Tokens">
     @POST("/updateAuthorizationTokens")
     void updateAuthorizationTokens(
-            @Body UserFormDTO userFormDTO,
+            @Header("Authorization") String authorization,
+            @Body LoginSignUpFormDTO userFormDTO,
             Callback<BaseResponseDTO> callback);
     //</editor-fold>
 
