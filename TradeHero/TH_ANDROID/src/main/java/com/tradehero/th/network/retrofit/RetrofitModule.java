@@ -320,12 +320,15 @@ public class RetrofitModule
                 .setLogLevel(RetrofitConstants.DEFAULT_SERVICE_LOG_LEVEL);
     }
 
-    @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Endpoint server, RequestHeaders requestHeaders)
+    @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder,
+            Endpoint server,
+            RequestHeaders requestHeaders,
+            RetrofitErrorHandlerLogger errorHandlerLogger)
     {
         return builder
                 .setEndpoint(server)
                 .setRequestInterceptor(requestHeaders)
-                .setErrorHandler(new RetrofitErrorHandlerLogger())
+                .setErrorHandler(errorHandlerLogger)
                 .build();
     }
 

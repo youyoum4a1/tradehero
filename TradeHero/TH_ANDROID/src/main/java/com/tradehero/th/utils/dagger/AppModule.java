@@ -8,6 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.tencent.tauth.Tencent;
 import com.tradehero.FlavorModule;
 import com.tradehero.th.BuildTypeModule;
+import com.tradehero.th.activities.ActivityAppModule;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -40,6 +41,7 @@ import javax.inject.Singleton;
 
 @Module(
         includes = {
+                ActivityAppModule.class,
                 FlavorModule.class,
                 AchievementModule.class,
                 XpModule.class,

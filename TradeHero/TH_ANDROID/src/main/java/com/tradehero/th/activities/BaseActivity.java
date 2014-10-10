@@ -4,24 +4,41 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.inject.Injector;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.dagger.AppModule;
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Arrays;
 import java.util.List;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class BaseActivity extends FragmentActivity
         implements OnAccountsUpdateListener, Injector
 {
     private AccountManager accountManager;
     private Injector newInjector;
+
+    @Inject protected LocalBroadcastManager localBroadcastManager;
+    @Inject @ForUpgrade IntentFilter upgradeIntentFilter;
+    @NotNull BroadcastReceiver upgradeRequiredBroadcastListener;
+    @Inject Lazy<MarketUtil> marketUtil;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -32,6 +49,7 @@ public class BaseActivity extends FragmentActivity
         newInjector.inject(this);
 
         accountManager = AccountManager.get(this);
+        upgradeRequiredBroadcastListener = new UpgradeRequiredListener();
     }
 
     protected List<Object> getModules()
@@ -47,16 +65,24 @@ public class BaseActivity extends FragmentActivity
         {
             accountManager.addOnAccountsUpdatedListener(this, null, true);
         }
+        localBroadcastManager.registerReceiver(upgradeRequiredBroadcastListener, upgradeIntentFilter);
     }
 
     @Override protected void onPause()
     {
         super.onPause();
 
+        localBroadcastManager.unregisterReceiver(upgradeRequiredBroadcastListener);
         if (requireLogin())
         {
             accountManager.removeOnAccountsUpdatedListener(this);
         }
+    }
+
+    @Override protected void onDestroy()
+    {
+        upgradeRequiredBroadcastListener = null;
+        super.onDestroy();
     }
 
     protected boolean requireLogin()
@@ -77,6 +103,33 @@ public class BaseActivity extends FragmentActivity
         Intent intent = new Intent(this, AuthenticationActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    protected class UpgradeRequiredListener extends BroadcastReceiver
+    {
+        @Override public void onReceive(Context context, Intent intent)
+        {
+            showUpgradeDialog();
+        }
+    }
+
+    private void showUpgradeDialog()
+    {
+        alertDialogUtil.get().popWithOkCancelButton(
+                this,
+                R.string.upgrade_needed,
+                R.string.please_update,
+                R.string.update_now,
+                R.string.later,
+                new DialogInterface.OnClickListener()
+                {
+                    @Override public void onClick(DialogInterface dialog, int which)
+                    {
+                        THToast.show(R.string.update_guide);
+                        marketUtil.get().showAppOnMarket(BaseActivity.this);
+                        finish();
+                    }
+                });
     }
 
     @Override public void inject(Object o)
