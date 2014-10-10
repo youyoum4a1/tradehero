@@ -77,11 +77,10 @@ public class SocialNetworkAppModule
     @Provides @Singleton @ForWeiboAppAuthData
     WeiboAppAuthData provideWeiboAppId()
     {
-        WeiboAppAuthData data = new WeiboAppAuthData();
-        data.appId = WEIBO_APP_ID;
-        data.redirectUrl = WEIBO_REDIRECT_URL;
-        data.scope = WEIBO_SCOPE;
-        return data;
+        return new WeiboAppAuthData(
+            WEIBO_APP_ID,
+            WEIBO_REDIRECT_URL,
+            WEIBO_SCOPE);
     }
 
     @Provides @Singleton @FacebookPermissions List<String> provideFacebookPermissions()
