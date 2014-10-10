@@ -4,6 +4,5 @@
   <string name="user_level_xp">经验值</string>
   <string name="user_level_up_header_text">恭喜你!</string>
   <string name="user_level_up_description_text">你升到了 %d 级!</string>
-  <string name="user_level_xp_multiplier_format" translatable="false">%1$s: XP x%2$d!</string>
 
 </resources>
