@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import com.tradehero.th.activities.AuthenticationActivity;
+import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import java.util.HashSet;
@@ -21,6 +24,17 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
     public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId)
     {
         super(fragmentActivity, fragmentActivity.getSupportFragmentManager(), fragmentContentId);
+    }
+
+    public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId, Class<? extends Fragment> initialFragment)
+    {
+        this(fragmentActivity, fragmentContentId);
+
+        Fragment fragment = Fragment.instantiate(activity, initialFragment.getName(), new Bundle());
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction
+                .replace(fragmentContentId, fragment)
+                .commit();
     }
 
     /**

@@ -38,13 +38,11 @@ public class AuthenticationActivity extends BaseActivity
         setContentView(R.layout.authentication_layout);
 
         setupNavigator();
-
-        navigator.pushFragment(SignInOrUpFragment.class, new Bundle());
     }
 
     private void setupNavigator()
     {
-        navigator = new DashboardNavigator(this, R.id.fragment_content);
+        navigator = new DashboardNavigator(this, R.id.fragment_content, SignInOrUpFragment.class);
     }
 
     @Override protected void onResume()
