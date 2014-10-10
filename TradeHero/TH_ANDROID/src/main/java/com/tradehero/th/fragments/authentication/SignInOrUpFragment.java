@@ -333,6 +333,16 @@ public class SignInOrUpFragment extends Fragment
                                         .build();
                             }
                         })
+                        .doOnNext(new Action1<LoginSignUpFormDTO>()
+                        {
+                            @Override public void call(LoginSignUpFormDTO loginSignUpFormDTO)
+                            {
+                                if (progressDialog != null)
+                                {
+                                    progressDialog.show();
+                                }
+                            }
+                        })
                         .flatMap(new Func1<LoginSignUpFormDTO, Observable<UserLoginDTO>>()
                         {
                             @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
