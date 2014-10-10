@@ -33,6 +33,7 @@
   <string name="buy_sell_no_quote_cancel">好的</string>
 
   <string name="buy_sell_no_portfolio_title">无法交易</string>
+  <string name="buy_sell_no_portfolio_message">没有可用的投资组合。</string>
   <string name="buy_sell_no_portfolio_cancel">好的</string>
 
   <string name="buy_sell_portfolio_selected_title">投资组合:</string>
