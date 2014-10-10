@@ -139,10 +139,11 @@ public class SignInOrUpFragment extends Fragment
                 {
                     @Override public void call(SocialNetworkEnum socialNetworkEnum)
                     {
-                        if (socialNetworkEnum != SocialNetworkEnum.TH)
+                        progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+                                getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()), socialNetworkEnum != SocialNetworkEnum.TH);
+                        if (socialNetworkEnum == SocialNetworkEnum.TH)
                         {
-                            progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                                    getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()), true);
+                            progressDialog.hide();
                         }
                     }
                 })
@@ -168,6 +169,11 @@ public class SignInOrUpFragment extends Fragment
                         if (progressDialog != null)
                         {
                             progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
+                            if (authData.socialNetworkEnum == SocialNetworkEnum.TH)
+                            {
+                                progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero_only));
+                                progressDialog.show();
+                            }
                         }
                     }
                 })
