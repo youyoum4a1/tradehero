@@ -3,7 +3,6 @@ package com.tradehero.th.api;
 import com.tradehero.th.api.alert.ApiAlertTestModule;
 import com.tradehero.th.api.competition.ApiCompetitionTestModule;
 import com.tradehero.th.api.discussion.ApiDiscussionTestModule;
-import com.tradehero.th.api.form.ApiFormTestModule;
 import com.tradehero.th.api.i18n.ApiI18nTestModule;
 import com.tradehero.th.api.position.ApiPositionTestModule;
 import com.tradehero.th.api.provider.ApiProviderTestModule;
@@ -18,7 +17,6 @@ import dagger.Module;
                 ApiAlertTestModule.class,
                 ApiCompetitionTestModule.class,
                 ApiDiscussionTestModule.class,
-                ApiFormTestModule.class,
                 ApiI18nTestModule.class,
                 ApiProviderTestModule.class,
                 ApiSecurityTestModule.class,
