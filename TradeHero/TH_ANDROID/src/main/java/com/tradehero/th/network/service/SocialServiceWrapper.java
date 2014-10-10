@@ -5,7 +5,7 @@ import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AccessTokenForm;
+import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;

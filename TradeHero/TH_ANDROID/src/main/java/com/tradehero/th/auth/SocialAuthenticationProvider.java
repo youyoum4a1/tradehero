@@ -2,6 +2,7 @@ package com.tradehero.th.auth;
 
 import android.app.Activity;
 import android.content.Context;
+import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SocialLinker;
 import java.lang.ref.WeakReference;

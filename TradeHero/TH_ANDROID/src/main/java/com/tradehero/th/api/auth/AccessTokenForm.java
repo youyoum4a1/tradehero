@@ -1,7 +1,8 @@
-package com.tradehero.th.auth;
+package com.tradehero.th.api.auth;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tradehero.th.auth.AuthData;
 import java.util.Map;
 
 public final class AccessTokenForm

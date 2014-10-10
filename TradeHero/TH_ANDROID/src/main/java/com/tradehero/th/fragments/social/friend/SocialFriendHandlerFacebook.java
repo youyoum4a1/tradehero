@@ -16,7 +16,7 @@ import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AccessTokenForm;
+import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.facebook.ObservableWebDialog;

@@ -3,7 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AccessTokenForm;
+import com.tradehero.th.api.auth.AccessTokenForm;
 import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;
