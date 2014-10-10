@@ -9,7 +9,6 @@ import com.tradehero.th.api.provider.ApiProviderTestModule;
 import com.tradehero.th.api.security.ApiSecurityTestModule;
 import com.tradehero.th.api.social.ApiSocialTestModule;
 import com.tradehero.th.api.translation.ApiTranslationTestModule;
-import com.tradehero.th.api.users.ApiUsersTestModule;
 import dagger.Module;
 
 @Module(
@@ -23,7 +22,6 @@ import dagger.Module;
                 ApiSocialTestModule.class,
                 ApiPositionTestModule.class,
                 ApiTranslationTestModule.class,
-                ApiUsersTestModule.class,
         },
         injects = {
                 ObjectMapperWrapperTest.class,
