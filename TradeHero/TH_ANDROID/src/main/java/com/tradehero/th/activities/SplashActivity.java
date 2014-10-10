@@ -1,8 +1,6 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
@@ -11,27 +9,20 @@ import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
 import com.tradehero.th.auth.operator.FacebookAppId;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.inject.ExInjector;
-import com.tradehero.th.inject.Injector;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
-import dagger.Module;
-import dagger.Provides;
 import javax.inject.Inject;
 
-public class SplashActivity extends FragmentActivity
+public class SplashActivity extends BaseActivity
 {
     @Inject @FacebookAppId String facebookAppId;
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
@@ -57,14 +48,6 @@ public class SplashActivity extends FragmentActivity
         {
             appVersion.setText(VersionUtils.getAppVersion(this));
         }
-
-        Injector newInjector = loadInjector(THApp.get(this));
-        newInjector.inject(this);
-    }
-
-    protected ExInjector loadInjector(ExInjector injector)
-    {
-        return injector.plus(new SplashActivityModule());
     }
 
     @Override protected void onResume()
@@ -96,6 +79,11 @@ public class SplashActivity extends FragmentActivity
         super.onPause();
     }
 
+    @Override protected boolean requireLogin()
+    {
+        return false;
+    }
+
     protected void initialisation()
     {
         analytics.addEvent(new AppLaunchEvent())
@@ -116,21 +104,6 @@ public class SplashActivity extends FragmentActivity
         {
             ActivityHelper.launchDashboard(this);
             finish();
-        }
-    }
-
-    @Module(
-            addsTo = AppModule.class,
-            includes = UIModule.class,
-            library = true,
-            complete = false,
-            overrides = true
-    )
-    public class SplashActivityModule
-    {
-        @Provides Activity provideActivity()
-        {
-            return SplashActivity.this;
         }
     }
 }
