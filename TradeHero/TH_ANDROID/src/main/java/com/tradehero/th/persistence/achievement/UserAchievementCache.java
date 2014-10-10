@@ -108,7 +108,7 @@ import timber.log.Timber;
     {
         if (achievementDefDTO.virtualDollars != 0)
         {
-            portfolioCompactListCache.get().invalidate(currentUserId.get().toUserBaseKey());
+            portfolioCompactListCache.get().getOrFetchAsync(currentUserId.get().toUserBaseKey(), true);
         }
     }
 }
