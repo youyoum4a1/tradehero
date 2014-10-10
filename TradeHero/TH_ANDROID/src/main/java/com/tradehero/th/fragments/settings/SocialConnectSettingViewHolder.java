@@ -54,7 +54,7 @@ abstract public class SocialConnectSettingViewHolder
             @NotNull SocialServiceWrapper socialServiceWrapper,
             @NotNull SocialAuthenticationProvider socialAuthenticationProvider,
             @NotNull UserProfileDTOUtil userProfileDTOUtil,
-            @NotNull @AuthHeader String authToken)
+            @NotNull String authToken)
     {
         super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
         this.alertDialogUtil = alertDialogUtil;

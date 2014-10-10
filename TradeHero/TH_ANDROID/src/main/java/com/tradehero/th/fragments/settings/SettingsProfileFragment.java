@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -39,6 +40,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,7 +62,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject DashboardNavigator navigator;
     @Inject Provider<AuthDataAction> authDataActionProvider;
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private Subscription updateProfileSubscription;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -76,9 +78,8 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     protected void initSetup(View view)
     {
-        profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
+        ButterKnife.inject(this, view);
 
-        updateButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         updateButton.setText(R.string.update);
         updateButton.setOnClickListener(this);
 
