@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import com.tradehero.th.R;
@@ -7,12 +8,15 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID = SecurityDiscussionEditPostFragment.class.getName() + ".securityId";
+
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
