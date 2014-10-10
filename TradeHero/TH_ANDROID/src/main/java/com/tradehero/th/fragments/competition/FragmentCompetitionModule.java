@@ -10,6 +10,7 @@ import dagger.Module;
         injects = {
                 MacquarieWarrantItemViewAdapter.class,
                 CompetitionWebViewFragment.class,
+                CompetitionEnrollmentWebViewFragment.class,
                 CompetitionZoneListItemAdapter.class,
                 CompetitionZoneListItemView.class,
                 CompetitionZoneLeaderboardListItemView.class,

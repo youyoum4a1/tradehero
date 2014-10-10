@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.TabHost;
@@ -36,6 +35,9 @@ import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
@@ -52,7 +54,10 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
+import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
+import com.tradehero.th.fragments.competition.ForCompetitionEnrollment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -79,6 +84,7 @@ import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -100,6 +106,7 @@ import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
@@ -141,8 +148,13 @@ public class DashboardActivity extends BaseActivity
     @Inject @ForAchievement IntentFilter achievementIntentFilter;
     @Inject @ForXP IntentFilter xpIntentFilter;
     @Inject @ForOnBoard IntentFilter onBoardIntentFilter;
+    @Inject @ForCompetitionEnrollment IntentFilter competitionEnrollmentIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
+
+    @Inject Lazy<ProviderListCache> providerListCache;
+    private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListCallback;
+    private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
@@ -154,6 +166,8 @@ public class DashboardActivity extends BaseActivity
     private BroadcastReceiver mAchievementBroadcastReceiver;
     private BroadcastReceiver mXPBroadcastReceiver;
     private BroadcastReceiver onBoardBroadcastReceiver;
+    private BroadcastReceiver enrollmentBroadcastReceiver;
+    private Boolean onboardAsked;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -189,6 +203,7 @@ public class DashboardActivity extends BaseActivity
 
         detachNotificationFetchTask();
         notificationFetchListener = createNotificationFetchListener();
+        providerListCallback = new ProviderListFetchListener();
 
         // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
@@ -231,7 +246,6 @@ public class DashboardActivity extends BaseActivity
 
     private void setupDashboardTabHost()
     {
-        final View mainContent = findViewById(R.id.realtabcontent);
         dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
         dashboardTabHost.setup();
         dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
@@ -282,6 +296,14 @@ public class DashboardActivity extends BaseActivity
             @Override public void onReceive(Context context, Intent intent)
             {
                 OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
+            }
+        };
+
+        enrollmentBroadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                fetchProviderList();
             }
         };
     }
@@ -396,6 +418,21 @@ public class DashboardActivity extends BaseActivity
         localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, achievementIntentFilter);
         localBroadcastManager.registerReceiver(mXPBroadcastReceiver, xpIntentFilter);
         localBroadcastManager.registerReceiver(onBoardBroadcastReceiver, onBoardIntentFilter);
+
+        // get providers for enrollment page
+        localBroadcastManager.registerReceiver(enrollmentBroadcastReceiver, competitionEnrollmentIntentFilter);
+    }
+
+    protected void fetchProviderList()
+    {
+        detachProviderListTask();
+        providerListCache.get().register(new ProviderListKey(), providerListCallback);
+        providerListCache.get().getOrFetchAsync(new ProviderListKey());
+    }
+
+    private void detachProviderListTask()
+    {
+        providerListCache.get().unregister(providerListCallback);
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -430,6 +467,7 @@ public class DashboardActivity extends BaseActivity
         localBroadcastManager.unregisterReceiver(mAchievementBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(mXPBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(onBoardBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(enrollmentBroadcastReceiver);
         super.onPause();
     }
 
@@ -466,10 +504,23 @@ public class DashboardActivity extends BaseActivity
 
     private void showStartDialogsPlease()
     {
-        if (userProfileDTOUtilLazy.get().shouldShowOnBoard(
-                userProfileCache.get().get(currentUserId.toUserBaseKey())))
+        UserProfileDTO cachedUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (cachedUserProfile != null)
         {
-            broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
+            if (userProfileDTOUtilLazy.get().shouldShowOnBoard(cachedUserProfile))
+            {
+                broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
+                onboardAsked = true;
+            }
+            else
+            {
+                onboardAsked = false;
+            }
+        }
+
+        if (onboardAsked != null)
+        {
+            broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
         }
     }
 
@@ -563,6 +614,60 @@ public class DashboardActivity extends BaseActivity
         }
     }
 
+    protected class ProviderListFetchListener implements DTOCacheNew.Listener<ProviderListKey, ProviderDTOList>
+    {
+        @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
+        {
+            openEnrollmentPageIfNecessary(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_provider_competition_list);
+        }
+    }
+
+    private void openEnrollmentPageIfNecessary(ProviderDTOList providerDTOs)
+    {
+        for (@NotNull ProviderDTO providerDTO : providerDTOs)
+        {
+            if (!providerDTO.isUserEnrolled
+                    && !enrollmentScreenOpened.contains(providerDTO.id))
+            {
+                enrollmentScreenOpened.add(providerDTO.id);
+
+                Runnable handleCompetitionRunnable = createHandleCompetitionRunnable(providerDTO);
+                runOnUiThread(handleCompetitionRunnable);
+                return;
+            }
+        }
+    }
+
+    //<editor-fold desc="Competition Runnable">
+    private Runnable createHandleCompetitionRunnable(ProviderDTO providerDTO)
+    {
+        return new TrendingFragmentHandleCompetitionRunnable(providerDTO);
+    }
+
+    private class TrendingFragmentHandleCompetitionRunnable implements Runnable
+    {
+        private final ProviderDTO providerDTO;
+
+        private TrendingFragmentHandleCompetitionRunnable(ProviderDTO providerDTO)
+        {
+            this.providerDTO = providerDTO;
+        }
+
+        @Override public void run()
+        {
+            if (!isFinishing())
+            {
+                navigator.pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
+            }
+        }
+    }
+    //</editor-fold>
+
     @Override public void onLowMemory()
     {
         super.onLowMemory();
@@ -640,6 +745,5 @@ public class DashboardActivity extends BaseActivity
         {
             return new QuickReturnWebViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
         }
-
     }
 }

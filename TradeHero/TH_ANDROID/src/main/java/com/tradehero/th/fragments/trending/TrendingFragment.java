@@ -22,7 +22,6 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
-import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
@@ -39,7 +38,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
+import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
@@ -50,11 +49,7 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.models.time.AppTiming;
@@ -68,8 +63,6 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
-import java.util.HashSet;
-import java.util.Set;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -86,7 +79,6 @@ public class TrendingFragment extends SecurityListFragment
     @Inject Lazy<ProviderCache> providerCache;
     @Inject Lazy<ProviderListCache> providerListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject ProviderUtil providerUtil;
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Analytics analytics;
@@ -103,9 +95,6 @@ public class TrendingFragment extends SecurityListFragment
 
     private ExtraTileAdapter wrapperAdapter;
     private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListCallback;
-    private BaseWebViewFragment webFragment;
-    private THIntentPassedListener thIntentPassedListener;
-    private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private Runnable handleCompetitionRunnable;
     @Inject DashboardNavigator navigator;
 
@@ -137,7 +126,6 @@ public class TrendingFragment extends SecurityListFragment
             this.filterSelectorView.setChangedListener(createTrendingFilterChangedListener());
         }
 
-        thIntentPassedListener = createCompetitionTHIntentPassedListener();
         fetchExchangeList();
     }
 
@@ -230,7 +218,6 @@ public class TrendingFragment extends SecurityListFragment
         handleCompetitionRunnable = null;
         exchangeListTypeCacheListener = null;
         userProfileCacheListener = null;
-        thIntentPassedListener = null;
         providerListCallback = null;
         super.onDestroy();
     }
@@ -423,13 +410,7 @@ public class TrendingFragment extends SecurityListFragment
         }
         else if (providerDTO != null)
         {
-            Bundle args = new Bundle();
-            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                    providerDTO.getProviderId(),
-                    currentUserId.toUserBaseKey()));
-            CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
-            webFragment = navigator.pushFragment(CompetitionWebViewFragment.class, args);
-            webFragment.setThIntentPassedListener(thIntentPassedListener);
+            navigator.pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
         }
     }
 
@@ -607,86 +588,11 @@ public class TrendingFragment extends SecurityListFragment
         @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
         {
             refreshAdapterWithTiles(true);
-            //close it , just like a bug if i have many competition not joined.
-            //openEnrollmentPageIfNecessary(value);
         }
 
         @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_provider_competition_list);
-        }
-    }
-    //</editor-fold>
-
-    private void openEnrollmentPageIfNecessary(ProviderDTOList providerDTOs)
-    {
-        for (@NotNull ProviderDTO providerDTO : providerDTOs)
-        {
-            if (!providerDTO.isUserEnrolled
-                    && !enrollmentScreenOpened.contains(providerDTO.id))
-            {
-                enrollmentScreenOpened.add(providerDTO.id);
-
-                removeCallbacksIfCan(handleCompetitionRunnable);
-                handleCompetitionRunnable = createHandleCompetitionRunnable(providerDTO);
-                postIfCan(handleCompetitionRunnable);
-                return;
-            }
-        }
-    }
-
-    //<editor-fold desc="Competition Runnable">
-    private Runnable createHandleCompetitionRunnable(ProviderDTO providerDTO)
-    {
-        return new TrendingFragmentHandleCompetitionRunnable(providerDTO);
-    }
-
-    private class TrendingFragmentHandleCompetitionRunnable implements Runnable
-    {
-        private final ProviderDTO providerDTO;
-
-        private TrendingFragmentHandleCompetitionRunnable(ProviderDTO providerDTO)
-        {
-            this.providerDTO = providerDTO;
-        }
-
-        @Override public void run()
-        {
-            if (!isDetached())
-            {
-                handleCompetitionItemClicked(providerDTO);
-            }
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Intent Listener">
-    protected THIntentPassedListener createCompetitionTHIntentPassedListener()
-    {
-        return new CompetitionTHIntentPassedListener();
-    }
-
-    protected class CompetitionTHIntentPassedListener implements THIntentPassedListener
-    {
-        @Override public void onIntentPassed(THIntent thIntent)
-        {
-            if (thIntent instanceof ProviderPageIntent)
-            {
-                Timber.d("Intent is ProviderPageIntent");
-                if (webFragment != null)
-                {
-                    Timber.d("Passing on %s", ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
-                    webFragment.loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
-                }
-                else
-                {
-                    Timber.d("WebFragment is null");
-                }
-            }
-            else
-            {
-                Timber.w("Unhandled intent %s", thIntent);
-            }
         }
     }
     //</editor-fold>

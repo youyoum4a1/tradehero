@@ -91,7 +91,7 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
         {
             if (currentUserProfile != null)
             {
-                List<Integer> userGenHeroIds= currentUserProfile.getUserGeneratedHeroIds();
+                List<Integer> userGenHeroIds = currentUserProfile.getUserGeneratedHeroIds();
                 if (userGenHeroIds != null && userGenHeroIds.size() > 0)
                 {
                     return false;
