@@ -20,12 +20,12 @@ public interface SocialService
     @POST("/users/{userId}/connect")
     UserProfileDTO connect(
             @Path("userId") int userId,
-            @Body AccessTokenForm userFormDTO);
+            @Body AccessTokenForm accessTokenForm);
 
     @POST("/users/{userId}/connect")
     Observable<UserProfileDTO> connectRx(
             @Path("userId") int userId,
-            @Body AccessTokenForm userFormDTO);
+            @Body AccessTokenForm accessTokenForm);
     //</editor-fold>
 
     //<editor-fold desc="Disconnect User">

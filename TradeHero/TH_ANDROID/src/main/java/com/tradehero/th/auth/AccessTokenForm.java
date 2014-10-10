@@ -19,4 +19,20 @@ public final class AccessTokenForm
     {
         this.tokenMap = authData.getTokenMap();
     }
+
+    @Override public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        String separator = "";
+        for (Map.Entry<String, String> entry : tokenMap.entrySet())
+        {
+            sb.append(separator).append(entry.getKey()).append(':').append(entry.getValue());
+            separator = ", ";
+        }
+        sb.append(']');
+        return "AccessTokenForm{" +
+                "tokenMap=" + sb +
+                '}';
+    }
 }

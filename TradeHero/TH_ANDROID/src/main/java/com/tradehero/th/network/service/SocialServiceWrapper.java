@@ -69,9 +69,9 @@ import rx.functions.Func1;
         };
     }
 
-    @NotNull public Observable<UserProfileDTO> connectRx(@NotNull UserBaseKey userBaseKey, AccessTokenForm userFormDTO)
+    @NotNull public Observable<UserProfileDTO> connectRx(@NotNull UserBaseKey userBaseKey, AccessTokenForm accessTokenForm)
     {
-        return socialService.connectRx(userBaseKey.key, userFormDTO)
+        return socialService.connectRx(userBaseKey.key, accessTokenForm)
                 .map(new Func1<UserProfileDTO, UserProfileDTO>()
                 {
                     @Override public UserProfileDTO call(UserProfileDTO userProfileDTO)
@@ -81,9 +81,9 @@ import rx.functions.Func1;
                 });
     }
 
-    @Override @NotNull public Observable<UserProfileDTO> link(AccessTokenForm userFormDTO)
+    @Override @NotNull public Observable<UserProfileDTO> link(AccessTokenForm accessTokenForm)
     {
-        return connectRx(currentUserId.toUserBaseKey(), userFormDTO);
+        return connectRx(currentUserId.toUserBaseKey(), accessTokenForm);
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> connect(@NotNull UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)

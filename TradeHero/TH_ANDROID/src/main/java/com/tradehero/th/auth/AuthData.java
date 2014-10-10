@@ -1,7 +1,6 @@
 package com.tradehero.th.auth;
 
 import android.util.Base64;
-import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.Collections;
 import java.util.Date;
@@ -73,5 +72,17 @@ public class AuthData
             sb.append(":").append(accessTokenSecret);
         }
         return sb.toString();
+    }
+
+    @Override public String toString()
+    {
+        return "AuthData{" +
+                "socialNetworkEnum=" + socialNetworkEnum +
+                ", accessToken='" + accessToken + '\'' +
+                ", accessTokenSecret='" + accessTokenSecret + '\'' +
+                ", password='" + password + '\'' +
+                ", expirationDate=" + expirationDate +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

@@ -20,7 +20,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -214,7 +213,7 @@ abstract public class SocialConnectSettingViewHolder
             unsubscribeUnLinking();
             unLinkingSubscription = socialServiceWrapper.disconnectRx(
                     currentUserId.toUserBaseKey(),
-                    new SocialNetworkFormDTO(SocialNetworkEnum.FB))
+                    new SocialNetworkFormDTO(getSocialNetworkEnum()))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new ChangedStatusObserver());
         }
