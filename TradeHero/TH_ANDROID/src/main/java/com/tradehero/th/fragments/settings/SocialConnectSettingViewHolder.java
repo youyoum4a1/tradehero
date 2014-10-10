@@ -235,6 +235,7 @@ abstract public class SocialConnectSettingViewHolder
         {
             dismissProgress();
             THToast.show(new THException(e));
+            Timber.e(e, "");
         }
     }
 
