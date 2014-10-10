@@ -389,6 +389,12 @@ public class FriendsInvitationFragment extends DashboardFragment
                         super.onNext(args);
                         pushSocialInvitationFragment(socialNetworkEnum);
                     }
+
+                    @Override public void onError(Throwable e)
+                    {
+                        super.onError(e);
+                        THToast.show("Error: " + e.getMessage());
+                    }
                 });
     }
 
