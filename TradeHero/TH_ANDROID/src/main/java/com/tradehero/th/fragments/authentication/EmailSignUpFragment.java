@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.authentication;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,6 +30,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.observers.EmptyObserver;
@@ -50,6 +53,7 @@ public class EmailSignUpFragment extends Fragment
 
     private Observable<Pair<AuthData, UserProfileDTO>> signUpObservable;
     private Subscription subscription;
+    private ProgressDialog progressDialog;
 
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
@@ -86,6 +90,14 @@ public class EmailSignUpFragment extends Fragment
                         return profileView.obtainUserFormDTO();
                     }
                 })
+                .doOnNext(new Action1<UserFormDTO>()
+                {
+                    @Override public void call(UserFormDTO userFormDTO)
+                    {
+                        progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+                                getString(R.string.authentication_connecting_tradehero_only), true);
+                    }
+                })
                 .flatMap(new Func1<UserFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
                 {
                     @Override public Observable<Pair<AuthData, UserProfileDTO>> call(UserFormDTO userFormDTO)
@@ -106,6 +118,16 @@ public class EmailSignUpFragment extends Fragment
                 .doOnNext(authDataAction)
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(toastOnErrorAction)
+                .doOnUnsubscribe(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        if (progressDialog != null)
+                        {
+                            progressDialog.dismiss();
+                        }
+                    }
+                })
         ;
     }
 
