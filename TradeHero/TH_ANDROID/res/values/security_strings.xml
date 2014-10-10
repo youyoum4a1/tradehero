@@ -51,4 +51,6 @@
   <string name="share_success">Your share is success</string>
   <!--do not thanslate-->
   <string name="security_action_bar_title" translatable="false">%1$s (%2$s)</string>
+
+  <string name="auth_wechat">wechat auth</string>
 </resources>

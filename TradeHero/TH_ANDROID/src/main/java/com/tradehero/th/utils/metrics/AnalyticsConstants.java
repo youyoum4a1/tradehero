@@ -116,6 +116,7 @@ public class AnalyticsConstants
     public static final String PrivateMessage = "Private Message";//
     public static final String Profile = "Profile";
     public static final String QQ = "QQ";//
+    public static final String WECHAT = "Wechat";//
     public static final String Register_Form = "RegisterForm";//
     public static final String RegisterFormScreen = "RegisterFormScreen";//
     public static final String Screen = "Screen ";//

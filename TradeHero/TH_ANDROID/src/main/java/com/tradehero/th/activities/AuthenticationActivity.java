@@ -12,6 +12,8 @@ import android.widget.EditText;
 import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
@@ -33,11 +35,13 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
+import com.tradehero.th.utils.WeChatUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.wxapi.WXEntryActivity;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -48,7 +52,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-//import com.tradehero.th.utils.FacebookUtils;
 
 public class AuthenticationActivity extends DashboardActivity
         implements View.OnClickListener
@@ -64,6 +67,7 @@ public class AuthenticationActivity extends DashboardActivity
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
+    @Inject Lazy<WeChatUtils> wechatUtils;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
@@ -102,6 +106,8 @@ public class AuthenticationActivity extends DashboardActivity
         analytics.openSession();
         analytics.tagScreen(AnalyticsConstants.Login_Register);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));
+
+        getWeChatAccessToken();
     }
 
     @Override protected void onPause()
@@ -206,10 +212,14 @@ public class AuthenticationActivity extends DashboardActivity
             case R.id.btn_weibo_signin:
                 authenticateWithWeibo();
                 break;
-
             case R.id.btn_qq_signin:
                 authenticateWithQQ();
                 break;
+            case R.id.btn_wechat_signin:
+                startWeChatSign();
+                //authenticateWithWechat("00a2b1ae9ff0829bbcfcce92159b346c");
+                break;
+
             case R.id.txt_term_of_service_signin:
                 //TODO WebViewActivity not work, for chromium﹕ [INFO:CONSOLE(17)] "The page at
                 //TODO https://www.tradehero.mobi/privacy ran insecure content from
@@ -320,6 +330,22 @@ public class AuthenticationActivity extends DashboardActivity
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.QQ));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_qq);
         qqUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.QQ));
+    }
+
+    public void startWeChatSign()
+    {
+        Intent intent = new Intent(this, WXEntryActivity.class);
+        WeChatDTO weChatDTO = new WeChatDTO();
+        weChatDTO.type = WeChatMessageType.Auth;
+        WXEntryActivity.putWeChatDTO(intent, weChatDTO);
+        startActivity(intent);
+    }
+
+    public void authenticateWithWechat(String code)
+    {
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.WECHAT));
+        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_wechat);
+        wechatUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.WECHAT),code);
     }
 
     public void authenticateWithLinkedIn()
@@ -506,5 +532,18 @@ public class AuthenticationActivity extends DashboardActivity
             return;
         }
         super.onBackPressed();
+    }
+
+
+    public void getWeChatAccessToken()
+    {
+        String wechatCode = WXEntryActivity.getWeChatCode();
+        if(wechatCode!=null)
+        {
+            authenticateWithWechat(wechatCode);
+            THToast.show("获取 微信 access token ！" + wechatCode);
+            WXEntryActivity.setWeChatCodeNull();
+
+        }
     }
 }

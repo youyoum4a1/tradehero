@@ -9,7 +9,6 @@ import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.persistence.prefs.DiviceID;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.MarketSegment;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -39,20 +38,20 @@ public class DeviceTokenHelper
 
     public boolean isChineseVersion()
     {
-        return Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA);
+        return true;
+        //return Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA);
     }
 
     /**
      * If locale is Chinese, return the token from baidu,otherwise from urbanairship
-     * @return
      */
     public String getDeviceToken()
     {
         //if (isChineseVersion())
         //{
-            String token = savedPushDeviceIdentifier.get();
-            Timber.d("get saved the token from baidu %s", token);
-            return token;
+        String token = savedPushDeviceIdentifier.get();
+        Timber.d("get saved the token from baidu %s", token);
+        return token;
         //}
         //return PushManager.shared().getAPID();
     }
@@ -67,13 +66,13 @@ public class DeviceTokenHelper
         String imei = mDeviceIDStringPreference.get();
         if (imei.isEmpty())
         {
-            TelephonyManager tm = (TelephonyManager)currentActivityHolder
+            TelephonyManager tm = (TelephonyManager) currentActivityHolder
                     .getCurrentActivity().getSystemService(Context.TELEPHONY_SERVICE);
             String strIMEI = tm.getDeviceId();
             if (strIMEI.isEmpty() || strIMEI.contains("000000000000000"))
             {
-                strIMEI = String.valueOf((int)Math.floor((Math.random() + 1) * GuideActivity.TIMES));
-                strIMEI = strIMEI+String.valueOf((int)Math.floor((Math.random() + 1) * GuideActivity.TIMES2));
+                strIMEI = String.valueOf((int) Math.floor((Math.random() + 1) * GuideActivity.TIMES));
+                strIMEI = strIMEI + String.valueOf((int) Math.floor((Math.random() + 1) * GuideActivity.TIMES2));
                 mDeviceIDStringPreference.set(strIMEI);
             }
             else

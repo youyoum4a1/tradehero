@@ -54,6 +54,7 @@
   <string name="qq_login_in">QQ账号</string>
   <string name="qq_register">用 QQ 注册</string>
   <string name="authentication_connecting_to_qq">连接QQ</string>
+  <string name="authentication_connecting_to_wechat">连接微信</string>
   <string name="wechat">微信</string>
   <string name="wechat_login_in">微信账号</string>
   <string name="email_login_in">用 Email 登陆</string>

@@ -7,6 +7,7 @@ import com.tradehero.th.api.form.LinkedinUserFormDTO;
 import com.tradehero.th.api.form.QQUserFormDTO;
 import com.tradehero.th.api.form.TwitterUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.form.WechatUserFormDTO;
 import com.tradehero.th.api.form.WeiboUserFormDTO;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ public class LoginSignUpFormDTOFactory
     @NotNull private final Provider<LoginSignUpFormFacebookDTO> loginSignUpFormFacebookDTOProvider;
     @NotNull private final Provider<LoginSignUpFormLinkedinDTO> loginSignUpFormLinkedinDTOProvider;
     @NotNull private final Provider<LoginSignUpFormQQDTO> loginSignUpFormQQDTOProvider;
+    @NotNull private final Provider<LoginSignUpFormWeChatDTO> loginSignUpFormWechatDTOProvider;
     @NotNull private final Provider<LoginSignUpFormTwitterDTO> loginSignUpFormTwitterDTOProvider;
     @NotNull private final Provider<LoginSignUpFormWeiboDTO> loginSignUpFormWeiboDTOProvider;
     @NotNull private final Provider<LoginSignUpFormDeviceDTO> loginSignUpFormDeviceDTOProvider;
@@ -29,6 +31,7 @@ public class LoginSignUpFormDTOFactory
             @NotNull Provider<LoginSignUpFormFacebookDTO> loginSignUpFormFacebookDTOProvider,
             @NotNull Provider<LoginSignUpFormLinkedinDTO> loginSignUpFormLinkedinDTOProvider,
             @NotNull Provider<LoginSignUpFormQQDTO> loginSignUpFormQQDTOProvider,
+            @NotNull Provider<LoginSignUpFormWeChatDTO> loginSignUpFormWechatDTOProvider,
             @NotNull Provider<LoginSignUpFormTwitterDTO> loginSignUpFormTwitterDTOProvider,
             @NotNull Provider<LoginSignUpFormDeviceDTO> loginSignUpFormDeviceDTOProvider,
             @NotNull Provider<LoginSignUpFormWeiboDTO> loginSignUpFormWeiboDTOProvider)
@@ -37,6 +40,7 @@ public class LoginSignUpFormDTOFactory
         this.loginSignUpFormFacebookDTOProvider = loginSignUpFormFacebookDTOProvider;
         this.loginSignUpFormLinkedinDTOProvider = loginSignUpFormLinkedinDTOProvider;
         this.loginSignUpFormQQDTOProvider = loginSignUpFormQQDTOProvider;
+        this.loginSignUpFormWechatDTOProvider = loginSignUpFormWechatDTOProvider;
         this.loginSignUpFormTwitterDTOProvider = loginSignUpFormTwitterDTOProvider;
         this.loginSignUpFormWeiboDTOProvider = loginSignUpFormWeiboDTOProvider;
         this.loginSignUpFormDeviceDTOProvider = loginSignUpFormDeviceDTOProvider;
@@ -71,6 +75,13 @@ public class LoginSignUpFormDTOFactory
             qq.accessToken = ((QQUserFormDTO) fromForm).accessToken;
             qq.openId = ((QQUserFormDTO) fromForm).openid;
             created = qq;
+        }
+        else if (fromForm instanceof WechatUserFormDTO)
+        {
+            LoginSignUpFormWeChatDTO wechat = loginSignUpFormWechatDTOProvider.get();
+            wechat.accessToken = ((WechatUserFormDTO) fromForm).accessToken;
+            wechat.openId = ((WechatUserFormDTO) fromForm).openid;
+            created = wechat;
         }
         else if (fromForm instanceof TwitterUserFormDTO)
         {

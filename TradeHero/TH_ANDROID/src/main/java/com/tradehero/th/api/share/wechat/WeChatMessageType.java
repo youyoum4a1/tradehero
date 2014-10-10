@@ -11,7 +11,9 @@ public enum WeChatMessageType
     Trade(5, R.string.share_to_wechat_timeline_trade),
     Invite(6, R.string.share_to_wechat_invite_friends),
     ShareSell(7, R.string.share_to_wechat_invite_friends),
-    ShareSellToTimeline(8, R.string.share_to_wechat_invite_friends);
+    ShareSellToTimeline(8, R.string.share_to_wechat_invite_friends),
+    Auth(9,R.string.auth_wechat);
+
 
     private final int value;
     private final int titleResId;

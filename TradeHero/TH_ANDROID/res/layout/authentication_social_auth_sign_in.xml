@@ -20,7 +20,7 @@
     <LinearLayout
         android:id="@+id/btn_weibo_signin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/btn_background_social_weibo">
@@ -29,9 +29,9 @@
           android:layout_height="1dp"
           android:layout_weight="1"/>
       <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/login_weibo"/>
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:background="@drawable/icon_login_weibo"/>
       <TextView
           android:layout_width="0dp"
           android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
     <LinearLayout
         android:id="@+id/btn_qq_signin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="@dimen/margin_medium"
         android:orientation="horizontal"
         android:gravity="center_vertical"
@@ -60,9 +60,9 @@
           android:layout_height="1dp"
           android:layout_weight="1"/>
       <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/login_qq"/>
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:background="@drawable/icon_login_qq"/>
       <TextView
           android:layout_width="0dp"
           android:layout_height="wrap_content"
@@ -79,27 +79,27 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/btn_linkedin_signin"
+        android:id="@+id/btn_wechat_signin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="@dimen/margin_medium"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@drawable/btn_background_social_linkedin">
+        android:background="@drawable/btn_background_social_wechat">
       <View
           android:layout_width="0dp"
           android:layout_height="1dp"
           android:layout_weight="1"/>
       <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/login_linkdin"/>
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:background="@drawable/icon_login_weixin"/>
       <TextView
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="3"
           android:layout_marginLeft="@dimen/margin_small"
-          android:text="@string/linkedin_login_in"
+          android:text="微信账号"
           android:textColor="@color/white"
           android:textSize="@dimen/text_large"
           android:gravity="left|center_vertical"/>
@@ -108,6 +108,39 @@
           android:layout_height="1dp"
           android:layout_weight="1"/>
     </LinearLayout>
+
+
+    <!--<LinearLayout-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/btn_linkedin_signin"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/margin_medium"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:background="@drawable/btn_background_social_linkedin">-->
+      <!--<View-->
+          <!--android:layout_width="0dp"-->
+          <!--android:layout_height="1dp"-->
+          <!--android:layout_weight="1"/>-->
+      <!--<ImageView-->
+          <!--android:layout_width="wrap_content"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--android:background="@drawable/login_linkdin"/>-->
+      <!--<TextView-->
+          <!--android:layout_width="0dp"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--android:layout_weight="3"-->
+          <!--android:layout_marginLeft="@dimen/margin_small"-->
+          <!--android:text="@string/linkedin_login_in"-->
+          <!--android:textColor="@color/white"-->
+          <!--android:textSize="@dimen/text_large"-->
+          <!--android:gravity="left|center_vertical"/>-->
+      <!--<View-->
+          <!--android:layout_width="0dp"-->
+          <!--android:layout_height="1dp"-->
+          <!--android:layout_weight="1"/>-->
+    <!--</LinearLayout>-->
 
   </LinearLayout>
 

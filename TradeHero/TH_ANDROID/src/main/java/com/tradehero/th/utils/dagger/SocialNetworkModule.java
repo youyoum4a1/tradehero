@@ -46,6 +46,8 @@ public class SocialNetworkModule
     private static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";
     private static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
     private static final String FACEBOOK_APP_ID = "431745923529834";
+
+    public static final String WECHAT_APP_SECRET = "a6afcadca7d218c9b2c44632fc8f884d";
     public static final String WECHAT_APP_ID = "wxe795a0ba8fa23cf7";//release
     //public static final String WECHAT_APP_ID = "wxbd1f7f377d636b55";//test
 
@@ -101,7 +103,7 @@ public class SocialNetworkModule
 
     @Provides @Singleton IWXAPI createWXAPI(Context context)
     {
-        IWXAPI weChatApi = WXAPIFactory.createWXAPI(context, WECHAT_APP_ID, false);
+        IWXAPI weChatApi = WXAPIFactory.createWXAPI(context, WECHAT_APP_ID, true);
         weChatApi.registerApp(WECHAT_APP_ID);
         return weChatApi;
     }

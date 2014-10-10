@@ -10,6 +10,7 @@ import com.tradehero.th.api.users.signup.LoginSignUpFormFacebookDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormLinkedinDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormQQDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormTwitterDTO;
+import com.tradehero.th.api.users.signup.LoginSignUpFormWeChatDTO;
 import com.tradehero.th.api.users.signup.LoginSignUpFormWeiboDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.models.push.DeviceTokenHelper;
@@ -75,6 +76,15 @@ public class NetworkModule
     @Provides LoginSignUpFormQQDTO provideLoginSignUpFormQQDTO(DeviceTokenHelper deviceTokenHelper)
     {
         return new LoginSignUpFormQQDTO(
+                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
+                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                VersionUtils.getVersionId(Application.context()),
+                deviceTokenHelper.getIMEI());
+    }
+
+    @Provides LoginSignUpFormWeChatDTO provideLoginSignUpFormWechatDTO(DeviceTokenHelper deviceTokenHelper)
+    {
+        return new LoginSignUpFormWeChatDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
                 VersionUtils.getVersionId(Application.context()),

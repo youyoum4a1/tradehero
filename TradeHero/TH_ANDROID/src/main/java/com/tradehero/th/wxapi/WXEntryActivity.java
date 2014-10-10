@@ -9,16 +9,16 @@ import android.view.MotionEvent;
 import android.view.Window;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tencent.mm.sdk.openapi.BaseReq;
-import com.tencent.mm.sdk.openapi.BaseResp;
-import com.tencent.mm.sdk.openapi.ConstantsAPI;
+import com.tencent.mm.sdk.constants.ConstantsAPI;
+import com.tencent.mm.sdk.modelbase.BaseReq;
+import com.tencent.mm.sdk.modelbase.BaseResp;
+import com.tencent.mm.sdk.modelmsg.SendAuth;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
-import com.tencent.mm.sdk.openapi.SendMessageToWX;
-import com.tencent.mm.sdk.openapi.WXMediaMessage;
-import com.tencent.mm.sdk.openapi.WXTextObject;
-import com.tencent.mm.sdk.openapi.WXWebpageObject;
-import com.tencent.mm.sdk.platformtools.Util;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -42,6 +42,8 @@ import timber.log.Timber;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
 {
+
+    public static final String APP_ID = "";
     public static final int WECHAT_MESSAGE_TYPE_NONE = -1;
     private static final int TIMELINE_SUPPORTED_VERSION = 0x21020001;
     private static final String WECHAT_DTO_INTENT_KEY = WXEntryActivity.class.getName() + ".weChatDTOKey";
@@ -57,6 +59,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     @Inject WeChatServiceWrapper weChatServiceWrapper;
     @Inject Lazy<Picasso> picassoLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
+
+    private static  String WECHAT_CODE ;
 
     public static void putWeChatDTO(@NotNull Intent intent, @NotNull WeChatDTO weChatDTO)
     {
@@ -76,6 +80,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         // TODO take this intent extraction into a separate method and use a new
         // WeChatDTO method to read from Intent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+
         weChatDTO = getWeChatDTO(getIntent());
         loadImage();
 
@@ -85,9 +91,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             if (mWeChatApi.getWXAppSupportAPI()
                     >= TIMELINE_SUPPORTED_VERSION) //wechat 4.2 support timeline
             {
-                WXMediaMessage weChatMessage = buildMessage(weChatDTO.type);
-                SendMessageToWX.Req weChatReq = buildRequest(weChatMessage);
-                mWeChatApi.sendReq(weChatReq);
+                if(weChatDTO.type == WeChatMessageType.Auth)
+                {
+                    weChatAuth();
+                }
+                else
+                {
+                    WXMediaMessage weChatMessage = buildMessage(weChatDTO.type);
+                    SendMessageToWX.Req weChatReq = buildRequest(weChatMessage);
+                    mWeChatApi.sendReq(weChatReq);
+                }
             }
             else
             {
@@ -100,6 +113,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             THToast.show(getString(R.string.need_install_wechat));
             finish();
         }
+    }
+
+    private void weChatAuth()
+    {
+        final SendAuth.Req req = new SendAuth.Req();
+        req.scope = "snsapi_userinfo";
+        req.state = "wechat_sdk_demo_test";
+        mWeChatApi.sendReq(req);
     }
 
     private WXMediaMessage buildMessage(WeChatMessageType weChatMessageType)
@@ -136,7 +157,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 i++;
             }
             initBitmap();
-            weChatMsg.thumbData = Util.bmpToByteArray(mBitmap, true);
+            //new sdk not support bmpToByteArray Method??
+            //weChatMsg.thumbData = Util.bmpToByteArray(mBitmap, true);
             mBitmap.recycle();
 
             return weChatMsg;
@@ -164,8 +186,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                                 mBitmap = Bitmap.createScaledBitmap(tempBitmap, 250, 250, false);
                             }
                         }
-                    }
-                    catch (IOException e)
+                    } catch (IOException e)
                     {
                         THToast.show(e.getMessage());
                         e.printStackTrace();
@@ -186,8 +207,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 //mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
                 mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
             }
-        }
-        catch (OutOfMemoryError e)
+        } catch (OutOfMemoryError e)
         {
             Timber.e(e, null);
         }
@@ -198,7 +218,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         SendMessageToWX.Req weChatReq = new SendMessageToWX.Req();
         weChatReq.transaction = String.valueOf(System.currentTimeMillis());
         //not sure for transaction, maybe identify id?
-        if(weChatDTO.type == WeChatMessageType.Invite || weChatDTO.type == WeChatMessageType.ShareSell)
+        if (weChatDTO.type == WeChatMessageType.Invite || weChatDTO.type == WeChatMessageType.ShareSell)
         {
             weChatReq.scene = SendMessageToWX.Req.WXSceneSession;
         }
@@ -218,37 +238,80 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         mWeChatApi.handleIntent(intent, this);
     }
 
-    //<editor-fold desc="Wechat Callback">
-    @Override
-    public void onReq(BaseReq req)
+    @Override public void onReq(BaseReq req)
     {
-        switch (req.getType())
-        {
-            case ConstantsAPI.COMMAND_GETMESSAGE_FROM_WX:
-                break;
-            case ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX:
-                break;
-            default:
-                break;
-        }
+            switch (req.getType())
+            {
+                case ConstantsAPI.COMMAND_GETMESSAGE_FROM_WX:
+                    break;
+                case ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX:
+                    break;
+                default:
+                    break;
+            }
     }
 
-    @Override
-    public void onResp(BaseResp resp)
+    @Override public void onResp(BaseResp resp)
     {
-        switch (resp.errCode)
-        {
-            case BaseResp.ErrCode.ERR_OK:
-                THToast.show(getString(R.string.share_success));
-                reportWeChatSuccessShareToServer();
-                break;
-            case BaseResp.ErrCode.ERR_USER_CANCEL:
-            case BaseResp.ErrCode.ERR_AUTH_DENIED:
-            default:
-                finish();
-                break;
-        }
+            switch (resp.errCode)
+            {
+                case BaseResp.ErrCode.ERR_OK:
+                    if(resp instanceof SendAuth.Resp)
+                    {
+                        WECHAT_CODE = ((SendAuth.Resp) resp).code;
+                        finish();
+                    }
+                    else
+                    {
+                        THToast.show(getString(R.string.share_success));
+                        reportWeChatSuccessShareToServer();
+                    }
+                    break;
+                case BaseResp.ErrCode.ERR_USER_CANCEL:
+                case BaseResp.ErrCode.ERR_AUTH_DENIED:
+                default:
+                    finish();
+                    break;
+            }
     }
+
+    ////<editor-fold desc="Wechat Callback">
+    //@Override
+    //public void onReq(BaseReq req)
+    //{
+    //    switch (req.getType())
+    //    {
+    //        case ConstantsAPI.COMMAND_GETMESSAGE_FROM_WX:
+    //            break;
+    //        case ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX:
+    //            break;
+    //        default:
+    //            break;
+    //    }
+    //}
+    //
+    //@Override
+    //public void onResp(BaseResp resp)
+    //{
+    //    Timber.d("Tradeheor:: " + resp.toString());
+    //    THToast.show(resp.toString());
+    //
+    //
+    //    switch (resp.errCode)
+    //    {
+    //        case BaseResp.ErrCode.ERR_OK:
+    //
+    //            //THToast.show(getString(R.string.share_success));
+    //            //reportWeChatSuccessShareToServer();
+    //
+    //            break;
+    //        case BaseResp.ErrCode.ERR_USER_CANCEL:
+    //        case BaseResp.ErrCode.ERR_AUTH_DENIED:
+    //        default:
+    //            finish();
+    //            break;
+    //    }
+    //}
     //</editor-fold>
 
     private void reportWeChatSuccessShareToServer()
@@ -278,6 +341,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         super.onDestroy();
     }
 
+
+
     private class TrackShareCallback implements Callback<Response>
     {
         @Override public void success(Response response, Response response2)
@@ -302,4 +367,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         finish();
         return super.onTouchEvent(event);
     }
+
+    public static String getWeChatCode()
+    {
+        return WECHAT_CODE;
+    }
+
+    public static void setWeChatCodeNull()
+    {
+        WECHAT_CODE = null;
+    }
+
 }
