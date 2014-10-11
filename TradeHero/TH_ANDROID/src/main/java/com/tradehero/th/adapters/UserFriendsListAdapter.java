@@ -9,8 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -40,7 +43,7 @@ public class UserFriendsListAdapter extends BaseAdapter
 
     public void addListData(List<UserProfileCompactDTO> list)
     {
-        if(userProfileCompactDTOs == null) userProfileCompactDTOs = new ArrayList<>();
+        if (userProfileCompactDTOs == null) userProfileCompactDTOs = new ArrayList<>();
         userProfileCompactDTOs.addAll(list);
     }
 
@@ -92,6 +95,22 @@ public class UserFriendsListAdapter extends BaseAdapter
                     .into(holder.imgUserHead);
 
             holder.imgUserName.setText(item.displayName);
+
+            double roi = 0;
+            if (item instanceof UserFollowerDTO)
+            {
+                roi = ((UserFollowerDTO) item).roiSinceInception;
+            }
+            else
+            {
+                roi = item.roiSinceInception;
+            }
+
+            THSignedNumber thRoiSinceInception = THSignedPercentage.builder(roi * 100)
+                    .build();
+            holder.tvUserExtraValue.setText(thRoiSinceInception.toString());
+            holder.tvUserExtraValue.setTextColor(
+                    context.getResources().getColor(thRoiSinceInception.getColorResId()));
 
             if (friendsType == UserFriendsListFragment.TYPE_FRIENDS_FOLLOWS)
             {

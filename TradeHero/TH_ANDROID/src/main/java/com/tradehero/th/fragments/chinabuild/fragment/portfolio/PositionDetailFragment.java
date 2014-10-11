@@ -115,14 +115,14 @@ public class PositionDetailFragment extends DashboardFragment
 
         initListView();
 
-        if (adapter.getCount() == 0)
-        {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
-        }
-        else
-        {
+        //if (adapter.getCount() == 0)
+        //{
+        //    betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        //}
+        //else
+        //{
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
-        }
+        //}
 
         return view;
     }
@@ -242,6 +242,7 @@ public class PositionDetailFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
         {
+
             linkWith(tradeDTOs, true);
             onFinish();
         }
@@ -260,16 +261,9 @@ public class PositionDetailFragment extends DashboardFragment
 
     public void linkWith(TradeDTOList tradeDTOs, boolean andDisplay)
     {
+        Timber.d("Tradehero: PositionDetailFragment LinkWith");
         this.tradeDTOList = tradeDTOs;
         adapter.setTradeList(tradeDTOList);
     }
 
-    //@Nullable protected SecurityId getSecurityId()
-    //{
-    //    if (positionDTO == null)
-    //    {
-    //        return null;
-    //    }
-    //    return securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId));
-    //}
 }

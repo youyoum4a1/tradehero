@@ -104,6 +104,9 @@ public class PortfolioFragment extends DashboardFragment
     private PortfolioCompactDTO defaultPortfolio;
     @Inject @BindGuestUser BooleanPreference mBindGuestUserDialogKeyPreference;
 
+    private int user_id = 0;
+    private int portfolio_id = 0;
+
     private MiddleCallback<GetPositionsDTO> getPositionDTOCallback;
     @Inject Lazy<PositionServiceWrapper> positionServiceWrapper;
 
@@ -231,25 +234,20 @@ public class PortfolioFragment extends DashboardFragment
         pushFragment(SecurityDetailFragment.class, bundle);
     }
 
+    public void setPortfolioInfo(int user_id, int porfolio_id)
+    {
+        this.user_id = user_id;
+        this.portfolio_id = porfolio_id;
+    }
+
     public void enterSecurity(SecurityId securityId, String securityName, PositionDTO positionDTO)
     {
-        PortfolioCompactDTO dto;
-        if(portfolio_type == PORTFOLIO_TYPE_MINE)
-        {
-            dto = portfolioCompactDTO;
-        }
-        else
-        {
-            if (defaultPortfolio == null) return;
-            dto = defaultPortfolio;
-        }
-
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
         bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
         PositionDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
-        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(dto.userId, dto.id);
+        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(user_id, portfolio_id);
         if (ownedPortfolioId != null)
         {
             PositionDetailFragment.putApplicablePortfolioId(bundle, ownedPortfolioId);
@@ -311,6 +309,7 @@ public class PortfolioFragment extends DashboardFragment
             {//来自比赛的持仓，我的当前比赛持仓
                 portfolio_type = PORTFOLIO_TYPE_MINE;
                 getPositionsFromPortfolio(portfolioCompactDTO);
+                setPortfolioInfo(portfolioCompactDTO.userId, portfolioCompactDTO.id);
             }
         }
     }
@@ -329,6 +328,7 @@ public class PortfolioFragment extends DashboardFragment
         {
             getPositionsDTOKey = new OwnedPortfolioId(showUserBaseKey.key, defaultPortfolio.id);
             fetchSimplePage(false);
+            setPortfolioInfo(defaultPortfolio.userId, defaultPortfolio.id);
         }
         else
         {
@@ -344,6 +344,7 @@ public class PortfolioFragment extends DashboardFragment
         {
             getPositionsDTOKey = new OwnedPortfolioId(showUserBaseKey.key, defaultPortfolio.id);
             fetchSimplePage(false);
+            setPortfolioInfo(defaultPortfolio.userId, defaultPortfolio.id);
         }
     }
 
@@ -373,9 +374,15 @@ public class PortfolioFragment extends DashboardFragment
         return new GetPositionsListener();
     }
 
-    private void linkWith(GetPositionsDTO value, boolean display)
+    private void linkWith(GetPositionsDTO value, boolean setPorfolio)
     {
-        Timber.d("");
+        try
+        {//来自比赛的profolio信息从GetPositionDTO里获取
+            user_id = value.positions.get(0).userId;
+            portfolio_id = value.positions.get(0).portfolioId;
+        } catch (Exception e)
+        {
+        }
         initPositionSecurity(value);
     }
 
@@ -601,7 +608,7 @@ public class PortfolioFragment extends DashboardFragment
 
         @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
         {
-            linkWith(getPositionsDTO, true);
+            linkWith(getPositionsDTO, false);
             alertDialogUtilLazy.get().dismissProgressDialog();
         }
 
@@ -620,7 +627,6 @@ public class PortfolioFragment extends DashboardFragment
         }
         getPositionDTOCallback = null;
     }
-
 
     protected void getPositionDirectly(@NotNull UserBaseKey heroId)
     {
