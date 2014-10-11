@@ -233,13 +233,23 @@ public class PortfolioFragment extends DashboardFragment
 
     public void enterSecurity(SecurityId securityId, String securityName, PositionDTO positionDTO)
     {
-        if (defaultPortfolio == null) return;
+        PortfolioCompactDTO dto;
+        if(portfolio_type == PORTFOLIO_TYPE_MINE)
+        {
+            dto = portfolioCompactDTO;
+        }
+        else
+        {
+            if (defaultPortfolio == null) return;
+            dto = defaultPortfolio;
+        }
+
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
         bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
         PositionDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
-        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(defaultPortfolio.userId, defaultPortfolio.id);
+        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(dto.userId, dto.id);
         if (ownedPortfolioId != null)
         {
             PositionDetailFragment.putApplicablePortfolioId(bundle, ownedPortfolioId);

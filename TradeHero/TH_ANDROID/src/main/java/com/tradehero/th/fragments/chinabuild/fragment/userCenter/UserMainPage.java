@@ -89,6 +89,7 @@ public class UserMainPage extends DashboardFragment
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
     @InjectView(R.id.llItemAllAmount) LinearLayout llItemAllAmount;
     @InjectView(R.id.llItemAllHero) LinearLayout llItemAllHero;
@@ -171,6 +172,7 @@ public class UserMainPage extends DashboardFragment
 
         listTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
         listTimeLine.setAdapter(adapter);
+        listTimeLine.setEmptyView(imgEmpty);
 
         adapter.setTimeLineOperater(new UserTimeLineAdapter.TimeLineOperater()
         {

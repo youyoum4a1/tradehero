@@ -3,17 +3,19 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="48dp"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     android:gravity="center_vertical"
     android:orientation="horizontal">
   <LinearLayout
       android:id="@+id/llTLPraise"
-      android:layout_marginLeft="10dp"
+      android:layout_marginLeft="0dp"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
     <TextView android:id="@+id/btnTLPraise"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:duplicateParentState="true"
         android:background="@drawable/icon_praise_xml"/>
     <TextView
@@ -29,12 +31,12 @@
 
   <LinearLayout
       android:id="@+id/llTLComment"
-      android:layout_marginLeft="25dp"
+      android:layout_marginLeft="50dp"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
     <TextView android:id="@+id/btnTLComment"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:duplicateParentState="true"
         android:background="@drawable/icon_comment_xml"/>
     <TextView
@@ -50,12 +52,12 @@
 
   <LinearLayout
       android:id="@+id/llTLShare"
-      android:layout_marginLeft="25dp"
+      android:layout_marginLeft="50dp"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
     <TextView android:id="@+id/btnTLShare"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:duplicateParentState="true"
         android:background="@drawable/icon_share_xml"/>
     <TextView

@@ -17,7 +17,7 @@
     <Spinner
         android:id="@+id/spinnerExchange"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
         android:layout_gravity="center_horizontal"
         android:dropDownSelector="@drawable/basic_transparent_selector"
         style="@style/TH.Spinner"

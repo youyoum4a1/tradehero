@@ -127,29 +127,16 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
 
     private void openSecurityProfile(String exchange, String symbol)
     {
-        //SecurityId securityId = new SecurityId(exchange, symbol);
-        //Bundle args = new Bundle();
-        //BuySellFragment.putSecurityId(args, securityId);
-        //getNavigator().pushFragment(BuySellFragment.class, args);
         Timber.d("openSecurity " + exchange + " : " + symbol);
         Bundle bundle = new Bundle();
         SecurityId securityId = new SecurityId(exchange,symbol);
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
-        //getNavigator().pushFragment(SecurityDetailFragment.class, bundle);
         enterFragment(SecurityDetailFragment.class,bundle);
     }
 
     private void openUserProfile(int userId)
     {
-        //Bundle b = new Bundle();
-        //thRouter.save(b, new UserBaseKey(userId));
-        //
-        //if (currentUserId.get() != userId)
-        //{
-        //    getNavigator().pushFragment(PushableTimelineFragment.class, b);
-        //}
-
         Timber.d("openUserProfile : " + userId);
         if (userId >= 0)
         {

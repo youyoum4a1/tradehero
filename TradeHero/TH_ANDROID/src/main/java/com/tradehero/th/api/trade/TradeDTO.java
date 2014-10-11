@@ -46,7 +46,7 @@ public class TradeDTO implements DTO
     //成交金额
     public String displayTradeMoney()
     {
-        return "" + Math.abs(quantity * unitPriceRefCcy);
+        return "" + Math.round(Math.abs(quantity * unitPriceRefCcy));
     }
 
     public String displayTradeQuantity()

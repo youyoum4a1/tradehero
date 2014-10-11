@@ -123,6 +123,7 @@
     <CheckBox
         android:id="@+id/cbCreateCompetitionInvite"
         style="@style/CustomCheckboxTheme"
+
         android:text="  邀请好友参加比赛"
         />
   </LinearLayout>

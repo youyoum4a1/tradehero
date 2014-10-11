@@ -5,11 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -38,6 +41,7 @@ import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -86,6 +90,8 @@ public class TradeOfMineFragment extends DashboardFragment
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.tradeMyPositionList) SecurityListView listView;
+    @InjectView(R.id.llEmpty) LinearLayout llEmpty;
+    @InjectView(R.id.btnEmptyAction) Button btnEmptyAction;
 
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
@@ -136,7 +142,7 @@ public class TradeOfMineFragment extends DashboardFragment
 
     public void initView()
     {
-
+        listView.setEmptyView(llEmpty);
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
 
@@ -224,6 +230,12 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         refreshData(false);
         super.onResume();
+    }
+
+    @OnClick(R.id.btnEmptyAction)
+    public void onEmptyActionClicked()
+    {
+        gotoDashboard(SearchFragment.class.getName());
     }
 
     public void refreshData(boolean force)

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
@@ -54,6 +55,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
     @InjectView(R.id.listFriends) SecurityListView listView;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
     protected UserProfileCompactDTO selectedItem;
 
@@ -112,6 +114,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
     {
         listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         listView.setAdapter(adapter);
+        listView.setEmptyView(imgEmpty);
         listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
@@ -283,8 +286,13 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
 
         private void onFinish()
         {
-            listView.onRefreshComplete();
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listFriends);
+            try
+            {
+                listView.onRefreshComplete();
+                betterViewAnimator.setDisplayedChildByLayoutId(R.id.listFriends);
+            } catch (Exception e)
+            {
+            }
         }
     }
 

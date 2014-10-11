@@ -70,7 +70,7 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
         Timber.d("onResume MainTabFragmentStockGod!");
     }
 
-    private static final String[] CONTENT = new String[] {"推荐榜", "人气榜", "土豪榜", "更多榜单"};
+    private static final String[] CONTENT = new String[] {"推荐榜", "人气榜", "土豪榜", "更多榜"};
 
     class CustomAdapter extends FragmentPagerAdapter
     {

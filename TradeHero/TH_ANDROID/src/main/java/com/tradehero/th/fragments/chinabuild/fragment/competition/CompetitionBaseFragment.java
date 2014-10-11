@@ -57,6 +57,8 @@ public class CompetitionBaseFragment extends DashboardFragment
 
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.imgEmpty) ImageView imgEmpty;
+
 
     @InjectView(R.id.listCompetitions) SecurityListView listCompetitions;//比赛列表
     @InjectView(R.id.llCompetitionAdv) RelativeLayout llCompetitionAdv;//广告栏
@@ -116,6 +118,7 @@ public class CompetitionBaseFragment extends DashboardFragment
 
         fetchVipCompetition(false);//获取官方推荐比赛
 
+        listCompetitions.setEmptyView(imgEmpty);
         listCompetitions.setMode(PullToRefreshBase.Mode.BOTH);
         listCompetitions.setAdapter(adapterList);
         listCompetitions.setOnItemClickListener(new AdapterView.OnItemClickListener()

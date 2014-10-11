@@ -87,6 +87,7 @@ public class CompetitionCreateFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         exchangeListTypeCacheListener = createExchangeListTypeFetchListener();
         callbackcreatUGC = new CreateUGCCallback();
+
     }
 
     @Override
@@ -163,6 +164,7 @@ public class CompetitionCreateFragment extends DashboardFragment
     private void initView()
     {
         initSpinnerViewPeriod();
+        cbCompetitionInvite.setChecked(true);
     }
 
     @Override public void onStop()

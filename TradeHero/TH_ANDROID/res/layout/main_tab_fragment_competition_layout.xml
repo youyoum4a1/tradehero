@@ -43,15 +43,15 @@
   </LinearLayout>
   <TextView
       android:id="@+id/tvCreateCompetition"
-      android:background="@drawable/blue_circle_alpha"
+      android:background="@drawable/issue_xml"
       android:text="创建"
       android:textColor="@color/white"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
+      android:layout_width="56dp"
+      android:layout_height="56dp"
       android:layout_alignParentRight="true"
       android:layout_alignParentBottom="true"
-      android:layout_marginRight="40dp"
-      android:layout_marginBottom="80dp"
+      android:layout_marginRight="30dp"
+      android:layout_marginBottom="60dp"
       android:gravity="center"
       />
 
