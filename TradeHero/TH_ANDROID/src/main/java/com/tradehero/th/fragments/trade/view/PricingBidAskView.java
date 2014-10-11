@@ -289,6 +289,6 @@ public class PricingBidAskView extends LinearLayout
 
     public String getCurrencyDisplay()
     {
-        return securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
+        return securityCompactDTO == null ? "-" : securityCompactDTO.getCurrencyDisplay();
     }
 }

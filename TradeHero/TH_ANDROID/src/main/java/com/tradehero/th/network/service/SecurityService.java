@@ -102,7 +102,7 @@ public interface SecurityService
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    @GET("/securities/{exchange}/{pathSafeSecuritySymbol}") SecurityPositionDetailDTO getSecurity(
+    @GET("/securities/{exchange}/{pathSafeSecuritySymbol}?includeProviderInfo=false") SecurityPositionDetailDTO getSecurity(
             @Path("exchange") String exchange,
             @Path("pathSafeSecuritySymbol") String pathSafeSecuritySymbol);
     //</editor-fold>

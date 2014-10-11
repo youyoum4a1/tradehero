@@ -938,28 +938,28 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 if (securityCompactDTO.high != null)
                 {
                     tvInfo0Value.setText(THSignedMoney.builder(securityCompactDTO.high)
-                            .currency(securityCompactDTO.currencyDisplay)
+                            .currency(securityCompactDTO.getCurrencyDisplay())
                             .build().toString());
                 }
 
                 if (securityCompactDTO.low != null)
                 {
                     tvInfo1Value.setText(THSignedMoney.builder(securityCompactDTO.low)
-                            .currency(securityCompactDTO.currencyDisplay)
+                            .currency(securityCompactDTO.getCurrencyDisplay())
                             .build().toString());
                 }
 
                 if (securityCompactDTO.volume != null)
                 {
                     tvInfo2Value.setText(THSignedMoney.builder(securityCompactDTO.volume)
-                            .currency(securityCompactDTO.currencyDisplay)
+                            .currency(securityCompactDTO.getCurrencyDisplay())
                             .build().toString());
                 }
 
                 if (securityCompactDTO.averageDailyVolume != null)
                 {
                     tvInfo3Value.setText(THSignedMoney.builder(securityCompactDTO.averageDailyVolume)
-                            .currency(securityCompactDTO.currencyDisplay)
+                            .currency(securityCompactDTO.getCurrencyDisplay())
                             .build().toString());
                 }
             }

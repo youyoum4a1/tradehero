@@ -5,11 +5,11 @@ import com.tradehero.th.api.security.SecurityId;
 public class SecurityUtils
 {
     public static final String DEFAULT_VIRTUAL_CASH_CURRENCY_ISO = "USD";
-    public static final String DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY = "US$";
+    public static final String DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY = "$";
 
     public static final double DEFAULT_TRANSACTION_COST_USD = 10;
     public static final String DEFAULT_TRANSACTION_CURRENCY_ISO = "USD";
-    public static final String DEFAULT_TRANSACTION_CURRENCY_DISPLAY = "US$";
+    public static final String DEFAULT_TRANSACTION_CURRENCY_DISPLAY = "$";
 
     public static String getDefaultCurrency()
     {
@@ -19,5 +19,25 @@ public class SecurityUtils
     public static String getDisplayableSecurityName(SecurityId securityId)
     {
         return String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol());
+    }
+
+    public static String getCurrencyShortDispaly(String display)
+    {
+        if (StringUtils.isNullOrEmpty(display))
+        {
+            return "";
+        }
+        else
+        {
+            if (display.startsWith("CN"))
+            {
+                return display.replace("CN", "");
+            }
+            if (display.startsWith("US"))
+            {
+                return display.replace("US", "");
+            }
+        }
+        return display;
     }
 }

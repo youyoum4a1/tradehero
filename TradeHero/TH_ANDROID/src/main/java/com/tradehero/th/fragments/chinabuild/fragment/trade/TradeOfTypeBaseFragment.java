@@ -55,6 +55,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     private SecurityListAdapter adapterSecurity;
 
     private ExchangeCompactDTOList exchangeCompactDTOs;
+    public static final int DEFAULT_POSITION = 14;
 
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 50;
@@ -295,7 +296,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         spinnerIconAdapter = new SpinnerExchangeIconAdapter(getActivity(), strExchangeList, countryList);
         spinnerExchange.setAdapter(spinnerIconAdapter);
         spinnerExchange.setOnItemSelectedListener(spinnerSelectListener);
-        spinnerExchange.setSelection(17);
+        spinnerExchange.setSelection(DEFAULT_POSITION);
     }
 
     private void getExchangSecurity(int position)

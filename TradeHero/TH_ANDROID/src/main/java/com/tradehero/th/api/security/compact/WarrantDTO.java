@@ -66,7 +66,7 @@ public class WarrantDTO extends SecurityCompactDTO
                 ", name='" + name + '\'' +
                 ", exchange='" + exchange + '\'' +
                 ", yahooSymbol='" + yahooSymbol + '\'' +
-                ", currencyDisplay='" + currencyDisplay + '\'' +
+                ", currencyDisplay='" + getCurrencyDisplay() + '\'' +
                 ", currencyISO='" + currencyISO + '\'' +
                 ", marketCap=" + marketCap +
                 ", lastPrice=" + lastPrice +

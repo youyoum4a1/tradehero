@@ -307,7 +307,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                         }
                         else
                         {
-                            gainLossLabel.setText(watchlistPositionDTO.securityDTO.currencyDisplay + " " +
+                            gainLossLabel.setText(watchlistPositionDTO.securityDTO.getCurrencyDisplay() + " " +
                                     new DecimalFormat("##.##").format(gainLoss));
                         }
 
@@ -343,7 +343,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                 lastPrice = 0.0;
             }
             // last price
-            positionLastAmount.setText(formatLastPrice(securityCompactDTO.currencyDisplay, lastPrice));
+            positionLastAmount.setText(formatLastPrice(securityCompactDTO.getCurrencyDisplay(), lastPrice));
 
             // pl percentage
             if (watchlistPrice != 0)
@@ -392,7 +392,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             if (securityCompactDTO != null)
             {
                 Double watchListPrice = watchlistPositionDTO.watchlistPrice;
-                numberOfShares.setText(formatNumberOfShares(watchlistPositionDTO.shares, securityCompactDTO.currencyDisplay, watchListPrice));
+                numberOfShares.setText(formatNumberOfShares(watchlistPositionDTO.shares, securityCompactDTO.getCurrencyDisplay(), watchListPrice));
             }
             else
             {

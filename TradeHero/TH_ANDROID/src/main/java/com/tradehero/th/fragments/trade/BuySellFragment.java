@@ -652,7 +652,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mBuyPrice != null)
         {
-            String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
+            String display = securityCompactDTO == null ? "-" : securityCompactDTO.getCurrencyDisplay();
             String bPrice;
             String sPrice;
             THSignedNumber bthSignedNumber;

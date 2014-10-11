@@ -125,7 +125,7 @@ public class SecurityListAdapter extends BaseAdapter
             }
 
             holder.tvSecurityPrice.setText(String.valueOf(item.lastPrice));
-            holder.tvSecurityCurrency.setText(item.currencyDisplay);
+            holder.tvSecurityCurrency.setText(item.getCurrencyDisplay());
         }
         return convertView;
     }

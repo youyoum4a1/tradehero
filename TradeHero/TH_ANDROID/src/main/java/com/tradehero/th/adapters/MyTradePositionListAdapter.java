@@ -196,7 +196,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 //price
                 tvSecurityPrice.setText(String.valueOf((((SecurityPositionItem) item)).security.lastPrice));
                 //currency
-                tvSecurityCurrency.setText(((SecurityPositionItem) item).security.currencyDisplay);
+                tvSecurityCurrency.setText(((SecurityPositionItem) item).security.getCurrencyDisplay());
                 //extro
                 //显示总盈亏
                 Double pl = ((SecurityPositionItem) item).position.getTotalScoreOfTrade();
@@ -208,7 +208,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
                         .withSign()
                         .signTypePlusMinusAlways()
-                        .currency(((SecurityPositionItem) item).security.currencyDisplay)
+                        .currency(((SecurityPositionItem) item).security.getCurrencyDisplay())
                         .build();
                 tvSecurityExtraInfo.setText(thPlSinceInception.toString());
                 tvSecurityExtraInfo.setTextColor(context.getResources().getColor(
@@ -229,7 +229,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 //price
                 tvSecurityPrice.setText(String.valueOf((((WatchPositionItem) item)).watchlistPosition.securityDTO.lastPrice));
                 //currency
-                tvSecurityCurrency.setText(((WatchPositionItem) item).watchlistPosition.securityDTO.currencyDisplay);
+                tvSecurityCurrency.setText(((WatchPositionItem) item).watchlistPosition.securityDTO.getCurrencyDisplay());
 
                 tvSecurityExtraInfo.setVisibility(View.GONE);
                 tvSecurityExtraInfo.setText("xxx人关注");

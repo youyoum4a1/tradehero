@@ -290,7 +290,7 @@ public class PositionPartialTopView extends LinearLayout
             {
                 if (securityCompactDTO.lastPrice != null)
                 {
-                    stockLastPrice.setText(String.format("%s %.2f", securityCompactDTO.currencyDisplay, securityCompactDTO.lastPrice));
+                    stockLastPrice.setText(String.format("%s %.2f", securityCompactDTO.getCurrencyDisplay(), securityCompactDTO.lastPrice));
                 }
                 else
                 {
