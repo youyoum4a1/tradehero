@@ -141,6 +141,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         init();
         initView();
         updateHeadView(true);
+        mShareToSocialCheckBox.setChecked(true);
         return view;
     }
 
@@ -148,7 +149,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
     {
         super.updateHeadView(display);
     }
-
 
     public void initView()
     {
@@ -311,8 +311,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         quoteDTO = getBundledQuoteDTO();
         competitionID = getCompetitionID();
 
-
-        if(competitionID == 0)
+        if (competitionID == 0)
         {
             SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
 
@@ -326,12 +325,8 @@ public class BuySaleSecurityFragment extends DashboardFragment
             positionDTOCompactList = getPositionDTOCompactList();
         }
 
-
-
         clampQuantity(true);
         linkWith(userProfileCache.get(currentUserId.toUserBaseKey()));
-
-
     }
 
     protected void clampQuantity(boolean andDisplay)
@@ -361,9 +356,9 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     private void updateRate()
     {
-        if(securityCompactDTO!=null)
+        if (securityCompactDTO != null)
         {
-            tvBuySaleRate.setText(""+securityCompactDTO.risePercent);
+            tvBuySaleRate.setText("" + securityCompactDTO.risePercent);
             THSignedNumber roi = THSignedPercentage.builder(securityCompactDTO.risePercent * 100)
                     .withSign()
                     .signTypeArrow()
@@ -560,7 +555,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     protected String getSecurityName()
     {
-        if(this.securityName == null)
+        if (this.securityName == null)
         {
             this.securityName = getArguments().getString(KEY_SECURITY_NAME);
         }
@@ -580,7 +575,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     {
         if (this.competitionID == 0)
         {
-            this.competitionID = getArguments().getInt(KEY_COMPETITION_ID,0);
+            this.competitionID = getArguments().getInt(KEY_COMPETITION_ID, 0);
         }
         return competitionID;
     }
@@ -598,7 +593,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     {
         if (this.positionDTOCompactList == null)
         {
-            this.positionDTOCompactList = (PositionDTOCompactList)getArguments().getSerializable(KEY_POSITION_COMPACT_DTO);
+            this.positionDTOCompactList = (PositionDTOCompactList) getArguments().getSerializable(KEY_POSITION_COMPACT_DTO);
         }
         return positionDTOCompactList;
     }

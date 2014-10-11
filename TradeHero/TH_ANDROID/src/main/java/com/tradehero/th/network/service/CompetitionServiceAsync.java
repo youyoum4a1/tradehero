@@ -71,6 +71,10 @@ interface CompetitionServiceAsync
             Callback<UserCompetitionDTO> callback
     );
 
+    @GET("/usercompetitions/{competitionId}/detail") void getCompetitionDetail(
+            @Path("competitionId") int competitionId,
+            Callback<UserCompetitionDTO> callback
+    );
 
     //<editor-fold desc="Get MySelfRank">
     @GET("/leaderboards/{leaderboardsId}/users/{userId}") void getMySelfRank(

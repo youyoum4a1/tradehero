@@ -24,6 +24,9 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import javax.inject.Inject;
 
+/*
+    我的交易持仓，平仓，自选股，列表
+ */
 public class MyTradePositionListAdapter extends BaseAdapter
 {
     private Context context;
@@ -195,7 +198,9 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 //currency
                 tvSecurityCurrency.setText(((SecurityPositionItem) item).security.currencyDisplay);
                 //extro
-                Double pl = ((SecurityPositionItem) item).position.unrealizedPLRefCcy;
+                //显示总盈亏
+                Double pl = ((SecurityPositionItem) item).position.getTotalScoreOfTrade();
+
                 if (pl == null)
                 {
                     pl = 0.0;
@@ -207,7 +212,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                         .build();
                 tvSecurityExtraInfo.setText(thPlSinceInception.toString());
                 tvSecurityExtraInfo.setTextColor(context.getResources().getColor(
-                        ColorUtils.getColorResourceIdForNumber(((SecurityPositionItem) item).position.unrealizedPLRefCcy)));
+                        ColorUtils.getColorResourceIdForNumber(pl)));
                 tvSecurityExtraInfo.setVisibility(View.VISIBLE);
             }
             else if (item instanceof WatchPositionItem)

@@ -113,6 +113,14 @@ import retrofit.Callback;
         return competitionServiceWrapper.enrollUGCompetition(competitionId, callback);
     }
 
+    public MiddleCallback<UserCompetitionDTO> getCompetitionDetail(int competitionId, @Nullable
+    Callback<UserCompetitionDTO> callback)
+    {
+        return competitionServiceWrapper.getCompetitionDetail(competitionId, callback);
+    }
+
+
+
     public MiddleCallback<LeaderboardDTO> getMySelfRank(int leaderboardsId, int userId, @Nullable
     Callback<LeaderboardDTO> callback)
     {

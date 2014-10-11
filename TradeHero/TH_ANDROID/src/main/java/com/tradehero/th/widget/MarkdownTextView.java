@@ -15,6 +15,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.models.intent.THIntentFactory;
@@ -85,6 +86,11 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         switch (key)
         {
+            case "competition":
+                Timber.d("");
+                int competitionId = Integer.parseInt(matchStrings[2]);
+                openCompetition(competitionId);
+                break;
             case "user":
                 int userId = Integer.parseInt(matchStrings[2]);
                 openUserProfile(userId);
@@ -134,6 +140,18 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
         enterFragment(SecurityDetailFragment.class,bundle);
     }
+
+    private void openCompetition(int competitionId)
+    {
+        Timber.d("openCompetition : " + competitionId);
+        if (competitionId >= 0)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID,competitionId);
+            enterFragment(CompetitionDetailFragment.class,bundle);
+        }
+    }
+
 
     private void openUserProfile(int userId)
     {

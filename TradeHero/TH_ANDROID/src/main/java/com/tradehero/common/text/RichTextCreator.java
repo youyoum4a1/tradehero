@@ -41,6 +41,7 @@ public class RichTextCreator
     private RichTextProcessor[] getBuildInProcessors()
     {
         return new RichTextProcessor[] {
+                new CompetitionTagProcessor(),
                 new UserTagProcessor(),
                 new BoldTagProcessor(),
                 new ItalicTagProcessor(),

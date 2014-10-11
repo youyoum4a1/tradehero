@@ -74,6 +74,7 @@ import timber.log.Timber;
 public class CompetitionDetailFragment extends DashboardFragment
 {
     public static final String BUNDLE_COMPETITION_DTO = "bundle_competition_dto";
+    public static final String BUNDLE_COMPETITION_ID = "bundle_competition_id";
 
     @Inject Lazy<Picasso> picasso;
     @Inject CompetitionDTOUtil competitionDTOUtil;
@@ -82,12 +83,14 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     @Inject Lazy<CompetitionCache> competitionCacheLazy;
     private Callback<UserCompetitionDTO> callbackEnrollUGC;
+    private Callback<UserCompetitionDTO> callbackgetCompetition;
     private Callback<LeaderboardDTO> callbackMySelfRank;
 
     @Inject protected PortfolioCompactNewCache portfolioCompactNewCache;
     private DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> portfolioCompactNewFetchListener;
 
     public UserCompetitionDTO userCompetitionDTO;
+    public int competitionId;
     private ProgressDialog mTransactionDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
 
@@ -127,8 +130,9 @@ public class CompetitionDetailFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        getBundleCompetitionDTO();
+        getBundleCompetition();
         callbackEnrollUGC = new EnrollUGCCallback();
+        callbackgetCompetition = new GetCompetitionDetailCallback();
         callbackMySelfRank = new MySelfRanCallbakc();
         competitionLeaderboardCacheListener = createCompetitionLeaderboardListener();
         portfolioCompactNewFetchListener = createPortfolioCompactNewFetchListener();
@@ -137,12 +141,20 @@ public class CompetitionDetailFragment extends DashboardFragment
         adapter = new LeaderboardListAdapter(getActivity());
     }
 
-    public void getBundleCompetitionDTO()
+    public void getBundleCompetition()
     {
         Bundle bundle = getArguments();
         if (bundle != null)
         {
             this.userCompetitionDTO = (UserCompetitionDTO) bundle.getSerializable(BUNDLE_COMPETITION_DTO);
+            if (userCompetitionDTO != null)
+            {
+                competitionId = userCompetitionDTO.id;
+            }
+            else
+            {
+                this.competitionId = bundle.getInt(BUNDLE_COMPETITION_ID, 0);
+            }
         }
     }
 
@@ -151,10 +163,6 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain("比赛详情");
-        if (userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing)
-        {//比赛我参加了，并且还没结束。
-            setHeadViewRight0("邀请好友");
-        }
     }
 
     @Override
@@ -162,8 +170,21 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.competition_detail_layout, container, false);
         ButterKnife.inject(this, view);
-        initView();
+        if (userCompetitionDTO != null)
+        {
+            initView();
+        }
+        else
+        {
+            fetchCompetitionDetail();
+        }
         return view;
+    }
+
+    private void noFoundCompetition()
+    {
+        THToast.show("没有找到比赛");
+        popCurrentFragment();
     }
 
     private void initView()
@@ -173,6 +194,11 @@ public class CompetitionDetailFragment extends DashboardFragment
         initRankList();
         getMySelfRank();
         tvCompetitionDetailMore.setVisibility(userCompetitionDTO.detailUrl == null ? View.GONE : View.VISIBLE);
+
+        if (userCompetitionDTO != null && userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing)
+        {//比赛我参加了，并且还没结束。
+            setHeadViewRight0("邀请好友");
+        }
     }
 
     private void initRankList()
@@ -279,7 +305,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         detachCompetitionLeaderboardCache();
         detachPortfolioCompactNewCache();
         detachUserProfileCache();
-
         super.onDestroyView();
     }
 
@@ -289,6 +314,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         portfolioCompactNewFetchListener = null;
         userProfileCacheListener = null;
         callbackEnrollUGC = null;
+        callbackgetCompetition = null;
         callbackMySelfRank = null;
         super.onDestroy();
     }
@@ -296,6 +322,13 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
+        refreshStatus();
+    }
+
+    public void refreshStatus()
+    {
+        if(userCompetitionDTO == null)return;
+
         if (!userCompetitionDTO.isOngoing)
         {
             getMySelfRank();
@@ -376,6 +409,21 @@ public class CompetitionDetailFragment extends DashboardFragment
         }
     }
 
+    //通过competitionId去获取比赛详情
+    public void fetchCompetitionDetail()
+    {
+        if (competitionId == 0)
+        {
+            noFoundCompetition();
+            return;
+        }
+
+        mTransactionDialog = progressDialogUtil.show(CompetitionDetailFragment.this.getActivity(),
+                R.string.processing, R.string.alert_dialog_please_wait);
+        competitionCacheLazy.get().getCompetitionDetail(competitionId, callbackgetCompetition);
+
+    }
+
     public void toPlayCompetition()
     {
         Timber.d("去比赛");
@@ -394,6 +442,46 @@ public class CompetitionDetailFragment extends DashboardFragment
     public void getMySelfRank()
     {
         competitionCacheLazy.get().getMySelfRank(userCompetitionDTO.leaderboardId, currentUserId.toUserBaseKey().getUserId(), callbackMySelfRank);
+    }
+
+
+
+    protected class GetCompetitionDetailCallback implements retrofit.Callback<UserCompetitionDTO>
+    {
+
+        @Override
+        public void success(UserCompetitionDTO userCompetitionDTO, Response response)
+        {
+            onFinish();
+            if (response.getStatus() == 200)
+            {
+                CompetitionDetailFragment.this.userCompetitionDTO = userCompetitionDTO;
+                initView();
+                refreshStatus();
+            }
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            onFinish();
+            if (retrofitError != null)
+            {
+                Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
+            }
+
+            noFoundCompetition();
+            //THException thException = new THException(retrofitError);
+            //THToast.show(thException);
+        }
+
+        private void onFinish()
+        {
+            if (mTransactionDialog != null)
+            {
+                mTransactionDialog.dismiss();
+            }
+            mTransactionDialog.dismiss();
+        }
     }
 
     protected class EnrollUGCCallback implements retrofit.Callback<UserCompetitionDTO>
@@ -625,7 +713,6 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void fetchPortfolioCompactNew()
     {
-
         detachPortfolioCompactNewCache();
         PortfolioId key = new PortfolioId(userCompetitionDTO.id);
         portfolioCompactNewCache.register(key, portfolioCompactNewFetchListener);

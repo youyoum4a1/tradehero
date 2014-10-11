@@ -81,7 +81,7 @@
         android:textColor="#1789d5"
         android:layout_centerVertical="true"
         android:singleLine="true"
-        android:text="杜淳杰"/>
+        android:text=""/>
 
     <TextView
         android:id="@+id/tvGotoCompetition"
@@ -135,7 +135,7 @@
         android:layout_margin="10dp"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:text="（截止昨天24:00）"/>
+        android:text=""/>
   </LinearLayout>
 
   <com.tradehero.th.fragments.chinabuild.listview.SecurityListView

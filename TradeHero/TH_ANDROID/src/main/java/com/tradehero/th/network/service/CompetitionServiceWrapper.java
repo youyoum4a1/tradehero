@@ -162,6 +162,18 @@ import retrofit.Callback;
         return middleCallback;
     }
 
+    //通过比赛id获取比赛详情
+    @NotNull public MiddleCallback<UserCompetitionDTO> getCompetitionDetail(
+            int competitionId,
+            @Nullable Callback<UserCompetitionDTO> callback)
+    {
+        MiddleCallback<UserCompetitionDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        this.competitionServiceAsync.getCompetitionDetail(competitionId, middleCallback);
+        return middleCallback;
+    }
+
+
+
     //获取自己的比赛排名信息
     @NotNull public MiddleCallback<LeaderboardDTO> getMySelfRank(
             int leaderboardsId,int userId,
