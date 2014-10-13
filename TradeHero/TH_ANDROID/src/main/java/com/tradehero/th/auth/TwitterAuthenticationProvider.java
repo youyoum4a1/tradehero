@@ -2,7 +2,6 @@ package com.tradehero.th.auth;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.ConsumerKey;

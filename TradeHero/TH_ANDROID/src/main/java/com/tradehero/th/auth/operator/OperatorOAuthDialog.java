@@ -2,7 +2,9 @@ package com.tradehero.th.auth.operator;
 
 import android.content.Context;
 import android.net.Uri;
+import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import com.tradehero.th.R;
 import com.tradehero.th.auth.OAuthDialog;
 import java.util.concurrent.CancellationException;
 import oauth.signpost.OAuth;
@@ -33,7 +35,8 @@ public class OperatorOAuthDialog implements Observable.OnSubscribe<String>
         {
             @Override public void onCancel()
             {
-                subscriber.onError(new CancellationException());
+                CookieManager.getInstance().removeAllCookie();
+                subscriber.onError(new CancellationException(context.getString(R.string.error_canceled)));
             }
 
             @Override public void onError(int errorCode, String description, String failingUrl)
@@ -49,7 +52,7 @@ public class OperatorOAuthDialog implements Observable.OnSubscribe<String>
                 final String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
                 if (verifier == null)
                 {
-                    subscriber.onError(new CancellationException("Verifier is empty"));
+                    onCancel();
                     return;
                 }
                 subscriber.onNext(verifier);
