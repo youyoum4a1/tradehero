@@ -54,6 +54,7 @@
         android:maxLength="20"
         android:textSize="@dimen/text_large"
         android:hint="@string/login_password_hint"
+        android:inputType="textPassword"
         android:textColorHint="#bfbfbf"
         android:background="@color/white"/>
   </LinearLayout>

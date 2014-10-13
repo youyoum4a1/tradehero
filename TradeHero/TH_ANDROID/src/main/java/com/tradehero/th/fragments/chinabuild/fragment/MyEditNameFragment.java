@@ -52,6 +52,7 @@ public class MyEditNameFragment extends DashboardFragment implements View.OnClic
     {
         View view = inflater.inflate(R.layout.setting_my_name_fragment_layout, container, false);
         ButterKnife.inject(this, view);
+        setNeedToMonitorBackPressed(true);
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
@@ -144,4 +145,10 @@ public class MyEditNameFragment extends DashboardFragment implements View.OnClic
             }
         };
     }
+
+    @Override
+    public void onBackPressed(){
+        onClickHeadLeft();
+    }
+
 }

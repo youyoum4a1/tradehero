@@ -41,6 +41,20 @@ abstract public class DashboardFragment extends BaseFragment
     private TextView tvHeadMiddleMain;
     private TextView tvHeadMiddleSub;
 
+    //Listen to back pressed
+    private boolean needToMonitorBackPressed = false;
+
+    public boolean isNeedBackPressed(){
+        return needToMonitorBackPressed;
+    }
+
+    public void setNeedToMonitorBackPressed(boolean needToMonitorBackPressed){
+        this.needToMonitorBackPressed = needToMonitorBackPressed;
+    }
+
+    public void onBackPressed(){}
+
+
     public void updateHeadView(boolean display)
     {
         if (rlCustomHeadView != null)

@@ -174,6 +174,14 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onBackPressed()
     {
+        Fragment fragment = getNavigator().getCurrentFragment();
+        if(fragment instanceof DashboardFragment){
+            DashboardFragment fragmentDF = (DashboardFragment)fragment;
+            if(fragmentDF.isNeedBackPressed()){
+                fragmentDF.onBackPressed();
+                return;
+            }
+        }
         getNavigator().popFragment();
     }
 
