@@ -6,8 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -45,12 +47,14 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -59,8 +63,7 @@ import timber.log.Timber;
 /**
  * Register using email.
  */
-public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
-{
+public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener {
     //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
     private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
@@ -82,14 +85,46 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private MiddleCallback<Response> sendCodeMiddleCallback;
     protected boolean mIsPhoneNumRegister;
 
-    @Inject Analytics analytics;
-    @Inject BitmapForProfileFactory bitmapForProfileFactory;
-    @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
-    @Inject Picasso picasso;
-    @Inject UserServiceWrapper userServiceWrapper;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
+    @Inject
+    Analytics analytics;
+    @Inject
+    BitmapForProfileFactory bitmapForProfileFactory;
+    @Inject
+    BitmapTypedOutputFactory bitmapTypedOutputFactory;
+    @Inject
+    Picasso picasso;
+    @Inject
+    UserServiceWrapper userServiceWrapper;
+
+
+    private static long lasttime_request_verify_code = -1;
+    private final long duration_verify_code = 60;
+    private String requestVerifyCodeStr = "";
+    private Runnable refreshVerifyCodeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (getVerifyCodeButton == null) {
+                return;
+            }
+            long limitTime = (System.currentTimeMillis() - lasttime_request_verify_code) / 1000;
+            if (limitTime < duration_verify_code && limitTime > 0) {
+                getVerifyCodeButton.setClickable(false);
+                getVerifyCodeButton.setText(String.valueOf(duration_verify_code - limitTime));
+                getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng_again);
+                Handler handler = new Handler();
+                handler.postDelayed(refreshVerifyCodeRunnable, 1000);
+            } else {
+                getVerifyCodeButton.setClickable(true);
+                getVerifyCodeButton.setText(requestVerifyCodeStr);
+                getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng);
+                lasttime_request_verify_code = -1;
+            }
+        }
+    };
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
@@ -98,72 +133,82 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(R.string.authentication_register);
     }
 
-    @Override public int getDefaultViewId()
-    {
+    @Override
+    public int getDefaultViewId() {
         return R.layout.authentication_email_sign_up;
     }
 
-    @Override protected void initSetup(View view)
-    {
+    @Override
+    protected void initSetup(View view) {
         this.emailEditText = (EditText) view.findViewById(R.id.authentication_sign_up_email);
-        emailEditText.addTextChangedListener(new TextWatcher()
-        {
+        emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
             }
 
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 mIsPhoneNumRegister = false;
-                if (charSequence.length() == 11)
-                {
+                if (charSequence.length() == 11) {
                     Pattern p = Pattern.compile("[0-9]*");
                     Matcher m = p.matcher(charSequence);
-                    if (m.matches())
-                    {
+                    if (m.matches()) {
                         mIsPhoneNumRegister = true;
                     }
                 }
-                if (verifyCodeLayout != null)
-                {
+                if (verifyCodeLayout != null) {
                     verifyCodeLayout.setVisibility(mIsPhoneNumRegister ? View.VISIBLE : View.GONE);
                 }
             }
 
-            @Override public void afterTextChanged(Editable editable)
-            {
+            @Override
+            public void afterTextChanged(Editable editable) {
 
             }
         });
         this.passwordEditText = (EditText) view.findViewById(R.id.authentication_sign_up_password);
         verifyCodeLayout = (RelativeLayout) view.findViewById(R.id.login_verify_code_layout);
         verifyCode = (EditText) view.findViewById(R.id.verify_code);
+
         getVerifyCodeButton = (TextView) view.findViewById(R.id.get_verify_code_button);
         getVerifyCodeButton.setOnClickListener(this);
+        requestVerifyCodeStr = getActivity().getResources().getString(R.string.login_get_verify_code);
+        long limitTime = (System.currentTimeMillis() - lasttime_request_verify_code) / 1000;
+        if (limitTime < duration_verify_code && limitTime > 0) {
+            getVerifyCodeButton.setClickable(false);
+            getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng_again);
+            getVerifyCodeButton.setText(String.valueOf(duration_verify_code - limitTime));
+            Handler handler = new Handler();
+            handler.postDelayed(refreshVerifyCodeRunnable, 1000);
+        } else {
+            getVerifyCodeButton.setClickable(true);
+            getVerifyCodeButton.setText(requestVerifyCodeStr);
+            getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng);
+            lasttime_request_verify_code = -1;
+        }
+
+
         this.mDisplayName = (EditText) view.findViewById(R.id.authentication_sign_up_username);
-        this.mDisplayName.addTextChangedListener(new TextWatcher()
-        {
+        this.mDisplayName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
             }
 
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 signButton.setEnabled(charSequence.length() > 1);
             }
 
-            @Override public void afterTextChanged(Editable editable)
-            {
+            @Override
+            public void afterTextChanged(Editable editable) {
 
             }
         });
@@ -192,23 +237,19 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         mSwitcher = (ViewSwitcher) view.findViewById(R.id.switcher);
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         DeviceUtil.showKeyboardDelayed(emailEditText);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
-                if (getActivity() instanceof DashboardNavigatorActivity)
-                {
+                if (getActivity() instanceof DashboardNavigatorActivity) {
                     ((NavigatorActivity) getActivity()).getNavigator().popFragment();
-                }
-                else
-                {
+                } else {
                     Timber.e("Activity is not a DashboardNavigatorActivity", new Exception());
                 }
                 return true;
@@ -216,49 +257,34 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK)
-        {
-            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
-            {
-                try
-                {
+        if (resultCode == Activity.RESULT_OK) {
+            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null) {
+                try {
                     handleDataFromLibrary(data);
-                }
-                catch (OutOfMemoryError e)
-                {
+                } catch (OutOfMemoryError e) {
                     THToast.show(R.string.error_decode_image_memory);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     THToast.show(R.string.error_fetch_image_library);
                     Timber.e(e, "Failed to extract image from library");
                 }
-            }
-            else if (requestCode == REQUEST_GALLERY)
-            {
+            } else if (requestCode == REQUEST_GALLERY) {
                 Timber.e(new Exception("Got null data from library"), "");
             }
-        }
-        else if (resultCode != Activity.RESULT_CANCELED)
-        {
+        } else if (resultCode != Activity.RESULT_CANCELED) {
             Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
         }
     }
 
-    public void handleDataFromLibrary(Intent data)
-    {
+    public void handleDataFromLibrary(Intent data) {
         Uri selectedImageUri = data.getData();
-        if (selectedImageUri != null)
-        {
+        if (selectedImageUri != null) {
             String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
             setNewImagePath(selectedPath);
-        }
-        else
-        {
+        } else {
             alertDialogUtil.popWithNegativeButton(getActivity(),
                     R.string.error_fetch_image_library,
                     R.string.error_fetch_image_library,
@@ -266,19 +292,15 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
     }
 
-    public void setNewImagePath(String newImagePath)
-    {
+    public void setNewImagePath(String newImagePath) {
         this.newImagePath = newImagePath;
         displayProfileImage();
     }
 
-    public void displayProfileImage()
-    {
-        if (newImagePath != null)
-        {
+    public void displayProfileImage() {
+        if (newImagePath != null) {
             Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
-            if (decoded != null)
-            {
+            if (decoded != null) {
                 mPhoto.setImageBitmap(decoded);
                 return;
             }
@@ -286,18 +308,16 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         displayDefaultProfileImage();
     }
 
-    public void displayDefaultProfileImage()
-    {
-        if (this.mPhoto != null && picasso != null)
-        {
+    public void displayDefaultProfileImage() {
+        if (this.mPhoto != null && picasso != null) {
             picasso.load(R.drawable.superman_facebook)
                     //.transform(userPhotoTransformation)
                     .into(mPhoto);
         }
     }
 
-    @Override public void onDestroyView()
-    {
+    @Override
+    public void onDestroyView() {
         //if (this.profileView != null)
         //{
         //    this.profileView.setOnTouchListenerOnFields(null);
@@ -307,23 +327,20 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         //}
         //this.profileView = null;
         detachSendCodeMiddleCallback();
-        if (this.signButton != null)
-        {
+        if (this.signButton != null) {
             this.signButton.setOnClickListener(null);
         }
         this.signButton = null;
-        if (backButton != null)
-        {
+        if (backButton != null) {
             backButton.setOnClickListener(null);
             backButton = null;
         }
         super.onDestroyView();
     }
 
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.authentication_sign_up_button:
                 //clear old user info
                 THUser.clearCurrentUser();
@@ -333,8 +350,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 showChooseImageDialog();
                 break;
             case R.id.btn_next:
-                if (checkAccountAndPassword())
-                {
+                if (checkAccountAndPassword()) {
                     mSwitcher.setDisplayedChild(1);
                 }
                 break;
@@ -344,22 +360,30 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                         R.drawable.register_duihao : R.drawable.register_duihao_cancel);
                 break;
             case R.id.get_verify_code_button:
-                detachSendCodeMiddleCallback();
-                sendCodeMiddleCallback = userServiceWrapper.sendCode(emailEditText.getText().toString(), new SendCodeCallback());
+                requestVerifyCode();
                 break;
         }
     }
 
-    private void showChooseImageDialog()
-    {
+    private void requestVerifyCode(){
+        getVerifyCodeButton.setClickable(false);
+        getVerifyCodeButton.setText(String.valueOf(duration_verify_code));
+        getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng_again);
+        lasttime_request_verify_code = System.currentTimeMillis();
+        Handler handler = new Handler();
+        handler.postDelayed(refreshVerifyCodeRunnable, 1000);
+        detachSendCodeMiddleCallback();
+        sendCodeMiddleCallback = userServiceWrapper.sendCode(emailEditText.getText().toString(), new SendCodeCallback());
+    }
+
+
+    private void showChooseImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(false);
-        builder.setItems(R.array.register_choose_image, new DialogInterface.OnClickListener()
-        {
-            @Override public void onClick(DialogInterface dialogInterface, int i)
-            {
-                switch (i)
-                {
+        builder.setItems(R.array.register_choose_image, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i) {
                     case 0:
                         askImageFromCamera();
                         break;
@@ -373,13 +397,13 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         builder.create().show();
     }
 
-    @Override protected void forceValidateFields()
-    {
+    @Override
+    protected void forceValidateFields() {
         //this.profileView.forceValidateFields();
     }
 
-    @Override public boolean areFieldsValid()
-    {
+    @Override
+    public boolean areFieldsValid() {
         //return this.profileView.areFieldsValid();
         //if (mDisplayName.getText().toString().isEmpty())
         //{
@@ -389,32 +413,26 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return true;
     }
 
-    private boolean checkAccountAndPassword()
-    {
-        if (emailEditText.getText().toString().isEmpty())
-        {
+    private boolean checkAccountAndPassword() {
+        if (emailEditText.getText().toString().isEmpty()) {
             THToast.show(R.string.register_error_account);
             return false;
-        }
-        else if (passwordEditText.getText().length() < 6)
-        {
+        } else if (passwordEditText.getText().length() < 6) {
             THToast.show(R.string.register_error_password);
             return false;
         }
         return true;
     }
 
-    @Override protected Map<String, Object> getUserFormMap()
-    {
+    @Override
+    protected Map<String, Object> getUserFormMap() {
         Map<String, Object> map = super.getUserFormMap();
         populateUserFormMap(map);
         return map;
     }
 
-    public void populateUserFormMap(Map<String, Object> map)
-    {
-        if (mIsPhoneNumRegister)
-        {
+    public void populateUserFormMap(Map<String, Object> map) {
+        if (mIsPhoneNumRegister) {
             populateUserFormMapFromEditable(map, UserFormFactory.KEY_PHONE_NUMBER, emailEditText.getText());
             populateUserFormMapFromEditable(map, UserFormFactory.KEY_VERIFY_CODE, verifyCode.getText());
         }
@@ -425,73 +443,57 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_INVITE_CODE, "");
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, "");
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, "");
-        if (newImagePath != null)
-        {
+        if (newImagePath != null) {
             map.put(UserFormFactory.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
         }
     }
 
-    protected BitmapTypedOutput safeCreateProfilePhoto()
-    {
+    protected BitmapTypedOutput safeCreateProfilePhoto() {
         BitmapTypedOutput created = null;
-        if (newImagePath != null)
-        {
-            try
-            {
+        if (newImagePath != null) {
+            try {
                 created = bitmapTypedOutputFactory.createForProfilePhoto(
                         getResources(), bitmapForProfileFactory, newImagePath);
-            }
-            catch (OutOfMemoryError e)
-            {
+            } catch (OutOfMemoryError e) {
                 THToast.show(R.string.error_decode_image_memory);
             }
         }
         return created;
     }
 
-    private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
-    {
-        if (toPick != null)
-        {
+    private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick) {
+        if (toPick != null) {
             toFill.put(key, toPick.toString());
         }
     }
 
-    private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, String toPick)
-    {
-        if (toPick != null)
-        {
+    private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, String toPick) {
+        if (toPick != null) {
             toFill.put(key, toPick);
         }
     }
 
-    @Override public void onClickHeadLeft()
-    {
-        if (mSwitcher.getDisplayedChild() == 1)
-        {
+    @Override
+    public void onClickHeadLeft() {
+        if (mSwitcher.getDisplayedChild() == 1) {
             mSwitcher.setDisplayedChild(0);
-        }
-        else
-        {
-            ((AuthenticationActivity)getActivity()).onBackPressed();
+        } else {
+            ((AuthenticationActivity) getActivity()).onBackPressed();
         }
     }
 
-    protected void askImageFromLibrary()
-    {
+    protected void askImageFromLibrary() {
         Intent libraryIntent = new Intent(Intent.ACTION_PICK);
         libraryIntent.setType("image/jpeg");
         startActivityForResult(libraryIntent, REQUEST_GALLERY);
     }
 
-    protected void askImageFromCamera()
-    {
+    protected void askImageFromCamera() {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
     }
 
-    public String getPath(Uri uri)
-    {
+    public String getPath(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
         int column_index = cursor
@@ -500,51 +502,46 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return cursor.getString(column_index);
     }
 
-    @Override public AuthenticationMode getAuthenticationMode()
-    {
+    @Override
+    public AuthenticationMode getAuthenticationMode() {
         return AuthenticationMode.SignUpWithEmail;
     }
 
-    protected ProfileInfoView.Listener createProfileViewListener()
-    {
+    protected ProfileInfoView.Listener createProfileViewListener() {
         return new EmailSignUpProfileViewListener();
     }
 
-    protected class EmailSignUpProfileViewListener implements ProfileInfoView.Listener
-    {
-        @Override public void onUpdateRequested()
-        {
+    protected class EmailSignUpProfileViewListener implements ProfileInfoView.Listener {
+        @Override
+        public void onUpdateRequested() {
             // TODO
         }
 
-        @Override public void onImageFromCameraRequested()
-        {
+        @Override
+        public void onImageFromCameraRequested() {
             askImageFromCamera();
         }
 
-        @Override public void onImageFromLibraryRequested()
-        {
+        @Override
+        public void onImageFromLibraryRequested() {
             askImageFromLibrary();
         }
     }
 
-    private class SendCodeCallback implements Callback<Response>
-    {
-        @Override public void success(Response response, Response response2)
-        {
+    private class SendCodeCallback implements Callback<Response> {
+        @Override
+        public void success(Response response, Response response2) {
             THToast.show(R.string.send_verify_code_success);
         }
 
-        @Override public void failure(RetrofitError retrofitError)
-        {
+        @Override
+        public void failure(RetrofitError retrofitError) {
             THToast.show(new THException(retrofitError));
         }
     }
 
-    private void detachSendCodeMiddleCallback()
-    {
-        if (sendCodeMiddleCallback != null)
-        {
+    private void detachSendCodeMiddleCallback() {
+        if (sendCodeMiddleCallback != null) {
             sendCodeMiddleCallback.setPrimaryCallback(null);
         }
         sendCodeMiddleCallback = null;
