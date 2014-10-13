@@ -97,8 +97,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Inject
     UserServiceWrapper userServiceWrapper;
 
-
-    private static long lasttime_request_verify_code = -1;
+    private static long last_time_request_verify_code = -1;
     private final long duration_verify_code = 60;
     private String requestVerifyCodeStr = "";
     private Runnable refreshVerifyCodeRunnable = new Runnable() {
@@ -107,7 +106,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             if (getVerifyCodeButton == null) {
                 return;
             }
-            long limitTime = (System.currentTimeMillis() - lasttime_request_verify_code) / 1000;
+            long limitTime = (System.currentTimeMillis() - last_time_request_verify_code) / 1000;
             if (limitTime < duration_verify_code && limitTime > 0) {
                 getVerifyCodeButton.setClickable(false);
                 getVerifyCodeButton.setText(String.valueOf(duration_verify_code - limitTime));
@@ -118,7 +117,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 getVerifyCodeButton.setClickable(true);
                 getVerifyCodeButton.setText(requestVerifyCodeStr);
                 getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng);
-                lasttime_request_verify_code = -1;
+                last_time_request_verify_code = -1;
             }
         }
     };
@@ -180,7 +179,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         getVerifyCodeButton = (TextView) view.findViewById(R.id.get_verify_code_button);
         getVerifyCodeButton.setOnClickListener(this);
         requestVerifyCodeStr = getActivity().getResources().getString(R.string.login_get_verify_code);
-        long limitTime = (System.currentTimeMillis() - lasttime_request_verify_code) / 1000;
+        long limitTime = (System.currentTimeMillis() - last_time_request_verify_code) / 1000;
         if (limitTime < duration_verify_code && limitTime > 0) {
             getVerifyCodeButton.setClickable(false);
             getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng_again);
@@ -191,7 +190,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             getVerifyCodeButton.setClickable(true);
             getVerifyCodeButton.setText(requestVerifyCodeStr);
             getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng);
-            lasttime_request_verify_code = -1;
+            last_time_request_verify_code = -1;
         }
 
 
@@ -204,10 +203,10 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if(charSequence.length()>1){
+                if (charSequence.length() > 1) {
                     signButton.setBackgroundResource(R.drawable.basic_red_selector_round_corner);
                     signButton.setEnabled(charSequence.length() > 1);
-                }else{
+                } else {
                     signButton.setEnabled(false);
                     signButton.setBackgroundResource(R.drawable.yijian);
                 }
@@ -371,11 +370,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
     }
 
-    private void requestVerifyCode(){
+    private void requestVerifyCode() {
         getVerifyCodeButton.setClickable(false);
         getVerifyCodeButton.setText(String.valueOf(duration_verify_code));
         getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng_again);
-        lasttime_request_verify_code = System.currentTimeMillis();
+        last_time_request_verify_code = System.currentTimeMillis();
         Handler handler = new Handler();
         handler.postDelayed(refreshVerifyCodeRunnable, 1000);
         detachSendCodeMiddleCallback();
@@ -422,8 +421,13 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         if (emailEditText.getText().toString().isEmpty()) {
             THToast.show(R.string.register_error_account);
             return false;
-        } else if (passwordEditText.getText().length() < 6) {
+        }
+        if (passwordEditText.getText().length() < 6) {
             THToast.show(R.string.register_error_password);
+            return false;
+        }
+        if(!isValidEmail(emailEditText.getText())&&!isValidPhoneNumber(emailEditText.getText())){
+            THToast.show(R.string.enter_phone_email_error);
             return false;
         }
         return true;
@@ -551,6 +555,33 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
         sendCodeMiddleCallback = null;
     }
+
+    private boolean isValidPhoneNumber(CharSequence charSequence) {
+        boolean isValid = false;
+        Pattern p = Pattern.compile("[0-9]*");
+        Matcher m = p.matcher(charSequence);
+        if (m.matches()) {
+            isValid = true;
+        } else {
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private boolean isValidEmail(CharSequence charSequence) {
+        boolean isValid = false;
+        String str = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+        Pattern p = Pattern.compile(str);
+        Matcher m = p.matcher(charSequence);
+        if (m.matches()) {
+            isValid = true;
+        } else {
+            isValid = false;
+        }
+        return isValid;
+    }
+
+
 }
 
 

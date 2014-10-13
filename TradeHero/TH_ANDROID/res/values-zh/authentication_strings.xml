@@ -66,4 +66,6 @@
   <string name="register_now">现在注册</string>
   <string name="log_in_now">现在登陆！</string>
 
+  <string name="enter_phone_email_error">请输入正确的手机号或邮箱</string>
+
 </resources>

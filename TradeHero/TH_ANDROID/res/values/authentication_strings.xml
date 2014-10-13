@@ -67,4 +67,6 @@
   <string name="register_now">Register now</string>
   <string name="log_in_now">Login now!</string>
 
+  <string name="enter_phone_email_error">Please enter a valid phone number or e-mail.</string>
+
 </resources>
