@@ -123,7 +123,7 @@ abstract public class SocialConnectSettingViewHolder
         unlinkConfirmDialog = null;
     }
 
-    protected boolean changeStatus(boolean enable)
+    @Override protected boolean changeStatus(boolean enable)
     {
         Activity activityContext = null;
         DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;

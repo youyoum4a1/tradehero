@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceGroup;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,9 +23,11 @@ import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.Map;
@@ -91,6 +94,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         setHasOptionsMenu(true);
         addPreferencesFromResource(R.xml.settings);
+        localizationCustomize();
 
         HierarchyInjector.inject(this);
 
@@ -204,10 +208,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Settings));
         if (socialNetworkToConnectTo != null)
         {
-            // TODO/refactor
-            authenticationProviderMap.get(socialNetworkToConnectTo);
+            //socialConnectSettingViewHolderContainer.changeSharing(socialNetworkToConnectTo, true);
             socialNetworkToConnectTo = null;
-            throw new RuntimeException("Not implemented");
         }
     }
 
@@ -247,6 +249,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         allSettingViewHolders.clear();
         super.onDestroy();
+    }
+
+    private void localizationCustomize()
+    {
+        if (Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA))
+        {
+            Preference facebookPref = getPreferenceScreen().findPreference(getString(R.string.key_settings_sharing_facebook));
+            Preference twitterPref = getPreferenceScreen().findPreference(getString(R.string.key_settings_sharing_twitter));
+            PreferenceGroup sharingGroupPref = (PreferenceGroup) getPreferenceScreen().findPreference(getString(R.string.key_settings_sharing_group));
+            sharingGroupPref.removePreference(facebookPref);
+            sharingGroupPref.removePreference(twitterPref);
+        }
     }
 
     private void initPreferenceClickHandlers()
