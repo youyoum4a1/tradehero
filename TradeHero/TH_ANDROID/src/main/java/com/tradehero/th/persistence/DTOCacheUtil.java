@@ -7,6 +7,7 @@ import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.level.key.LevelDefListId;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -310,9 +311,14 @@ import org.jetbrains.annotations.Nullable;
 
     protected void preFetchTrending(
             @NotNull UserBaseDTO userBaseDTO,
-            @NotNull List<? extends ExchangeCompactDTO> exchangeCompactDTOs)
+            @NotNull ExchangeCompactDTOList exchangeCompactDTOs)
     {
-        ExchangeCompactDTO initialExchange = userBaseDTOUtil.getInitialExchange(userBaseDTO, exchangeCompactDTOs);
+        Country country = userBaseDTO.getCountry();
+        ExchangeCompactDTO initialExchange = null;
+        if (country != null)
+        {
+            initialExchange = exchangeCompactDTOs.findFirstDefaultFor(country);
+        }
         ExchangeCompactSpinnerDTO initialExchangeSpinner;
         if (initialExchange == null)
         {
@@ -346,9 +352,10 @@ import org.jetbrains.annotations.Nullable;
         if (profile != null)
         {
             ExchangeCompactDTOList exchangeCompacts = exchangeCompactListCache.get().get(new ExchangeListType());
-            if (exchangeCompacts != null)
+            Country country = profile.getCountry();
+            if (exchangeCompacts != null && country != null)
             {
-                ExchangeCompactDTO initialExchange = userBaseDTOUtil.getInitialExchange(profile, exchangeCompacts);
+                ExchangeCompactDTO initialExchange = exchangeCompacts.findFirstDefaultFor(country);
                 if (initialExchange != null)
                 {
                     securityCompactListCache.get().getOrFetchAsync(
