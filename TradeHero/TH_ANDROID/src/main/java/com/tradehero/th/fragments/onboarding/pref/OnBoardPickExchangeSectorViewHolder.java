@@ -5,30 +5,39 @@ import android.view.View;
 import android.widget.Spinner;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.android.internal.util.Predicate;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
+import com.tradehero.th.api.market.KnownSectors;
 import com.tradehero.th.api.market.SectorCompactDTO;
+import com.tradehero.th.api.market.SectorCompactDTOList;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapterNew;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
-import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class OnBoardPickExchangeSectorViewHolder
 {
-    @InjectView(R.id.spinner_exchange) Spinner exchangeSpinner;
+    private static final int DEFAULT_SECTOR_ID = KnownSectors.SECTOR_ID_TECHNOLOGY;
+
+    @InjectView(R.id.spinner_exchange) ExchangeSpinner exchangeSpinner;
     @InjectView(R.id.spinner_sector) Spinner sectorSpinner;
-    @InjectView(R.id.spinner_country) Spinner countrySpinner;
 
     @NotNull Context context;
     @NotNull TrendingFilterSpinnerIconAdapterNew exchangeAdapter;
     @NotNull SectorSpinnerAdapterNew sectorAdapter;
-    @NotNull CountrySpinnerAdapterNew countryAdapter;
 
-    public OnBoardPickExchangeSectorViewHolder(
-            @NotNull Context context)
+    @Nullable ExchangeSectorCompactListDTO exchangeSectorCompacts;
+    @Nullable ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
+    @Nullable UserProfileDTO userProfile;
+
+    //<editor-fold desc="Constructors">
+    public OnBoardPickExchangeSectorViewHolder(@NotNull Context context)
     {
         super();
         this.context = context;
@@ -36,18 +45,16 @@ public class OnBoardPickExchangeSectorViewHolder
         exchangeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
         sectorAdapter = new SectorSpinnerAdapterNew(context, R.layout.sector_spinner_item);
         sectorAdapter.setDropDownViewResource(R.layout.sector_spinner_dropdown_item);
-        countryAdapter = new CountrySpinnerAdapterNew(context, R.layout.country_filter_spinner_item);
-        countryAdapter.setDropDownViewResource(R.layout.country_spinner_dropdown_item);
-        countryAdapter.appendTail(Arrays.asList(Country.values()));
-        countryAdapter.remove(Country.NONE);
     }
+    //</editor-fold>
 
     public void attachView(View view)
     {
         ButterKnife.inject(this, view);
         exchangeSpinner.setAdapter(exchangeAdapter);
+        setExchangeSpinnerToUserCountry();
         sectorSpinner.setAdapter(sectorAdapter);
-        countrySpinner.setAdapter(countryAdapter);
+        setSectorSpinnerToDefault();
     }
 
     public void detachView()
@@ -57,38 +64,80 @@ public class OnBoardPickExchangeSectorViewHolder
 
     public void setUserProfile(@NotNull UserProfileDTO userProfile)
     {
-        Spinner countrySpinnerCopy = countrySpinner;
-        if (countrySpinnerCopy != null)
-        {
-            Country userCountry = userProfile.getCountry();
-            if (userCountry != null)
-            {
-                countrySpinnerCopy.setSelection(countryAdapter.getPositionOf(userCountry));
-            }
-        }
+        this.userProfile = userProfile;
+        setExchangeSpinnerToUserCountry();
     }
 
     public void setExchangeSector(@NotNull ExchangeSectorCompactListDTO exchangeSectorCompactListDTO)
     {
+        this.exchangeSectorCompacts = exchangeSectorCompactListDTO;
         exchangeAdapter.clear();
-        exchangeAdapter.addAll(new ExchangeCompactSpinnerDTOList(
+        exchangeCompactSpinnerDTOs = new ExchangeCompactSpinnerDTOList(
                 context.getResources(),
-                exchangeSectorCompactListDTO.exchanges));
+                exchangeSectorCompactListDTO.exchanges);
+        exchangeAdapter.addAll(exchangeCompactSpinnerDTOs);
         exchangeAdapter.notifyDataSetChanged();
-        exchangeSpinner.setSelection(3);
 
         sectorAdapter.clear();
         sectorAdapter.addAll(exchangeSectorCompactListDTO.sectors);
         sectorAdapter.notifyDataSetChanged();
-        sectorSpinner.setSelection(12);
+
+        setExchangeSpinnerToUserCountry();
+        setSectorSpinnerToDefault();
+    }
+
+    protected void setExchangeSpinnerToUserCountry()
+    {
+        UserProfileDTO userProfileCopy = userProfile;
+        Country userCountry = null;
+        if (userProfileCopy != null)
+        {
+            userCountry = userProfileCopy.getCountry();
+        }
+        if (userCountry == null)
+        {
+            userCountry = Country.US;
+        }
+        ExchangeSpinner exchangeSpinnerCopy = exchangeSpinner;
+        ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOsCopy = exchangeCompactSpinnerDTOs;
+        if (exchangeSpinnerCopy != null && exchangeCompactSpinnerDTOsCopy != null)
+        {
+            ExchangeCompactSpinnerDTO found = exchangeCompactSpinnerDTOsCopy.findFirstDefaultFor(userCountry);
+            if (found != null)
+            {
+                exchangeSpinnerCopy.setSelection(found);
+            }
+        }
+    }
+
+    protected void setSectorSpinnerToDefault()
+    {
+        Spinner sectorSpinnerCopy = sectorSpinner;
+        ExchangeSectorCompactListDTO exchangeSectorCompactsCopy = exchangeSectorCompacts;
+        if (exchangeSectorCompactsCopy != null && sectorSpinnerCopy != null)
+        {
+            SectorCompactDTOList sectors = exchangeSectorCompactsCopy.sectors;
+            if (sectors != null)
+            {
+                SectorCompactDTO sectorCompactDTO = sectors.findFirstWhere(new Predicate<SectorCompactDTO>()
+                {
+                    @Override public boolean apply(SectorCompactDTO sectorCompactDTO)
+                    {
+                        return sectorCompactDTO.id == DEFAULT_SECTOR_ID;
+                    }
+                });
+                if (sectorCompactDTO != null)
+                {
+                    sectorSpinnerCopy.setSelection(sectors.indexOf(sectorCompactDTO));
+                }
+            }
+        }
     }
 
     public OnBoardPrefDTO getOnBoardPrefs()
     {
         return new OnBoardPrefDTO(
                 (ExchangeCompactDTO) exchangeSpinner.getSelectedItem(),
-                (SectorCompactDTO) sectorSpinner.getSelectedItem(),
-                (Country) countrySpinner.getSelectedItem());
+                (SectorCompactDTO) sectorSpinner.getSelectedItem());
     }
-
 }
