@@ -204,7 +204,13 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                signButton.setEnabled(charSequence.length() > 1);
+                if(charSequence.length()>1){
+                    signButton.setBackgroundResource(R.drawable.basic_red_selector_round_corner);
+                    signButton.setEnabled(charSequence.length() > 1);
+                }else{
+                    signButton.setEnabled(false);
+                    signButton.setBackgroundResource(R.drawable.yijian);
+                }
             }
 
             @Override
@@ -375,7 +381,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         detachSendCodeMiddleCallback();
         sendCodeMiddleCallback = userServiceWrapper.sendCode(emailEditText.getText().toString(), new SendCodeCallback());
     }
-
 
     private void showChooseImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
