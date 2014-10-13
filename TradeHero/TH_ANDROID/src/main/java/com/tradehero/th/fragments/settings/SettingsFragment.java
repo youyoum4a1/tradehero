@@ -208,7 +208,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Settings));
         if (socialNetworkToConnectTo != null)
         {
-            //socialConnectSettingViewHolderContainer.changeSharing(socialNetworkToConnectTo, true);
+            socialConnectSettingViewHolderContainer.changeSharing(socialNetworkToConnectTo, true);
             socialNetworkToConnectTo = null;
         }
     }

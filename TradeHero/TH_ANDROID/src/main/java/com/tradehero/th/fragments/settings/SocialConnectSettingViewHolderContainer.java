@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.settings;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
@@ -62,5 +63,17 @@ public class SocialConnectSettingViewHolderContainer implements SettingViewHolde
     @Override public Preference getPreference()
     {
         return container;
+    }
+
+    public void changeSharing(SocialNetworkEnum socialNetworkToConnectTo, boolean enable)
+    {
+        for (SocialConnectSettingViewHolder settingViewHolder: settingViewHolders)
+        {
+            if (settingViewHolder.getSocialNetworkEnum() == socialNetworkToConnectTo)
+            {
+                settingViewHolder.changeStatus(enable);
+                break;
+            }
+        }
     }
 }
