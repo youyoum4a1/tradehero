@@ -56,6 +56,7 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
@@ -382,6 +383,7 @@ public class FriendsInvitationFragment extends DashboardFragment
 
         ((SocialAuthenticationProvider) authenticationProviders.get(socialNetworkEnum))
                 .socialLink(getActivity())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new EmptyObserver<UserProfileDTO>()
                 {
                     @Override public void onNext(UserProfileDTO args)

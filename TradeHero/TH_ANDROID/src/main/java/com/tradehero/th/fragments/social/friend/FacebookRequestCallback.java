@@ -1,11 +1,12 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
+import com.tradehero.th.api.BaseResponseDTO;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class FacebookRequestCallback extends RequestCallback
+public class FacebookRequestCallback extends RequestCallback<BaseResponseDTO>
 {
     public FacebookRequestCallback(@NotNull Context context)
     {
@@ -13,7 +14,7 @@ public class FacebookRequestCallback extends RequestCallback
     }
 
     @Override
-    public final void success(Object data, Response response)
+    public final void success(BaseResponseDTO data, Response response)
     {
         this.success();
     }

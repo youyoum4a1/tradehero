@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.List;
@@ -48,7 +49,7 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
     }
 
     @Override
-    protected RequestCallback createInviteCallback(List<UserFriendsDTO> usersToInvite)
+    protected RequestCallback<BaseResponseDTO> createInviteCallback(List<UserFriendsDTO> usersToInvite)
     {
         return new FacebookInviteFriendCallback(usersToInvite);
     }
