@@ -120,8 +120,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         super.onDestroyOptionsMenu();
     }
 
-
-
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
