@@ -14,6 +14,7 @@ public class NetworkConstants
     //public static final String TRADEHERO_PROD_API_ENDPOINT = "https://thvm-proxy.cloudapp.net:8000/api";
 
     public static final String TRADEHERO_QA_ENDPOINT = "https://th-paas-test-dev1.cloudapp.net/";
+//    public static final String TRADEHERO_QA_ENDPOINT = "http://aa715d66c5d144cea2f12a2db4270f85.cloudapp.net/";
     public static final String TRADEHERO_QA_API_ENDPOINT = TRADEHERO_QA_ENDPOINT + "api/";
 
     public static String getEndPointInUse()
