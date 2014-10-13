@@ -103,7 +103,8 @@
       android:id="@+id/social_layout"
       android:layout_width="fill_parent"
       android:layout_height="@dimen/more_bang_item_height"
-      android:background="@drawable/listview_item_selector">
+      android:background="@drawable/listview_item_selector"
+      android:visibility="gone">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
