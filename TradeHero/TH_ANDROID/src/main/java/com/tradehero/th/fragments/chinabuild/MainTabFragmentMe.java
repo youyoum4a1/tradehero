@@ -170,6 +170,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 tvMeName.setText(user.displayName);
             }
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
+            tvAllHero.setText(String.valueOf(user.allHeroCount));
             //粉丝数达到10人
             if (user.allFollowerCount > 9)
             {
@@ -183,7 +184,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
                             getString(R.string.share_amount_fans_num_title));
                 }
             }
-            tvAllHero.setText(String.valueOf(user.heroIds == null ? 0 : user.heroIds.size()));
+
         }
     }
 

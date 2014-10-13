@@ -71,10 +71,11 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         if (parser != null && text != null)
         {
-            if(text.toString().startsWith("*") && text.toString().endsWith("*"))
-            {
-                text = text.subSequence(1,text.length()-1);
-            }
+            //if(text.toString().startsWith("*") && text.toString().endsWith("*"))
+            //{
+            //    text = text.subSequence(1,text.length()-1);
+            //}
+            text = text.toString().replace("*","");
             text = parser.load(text.toString().trim()).create();
         }
         super.setText(text, BufferType.SPANNABLE);
@@ -148,7 +149,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         {
             Bundle bundle = new Bundle();
             bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID,competitionId);
-            enterFragment(CompetitionDetailFragment.class,bundle);
+            enterFragment(CompetitionDetailFragment.class, bundle);
         }
     }
 
