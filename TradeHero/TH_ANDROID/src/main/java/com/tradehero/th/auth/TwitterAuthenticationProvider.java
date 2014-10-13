@@ -37,8 +37,8 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
     private final CommonsHttpOAuthConsumer consumer;
 
     @Inject public TwitterAuthenticationProvider(@NotNull SocialLinker socialLinker,
-            @ConsumerKey("Twitter") String consumerKey,
-            @ConsumerSecret("Twitter") String consumerSecret)
+            @ConsumerKey(SocialNetworkEnum.TW) String consumerKey,
+            @ConsumerSecret(SocialNetworkEnum.TW) String consumerSecret)
     {
         super(socialLinker);
         provider = new CommonsHttpOAuthProvider(

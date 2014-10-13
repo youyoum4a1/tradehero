@@ -5,6 +5,7 @@ import com.facebook.FacebookPermissionsConstants;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.ConsumerKey;
 import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.FacebookAppId;
@@ -50,21 +51,21 @@ public class SocialNetworkAppModule
                     + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
                     + "follow_app_official_microblog," + "invitation_write";
 
-    @Provides @Singleton @ConsumerKey("Twitter") String provideTwitterConsumerKey()
+    @Provides @Singleton @ConsumerKey(SocialNetworkEnum.TW) String provideTwitterConsumerKey()
     {
         return TWITTER_CONSUMER_KEY;
     }
 
-    @Provides @Singleton @ConsumerSecret("Twitter") String provideTwitterConsumerSecret()
+    @Provides @Singleton @ConsumerSecret(SocialNetworkEnum.TW) String provideTwitterConsumerSecret()
     {
         return TWITTER_CONSUMER_SECRET;
     }
 
-    @Provides @Singleton @ConsumerKey("LinkedIn") String provideLinkedInConsumerKey()
+    @Provides @Singleton @ConsumerKey(SocialNetworkEnum.LN) String provideLinkedInConsumerKey()
     {
         return LINKEDIN_CONSUMER_KEY;
     }
-    @Provides @Singleton @ConsumerSecret("LinkedIn") String provideLinkedInConsumerSecret()
+    @Provides @Singleton @ConsumerSecret(SocialNetworkEnum.LN) String provideLinkedInConsumerSecret()
     {
         return LINKEDIN_CONSUMER_SECRET;
     }

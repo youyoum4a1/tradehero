@@ -44,8 +44,8 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 
     @Inject public LinkedInAuthenticationProvider(
             @NotNull SocialLinker socialLinker,
-            @ConsumerKey("LinkedIn") @NotNull String consumerKey,
-            @ConsumerSecret("LinkedIn") @NotNull String consumerSecret)
+            @ConsumerKey(SocialNetworkEnum.LN) @NotNull String consumerKey,
+            @ConsumerSecret(SocialNetworkEnum.LN) @NotNull String consumerSecret)
     {
         super(socialLinker);
         this.consumerKey = consumerKey;
