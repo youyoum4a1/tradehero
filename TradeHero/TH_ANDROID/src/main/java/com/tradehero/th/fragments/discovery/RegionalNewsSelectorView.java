@@ -52,6 +52,7 @@ public class RegionalNewsSelectorView extends LinearLayout
 {
     @InjectView(R.id.news_region_selector) TextView mRegionSelector;
     @InjectView(R.id.country_filter_text_box) InstantAutoCompleteTextView mCountryFilter;
+    @SuppressWarnings("UnusedDeclaration")
     @OnFocusChanged(R.id.country_filter_text_box) void handleCountryFilterFocusChanged(boolean hasFocus)
     {
         if (hasFocus)
@@ -64,6 +65,7 @@ public class RegionalNewsSelectorView extends LinearLayout
     @InjectView(R.id.discovery_news_carousel_spinner_wrapper) BetterViewAnimator mRegionSelectorWrapper;
     private UserProfileDTO userProfileDTO;
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.news_region_selector) void handleRegionSelectorClick()
     {
         int currentDisplayedChild = mRegionSelectorWrapper.getDisplayedChildLayoutId();
@@ -156,11 +158,16 @@ public class RegionalNewsSelectorView extends LinearLayout
     {
         super.onAttachedToWindow();
 
+        ButterKnife.inject(this);
+
         if (mLanguageCode != null)
         {
             mRegionSelector.setText(mCountryCode);
         }
-        fetchAndSetUserRegional();
+        if (!isInEditMode())
+        {
+            fetchAndSetUserRegional();
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -170,6 +177,7 @@ public class RegionalNewsSelectorView extends LinearLayout
             mCountryLanguageFetchMiddleCallback.setPrimaryCallback(null);
         }
         detachUserProfileFetchTask();
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
@@ -234,7 +242,7 @@ public class RegionalNewsSelectorView extends LinearLayout
             countryName = parcel.readString();
         }
 
-        @Override public void writeToParcel(Parcel dest, int flags)
+        @Override public void writeToParcel(@NotNull Parcel dest, int flags)
         {
             super.writeToParcel(dest, flags);
             dest.writeString(languageCode);
@@ -275,7 +283,7 @@ public class RegionalNewsSelectorView extends LinearLayout
         }
     }
 
-    private void linkWith(UserProfileDTO userProfileDTO, boolean display)
+    private void linkWith(UserProfileDTO userProfileDTO, @SuppressWarnings("UnusedParameters") boolean display)
     {
         this.userProfileDTO = userProfileDTO;
 
@@ -313,10 +321,7 @@ public class RegionalNewsSelectorView extends LinearLayout
             {
                 CountryLanguagePairDTO singleCountryLanguagePair = userCountryLanguagePairs.iterator().next();
                 mCountryName = singleCountryLanguagePair.name;
-                if (andDisplay)
-                {
-                    mRegionSelector.setText(mCountryName);
-                }
+                mRegionSelector.setText(mCountryName);
             }
             mCountryAdapter.notifyDataSetChanged();
         }
