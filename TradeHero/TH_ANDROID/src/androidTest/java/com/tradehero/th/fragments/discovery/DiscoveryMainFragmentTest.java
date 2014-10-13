@@ -49,7 +49,7 @@ public class DiscoveryMainFragmentTest
         for (int clickingTabIndex = 0; clickingTabIndex < DiscoveryTabType.values().length; ++clickingTabIndex)
         {
             actionBar.selectTab(actionBar.getTabAt(clickingTabIndex));
-            assertThat(discoveryMainFragment.mViewPager.getCurrentItem()).isEqualTo(clickingTabIndex);
+            assertThat(discoveryMainFragment.tabViewPager.getCurrentItem()).isEqualTo(clickingTabIndex);
         }
     }
 }
