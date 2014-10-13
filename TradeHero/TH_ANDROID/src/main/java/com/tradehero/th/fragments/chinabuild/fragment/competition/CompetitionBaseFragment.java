@@ -59,7 +59,6 @@ public class CompetitionBaseFragment extends DashboardFragment
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
-
     @InjectView(R.id.listCompetitions) SecurityListView listCompetitions;//比赛列表
     @InjectView(R.id.llCompetitionAdv) RelativeLayout llCompetitionAdv;//广告栏
     @InjectView(R.id.pager) ViewPager pager;
@@ -187,8 +186,6 @@ public class CompetitionBaseFragment extends DashboardFragment
         pager.setAdapter(pageAdapter);
         indicator.setViewPager(pager);
     }
-
-
 
     @OnClick(R.id.llCompetitionAdv)
     public void onCompetitionAdvClicked()
@@ -398,18 +395,17 @@ public class CompetitionBaseFragment extends DashboardFragment
 
     public UserCompetitionDTOList removeVipCompetition(UserCompetitionDTOList userCompetitionDTOs)
     {
-        if(userCompetitionDTOs!=null)
+        if (userCompetitionDTOs != null)
         {
             ArrayList<UserCompetitionDTO> list = new ArrayList<>();
             int size = userCompetitionDTOs.size();
-            for(int i=0;i<size;i++)
+            for (int i = 0; i < size; i++)
             {
                 list.add(userCompetitionDTOs.get(i));
             }
         }
         return null;
     }
-
 
     public int getCompetitionPageType()
     {
@@ -469,10 +465,15 @@ public class CompetitionBaseFragment extends DashboardFragment
 
         public void onFinish()
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listCompetitions);
-            if(listCompetitions!=null)
+            try
             {
-                listCompetitions.onRefreshComplete();
+                betterViewAnimator.setDisplayedChildByLayoutId(R.id.listCompetitions);
+                if (listCompetitions != null)
+                {
+                    listCompetitions.onRefreshComplete();
+                }
+            } catch (Exception e)
+            {
             }
         }
     }

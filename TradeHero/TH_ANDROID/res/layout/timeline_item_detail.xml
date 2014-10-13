@@ -1,43 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/bg_fragment"
+    android:orientation="vertical"
     >
 
-  <LinearLayout
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="10dp">
-    <com.tradehero.th.widget.MarkdownTextView
-        android:id="@+id/tvTimeLineDetailContent"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dip"
-        android:textColorLink="@color/timeline_item_link"
-        android:textColor="@color/timeline_item"
-        android:textSize="@dimen/text_medium"
-        android:textStyle="normal"
-        tools:text="Hello world!"
-        />
-  </LinearLayout>
-
-  <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
-      xmlns:ptr="http://schemas.android.com/apk/res-auto"
-      ptr:ptrHeaderTextColor="@color/black"
-      android:id="@+id/listTimeLine"
-      android:scrollingCache="false"
-      android:fadingEdge="none"
-      android:dividerHeight="1px"
-      android:divider="@color/separate_line_color"
-      android:background="@color/bg_fragment"
+  <com.tradehero.common.widget.BetterViewAnimator
+      android:id="@+id/bvaViewAll"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
-  </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@android:id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/rlAllView"
+        >
+
+
+      <include layout="@layout/security_time_line_item" android:id="@+id/llDisscurssOrNews"/>
+
+      <RelativeLayout
+          android:id="@+id/rlSend"
+          android:background="@drawable/tab_menu_bg"
+          android:layout_alignParentBottom="true"
+          android:layout_width="fill_parent"
+          android:layout_height="60dp">
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="发送"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:background="@color/transparent"
+            android:textColor="@color/tradehero_blue"/>
+
+        <EditText
+            android:id="@+id/edtSend"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:hint="输入内容..."
+            android:singleLine="true"
+            android:maxLength="140"
+            android:layout_toLeftOf="@id/btnSend"/>
+      </RelativeLayout>
+
+
+      <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+          xmlns:ptr="http://schemas.android.com/apk/res-auto"
+          ptr:ptrHeaderTextColor="@color/black"
+          android:id="@+id/listTimeLine"
+          android:scrollingCache="false"
+          android:layout_marginTop="20dp"
+          android:layout_below="@id/llDisscurssOrNews"
+          android:layout_above="@id/rlSend"
+          android:fadingEdge="none"
+          android:dividerHeight="1px"
+          android:divider="@color/separate_line_color"
+          android:background="@color/bg_fragment"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent">
+      </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+    </RelativeLayout>
+  </com.tradehero.common.widget.BetterViewAnimator>
+</RelativeLayout>
 
