@@ -107,10 +107,11 @@ public class PortfolioCompactDTO implements DTO ,Serializable
     {
         if (currencyDisplay != null && !currencyDisplay.isEmpty())
         {
-            return currencyDisplay;
+            return SecurityUtils.getCurrencyShortDispaly(currencyDisplay);
         }
         return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
     }
+
 
     @JsonIgnore public double getProperRefCcyToUsdRate()
     {

@@ -240,7 +240,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (securityCompactDTO != null)
             {
-                currencyDisplay.setText(securityCompactDTO.currencyDisplay);
+                currencyDisplay.setText(securityCompactDTO.getCurrencyDisplay());
             }
             else
             {

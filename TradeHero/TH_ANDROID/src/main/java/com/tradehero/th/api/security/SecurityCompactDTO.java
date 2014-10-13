@@ -53,7 +53,7 @@ public class SecurityCompactDTO extends ExtendedDTO
     public String name;
     public String exchange;
     public String yahooSymbol;
-    public String currencyDisplay;
+    private String currencyDisplay;
     public String currencyISO;
     public Double marketCap;
     public Double lastPrice;
@@ -103,6 +103,13 @@ public class SecurityCompactDTO extends ExtendedDTO
     {
         super();
     }
+
+    public String getCurrencyDisplay()
+    {
+        return SecurityUtils.getCurrencyShortDispaly(currencyDisplay);
+    }
+
+
 
     public SecurityCompactDTO(SecurityCompactDTO other)
     {

@@ -28,7 +28,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
         THSignedNumber bThSignedNumber = THSignedMoney
                 .builder(quoteDTO.ask)
                 .withOutSign()
-                .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
+                .currency(securityCompactDTO == null ? "-" : securityCompactDTO.getCurrencyDisplay())
                 .build();
         return getString(R.string.buy_sell_dialog_buy, bThSignedNumber.toString());
     }

@@ -133,7 +133,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         getBundleCompetition();
         callbackEnrollUGC = new EnrollUGCCallback();
         callbackgetCompetition = new GetCompetitionDetailCallback();
-        callbackMySelfRank = new MySelfRanCallbakc();
+        callbackMySelfRank = new MySelfRanCallback();
         competitionLeaderboardCacheListener = createCompetitionLeaderboardListener();
         portfolioCompactNewFetchListener = createPortfolioCompactNewFetchListener();
         userProfileCacheListener = createUserProfileFetchListener();
@@ -455,6 +455,7 @@ public class CompetitionDetailFragment extends DashboardFragment
             onFinish();
             if (response.getStatus() == 200)
             {
+                if(getActivity() == null)return;
                 CompetitionDetailFragment.this.userCompetitionDTO = userCompetitionDTO;
                 initView();
                 refreshStatus();
@@ -554,7 +555,7 @@ public class CompetitionDetailFragment extends DashboardFragment
                             .signTypeArrow()
                             .build();
                     tvUserExtraValue.setText(roi.toString());
-                    tvUserExtraValue.setTextColor(getResources().getColor(roi.getColorResId()));
+                    tvUserExtraValue.setTextColor(getActivity().getResources().getColor(roi.getColorResId()));
                 }
             }
         }
@@ -582,7 +583,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         }
     }
 
-    protected class MySelfRanCallbakc implements retrofit.Callback<LeaderboardDTO>
+    protected class MySelfRanCallback implements retrofit.Callback<LeaderboardDTO>
     {
         @Override
         public void success(LeaderboardDTO leaderboardDTO, Response response)
@@ -591,6 +592,7 @@ public class CompetitionDetailFragment extends DashboardFragment
             if (response.getStatus() == 200)
             {
                 Timber.d("");
+                if(getActivity() == null)return;
                 displayMySelfRank(leaderboardDTO);
             }
         }

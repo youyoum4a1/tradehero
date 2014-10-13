@@ -180,7 +180,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
             THSignedNumber bThSignedNumber = THSignedMoney
                     .builder(quoteDTO.ask)
                     .withOutSign()
-                    .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
+                    .currency(securityCompactDTO == null ? "-" : securityCompactDTO.getCurrencyDisplay())
                     .build();
             return bThSignedNumber.toString();
         }
@@ -189,7 +189,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
             THSignedNumber sthSignedNumber = THSignedMoney
                     .builder(quoteDTO.bid)
                     .withOutSign()
-                    .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
+                    .currency(securityCompactDTO == null ? "-" : securityCompactDTO.getCurrencyDisplay())
                     .build();
             return sthSignedNumber.toString();
         }

@@ -125,7 +125,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
                     SecurityCompactDTO cachedSecurity = securityCache.get().get(securityId);
                     if (cachedSecurity != null)
                     {
-                        this.strDisplay = cachedSecurity.currencyDisplay;
+                        this.strDisplay = cachedSecurity.getCurrencyDisplay();
                     }
                 }
             }

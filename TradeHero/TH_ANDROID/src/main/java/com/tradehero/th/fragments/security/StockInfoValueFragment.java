@@ -95,7 +95,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             {
                 mPreviousClose.setText(THSignedMoney
                         .builder(value.previousClose)
-                        .currency(value.currencyDisplay)
+                        .currency(value.getCurrencyDisplay())
                         .build().toString());
             }
         }
@@ -112,7 +112,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             else
             {
                 mOpen.setText(THSignedMoney.builder(value.open)
-                        .currency(value.currencyDisplay)
+                        .currency(value.getCurrencyDisplay())
                         .build().toString());
             }
         }
@@ -129,7 +129,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             else
             {
                 mDaysHigh.setText(THSignedMoney.builder(value.high)
-                        .currency(value.currencyDisplay)
+                        .currency(value.getCurrencyDisplay())
                         .build().toString());
             }
         }
@@ -146,7 +146,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             else
             {
                 mDaysLow.setText(THSignedMoney.builder(value.low)
-                        .currency(value.currencyDisplay)
+                        .currency(value.getCurrencyDisplay())
                         .build().toString());
             }
         }
@@ -163,7 +163,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             else
             {
                 mMarketCap.setText(THSignedMoney.builder(value.marketCap)
-                        .currency(value.currencyDisplay)
+                        .currency(value.getCurrencyDisplay())
                         .build().toString());
             }
         }

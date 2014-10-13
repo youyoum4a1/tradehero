@@ -121,7 +121,7 @@ public class PositionDetailFragment extends DashboardFragment
         //}
         //else
         //{
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
+        betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
         //}
 
         return view;
@@ -215,7 +215,7 @@ public class PositionDetailFragment extends DashboardFragment
                 .build();
         tvPositionTotalCcy.setTextColor(getResources().getColor(roi.getColorResId()));
         tvPositionTotalCcy.setText("" + positionDTO.getTotalScoreOfTrade() + "(" + roi.toString() + ")");
-        tvPositionSumAmont.setText("US$ " + Math.round(positionDTO.sumInvestedAmountRefCcy));
+        tvPositionSumAmont.setText("$" + Math.round(positionDTO.sumInvestedAmountRefCcy));
         tvPositionStartTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.earliestTradeUtc));
         tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));
         tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,
@@ -265,5 +265,4 @@ public class PositionDetailFragment extends DashboardFragment
         this.tradeDTOList = tradeDTOs;
         adapter.setTradeList(tradeDTOList);
     }
-
 }

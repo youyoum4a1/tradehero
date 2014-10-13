@@ -5,8 +5,8 @@ import com.tradehero.th.api.misc.DeviceType;
 public class LoginFormDTO
 {
     public final String deviceToken;
-
     public final DeviceType clientType;
+    public boolean useOnlyHeroCount = true;
 
     // min. version support
     public final String clientVersion;

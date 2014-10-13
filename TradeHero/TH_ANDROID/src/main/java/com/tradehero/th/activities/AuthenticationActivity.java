@@ -541,7 +541,7 @@ public class AuthenticationActivity extends DashboardActivity
         if(wechatCode!=null)
         {
             authenticateWithWechat(wechatCode);
-            THToast.show("获取 微信 access token ！" + wechatCode);
+            //THToast.show("获取 微信 access token ！" + wechatCode);
             WXEntryActivity.setWeChatCodeNull();
 
         }

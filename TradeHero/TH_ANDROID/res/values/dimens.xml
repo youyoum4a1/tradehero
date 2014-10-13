@@ -197,7 +197,7 @@
   <dimen name="more_bang_item_height">48dp</dimen>
   <dimen name="right_arrow_margin">15dp</dimen>
 
-  <dimen name="sucurity_detail_info">13sp</dimen>
+  <dimen name="sucurity_detail_info">12sp</dimen>
 
   <dimen name="photo_medium">50dp</dimen>
 

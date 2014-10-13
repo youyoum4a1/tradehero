@@ -191,7 +191,7 @@ public class WechatAuthenticationProvider extends SocialAuthenticationProvider
                     //取出回应字串
                     String strResult = EntityUtils.toString(httpResponse.getEntity());
                     Timber.d("Tradehero: strResult = " + strResult);
-                    THToast.show(strResult);
+                    //THToast.show(strResult);
                     wechatAuthData = parseData(strResult);
                 }
                 else

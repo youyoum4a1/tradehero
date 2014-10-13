@@ -103,7 +103,10 @@ public class UserFriendsListAdapter extends BaseAdapter
             }
             else
             {
-                roi = item.roiSinceInception;
+                if (item != null && item.roiSinceInception != null)
+                {
+                    roi = item.roiSinceInception;
+                }
             }
 
             THSignedNumber thRoiSinceInception = THSignedPercentage.builder(roi * 100)

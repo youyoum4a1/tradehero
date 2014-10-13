@@ -475,7 +475,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
             {
                 thCurrentPrice = THSignedMoney.builder(securityCompactDTO.lastPrice)
                         .withOutSign()
-                        .currency(securityCompactDTO.currencyDisplay)
+                        .currency(securityCompactDTO.getCurrencyDisplay())
                         .build();
             }
             currentPrice.setText(thCurrentPrice == null ? "-" : thCurrentPrice.toString());
@@ -573,7 +573,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THSignedNumber thPercentageChangePriceValue = THSignedMoney.builder(getSeekingMovementPrice())
                     .withOutSign()
-                    .currency(securityCompactDTO.currencyDisplay)
+                    .currency(securityCompactDTO.getCurrencyDisplay())
                     .build();
             percentageChangePriceValue.setText(getFormattedPercentageChangeTargetValue(isChecked ? thPercentageChangePriceValue.toString() : "-"));
         }
