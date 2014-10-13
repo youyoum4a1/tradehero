@@ -150,7 +150,11 @@ public class DiscoveryMainFragment extends DashboardFragment
             tabViewPager.setCurrentItem(selectedTab);
         }
 
-        postMenuButton.setVisible(((DiscoveryTabType) tab.getTag()).showComment);
+        MenuItem postMenuButtonCopy = postMenuButton;
+        if (postMenuButtonCopy != null)
+        {
+            postMenuButtonCopy.setVisible(((DiscoveryTabType) tab.getTag()).showComment);
+        }
     }
 
     @Override public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft)
