@@ -25,6 +25,7 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.NotifyingWebView;
 import com.tradehero.common.widget.QuickReturnWebViewOnScrollChangedListener;
@@ -86,6 +87,7 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
@@ -151,6 +153,7 @@ public class DashboardActivity extends BaseActivity
     @Inject @ForCompetitionEnrollment IntentFilter competitionEnrollmentIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
+    @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
 
     @Inject Lazy<ProviderListCache> providerListCache;
     private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListCallback;
@@ -167,7 +170,6 @@ public class DashboardActivity extends BaseActivity
     private BroadcastReceiver mXPBroadcastReceiver;
     private BroadcastReceiver onBoardBroadcastReceiver;
     private BroadcastReceiver enrollmentBroadcastReceiver;
-    private Boolean onboardAsked;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -295,6 +297,7 @@ public class DashboardActivity extends BaseActivity
         {
             @Override public void onReceive(Context context, Intent intent)
             {
+                isOnboardShown.set(true);
                 OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
             }
         };
@@ -505,20 +508,15 @@ public class DashboardActivity extends BaseActivity
     private void showStartDialogsPlease()
     {
         UserProfileDTO cachedUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (cachedUserProfile != null)
+        if (cachedUserProfile != null && !isOnboardShown.get())
         {
             if (userProfileDTOUtilLazy.get().shouldShowOnBoard(cachedUserProfile))
             {
                 broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-                onboardAsked = true;
-            }
-            else
-            {
-                onboardAsked = false;
             }
         }
 
-        if (onboardAsked != null)
+        if (isOnboardShown.get())
         {
             broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
         }

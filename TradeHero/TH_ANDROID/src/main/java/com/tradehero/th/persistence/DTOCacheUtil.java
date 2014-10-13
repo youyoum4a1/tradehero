@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.billing.ProductPurchaseCache;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.api.competition.key.ProviderListKey;
@@ -54,6 +55,7 @@ import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.position.PositionCompactCache;
 import com.tradehero.th.persistence.position.PositionCompactIdCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.UserFollowerCache;
@@ -128,6 +130,7 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     protected final StringPreference serverEndpointPreference;
     protected final SharedPreferences userSharedPreferences;
+    private final BooleanPreference isOnboardShown;
     @NotNull protected final BroadcastUtils broadcastUtils;
     @NotNull protected final UserBaseDTOUtil userBaseDTOUtil;
     @NotNull protected final Context context;
@@ -181,6 +184,7 @@ import org.jetbrains.annotations.Nullable;
             Lazy<QuestBonusListCache> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
             @ForUser SharedPreferences userSharedPreferences,
+            @IsOnBoardShown BooleanPreference isOnboardShown,
             @NotNull BroadcastUtils broadcastUtils,
             @NotNull UserBaseDTOUtil userBaseDTOUtil,
             @NotNull Context context)
@@ -233,6 +237,7 @@ import org.jetbrains.annotations.Nullable;
         this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
         this.userSharedPreferences = userSharedPreferences;
+        this.isOnboardShown = isOnboardShown;
         this.broadcastUtils = broadcastUtils;
         this.userBaseDTOUtil = userBaseDTOUtil;
         this.context = context;
@@ -286,6 +291,7 @@ import org.jetbrains.annotations.Nullable;
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
+        isOnboardShown.delete();
         userSharedPreferences.edit().clear().apply();
 
         broadcastUtils.clear();
