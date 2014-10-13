@@ -16,7 +16,7 @@ public class DTOAdapterNew<DTOType>
     protected static final int DEFAULT_VIEW_TYPE = 0;
 
     @LayoutRes protected int layoutResourceId;
-    @NotNull private LayoutInflater inflater;
+    @NotNull protected LayoutInflater inflater;
 
     //<editor-fold desc="Constructors">
     public DTOAdapterNew(@NotNull Context context, @LayoutRes int layoutResourceId)

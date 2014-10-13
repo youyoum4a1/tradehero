@@ -17,27 +17,11 @@
       android:layout_marginTop="8dp"
       android:text="@string/regional_news"
       />
-  <com.tradehero.common.widget.BetterViewAnimator
+
+  <Spinner
       android:id="@+id/discovery_news_carousel_spinner_wrapper"
       android:layout_width="@dimen/discovery_news_carousel_spinner_width"
+      android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
-      android:gravity="center_horizontal"
-      android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/news_region_selector"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:dropDownSelector="@drawable/basic_transparent_selector"
-        style="@style/TH.Spinner"
-        />
-
-    <com.tradehero.common.widget.InstantAutoCompleteTextView
-        android:id="@+id/country_filter_text_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:hint="@string/search_regional_hint"
-        />
-  </com.tradehero.common.widget.BetterViewAnimator>
+      />
 </com.tradehero.th.fragments.discovery.RegionalNewsSelectorView>
