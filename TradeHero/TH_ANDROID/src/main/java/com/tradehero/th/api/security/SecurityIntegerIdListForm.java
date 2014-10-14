@@ -19,7 +19,7 @@ public class SecurityIntegerIdListForm
 
     public SecurityIntegerIdListForm(
             @NotNull Collection<? extends SecurityIntegerId> securityIntegerIds,
-            @Nullable SecurityIntegerId typeQualifier)
+            @SuppressWarnings("UnusedParameters") @Nullable SecurityIntegerId typeQualifier)
     {
         this();
         for (@NotNull SecurityIntegerId securityIntegerId : securityIntegerIds)
@@ -30,7 +30,7 @@ public class SecurityIntegerIdListForm
 
     public SecurityIntegerIdListForm(
             @NotNull Collection<? extends SecurityCompactDTO> securityCompactDTOs,
-            @Nullable SecurityCompactDTO typeQualifier)
+            @SuppressWarnings("UnusedParameters") @Nullable SecurityCompactDTO typeQualifier)
     {
         this();
         for (@NotNull SecurityCompactDTO  securityCompactDTO : securityCompactDTOs)

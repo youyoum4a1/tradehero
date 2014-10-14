@@ -23,6 +23,7 @@ import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.key.ProviderListKey;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
@@ -315,11 +316,15 @@ public class TrendingFragment extends SecurityListFragment
         {
             if (userProfileDTO != null && exchangeCompactSpinnerDTOs != null)
             {
-                ExchangeCompactSpinnerDTO initial = userBaseDTOUtil.getInitialExchange(userProfileDTO, exchangeCompactSpinnerDTOs);
-                if (initial != null)
+                Country country = userProfileDTO.getCountry();
+                if (country != null)
                 {
-                    trendingFilterTypeDTO.exchange = initial;
-                    defaultFilterSelected = true;
+                    ExchangeCompactSpinnerDTO initial = exchangeCompactSpinnerDTOs.findFirstDefaultFor(userProfileDTO.getCountry());
+                    if (initial != null)
+                    {
+                        trendingFilterTypeDTO.exchange = initial;
+                        defaultFilterSelected = true;
+                    }
                 }
             }
         }

@@ -267,6 +267,7 @@ public class PostCommentView extends RelativeLayout
         commentActionWrapper.setDisplayedChildByLayoutId(commentActionProcessing.getId());
         commentSubmit.setEnabled(false);
         resetCommentText();
+        dismissKeypad();
     }
 
     protected void setPosted()

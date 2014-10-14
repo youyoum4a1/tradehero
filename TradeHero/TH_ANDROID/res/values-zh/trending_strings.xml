@@ -23,4 +23,8 @@
   <string name="trending_filter_exchange_all">全部</string>
   <string name="trending_filter_exchange_drop_down">%2$s - %1$s</string>
 
+  <string name="tile_earn_credit_text">邀请朋友获得全民股神虚拟币！</string>
+  <string name="tile_extra_cash_text">购买更多虚拟币</string>
+  <string name="tile_reset_portfolio">重置你的仓位</string>
+
 </resources>

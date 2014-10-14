@@ -34,7 +34,7 @@
         android:textColor="@color/black"
         />
 
-    <Spinner
+    <com.tradehero.th.fragments.market.ExchangeSpinner
         android:id="@+id/spinner_exchange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,23 +57,6 @@
         android:layout_height="wrap_content"
         android:dropDownSelector="@drawable/basic_transparent_selector"
         style="@style/TH.Spinner"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/market_on_board_country_from"
-        android:layout_marginTop="@dimen/common_margin_10"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:visibility="gone"
-        />
-
-    <Spinner
-        android:id="@+id/spinner_country"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        />
 
   </LinearLayout>
 

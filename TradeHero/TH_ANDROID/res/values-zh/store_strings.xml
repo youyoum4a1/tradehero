@@ -132,4 +132,35 @@
   <string name="manage_alerts_plan">"计划: "</string>
   <string name="manage_alerts_with_count">%d 预警</string>
 
+  <!-- In-App Purchases elements -->
+  <string name="iap_send_support_email_chooser_title">给全民股神写邮件</string>
+
+  <string name="iap_send_support_email_report_fail_title">购买失败报告</string>
+  <string name="iap_send_support_email_report_fail_message">你是否介意将报告发给全民股神？</string>
+  <string name="iap_send_support_email_report_fail_ok">好的</string>
+  <string name="iap_send_support_email_report_fail_cancel">不介意</string>
+
+  <string name="iap_consumed_purchase_title">已购买</string>
+  <string name="iap_consumed_purchase_message">你的购买检查成功。</string>
+  <string name="iap_consumed_purchase_message_info">你的 "%s" 检车成功。</string>
+  <string name="iap_consumed_purchase_cancel">好的</string>
+
+  <string name="iap_purchase_restored_none_title">没有可以恢复的购买项。</string>
+  <string name="iap_purchase_restored_none_message">所有购买项已执行。</string>
+  <string name="iap_purchase_restored_none_cancel">好的</string>
+
+  <string name="iap_purchase_restored_title">购买已恢复</string>
+  <string name="iap_purchase_restored_message">我们已恢复 %1$d 份你的购买项。</string>
+  <string name="iap_purchase_restored_cancel">好的</string>
+
+  <string name="iap_send_support_email_restore_fail_partial_title">购买已恢复</string>
+  <string name="iap_send_support_email_restore_fail_partial_message">已恢复 %1$d 份购买，另外的 %2$d 份购买无法恢复。 \n\n你是否介意报告给全民股神？</string>
+  <string name="iap_send_support_email_restore_fail_partial_ok">好的</string>
+  <string name="iap_send_support_email_restore_fail_partial_cancel">不介意</string>
+
+  <string name="iap_send_support_email_restore_fail_title">购买无法恢复。</string>
+  <string name="iap_send_support_email_restore_fail_message">无法恢复你的 %1$d 购买项。 \n\n你是否介意报告给全民股神？</string>
+  <string name="iap_send_support_email_restore_fail_ok">好的</string>
+  <string name="iap_send_support_email_restore_fail_cancel">不介意</string>
+
 </resources>

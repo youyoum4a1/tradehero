@@ -16,7 +16,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
@@ -24,6 +23,8 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -66,6 +67,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
 
     //exchange
     @NotNull OnBoardPickExchangeSectorViewHolder exchangeSectorViewHolder;
+    @Nullable DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     @Nullable DTOCacheNew.Listener<ExchangeSectorCompactKey, ExchangeSectorCompactListDTO> exchangeSectorListener;
 
     //hero
@@ -88,6 +90,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         super.onCreate(savedInstanceState);
         //exchange
+        userProfileListener = new OnBoardPickExchangeUserProfileListener();
         exchangeSectorListener = new OnBoardPickExchangeSectorListener();
         exchangeSectorViewHolder = new OnBoardPickExchangeSectorViewHolder(getActivity());
         //hero
@@ -110,7 +113,35 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         exchangeSectorViewHolder.attachView(view);
         heroViewHolder.attachView(view);
         stockViewHolder.attachView(view);
+        fetchUserProfile();
         fetchExchangeSectors();
+    }
+
+    protected void fetchUserProfile()
+    {
+        detachUserProfileCache();
+        UserBaseKey key = currentUserId.toUserBaseKey();
+        userProfileCache.register(key, userProfileListener);
+        userProfileCache.getOrFetchAsync(key);
+    }
+
+    protected void detachUserProfileCache()
+    {
+        userProfileCache.unregister(userProfileListener);
+    }
+
+    protected class OnBoardPickExchangeUserProfileListener
+        implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            exchangeSectorViewHolder.setUserProfile(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_your_user_profile);
+        }
     }
 
     protected void fetchExchangeSectors()
@@ -203,7 +234,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
             //Timber.d("lyl stock "+value.toString());
             mStockSwitcher.setDisplayedChild(1);
             stockViewHolder.setStocks(value);
-            submitHeros();
+            submitHeroes();
         }
 
         @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
@@ -217,6 +248,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         detachExchangeSectorCompactListCache();
         detachLeaderboardUserListCache();
         detachSecurityListCache();
+        detachUserProfileCache();
         exchangeSectorViewHolder.detachView();
         heroViewHolder.detachView();
         stockViewHolder.detachView();
@@ -228,6 +260,15 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         super.onDismiss(dialog);
         broadcastUtils.nextPlease();
+    }
+
+    @Override public void onDestroy()
+    {
+        userProfileListener = null;
+        exchangeSectorListener = null;
+        leaderboardUserListCacheListener = null;
+        securityListCacheListener = null;
+        super.onDestroy();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -249,7 +290,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         firstShowOnBoardDialogPreference.justHandled();
     }
 
-    public void submitHeros()
+    public void submitHeroes()
     {
         // Follow heroes if any
         LeaderboardUserDTOList heroesList = heroViewHolder.getSelectedHeroes();
@@ -267,7 +308,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         if (!stocksList.isEmpty())
         {
             watchlistServiceWrapper.batchCreate(
-                    new SecurityIntegerIdListForm(stocksList, (SecurityCompactDTO) null), null);
+                    new SecurityIntegerIdListForm(stocksList, null), null);
         }
     }
 

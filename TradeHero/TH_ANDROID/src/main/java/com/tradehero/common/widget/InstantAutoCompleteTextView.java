@@ -6,10 +6,12 @@ import android.widget.AutoCompleteTextView;
 
 public class InstantAutoCompleteTextView extends AutoCompleteTextView
 {
+    //<editor-fold desc="Constructors">
     public InstantAutoCompleteTextView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
+    //</editor-fold>
 
     @Override
     public boolean enoughToFilter()

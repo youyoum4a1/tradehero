@@ -29,7 +29,7 @@
   <string name="buy_sell_confirm_share_on">Share:</string>
   <string name="buy_sell_switch_buy">Buy</string>
   <string name="buy_sell_switch_sell">Sell</string>
-  <string name="buy_sell_usd_price_unit_left">= US$</string>
+  <string name="buy_sell_usd_price_unit_left" translatable="false">= US$</string>
   <string name="buy_sell_market_status">Market status</string>
   <string name="buy_sell_toggle">Toggle Buy/Sell mode</string>
 

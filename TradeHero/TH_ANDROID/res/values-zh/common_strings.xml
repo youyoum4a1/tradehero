@@ -24,6 +24,7 @@
   <string name="dashboard_timeline">我的档案</string>
   <string name="dashboard_home">首页</string>
   <string name="dashboard_trending">交易中心</string>
+  <string name="dashboard_education">学院</string>
   <string name="dashboard_community">社交中心</string>
   <string name="dashboard_message_center">消息中心</string>
   <string name="dashboard_referral">邀请好友</string>
@@ -54,6 +55,7 @@
   <string name="th_help_url">http://www.tradehero.mobi/about</string>
   <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
   <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
+
   <string name="plus">+</string>
 
   <!-- TimeDisplayViewHolder -->
@@ -61,6 +63,7 @@
   <string name="time_display_view_holder_format_hour">%02d</string>
   <string name="time_display_view_holder_format_minute">%02d</string>
   <string name="time_display_view_holder_format_second">%02d</string>
+
   <string name="help">帮助</string>
   <string name="tab_to_dismiss">点击取消</string>
   <string name="sharing">分享</string>

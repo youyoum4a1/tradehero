@@ -1,24 +1,28 @@
 package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import org.jetbrains.annotations.NotNull;
 
 public class TrendingFilterSpinnerIconAdapterNew
         extends ArrayDTOAdapterNew<ExchangeCompactSpinnerDTO, TrendingFilterSpinnerItemView>
 {
-    private int dropDownResId;
+    @LayoutRes private int dropDownResId;
 
     //<editor-fold desc="Constructors">
-    public TrendingFilterSpinnerIconAdapterNew(Context context, int layoutResourceId)
+    public TrendingFilterSpinnerIconAdapterNew(
+            @NotNull Context context,
+            @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
     //</editor-fold>
 
-    @Override public void setDropDownViewResource(int resource)
+    @Override public void setDropDownViewResource(@LayoutRes int resource)
     {
         super.setDropDownViewResource(resource);
         this.dropDownResId = resource;

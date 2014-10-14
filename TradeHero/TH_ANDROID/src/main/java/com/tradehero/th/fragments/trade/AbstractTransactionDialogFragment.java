@@ -308,10 +308,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         }
 
         mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
-        mQuickPriceButtonSet.addButton(R.id.toggle5k);
-        mQuickPriceButtonSet.addButton(R.id.toggle10k);
-        mQuickPriceButtonSet.addButton(R.id.toggle25k);
-        mQuickPriceButtonSet.addButton(R.id.toggle50k);
         displayQuickPriceButtonSet();
 
         mBtnAddCash.setOnClickListener(new View.OnClickListener()

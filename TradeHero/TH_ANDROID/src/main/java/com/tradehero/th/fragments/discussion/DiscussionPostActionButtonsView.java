@@ -70,12 +70,15 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     private void initSocialBtnStatus()
     {
-        socialSharePreferenceHelperNew.load();
-        initSocialButton(mFacebookShareButton, SocialNetworkEnum.FB);
-        initSocialButton(mTwitterShareButton, SocialNetworkEnum.TW);
-        initSocialButton(mLinkedInShareButton, SocialNetworkEnum.LN);
-        initSocialButton(mWechatShareButton, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
-        initSocialButton(mWeiboShareButton, SocialNetworkEnum.WB);
+        if (!isInEditMode())
+        {
+            socialSharePreferenceHelperNew.load();
+            initSocialButton(mFacebookShareButton, SocialNetworkEnum.FB);
+            initSocialButton(mTwitterShareButton, SocialNetworkEnum.TW);
+            initSocialButton(mLinkedInShareButton, SocialNetworkEnum.LN);
+            initSocialButton(mWechatShareButton, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
+            initSocialButton(mWeiboShareButton, SocialNetworkEnum.WB);
+        }
     }
 
     private void initSocialButton(CompoundButton compoundButton, SocialNetworkEnum socialNetworkEnum)

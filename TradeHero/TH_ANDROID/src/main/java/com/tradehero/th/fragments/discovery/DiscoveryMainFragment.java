@@ -9,29 +9,40 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class DiscoveryMainFragment extends DashboardFragment
         implements ActionBar.TabListener
 {
-    @Inject Context doNotRemoveOtherwiseFails; // Do not remove otherwise fails
-    private DiscoverySessionPagerAdapter mDiscoverySessionPagerAdapter;
-    @InjectView(R.id.pager) ViewPager mViewPager;
-    private int selectedTabIndex;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+    private DiscoveryPagerAdapter discoveryPagerAdapter;
+    @InjectView(R.id.pager) ViewPager tabViewPager;
+    private MenuItem postMenuButton;
+    private int selectedTab = 0;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        discoveryPagerAdapter = new DiscoveryPagerAdapter(this.getChildFragmentManager());
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.discovery_main_fragment, container, false);
-        initView(view);
+        ButterKnife.inject(this, view);
+        tabViewPager.setAdapter(discoveryPagerAdapter);
         return view;
     }
 
@@ -39,69 +50,72 @@ public class DiscoveryMainFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(getString(R.string.discovery));
+        inflater.inflate(R.menu.menu_create_post_discussion, menu);
+        postMenuButton = menu.findItem(R.id.discussion_edit_post);
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
         {
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+            setupTabs(actionBar);
         }
     }
 
-    private void initView(View view)
+    @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        ButterKnife.inject(this, view);
+        if (item.getItemId() == R.id.discussion_edit_post)
+        {
+            navigator.pushFragment(DiscussionEditPostFragment.class);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        final ActionBar actionBar = getSupportActionBar();
-
+    @Override public void onDestroyOptionsMenu()
+    {
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
         {
-            mDiscoverySessionPagerAdapter = new DiscoverySessionPagerAdapter(((Fragment)this).getChildFragmentManager());
-            setupTabs(actionBar);
-            setupPager(actionBar);
+            actionBar.removeAllTabs();
         }
+        this.postMenuButton = null;
+        super.onDestroyOptionsMenu();
     }
 
-    private void setupTabs(ActionBar actionBar)
+    @Override public void onDestroyView()
     {
-        actionBar.removeAllTabs();
-        for (int i = 0; i < mDiscoverySessionPagerAdapter.getCount(); ++i)
-        {
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mDiscoverySessionPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
-        }
-
-        if (selectedTabIndex < 0)
-        {
-            selectedTabIndex = actionBar.getTabCount() / 2;
-            selectTabAtPosition(actionBar, selectedTabIndex);
-        }
+        tabViewPager.setAdapter(null);
+        ButterKnife.reset(this);
+        super.onDestroyView();
     }
 
-    private void selectTabAtPosition(ActionBar actionBar, int position)
+    @Override public void onDestroy()
     {
-        selectedTabIndex = position;
-        actionBar.selectTab(actionBar.getTabAt(position));
+        this.discoveryPagerAdapter = null;
+        super.onDestroy();
     }
 
-    private void setupPager(final ActionBar actionBar)
+    private void setupTabs(@NotNull ActionBar actionBar)
     {
-        mViewPager.setAdapter(mDiscoverySessionPagerAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
+        DiscoveryTabType[] types = DiscoveryTabType.values();
+        if (actionBar.getTabCount() != types.length)
         {
-            @Override public void onPageSelected(int position)
+            actionBar.removeAllTabs();
+            int savedSelectedTab = selectedTab;
+            for (DiscoveryTabType type : types)
             {
-                if (position < actionBar.getTabCount())
-                {
-                    selectTabAtPosition(actionBar, position);
-                }
+                actionBar.addTab(
+                        actionBar.newTab()
+                                .setText(type.titleStringResId)
+                                .setTabListener(this)
+                                .setTag(type));
             }
-        });
+            actionBar.setSelectedNavigationItem(savedSelectedTab);
+        }
     }
 
-    private class DiscoverySessionPagerAdapter extends FragmentPagerAdapter
+    private class DiscoveryPagerAdapter extends FragmentPagerAdapter
     {
-        public DiscoverySessionPagerAdapter(FragmentManager fragmentManager)
+        public DiscoveryPagerAdapter(FragmentManager fragmentManager)
         {
             super(fragmentManager);
         }
@@ -129,7 +143,18 @@ public class DiscoveryMainFragment extends DashboardFragment
     @Override public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft)
     {
         // When the given tab is selected, switch to the corresponding page in the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
+        selectedTab = tab.getPosition();
+        ViewPager pager = tabViewPager;
+        if (pager != null)
+        {
+            tabViewPager.setCurrentItem(selectedTab);
+        }
+
+        MenuItem postMenuButtonCopy = postMenuButton;
+        if (postMenuButtonCopy != null)
+        {
+            postMenuButtonCopy.setVisible(((DiscoveryTabType) tab.getTag()).showComment);
+        }
     }
 
     @Override public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft)

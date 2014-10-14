@@ -36,10 +36,13 @@ public class MenuOwnedPortfolioIdFactory
         {
             menus.add(createMainPortfolioMenu(forUser));
         }
-        MenuOwnedPortfolioIdList providerMenus = createProviderPortfolioMenus(securityPositionDetailDTO);
-        if (providerMenus != null)
+        if (securityPositionDetailDTO != null)
         {
-            menus.addAll(providerMenus);
+            MenuOwnedPortfolioIdList providerMenus = createProviderPortfolioMenus(securityPositionDetailDTO);
+            if (providerMenus != null)
+            {
+                menus.addAll(providerMenus);
+            }
         }
         return menus;
     }
@@ -54,12 +57,8 @@ public class MenuOwnedPortfolioIdFactory
         return new MenuOwnedPortfolioId(mainPortfolio.getUserBaseKey(), mainPortfolio);
     }
 
-    @Nullable public MenuOwnedPortfolioIdList createPortfolioMenus(@Nullable OwnedPortfolioIdList ownedPortfolioIds)
+    @Nullable public MenuOwnedPortfolioIdList createPortfolioMenus(@NotNull OwnedPortfolioIdList ownedPortfolioIds)
     {
-        if (ownedPortfolioIds == null)
-        {
-            return null;
-        }
         MenuOwnedPortfolioIdList menuOwnedPortfolioIds = new MenuOwnedPortfolioIdList();
         for (OwnedPortfolioId ownedPortfolioId : ownedPortfolioIds)
         {
@@ -71,13 +70,13 @@ public class MenuOwnedPortfolioIdFactory
     }
 
     @Nullable public MenuOwnedPortfolioIdList createProviderPortfolioMenus(
-            @Nullable SecurityPositionDetailDTO securityPositionDetailDTO)
+            @NotNull SecurityPositionDetailDTO securityPositionDetailDTO)
     {
-        if (securityPositionDetailDTO == null)
+        OwnedPortfolioIdList providerPortfolios = securityPositionDetailDTO.getProviderAssociatedOwnedPortfolioIds();
+        if (providerPortfolios != null)
         {
-            return null;
+            return createPortfolioMenus(providerPortfolios);
         }
-
-        return createPortfolioMenus(securityPositionDetailDTO.getProviderAssociatedOwnedPortfolioIds());
+        return null;
     }
 }

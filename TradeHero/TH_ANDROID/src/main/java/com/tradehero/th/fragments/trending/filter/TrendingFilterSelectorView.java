@@ -7,12 +7,12 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
@@ -28,7 +28,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     @InjectView(R.id.title) public TextView mTitle;
     @InjectView(R.id.trending_filter_title_icon) public ImageView mTitleIcon;
     @InjectView(R.id.description) public TextView mDescription;
-    @InjectView(R.id.exchange_selection) public Spinner mExchangeSelection;
+    @InjectView(R.id.exchange_selection) public ExchangeSpinner mExchangeSelection;
     private TrendingFilterSpinnerIconAdapterNew mExchangeSelectionAdapter;
 
     @NotNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
@@ -74,7 +74,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     public void setUpExchangeSpinner(@NotNull ExchangeCompactSpinnerDTOList items)
     {
-        Spinner exchangeSelection = mExchangeSelection;
+        ExchangeSpinner exchangeSelection = mExchangeSelection;
         if (exchangeSelection != null)
         {
             mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapterNew(
@@ -83,10 +83,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
             mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
             mExchangeSelectionAdapter.addAll(items);
             exchangeSelection.setAdapter(mExchangeSelectionAdapter);
-            exchangeSelection.setSelection(items.indexOf(
-                    new ExchangeCompactSpinnerDTO(
-                            getResources(),
-                            trendingFilterTypeDTO.exchange)));
+            exchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
             exchangeSelection.setOnItemSelectedListener(createTrendingFilterSelectorViewSpinnerListener());
         }
     }

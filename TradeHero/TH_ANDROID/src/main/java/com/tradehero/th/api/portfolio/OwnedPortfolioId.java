@@ -16,7 +16,7 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
     @NotNull public final Integer portfolioId;
 
     //<editor-fold desc="Constructors">
-    private OwnedPortfolioId()
+    @SuppressWarnings("UnusedDeclaration") private OwnedPortfolioId()
     {
         // Do not remove. Exists only for JSON deserialiser
         super();

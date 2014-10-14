@@ -3,6 +3,7 @@
 
   <string name="watchlist_not_enough_info">信息不够</string>
   <string name="watchlist_title">自选股</string>
+  <string name="watchlist_add_new_title">增加新的查看列表</string>
   <string name="watchlist_add_title">添加到自选股</string>
   <string name="watchlist_edit_title">编辑自选股</string>
   <string name="watchlist_button_done">完成</string>

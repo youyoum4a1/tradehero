@@ -193,7 +193,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     public void testQuickButtonPriceShouldUpdateDialog()
     {
         QuickPriceButtonSet quickPriceButtonSet = abstractTransactionDialogFragment.mQuickPriceButtonSet;
-        List<QuickPriceButton> list = quickPriceButtonSet.getButtons();
+        List<QuickPriceButton> list = quickPriceButtonSet.findButtons();
 
         SeekBar seekBar = abstractTransactionDialogFragment.mSeekBar;
         Double priceCcy = abstractTransactionDialogFragment.getPriceCcy();
@@ -473,7 +473,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         assertThat(value).isEqualTo(AnalyticsConstants.ManualQuantityInput);
 
         //QuickSet
-        abstractTransactionDialogFragment.mQuickPriceButtonSet.getButtons().get(1).performClick();
+        abstractTransactionDialogFragment.mQuickPriceButtonSet.findButtons().get(1).performClick();
         value = getMapValueFromSharingOptionsEvent(key);
         assertThat(value).isEqualTo(AnalyticsConstants.MoneySelection);
     }

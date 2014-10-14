@@ -27,13 +27,25 @@
   <string name="buy_sell_switch_sell">卖出</string>
   <string name="buy_sell_market_status">市场状态</string>
   <string name="buy_sell_toggle">切换 买入/卖出 模式</string>
+
+  <string name="buy_sell_no_quote_title">无法交易</string>
+  <string name="buy_sell_no_quote_message">该股票代码不可用。</string>
+  <string name="buy_sell_no_quote_cancel">好的</string>
+
+  <string name="buy_sell_no_portfolio_title">无法交易</string>
+  <string name="buy_sell_no_portfolio_message">没有可用的投资组合。</string>
+  <string name="buy_sell_no_portfolio_cancel">好的</string>
+
   <string name="buy_sell_portfolio_selected_title">投资组合:</string>
+
   <string name="alert_dialog_buy_sell_order_null_title">真有点尴尬</string>
   <string name="alert_dialog_buy_sell_order_null_message">交易请求出了点问题</string>
   <string name="alert_dialog_buy_sell_order_null_cancel">好的</string>
+
   <string name="alert_dialog_buy_sell_retrofit_failed_title">失败</string>
   <string name="alert_dialog_buy_sell_retrofit_failed_message">执行出了点问题.\n请再尝试一次</string>
   <string name="alert_dialog_buy_sell_retrofit_failed_cancel">好的</string>
+
   <string name="alert_dialog_buy_sell_returned_null_title">喔喔</string>
   <string name="alert_dialog_buy_sell_returned_null_message">服务器返回无效信息.\n请再尝试一次.</string>
   <string name="alert_dialog_buy_sell_returned_null_cancel">好的</string>
