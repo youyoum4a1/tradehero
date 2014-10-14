@@ -6,18 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-  <include layout="@layout/authentication_social_auth_row"/>
-
-  <include layout="@layout/authentication_social_auth_china"/>
-
-  <com.tradehero.common.widget.AuthenticationButton
-      android:id="@+id/btn_linkedin_signin"
-      style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_linkedin_normal"
-      android:background="@drawable/btn_background_social_linkedin"
-      android:text="@string/linkedin_login_in"
-      app:type="linkedin"
-      />
+  <include layout="@layout/authentication_social_auth_buttons"/>
 
   <com.tradehero.common.widget.AuthenticationButton
       android:id="@+id/authentication_email_sign_in_link"
