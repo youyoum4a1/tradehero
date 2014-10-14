@@ -1,7 +1,9 @@
 package com.tradehero.th.auth.weibo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuth;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -10,9 +12,12 @@ import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.utils.Constants;
+
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -26,6 +31,7 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
     private static final String WEIBO_PACKAGE = "com.sina.weibo";
 
     @NotNull private final WeiboAppAuthData mAuthData;
+    private OperatorSsoHandler mOperatorSsoHandler;
 
     //<editor-fold desc="Constructors">
     @Inject public WeiboAuthenticationProvider(
@@ -53,16 +59,15 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         }
         else
         {
-            return Observable.create(new OperatorSsoHandler(
+            mOperatorSsoHandler = new OperatorSsoHandler(
                     activity,
-                    new WeiboAuth(activity, mAuthData.appId, mAuthData.redirectUrl, mAuthData.scope)))
-                    .map(new Func1<Bundle, AuthData>()
-                    {
-                        @Override public AuthData call(Bundle bundle)
-                        {
+                    new WeiboAuth(activity, mAuthData.appId, mAuthData.redirectUrl, mAuthData.scope));
+            return Observable.create(mOperatorSsoHandler)
+                    .map(new Func1<Bundle, AuthData>() {
+                        @Override
+                        public AuthData call(Bundle bundle) {
                             Oauth2AccessToken token = Oauth2AccessToken.parseAccessToken(bundle);
-                            if (token.isSessionValid())
-                            {
+                            if (token.isSessionValid()) {
                                 return new AuthData(
                                         SocialNetworkEnum.WB,
                                         null, // TODO expiry
@@ -76,6 +81,14 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
                             throw new RuntimeException("Token is invalid");
                         }
                     });
+        }
+    }
+
+    public void authorizeCallBack(int requestCode, int resultCode, Intent data)
+    {
+        if (mOperatorSsoHandler != null)
+        {
+            mOperatorSsoHandler.authorizeCallBack(requestCode, resultCode, data);
         }
     }
 }
