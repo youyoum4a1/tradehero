@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class SecurityPositionDetailDTO implements DTO
 {
     public SecurityCompactDTO security;
-    public PositionDTOCompactList positions;
+    @Nullable public PositionDTOCompactList positions;
     //public PositionDTOCompact position; // This is a backward compatible element. Do not add back
     @Deprecated public PortfolioDTO portfolio; // Does it always comes back as null
     @Nullable public ProviderDTOList providers;
@@ -22,8 +22,8 @@ public class SecurityPositionDetailDTO implements DTO
     {
     }
 
-    public SecurityPositionDetailDTO(SecurityCompactDTO security, PositionDTOCompactList positions,
-            PortfolioDTO portfolio, ProviderDTOList providers, int firstTradeAllTime)
+    public SecurityPositionDetailDTO(SecurityCompactDTO security, @Nullable PositionDTOCompactList positions,
+            PortfolioDTO portfolio, @Nullable ProviderDTOList providers, int firstTradeAllTime)
     {
         this.security = security;
         this.positions = positions;
