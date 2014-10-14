@@ -50,6 +50,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareSellDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCollegeFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCreateFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionMineFragment;
@@ -490,7 +491,6 @@ import javax.inject.Singleton;
                         TimeLineBaseAdapter.class,
                         PositionTradeListAdapter.class,
 
-
                         AbsLeaderboardFragment.class,
                         LeaderboardFromExchangeFragment.class,
                         LeaderboardFromIndustryFragment.class,
@@ -540,6 +540,7 @@ import javax.inject.Singleton;
                         NotificationFragment.class,
                         NotificationListAdapter.class,
                         TimeLineItemDetailFragment.class,
+                        CompetitionCollegeFragment.class,
                         //China Build End
                 },
         staticInjections =
