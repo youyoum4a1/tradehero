@@ -20,5 +20,6 @@
   <string name="error_fetch_friends">Failed to retrieve your friends list</string>
   <string name="error_fetch_local_contacts">Failed to retrieve the contacts from your phone</string>
   <string name="error_fetch_server_friends">Failed to retrieve your friends list from the server</string>
+  <string name="invite_code_submit_success">Submit Successfully</string>
 
 </resources>

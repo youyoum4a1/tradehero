@@ -19,5 +19,6 @@
   <string name="error_fetch_friends">获取好友列表失败</string>
   <string name="error_fetch_local_contacts">获取手机通讯录失败</string>
   <string name="error_fetch_server_friends">从服务器获取好友列表失败</string>
+  <string name="invite_code_submit_success">提交成功</string>
 
 </resources>

@@ -105,6 +105,7 @@ public class InputInviteCodeFragment extends DashboardFragment implements View.O
         @Override public void success(Response response, Response response2)
         {
             progressDialogUtil.dismiss(getActivity());
+            THToast.show(R.string.invite_code_submit_success);
             onClickHeadLeft();
         }
 
