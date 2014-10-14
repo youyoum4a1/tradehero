@@ -83,6 +83,34 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @Override protected void initSetup(View view)
     {
         email = (EditText) view.findViewById(R.id.authentication_sign_in_email);
+        email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                int lines = email.getLineCount();
+                if (lines > 1) {
+                    String str = charSequence.toString();
+                    int cursorStart = email.getSelectionStart();
+                    int cursorEnd = email.getSelectionEnd();
+                    if (cursorStart == cursorEnd && cursorStart < str.length() && cursorStart >= 1) {
+                        str = str.substring(0, cursorStart-1) + str.substring(cursorStart);
+                    } else {
+                        str = str.substring(0, email.length()-1);
+                    }
+                    email.setText(str);
+                    email.setSelection(email.getText().length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         signButton = (Button) view.findViewById(R.id.btn_login);
         signButton.setOnClickListener(this);
@@ -99,6 +127,19 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
             @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
             {
+                int lines = password.getLineCount();
+                if (lines > 1) {
+                    String str = charSequence.toString();
+                    int cursorStart = password.getSelectionStart();
+                    int cursorEnd = password.getSelectionEnd();
+                    if (cursorStart == cursorEnd && cursorStart < str.length() && cursorStart >= 1) {
+                        str = str.substring(0, cursorStart-1) + str.substring(cursorStart);
+                    } else {
+                        str = str.substring(0, password.length()-1);
+                    }
+                    password.setText(str);
+                    password.setSelection(password.getText().length());
+                }
                 if (signButton != null)
                 {
                     signButton.setEnabled(charSequence.length() > 5);

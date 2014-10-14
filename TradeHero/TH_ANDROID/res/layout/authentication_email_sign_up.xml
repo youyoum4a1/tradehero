@@ -39,8 +39,12 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/register_account"
                         android:layout_alignBaseline="@+id/register_account"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
                         android:textSize="@dimen/text_large"
+                        android:maxLines="1"
                         android:hint="@string/login_account_hint"
+                        android:maxLength="32"
                         android:textColorHint="#bfbfbf"
                         android:background="@color/white"/>
                 <View
@@ -67,6 +71,9 @@
                         android:maxLength="20"
                         android:textSize="@dimen/text_large"
                         android:hint="@string/login_password_hint"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:maxLines="1"
                         android:textColorHint="#bfbfbf"
                         android:background="@color/white"/>
                 <RelativeLayout
@@ -99,6 +106,7 @@
                             android:layout_alignBaseline="@id/login_verify_code_title"
                             android:layout_marginTop="@dimen/margin_medium"
                             android:layout_marginBottom="@dimen/margin_medium"
+                            android:maxLines="1"
                             android:maxLength="4"
                             android:textSize="@dimen/text_large"
                             android:hint="@string/login_verify_code_hint"
@@ -109,7 +117,7 @@
                             android:layout_width="100dp"
                             android:layout_height="35dp"
                             android:paddingLeft="@dimen/margin_small"
-                          android:layout_centerVertical="true"
+                            android:layout_centerVertical="true"
                             android:paddingRight="@dimen/margin_small"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="5dp"

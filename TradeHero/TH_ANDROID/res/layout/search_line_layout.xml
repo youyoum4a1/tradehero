@@ -16,7 +16,7 @@
       android:layout_marginRight="15sp"
       android:layout_centerInParent="true"
       android:layout_marginLeft="10dp"
-      android:text="@string/search_cancel"/>
+      android:text="搜索"/>
 
   <RelativeLayout
       android:layout_width="fill_parent"

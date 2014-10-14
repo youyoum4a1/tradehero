@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contest_center_content_screen"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_fragment"
-    >
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/contest_center_content_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_fragment"
+        android:orientation="vertical">
+    android:orientation="vertical">
+    <EditText
+            android:id="@+id/edtSearchInput"
+            android:singleLine="true"
+            android:maxLength="30"
+            android:layout_width="fill_parent"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:imeOptions="actionSearch"
+            android:hint="@string/competition_enter_college"/>
 
-  <TextView
-      android:id="@+id/tvTest"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:gravity="center"
-      android:text="高校选择页面">
-  </TextView>
+    <ListView android:layout_width="match_parent" android:layout_height="match_parent"
+              android:id="@+id/listview_competition_colleges"/>
 
 </LinearLayout>
 

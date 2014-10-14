@@ -186,5 +186,6 @@
   <string name="search_no_result">无结果</string>
   <string name="search_search">搜索</string>
   <string name="search_cancel">取消</string>
+  <string name="competition_enter_college">输入学校名称</string>
 
 </resources>

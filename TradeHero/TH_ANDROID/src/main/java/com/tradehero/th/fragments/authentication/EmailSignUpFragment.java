@@ -86,16 +86,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     protected boolean mIsPhoneNumRegister;
 
 
-    @Inject
-    Analytics analytics;
-    @Inject
-    BitmapForProfileFactory bitmapForProfileFactory;
-    @Inject
-    BitmapTypedOutputFactory bitmapTypedOutputFactory;
-    @Inject
-    Picasso picasso;
-    @Inject
-    UserServiceWrapper userServiceWrapper;
+    @Inject Analytics analytics;
+    @Inject BitmapForProfileFactory bitmapForProfileFactory;
+    @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
+    @Inject Picasso picasso;
+    @Inject UserServiceWrapper userServiceWrapper;
 
     private static long last_time_request_verify_code = -1;
     private final long duration_verify_code = 60;
@@ -165,6 +160,19 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 if (verifyCodeLayout != null) {
                     verifyCodeLayout.setVisibility(mIsPhoneNumRegister ? View.VISIBLE : View.GONE);
                 }
+                int lines = emailEditText.getLineCount();
+                if (lines > 1) {
+                    String str = charSequence.toString();
+                    int cursorStart = emailEditText.getSelectionStart();
+                    int cursorEnd = emailEditText.getSelectionEnd();
+                    if (cursorStart == cursorEnd && cursorStart < str.length() && cursorStart >= 1) {
+                        str = str.substring(0, cursorStart-1) + str.substring(cursorStart);
+                    } else {
+                        str = str.substring(0, emailEditText.length()-1);
+                    }
+                    emailEditText.setText(str);
+                    emailEditText.setSelection(emailEditText.getText().length());
+                }
             }
 
             @Override
@@ -172,9 +180,65 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
             }
         });
-        this.passwordEditText = (EditText) view.findViewById(R.id.authentication_sign_up_password);
+        passwordEditText = (EditText) view.findViewById(R.id.authentication_sign_up_password);
+        passwordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                int lines = passwordEditText.getLineCount();
+                if (lines > 1) {
+                    String str = charSequence.toString();
+                    int cursorStart = passwordEditText.getSelectionStart();
+                    int cursorEnd = passwordEditText.getSelectionEnd();
+                    if (cursorStart == cursorEnd && cursorStart < str.length() && cursorStart >= 1) {
+                        str = str.substring(0, cursorStart-1) + str.substring(cursorStart);
+                    } else {
+                        str = str.substring(0, passwordEditText.length()-1);
+                    }
+                    passwordEditText.setText(str);
+                    passwordEditText.setSelection(passwordEditText.getText().length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         verifyCodeLayout = (RelativeLayout) view.findViewById(R.id.login_verify_code_layout);
         verifyCode = (EditText) view.findViewById(R.id.verify_code);
+        verifyCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                int lines = verifyCode.getLineCount();
+                if (lines > 1) {
+                    String str = charSequence.toString();
+                    int cursorStart = verifyCode.getSelectionStart();
+                    int cursorEnd = verifyCode.getSelectionEnd();
+                    if (cursorStart == cursorEnd && cursorStart < str.length() && cursorStart >= 1) {
+                        str = str.substring(0, cursorStart-1) + str.substring(cursorStart);
+                    } else {
+                        str = str.substring(0, verifyCode.length()-1);
+                    }
+                    verifyCode.setText(str);
+                    verifyCode.setSelection(verifyCode.getText().length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         getVerifyCodeButton = (TextView) view.findViewById(R.id.get_verify_code_button);
         getVerifyCodeButton.setOnClickListener(this);
@@ -194,8 +258,8 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
 
 
-        this.mDisplayName = (EditText) view.findViewById(R.id.authentication_sign_up_username);
-        this.mDisplayName.addTextChangedListener(new TextWatcher() {
+        mDisplayName = (EditText) view.findViewById(R.id.authentication_sign_up_username);
+        mDisplayName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
@@ -203,6 +267,19 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                int lines = mDisplayName.getLineCount();
+                if (lines > 1) {
+                    String str = charSequence.toString();
+                    int cursorStart = mDisplayName.getSelectionStart();
+                    int cursorEnd = mDisplayName.getSelectionEnd();
+                    if (cursorStart == cursorEnd && cursorStart < str.length() && cursorStart >= 1) {
+                        str = str.substring(0, cursorStart-1) + str.substring(cursorStart);
+                    } else {
+                        str = str.substring(0, mDisplayName.length()-1);
+                    }
+                    mDisplayName.setText(str);
+                    mDisplayName.setSelection(mDisplayName.getText().length());
+                }
                 if (charSequence.length() > 1) {
                     signButton.setBackgroundResource(R.drawable.basic_red_selector_round_corner);
                     signButton.setEnabled(charSequence.length() > 1);
@@ -523,7 +600,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     protected class EmailSignUpProfileViewListener implements ProfileInfoView.Listener {
         @Override
         public void onUpdateRequested() {
-            // TODO
+
         }
 
         @Override
