@@ -194,7 +194,7 @@
   <dimen name="tab_menu_height">48dp</dimen>
   <dimen name="text_default_color">@color/black</dimen>
   <dimen name="more_bang_text_size">16sp</dimen>
-  <dimen name="more_bang_item_height">48dp</dimen>
+  <dimen name="more_bang_item_height">56dp</dimen>
   <dimen name="right_arrow_margin">15dp</dimen>
 
   <dimen name="sucurity_detail_info">12sp</dimen>

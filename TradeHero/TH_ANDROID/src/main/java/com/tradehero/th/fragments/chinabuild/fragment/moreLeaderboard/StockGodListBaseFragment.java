@@ -22,6 +22,7 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
@@ -114,10 +115,27 @@ public class StockGodListBaseFragment extends DashboardFragment
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
             {
                 LeaderboardUserDTO dto = (LeaderboardUserDTO) adapter.getItem((int) position);
-                enterPortfolio(dto);
+                if(leaderboard_key == LeaderboardDefKeyKnowledge.WEALTH)
+                {
+                    enterMainPage(dto);
+                }
+                else
+                {
+                    enterPortfolio(dto);
+                }
             }
         });
     }
+    /*
+进入个人主页
+*/
+    private void enterMainPage(LeaderboardUserDTO userDTO)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userDTO.id);
+        gotoDashboard(UserMainPage.class, bundle);
+    }
+
 
     /*
 进入持仓页面

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
@@ -135,6 +136,14 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
     {
         listTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
         listTimeLine.setAdapter(adapter);
+
+        listTimeLine.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                Timber.d("Clicked item position = " + l);
+            }
+        });
 
         adapter.setTimeLineOperater(new UserTimeLineAdapter.TimeLineOperater()
         {
