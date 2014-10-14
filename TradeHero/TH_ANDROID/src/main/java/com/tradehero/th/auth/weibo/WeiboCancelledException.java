@@ -1,6 +1,8 @@
 package com.tradehero.th.auth.weibo;
 
-public class WeiboCancelledException extends RuntimeException
+import java.util.concurrent.CancellationException;
+
+public class WeiboCancelledException extends CancellationException
 {
     public WeiboCancelledException()
     {

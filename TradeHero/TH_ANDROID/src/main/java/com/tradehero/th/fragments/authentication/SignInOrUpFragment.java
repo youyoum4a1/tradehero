@@ -57,6 +57,7 @@ public class SignInOrUpFragment extends Fragment
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
     @Inject Provider<AuthDataAction> authDataActionProvider;
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_email_sign_up_link) void handleSignUpButtonClick()
     {
         dashboardNavigator.pushFragment(EmailSignUpFragment.class);
@@ -78,6 +79,7 @@ public class SignInOrUpFragment extends Fragment
     private ProgressDialog progressDialog;
     @Inject Provider<ToastOnErrorAction> toastOnErrorActionProvider;
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick({
             R.id.txt_term_of_service_signin,
             R.id.txt_term_of_service_termsofuse
