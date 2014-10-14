@@ -2,14 +2,14 @@ package com.tradehero.th.fragments.chinabuild.fragment.competition;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -52,10 +52,14 @@ public class CompetitionSearchFragment extends DashboardFragment
 
     @InjectView(R.id.listSearch) SecurityListView listCompetitions;//比赛列表
     @InjectView(R.id.tvSearch) TextView tvSearch;
-    @InjectView(R.id.edtSearchInput) TextView tvSearchInput;
+    @InjectView(R.id.edtSearchInput) EditText tvSearchInput;
     @InjectView(R.id.btn_search_x) Button btnSearch_x;
     @InjectView(R.id.listSearch) SecurityListView listSearch;
     @InjectView(R.id.textview_security_searchresult)TextView tvResult;
+
+
+    private String searchStr;
+    private String searchCancelStr;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -86,6 +90,8 @@ public class CompetitionSearchFragment extends DashboardFragment
 
     private void initView()
     {
+        searchStr = getActivity().getResources().getString(R.string.search_search);
+        searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
         initListView();
         tvSearchInput.setHint("请输入比赛关键字");
         tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener()
@@ -103,6 +109,27 @@ public class CompetitionSearchFragment extends DashboardFragment
                 return true;
             }
         });
+        tvSearchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String inputStr = editable.toString();
+                if(TextUtils.isEmpty(inputStr)){
+                    tvSearch.setText(searchCancelStr);
+                }else{
+                    tvSearch.setText(searchStr);
+                }
+            }
+        });
     }
 
     @OnClick(R.id.btn_search_x)
@@ -118,8 +145,10 @@ public class CompetitionSearchFragment extends DashboardFragment
     @OnClick(R.id.tvSearch)
     public void onSearch()
     {
-        Timber.d("onSearch!");
-        //popCurrentFragment();
+        if(TextUtils.isEmpty(getSearchString())){
+            popCurrentFragment();
+            return;
+        }
         toSearch();
     }
 

@@ -362,5 +362,7 @@
   <string name="local_social">社区</string>
 
   <string name="search_no_result">No Result</string>
+  <string name="search_search">搜索</string>
+  <string name="search_cancel">取消</string>
 
 </resources>

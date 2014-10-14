@@ -2,6 +2,9 @@ package com.tradehero.th.fragments.chinabuild.fragment.competition;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +65,9 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
 
     private int trendingAllSecurityListType = 0;
 
+    private String searchStr;
+    private String searchCancelStr;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -108,7 +114,8 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         currentPage = 0;
         fetchSecurityList();
         initListView();
-
+        searchStr = getActivity().getResources().getString(R.string.search_search);
+        searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
         tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override public boolean onEditorAction(TextView textView, int actionId, android.view.KeyEvent keyEvent)
@@ -122,6 +129,28 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
                         break;
                 }
                 return true;
+            }
+        });
+
+        tvSearchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String inputStr = editable.toString();
+                if(TextUtils.isEmpty(inputStr)){
+                    tvSearch.setText(searchCancelStr);
+                }else{
+                    tvSearch.setText(searchStr);
+                }
             }
         });
     }
@@ -168,6 +197,10 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     @OnClick(R.id.tvSearch)
     public void onSearchClicked()
     {
+        if(TextUtils.isEmpty(getSearchString())){
+            popCurrentFragment();
+            return;
+        }
         toSearchSecurity();
     }
 

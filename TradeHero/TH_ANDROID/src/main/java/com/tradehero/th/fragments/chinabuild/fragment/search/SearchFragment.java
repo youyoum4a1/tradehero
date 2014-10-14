@@ -1,14 +1,16 @@
 package com.tradehero.th.fragments.chinabuild.fragment.search;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -64,7 +66,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     public SecuritySearchListAdapter adapter;
 
     @InjectView(R.id.tvSearch)TextView tvSearch;
-    @InjectView(R.id.edtSearchInput)TextView tvSearchInput;
+    @InjectView(R.id.edtSearchInput)EditText tvSearchInput;
     @InjectView(R.id.btn_search_x)Button btnSearch_x;
     @InjectView(R.id.listSearch)SecurityListView listSearch;
     @InjectView(R.id.textview_security_searchresult)TextView tvResult;
@@ -72,11 +74,14 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     private SearchHotSecurityListType keyHot;
     private SearchSecurityListType keySearch;
     boolean isUserSearch = false;
+    private String searchStr;
+    private String searchCancelStr;
 
     protected SecurityCompactDTO selectedItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         securityListTypeCacheListener = createSecurityListFetchListener();
         securityListTypeHotCacheListener = createSecurityListFetchListener();
@@ -97,14 +102,37 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         View view = inflater.inflate(R.layout.search_fragment_layout, container, false);
         ButterKnife.inject(this, view);
         initView();
-
         return view;
     }
 
     public void initView() {
+        searchStr = getActivity().getResources().getString(R.string.search_search);
+        searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch) {
             fetchHotSecuritySearchList(true);
         }
+
+        tvSearchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String inputStr = editable.toString();
+                if(TextUtils.isEmpty(inputStr)){
+                    tvSearch.setText(searchCancelStr);
+                }else{
+                    tvSearch.setText(searchStr);
+                }
+            }
+        });
 
         tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -303,6 +331,10 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
 
     @OnClick(R.id.tvSearch)
     public void onSearchClicked() {
+        if(TextUtils.isEmpty(getSearchString())){
+            popCurrentFragment();
+            return;
+        }
         if (!StringUtils.isNullOrEmptyOrSpaces(getSearchString())) {
             fetchSecuritySearchList(true);
         }
