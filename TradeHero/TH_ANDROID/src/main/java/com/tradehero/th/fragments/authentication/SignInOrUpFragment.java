@@ -259,7 +259,10 @@ public class SignInOrUpFragment extends Fragment
 
     @Override public void onDestroy()
     {
-        subscription.unsubscribe();
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
         ButterKnife.reset(this);
         super.onDestroy();
     }

@@ -26,6 +26,7 @@ import dagger.Provides;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class BaseActivity extends FragmentActivity
         implements OnAccountsUpdateListener, Injector
@@ -43,15 +44,22 @@ public class BaseActivity extends FragmentActivity
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
+        extendAndInject();
+
         super.onCreate(savedInstanceState);
 
-        THApp thApp = THApp.get(this);
-        newInjector = thApp.plus(getModules().toArray());
-        newInjector.inject(this);
+        Timber.d("Activity created");
 
         accountManager = AccountManager.get(this);
         upgradeRequiredBroadcastListener = new UpgradeRequiredListener();
         socialTokenBroadcastListener = new SocialTokenListener();
+    }
+
+    private void extendAndInject()
+    {
+        THApp thApp = THApp.get(this);
+        newInjector = thApp.plus(getModules().toArray());
+        newInjector.inject(this);
     }
 
     protected List<Object> getModules()
