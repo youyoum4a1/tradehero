@@ -57,7 +57,6 @@ public class MainTabFragmentTrade extends AbsBaseFragment
     @OnClick(R.id.imgSearch)
     public void onSearchClicked()
     {
-        Timber.d("Search Button Clicked!");
         gotoDashboard(SearchFragment.class.getName());
     }
 

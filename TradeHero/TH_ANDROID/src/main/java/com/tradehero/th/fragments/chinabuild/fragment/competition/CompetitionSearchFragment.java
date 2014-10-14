@@ -55,7 +55,7 @@ public class CompetitionSearchFragment extends DashboardFragment
     @InjectView(R.id.edtSearchInput) TextView tvSearchInput;
     @InjectView(R.id.btn_search_x) Button btnSearch_x;
     @InjectView(R.id.listSearch) SecurityListView listSearch;
-
+    @InjectView(R.id.textview_security_searchresult)TextView tvResult;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -218,6 +218,11 @@ public class CompetitionSearchFragment extends DashboardFragment
         if (adapterList != null)
         {
             adapterList.setSearchCompetitionDtoList(userCompetitionDTOs);
+            if (adapterList.getCount() > 0) {
+                tvResult.setVisibility(View.GONE);
+            } else {
+                tvResult.setVisibility(View.VISIBLE);
+            }
         }
     }
 

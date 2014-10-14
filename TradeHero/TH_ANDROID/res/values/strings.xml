@@ -361,4 +361,6 @@
   <string name="share_detial_contest">我参与了一个炒股比赛＃%1$s＃，一起来切磋下吧～ \nhttp://cn.tradehero.mobi/shr/match.html?userId=%2$s&amp;competitionId=%3$s</string>
   <string name="local_social">社区</string>
 
+  <string name="search_no_result">No Result</string>
+
 </resources>

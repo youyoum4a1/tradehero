@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contest_center_content_screen"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_fragment"
-    android:orientation="vertical"
-    >
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/contest_center_content_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_fragment"
+        android:orientation="vertical"
+        >
 
-  <include layout="@layout/search_line_layout"/>
-
-  <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
-      xmlns:ptr="http://schemas.android.com/apk/res-auto"
-      ptr:ptrHeaderTextColor="@color/black"
-      android:id="@+id/listSearch"
-      android:scrollingCache="false"
-      android:fadingEdge="none"
-      android:dividerHeight="1px"
-      android:divider="@color/separate_line_color"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent">
-  </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
-
+    <include layout="@layout/search_line_layout"/>
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+                xmlns:ptr="http://schemas.android.com/apk/res-auto"
+                ptr:ptrHeaderTextColor="@color/black"
+                android:id="@+id/listSearch"
+                android:scrollingCache="false"
+                android:fadingEdge="none"
+                android:dividerHeight="1px"
+                android:divider="@color/separate_line_color"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+        </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+        <TextView android:id="@+id/textview_security_searchresult"
+                  android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp"
+                  android:layout_centerHorizontal="true" android:text="@string/search_no_result"
+                  android:textColor="@color/color_gray_plus"
+                  android:layout_marginTop="60dp"
+                  android:visibility="gone"/>
+    </RelativeLayout>
 </LinearLayout>
 

@@ -54,6 +54,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     @InjectView(R.id.edtSearchInput) TextView tvSearchInput;
     @InjectView(R.id.btn_search_x) Button btnSearch_x;
     @InjectView(R.id.listSearch) SecurityListView listSearch;
+    @InjectView(R.id.textview_security_searchresult)TextView tvResult;
 
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 20;
@@ -331,6 +332,12 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         }
 
         adapterSecurity.notifyDataSetChanged();
+        adapterSecurity.notifyDataSetChanged();
+        if (adapterSecurity.getCount() > 0) {
+            tvResult.setVisibility(View.GONE);
+        } else {
+            tvResult.setVisibility(View.VISIBLE);
+        }
     }
 
     //进入比赛相关的股票详情，带入competitionID

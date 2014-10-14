@@ -38,9 +38,11 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
+
 import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
@@ -48,21 +50,24 @@ import timber.log.Timber;
 /*
    搜索  热门／历史
  */
-public class SearchFragment extends DashboardFragment implements HasSelectedItem
-{
+public class SearchFragment extends DashboardFragment implements HasSelectedItem {
 
-    @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject CurrentUserId currentUserId;
-    @Inject UserServiceWrapper userServiceWrapper;
+    @Inject
+    Lazy<SecurityCompactListCache> securityCompactListCache;
+    @Inject
+    CurrentUserId currentUserId;
+    @Inject
+    UserServiceWrapper userServiceWrapper;
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeCacheListener;
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeHotCacheListener;
 
     public SecuritySearchListAdapter adapter;
 
-    @InjectView(R.id.tvSearch) TextView tvSearch;
-    @InjectView(R.id.edtSearchInput) TextView tvSearchInput;
-    @InjectView(R.id.btn_search_x) Button btnSearch_x;
-    @InjectView(R.id.listSearch) SecurityListView listSearch;
+    @InjectView(R.id.tvSearch)TextView tvSearch;
+    @InjectView(R.id.edtSearchInput)TextView tvSearchInput;
+    @InjectView(R.id.btn_search_x)Button btnSearch_x;
+    @InjectView(R.id.listSearch)SecurityListView listSearch;
+    @InjectView(R.id.textview_security_searchresult)TextView tvResult;
 
     private SearchHotSecurityListType keyHot;
     private SearchSecurityListType keySearch;
@@ -71,8 +76,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     protected SecurityCompactDTO selectedItem;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         securityListTypeCacheListener = createSecurityListFetchListener();
         securityListTypeHotCacheListener = createSecurityListFetchListener();
@@ -80,19 +84,16 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
         //setHeadViewMiddleMain("搜索");
-        if (getSupportActionBar() != null)
-        {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment_layout, container, false);
         ButterKnife.inject(this, view);
         initView();
@@ -100,19 +101,15 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         return view;
     }
 
-    public void initView()
-    {
-        if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch)
-        {
+    public void initView() {
+        if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch) {
             fetchHotSecuritySearchList(true);
         }
 
-        tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener()
-        {
-            @Override public boolean onEditorAction(TextView textView, int actionId, android.view.KeyEvent keyEvent)
-            {
-                switch (actionId)
-                {
+        tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, android.view.KeyEvent keyEvent) {
+                switch (actionId) {
                     case EditorInfo.IME_ACTION_SEARCH:
                         fetchSecuritySearchList(true);
                         break;
@@ -125,46 +122,36 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
 
         listSearch.setMode(PullToRefreshBase.Mode.BOTH);
         listSearch.setAdapter(adapter);
-        listSearch.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
-            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+        listSearch.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 Timber.d("下拉刷新");
-                if (isUserSearch)
-                {
+                if (isUserSearch) {
                     fetchSecuritySearchList(true);
-                }
-                else
-                {
+                } else {
                     fetchHotSecuritySearchList(true);
                 }
             }
 
-            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
                 Timber.d("上拉加载更多");
-                if (isUserSearch)
-                {
+                if (isUserSearch) {
                     fetchSecuritySearchListMore();
-                }
-                else
-                {
+                } else {
                     fetchHotSecuritySearchListMore();
                 }
             }
         });
 
-        listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
-            {
-                SecurityCompactDTO dto = (SecurityCompactDTO) adapter.getItem((int)position);
-                if (dto != null)
-                {
+        listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int id, long position) {
+                SecurityCompactDTO dto = (SecurityCompactDTO) adapter.getItem((int) position);
+                if (dto != null) {
                     Timber.d("list item clicked %s", dto.name);
-                    enterSecurity(dto.getSecurityId(),dto.name,dto);
-                    if(isUserSearch)
-                    {
+                    enterSecurity(dto.getSecurityId(), dto.name, dto);
+                    if (isUserSearch) {
                         sendAnalytics(dto);
                     }
                 }
@@ -172,17 +159,13 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         });
     }
 
-    public void enterSecurity(SecurityId securityId,String securityName,SecurityCompactDTO dto)
-    {
+    public void enterSecurity(SecurityId securityId, String securityName, SecurityCompactDTO dto) {
         if (getArguments() != null && getArguments().containsKey(
-                DiscussSendFragment.BUNDLE_KEY_RETURN_FRAGMENT))
-        {
+                DiscussSendFragment.BUNDLE_KEY_RETURN_FRAGMENT)) {
             selectedItem = dto;
             popCurrentFragment();
             return;
-        }
-        else
-        {
+        } else {
             Bundle bundle = new Bundle();
             bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
             bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
@@ -192,13 +175,13 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     }
 
 
-    @Override public void onStop()
-    {
+    @Override
+    public void onStop() {
         super.onStop();
     }
 
-    @Override public void onDestroyView()
-    {
+    @Override
+    public void onDestroyView() {
         detachSecurityHotListCache();
         detachSecurityListCache();
         ButterKnife.reset(this);
@@ -206,96 +189,82 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
     }
 
-    @Override public void onResume()
-    {
+    @Override
+    public void onResume() {
         super.onResume();
         Timber.d("OnRusme: StockGodList 1 ");
     }
 
-    protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
-    {
+    protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener() {
         return new TrendingSecurityListFetchListener();
     }
 
-    @Nullable @Override public Object getSelectedItem()
-    {
+    @Nullable
+    @Override
+    public Object getSelectedItem() {
         return selectedItem;
     }
 
-    protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>
-    {
-        @Override public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
-        {
-            Timber.d("value");
+    protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> {
+        @Override
+        public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value) {
             initAdapterSecurity(value, key);
             onFinish();
         }
 
-        @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
-        {
+        @Override
+        public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error) {
             //THToast.show(getString(R.string.error_fetch_exchange_list));
             Timber.e("Error fetching the list of security %s", key, error);
             onFinish();
         }
 
-        private void onFinish()
-        {
+        private void onFinish() {
             listSearch.onRefreshComplete();
-            //if (mTransactionDialog != null)
-            //{
-            //    mTransactionDialog.dismiss();
-            //}
         }
     }
 
-    private void initAdapterSecurity(@NotNull SecurityCompactDTOList value, @NotNull SecurityListType key)
-    {
-        Timber.d("");
-        if (key instanceof SearchSecurityListType)
-        {
+    private void initAdapterSecurity(@NotNull SecurityCompactDTOList value, @NotNull SecurityListType key) {
+        if (key instanceof SearchSecurityListType) {
             isUserSearch = true;
         }
 
-        if (key.page == 1)
-        {
+        if (key.page == 1) {
             adapter.setSecurityList(value);
-        }
-        else
-        {
+        } else {
             adapter.addItems(value);
         }
 
-        if (value != null && value.size() > 0)
-        {
+        if (value != null && value.size() > 0) {
             key.page += 1;
         }
 
         adapter.notifyDataSetChanged();
+        if (adapter.getCount() > 0) {
+            tvResult.setVisibility(View.GONE);
+        } else {
+            tvResult.setVisibility(View.VISIBLE);
+        }
     }
 
-    private void detachSecurityListCache()
-    {
-        if (securityListTypeCacheListener != null)
-        {
+    private void detachSecurityListCache() {
+        if (securityListTypeCacheListener != null) {
             securityCompactListCache.get().unregister(securityListTypeCacheListener);
         }
     }
 
-    private void detachSecurityHotListCache()
-    {
-        if (securityListTypeHotCacheListener != null)
-        {
+    private void detachSecurityHotListCache() {
+        if (securityListTypeHotCacheListener != null) {
             securityCompactListCache.get().unregister(securityListTypeHotCacheListener);
         }
     }
 
-    private void fetchSecuritySearchList(boolean force)
-    {
+    private void fetchSecuritySearchList(boolean force) {
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString())) return;
         detachSecurityListCache();
         keySearch = new SearchSecurityListType(getSearchString(), 1, 50);
@@ -303,66 +272,53 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         securityCompactListCache.get().getOrFetchAsync(keySearch, force);
     }
 
-    private void fetchHotSecuritySearchList(boolean force)
-    {
+    private void fetchHotSecuritySearchList(boolean force) {
         detachSecurityHotListCache();
         keyHot = new SearchHotSecurityListType(1, 50);
         securityCompactListCache.get().register(keyHot, securityListTypeHotCacheListener);
         securityCompactListCache.get().getOrFetchAsync(keyHot, force);
     }
 
-    private void fetchSecuritySearchListMore()
-    {
+    private void fetchSecuritySearchListMore() {
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString())) return;
         detachSecurityListCache();
         securityCompactListCache.get().register(keySearch, securityListTypeCacheListener);
         securityCompactListCache.get().getOrFetchAsync(keySearch, true);
     }
 
-    private void fetchHotSecuritySearchListMore()
-    {
+    private void fetchHotSecuritySearchListMore() {
         detachSecurityHotListCache();
         securityCompactListCache.get().register(keyHot, securityListTypeHotCacheListener);
         securityCompactListCache.get().getOrFetchAsync(keyHot, true);
     }
 
-    public String getSearchString()
-    {
+    public String getSearchString() {
         String strSearch = tvSearchInput.getText().toString();
-        if (strSearch != null && strSearch.length() > 0)
-        {
+        if (strSearch != null && strSearch.length() > 0) {
             return strSearch;
-        }
-        else
-        {
+        } else {
             return "";
         }
     }
 
     @OnClick(R.id.tvSearch)
-    public void onSearchClicked()
-    {
-        if (!StringUtils.isNullOrEmptyOrSpaces(getSearchString()))
-        {
+    public void onSearchClicked() {
+        if (!StringUtils.isNullOrEmptyOrSpaces(getSearchString())) {
             fetchSecuritySearchList(true);
         }
     }
 
     @OnClick(R.id.btn_search_x)
-    public void onClearClicked()
-    {
+    public void onClearClicked() {
         tvSearchInput.setText("");
     }
 
 
-    private void sendAnalytics(final SecurityCompactDTO dto )
-    {
-        Thread thread = new Thread(new Runnable()
-        {
-            @Override public void run()
-            {
-                try
-                {
+    private void sendAnalytics(final SecurityCompactDTO dto) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
                     SearchSecurityEventForm analyticsEventForm = new SearchSecurityEventForm("search",
                             DateUtils.getFormattedUtcDateFromDate(getActivity().getResources(),
                                     new Date(System.currentTimeMillis())), dto.id,
@@ -371,9 +327,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
                     batchAnalyticsEventForm.events = new ArrayList<>();
                     batchAnalyticsEventForm.events.add(analyticsEventForm);
                     userServiceWrapper.sendAnalytics(batchAnalyticsEventForm);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     THToast.show(e.getMessage());
                     e.printStackTrace();
                 }
