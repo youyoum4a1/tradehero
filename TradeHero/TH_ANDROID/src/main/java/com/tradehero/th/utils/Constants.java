@@ -14,7 +14,7 @@ public class Constants
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
-    private static final int COMMON_ITEM_PER_PAGE = RELEASE ? 42 : 10;
+    public static final int COMMON_ITEM_PER_PAGE = RELEASE ? 42 : 20;
 
     public static final int TIMELINE_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
 
