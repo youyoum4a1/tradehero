@@ -24,18 +24,24 @@
         />
   </LinearLayout>
 
-
-  <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
-      xmlns:ptr="http://schemas.android.com/apk/res-auto"
-      ptr:ptrHeaderTextColor="@color/black"
-      android:id="@+id/listSecurity"
-      android:scrollingCache="false"
-      android:fadingEdge="none"
-      android:dividerHeight="1px"
-      android:divider="@color/separate_line_color"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent">
-  </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
-
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+                xmlns:ptr="http://schemas.android.com/apk/res-auto"
+                ptr:ptrHeaderTextColor="@color/black"
+                android:id="@+id/listSecurity"
+                android:scrollingCache="false"
+                android:fadingEdge="none"
+                android:dividerHeight="1px"
+                android:divider="@color/separate_line_color"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+        </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+        <ProgressBar android:id="@+id/progressbar_hothold" android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     style="@android:style/Widget.ProgressBar.Inverse"
+                     android:layout_centerInParent="true"
+                     android:visibility="gone"
+                />
+    </RelativeLayout>
 </RelativeLayout>
 
