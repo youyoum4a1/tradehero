@@ -3,175 +3,115 @@ package com.tradehero.th.fragments.trade.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
-import timber.log.Timber;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QuickPriceButtonSet extends LinearLayout
+    implements View.OnClickListener
 {
-    private final List<QuickPriceButton> buttons;
-    private OnQuickPriceButtonSelectedListener listener;
-    private boolean enabled = false;
+    @Nullable private OnQuickPriceButtonSelectedListener listener;
     private double maxPrice = Double.MAX_VALUE;
-    private QuickPriceButton currentSelected;
-    private boolean attachedToWindow = false;
+    @Nullable private QuickPriceButton currentSelected;
 
     //<editor-fold desc="Constructors">
-    public QuickPriceButtonSet(Context context)
-    {
-        super(context);
-        buttons = new ArrayList<>();
-    }
-
     public QuickPriceButtonSet(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        buttons = new ArrayList<>();
-    }
-
-    public QuickPriceButtonSet(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        buttons = new ArrayList<>();
     }
     //</editor-fold>
 
     //<editor-fold desc="Accessors">
-    public boolean isEnabled()
+    @Override public void setEnabled(boolean enabled)
     {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled)
-    {
-        this.enabled = enabled;
+        super.setEnabled(enabled);
         display();
-    }
-
-    public double getMaxPrice()
-    {
-        return maxPrice;
     }
 
     public void setMaxPrice(double maxPrice)
     {
         this.maxPrice = maxPrice;
-        Timber.d("MaxPrice: %f", maxPrice);
         display();
+    }
+
+    public void setListener(@Nullable OnQuickPriceButtonSelectedListener listener)
+    {
+        this.listener = listener;
     }
     //</editor-fold>
 
-    public void addButton(int resourceId)
-    {
-        addButton((QuickPriceButton) findViewById(resourceId));
-    }
-
-    public void addButton(QuickPriceButton quickPriceButton)
-    {
-        if (quickPriceButton != null)
-        {
-            buttons.add(quickPriceButton);
-            if (attachedToWindow)
-            {
-                quickPriceButton.setOnClickListener(createButtonOnClickListener());
-            }
-        }
-    }
-
-    public void removeButton(QuickPriceButton quickPriceButton)
-    {
-        if (buttons.contains(quickPriceButton))
-        {
-            quickPriceButton.setOnClickListener(null);
-        }
-        buttons.remove(quickPriceButton);
-    }
-
-    public void clearButtons()
-    {
-        for (QuickPriceButton button : buttons)
-        {
-            button.setOnClickListener(null);
-        }
-        buttons.clear();
-    }
-
-    public List<QuickPriceButton> getButtons()
-    {
-        return buttons;
-    }
-
     @Override protected void onAttachedToWindow()
     {
-        attachedToWindow = true;
-        if (buttons != null)
-        {
-            OnClickListener buttonListener = createButtonOnClickListener();
-            for (QuickPriceButton button : buttons)
-            {
-                if (button != null)
-                {
-                    button.setOnClickListener(buttonListener);
-                }
-            }
-        }
         super.onAttachedToWindow();
+        for (@NotNull QuickPriceButton button : findButtons())
+        {
+            button.setOnClickListener(this);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        attachedToWindow = false;
-        if (buttons != null)
+        for (@NotNull QuickPriceButton button : findButtons())
         {
-            for (QuickPriceButton button : buttons)
-            {
-                if (button != null)
-                {
-                    button.setOnClickListener(null);
-                }
-            }
+            button.setOnClickListener(null);
         }
         super.onDetachedFromWindow();
     }
 
-    public void setListener(OnQuickPriceButtonSelectedListener listener)
+    @NotNull public List<QuickPriceButton> findButtons()
     {
-        this.listener = listener;
+        return findButtons(this);
+    }
+
+    @NotNull protected List<QuickPriceButton> findButtons(@NotNull ViewGroup parent)
+    {
+        List<QuickPriceButton> found = new ArrayList<>();
+        for (int i = 0; i < parent.getChildCount(); i++)
+        {
+            View child = parent.getChildAt(i);
+            if (child instanceof ViewGroup)
+            {
+                found.addAll(findButtons((ViewGroup) child));
+            }
+            else if (child instanceof QuickPriceButton)
+            {
+                found.add((QuickPriceButton) child);
+            }
+        }
+        return found;
+    }
+
+    @Override public void onClick(@NotNull View view)
+    {
+        currentSelected = (QuickPriceButton) view;
+        display();
+        notifyListener(((QuickPriceButton) view).getPrice());
+    }
+
+    protected void display()
+    {
+        List<QuickPriceButton> buttons = findButtons();
+        for (QuickPriceButton button : buttons)
+        {
+            button.setEnabled(isEnabled() && (button.getPrice() <= maxPrice));
+        }
+        for (Button button : buttons)
+        {
+            button.setSelected(button == currentSelected && button.isEnabled());
+        }
     }
 
     private void notifyListener(double price)
     {
-        if (this.listener != null)
+        OnQuickPriceButtonSelectedListener listenerCopy = listener;
+        if (listenerCopy != null)
         {
-            this.listener.onQuickPriceButtonSelected(price);
+            listenerCopy.onQuickPriceButtonSelected(price);
         }
-    }
-
-    public void display()
-    {
-        for (QuickPriceButton button : buttons)
-        {
-            button.setEnabled(enabled && (button.getPrice() <= maxPrice));
-        }
-        for (Button button : buttons)
-        {
-            button.setSelected(button == this.currentSelected && button.isEnabled());
-        }
-    }
-
-    private OnClickListener createButtonOnClickListener()
-    {
-        return new OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                QuickPriceButtonSet.this.currentSelected = (QuickPriceButton) view;
-                display();
-                notifyListener(((QuickPriceButton) view).getPrice());
-            }
-        };
     }
 
     public interface OnQuickPriceButtonSelectedListener

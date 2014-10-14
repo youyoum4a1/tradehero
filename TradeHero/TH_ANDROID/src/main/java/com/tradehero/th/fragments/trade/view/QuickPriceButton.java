@@ -5,31 +5,23 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.Button;
 import com.tradehero.th.R;
+import org.jetbrains.annotations.NotNull;
 
 public class QuickPriceButton extends Button
 {
     public static final float ALPHA_DISABLED = 0.5f;
 
-    //<editor-fold desc="Constructors">
-    public QuickPriceButton(Context context)
-    {
-        super(context);
-    }
+    private double price;
 
+    //<editor-fold desc="Constructors">
     public QuickPriceButton(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         init(context, attrs);
     }
-
-    public QuickPriceButton(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        init(context, attrs);
-    }
     //</editor-fold>
 
-    protected void init(Context context, AttributeSet attrs)
+    protected void init(@NotNull Context context, @NotNull AttributeSet attrs)
     {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.QuickPriceButton);
         setPrice(a.getInt(R.styleable.QuickPriceButton_price, 0));
@@ -39,29 +31,18 @@ public class QuickPriceButton extends Button
     //<editor-fold desc="Accessors">
     public double getPrice()
     {
-        Double price = (Double) getTag(R.string.key_price);
-        if (price == null)
-        {
-            return 0;
-        }
         return price;
     }
 
     public void setPrice(double price)
     {
-        setTag(R.string.key_price, price);
+        this.price = price;
     }
+    //</editor-fold>
 
     @Override public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
         setAlpha(enabled ? 1 : ALPHA_DISABLED);
-    }
-    //</editor-fold>
-
-    @Override protected void onDetachedFromWindow()
-    {
-        setOnClickListener(null);
-        super.onDetachedFromWindow();
     }
 }
