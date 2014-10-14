@@ -2,6 +2,7 @@ package com.tradehero.th.auth;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.ConsumerKey;
@@ -61,6 +62,11 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // do nothing
     }
 
     @Override public void logout()

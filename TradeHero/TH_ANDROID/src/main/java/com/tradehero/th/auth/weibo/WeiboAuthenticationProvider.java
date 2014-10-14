@@ -3,7 +3,6 @@ package com.tradehero.th.auth.weibo;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuth;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -12,12 +11,10 @@ import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.utils.Constants;
-
-import org.jetbrains.annotations.NotNull;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -30,22 +27,23 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
     public static final String KEY_EXPIRES_IN = "expires_in";
     private static final String WEIBO_PACKAGE = "com.sina.weibo";
 
-    @NotNull private final WeiboAppAuthData mAuthData;
-    private OperatorSsoHandler mOperatorSsoHandler;
+    @NotNull private final WeiboAppAuthData appAuthData;
+    @Nullable private OperatorSsoHandler operatorSsoHandler;
 
     //<editor-fold desc="Constructors">
     @Inject public WeiboAuthenticationProvider(
             @NotNull SocialLinker socialLinker,
-            @NotNull @ForWeiboAppAuthData WeiboAppAuthData authData)
+            @NotNull @ForWeiboAppAuthData WeiboAppAuthData appAuthData)
     {
         super(socialLinker);
-        this.mAuthData = authData;
+        this.appAuthData = appAuthData;
     }
     //</editor-fold>
 
     @Override public void logout()
     {
         // FIXME Nothing to do?
+        operatorSsoHandler = null;
     }
 
     @Override protected Observable<AuthData> createAuthDataObservable(final Activity activity)
@@ -59,15 +57,18 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         }
         else
         {
-            mOperatorSsoHandler = new OperatorSsoHandler(
+            operatorSsoHandler = new OperatorSsoHandler(
                     activity,
-                    new WeiboAuth(activity, mAuthData.appId, mAuthData.redirectUrl, mAuthData.scope));
-            return Observable.create(mOperatorSsoHandler)
-                    .map(new Func1<Bundle, AuthData>() {
-                        @Override
-                        public AuthData call(Bundle bundle) {
+                    new WeiboAuth(activity, appAuthData.appId, appAuthData.redirectUrl, appAuthData.scope));
+            return Observable.create(operatorSsoHandler)
+                    .map(new Func1<Bundle, AuthData>()
+                    {
+                        @Override public AuthData call(Bundle bundle)
+                        {
+                            operatorSsoHandler = null;
                             Oauth2AccessToken token = Oauth2AccessToken.parseAccessToken(bundle);
-                            if (token.isSessionValid()) {
+                            if (token.isSessionValid())
+                            {
                                 return new AuthData(
                                         SocialNetworkEnum.WB,
                                         null, // TODO expiry
@@ -84,11 +85,12 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         }
     }
 
-    public void authorizeCallBack(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (mOperatorSsoHandler != null)
+        // Request code is always 32973 ? SsoHandler.REQUEST_CODE_SSO_AUTH
+        if (operatorSsoHandler != null)
         {
-            mOperatorSsoHandler.authorizeCallBack(requestCode, resultCode, data);
+            operatorSsoHandler.authorizeCallBack(requestCode, resultCode, data);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.tradehero.th.auth.tencent_qq;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import com.tencent.tauth.Tencent;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
@@ -32,11 +33,6 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     }
     //</editor-fold>
 
-    @Override public void logout()
-    {
-        tencent.logout(context);
-    }
-
     @Override protected Observable<AuthData> createAuthDataObservable(Activity activity)
     {
         tencent.logout(activity);
@@ -53,5 +49,15 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
                             qqAppAuthData.openId);
                 }
             });
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // do nothing
+    }
+
+    @Override public void logout()
+    {
+        tencent.logout(context);
     }
 }

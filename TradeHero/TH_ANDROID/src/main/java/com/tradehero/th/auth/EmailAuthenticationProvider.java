@@ -1,6 +1,7 @@
 package com.tradehero.th.auth;
 
 import android.app.Activity;
+import android.content.Intent;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import javax.inject.Inject;
@@ -27,6 +28,11 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
     {
         EmailSignInFragment emailSignInFragment = dashboardNavigatorProvider.get().pushFragment(EmailSignInFragment.class);
         return emailSignInFragment.obtainAuthData();
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // do nothing
     }
 
     @Override public void logout()

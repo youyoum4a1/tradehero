@@ -173,7 +173,7 @@ class Navigator<ActivityType extends Activity>
         backPressedCount = 0;
     }
 
-    public Fragment getCurrentFragment()
+    @Nullable public Fragment getCurrentFragment()
     {
         return manager.findFragmentById(fragmentContentId);
     }

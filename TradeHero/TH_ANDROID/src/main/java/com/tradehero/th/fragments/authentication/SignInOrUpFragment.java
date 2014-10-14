@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.Assertions;
@@ -257,16 +258,6 @@ public class SignInOrUpFragment extends Fragment
         ;
     }
 
-    @Override public void onDestroy()
-    {
-        if (subscription != null)
-        {
-            subscription.unsubscribe();
-        }
-        ButterKnife.reset(this);
-        super.onDestroy();
-    }
-
     @Override public void onResume()
     {
         super.onResume();
@@ -276,6 +267,25 @@ public class SignInOrUpFragment extends Fragment
         {
             resubscribe();
         }
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        for (@NotNull AuthenticationProvider authProvider : enumToAuthProviderMap.values())
+        {
+            authProvider.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override public void onDestroy()
+    {
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
+        ButterKnife.reset(this);
+        super.onDestroy();
     }
 
     // TODO better with Observable#retry() ?
