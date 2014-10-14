@@ -47,7 +47,7 @@
         android:textSize="@dimen/text_xsmall"
         android:duplicateParentState="true"
         android:layout_gravity="center_vertical"
-        android:text="13"/>
+        android:text="0"/>
   </LinearLayout>
 
   <LinearLayout

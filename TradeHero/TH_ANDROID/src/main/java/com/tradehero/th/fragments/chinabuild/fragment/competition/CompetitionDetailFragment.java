@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -125,6 +126,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     @InjectView(R.id.llCompetitionLeaderboardTitle) LinearLayout llCompetitionLeaderboardTitle;//比赛排名 TITLE
     @InjectView(R.id.tvLeaderboardTime) TextView tvLeaderboardTime;
+    @InjectView(R.id.btnCollegeSelect) Button btnCollegeSelect;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -327,7 +329,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     public void refreshStatus()
     {
-        if(userCompetitionDTO == null)return;
+        if (userCompetitionDTO == null) return;
 
         if (!userCompetitionDTO.isOngoing)
         {
@@ -337,6 +339,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             fetchPortfolioCompactNew();
         }
+
         fetchUserProfile();
         setLeaderboardHeadLine();
     }
@@ -351,6 +354,12 @@ public class CompetitionDetailFragment extends DashboardFragment
         detachUserProfileCache();
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    @OnClick(R.id.btnCollegeSelect)
+    public void onCollegeSelect()
+    {
+        pushFragment(CompetitionCollegeFragment.class, null);
     }
 
     @OnClick(R.id.tvGotoCompetition)
@@ -421,7 +430,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         mTransactionDialog = progressDialogUtil.show(CompetitionDetailFragment.this.getActivity(),
                 R.string.processing, R.string.alert_dialog_please_wait);
         competitionCacheLazy.get().getCompetitionDetail(competitionId, callbackgetCompetition);
-
     }
 
     public void toPlayCompetition()
@@ -444,8 +452,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         competitionCacheLazy.get().getMySelfRank(userCompetitionDTO.leaderboardId, currentUserId.toUserBaseKey().getUserId(), callbackMySelfRank);
     }
 
-
-
     protected class GetCompetitionDetailCallback implements retrofit.Callback<UserCompetitionDTO>
     {
 
@@ -455,7 +461,7 @@ public class CompetitionDetailFragment extends DashboardFragment
             onFinish();
             if (response.getStatus() == 200)
             {
-                if(getActivity() == null)return;
+                if (getActivity() == null) return;
                 CompetitionDetailFragment.this.userCompetitionDTO = userCompetitionDTO;
                 initView();
                 refreshStatus();
@@ -592,7 +598,7 @@ public class CompetitionDetailFragment extends DashboardFragment
             if (response.getStatus() == 200)
             {
                 Timber.d("");
-                if(getActivity() == null)return;
+                if (getActivity() == null) return;
                 displayMySelfRank(leaderboardDTO);
             }
         }
@@ -773,6 +779,9 @@ public class CompetitionDetailFragment extends DashboardFragment
                 .placeholder(R.drawable.superman_facebook)
                 .error(R.drawable.superman_facebook)
                 .into(imgUserHead);
+
+        //设置是否显示 高线选择按钮
+        btnCollegeSelect.setVisibility(View.VISIBLE);
     }
 
     private void linkWith(PortfolioCompactDTO value)
