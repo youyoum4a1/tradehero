@@ -24,6 +24,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityResultRequester;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -47,6 +48,7 @@ import timber.log.Timber;
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 
 public class ProfileInfoView extends LinearLayout
+    implements ActivityResultRequester
 {
     @InjectView(R.id.authentication_sign_up_email) ServerValidatedEmailText email;
     @InjectView(R.id.authentication_sign_up_password) ValidatedPasswordText password;
@@ -284,7 +286,7 @@ public class ProfileInfoView extends LinearLayout
         alertDialog.show();
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         // handle image upload
         if (resultCode == Activity.RESULT_OK)
