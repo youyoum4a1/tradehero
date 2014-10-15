@@ -2,9 +2,10 @@ package com.tradehero.th.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.Window;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
+import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
 import com.tradehero.th.inject.Injector;
@@ -17,7 +18,9 @@ import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class AuthenticationActivity extends BaseActivity
@@ -25,6 +28,7 @@ public class AuthenticationActivity extends BaseActivity
 {
     @Inject Analytics analytics;
     @Inject DTOCacheUtil dtoCacheUtil;
+    @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
 
     private DashboardNavigator navigator;
 
@@ -64,15 +68,17 @@ public class AuthenticationActivity extends BaseActivity
         super.onPause();
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
-        Fragment currentFragment = navigator.getCurrentFragment();
-        if (currentFragment != null)
+        CollectionUtils.apply(activityResultRequesters, new Action1<ActivityResultRequester>()
         {
-            currentFragment.onActivityResult(requestCode, resultCode, data);
-        }
+            @Override public void call(ActivityResultRequester activityResultRequester)
+            {
+                activityResultRequester.onActivityResult(requestCode, resultCode, data);
+            }
+        });
     }
 
     @Override protected boolean requireLogin()

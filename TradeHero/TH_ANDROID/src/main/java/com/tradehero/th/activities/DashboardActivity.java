@@ -26,6 +26,7 @@ import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.NotifyingWebView;
 import com.tradehero.common.widget.QuickReturnWebViewOnScrollChangedListener;
@@ -47,6 +48,7 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
+import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
@@ -115,6 +117,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class DashboardActivity extends BaseActivity
@@ -170,6 +173,7 @@ public class DashboardActivity extends BaseActivity
     private BroadcastReceiver mXPBroadcastReceiver;
     private BroadcastReceiver onBoardBroadcastReceiver;
     private BroadcastReceiver enrollmentBroadcastReceiver;
+    @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -549,10 +553,16 @@ public class DashboardActivity extends BaseActivity
         Timber.e(new Exception("thIntentFactory"), "Was handled by thIntentFactory");
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        facebookAuthenticationProvider.onActivityResult(requestCode, resultCode, data);
+        CollectionUtils.apply(activityResultRequesters, new Action1<ActivityResultRequester>()
+        {
+            @Override public void call(ActivityResultRequester activityResultRequester)
+            {
+                activityResultRequester.onActivityResult(requestCode, resultCode, data);
+            }
+        });
         // Passing it on just in case it is expecting something
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
     }

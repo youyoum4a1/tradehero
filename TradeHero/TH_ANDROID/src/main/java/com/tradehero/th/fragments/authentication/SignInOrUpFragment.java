@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.Assertions;
@@ -266,15 +265,6 @@ public class SignInOrUpFragment extends Fragment
         if (subscription == null || subscription.isUnsubscribed())
         {
             resubscribe();
-        }
-    }
-
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        for (@NotNull AuthenticationProvider authProvider : enumToAuthProviderMap.values())
-        {
-            authProvider.onActivityResult(requestCode, resultCode, data);
         }
     }
 

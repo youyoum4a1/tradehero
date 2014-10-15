@@ -9,6 +9,7 @@ import com.facebook.Session;
 import com.facebook.SessionDefaultAudience;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
+import com.tradehero.th.activities.ActivityResultRequester;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.facebook.SubscriberCallback;
 import com.tradehero.th.auth.operator.FacebookAppId;
@@ -35,6 +36,7 @@ import rx.functions.Func1;
 
 @Singleton
 public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
+    implements ActivityResultRequester
 {
     public static final DateFormat PRECISE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
     public static final String ACCESS_TOKEN_KEY =  "access_token";

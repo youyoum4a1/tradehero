@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import rx.functions.Action1;
 
 public class CollectionUtils
 {
@@ -32,5 +33,13 @@ public class CollectionUtils
             }
         }
         return c;
+    }
+
+    public static <T> void apply(Collection<T> collection, Action1<T> action)
+    {
+        for (T element : collection)
+        {
+            action.call(element);
+        }
     }
 }

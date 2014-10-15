@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuth;
+import com.tradehero.th.activities.ActivityResultRequester;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
@@ -21,6 +22,7 @@ import timber.log.Timber;
 
 @Singleton
 public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
+    implements ActivityResultRequester
 {
     public static final String KEY_UID = "uid";
     public static final String KEY_ACCESS_TOKEN = "access_token";

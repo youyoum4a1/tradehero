@@ -30,11 +30,6 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
         return emailSignInFragment.obtainAuthData();
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        // do nothing
-    }
-
     @Override public void logout()
     {
         // do nothing

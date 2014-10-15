@@ -1,11 +1,9 @@
 package com.tradehero.common.billing;
 
-import android.content.Intent;
-
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
-
+import com.tradehero.th.activities.ActivityResultRequester;
 import org.jetbrains.annotations.NotNull;
 
 public interface BillingInteractor<
@@ -47,6 +45,7 @@ public interface BillingInteractor<
                 ProductPurchaseType,
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
+    extends ActivityResultRequester
 {
     String getName();
 
@@ -56,6 +55,4 @@ public interface BillingInteractor<
     void forgetRequestCode(int requestCode);
 
     int run(@NotNull UIBillingRequestType uiBillingRequest);
-
-    void onActivityResult(int requestCode, int resultCode, Intent data);
 }

@@ -1,7 +1,6 @@
 package com.tradehero.th.auth.linkedin;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
@@ -135,11 +134,6 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
                         }
                     }
                 });
-    }
-
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        // do nothing
     }
 
     @Override public void logout()
