@@ -229,8 +229,8 @@
   </string>
   <string name="referral_code_callback_success">Your invite code is correct, you will get extra 10,000 TH dollars</string>
 
-  <string name="friends_can_be_invite">%s friends can be invite</string>
-  <string name="friends_can_be_follow">%s friends can be follow</string>
+  <string name="friends_can_be_invite">%s friends can be invited</string>
+  <string name="friends_can_be_follow">%s friends can be followed</string>
   <string name="weibo_message_text_limit" translatable="false">[%d/140]</string>
   <string name="weibo_message_length_error">no more than 140 character</string>
   <string name="weibo_friends_invite">Join TradeHero, learn to trade, get expert tips, compete with the world top traders and earn real cash from followers, use my invitation code %1$s to get extra 10,000 TH dollars!</string>
