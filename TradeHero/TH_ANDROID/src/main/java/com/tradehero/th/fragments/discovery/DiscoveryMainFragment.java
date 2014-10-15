@@ -30,7 +30,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     private DiscoveryPagerAdapter discoveryPagerAdapter;
     @InjectView(R.id.pager) ViewPager tabViewPager;
     private MenuItem postMenuButton;
-    private int selectedTab = 0;
+    private static int selectedTab = 0;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -72,11 +72,6 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.removeAllTabs();
-        }
         this.postMenuButton = null;
         super.onDestroyOptionsMenu();
     }
@@ -97,10 +92,10 @@ public class DiscoveryMainFragment extends DashboardFragment
     private void setupTabs(@NotNull ActionBar actionBar)
     {
         DiscoveryTabType[] types = DiscoveryTabType.values();
+        int savedSelectedTab = selectedTab;
         if (actionBar.getTabCount() != types.length)
         {
             actionBar.removeAllTabs();
-            int savedSelectedTab = selectedTab;
             for (DiscoveryTabType type : types)
             {
                 actionBar.addTab(
@@ -109,8 +104,16 @@ public class DiscoveryMainFragment extends DashboardFragment
                                 .setTabListener(this)
                                 .setTag(type));
             }
-            actionBar.setSelectedNavigationItem(savedSelectedTab);
         }
+        else
+        {
+            for (int i = 0; i < actionBar.getTabCount(); i++)
+            {
+                actionBar.getTabAt(i).setTabListener(this);
+            }
+        }
+        actionBar.setSelectedNavigationItem(savedSelectedTab);
+        setPagerAt();
     }
 
     private class DiscoveryPagerAdapter extends FragmentPagerAdapter
@@ -144,11 +147,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     {
         // When the given tab is selected, switch to the corresponding page in the ViewPager.
         selectedTab = tab.getPosition();
-        ViewPager pager = tabViewPager;
-        if (pager != null)
-        {
-            tabViewPager.setCurrentItem(selectedTab);
-        }
+        setPagerAt();
 
         MenuItem postMenuButtonCopy = postMenuButton;
         if (postMenuButtonCopy != null)
@@ -165,4 +164,13 @@ public class DiscoveryMainFragment extends DashboardFragment
     {
     }
     //endregion
+
+    protected void setPagerAt()
+    {
+        ViewPager pager = tabViewPager;
+        if (pager != null && selectedTab != tabViewPager.getCurrentItem())
+        {
+            tabViewPager.setCurrentItem(selectedTab);
+        }
+    }
 }
