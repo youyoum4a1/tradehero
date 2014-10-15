@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -115,6 +116,8 @@ public class EmailSignUpFragment extends Fragment
                         });
                     }
                 })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authDataAction)
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(toastOnErrorAction)
@@ -128,6 +131,7 @@ public class EmailSignUpFragment extends Fragment
                         }
                     }
                 })
+                .retry()
         ;
     }
 
@@ -146,8 +150,10 @@ public class EmailSignUpFragment extends Fragment
     @Override public void onResume()
     {
         super.onResume();
-
-        subscription = signUpObservable.subscribe(new EmptyObserver<Pair<AuthData, UserProfileDTO>>());
+        if (subscription == null || subscription.isUnsubscribed())
+        {
+            subscription = signUpObservable.subscribe(new EmptyObserver<Pair<AuthData, UserProfileDTO>>());
+        }
     }
 
     @Override public void onPause()
