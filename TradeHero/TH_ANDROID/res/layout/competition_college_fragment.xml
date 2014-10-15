@@ -7,9 +7,8 @@
         android:layout_height="match_parent"
         android:background="@color/bg_fragment"
         android:orientation="vertical">
-    android:orientation="vertical">
     <EditText
-            android:id="@+id/edtSearchInput"
+            android:id="@+id/edittext_competition_search_college"
             android:singleLine="true"
             android:maxLength="30"
             android:layout_width="fill_parent"
@@ -22,9 +21,18 @@
             android:maxLines="1"
             android:imeOptions="actionSearch"
             android:hint="@string/competition_enter_college"/>
-
-    <ListView android:layout_width="match_parent" android:layout_height="match_parent"
-              android:id="@+id/listview_competition_colleges"/>
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <ListView android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:id="@+id/listview_competition_colleges"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:id="@+id/textview_competition_search_college_noresult"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="60dp"
+                  android:textSize="16sp"
+                  android:textColor="@color/color_gray_plus"
+                  android:text="@string/search_no_result"
+                  android:visibility="gone"/>
+    </RelativeLayout>
 
 </LinearLayout>
 
