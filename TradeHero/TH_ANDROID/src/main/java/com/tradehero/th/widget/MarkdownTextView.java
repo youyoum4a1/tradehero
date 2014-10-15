@@ -75,13 +75,11 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
             //{
             //    text = text.subSequence(1,text.length()-1);
             //}
-            text = text.toString().replace("*","");
+            text = text.toString().replace("*", "");
             text = parser.load(text.toString().trim()).create();
         }
         super.setText(text, BufferType.SPANNABLE);
     }
-
-
 
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
     {
@@ -92,10 +90,12 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
                 int competitionId = Integer.parseInt(matchStrings[2]);
                 openCompetition(competitionId);
                 break;
+
             case "user":
                 int userId = Integer.parseInt(matchStrings[2]);
                 openUserProfile(userId);
                 break;
+
             case "security":
                 if (matchStrings.length < 3) break;
                 String exchange = matchStrings[1];
@@ -136,10 +136,10 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         Timber.d("openSecurity " + exchange + " : " + symbol);
         Bundle bundle = new Bundle();
-        SecurityId securityId = new SecurityId(exchange,symbol);
+        SecurityId securityId = new SecurityId(exchange, symbol);
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
-        enterFragment(SecurityDetailFragment.class,bundle);
+        enterFragment(SecurityDetailFragment.class, bundle);
     }
 
     private void openCompetition(int competitionId)
@@ -148,11 +148,10 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         if (competitionId >= 0)
         {
             Bundle bundle = new Bundle();
-            bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID,competitionId);
+            bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
             enterFragment(CompetitionDetailFragment.class, bundle);
         }
     }
-
 
     private void openUserProfile(int userId)
     {
@@ -162,26 +161,25 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
             Bundle bundle = new Bundle();
             bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
             //getNavigator().pushFragment(UserMainPage.class, bundle);
-            enterFragment(UserMainPage.class,bundle);
+            enterFragment(UserMainPage.class, bundle);
         }
     }
 
-
     private void enterFragment(Class fragmentClass, Bundle args)
     {
-        if(getNavigator()!=null)
+        if (getNavigator() != null)
         {
             getNavigator().pushFragment(fragmentClass, args);
         }
         else
         {
-            gotoDashboard(fragmentClass.getName(),args);
+            gotoDashboard(fragmentClass.getName(), args);
         }
     }
 
-    public void gotoDashboard(String strFragment,Bundle bundle)
+    public void gotoDashboard(String strFragment, Bundle bundle)
     {
-        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,strFragment);
-        ActivityHelper.launchDashboard((Activity)getContext(), bundle);
+        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
+        ActivityHelper.launchDashboard((Activity) getContext(), bundle);
     }
 }

@@ -41,6 +41,7 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
@@ -131,7 +132,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             timelineItemDTOKey = discussionKeyFactory.fromBundle(bundle.getBundle(BUNDLE_ARGUMENT_DISCUSSTION_ID));
             fetchDiscussion(timelineItemDTOKey, false);
-            discussionListKey = new PaginatedDiscussionListKey(timelineItemDTOKey.getType(), timelineItemDTOKey.id, 1, 100);
+            discussionListKey = new PaginatedDiscussionListKey(timelineItemDTOKey.getType(), timelineItemDTOKey.id, 1, 1000);
             fetchDiscussList(true);
         }
     }
@@ -148,6 +149,12 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     {
         View view = inflater.inflate(R.layout.timeline_item_detail, container, false);
         ButterKnife.inject(this, view);
+
+        //ListView lv = listTimeLine.getRefreshableView();
+        //mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item, container, false);
+        //lv.addHeaderView(mRefreshView);
+        //initRoot(mRefreshView);
+
         llDisscurssOrNews.setVisibility(View.INVISIBLE);
         initView();
 
@@ -163,8 +170,27 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         return view;
     }
 
+    //public void initRoot(View view)
+    //{
+    //    llDisscurssOrNews = (LinearLayout) view.findViewById(R.id.llItemAll);
+    //    imgSecurityTLUserHeader = (ImageView) view.findViewById(R.id.imgSecurityTLUserHeader);
+    //    tvUserTLTimeStamp = (TextView) view.findViewById(R.id.tvUserTLTimeStamp);
+    //    tvUserTLContent = (TextView) view.findViewById(R.id.tvUserTLContent);
+    //    tvUserTLName = (TextView) view.findViewById(R.id.tvUserTLName);
+    //    llTLPraise = (LinearLayout) view.findViewById(R.id.llTLPraise);
+    //    llTLComment = (LinearLayout) view.findViewById(R.id.llTLComment);
+    //    llTLShare = (LinearLayout) view.findViewById(R.id.llTLShare);
+    //    tvTLPraise = (TextView) view.findViewById(R.id.tvTLPraise);
+    //    tvTLComment = (TextView) view.findViewById(R.id.tvTLComment);
+    //    tvTLShare = (TextView) view.findViewById(R.id.tvTLShare);
+    //}
+
+    private LinearLayout mRefreshView;
+
     public void initView()
     {
+        tvUserTLContent.setMaxLines(1000);
+
         listTimeLine.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         listTimeLine.setAdapter(adapter);
 
@@ -266,7 +292,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     public void linkWithDTO(AbstractDiscussionCompactDTO value)
     {
         this.dataDto = value;
-        fetchDiscussion(timelineItemDTOKey, true);
+        fetchDiscussList(true);
         displayDiscussOrNewsDTO();
         //if (value instanceof TimelineItemDTO)
         //{
@@ -296,9 +322,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             imgSecurityTLUserHeader.setVisibility(dto instanceof NewsItemCompactDTO ? View.GONE : View.VISIBLE);
             tvUserTLName.setVisibility(dto instanceof NewsItemCompactDTO ? View.GONE : View.VISIBLE);
 
-            if (dto instanceof NewsItemCompactDTO)
+            if (dto instanceof NewsItemDTO)
             {
-                tvUserTLContent.setText(((NewsItemCompactDTO) dto).description);
+                tvUserTLContent.setText(((NewsItemDTO) dto).text);
                 tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(((NewsItemCompactDTO) dto).createdAtUtc));
             }
             else if (dto instanceof DiscussionDTO)

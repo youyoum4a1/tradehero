@@ -130,7 +130,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(getSecurityName());
-        setHeadViewMiddleSub(securityId.getDisplayName());
+        setHeadViewMiddleSub(getSecurityId().getDisplayName());
     }
 
     @Override

@@ -116,7 +116,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     public final static long MILLISEC_QUOTE_REFRESH = 10000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
-
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     private MiddleCallback<DiscussionDTO> voteCallback;
 
@@ -248,12 +247,24 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        setHeadViewMiddleMain(securityName);
-        setHeadViewMiddleSub(securityId.getDisplayName());
-        if (watchedList != null && securityId != null)
+        Bundle args = getArguments();
+        if (args != null)
         {
-            isInWatchList = watchedList.contains(securityId);
-            displayInWatchButton();
+            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+            securityName = args.getString(BUNDLE_KEY_SECURITY_NAME);
+            if (securityIdBundle != null)
+            {
+                securityId = new SecurityId(securityIdBundle);
+            }
+            setHeadViewMiddleMain(securityName);
+            setHeadViewMiddleSub(securityId.getDisplayName());
+
+            if (watchedList != null && securityId != null)
+            {
+                isInWatchList = watchedList.contains(securityId);
+                displayInWatchButton();
+            }
+
         }
     }
 
@@ -262,8 +273,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     {
         View view = inflater.inflate(R.layout.security_detail_layout, container, false);
         ButterKnife.inject(this, view);
+
         initView();
         updateHeadView(true);
+
         return view;
     }
 
@@ -360,6 +373,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public void initView()
     {
+        tvUserTLContent.setMaxLines(10);
         llBuySaleButtons.setVisibility(View.GONE);
 
         btnChart = new Button[4];
@@ -433,14 +447,20 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     @Override public void onResume()
     {
+        initArgment();
+
+
+
+        requestUserProfile();
+        fetchWatchlist();
+        super.onResume();
+    }
+
+    public void initArgment()
+    {
         Bundle args = getArguments();
         if (args != null)
         {
-            //Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
-            //if (providerIdBundle != null)
-            //{
-            //    linkWith(new ProviderId(providerIdBundle), false);
-            //}
             Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
             securityName = args.getString(BUNDLE_KEY_SECURITY_NAME);
             competitionID = args.getInt(BUNDLE_KEY_COMPETITION_ID_BUNDLE, 0);
@@ -449,11 +469,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 linkWith(new SecurityId(securityIdBundle));
             }
         }
-
-        requestUserProfile();
-        fetchWatchlist();
-
-        super.onResume();
     }
 
     private void setDefaultBtnTabView()
@@ -952,14 +967,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 if (securityCompactDTO.volume != null)
                 {
                     tvInfo2Value.setText(THSignedMoney.builder(securityCompactDTO.volume)
-                            .currency(securityCompactDTO.getCurrencyDisplay())
+                            //.currency(securityCompactDTO.getCurrencyDisplay())
                             .build().toString());
                 }
 
                 if (securityCompactDTO.averageDailyVolume != null)
                 {
                     tvInfo3Value.setText(THSignedMoney.builder(securityCompactDTO.averageDailyVolume)
-                            .currency(securityCompactDTO.getCurrencyDisplay())
+                            //.currency(securityCompactDTO.getCurrencyDisplay())
                             .build().toString());
                 }
             }
@@ -1511,7 +1526,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader})
     public void onOperaterClicked(View view)
     {
-        if(view.getId() == R.id.llDisscurssOrNews)
+        if (view.getId() == R.id.llDisscurssOrNews)
         {
             enterTimeLineDetail(getAbstractDiscussionCompactDTO());
         }
@@ -1519,7 +1534,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             openUserProfile(((DiscussionDTO) getAbstractDiscussionCompactDTO()).user.id);
         }
-        else if(view.getId() == R.id.llTLPraise)
+        else if (view.getId() == R.id.llTLPraise)
         {
             clickedPraise();
         }
@@ -1629,7 +1644,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
         }
         displayDiscussOrNewsDTO();
-
     }
 
     protected void detachVoteMiddleCallback()

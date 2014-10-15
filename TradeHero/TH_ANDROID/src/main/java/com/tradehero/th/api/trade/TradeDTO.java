@@ -3,6 +3,7 @@ package com.tradehero.th.api.trade;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +27,10 @@ public class TradeDTO implements DTO
     @JsonProperty("realized_pl_after_trade")
     public double realizedPLAfterTradeRefCcy;
 
+    @JsonProperty("unit_price_currency")
+    public String unit_price_currency;
+
+
     public String commentText;
 
     //<editor-fold desc="These need to be set on client side, in ServiceWrapper">
@@ -41,6 +46,11 @@ public class TradeDTO implements DTO
     @JsonIgnore @NotNull public OwnedTradeId getOwnedTradeId()
     {
         return new OwnedTradeId(userId, portfolioId, positionId, id);
+    }
+
+    public String getCurrencyDisplay()
+    {
+        return SecurityUtils.getCurrencyShortDispaly(unit_price_currency);
     }
 
     //成交金额

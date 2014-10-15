@@ -106,7 +106,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
             @Override
             public void run() {
                 viewpager.setCurrentItem((viewpager.getCurrentItem() + 1)%4, true);
-                if (isFinishing() || isDestroyed() || mIndicator0 == null)
+                if (isFinishing() /*|| isDestroyed()*/ || mIndicator0 == null)
                 {
                 }
                 else

@@ -50,7 +50,7 @@
             android:id="@+id/edtSend"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:hint="输入内容..."
+            android:hint="评论一下吧..."
             android:singleLine="true"
             android:maxLength="140"
             android:layout_toLeftOf="@id/btnSend"/>
