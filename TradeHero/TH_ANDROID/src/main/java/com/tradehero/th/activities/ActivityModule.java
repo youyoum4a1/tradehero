@@ -38,7 +38,7 @@ public class ActivityModule
         return Collections.unmodifiableSet(requests);
     }
     @Provides(type = Provides.Type.SET_VALUES) @Singleton @SocialAuth
-    Set<ActivityResultRequester> provideActivityResultRequesters(
+    Set<ActivityResultRequester> provideSocialAuthActivityResultRequesters(
             FacebookAuthenticationProvider facebookAuthenticationProvider,
             WeiboAuthenticationProvider weiboAuthenticationProvider
     )
