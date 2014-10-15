@@ -147,7 +147,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         super.onActivityResult(requestCode, resultCode, data);
         if (profileView != null)
         {
-            profileView.onActivityResult(resultCode, resultCode, data);
+            profileView.onActivityResult(requestCode, resultCode, data);
         }
     }
 

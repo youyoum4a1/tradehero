@@ -5,25 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import javax.inject.Inject;
 
 public class ImagePickerView extends LinearLayout
 {
-    //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
-    public static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
-    public static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
+    public static final int REQUEST_GALLERY = 1;
+    public static final int REQUEST_CAMERA = 2;
 
     @Inject Activity activity;
+    @Inject DashboardNavigator dashboardNavigator;
 
     public ImagePickerView(Context context, AttributeSet attrs)
     {
@@ -48,7 +48,11 @@ public class ImagePickerView extends LinearLayout
         if (handlerActivities.size() > 0)
         {
             //cameraIntent.setType("image/jpeg");
-            activity.startActivityForResult(cameraIntent, REQUEST_CAMERA);
+            Fragment currentFragment = dashboardNavigator.getCurrentFragment();
+            if (currentFragment != null)
+            {
+                currentFragment.startActivityForResult(cameraIntent, REQUEST_CAMERA);
+            }
         }
         else
         {
@@ -60,6 +64,10 @@ public class ImagePickerView extends LinearLayout
     {
         Intent libraryIntent = new Intent(Intent.ACTION_PICK);
         libraryIntent.setType("image/jpeg");
-        activity.startActivityForResult(libraryIntent, REQUEST_GALLERY);
+        Fragment currentFragment = dashboardNavigator.getCurrentFragment();
+        if (currentFragment != null)
+        {
+            currentFragment.startActivityForResult(libraryIntent, REQUEST_GALLERY);
+        }
     }
 }
