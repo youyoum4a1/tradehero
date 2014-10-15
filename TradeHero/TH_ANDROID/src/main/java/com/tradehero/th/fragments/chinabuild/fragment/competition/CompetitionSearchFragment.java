@@ -247,11 +247,6 @@ public class CompetitionSearchFragment extends DashboardFragment
         if (adapterList != null)
         {
             adapterList.setSearchCompetitionDtoList(userCompetitionDTOs);
-            if (adapterList.getCount() > 0) {
-                tvResult.setVisibility(View.GONE);
-            } else {
-                tvResult.setVisibility(View.VISIBLE);
-            }
         }
     }
 
@@ -304,5 +299,6 @@ public class CompetitionSearchFragment extends DashboardFragment
                 //fetchSearchCompetition(true,getSearchString());
             }
         });
+        listCompetitions.setEmptyView(tvResult);
     }
 }

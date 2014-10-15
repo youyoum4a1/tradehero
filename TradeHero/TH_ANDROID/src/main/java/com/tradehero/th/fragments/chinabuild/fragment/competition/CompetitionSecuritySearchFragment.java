@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.chinabuild.fragment.competition;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -9,10 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -58,6 +56,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     @InjectView(R.id.btn_search_x) Button btnSearch_x;
     @InjectView(R.id.listSearch) SecurityListView listSearch;
     @InjectView(R.id.textview_security_searchresult)TextView tvResult;
+    @InjectView(R.id.progressbar_competition_security_search)ProgressBar pbSearch;
 
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 20;
@@ -86,14 +85,11 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         {
             competitionId = bundle.getInt(BUNLDE_COMPETITION_ID, 0);
         }
-        //THToast.show("competitionId = " + competitionId);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        //super.onCreateOptionsMenu(menu, inflater);
-        //setHeadViewMiddleMain("搜索");
         if (getSupportActionBar() != null)
         {
             getSupportActionBar().hide();
@@ -223,6 +219,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         if (strSearch != null && strSearch.length() > 0)
         {
             clearPageCount();
+            showLoadingProgress();
             fetchSecuritySearchList();
         }
     }
@@ -291,6 +288,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
                 }
             }
         });
+        listSearch.setEmptyView(tvResult);
     }
 
     protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
@@ -304,13 +302,14 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         {
             Timber.d("value");
             initAdapterSecurity(value, key);
+            dismissLoadingProgress();
             onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
-            //THToast.show(getString(R.string.error_fetch_exchange_list));
             Timber.e("Error fetching the list of security %s", key, error);
+            dismissLoadingProgress();
             onFinish();
         }
 
@@ -365,12 +364,6 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         }
 
         adapterSecurity.notifyDataSetChanged();
-        adapterSecurity.notifyDataSetChanged();
-        if (adapterSecurity.getCount() > 0) {
-            tvResult.setVisibility(View.GONE);
-        } else {
-            tvResult.setVisibility(View.VISIBLE);
-        }
     }
 
     //进入比赛相关的股票详情，带入competitionID
@@ -381,5 +374,29 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
         bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
         pushFragment(SecurityDetailFragment.class, bundle);
+    }
+
+    private void showLoadingProgress() {
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (pbSearch != null) {
+                    pbSearch.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private void dismissLoadingProgress() {
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (pbSearch != null&&pbSearch.getVisibility()==View.VISIBLE) {
+                    pbSearch.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 }

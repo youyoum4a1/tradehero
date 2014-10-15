@@ -23,11 +23,18 @@
                 android:layout_height="fill_parent">
         </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
         <TextView android:id="@+id/textview_security_searchresult"
-                  android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp"
-                  android:layout_centerHorizontal="true" android:text="@string/search_no_result"
+                  android:layout_width="match_parent" android:layout_height="match_parent" android:textSize="14sp"
+                  android:text="@string/search_no_result"
                   android:textColor="@color/color_gray_plus"
-                  android:layout_marginTop="60dp"
+                  android:gravity="center_horizontal"
+                  android:paddingTop="60dp"
                   android:visibility="gone"/>
+        <ProgressBar android:id="@+id/progressbar_trade_security_search" android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     style="@android:style/Widget.ProgressBar.Inverse"
+                     android:layout_centerInParent="true"
+                     android:visibility="gone"
+                />
     </RelativeLayout>
 </LinearLayout>
 

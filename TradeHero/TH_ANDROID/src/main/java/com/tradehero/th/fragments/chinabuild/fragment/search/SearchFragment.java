@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.chinabuild.fragment.search;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -70,6 +71,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     @InjectView(R.id.btn_search_x)Button btnSearch_x;
     @InjectView(R.id.listSearch)SecurityListView listSearch;
     @InjectView(R.id.textview_security_searchresult)TextView tvResult;
+    @InjectView(R.id.progressbar_trade_security_search) ProgressBar pbSearch;
 
     private SearchHotSecurityListType keyHot;
     private SearchSecurityListType keySearch;
@@ -185,6 +187,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
                 }
             }
         });
+        listSearch.setEmptyView(tvResult);
     }
 
     public void enterSecurity(SecurityId securityId, String securityName, SecurityCompactDTO dto) {
@@ -225,7 +228,6 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     @Override
     public void onResume() {
         super.onResume();
-        Timber.d("OnRusme: StockGodList 1 ");
     }
 
     protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener() {
@@ -241,13 +243,14 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> {
         @Override
         public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value) {
+            dismissLoadingProgress();
             initAdapterSecurity(value, key);
             onFinish();
         }
 
         @Override
         public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error) {
-            //THToast.show(getString(R.string.error_fetch_exchange_list));
+            dismissLoadingProgress();
             Timber.e("Error fetching the list of security %s", key, error);
             onFinish();
         }
@@ -273,11 +276,6 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         }
 
         adapter.notifyDataSetChanged();
-        if (adapter.getCount() > 0) {
-            tvResult.setVisibility(View.GONE);
-        } else {
-            tvResult.setVisibility(View.VISIBLE);
-        }
     }
 
     private void detachSecurityListCache() {
@@ -336,6 +334,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
             return;
         }
         if (!StringUtils.isNullOrEmptyOrSpaces(getSearchString())) {
+            showLoadingProgress();
             fetchSecuritySearchList(true);
         }
     }
@@ -366,5 +365,29 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
             }
         });
         thread.start();
+    }
+
+    private void showLoadingProgress() {
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (pbSearch != null) {
+                    pbSearch.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private void dismissLoadingProgress() {
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (pbSearch != null&&pbSearch.getVisibility()==View.VISIBLE) {
+                    pbSearch.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 }
