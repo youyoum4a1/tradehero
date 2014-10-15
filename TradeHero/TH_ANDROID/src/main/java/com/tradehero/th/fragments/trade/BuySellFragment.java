@@ -254,6 +254,12 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         displayActionBarElements();
     }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        setActionBarSubtitle(null);
+        super.onDestroyOptionsMenu();
+    }
     //</editor-fold>
 
     @Override public void onStart()
@@ -531,7 +537,11 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayStockName()
     {
-        updateStockAndSymbol();
+        if (securityCompactDTO != null)
+        {
+            setActionBarTitle(securityCompactDTO.name);
+            setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());
+        }
 
         if (mMarketClosedIcon != null)
         {
@@ -540,18 +550,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                     || securityCompactDTO.marketOpen;
             mMarketClosedIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
         }
-    }
-
-    public void updateStockAndSymbol()
-    {
-        String title = "";
-        String symbol = "";
-        if (securityCompactDTO != null)
-        {
-            title = securityCompactDTO.name;
-            symbol = securityCompactDTO.getExchangeSymbol();
-        }
-        setActionBarTitle(getString(R.string.security_action_bar_title, title, symbol));
     }
 
     public void displayBuySellPrice()

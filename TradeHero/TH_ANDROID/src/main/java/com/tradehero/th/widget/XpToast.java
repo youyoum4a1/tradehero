@@ -180,6 +180,7 @@ public class XpToast extends RelativeLayout
 
     private void startXPAnimation()
     {
+        // https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/543e1b85e3de5099ba0dbd14
         currentLevelAnimationDefinition = levelAnimationDefinitions.pop();
 
         xpTextSwitcher.setText(currentLevelAnimationDefinition.text);

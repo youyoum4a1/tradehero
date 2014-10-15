@@ -59,6 +59,7 @@ public class PortfolioSelectorView extends RelativeLayout
         if (defaultPortfolioId.equals(new OwnedPortfolioId(menuOwnedPortfolioId)))
         {
             defaultMenuPortfolioId = menuOwnedPortfolioId;
+            currentMenu = menuOwnedPortfolioId;
         }
         if (currentMenu == null)
         {
