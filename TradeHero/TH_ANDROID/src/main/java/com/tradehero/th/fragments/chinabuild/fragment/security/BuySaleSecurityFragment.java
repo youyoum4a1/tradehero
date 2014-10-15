@@ -385,7 +385,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
                 double value = mTransactionQuantity * priceRefCcy;
                 THSignedNumber thTradeValue = THSignedMoney.builder(value)
                         .withOutSign()
-                        .currency(portfolioCompactDTO.currencyDisplay)
+                        .currency(portfolioCompactDTO.getCurrencyDisplay())
                         .build();
                 valueText = thTradeValue.toString();
             }
@@ -409,7 +409,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
                     THSignedNumber thSignedNumber = THSignedMoney
                             .builder(cashAvailable - value)
                             .withOutSign()
-                            .currency(portfolioCompactDTO.currencyDisplay)
+                            .currency(portfolioCompactDTO.getCurrencyDisplay())
                             .build();
                     cashLeftText = thSignedNumber.toString();
                 }
@@ -449,7 +449,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     private void updateCostUSD()
     {
-        tvBuySaleCost.setText(portfolioCompactDTO.currencyDisplay + portfolioCompactDTO.getProperTxnCostUsd());
+        tvBuySaleCost.setText(portfolioCompactDTO.getCurrencyDisplay() + portfolioCompactDTO.getProperTxnCostUsd());
     }
 
     private void updateProfitLoss()

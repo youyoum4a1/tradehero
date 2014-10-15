@@ -57,7 +57,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
                 THSignedNumber thSignedNumber = THSignedMoney
                         .builder(cashAvailable - value)
                         .withOutSign()
-                        .currency(portfolioCompactDTO.currencyDisplay)
+                        .currency(portfolioCompactDTO.getCurrencyDisplay())
                         .build();
                 cashLeftText = thSignedNumber.toString();
             }

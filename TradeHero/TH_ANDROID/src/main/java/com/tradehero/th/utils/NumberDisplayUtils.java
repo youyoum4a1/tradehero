@@ -98,7 +98,7 @@ public class NumberDisplayUtils
 
         if (money / 100000000 > 1)
         {
-            sb.append(money / 100000000 + "亿");
+            sb.append(Math.round(money / 100000000) + "亿");
         }
         else if (money / 10000 > 1)
         {

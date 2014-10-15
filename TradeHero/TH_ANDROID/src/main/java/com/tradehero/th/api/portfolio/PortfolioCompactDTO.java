@@ -33,7 +33,7 @@ public class PortfolioCompactDTO implements DTO ,Serializable
     public int closedPositionsCount;
     public int watchlistPositionsCount;
     public Date markingAsOfUtc;
-    public String currencyDisplay;
+    private String currencyDisplay;
     public String currencyISO;
     @Nullable public Double refCcyToUsdRate;
     @Nullable public Double txnCostUsd;
@@ -43,6 +43,11 @@ public class PortfolioCompactDTO implements DTO ,Serializable
     {
     }
     //</editor-fold>
+
+    public String getCurrencyDisplay()
+    {
+        return SecurityUtils.getCurrencyShortDispaly(currencyDisplay);
+    }
 
     @JsonIgnore @NotNull public UserBaseKey getUserBaseKey()
     {

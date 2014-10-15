@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -24,6 +25,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -128,6 +130,11 @@ public class CompetitionDetailFragment extends DashboardFragment
     @InjectView(R.id.tvLeaderboardTime) TextView tvLeaderboardTime;
     @InjectView(R.id.btnCollegeSelect) Button btnCollegeSelect;
 
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(R.id.rlRankAll) RelativeLayout rlRankAll;
+    @InjectView(R.id.imgEmpty) ImageView imgEmpty;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -180,6 +187,15 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             fetchCompetitionDetail();
         }
+
+        if (adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlRankAll);
+        }
         return view;
     }
 
@@ -205,6 +221,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void initRankList()
     {
+        listRanks.setEmptyView(imgEmpty);
         listRanks.setAdapter(adapter);
         listRanks.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         listRanks.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
@@ -633,14 +650,19 @@ public class CompetitionDetailFragment extends DashboardFragment
             {
                 setListData(key, userDTOs);
             }
-            //competitionAdapter.setCompetitionLeaderboardDTO(value);
-            //competitionAdapter.notifyDataSetChanged();
-            //updateCurrentRankHeaderView();
+
+            onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull CompetitionLeaderboardId key, @NotNull Throwable error)
         {
             Timber.d("CompetitionLeaderboardCacheListener failure!");
+            onFinish();
+        }
+
+        public void onFinish()
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlRankAll);
         }
     }
 

@@ -9,7 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -71,12 +75,7 @@ public class CompetitionSearchFragment extends DashboardFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        //super.onCreateOptionsMenu(menu, inflater);
-        //setHeadViewMiddleMain("搜索");
-        if (getSupportActionBar() != null)
-        {
-            getSupportActionBar().hide();
-        }
+        hideActionBar();
     }
 
     @Override
@@ -85,8 +84,11 @@ public class CompetitionSearchFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.competition_search_layout, container, false);
         ButterKnife.inject(this, view);
         initView();
+        hideActionBar();
         return view;
     }
+
+
 
     private void initView()
     {

@@ -138,32 +138,52 @@
         android:text=""/>
   </LinearLayout>
 
-  <RelativeLayout
-      android:layout_below="@id/viewLine"
-      android:layout_height="fill_parent"
-      android:layout_width="fill_parent">
+  <com.tradehero.common.widget.BetterViewAnimator
+      android:id="@+id/bvaViewAll"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
 
 
-    <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
-        android:id="@+id/listRanks"
-        xmlns:ptr="http://schemas.android.com/apk/res-auto"
-        ptr:ptrHeaderTextColor="@color/black"
-        android:scrollingCache="false"
-        android:fadingEdge="none"
-        android:dividerHeight="1px"
-        android:divider="@color/transparent"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-    </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+    <ProgressBar
+        android:id="@android:id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
 
-    <Button android:layout_height="48dp"
-        android:visibility="gone"
-        android:id="@+id/btnCollegeSelect"
-        android:layout_width="fill_parent"
-        android:layout_alignParentBottom="true"
-        android:textColor="@color/white"
-        android:background="@drawable/bg_college_xml"
-        android:text="选择所在高校"/>
-  </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rlRankAll"
+        android:layout_below="@id/viewLine"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent">
+      <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+          android:id="@+id/listRanks"
+          xmlns:ptr="http://schemas.android.com/apk/res-auto"
+          ptr:ptrHeaderTextColor="@color/black"
+          android:scrollingCache="false"
+          android:fadingEdge="none"
+          android:dividerHeight="1px"
+          android:divider="@color/transparent"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent">
+      </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+
+      <Button android:layout_height="48dp"
+          android:visibility="gone"
+          android:id="@+id/btnCollegeSelect"
+          android:layout_width="fill_parent"
+          android:layout_alignParentBottom="true"
+          android:textColor="@color/white"
+          android:background="@drawable/bg_college_xml"
+          android:text="选择所在高校"/>
+
+      <ImageView android:id="@+id/imgEmpty"
+          android:background="@drawable/empty"
+          android:layout_gravity="center"
+          android:layout_width="150dp"
+          android:layout_height="150dp"/>
+
+    </RelativeLayout>
+  </com.tradehero.common.widget.BetterViewAnimator>
 </LinearLayout>
 

@@ -88,12 +88,12 @@
           android:layout_marginLeft="5dp"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/number_red"
-          android:text="资金充值">
+        android:textColor="@color/number_red"
+        android:text="资金充值">
       </TextView>
     </LinearLayout>
   </LinearLayout>
-
+  <include layout="@layout/separate_line"/>
   <com.tradehero.common.widget.BetterViewAnimator
       android:id="@+id/bvaViewAll"
       android:layout_width="fill_parent"

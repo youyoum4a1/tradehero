@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 
+/*
+    交易－中国概念
+ */
 public class TradeOfChinaConceptFragment extends TradeOfTypeBaseFragment
 {
     public int getTradeType()

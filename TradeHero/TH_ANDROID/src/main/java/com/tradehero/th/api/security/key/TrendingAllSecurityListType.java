@@ -10,7 +10,7 @@ public class TrendingAllSecurityListType extends TrendingSecurityListType
     public static final int ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT = 2;//中国概念
     public static final int ALL_SECURITY_LIST_TYPE_COMPETITION = 3;//比赛专属股票列表，根据competitionId获取
     public static final int ALL_SECURITY_LIST_TYPE_SEARCH = 4;//主动搜索出来的股票列表
-    public static final int ALL_SECURITY_LIST_TYPE_RISE_PERCENT = 5;
+    public static final int ALL_SECURITY_LIST_TYPE_RISE_PERCENT = 5;//涨幅榜
 
 
     public int type = ALL_SECURITY_LIST_TYPE_WATCH;

@@ -90,6 +90,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -264,7 +265,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 isInWatchList = watchedList.contains(securityId);
                 displayInWatchButton();
             }
-
         }
     }
 
@@ -273,10 +273,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     {
         View view = inflater.inflate(R.layout.security_detail_layout, container, false);
         ButterKnife.inject(this, view);
-
         initView();
         updateHeadView(true);
-
+        hideActionBar();
         return view;
     }
 
@@ -448,9 +447,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @Override public void onResume()
     {
         initArgment();
-
-
-
         requestUserProfile();
         fetchWatchlist();
         super.onResume();
@@ -708,6 +704,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     private void queryCompactCache(final SecurityId securityId)
     {
+        //先显示缓存，然后再请求数据显示股票信息。
         SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
         if (securityCompactDTO != null)
         {
@@ -715,9 +712,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
         //else
         //{
-        detachSecurityCompactCache();
-        securityCompactCache.get().register(securityId, compactCacheListener);
-        securityCompactCache.get().getOrFetchAsync(securityId, true);
+            detachSecurityCompactCache();
+            securityCompactCache.get().register(securityId, compactCacheListener);
+            securityCompactCache.get().getOrFetchAsync(securityId, true);
         //}
     }
 
@@ -744,11 +741,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             linkWith((PortfolioCompactDTO) null, andDisplay);
         }
-        //if (andDisplay)
-        //{
-        //    displayBuySellSwitch();
-        //    displaySelectedPortfolio();
-        //}
     }
 
     protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
@@ -966,16 +958,18 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
                 if (securityCompactDTO.volume != null)
                 {
-                    tvInfo2Value.setText(THSignedMoney.builder(securityCompactDTO.volume)
-                            //.currency(securityCompactDTO.getCurrencyDisplay())
-                            .build().toString());
+                    //tvInfo2Value.setText(THSignedMoney.builder(securityCompactDTO.volume)
+                    //        //.currency(securityCompactDTO.getCurrencyDisplay())
+                    //        .build().toString());
+                    tvInfo2Value.setText(NumberDisplayUtils.getString(securityCompactDTO.volume));
                 }
 
                 if (securityCompactDTO.averageDailyVolume != null)
                 {
-                    tvInfo3Value.setText(THSignedMoney.builder(securityCompactDTO.averageDailyVolume)
-                            //.currency(securityCompactDTO.getCurrencyDisplay())
-                            .build().toString());
+                    //tvInfo3Value.setText(THSignedMoney.builder(securityCompactDTO.averageDailyVolume)
+                    //        //.currency(securityCompactDTO.getCurrencyDisplay())
+                    //        .build().toString());
+                    tvInfo3Value.setText(NumberDisplayUtils.getString(securityCompactDTO.averageDailyVolume));
                 }
             }
         }
@@ -1023,6 +1017,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         else if (quoteDTO.ask == null)
         {//跌停
             showBuyOrSaleError(ERROR_NO_BID);
+            return false;
+        }
+        if (portfolioCompactDTO == null)
+        {
+            Timber.d("未获取到 portfolioCompactDTO ，不能进行交易");
             return false;
         }
 

@@ -154,14 +154,14 @@ public class UserMainPage extends DashboardFragment
         fetchTimeLine();
         initView();
 
-        //if (adapter.getCount() == 0)
-        //{
-        //    betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
-        //}
-        //else
-        //{
+        if (adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
-        //}
+        }
 
         return view;
     }

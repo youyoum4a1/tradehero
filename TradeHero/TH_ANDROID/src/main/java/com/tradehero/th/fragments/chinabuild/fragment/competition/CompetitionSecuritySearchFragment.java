@@ -10,7 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -55,8 +59,9 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     @InjectView(R.id.edtSearchInput) TextView tvSearchInput;
     @InjectView(R.id.btn_search_x) Button btnSearch_x;
     @InjectView(R.id.listSearch) SecurityListView listSearch;
-    @InjectView(R.id.textview_security_searchresult)TextView tvResult;
     @InjectView(R.id.progressbar_competition_security_search)ProgressBar pbSearch;
+    @InjectView(R.id.textview_security_searchresult) TextView tvResult;
+
 
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 20;
@@ -75,7 +80,6 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         securityListTypeCacheListener = createSecurityListFetchListener();
 
         adapterSecurity = new SecurityListAdapter(getActivity(), getTradeType());
-
     }
 
     public void getCompetitionId()
@@ -90,10 +94,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        if (getSupportActionBar() != null)
-        {
-            getSupportActionBar().hide();
-        }
+        hideActionBar();
     }
 
     @Override
@@ -102,6 +103,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.competition_search_layout, container, false);
         ButterKnife.inject(this, view);
         initView();
+        hideActionBar();
         return view;
     }
 
@@ -128,23 +130,30 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
             }
         });
 
-        tvSearchInput.addTextChangedListener(new TextWatcher() {
+        tvSearchInput.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
 
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(Editable editable)
+            {
                 String inputStr = editable.toString();
-                if(TextUtils.isEmpty(inputStr)){
+                if (TextUtils.isEmpty(inputStr))
+                {
                     tvSearch.setText(searchCancelStr);
-                }else{
+                }
+                else
+                {
                     tvSearch.setText(searchStr);
                 }
             }
@@ -193,7 +202,8 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     @OnClick(R.id.tvSearch)
     public void onSearchClicked()
     {
-        if(TextUtils.isEmpty(getSearchString())){
+        if (TextUtils.isEmpty(getSearchString()))
+        {
             popCurrentFragment();
             return;
         }
@@ -364,6 +374,16 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         }
 
         adapterSecurity.notifyDataSetChanged();
+
+        adapterSecurity.notifyDataSetChanged();
+        if (adapterSecurity.getCount() > 0)
+        {
+            tvResult.setVisibility(View.GONE);
+        }
+        else
+        {
+            tvResult.setVisibility(View.VISIBLE);
+        }
     }
 
     //进入比赛相关的股票详情，带入competitionID

@@ -275,10 +275,10 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 TradeDTO tradeDTO = getTradeDTO(item.tradeId);
                 if (tradeDTO != null)
                 {
-                    holder.tvTradePrice.setText("" + tradeDTO.unitPriceRefCcy);
+                    holder.tvTradePrice.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.unitPriceRefCcy);
                     holder.tvTradeCount.setText(tradeDTO.displayTradeQuantity());
-                    holder.tvTradeMoney.setText(tradeDTO.displayTradeMoney());
-                    holder.tvTradeCost.setText("" + tradeDTO.transactionCost);
+                    holder.tvTradeMoney.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.displayTradeMoney());
+                    holder.tvTradeCost.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.transactionCost);
                     holder.title0.setText(tradeDTO.isBuy() ? "买入股票：" : "卖出股票：");
                     holder.title1.setText(tradeDTO.isBuy() ? "买入价格：" : "卖出价格：");
                     holder.title2.setText(tradeDTO.isBuy() ? "买入数量：" : "卖出数量：");

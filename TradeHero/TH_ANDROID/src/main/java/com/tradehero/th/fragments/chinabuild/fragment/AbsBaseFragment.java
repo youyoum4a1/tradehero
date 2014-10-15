@@ -40,6 +40,8 @@ public abstract class AbsBaseFragment extends Fragment
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject Lazy<UserProfileCache> userProfileCache;
 
+    public UserProfileDTO userProfileDTO;
+
 
     public void gotoDashboard(String strFragment)
     {
@@ -199,7 +201,8 @@ public abstract class AbsBaseFragment extends Fragment
         @Override
         public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
-            linkWithUserProfileDTO(value);
+            //linkWithUserProfileDTO(value);
+            userProfileDTO = value;
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
@@ -208,7 +211,7 @@ public abstract class AbsBaseFragment extends Fragment
         }
     }
 
-   public abstract void linkWithUserProfileDTO(UserProfileDTO value);
+   //public abstract void linkWithUserProfileDTO(UserProfileDTO value);
 
 
 

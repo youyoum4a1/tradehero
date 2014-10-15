@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCreateFragment;
@@ -121,14 +120,14 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
     @OnClick(R.id.tvCreateCompetition)
     public void createCompetitionClicked()
     {
-        gotoDashboard(CompetitionCreateFragment.class.getName());
+        //判断是否是游客，如果是游客不能创建比赛
+        if (userProfileDTO != null && userProfileDTO.isVisitor)
+        {
+            //提示用户去实名登录
+        }
+        else
+        {
+            gotoDashboard(CompetitionCreateFragment.class.getName());
+        }
     }
-
-    public void linkWithUserProfileDTO(UserProfileDTO value)
-    {
-        tvCreateCompetition.setVisibility(value.isVisitor ? View.GONE : View.VISIBLE);
-    }
-
-
-
 }
