@@ -36,18 +36,7 @@ import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
-import com.tradehero.th.fragments.chinabuild.fragment.BindEmailSignUpFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.InputInviteCodeFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.MyEditAccountFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.MyEditNameFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.MySocialFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.SettingsAboutUsFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.ShareSellDialogFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.*;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCollegeFragment;
@@ -541,6 +530,8 @@ import javax.inject.Singleton;
                         NotificationListAdapter.class,
                         TimeLineItemDetailFragment.class,
                         CompetitionCollegeFragment.class,
+
+                        LoginSuggestDialogFragment.class,
                         //China Build End
                 },
         staticInjections =

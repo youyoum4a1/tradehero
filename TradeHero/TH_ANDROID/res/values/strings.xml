@@ -365,5 +365,6 @@
   <string name="search_search">搜索</string>
   <string name="search_cancel">取消</string>
   <string name="competition_enter_college">Enter College</string>
+  <string name="dialog_profile_suggest_signin">必须升级为正式用户才可以更改名称</string>
 
 </resources>

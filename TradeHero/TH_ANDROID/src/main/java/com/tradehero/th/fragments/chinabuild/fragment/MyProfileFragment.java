@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +39,14 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import dagger.Lazy;
+
 import java.util.Date;
 import java.util.Random;
 import javax.inject.Inject;
+
 import timber.log.Timber;
 
-public class MyProfileFragment extends DashboardFragment implements View.OnClickListener
-{
+public class MyProfileFragment extends DashboardFragment implements View.OnClickListener {
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
     private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
     private String newImagePath;
@@ -63,26 +65,27 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject MainCredentialsPreference mainCredentialsPreference;
 
+    private UserProfileDTO userProfileDTO;
+    private LoginSuggestDialogFragment dialogFragment;
+    private FragmentManager fm;
+
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(R.string.settings_my_profile);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.setting_my_profile_fragment_layout, container, false);
         ButterKnife.inject(this, view);
         mPhotoLayout.setOnClickListener(this);
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         picasso.load(userProfileDTO.picture)
                 .placeholder(R.drawable.superman_facebook)
                 .into(mPhoto);
@@ -91,82 +94,67 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         mAccountLayout.setOnClickListener(this);
         mSocialLayout.setOnClickListener(this);
         CredentialsDTO credentials = mainCredentialsPreference.getCredentials();
-        if (credentials.getAuthType().contentEquals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
-        {
+        if (credentials.getAuthType().contentEquals(EmailCredentialsDTO.EMAIL_AUTH_TYPE)) {
             mAccountLayout.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             mAccountLayout.setVisibility(View.GONE);
         }
         return view;
     }
 
-    @Override public void onResume()
-    {
+    @Override
+    public void onResume() {
         super.onResume();
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK)
-        {
-            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
-            {
-                try
-                {
+        if (resultCode == Activity.RESULT_OK) {
+            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null) {
+                try {
                     handleDataFromLibrary(data);
                     updatePhoto();
-                }
-                catch (OutOfMemoryError e)
-                {
+                } catch (OutOfMemoryError e) {
                     THToast.show(R.string.error_decode_image_memory);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     THToast.show(R.string.error_fetch_image_library);
                     Timber.e(e, "Failed to extract image from library");
                 }
-            }
-            else if (requestCode == REQUEST_GALLERY)
-            {
+            } else if (requestCode == REQUEST_GALLERY) {
                 Timber.e(new Exception("Got null data from library"), "");
             }
-        }
-        else if (resultCode != Activity.RESULT_CANCELED)
-        {
+        } else if (resultCode != Activity.RESULT_CANCELED) {
             Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
         }
     }
 
-    @Override public void onStop()
-    {
+    @Override
+    public void onStop() {
         super.onStop();
     }
 
-    @Override public void onDestroyView()
-    {
+    @Override
+    public void onDestroyView() {
         ButterKnife.reset(this);
         detachMiddleCallbackUpdateUserProfile();
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
     }
 
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.photo_layout:
                 showChooseImageDialog();
                 break;
             case R.id.name_layout:
-                goToFragment(MyEditNameFragment.class);
+                gotoEditName();
                 break;
             case R.id.account_layout:
                 goToFragment(MyEditAccountFragment.class);
@@ -177,16 +165,36 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         }
     }
 
-    private void showChooseImageDialog()
-    {
+    private void gotoEditName() {
+        if (userProfileDTO == null) {
+            return;
+        }
+        if (userProfileDTO.isVisitor) {
+            showSuggestLoginDialogFragment();
+        } else {
+            goToFragment(MyEditNameFragment.class);
+        }
+    }
+
+    private void showSuggestLoginDialogFragment(){
+        if(dialogFragment==null){
+            dialogFragment =new LoginSuggestDialogFragment();
+        }
+        if(fm==null){
+            fm = getActivity().getSupportFragmentManager();
+        }
+        dialogFragment.show(fm, "abckdddd");
+    }
+
+    private void dismissSuggestLoginDialogFragment(){}
+
+    private void showChooseImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(false);
-        builder.setItems(R.array.register_choose_image, new DialogInterface.OnClickListener()
-        {
-            @Override public void onClick(DialogInterface dialogInterface, int i)
-            {
-                switch (i)
-                {
+        builder.setItems(R.array.register_choose_image, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i) {
                     case 0:
                         askImageFromCamera();
                         break;
@@ -200,29 +208,23 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         builder.create().show();
     }
 
-    protected void askImageFromLibrary()
-    {
+    protected void askImageFromLibrary() {
         Intent libraryIntent = new Intent(Intent.ACTION_PICK);
         libraryIntent.setType("image/jpeg");
         startActivityForResult(libraryIntent, REQUEST_GALLERY);
     }
 
-    protected void askImageFromCamera()
-    {
+    protected void askImageFromCamera() {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
     }
 
-    public void handleDataFromLibrary(Intent data)
-    {
+    public void handleDataFromLibrary(Intent data) {
         Uri selectedImageUri = data.getData();
-        if (selectedImageUri != null)
-        {
+        if (selectedImageUri != null) {
             String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
             setNewImagePath(selectedPath);
-        }
-        else
-        {
+        } else {
             alertDialogUtil.popWithNegativeButton(getActivity(),
                     R.string.error_fetch_image_library,
                     R.string.error_fetch_image_library,
@@ -230,22 +232,18 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         }
     }
 
-    public void setNewImagePath(String newImagePath)
-    {
+    public void setNewImagePath(String newImagePath) {
         this.newImagePath = newImagePath;
-        if (newImagePath != null)
-        {
+        if (newImagePath != null) {
             Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
-            if (decoded != null)
-            {
+            if (decoded != null) {
                 mPhoto.setImageBitmap(decoded);
                 return;
             }
         }
     }
 
-    private void updatePhoto()
-    {
+    private void updatePhoto() {
         UserFormDTO userFormDTO = createForm();
         detachMiddleCallbackUpdateUserProfile();
         middleCallbackUpdateUserProfile = userServiceWrapper.get().updatePhoto(
@@ -254,52 +252,42 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
                 createUpdateUserProfileCallback());
     }
 
-    private void detachMiddleCallbackUpdateUserProfile()
-    {
-        if (middleCallbackUpdateUserProfile != null)
-        {
+    private void detachMiddleCallbackUpdateUserProfile() {
+        if (middleCallbackUpdateUserProfile != null) {
             middleCallbackUpdateUserProfile.setPrimaryCallback(null);
         }
         middleCallbackUpdateUserProfile = null;
     }
 
-    public UserFormDTO createForm()
-    {
+    public UserFormDTO createForm() {
         UserFormDTO created = new UserFormDTO();
         created.profilePicture = safeCreateProfilePhoto();
         return created;
     }
 
-    protected BitmapTypedOutput safeCreateProfilePhoto()
-    {
+    protected BitmapTypedOutput safeCreateProfilePhoto() {
         BitmapTypedOutput created = null;
-        if (newImagePath != null)
-        {
-            try
-            {
+        if (newImagePath != null) {
+            try {
                 created = bitmapTypedOutputFactory.createForProfilePhoto(
                         getResources(), bitmapForProfileFactory, newImagePath);
-            }
-            catch (OutOfMemoryError e)
-            {
+            } catch (OutOfMemoryError e) {
                 THToast.show(R.string.error_decode_image_memory);
             }
         }
         return created;
     }
 
-    private THCallback<UserProfileDTO> createUpdateUserProfileCallback()
-    {
-        return new THCallback<UserProfileDTO>()
-        {
-            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-            {
+    private THCallback<UserProfileDTO> createUpdateUserProfileCallback() {
+        return new THCallback<UserProfileDTO>() {
+            @Override
+            protected void success(UserProfileDTO userProfileDTO, THResponse thResponse) {
                 userProfileCache.put(currentUserId.toUserBaseKey(), userProfileDTO);
                 THToast.show(R.string.settings_update_profile_successful);
             }
 
-            @Override protected void failure(THException ex)
-            {
+            @Override
+            protected void failure(THException ex) {
                 THToast.show(ex.getMessage());
             }
         };
