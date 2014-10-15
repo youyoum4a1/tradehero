@@ -33,7 +33,6 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Map;
-import java.util.concurrent.CancellationException;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
@@ -285,7 +284,9 @@ public class SignInOrUpFragment extends Fragment
         {
             @Override public void onError(Throwable e)
             {
-                if (e instanceof CancellationException)
+                // CancellationException
+                // Resubscribe on any type of exception for now
+                if (e instanceof Exception)
                 {
                     resubscribe();
                 }
