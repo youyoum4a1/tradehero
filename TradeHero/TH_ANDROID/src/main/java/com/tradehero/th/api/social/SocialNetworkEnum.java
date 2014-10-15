@@ -1,6 +1,7 @@
 package com.tradehero.th.api.social;
 
 import android.support.annotation.StringRes;
+
 import com.tradehero.th.R;
 
 /**
@@ -16,7 +17,7 @@ public enum SocialNetworkEnum
     LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret", R.string.linkedin),
     WECHAT("TH-WeChat", "WeChat", R.string.wechat),
     WB("TH-Weibo", "WeiBo", "weibo_access_token", R.string.sina_weibo),
-    QQ("TH-QQ", "QQ", "qq_access_token", "qq_openid", R.string.tencent_qq);
+    QQ("TH-QQ", "QQ", "qq_openid", "qq_access_token", R.string.tencent_qq);
 
     private final String authHeader;
     private final String name;

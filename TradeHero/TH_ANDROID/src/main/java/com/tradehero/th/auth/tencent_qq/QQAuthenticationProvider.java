@@ -2,14 +2,18 @@ package com.tradehero.th.auth.tencent_qq;
 
 import android.app.Activity;
 import android.content.Context;
+
 import com.tencent.tauth.Tencent;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.network.service.SocialLinker;
+
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -44,8 +48,8 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
                     return new AuthData(
                             SocialNetworkEnum.QQ,
                             null, // FIXME TODO expiration
-                            qqAppAuthData.accessToken,
-                            qqAppAuthData.openId);
+                            qqAppAuthData.openId,
+                            qqAppAuthData.accessToken);
                 }
             });
     }
