@@ -12,19 +12,9 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
     private UserProfileCompactViewHolder.OnProfileClickedListener profileClickedListener;
 
     //<editor-fold desc="Constructors">
-    public UserProfileDetailView(Context context)
-    {
-        this(context, null);
-    }
-
     public UserProfileDetailView(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
-    }
-
-    public UserProfileDetailView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
+        super(context, attrs);
     }
     //</editor-fold>
 

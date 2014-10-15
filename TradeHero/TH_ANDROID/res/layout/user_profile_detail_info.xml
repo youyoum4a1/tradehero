@@ -42,34 +42,6 @@
 
       <TextView
           style="@style/TH.SmallTitle"
-          android:id="@+id/txt_profile_tradeprofitprefix_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="3"
-          android:gravity="right"
-          android:text="@string/user_profile_trade_profit"
-          android:textColor="@color/text_gray_normal"
-          android:textStyle="normal"
-          />
-
-      <TextView
-          style="@style/TH.SmallValue"
-          android:id="@+id/txt_profile_tradeprofit"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="3dp"
-          android:textColor="@color/black"
-          android:layout_weight="4"
-          android:gravity="left"
-          tools:text="+US$ 44,526"
-          />
-
-    </TableRow>
-
-    <TableRow>
-
-      <TextView
-          style="@style/TH.SmallTitle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="3"

@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
     @InjectView(R.id.profile_screen_user_detail_top) @Optional protected View profileTop;
-    @InjectView(R.id.txt_profile_tradeprofit) @Optional protected TextView profitFromTrades;
     @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
     @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
     @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
