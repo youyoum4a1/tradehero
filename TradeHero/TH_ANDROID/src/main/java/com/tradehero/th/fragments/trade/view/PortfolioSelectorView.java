@@ -8,19 +8,20 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
-import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdList;
 import java.util.Set;
 import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Action1;
 
 public class PortfolioSelectorView extends RelativeLayout
 {
     @InjectView(R.id.portfolio_selected) TextView selectedPortfolio;
+    @Nullable private OwnedPortfolioId defaultPortfolioId;
+    @Nullable private MenuOwnedPortfolioId defaultMenuPortfolioId;
     @Nullable private MenuOwnedPortfolioId currentMenu;
     @NotNull private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
@@ -39,19 +40,36 @@ public class PortfolioSelectorView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
-    public void addMenuOwnedPortfolioIds(@NotNull MenuOwnedPortfolioIdList menuOwnedPortfolioIds)
+    public void setDefaultPortfolioId(@Nullable OwnedPortfolioId defaultPortfolioId)
     {
-        for (MenuOwnedPortfolioId menu : menuOwnedPortfolioIds)
-        {
-            addMenuOwnedPortfolioId(menu);
-        }
+        this.defaultPortfolioId = defaultPortfolioId;
+    }
+
+    @Nullable public MenuOwnedPortfolioId getCurrentMenu()
+    {
+        return currentMenu;
     }
 
     public void addMenuOwnedPortfolioId(@NotNull MenuOwnedPortfolioId menuOwnedPortfolioId)
     {
+        if (defaultPortfolioId == null)
+        {
+            defaultPortfolioId = new OwnedPortfolioId(menuOwnedPortfolioId);
+        }
+        if (defaultPortfolioId.equals(new OwnedPortfolioId(menuOwnedPortfolioId)))
+        {
+            defaultMenuPortfolioId = menuOwnedPortfolioId;
+        }
         if (currentMenu == null)
         {
-            currentMenu = menuOwnedPortfolioId;
+            if (defaultMenuPortfolioId != null)
+            {
+                currentMenu = defaultMenuPortfolioId;
+            }
+            else
+            {
+                currentMenu = menuOwnedPortfolioId;
+            }
         }
         this.usedMenuOwnedPortfolioIds.add(menuOwnedPortfolioId);
         display();

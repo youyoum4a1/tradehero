@@ -34,6 +34,8 @@ import com.tradehero.route.Routable;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -68,8 +70,6 @@ import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
-import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
-import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdList;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.share.SocialSharer;
@@ -135,7 +135,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.btn_add_watch_list) protected Button mBtnAddWatchlist;
 
     @Inject PortfolioCompactCache portfolioCompactCache;
-    @Inject MenuOwnedPortfolioIdFactory menuOwnedPortfolioIdFactory;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
@@ -218,6 +217,8 @@ public class BuySellFragment extends AbstractBuySellFragment
             mBottomViewPager.setAdapter(bottomViewPagerAdapter);
             mBottomViewPager.setOnPageChangeListener(this);
         }
+
+        mSelectedPortfolioContainer.setDefaultPortfolioId(getApplicablePortfolioId(getArguments()));
 
         selectPage(selectedPageIndex);
 
@@ -359,7 +360,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         super.linkWith(securityCompactDTO, andDisplay);
-        buildUsedMenuPortfolios();
 
         if (andDisplay)
         {
@@ -371,12 +371,26 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO,
+    @Override public void linkWith(@NotNull final SecurityPositionDetailDTO securityPositionDetailDTO,
             boolean andDisplay)
     {
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
-        buildUsedMenuPortfolios();
+        ProviderDTOList providerDTOs = securityPositionDetailDTO.providers;
+        if (providerDTOs != null)
+        {
+            for (@NotNull ProviderDTO providerDTO : providerDTOs)
+            {
+                if (providerDTO.associatedPortfolio != null)
+                {
+                    mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
+                            new MenuOwnedPortfolioId(
+                                    currentUserId.toUserBaseKey(),
+                                    providerDTO.associatedPortfolio));
+                }
+            }
+        }
+
         setInitialSellQuantityIfCan();
 
         if (andDisplay)
@@ -490,14 +504,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
 
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
-    protected void buildUsedMenuPortfolios()
-    {
-        mSelectedPortfolioContainer.addMenuOwnedPortfolioIds(
-                menuOwnedPortfolioIdFactory.createPortfolioMenus(
-                        currentUserId.toUserBaseKey(),
-                        securityPositionDetailDTO));
-    }
-
     public void display()
     {
         displayActionBarElements();
@@ -1057,7 +1063,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (quoteDTO != null
                 && BuyDialogFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
         {
-            if (purchaseApplicableOwnedPortfolioId != null)
+            OwnedPortfolioId currentMenu = mSelectedPortfolioContainer.getCurrentMenu();
+            if (currentMenu != null)
             {
                 pushPortfolioFragmentRunnable = null;
                 pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
@@ -1071,7 +1078,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
                 abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
                         securityId,
-                        purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
+                        currentMenu.getPortfolioIdKey(),
                         quoteDTO,
                         isTransactionTypeBuy);
                 abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
@@ -1329,7 +1336,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
         {
             super.onDTOReceived(key, value);
-            buildUsedMenuPortfolios();
+            PortfolioCompactDTO defaultPortfolio = value.getDefaultPortfolio();
+            if (defaultPortfolio != null)
+            {
+                mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));
+            }
             setInitialSellQuantityIfCan();
         }
     }

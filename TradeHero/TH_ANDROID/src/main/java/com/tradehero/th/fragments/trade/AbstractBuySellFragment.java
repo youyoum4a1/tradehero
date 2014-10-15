@@ -321,19 +321,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
+    public void linkWith(@NotNull final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
     {
         this.securityPositionDetailDTO = securityPositionDetailDTO;
-        if (securityPositionDetailDTO != null)
-        {
-            linkWith(securityPositionDetailDTO.security, andDisplay);
-            linkWith(securityPositionDetailDTO.positions, andDisplay);
-        }
-        else
-        {
-            linkWith((SecurityCompactDTO) null, andDisplay);
-            linkWith((PositionDTOCompactList) null, andDisplay);
-        }
+        linkWith(securityPositionDetailDTO.security, andDisplay);
+        linkWith(securityPositionDetailDTO.positions, andDisplay);
 
         if (andDisplay)
         {
