@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.settings;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
@@ -46,7 +45,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
 {
@@ -147,36 +145,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK)
+        if (profileView != null)
         {
-            if ((requestCode == ImagePickerView.REQUEST_CAMERA || requestCode == ImagePickerView.REQUEST_GALLERY) && data != null)
-            {
-                try
-                {
-                    if (profileView != null)
-                    {
-                        profileView.handleDataFromLibrary(data);
-                    }
-                }
-                catch (OutOfMemoryError e)
-                {
-                    THToast.show(R.string.error_decode_image_memory);
-                }
-                catch (Exception e)
-                {
-                    THToast.show(R.string.error_fetch_image_library);
-                    Timber.e(e, "Failed to extract image from library");
-                }
-            }
-            else if (requestCode == ImagePickerView.REQUEST_GALLERY)
-            {
-                Timber.e(new Exception("Got null data from library"), "");
-            }
-        }
-        else if (resultCode != Activity.RESULT_CANCELED)
-        {
-            Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
+            profileView.onActivityResult(resultCode, resultCode, data);
         }
     }
 
