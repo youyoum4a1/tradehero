@@ -4,14 +4,10 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
-
 import com.tradehero.th.R;
 import com.tradehero.th.utils.AlertDialogUtil;
-
-import org.jetbrains.annotations.NotNull;
-
 import javax.inject.Inject;
-
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class GooglePlayMarketUtil implements MarketUtil

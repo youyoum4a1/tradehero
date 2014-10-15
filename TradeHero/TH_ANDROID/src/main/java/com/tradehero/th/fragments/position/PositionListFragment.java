@@ -38,7 +38,7 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
-import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
+import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
@@ -52,6 +52,7 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -85,6 +86,7 @@ public class PositionListFragment
     @Inject UserProfileCache userProfileCache;
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
+    @Inject BroadcastUtils broadcastUtils;
 
     //@InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
@@ -758,20 +760,15 @@ public class PositionListFragment
         if (cachedPortfolio != null)
         {
             Double profit = cachedPortfolio.roiSinceInception;
-            if (profit != null)
+            if (profit != null && profit > 0)
             {
-                if (profit > 0)
+                if (mShowAskForReviewDialogPreference.isItTime())
                 {
-                    if (mShowAskForReviewDialogPreference.isItTime())
-                    {
-                        AskForReviewDialogFragment.showReviewDialog(getActivity().getFragmentManager());
-                        mShowAskForInviteDialogPreference.addInFuture(TimingIntervalPreference.DAY);
-                        return;
-                    }
-                    if (mShowAskForInviteDialogPreference.isItTime())
-                    {
-                        AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
-                    }
+                    broadcastUtils.enqueue(new SendLoveBroadcastSignal());
+                }
+                else if (mShowAskForInviteDialogPreference.isItTime())
+                {
+                    AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
                 }
             }
         }

@@ -47,7 +47,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -72,6 +71,8 @@ import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
+import com.tradehero.th.fragments.settings.AskForReviewSuggestedDialogFragment;
+import com.tradehero.th.fragments.settings.ForSendLove;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -154,8 +155,8 @@ public class DashboardActivity extends BaseActivity
     @Inject @ForXP IntentFilter xpIntentFilter;
     @Inject @ForOnBoard IntentFilter onBoardIntentFilter;
     @Inject @ForCompetitionEnrollment IntentFilter competitionEnrollmentIntentFilter;
+    @Inject @ForSendLove IntentFilter sendLoveIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
-    @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
 
     @Inject Lazy<ProviderListCache> providerListCache;
@@ -173,6 +174,7 @@ public class DashboardActivity extends BaseActivity
     private BroadcastReceiver mXPBroadcastReceiver;
     private BroadcastReceiver onBoardBroadcastReceiver;
     private BroadcastReceiver enrollmentBroadcastReceiver;
+    private BroadcastReceiver sendLoveBroadcastReceiver;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -313,6 +315,14 @@ public class DashboardActivity extends BaseActivity
                 fetchProviderList();
             }
         };
+
+        sendLoveBroadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager());
+            }
+        };
     }
 
     @Override
@@ -425,16 +435,16 @@ public class DashboardActivity extends BaseActivity
         localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, achievementIntentFilter);
         localBroadcastManager.registerReceiver(mXPBroadcastReceiver, xpIntentFilter);
         localBroadcastManager.registerReceiver(onBoardBroadcastReceiver, onBoardIntentFilter);
-
         // get providers for enrollment page
         localBroadcastManager.registerReceiver(enrollmentBroadcastReceiver, competitionEnrollmentIntentFilter);
+        localBroadcastManager.registerReceiver(sendLoveBroadcastReceiver, sendLoveIntentFilter);
     }
 
     protected void fetchProviderList()
     {
         detachProviderListTask();
         providerListCache.get().register(new ProviderListKey(), providerListCallback);
-        providerListCache.get().getOrFetchAsync(new ProviderListKey());
+        providerListCache.get().getOrFetchAsync(new ProviderListKey(), true);
     }
 
     private void detachProviderListTask()
@@ -475,6 +485,7 @@ public class DashboardActivity extends BaseActivity
         localBroadcastManager.unregisterReceiver(mXPBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(onBoardBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(enrollmentBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(sendLoveBroadcastReceiver);
         super.onPause();
     }
 
@@ -493,6 +504,8 @@ public class DashboardActivity extends BaseActivity
         mAchievementBroadcastReceiver = null;
         mXPBroadcastReceiver = null;
         onBoardBroadcastReceiver = null;
+        enrollmentBroadcastReceiver = null;
+        sendLoveBroadcastReceiver = null;
 
         THBillingInteractor billingInteractorCopy = billingInteractor.get();
         if (billingInteractorCopy != null && restoreRequestCode != null)

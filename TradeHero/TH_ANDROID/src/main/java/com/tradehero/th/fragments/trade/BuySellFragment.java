@@ -61,7 +61,7 @@ import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
-import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
+import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
@@ -81,6 +81,7 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
@@ -120,6 +121,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject ResideMenu resideMenu;
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
+    @Inject BroadcastUtils broadcastUtils;
 
     //for dialog
     private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
@@ -313,7 +315,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         securityAlertAssistant.setOnPopulatedListener(null);
 
         bottomViewPagerAdapter = null;
-        mBottomViewPager = null;
 
         pushPortfolioFragmentRunnable = null;
 
@@ -893,6 +894,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         freshQuoteHolder.identifier = "BuySellFragment";
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_add_trigger)
     protected void handleBtnAddTriggerClicked()
     {
@@ -926,6 +928,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_add_watch_list)
     protected void handleBtnWatchlistClicked()
     {
@@ -978,12 +981,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         showBuySellDialog();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.market_closed_icon)
     protected void handleMarketClosedIconClicked()
     {
         notifyMarketClosed();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.info)
     public void handleTabInfoClicked()
     {
@@ -993,6 +998,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.discussions)
     public void handleDiscussionsTabClicked()
     {
@@ -1002,6 +1008,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.news)
     public void handleNewsTabClicked()
     {
@@ -1131,23 +1138,16 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void showPrettyReviewAndInvite(boolean isBuy)
     {
-        if (!isBuy)//only check after sell
+        Double profit = abstractTransactionDialogFragment.getProfitOrLossUsd();
+        if (!isBuy && profit != null && profit > 0)
         {
-            Double profit = abstractTransactionDialogFragment.getProfitOrLossUsd();
-            if (profit != null)
+            if (mShowAskForReviewDialogPreference.isItTime())
             {
-                if (profit > 0)
-                {
-                    if (mShowAskForReviewDialogPreference.isItTime())
-                    {
-                        AskForReviewDialogFragment.showReviewDialog(getActivity().getFragmentManager());
-                        return;
-                    }
-                    if (mShowAskForInviteDialogPreference.isItTime())
-                    {
-                        AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
-                    }
-                }
+                broadcastUtils.enqueue(new SendLoveBroadcastSignal());
+            }
+            else if (mShowAskForInviteDialogPreference.isItTime())
+            {
+                AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
             }
         }
     }

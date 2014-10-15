@@ -15,7 +15,7 @@ public class TimingIntervalPreference extends LongPreference
     public static final long DAY = 24 * HOUR;
     public static final long WEEK = 7 * DAY;
     public static final long MONTH = 30 * DAY;
-    public static final long YEAR = 365 * DAY;
+    public static final long YEAR = (long) (365.242f * DAY);
 
     public final long interval;
 

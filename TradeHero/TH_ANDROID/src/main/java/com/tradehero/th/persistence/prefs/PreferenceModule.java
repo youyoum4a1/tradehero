@@ -99,9 +99,11 @@ public class PreferenceModule
     }
 
     @Provides @Singleton @ShowAskForReviewDialog TimingIntervalPreference provideAskForReviewDialogPreference(
-            @ForApp SharedPreferences sharedPreferences)
+            @ForUser SharedPreferences sharedPreferences)
     {
-        return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_ASK_FOR_REVIEW_FLAG, TimingIntervalPreference.YEAR);
+        TimingIntervalPreference askForReview = new TimingIntervalPreference(sharedPreferences, PREF_SHOW_ASK_FOR_REVIEW_FLAG, TimingIntervalPreference.YEAR);
+        askForReview.pushInFuture(TimingIntervalPreference.DAY); // Not to show on the first day
+        return askForReview;
     }
 
     @Provides @Singleton @FirstShowOnBoardDialog TimingIntervalPreference provideFirstShowOnBoardDialogTimingPreference(

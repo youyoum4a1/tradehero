@@ -9,26 +9,18 @@ import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
-import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
-import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class AskForReviewDialogFragment extends BaseDialogFragment
 {
     @Inject MarketUtil marketUtil;
-    @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
 
-    public static AskForReviewDialogFragment showReviewDialog(FragmentManager fragmentManager)
+    @NotNull public static AskForReviewDialogFragment showReviewDialog(FragmentManager fragmentManager)
     {
         AskForReviewDialogFragment dialogFragment = new AskForReviewDialogFragment();
         dialogFragment.show(fragmentManager, AskForReviewDialogFragment.class.getName());
         return dialogFragment;
-    }
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        mShowAskForReviewDialogPreference.addInFuture(TimingIntervalPreference.MINUTE);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -36,30 +28,18 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
         return inflater.inflate(R.layout.ask_for_review_dialog_layout, container, false);
     }
 
-    @OnClick(R.id.btn_cancel)
-    public void onCancel()
-    {
-        dismiss();
-        mShowAskForReviewDialogPreference.justHandled();
-    }
-
-    @OnClick(R.id.btn_later)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick({R.id.btn_later, R.id.btn_cancel})
     public void onLater()
     {
         dismiss();
-        mShowAskForReviewDialogPreference.pushInFuture(TimingIntervalPreference.DAY);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_rate)
     public void onRate()
     {
-        rate();
-        dismiss();
-        mShowAskForReviewDialogPreference.justHandled();
-    }
-
-    private void rate()
-    {
         marketUtil.sendToReviewAllOnMarket(getActivity());
+        dismiss();
     }
 }
