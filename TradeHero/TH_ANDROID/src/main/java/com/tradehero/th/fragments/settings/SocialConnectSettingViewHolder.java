@@ -8,7 +8,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.annotation.IntegerRes;
 import android.support.annotation.StringRes;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
@@ -16,22 +15,21 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class SocialConnectSettingViewHolder
-    extends UserProfileCheckBoxSettingViewHolder
+        extends UserProfileCheckBoxSettingViewHolder
 {
     @NotNull protected final AlertDialogUtil alertDialogUtil;
     @NotNull protected final SocialServiceWrapper socialServiceWrapper;
@@ -145,7 +143,7 @@ abstract public class SocialConnectSettingViewHolder
             linkingSubscription = socialAuthenticationProvider
                     .socialLink(activityContext)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ChangedStatusObserver());
+                    .subscribe(new ChangedStatusObserver(activityContext, alertDialogUtil));
         }
         else if (activityContext != null)
         {
@@ -215,12 +213,20 @@ abstract public class SocialConnectSettingViewHolder
                     currentUserId.toUserBaseKey(),
                     new SocialNetworkFormDTO(getSocialNetworkEnum()))
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ChangedStatusObserver());
+                    .subscribe(new ChangedStatusObserver(activityContext, alertDialogUtil));
         }
     }
 
-    protected class ChangedStatusObserver implements Observer<UserProfileDTO>
+    protected class ChangedStatusObserver extends AlertDialogObserver<UserProfileDTO>
     {
+        //<editor-fold desc="Constructors">
+        protected ChangedStatusObserver(@NotNull Context activityContext,
+                @NotNull AlertDialogUtil alertDialogUtil)
+        {
+            super(activityContext, alertDialogUtil);
+        }
+        //</editor-fold>
+
         @Override public void onNext(UserProfileDTO args)
         {
             updateStatus(args);
@@ -234,8 +240,7 @@ abstract public class SocialConnectSettingViewHolder
         @Override public void onError(Throwable e)
         {
             dismissProgress();
-            THToast.show(new THException(e));
-            Timber.e(e, "");
+            super.onError(e);
         }
     }
 
