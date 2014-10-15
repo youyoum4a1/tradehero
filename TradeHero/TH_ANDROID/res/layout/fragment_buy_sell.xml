@@ -16,7 +16,7 @@
       android:progressDrawable="@drawable/progress_thin_square"
       />
 
-  <RelativeLayout
+  <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
       android:id="@+id/portfolio_selector_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
         android:textSize="@dimen/text_medium"
         android:layout_centerVertical="true"/>
 
-  </RelativeLayout>
+  </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
 
   <RelativeLayout
       android:id="@+id/chart_frame"

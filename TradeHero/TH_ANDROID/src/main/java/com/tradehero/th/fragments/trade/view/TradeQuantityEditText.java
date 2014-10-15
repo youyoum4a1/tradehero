@@ -6,21 +6,13 @@ import android.widget.EditText;
 
 public class TradeQuantityEditText extends EditText
 {
-
-    public TradeQuantityEditText(Context context)
-    {
-        super(context);
-    }
-
+    //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public TradeQuantityEditText(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
-
-    public TradeQuantityEditText(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-    }
+    //</editor-fold>
 
     @Override
     public void onSelectionChanged(int start, int end)

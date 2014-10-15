@@ -8,7 +8,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.squareup.picasso.Picasso;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -17,14 +16,14 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.trade.TradeListItemAdapter;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.trade.TradeDTOUtils;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -33,7 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 
-public class TradeListItemView extends LinearLayout implements DTOView<TradeListItemAdapter.ExpandableTradeItem>
+public class TradeListItemView extends LinearLayout
+        implements DTOView<TradeListItemAdapter.ExpandableTradeItem>
 {
     private TradeListItemAdapter.ExpandableTradeItem tradeItem;
     @Nullable private TradeDTO trade;
@@ -41,7 +41,6 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     private boolean prettyDate = true;
     @Nullable private String strDisplay;
 
-    @Inject Lazy<Picasso> picasso;
     @Inject TradeDTOUtils tradeDTOUtils;
     @Inject Lazy<PositionDTOUtils> positionDTOUtils;
     @Inject PrettyTime prettyTime;

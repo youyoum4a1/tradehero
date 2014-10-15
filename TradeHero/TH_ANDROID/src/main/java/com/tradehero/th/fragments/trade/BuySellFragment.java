@@ -11,14 +11,12 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -62,6 +60,7 @@ import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
+import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
@@ -86,11 +85,12 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import dagger.Lazy;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("security/:securityRawInfo")
@@ -107,8 +107,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @InjectView(R.id.stock_bg_logo) protected ImageView mStockBgLogo;
     @InjectView(R.id.stock_logo) protected ImageView mStockLogo;
-    @InjectView(R.id.portfolio_selector_container) protected View mSelectedPortfolioContainer;
-    @InjectView(R.id.portfolio_selected) protected TextView mSelectedPortfolio;
+    @InjectView(R.id.portfolio_selector_container) PortfolioSelectorView mSelectedPortfolioContainer;
+    @Nullable Subscription portfolioMenuSubscription;
     @InjectView(R.id.market_closed_icon) protected ImageView mMarketClosedIcon;
     @InjectView(R.id.buy_price) protected TextView mBuyPrice;
     @InjectView(R.id.sell_price) protected TextView mSellPrice;
@@ -146,9 +146,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
-
-    private PopupMenu mPortfolioSelectorMenu;
-    private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     @Inject protected SecurityAlertAssistant securityAlertAssistant;
     protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
@@ -209,19 +206,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             mQuoteRefreshProgressBar.setMax(
                     (int) (MILLISEC_QUOTE_REFRESH / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             mQuoteRefreshProgressBar.setProgress(mQuoteRefreshProgressBar.getMax());
-        }
-
-        if (mSelectedPortfolio != null)
-        {
-            mPortfolioSelectorMenu = new PopupMenu(getActivity(), mSelectedPortfolio);
-            mPortfolioSelectorMenu.setOnMenuItemClickListener(
-                    new PopupMenu.OnMenuItemClickListener()
-                    {
-                        @Override public boolean onMenuItemClick(android.view.MenuItem menuItem)
-                        {
-                            return selectDifferentPortfolio(menuItem);
-                        }
-                    });
         }
 
         if (bottomViewPagerAdapter == null)
@@ -317,16 +301,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         detachWatchlistFetchTask();
         detachBuySellMiddleCallback();
+        detachPortfolioMenuSubscription();
 
         securityAlertAssistant.setOnPopulatedListener(null);
-
-        mSelectedPortfolio = null;
-
-        if (mPortfolioSelectorMenu != null)
-        {
-            mPortfolioSelectorMenu.setOnMenuItemClickListener(null);
-        }
-        mPortfolioSelectorMenu = null;
 
         bottomViewPagerAdapter = null;
         mBottomViewPager = null;
@@ -350,6 +327,14 @@ public class BuySellFragment extends AbstractBuySellFragment
     protected void detachWatchlistFetchTask()
     {
         userWatchlistPositionCache.unregister(userWatchlistPositionCacheFetchListener);
+    }
+
+    private void detachPortfolioMenuSubscription()
+    {
+        if (portfolioMenuSubscription != null)
+        {
+            portfolioMenuSubscription.unsubscribe();
+        }
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -378,9 +363,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (andDisplay)
         {
-            displaySelectedPortfolioContainer();
-            displayPortfolioSelectorMenu();
-            displaySelectedPortfolio();
             displayStockName();
             displayBottomViewPager();
             loadStockLogo();
@@ -399,9 +381,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (andDisplay)
         {
-            displaySelectedPortfolioContainer();
-            displayPortfolioSelectorMenu();
-            displaySelectedPortfolio();
             displayBuySellSwitch();
             displayBuySellPrice();
         }
@@ -458,7 +437,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (andDisplay)
         {
             displayBuySellSwitch();
-            displaySelectedPortfolio();
         }
     }
 
@@ -514,14 +492,10 @@ public class BuySellFragment extends AbstractBuySellFragment
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
     protected void buildUsedMenuPortfolios()
     {
-        Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
-
-        MenuOwnedPortfolioIdList menus = menuOwnedPortfolioIdFactory.createPortfolioMenus(
-                currentUserId.toUserBaseKey(),
-                securityPositionDetailDTO);
-
-        newMenus.addAll(menus);
-        usedMenuOwnedPortfolioIds = newMenus;
+        mSelectedPortfolioContainer.addMenuOwnedPortfolioIds(
+                menuOwnedPortfolioIdFactory.createPortfolioMenus(
+                        currentUserId.toUserBaseKey(),
+                        securityPositionDetailDTO));
     }
 
     public void display()
@@ -532,72 +506,11 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayPageElements()
     {
-        displaySelectedPortfolioContainer();
-        displayPortfolioSelectorMenu();
-        displaySelectedPortfolio();
         displayBuySellPrice();
         displayBottomViewPager();
         displayStockName();
         displayTriggerButton();
         loadStockLogo();
-    }
-
-    public void displaySelectedPortfolioContainer()
-    {
-        if (mSelectedPortfolioContainer != null)
-        {
-            mSelectedPortfolioContainer.setVisibility(
-                    usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 1
-                            ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    public void displayPortfolioSelectorMenu()
-    {
-        if (mPortfolioSelectorMenu != null)
-        {
-            mPortfolioSelectorMenu.getMenu().clear();
-            if (usedMenuOwnedPortfolioIds != null)
-            {
-                for (MenuOwnedPortfolioId menuOwnedPortfolioId : usedMenuOwnedPortfolioIds)
-                {
-                    mPortfolioSelectorMenu.getMenu()
-                            .add(Menu.NONE, Menu.NONE, Menu.NONE, menuOwnedPortfolioId);
-                }
-            }
-        }
-    }
-
-    public void displaySelectedPortfolio()
-    {
-        TextView selectedPortfolio = mSelectedPortfolio;
-        if (selectedPortfolio != null)
-        {
-            if (usedMenuOwnedPortfolioIds != null
-                    && usedMenuOwnedPortfolioIds.size() > 0
-                    && purchaseApplicableOwnedPortfolioId != null)
-            {
-                MenuOwnedPortfolioId chosen = null;
-
-                final Iterator<MenuOwnedPortfolioId> iterator =
-                        usedMenuOwnedPortfolioIds.iterator();
-                MenuOwnedPortfolioId lastElement = null;
-                while (iterator.hasNext())
-                {
-                    lastElement = iterator.next();
-                    if (purchaseApplicableOwnedPortfolioId.equals(lastElement))
-                    {
-                        chosen = lastElement;
-                    }
-                }
-                if (chosen == null)
-                {
-                    chosen = lastElement;
-                }
-
-                selectedPortfolio.setText(chosen);
-            }
-        }
     }
 
     public void displayBottomViewPager()
@@ -1024,26 +937,25 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.portfolio_selector_container)
     protected void showPortfolioSelector()
     {
-        if (mPortfolioSelectorMenu != null)
-        {
-            mPortfolioSelectorMenu.show();
-        }
+        detachPortfolioMenuSubscription();
+        portfolioMenuSubscription = AndroidObservable.bindFragment(
+                this,
+                mSelectedPortfolioContainer.createMenuObservable())
+                .subscribe(new EmptyObserver<MenuOwnedPortfolioId>()
+                {
+                    @Override public void onNext(MenuOwnedPortfolioId args)
+                    {
+                        super.onNext(args);
+                        linkWithApplicable(args, true);
+                    }
+                });
     }
 
-    private boolean selectDifferentPortfolio(MenuItem menuItem)
-    {
-        if (mSelectedPortfolio != null)
-        {
-            mSelectedPortfolio.setText(menuItem.getTitle());
-        }
-
-        linkWithApplicable((MenuOwnedPortfolioId) menuItem.getTitle(), true);
-        return true;
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick({R.id.btn_buy, R.id.btn_sell})
     protected void handleBuySellButtonsClicked(View view)
     {
@@ -1145,7 +1057,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (quoteDTO != null
                 && BuyDialogFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
         {
-            if(purchaseApplicableOwnedPortfolioId != null)
+            if (purchaseApplicableOwnedPortfolioId != null)
             {
                 pushPortfolioFragmentRunnable = null;
                 pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
