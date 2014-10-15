@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -60,6 +61,7 @@ public class DiscoveryDiscussionFragment extends Fragment
             {
                 mContentWrapper.setDisplayedChildByLayoutId(mTimelineListView.getId());
                 mBottomLoadingView.setVisibility(View.GONE);
+                mTimelineListView.onRefreshComplete();
             }
 
             @Override protected ListLoader<TimelineItemDTOKey> onCreateLoader(Bundle args)
@@ -81,6 +83,21 @@ public class DiscoveryDiscussionFragment extends Fragment
             {
                 mTimelineAdapter.getLoader().loadPrevious();
                 mBottomLoadingView.setVisibility(View.VISIBLE);
+            }
+        });
+        mTimelineListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+        {
+            @Override public void onRefresh(PullToRefreshBase<ListView> listViewPullToRefreshBase)
+            {
+                switch (listViewPullToRefreshBase.getCurrentMode())
+                {
+                    case PULL_FROM_START:
+                        mTimelineAdapter.getLoader().loadNext();
+                        break;
+                    case PULL_FROM_END:
+                        mTimelineAdapter.getLoader().loadPrevious();
+                        break;
+                }
             }
         });
         getActivity().getSupportLoaderManager().initLoader(
