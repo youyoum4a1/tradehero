@@ -235,7 +235,8 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
             }
             Session.setActiveSession(activeSession);
             openRequest.setCallback(statusCallback);
-            activeSession.openForRead(openRequest);
+            // TODO change to read and request for publish on demand
+            activeSession.openForPublish(openRequest);
 
             Subscription subscription = AndroidSubscriptions.unsubscribeInUiThread(new Action0()
             {
