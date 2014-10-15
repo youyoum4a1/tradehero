@@ -88,8 +88,11 @@ public class XpToast extends RelativeLayout
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(this);
         userLevelProgressBar.setUserLevelProgressBarListener(this);
         mLevelDefListCacheListener = new XPToastLevelDefCacheListener();
-        levelDefListCache.register(levelDefListId, mLevelDefListCacheListener);
-        levelDefListCache.getOrFetchAsync(levelDefListId);
+        if (!isInEditMode())
+        {
+            levelDefListCache.register(levelDefListId, mLevelDefListCacheListener);
+            levelDefListCache.getOrFetchAsync(levelDefListId);
+        }
     }
 
     @Override protected void onDetachedFromWindow()

@@ -7,12 +7,9 @@ import com.tradehero.th.R;
 
 public class ActivityHelper
 {
-    public static void launchAuthentication(Context activity)
+    public static void launchAuthentication(Activity activity)
     {
-        Intent localIntent = new Intent(activity, AuthenticationActivity.class);
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        activity.startActivity(localIntent);
-        ((Activity) activity).finish();
+        presentFromActivity(activity, AuthenticationActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
 
     public static void launchGuide(Context activity)

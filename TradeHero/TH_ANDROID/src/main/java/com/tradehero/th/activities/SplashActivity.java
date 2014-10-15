@@ -1,9 +1,6 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
@@ -12,49 +9,28 @@ import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
-import com.tradehero.th.api.users.LoginFormDTO;
-import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.inject.ExInjector;
-import com.tradehero.th.inject.Injector;
 import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.models.user.auth.CredentialsDTO;
-import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.th.network.retrofit.RequestHeaders;
-import com.tradehero.th.network.service.SessionServiceWrapper;
+import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
-import dagger.Module;
-import dagger.Provides;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import retrofit.RetrofitError;
 
-public class SplashActivity extends FragmentActivity
+public class SplashActivity extends BaseActivity
 {
-    private Timer timerToShiftActivity;
-    private AsyncTask<Void, Void, Void> initialAsyncTask;
-    @Inject SessionServiceWrapper sessionServiceWrapper;
-    @Inject RequestHeaders requestHeaders;
-    @Inject Provider<LoginFormDTO> loginFormDTOProvider;
     @Inject @FacebookAppId String facebookAppId;
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
 
-    @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
     @Inject Analytics analytics;
+    @Inject @AuthHeader String authToken;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -72,35 +48,11 @@ public class SplashActivity extends FragmentActivity
         {
             appVersion.setText(VersionUtils.getAppVersion(this));
         }
-
-        Injector newInjector = loadInjector(THApp.get(this));
-        newInjector.inject(this);
-    }
-
-    protected ExInjector loadInjector(ExInjector injector)
-    {
-        return injector.plus(new SplashActivityModule());
     }
 
     @Override protected void onResume()
     {
         super.onResume();
-
-        initialAsyncTask = new AsyncTask<Void, Void, Void>()
-        {
-            @Override protected Void doInBackground(Void... params)
-            {
-                initialisation();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid)
-            {
-                super.onPostExecute(aVoid);
-            }
-        };
-        initialAsyncTask.execute();
 
         analytics.openSession();
         analytics.tagScreen(AnalyticsConstants.Loading);
@@ -116,6 +68,8 @@ public class SplashActivity extends FragmentActivity
         {
             VersionUtils.logScreenMeasurements(this);
         }
+
+        initialisation();
     }
 
     @Override protected void onPause()
@@ -125,85 +79,31 @@ public class SplashActivity extends FragmentActivity
         super.onPause();
     }
 
+    @Override protected boolean requireLogin()
+    {
+        return false;
+    }
+
     protected void initialisation()
     {
-        analytics
-                .addEvent(new AppLaunchEvent())
+        analytics.addEvent(new AppLaunchEvent())
                 .addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
 
         if (firstLaunchPreference.get())
         {
-            ActivityHelper.launchGuide(SplashActivity.this);
+            ActivityHelper.launchGuide(this);
             firstLaunchPreference.set(false);
+            finish();
+        }
+        else if (authToken == null)
+        {
+            ActivityHelper.launchAuthentication(this);
             finish();
         }
         else
         {
-            boolean canLoad = canLoadApp();
-            if (canLoad)
-            {
-                ActivityHelper.launchDashboard(SplashActivity.this);
-                finish();
-            }
-            else
-            {
-                timerToShiftActivity = new Timer();
-                timerToShiftActivity.schedule(new TimerTask()
-                {
-                    public void run()
-                    {
-                        timerToShiftActivity.cancel();
-                        ActivityHelper.launchAuthentication(SplashActivity.this);
-                        finish();
-                    }
-                }, 1500);
-            }
-        }
-    }
-
-    public boolean canLoadApp()
-    {
-        CredentialsDTO credentialsDTO = mainCredentialsPreference.getCredentials();
-        boolean canLoad = credentialsDTO != null;
-        if (canLoad)
-        {
-            try
-            {
-                UserLoginDTO userLoginDTO = sessionServiceWrapper.login(
-                        requestHeaders.createTypedAuthParameters(credentialsDTO),
-                        loginFormDTOProvider.get());
-                canLoad = userLoginDTO != null && userLoginDTO.profileDTO != null;
-            }
-            catch (RetrofitError retrofitError)
-            {
-                canLoad = false;
-                if (retrofitError.isNetworkError())
-                {
-                    //THToast.show(R.string.network_error);
-                }
-            }
-        }
-        return canLoad;
-    }
-
-    @Override protected void onDestroy()
-    {
-        initialAsyncTask = null;
-        super.onDestroy();
-    }
-
-    @Module(
-            addsTo = AppModule.class,
-            includes = UIModule.class,
-            library = true,
-            complete = false,
-            overrides = true
-    )
-    public class SplashActivityModule
-    {
-        @Provides Activity provideActivity()
-        {
-            return SplashActivity.this;
+            ActivityHelper.launchDashboard(this);
+            finish();
         }
     }
 }

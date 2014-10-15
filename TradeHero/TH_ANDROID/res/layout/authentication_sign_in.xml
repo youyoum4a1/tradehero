@@ -12,7 +12,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fillViewport="true"
-      android:background="@drawable/authentication_bg"
       android:scrollbarStyle="outsideOverlay"
       android:paddingLeft="@dimen/authentication_horizontal_padding"
       android:paddingRight="@dimen/authentication_horizontal_padding"
@@ -43,12 +42,7 @@
           android:layout_height="0dp"
           android:layout_weight="1"/>
 
-      <include
-          android:id="@+id/authentication_social_sign_up"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          layout="@layout/authentication_social_auth_sign_in"
-          />
+      <include layout="@layout/authentication_social_auth_sign_in"/>
 
       <include
           android:id="@+id/authentication_agreement"

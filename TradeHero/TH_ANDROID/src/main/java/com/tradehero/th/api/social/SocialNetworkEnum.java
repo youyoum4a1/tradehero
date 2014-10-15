@@ -1,35 +1,60 @@
 package com.tradehero.th.api.social;
 
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
-import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
-import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
-import com.tradehero.th.models.user.auth.QQCredentialsDTO;
-import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
-import com.tradehero.th.models.user.auth.WeChatCredentialsDTO;
-import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
+import android.support.annotation.StringRes;
+import com.tradehero.th.R;
 
+/**
+ * List of social network or 3rd party that provide authentication, this implementation is closely linked with https://github
+ * .com/TradeHero/TH_ANDROID/blob/db4a33ee064f4e1c15a4b2b796165add706ab106/TradeHero/TH_ANDROID/res/values/attrs.xml#L110-120 by the order of login
+ * mechanism.
+ */
 public enum SocialNetworkEnum
 {
-    FB(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE, "Facebook"),
-    LN(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE, "LinkedIn"),
-    TH(EmailCredentialsDTO.EMAIL_AUTH_TYPE, "TradeHero"),
-    TW(TwitterCredentialsDTO.TWITTER_AUTH_TYPE, "Twitter"),
-    WECHAT(WeChatCredentialsDTO.WECHAT_AUTH_TYPE, "WeChat"),
-    WB(WeiboCredentialsDTO.WEIBO_AUTH_TYPE, "WeiBo"),
-    QQ(QQCredentialsDTO.QQ_AUTH_TYPE, "QQ");
+    TH("Basic", "TradeHero", R.string.app_name),
+    FB("TH-Facebook", "Facebook", "facebook_access_token", R.string.facebook),
+    TW("TH-Twitter", "Twitter", "twitter_access_token", "twitter_access_token_secret", R.string.twitter),
+    LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret", R.string.linkedin),
+    WECHAT("TH-WeChat", "WeChat", R.string.wechat),
+    WB("TH-Weibo", "WeiBo", "weibo_access_token", R.string.sina_weibo),
+    QQ("TH-QQ", "QQ", "qq_access_token", "qq_openid", R.string.tencent_qq);
 
-    private final String authenticationHeader;
+    private final String authHeader;
     private final String name;
+    private final String accessTokenName;
+    private final String accessTokenSecretName;
+    @StringRes public final int nameResId;
 
-    SocialNetworkEnum(String authenticationHeader, String name)
+    SocialNetworkEnum(String authHeader,
+            String name,
+            @StringRes int nameResId)
     {
-        this.authenticationHeader = authenticationHeader;
-        this.name = name;
+        this(authHeader, name, null, nameResId);
     }
 
-    public String getAuthenticationHeader()
+    SocialNetworkEnum(String authHeader,
+            String name,
+            String accessTokenName,
+            @StringRes int nameResId)
     {
-        return authenticationHeader;
+        this(authHeader, name, accessTokenName, null, nameResId);
+    }
+
+    SocialNetworkEnum(String authHeader,
+            String name,
+            String accessTokenName,
+            String accessTokenSecretName,
+            @StringRes int nameResId)
+    {
+        this.authHeader = authHeader;
+        this.name = name;
+        this.accessTokenName = accessTokenName;
+        this.accessTokenSecretName = accessTokenSecretName;
+        this.nameResId = nameResId;
+    }
+
+    public String getAuthHeader()
+    {
+        return authHeader;
     }
 
     //@JsonValue
@@ -46,5 +71,36 @@ public enum SocialNetworkEnum
             return name;
         }
         return super.toString();
+    }
+
+    public static SocialNetworkEnum fromIndex(int index)
+    {
+        if (index >= 0 && index <= values().length)
+        {
+            return values()[index];
+        }
+        throw new IllegalArgumentException("There is no value for index " + index);
+    }
+
+    public static SocialNetworkEnum fromAuthHeader(String authHeader)
+    {
+        for (SocialNetworkEnum socialNetworkEnum: values())
+        {
+            if (socialNetworkEnum.authHeader.equals(authHeader))
+            {
+                return socialNetworkEnum;
+            }
+        }
+        throw new IllegalArgumentException("There is no value with authentication header: " + authHeader);
+    }
+
+    public String getAccessTokenName()
+    {
+        return accessTokenName;
+    }
+
+    public String getAccessTokenSecretName()
+    {
+        return accessTokenSecretName;
     }
 }

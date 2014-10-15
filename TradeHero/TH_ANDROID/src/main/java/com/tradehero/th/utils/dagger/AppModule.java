@@ -1,14 +1,18 @@
 package com.tradehero.th.utils.dagger;
 
+import android.accounts.AccountManager;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
+import com.tencent.tauth.Tencent;
 import com.tradehero.FlavorModule;
 import com.tradehero.th.BuildTypeModule;
+import com.tradehero.th.activities.ActivityAppModule;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.loaders.FriendListLoader;
@@ -37,6 +41,7 @@ import javax.inject.Singleton;
 
 @Module(
         includes = {
+                ActivityAppModule.class,
                 FlavorModule.class,
                 AchievementModule.class,
                 XpModule.class,
@@ -52,7 +57,7 @@ import javax.inject.Singleton;
                 BillingModule.class,
                 SocialNetworkAppModule.class,
                 PushModule.class,
-                BuildTypeModule.class,
+                BuildTypeModule.class
         },
         injects =
                 {
@@ -76,15 +81,13 @@ import javax.inject.Singleton;
 
                         ObjectMapperWrapper.class,
                 },
-        staticInjections =
-                {
-                        THUser.class,
-                },
         complete = false,
         library = true // TODO remove this line
 )
 public class AppModule
 {
+    private static final String TENCENT_APP_ID = "1101331512";
+
     private final THApp THApp;
 
     public AppModule(THApp THApp)
@@ -112,9 +115,30 @@ public class AppModule
         return THApp;
     }
 
+    @Provides @Singleton AccountManager provideAccountManager(Context context)
+    {
+        return AccountManager.get(context);
+    }
+
     @Provides @Singleton
     LocalBroadcastManager providesLocalBroadcastReceiver(Context context)
     {
         return LocalBroadcastManager.getInstance(context);
+    }
+
+    @Provides @Singleton ConnectivityManager provideConnectivityManager(Context context) {
+
+        return (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    }
+
+    @Provides
+    NetworkInfo provideNetworkInfo(ConnectivityManager connectivityManager)
+    {
+        return connectivityManager.getActiveNetworkInfo();
+    }
+    
+    @Provides @Singleton Tencent provideTencentAuth(Context context)
+    {
+        return Tencent.createInstance(TENCENT_APP_ID, context);
     }
 }

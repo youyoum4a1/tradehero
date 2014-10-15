@@ -6,32 +6,21 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.ViewGroup;
-
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import timber.log.Timber;
 
 class Navigator<ActivityType extends Activity>
 {
+    public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
     private static final boolean DEFAULT_SHOW_HOME_KEY_AS_UP = true;
 
-    public static final int[] TUTORIAL_ANIMATION = new int[] {
-            R.anim.card_flip_right_in, R.anim.card_flip_right_out,
-            R.anim.card_flip_left_in, R.anim.card_flip_left_out
-    };
-    public static final int[] PUSH_UP_FROM_BOTTOM = new int[] {
-            R.anim.slide_in_from_bottom, R.anim.slide_out_to_top,
-            R.anim.slide_in_from_top, R.anim.slide_out_to_bottom
-    };
     public static final int[] DEFAULT_FRAGMENT_ANIMATION = new int[] {
             R.anim.slide_right_in, R.anim.slide_left_out,
             R.anim.slide_left_in, R.anim.slide_right_out
@@ -41,26 +30,17 @@ class Navigator<ActivityType extends Activity>
     protected final FragmentManager manager;
     private int fragmentContentId;
     private int backPressedCount;
+    private final int minimumBackstackSize;
 
     //<editor-fold desc="Constructors">
-    public Navigator(ActivityType activity, FragmentManager manager)
-    {
-        this(activity, manager, 0);
-        setFragmentContentId(((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0).getId());
-    }
-
-    public Navigator(ActivityType activity, FragmentManager manager, int fragmentContentId)
+    public Navigator(ActivityType activity, FragmentManager manager, int fragmentContentId, int minimumBackstackSize)
     {
         this.activity = activity;
         this.manager = manager;
         this.fragmentContentId = fragmentContentId;
+        this.minimumBackstackSize = minimumBackstackSize;
     }
     //</editor-fold>
-
-    public void setFragmentContentId(int fragmentContentId)
-    {
-        this.fragmentContentId = fragmentContentId;
-    }
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass)
     {
@@ -123,6 +103,20 @@ class Navigator<ActivityType extends Activity>
         }
     }
 
+
+    public void popFragment()
+    {
+        Fragment currentDashboardFragment = manager.findFragmentById(fragmentContentId);
+
+        String backStackName = null;
+        if (currentDashboardFragment != null && currentDashboardFragment.getArguments() != null)
+        {
+            Bundle args = currentDashboardFragment.getArguments();
+            backStackName = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+        }
+        popFragment(backStackName);
+    }
+
     public void popFragment(String backStackName)
     {
         Timber.d("Pop Keyboard visible %b", DeviceUtil.isKeyboardVisible(activity));
@@ -137,7 +131,7 @@ class Navigator<ActivityType extends Activity>
 
             if (isBackStackEmpty())
             {
-                if (backPressedCount > 0)
+                if (backPressedCount >= minimumBackstackSize)
                 {
                     resetBackPressCount();
                     activity.finish();
@@ -171,7 +165,7 @@ class Navigator<ActivityType extends Activity>
 
     public boolean isBackStackEmpty()
     {
-        return manager.getBackStackEntryCount() <= 1;
+        return manager.getBackStackEntryCount() <= minimumBackstackSize;
     }
 
     protected void resetBackPressCount()
@@ -179,8 +173,8 @@ class Navigator<ActivityType extends Activity>
         backPressedCount = 0;
     }
 
-    public Fragment getCurrentFragment()
+    @Nullable public Fragment getCurrentFragment()
     {
-        return manager.findFragmentById(R.id.realtabcontent);
+        return manager.findFragmentById(fragmentContentId);
     }
 }

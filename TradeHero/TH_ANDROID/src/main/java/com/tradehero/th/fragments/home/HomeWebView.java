@@ -72,6 +72,7 @@ public final class HomeWebView extends NotifyingWebView
     private void reloadWebView(@NotNull HomeContentDTO homeContentDTO)
     {
         String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
+
         loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
     }
 

@@ -113,4 +113,9 @@ public class MeTimelineFragment extends TimelineFragment
                 break;
         }
     }
+
+    @Override protected void fetchMessageThreadHeader()
+    {
+        // Nothing to do
+    }
 }

@@ -13,7 +13,6 @@ import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
@@ -45,10 +44,6 @@ public class THApp extends PApplication
         buildObjectGraphAndInject();
 
         DaggerUtils.setObjectGraph(objectGraph);
-
-        THUser.initialize();
-
-        EmailSignUtils.initialize();
 
         pushNotificationManager.initialise();
 

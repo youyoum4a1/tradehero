@@ -100,6 +100,14 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         initView();
     }
 
+    @Override public void onStart()
+    {
+        super.onStart();
+        detachFriendsListCache();
+        friendsListCache.register(friendsListKey, friendsListCacheListener);
+        friendsListCache.getOrFetchAsync(friendsListKey);
+    }
+
     @Override public void onStop()
     {
         detachFriendsListCache();
@@ -221,7 +229,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             {
                 @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
                 {
-
                 }
 
                 @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
@@ -231,7 +238,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
                 @Override public void afterTextChanged(Editable editable)
                 {
-
                 }
             });
         }
@@ -254,7 +260,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    protected RequestCallback createInviteCallback(List<UserFriendsDTO> usersToInvite)
+    protected RequestCallback<BaseResponseDTO> createInviteCallback(List<UserFriendsDTO> usersToInvite)
     {
         return new InviteFriendCallback(usersToInvite);
     }
@@ -382,10 +388,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         {
             friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(), getSocialNetwork());
         }
-        detachFriendsListCache();
-        friendsListCache.register(friendsListKey, friendsListCacheListener);
-        friendsListCache.getOrFetchAsync(friendsListKey);
-        //fetchTask.getStatus();
     }
 
     private void displayErrorView()
@@ -665,7 +667,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    class InviteFriendCallback extends RequestCallback<Response>
+    class InviteFriendCallback extends RequestCallback<BaseResponseDTO>
     {
         List<UserFriendsDTO> usersToInvite;
 
@@ -676,7 +678,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
 
         @Override
-        public void success(Response data, @NotNull Response response)
+        public void success(BaseResponseDTO data, @NotNull Response response)
         {
             super.success(data, response);
             if (response.getStatus() == 200 || response.getStatus() == 204)
@@ -707,10 +709,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 @NotNull FriendsListKey key,
                 @NotNull UserFriendsDTOList value)
         {
-            if (!hasView())
-            {
-                return;
-            }
             displayContentView(value);
         }
 
@@ -718,10 +716,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 @NotNull FriendsListKey key,
                 @NotNull Throwable error)
         {
-            if (!hasView())
-            {
-                return;
-            }
             if (hasListData())
             {
                 //when already fetch the data,do not show error view

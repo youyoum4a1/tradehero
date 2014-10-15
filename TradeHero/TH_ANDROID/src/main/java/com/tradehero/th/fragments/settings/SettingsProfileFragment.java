@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,45 +21,35 @@ import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.EmailAuthenticationProvider;
-import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.base.THUser;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.authentication.AuthDataAction;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.auth.CredentialsDTO;
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
-import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.rx.MakePairFunc2;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import dagger.Lazy;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
+import org.jetbrains.annotations.Nullable;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
 {
-    //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
-    private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
-    private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
-
     @InjectView(R.id.authentication_sign_up_button) protected Button updateButton;
     @InjectView(R.id.sign_up_form_wrapper) protected NotifyingScrollView scrollView;
     @InjectView(R.id.profile_info) protected ProfileInfoView profileView;
@@ -68,12 +59,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject @AuthHeader String authenticationHeader;
-    @Inject MainCredentialsPreference mainCredentialsPreference;
-
-    private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject DashboardNavigator navigator;
+    @Inject Provider<AuthDataAction> authDataActionProvider;
+
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    private Subscription updateProfileSubscription;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -82,18 +72,13 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         initSetup(view);
         setHasOptionsMenu(true);
 
-        this.populateCurrentUser();
+        populateCurrentUser();
         return view;
     }
 
     protected void initSetup(View view)
     {
         ButterKnife.inject(this, view);
-        FocusableOnTouchListener touchListener = new FocusableOnTouchListener();
-
-        profileView.setOnTouchListenerOnFields(touchListener);
-        profileView.addValidationListenerOnFields(this);
-        profileView.setListener(createProfileViewListener());
 
         updateButton.setText(R.string.update);
         updateButton.setOnClickListener(this);
@@ -105,20 +90,16 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     @Override public void onStop()
     {
-        detachMiddleCallbackUpdateUserProfile();
         detachUserProfileCache();
+        if (updateProfileSubscription != null && !updateProfileSubscription.isUnsubscribed())
+        {
+            updateProfileSubscription.unsubscribe();
+        }
         super.onStop();
     }
 
     @Override public void onDestroyView()
     {
-        if (profileView != null)
-        {
-            profileView.setOnTouchListenerOnFields(null);
-            profileView.removeAllListenersOnFields();
-            profileView.setNullOnFields();
-            profileView.setListener(null);
-        }
         profileView = null;
         if (updateButton != null)
         {
@@ -133,17 +114,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        detachMiddleCallbackUpdateUserProfile();
         detachUserProfileCache();
-    }
-
-    private void detachMiddleCallbackUpdateUserProfile()
-    {
-        if (middleCallbackUpdateUserProfile != null)
-        {
-            middleCallbackUpdateUserProfile.setPrimaryCallback(null);
-        }
-        middleCallbackUpdateUserProfile = null;
     }
 
     private void detachUserProfileCache()
@@ -168,27 +139,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         }
     }
 
-    protected void forceValidateFields()
-    {
-        profileView.forceValidateFields();
-    }
-
     public boolean areFieldsValid()
     {
         return profileView.areFieldsValid();
-    }
-
-    protected Map<String, Object> getUserFormMap()
-    {
-        Map<String, Object> map = new HashMap<>();
-        map.put(UserFormFactory.KEY_TYPE, EmailCredentialsDTO.EMAIL_AUTH_TYPE);
-        profileView.populateUserFormMap(map);
-        return map;
-    }
-
-    public JSONCredentials getUserFormJSON()
-    {
-        return new JSONCredentials(getUserFormMap());
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -197,7 +150,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
         if (resultCode == Activity.RESULT_OK)
         {
-            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
+            if ((requestCode == ImagePickerView.REQUEST_CAMERA || requestCode == ImagePickerView.REQUEST_GALLERY) && data != null)
             {
                 try
                 {
@@ -216,7 +169,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     Timber.e(e, "Failed to extract image from library");
                 }
             }
-            else if (requestCode == REQUEST_GALLERY)
+            else if (requestCode == ImagePickerView.REQUEST_GALLERY)
             {
                 Timber.e(new Exception("Got null data from library"), "");
             }
@@ -233,18 +186,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         userProfileCacheListener = createUserProfileCacheListener();
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
-        try
-        {
-            CredentialsDTO credentials = mainCredentialsPreference.getCredentials();
-            if (credentials != null)
-            {
-                this.profileView.populateCredentials(credentials.createJSON());
-            }
-        }
-        catch (JSONException e)
-        {
-            Timber.e(e, "Failed to populate current user %s", authenticationHeader);
-        }
     }
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
@@ -266,7 +207,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     private void updateProfile(View view)
     {
         DeviceUtil.dismissKeyboard(view);
-        forceValidateFields();
 
         if (!OnlineStateReceiver.isOnline(getActivity()))
         {
@@ -283,43 +223,30 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
             profileView.progressDialog.setCancelable(true);
-            EmailCredentialsDTO emailCredentialsDTO = profileView.getEmailCredentialsDTO();
-            EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
 
-            UserFormDTO userFormDTO = profileView.createForm();
-            if (userFormDTO == null)
-            {
-                return;
-            }
-
-            detachMiddleCallbackUpdateUserProfile();
-            middleCallbackUpdateUserProfile = userServiceWrapper.get().updateProfile(
-                    currentUserId.toUserBaseKey(),
-                    userFormDTO,
-                    createUpdateUserProfileCallback(emailCredentialsDTO));
+            updateProfileSubscription = profileView.obtainUserFormDTO()
+                    .flatMap(new Func1<UserFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
+                    {
+                        @Override public Observable<Pair<AuthData, UserProfileDTO>> call(UserFormDTO userFormDTO)
+                        {
+                            final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
+                            Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.get().updateProfileRx(currentUserId
+                                .toUserBaseKey(), userFormDTO);
+                            return Observable.zip(Observable.just(authData), userProfileDTOObservable, new MakePairFunc2<AuthData, UserProfileDTO>());
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+                    {
+                        @Override public void call(Pair<AuthData, UserProfileDTO> userProfileDTO)
+                        {
+                            profileView.progressDialog.hide(); // Before otherwise it is reset
+                            THToast.show(R.string.settings_update_profile_successful);
+                            navigator.popFragment();
+                        }
+                    })
+                    .subscribe(authDataActionProvider.get());
         }
-    }
-
-    private THCallback<UserProfileDTO> createUpdateUserProfileCallback(final EmailCredentialsDTO emailCredentialsDTO)
-    {
-        return new THCallback<UserProfileDTO>()
-        {
-            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-            {
-                profileView.progressDialog.hide(); // Before otherwise it is reset
-                THToast.show(R.string.settings_update_profile_successful);
-                navigator.popFragment();
-                if (emailCredentialsDTO != null && mainCredentialsPreference.getCredentials() instanceof EmailCredentialsDTO)
-                {
-                    THUser.saveCredentialsToUserDefaults(emailCredentialsDTO);
-                }
-            }
-
-            @Override protected void failure(THException ex)
-            {
-                THToast.show(ex.getMessage());
-            }
-        };
     }
 
     public String getPath(Uri uri)
@@ -338,24 +265,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         libraryIntent.setType("image/jpeg");
         try
         {
-            startActivityForResult(libraryIntent, REQUEST_GALLERY);
+            startActivityForResult(libraryIntent, ImagePickerView.REQUEST_GALLERY);
         }
         catch (ActivityNotFoundException e)
         {
             THToast.show(R.string.error_launch_photo_library);
-        }
-    }
-
-    protected void askImageFromCamera()
-    {
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        try
-        {
-            startActivityForResult(cameraIntent, REQUEST_CAMERA);
-        }
-        catch (ActivityNotFoundException e)
-        {
-            THToast.show(R.string.error_launch_camera);
         }
     }
 
@@ -364,29 +278,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         if (message != null && !message.getStatus() && message.getMessage() != null)
         {
             THToast.show(message.getMessage());
-        }
-    }
-
-    protected ProfileInfoView.Listener createProfileViewListener()
-    {
-        return new SettingsProfileViewListener();
-    }
-
-    protected class SettingsProfileViewListener implements ProfileInfoView.Listener
-    {
-        @Override public void onUpdateRequested()
-        {
-            // TODO
-        }
-
-        @Override public void onImageFromCameraRequested()
-        {
-            askImageFromCamera();
-        }
-
-        @Override public void onImageFromLibraryRequested()
-        {
-            askImageFromLibrary();
         }
     }
 }

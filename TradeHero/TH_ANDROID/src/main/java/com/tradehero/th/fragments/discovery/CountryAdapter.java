@@ -1,21 +1,22 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-
+import android.widget.TextView;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.th.adapters.ArrayDTOAdapterNew;
+import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public class CountryAdapter extends ArrayDTOAdapterNew<CountryLanguagePairDTO, CountryItemView>
+public class CountryAdapter extends DTOAdapterNew<CountryLanguagePairDTO>
         implements Filterable
 {
     private final Object lock = new Object();
@@ -35,6 +36,23 @@ public class CountryAdapter extends ArrayDTOAdapterNew<CountryLanguagePairDTO, C
             mFilter = new ArrayFilter();
         }
         return mFilter;
+    }
+
+    @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
+    {
+        return super.getView(position, convertView, parent);
+    }
+
+    @Override public View getView(int position, View convertView, ViewGroup parent)
+    {
+        if (convertView == null)
+        {
+            convertView = inflater.inflate(R.layout.selected_country_item, parent, false);
+        }
+        TextView selectedView = (TextView) convertView;
+        CountryLanguagePairDTO countryLanguagePairDTO = getItem(position);
+        selectedView.setText(countryLanguagePairDTO.name);
+        return convertView;
     }
 
     private class ArrayFilter extends Filter

@@ -56,7 +56,15 @@ public class THToast
 
     public static void show(THException ex)
     {
-        show(ex.getMessage());
+        String message = ex.getMessage();
+        if (message == null)
+        {
+            show(R.string.error_unknown);
+        }
+        else
+        {
+            show(message);
+        }
     }
 
     /**

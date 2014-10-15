@@ -3,39 +3,38 @@ package com.tradehero.th.auth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionDefaultAudience;
-import com.facebook.SessionState;
-import com.facebook.SharedPreferencesTokenCachingStrategy;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.auth.facebook.SubscriberCallback;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
-import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
-
-import org.json.JSONException;
-
+import com.tradehero.th.network.service.SocialLinker;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import timber.log.Timber;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.observables.Assertions;
+import rx.android.subscriptions.AndroidSubscriptions;
+import rx.functions.Action0;
+import rx.functions.Func1;
 
 @Singleton
-public class FacebookAuthenticationProvider implements THAuthenticationProvider
+public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 {
     public static final DateFormat PRECISE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
     public static final String ACCESS_TOKEN_KEY =  "access_token";
@@ -46,23 +45,27 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     private SessionDefaultAudience defaultAudience;
     private final String applicationId;
     private int activityCode;
-    private WeakReference<Activity> baseActivity;
     private Context applicationContext;
-    private Collection<String> permissions;
+    @NotNull private final TokenCachingStrategy tokenCachingStrategy;
+    private List<String> permissions;
     private THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
     private String userId;
 
     // TODO not use injection of Context as this instance is a singleton.
     // Use Provider<Activity> instead
     @Inject public FacebookAuthenticationProvider(
+            @NotNull SocialLinker socialLinker,
             Context context,
+            @NotNull TokenCachingStrategy tokenCachingStrategy,
             @FacebookAppId String applicationId,
-            @FacebookPermissions Collection<String> permissions)
+            @FacebookPermissions List<String> permissions)
     {
+        super(socialLinker);
+        this.tokenCachingStrategy = tokenCachingStrategy;
         PRECISE_DATE_FORMAT.setTimeZone(new SimpleTimeZone(0, "GMT"));
-
-        this.activityCode = 32665;
+        
         this.baseActivity = new WeakReference<>(null);
+        this.activityCode = 32665;
         this.permissions = permissions;
 
         this.applicationId = applicationId;
@@ -77,101 +80,13 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
     }
 
-    @Override public synchronized void authenticate(THAuthenticationProvider.THAuthenticationCallback callback)
-    {
-        if (this.currentOperationCallback != null)
-        {
-            cancel();
-        }
-        this.currentOperationCallback = callback;
-        final Activity activity = this.baseActivity == null ? null : this.baseActivity.get();
-        if (activity == null)
-        {
-            throw new IllegalStateException(
-                    "Activity must be non-null for Facebook authentication to proceed.");
-        }
-        int activityCode = this.activityCode;
-        this.session = new Session.Builder(activity)
-                .setApplicationId(this.applicationId)
-                .setTokenCachingStrategy(new SharedPreferencesTokenCachingStrategy(activity))
-                .build();
-
-        callback.onStart();
-        Session.OpenRequest openRequest = new Session.OpenRequest(activity);
-        openRequest.setRequestCode(activityCode);
-        if (this.defaultAudience != null)
-        {
-            openRequest.setDefaultAudience(this.defaultAudience);
-        }
-        if (this.permissions != null)
-        {
-            openRequest.setPermissions(new ArrayList<>(this.permissions));
-        }
-        openRequest.setCallback(new Session.StatusCallback()
-        {
-            @Override public void call(Session session, SessionState state, Exception exception)
-            {
-                if (state == SessionState.OPENING)
-                {
-                    return;
-                }
-                if (state.isOpened())
-                {
-                    if (FacebookAuthenticationProvider.this.currentOperationCallback == null)
-                    {
-                        return;
-                    }
-                    createAndExecuteMeRequest(session);
-                }
-                else if (exception != null)
-                {
-                    FacebookAuthenticationProvider.this.handleError(exception);
-                }
-                else
-                {
-                    FacebookAuthenticationProvider.this.handleCancel();
-                }
-            }
-        });
-        this.session.openForRead(openRequest);
-    }
-
-    private void createAndExecuteMeRequest(Session session)
-    {
-        Request meRequest = Request.newGraphPathRequest(session, "me", new Request.Callback()
-        {
-            @Override public void onCompleted(Response response)
-            {
-                if (response.getError() != null)
-                {
-                    if (response.getError().getException() != null)
-                    {
-                        FacebookAuthenticationProvider.this.handleError(response.getError().getException());
-                    }
-                    else
-                    {
-                        FacebookAuthenticationProvider.this.handleError(
-                                new Exception("An error occurred while fetching the Facebook user's identity."));
-                    }
-                }
-                else
-                {
-                    FacebookAuthenticationProvider.this.handleSuccess(
-                            (String) response.getGraphObject()
-                                    .getProperty("id"));
-                }
-            }
-        });
-        meRequest.getParameters().putString("fields", "id");
-        meRequest.executeAsync();
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Activity activity = this.baseActivity.get();
-        if (activity != null && session != null)
+        Session activeSession = Session.getActiveSession();
+        if (activity != null && activeSession != null)
         {
-            this.session.onActivityResult(activity, requestCode, resultCode, data);
+            activeSession.onActivityResult(activity, requestCode, resultCode, data);
         }
     }
 
@@ -183,21 +98,6 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     public int getActivityCode()
     {
         return this.activityCode;
-    }
-
-    @Override public String getAuthType()
-    {
-        return FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE;
-    }
-
-    @Override public String getAuthHeader()
-    {
-        return getAuthType() + " " + getAuthHeaderParameter ();
-    }
-
-    @Override public String getAuthHeaderParameter()
-    {
-        return this.session.getAccessToken();
     }
 
     public Facebook getFacebook()
@@ -242,44 +142,6 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
     }
 
-    public JSONCredentials getAuthData(String id, String accessToken, Date expiration) throws JSONException
-    {
-        JSONCredentials authData = new JSONCredentials();
-        authData.put(SocialAuthenticationProvider.ID_KEY, id);
-        authData.put(ACCESS_TOKEN_KEY, accessToken);
-        authData.put(EXPIRATION_DATE_KEY, PRECISE_DATE_FORMAT.format(expiration));
-        return authData;
-    }
-
-    private void handleSuccess(String userId)
-    {
-        if (this.currentOperationCallback == null)
-        {
-            return;
-        }
-
-        this.userId = userId;
-        JSONCredentials authData = null;
-        try
-        {
-            authData = getAuthData(userId, this.session.getAccessToken(), this.session.getExpirationDate());
-        }
-        catch (JSONException e)
-        {
-            handleError(e);
-            return;
-        }
-        try
-        {
-            this.currentOperationCallback.onSuccess(authData);
-            restoreAuthentication(authData);
-        }
-        finally
-        {
-            this.currentOperationCallback = null;
-        }
-    }
-
     public synchronized void setActivity(Activity activity)
     {
         this.baseActivity = new WeakReference<>(activity);
@@ -290,76 +152,157 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         this.activityCode = activityCode;
     }
 
-    public synchronized void setPermissions(Collection<String> permissions)
+    public synchronized void setPermissions(@Nullable List<String> permissions)
     {
         this.permissions = permissions;
+        clearCachedObservables();
     }
 
-    @Override public boolean restoreAuthentication(JSONCredentials authData)
+    public void addPermission(@NotNull String permission)
     {
-        if (authData == null)
+        this.permissions.add(permission);
+        clearCachedObservables();
+    }
+
+    @Override public Observable<AuthData> createAuthDataObservable(Activity activity)
+    {
+        return createSessionObservable(activity)
+                .flatMap(new Func1<Session, Observable<AuthData>>()
+                {
+                    @Override public Observable<AuthData> call(Session session)
+                    {
+                        return Observable.create(new MeRequestSubscribe(session));
+                    }
+                });
+    }
+
+    public Observable<Session> createSessionObservable(Activity activity)
+    {
+        return Observable.create(new FacebookAuthenticationSubscribe(activity, permissions));
+    }
+
+    @Override public void logout()
+    {
+        Session session = Session.getActiveSession();
+        if (session != null && !session.isClosed())
         {
-            if (this.facebook != null)
+            session.closeAndClearTokenInformation();
+        }
+
+        tokenCachingStrategy.clear();
+    }
+
+    private class FacebookAuthenticationSubscribe implements Observable.OnSubscribe<Session>
+    {
+        private final Activity activity;
+        private final List<String> permissions;
+
+        public FacebookAuthenticationSubscribe(Activity activity, List<String> permissions)
+        {
+            this.activity = activity;
+            this.permissions = permissions;
+        }
+
+        @Override public void call(final Subscriber<? super Session> subscriber)
+        {
+            Assertions.assertUiThread();
+            final Session.StatusCallback statusCallback = new SubscriberCallback(subscriber);
+
+            Session activeSession = Session.getActiveSession();
+
+            if (activeSession != null && activeSession.isOpened())
             {
-                this.facebook.setAccessExpires(0L);
-                this.facebook.setAccessToken(null);
+                // if requesting permissions is just subset of activeSession.getPermissions() - existing one
+                if (isSubsetPermissions(activeSession.getPermissions(), permissions))
+                {
+                    subscriber.onNext(activeSession);
+                    subscriber.onCompleted();
+                    return;
+                }
             }
-            this.session = null;
+
+            activeSession = new Session.Builder(activity)
+                    .setApplicationId(applicationId)
+                    .setTokenCachingStrategy(tokenCachingStrategy)
+                    .build();
+            Session.OpenRequest openRequest = new Session.OpenRequest(activity);
+            openRequest.setRequestCode(activityCode);
+            if (this.permissions != null)
+            {
+                openRequest.setPermissions(new ArrayList<>(this.permissions));
+            }
+            Session.setActiveSession(activeSession);
+            openRequest.setCallback(statusCallback);
+            activeSession.openForRead(openRequest);
+
+            Subscription subscription = AndroidSubscriptions.unsubscribeInUiThread(new Action0()
+            {
+                @Override public void call()
+                {
+                    Session activeSession = Session.getActiveSession();
+                    if (activeSession != null)
+                    {
+                        activeSession.removeCallback(statusCallback);
+                    }
+                }
+            });
+
+            subscriber.add(subscription);
+        }
+    }
+
+    private static boolean isSubsetPermissions(List<String> permissions, List<String> newPermissions)
+    {
+        if (newPermissions == null)
+        {
             return true;
         }
-        try
+        if (permissions == null)
         {
-            String accessToken = authData.getString(ACCESS_TOKEN_KEY);
-            Date expirationDate = PRECISE_DATE_FORMAT.parse(authData.getString(EXPIRATION_DATE_KEY));
-
-            if (this.facebook != null)
-            {
-                this.facebook.setAccessToken(accessToken);
-                this.facebook.setAccessExpires(expirationDate.getTime());
-            }
-            TokenCachingStrategy tcs = new SharedPreferencesTokenCachingStrategy(this.applicationContext);
-            Bundle data = tcs.load();
-            TokenCachingStrategy.putToken(data, authData.getString(ACCESS_TOKEN_KEY));
-            TokenCachingStrategy.putExpirationDate(data, expirationDate);
-            tcs.save(data);
-
-            Session newSession = new Session.Builder(this.applicationContext)
-                    .setApplicationId(this.applicationId).setTokenCachingStrategy(tcs).build();
-            if (newSession.getState() == SessionState.CREATED_TOKEN_LOADED)
-            {
-                newSession.openForRead(null);
-                this.session = newSession;
-                Session.setActiveSession(this.session);
-            }
-            else
-            {
-                this.session = null;
-            }
-            return true;
+            return false;
         }
-        catch (Exception e)
+
+        List<String> temp = new ArrayList<>(permissions);
+        for (String permission: newPermissions)
         {
-            Timber.e("Unable to restore authentication", e);
+            if (!temp.remove(permission))
+            {
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
-    @Override public void deauthenticate()
+    private class MeRequestSubscribe implements Observable.OnSubscribe<AuthData>
     {
-        JSONCredentials authData = null;
-        try
-        {
-            authData = getAuthData("", "", new Date());
-        }
-        catch (JSONException e)
-        {
-            Timber.e("Unable to deauthenticate", e);
-        }
-        restoreAuthentication(authData);
-    }
+        private final Session session;
 
-    public String getUserId()
-    {
-        return this.userId;
+        public MeRequestSubscribe(Session session)
+        {
+            this.session = session;
+        }
+
+        @Override public void call(final Subscriber<? super AuthData> subscriber)
+        {
+            // TODO never create a new request twice
+            Request meRequest = Request.newGraphPathRequest(session, "me", new Request.Callback()
+            {
+                @Override public void onCompleted(Response response)
+                {
+                    if (response.getError() != null)
+                    {
+                        subscriber.onError(response.getError().getException());
+                    }
+                    else
+                    {
+                        AuthData authData = new AuthData(SocialNetworkEnum.FB, session.getExpirationDate(), session.getAccessToken());
+                        subscriber.onNext(authData);
+                        subscriber.onCompleted();
+                    }
+                }
+            });
+            meRequest.getParameters().putString("fields", "id");
+            meRequest.executeAsync();
+        }
     }
 }

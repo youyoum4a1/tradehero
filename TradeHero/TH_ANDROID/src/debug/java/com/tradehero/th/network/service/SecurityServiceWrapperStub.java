@@ -18,13 +18,14 @@ import org.jetbrains.annotations.NotNull;
     @Inject public SecurityServiceWrapperStub(
             @NotNull SecurityService securityService,
             @NotNull SecurityServiceAsync securityServiceAsync,
+            @NotNull SecurityServiceRx securityServiceRx,
             @NotNull ProviderServiceWrapper providerServiceWrapper,
             @NotNull SecurityPositionDetailCache securityPositionDetailCache,
             @NotNull SecurityCompactCache securityCompactCache,
             @NotNull UserProfileCache userProfileCache,
             @NotNull CurrentUserId currentUserId)
     {
-        super(securityService, securityServiceAsync, providerServiceWrapper,
+        super(securityService, securityServiceAsync, securityServiceRx, providerServiceWrapper,
                 securityPositionDetailCache, securityCompactCache, userProfileCache,
                 currentUserId);
     }

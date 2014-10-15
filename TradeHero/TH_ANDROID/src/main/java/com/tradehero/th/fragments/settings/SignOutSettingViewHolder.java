@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -7,12 +9,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THUser;
+import com.tradehero.th.auth.AuthenticationProvider;
+import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
+import com.tradehero.th.persistence.prefs.AuthHeader;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,18 +30,33 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
     @NotNull private final ProgressDialogUtil progressDialogUtil;
     @NotNull private final SessionServiceWrapper sessionServiceWrapper;
+    @NotNull private final String authHeader;
+    @NotNull private final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
+    @NotNull private final AccountManager accountManager;
     @Nullable private ProgressDialog progressDialog;
     @Nullable private MiddleCallback<UserProfileDTO> logoutCallback;
 
     //<editor-fold desc="Constructors">
     @Inject public SignOutSettingViewHolder(
             @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull SessionServiceWrapper sessionServiceWrapper)
+            @NotNull SessionServiceWrapper sessionServiceWrapper,
+            @NotNull @AuthHeader String authHeader,
+            @NotNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap,
+            @NotNull AccountManager accountManager)
     {
         this.progressDialogUtil = progressDialogUtil;
         this.sessionServiceWrapper = sessionServiceWrapper;
+        this.authHeader = authHeader;
+        this.authenticationProviderMap = authenticationProviderMap;
+        this.accountManager = accountManager;
     }
     //</editor-fold>
+
+    @Override public void destroyViews()
+    {
+        dismissProgressDialog();
+        super.destroyViews();
+    }
 
     @Override protected int getStringKeyResId()
     {
@@ -138,10 +159,24 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         @Override
         public void success(UserProfileDTO o, Response response)
         {
-            THUser.clearCurrentUser();
+            for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry: authenticationProviderMap.entrySet())
+            {
+                if (authHeader.startsWith(entry.getKey().getAuthHeader()))
+                {
+                    entry.getValue().logout();
+                }
+            }
+
+            Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
+            if (accounts != null)
+            {
+                for (Account account: accounts)
+                {
+                    accountManager.removeAccount(account, null, null);
+                }
+            }
+
             dismissProgressDialog();
-            // TODO move these lines into MiddleCallbackLogout?
-            ActivityHelper.launchAuthentication(activity);
         }
 
         @Override public void failure(RetrofitError error)
@@ -174,5 +209,6 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         {
             progressDialogCopy.dismiss();
         }
+        progressDialog = null;
     }
 }

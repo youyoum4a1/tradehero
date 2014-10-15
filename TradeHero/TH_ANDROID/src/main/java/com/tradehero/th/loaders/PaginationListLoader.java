@@ -1,13 +1,13 @@
 package com.tradehero.th.loaders;
 
 import android.content.Context;
+import com.tradehero.th.utils.Constants;
 import java.util.List;
 import timber.log.Timber;
 
 public abstract class PaginationListLoader<D> extends ListLoader<D>
 {
-    private static final int DEFAULT_ITEM_PER_PAGE = 10;
-    private int itemsPerPage = DEFAULT_ITEM_PER_PAGE;
+    private int itemsPerPage = Constants.COMMON_ITEM_PER_PAGE;
 
     private LoadMode loadMode = LoadMode.IDLE;
 

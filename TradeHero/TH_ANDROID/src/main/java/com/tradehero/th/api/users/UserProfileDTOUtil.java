@@ -4,6 +4,7 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
@@ -90,7 +91,7 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
         {
             if (currentUserProfile != null)
             {
-                List<Integer> userGenHeroIds= currentUserProfile.getUserGeneratedHeroIds();
+                List<Integer> userGenHeroIds = currentUserProfile.getUserGeneratedHeroIds();
                 if (userGenHeroIds != null && userGenHeroIds.size() > 0)
                 {
                     return false;
@@ -101,6 +102,27 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
         else
         {
             return false;
+        }
+    }
+
+    public boolean checkLinkedStatus(@NotNull UserProfileCompactDTO userProfileCompactDTO, @NotNull SocialNetworkEnum socialNetwork)
+    {
+        switch (socialNetwork)
+        {
+            case FB:
+                return userProfileCompactDTO.fbLinked;
+            case LN:
+                return userProfileCompactDTO.liLinked;
+            case QQ:
+                return userProfileCompactDTO.qqLinked;
+            case TH:
+                return userProfileCompactDTO.thLinked;
+            case TW:
+                return userProfileCompactDTO.twLinked;
+            case WB:
+                return userProfileCompactDTO.wbLinked;
+            default:
+                return false;
         }
     }
 }

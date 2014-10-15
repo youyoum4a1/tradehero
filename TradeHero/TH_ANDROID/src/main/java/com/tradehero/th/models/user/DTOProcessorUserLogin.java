@@ -11,10 +11,13 @@ import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Action1;
 
 public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
+    , Action1<UserLoginDTO> // TODO remove when changed DTOProcessor
 {
     @NotNull private final SystemStatusCache systemStatusCache;
+    @NotNull private final CurrentUserId currentUserId;
     @NotNull private final DTOProcessorSignInUpUserProfile processorSignInUp;
 
     //<editor-fold desc="Constructors">
@@ -26,6 +29,7 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
             @NotNull DTOCacheUtil dtoCacheUtil)
     {
         this.systemStatusCache = systemStatusCache;
+        this.currentUserId = currentUserId;
         this.processorSignInUp = new DTOProcessorSignInUpUserProfile(
                 userProfileCache,
                 homeContentCache,
@@ -41,6 +45,7 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
             UserProfileDTO profile = value.profileDTO;
             if (profile != null)
             {
+                currentUserId.set(profile.id);
                 value.profileDTO = processorSignInUp.process(profile);
 
                 UserBaseKey userKey = profile.getBaseKey();
@@ -52,5 +57,10 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
             }
         }
         return value;
+    }
+
+    @Override public void call(UserLoginDTO userLoginDTO)
+    {
+        process(userLoginDTO);
     }
 }

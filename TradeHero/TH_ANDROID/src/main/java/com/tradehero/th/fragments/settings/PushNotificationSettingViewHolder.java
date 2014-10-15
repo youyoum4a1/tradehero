@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.support.annotation.StringRes;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -71,7 +72,7 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
         }
     }
 
-    @Override protected int getStringKeyResId()
+    @StringRes @Override protected int getStringKeyResId()
     {
         return R.string.key_settings_notifications_push;
     }

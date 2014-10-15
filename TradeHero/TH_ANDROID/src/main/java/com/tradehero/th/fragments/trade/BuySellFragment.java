@@ -62,7 +62,6 @@ import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.AskForReviewDialogFragment;
-import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
@@ -161,7 +160,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
     private int selectedPageIndex;
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
-    SocialLinkHelper socialLinkHelper;
     private BroadcastReceiver chartImageButtonClickReceiver;
 
     @Inject Analytics analytics;
@@ -317,7 +315,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyView()
     {
-        detachSocialLinkHelper();
         detachWatchlistFetchTask();
         detachBuySellMiddleCallback();
 
@@ -348,15 +345,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         chartImageButtonClickReceiver = null;
         securityAlertAssistant = null;
         super.onDestroy();
-    }
-
-    protected void detachSocialLinkHelper()
-    {
-        if (socialLinkHelper != null)
-        {
-            socialLinkHelper.setSocialLinkingCallback(null);
-        }
-        socialLinkHelper = null;
     }
 
     protected void detachWatchlistFetchTask()

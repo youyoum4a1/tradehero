@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceGroup;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,43 +13,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.auth.AuthenticationProvider;
+import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-
+import dagger.Lazy;
+import java.util.Map;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
-
-import dagger.Lazy;
 
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
 
-    @Inject UserServiceWrapper userServiceWrapper;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
     @Inject Analytics analytics;
     @Inject protected UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
-    @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;
     @Inject protected SocialConnectSettingViewHolderContainer socialConnectSettingViewHolderContainer;
+    @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;
     @Inject protected SendLoveViewHolder sendLoveViewHolder;
     @Inject protected SendFeedbackViewHolder sendFeedbackViewHolder;
     @Inject protected FaqViewHolder faqViewHolder;
@@ -66,6 +64,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected ResetHelpScreensViewHolder resetHelpScreensViewHolder;
     @Inject protected ClearCacheViewHolder clearCacheViewHolder;
     @Inject protected AboutPrefViewHolder aboutPrefViewHolder;
+    @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
 
     @NotNull private SettingViewHolderList allSettingViewHolders;
     private SocialNetworkEnum socialNetworkToConnectTo;
@@ -73,16 +72,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     public static void putSocialNetworkToConnect(@NotNull Bundle args, @NotNull SocialNetworkEnum socialNetwork)
     {
         args.putString(KEY_SOCIAL_NETWORK_TO_CONNECT, socialNetwork.name());
-    }
-
-    public static void putSocialNetworkToConnect(@NotNull Bundle args, @Nullable SocialShareFormDTO shareFormDTO)
-    {
-        if (shareFormDTO instanceof TimelineItemShareFormDTO &&
-                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO != null &&
-                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork != null)
-        {
-            putSocialNetworkToConnect(args, ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork);
-        }
     }
 
     @Nullable public static SocialNetworkEnum getSocialNetworkToConnect(@Nullable Bundle args)
@@ -105,6 +94,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         setHasOptionsMenu(true);
         addPreferencesFromResource(R.xml.settings);
+        localizationCustomize();
 
         HierarchyInjector.inject(this);
 
@@ -259,6 +249,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         allSettingViewHolders.clear();
         super.onDestroy();
+    }
+
+    private void localizationCustomize()
+    {
+        if (Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA))
+        {
+            Preference facebookPref = getPreferenceScreen().findPreference(getString(R.string.key_settings_sharing_facebook));
+            Preference twitterPref = getPreferenceScreen().findPreference(getString(R.string.key_settings_sharing_twitter));
+            PreferenceGroup sharingGroupPref = (PreferenceGroup) getPreferenceScreen().findPreference(getString(R.string.key_settings_sharing_group));
+            sharingGroupPref.removePreference(facebookPref);
+            sharingGroupPref.removePreference(twitterPref);
+        }
     }
 
     private void initPreferenceClickHandlers()

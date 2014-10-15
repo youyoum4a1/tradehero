@@ -104,9 +104,19 @@ public class RetrofitProtectedModule
         return adapter.create(SecurityServiceAsync.class);
     }
 
+    @Provides @Singleton SecurityServiceRx provideSecurityServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(SecurityServiceRx.class);
+    }
+
     @Provides @Singleton SessionServiceAsync provideSessionServiceAsync(RestAdapter adapter)
     {
         return adapter.create(SessionServiceAsync.class);
+    }
+
+    @Provides @Singleton SessionServiceRx provideSessionServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(SessionServiceRx.class);
     }
 
     @Provides @Singleton SocialServiceAsync provideSocialServiceAsync(RestAdapter adapter)
@@ -131,6 +141,10 @@ public class RetrofitProtectedModule
         return adapter.create(TranslationTokenServiceAsync.class);
     }
 
+    @Provides @Singleton UserServiceRx provideUserServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(UserServiceRx.class);
+    }
     @Provides @Singleton UserServiceAsync provideUserService(RestAdapter adapter)
     {
         return adapter.create(UserServiceAsync.class);

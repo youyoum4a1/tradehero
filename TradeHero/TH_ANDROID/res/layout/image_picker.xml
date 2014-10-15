@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.settings.ImagePickerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+  <TextView
+      android:id="@+id/request_image_from_camera"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/basic_transparent_selector"
+      android:padding="16dp"
+      android:gravity="center"
+      android:textSize="@dimen/text_medium"
+      android:text="@string/user_profile_choose_image_from_camera"
+      tools:text="Image from Camera"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/light_grey_transparent"
+      />
+
+  <TextView
+      android:id="@+id/request_image_from_library"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/basic_transparent_selector"
+      android:padding="16dp"
+      android:gravity="center"
+      android:textSize="@dimen/text_medium"
+      android:text="@string/user_profile_choose_image_from_library"
+      tools:text="Image from Camera"
+      />
+</com.tradehero.th.fragments.settings.ImagePickerView>

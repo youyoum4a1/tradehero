@@ -1,6 +1,7 @@
 package com.tradehero.th.utils;
 
 import com.tradehero.th.BuildConfig;
+import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 
 public class Constants
@@ -13,7 +14,7 @@ public class Constants
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
-    private static final int COMMON_ITEM_PER_PAGE = RELEASE ? 42 : 10;
+    public static final int COMMON_ITEM_PER_PAGE = RELEASE ? 42 : 20;
 
     public static final int TIMELINE_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
 
@@ -58,6 +59,14 @@ public class Constants
     public static final String GCM_STAGING_SENDER = "927417497470";
 
     // To change TAPSTREAM_VERSION, look at gradle build flavor for china
-    public static final TapStreamType TAP_STREAM_TYPE =
-            TapStreamType.fromType(BuildConfig.TAPSTREAM_VERSION);
+    public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(BuildConfig.TAPSTREAM_VERSION);
+    public static final DeviceType DEVICE_TYPE = Constants.TAP_STREAM_TYPE.marketSegment.deviceType;
+
+    public static class Auth
+    {
+        public static final String PARAM_AUTHTOKEN_TYPE = "authTokenType";
+        public static final String PARAM_ACCOUNT_TYPE = "tradehero.mobi";
+    }
+
+    private Constants() {}
 }

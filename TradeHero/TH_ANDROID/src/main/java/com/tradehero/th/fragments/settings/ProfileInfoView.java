@@ -1,17 +1,19 @@
 package com.tradehero.th.fragments.settings;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.text.Editable;
 import android.util.AttributeSet;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -23,33 +25,26 @@ import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromAdapter;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTOFactory;
-import com.tradehero.th.fragments.settings.photo.ChooseImageFromLibraryDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
-import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.BitmapForProfileFactory;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
-import com.tradehero.th.widget.ValidationListener;
-import dagger.Lazy;
-import java.util.Map;
 import javax.inject.Inject;
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.inject.Provider;
+import rx.Observable;
+import rx.android.observables.ViewObservable;
+import rx.functions.Func8;
 import timber.log.Timber;
+
+import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 
 public class ProfileInfoView extends LinearLayout
 {
@@ -62,40 +57,27 @@ public class ProfileInfoView extends LinearLayout
     @InjectView(R.id.et_lastname) EditText lastName;
     @InjectView(R.id.image_optional) @Optional ImageView profileImage;
 
-    @Inject ChooseImageFromDTOFactory chooseImageFromDTOFactory;
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
-    @Inject @AuthHeader Lazy<String> authenticationHeader;
+    @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
+    @Inject AccountManager accountManager;
 
     ProgressDialog progressDialog;
     private UserProfileDTO userProfileDTO;
     private String newImagePath;
-    private Listener listener;
-
-    //<editor-fold desc="Constructors">
-    public ProfileInfoView(Context context)
-    {
-        super(context);
-    }
 
     public ProfileInfoView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        HierarchyInjector.inject(this);
     }
-
-    public ProfileInfoView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-    }
-    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 
@@ -104,6 +86,10 @@ public class ProfileInfoView extends LinearLayout
         super.onAttachedToWindow();
         ButterKnife.inject(this);
         displayProfileImage();
+        if (!isInEditMode())
+        {
+            populateCredentials();
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -112,117 +98,12 @@ public class ProfileInfoView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void setListener(Listener listener)
-    {
-        this.listener = listener;
-    }
-
-    public void forceValidateFields()
-    {
-        if (email != null && email.getVisibility() == VISIBLE)
-        {
-            email.forceValidate();
-        }
-        if (password != null && password.getVisibility() == VISIBLE)
-        {
-            password.forceValidate();
-        }
-        if (confirmPassword != null && confirmPassword.getVisibility() == VISIBLE)
-        {
-            confirmPassword.forceValidate();
-        }
-        if (displayName != null)
-        {
-            displayName.forceValidate();
-        }
-    }
-
     public boolean areFieldsValid()
     {
         return (email == null || email.getVisibility() == GONE || email.isValid()) &&
                 (password == null || password.getVisibility() == GONE || password.isValid()) &&
                 (confirmPassword == null || confirmPassword.getVisibility() == GONE || confirmPassword.isValid()) &&
                 (displayName == null || displayName.isValid());
-    }
-
-    public void setOnTouchListenerOnFields(View.OnTouchListener touchListener)
-    {
-        if (email != null)
-        {
-            email.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (password != null)
-        {
-            password.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (confirmPassword != null)
-        {
-            confirmPassword.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (displayName != null)
-        {
-            displayName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (firstName != null)
-        {
-            firstName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-        if (lastName != null)
-        {
-            lastName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        }
-    }
-
-    public void addValidationListenerOnFields(ValidationListener listener)
-    {
-        if (email != null)
-        {
-            email.setListener(listener);
-        }
-        if (password != null)
-        {
-            password.setListener(listener);
-        }
-        if (confirmPassword != null)
-        {
-            confirmPassword.setListener(listener);
-        }
-        if (displayName != null)
-        {
-            displayName.setListener(listener);
-        }
-    }
-
-    public void removeAllListenersOnFields()
-    {
-        if (email != null)
-        {
-            email.setListener(null);
-        }
-        if (password != null)
-        {
-            password.setListener(null);
-        }
-        if (confirmPassword != null)
-        {
-            confirmPassword.setListener(null);
-        }
-        if (displayName != null)
-        {
-            displayName.setListener(null);
-        }
-    }
-
-    public void setNullOnFields()
-    {
-        email = null;
-        password = null;
-        confirmPassword = null;
-        displayName = null;
-        referralCode = null;
-        firstName = null;
-        lastName = null;
-        progressDialog = null;
     }
 
     public void handleDataFromLibrary(Intent data)
@@ -248,34 +129,6 @@ public class ProfileInfoView extends LinearLayout
         displayProfileImage();
     }
 
-    public UserFormDTO createForm()
-    {
-        UserFormDTO created = new UserFormDTO();
-        created.email = getTextValue(email);
-        created.password = getTextValue(password);
-        created.passwordConfirmation = getTextValue(confirmPassword);
-        created.displayName = getTextValue(displayName);
-        created.firstName = getTextValue(firstName);
-        created.lastName = getTextValue(lastName);
-        created.profilePicture = safeCreateProfilePhoto();
-        return created;
-    }
-
-    public void populateUserFormMap(Map<String, Object> map)
-    {
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_EMAIL, email.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD, password.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_INVITE_CODE, referralCode.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, firstName.getText());
-        populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
-        if (newImagePath != null)
-        {
-            map.put(UserFormFactory.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
-        }
-    }
-
     protected BitmapTypedOutput safeCreateProfilePhoto()
     {
         BitmapTypedOutput created = null;
@@ -292,26 +145,6 @@ public class ProfileInfoView extends LinearLayout
             }
         }
         return created;
-    }
-
-    private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
-    {
-        if (toPick != null)
-        {
-            toFill.put(key, toPick.toString());
-        }
-    }
-
-    private String getTextValue(TextView textView)
-    {
-        if (textView != null)
-        {
-            return textView.getText().toString();
-        }
-        else
-        {
-            return null;
-        }
     }
 
     public void populate(UserProfileDTO userProfileDTO)
@@ -334,6 +167,7 @@ public class ProfileInfoView extends LinearLayout
         displayProfileImage();
     }
 
+    //region Display user information
     public void displayProfileImage()
     {
         if (newImagePath != null)
@@ -402,35 +236,33 @@ public class ProfileInfoView extends LinearLayout
                     .into(profileImage);
         }
     }
+    //endregion
 
-    // TODO pass something else
-    public void populateCredentials(JSONObject credentials)
+    private void populateCredentials()
     {
-        if (credentials == null)
-        {
-            Timber.e(new NullPointerException("credentials were null current auth type " +  authenticationHeader.get()), "");
-            THToast.show(R.string.error_fetch_your_user_profile);
-        }
-        else
+        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        if (accounts != null && accounts.length > 0)
         {
             String emailValue = null, passwordValue = null;
-            try
+            for (Account account: accounts)
             {
-                // We test here just to reduce the number of errors sent to Crashlytics
-                if (credentials.has("email"))
+                if (account.name != null)
                 {
-                    emailValue = credentials.getString("email");
-                    this.email.setText(emailValue);
-                }
-                if (credentials.has("password"))
-                {
-                    passwordValue = credentials.getString("password");
+                    String currentPassword = accountManager.getPassword(account);
+                    if (currentPassword != null)
+                    {
+                        emailValue = account.name;
+                        passwordValue = currentPassword;
+
+                        // TODO what if we have more than 1 account with both email & pass
+                        break;
+                    }
+
+                    emailValue = account.name;
                 }
             }
-            catch (JSONException e)
-            {
-                Timber.e(e, "populateCredentials");
-            }
+
+            this.email.setText(emailValue);
             this.password.setText(passwordValue);
             this.confirmPassword.setText(passwordValue);
 
@@ -439,78 +271,84 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
-    public EmailCredentialsDTO getEmailCredentialsDTO()
-    {
-        return new EmailCredentialsDTO(
-                email.getText().toString(),
-                password.getText().toString());
-    }
-
     @OnClick(R.id.image_optional) @Optional
     protected void showImageFromDialog()
     {
-        ChooseImageFromAdapter adapter = new ChooseImageFromAdapter(
-                getContext(),
-                R.layout.choose_from_item);
-        adapter.addAll(chooseImageFromDTOFactory.getAll(getContext()));
-        alertDialogUtil.popWithNegativeButton(getContext(),
-                getContext().getString(R.string.user_profile_choose_image_from_choice),
-                null, getContext().getString(R.string.cancel),
-                adapter, createChooseImageDialogClickListener(),
-                null);
+        ImagePickerView imagePickerView = (ImagePickerView) LayoutInflater.from(getContext())
+                .inflate(R.layout.image_picker, null);
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setTitle(R.string.user_profile_choose_image_from_choice)
+                .setNegativeButton(R.string.cancel, null)
+                .setView(imagePickerView)
+                .create();
+        alertDialog.show();
     }
 
-    protected void handleChooseImage(ChooseImageFromDTO chooseImageFrom)
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (chooseImageFrom instanceof ChooseImageFromCameraDTO)
+        // handle image upload
+        if (resultCode == Activity.RESULT_OK)
         {
-            notifyImageFromCameraRequested();
+            if ((requestCode == ImagePickerView.REQUEST_CAMERA || requestCode == ImagePickerView.REQUEST_GALLERY) && data != null)
+            {
+                try
+                {
+                    handleDataFromLibrary(data);
+                }
+                catch (OutOfMemoryError e)
+                {
+                    THToast.show(R.string.error_decode_image_memory);
+                }
+                catch (Exception e)
+                {
+                    THToast.show(R.string.error_fetch_image_library);
+                    Timber.e(e, "Failed to extract image from library");
+                }
+            }
+            else if (requestCode == ImagePickerView.REQUEST_GALLERY)
+            {
+                Timber.e(new Exception("Got null data from library"), "");
+            }
         }
-        else if (chooseImageFrom instanceof ChooseImageFromLibraryDTO)
+        else if (resultCode != Activity.RESULT_CANCELED)
         {
-            notifyImageFromLibraryRequested();
-        }
-        else
-        {
-            Timber.e(new Exception("unhandled ChooseFrom type " + chooseImageFrom), "");
-        }
-    }
-
-    protected void notifyImageFromCameraRequested()
-    {
-        Listener listenerCopy = listener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onImageFromCameraRequested();
-        }
-    }
-
-    protected void notifyImageFromLibraryRequested()
-    {
-        Listener listenerCopy = listener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onImageFromLibraryRequested();
+            Timber.e(new Exception("Failed to get image from library, resultCode: " + resultCode), "");
         }
     }
 
-    protected AlertDialogUtil.OnClickListener<ChooseImageFromDTO> createChooseImageDialogClickListener()
+    public Observable<UserFormDTO> obtainUserFormDTO()
     {
-        return new ProfileInfoViewChooseImageDialogClickListener();
-    }
+        return Observable.combineLatest(
+                ViewObservable.text(email, true),
+                ViewObservable.text(password, true),
+                ViewObservable.text(confirmPassword, true),
+                ViewObservable.text(displayName, true),
+                ViewObservable.text(referralCode, true),
+                ViewObservable.text(firstName, true),
+                ViewObservable.text(lastName, true),
+                Observable.just(profileImage),
+                new Func8<ServerValidatedEmailText, ValidatedPasswordText, MatchingPasswordText, ServerValidatedUsernameText, EditText, EditText, EditText, ImageView, UserFormDTO>()
+                {
+                    @Override public UserFormDTO call(ServerValidatedEmailText serverValidatedEmailText, ValidatedPasswordText validatedPasswordText,
+                            MatchingPasswordText matchingPasswordText, ServerValidatedUsernameText serverValidatedUsernameText, EditText referralCode,
+                            EditText firstName, EditText lastName, ImageView profileImage)
+                    {
+                        serverValidatedEmailText.forceValidate();
+                        validatedPasswordText.forceValidate();
+                        matchingPasswordText.forceValidate();
+                        serverValidatedUsernameText.forceValidate();
+                        return userFormBuilderProvider.get()
+                                .email(serverValidatedEmailText.getText().toString())
+                                .password(validatedPasswordText.getText().toString())
+                                .displayName(serverValidatedUsernameText.getText().toString())
+                                .inviteCode(referralCode.getText().toString())
+                                .firstName(firstName.getText().toString())
+                                .lastName(lastName.getText().toString())
+                                .profilePicture(safeCreateProfilePhoto())
+                                .build();
+                    }
+                }
 
-    protected class ProfileInfoViewChooseImageDialogClickListener implements AlertDialogUtil.OnClickListener<ChooseImageFromDTO>
-    {
-        @Override public void onClick(ChooseImageFromDTO which)
-        {
-            handleChooseImage(which);
-        }
-    }
-
-    public static interface Listener
-    {
-        void onUpdateRequested();
-        void onImageFromCameraRequested();
-        void onImageFromLibraryRequested();
+        );
     }
 }

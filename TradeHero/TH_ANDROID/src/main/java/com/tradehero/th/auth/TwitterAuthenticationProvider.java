@@ -1,155 +1,130 @@
 package com.tradehero.th.auth;
 
+import android.app.Activity;
 import android.content.Context;
-import com.tradehero.th.auth.operator.Twitter;
-import com.tradehero.th.base.JSONCredentials;
-import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
+import android.content.Intent;
+import android.webkit.CookieSyncManager;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.auth.operator.ConsumerKey;
+import com.tradehero.th.auth.operator.ConsumerSecret;
+import com.tradehero.th.auth.operator.OperatorOAuthDialog;
+import com.tradehero.th.network.service.SocialLinker;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.json.JSONException;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
+import org.jetbrains.annotations.NotNull;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 @Singleton
 public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
 {
-    private final Twitter twitter;
+    private static final String REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token";
+    private static final String AUTHORIZE_URL = "https://api.twitter.com/oauth/authorize";
+    private static final String ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
+    private static final String CALLBACK_URL = "twitter-oauth://complete";
 
-    @Inject public TwitterAuthenticationProvider(Twitter twitter)
+    private static final String SERVICE_URL_ID = "api.twitter";
+    private static final String USER_ID_PARAM = "user_id";
+    private static final String SCREEN_NAME_PARAM = "screen_name";
+
+    private final OAuthProvider provider;
+    private final CommonsHttpOAuthConsumer consumer;
+
+    @Inject public TwitterAuthenticationProvider(@NotNull SocialLinker socialLinker,
+            @ConsumerKey(SocialNetworkEnum.TW) String consumerKey,
+            @ConsumerSecret(SocialNetworkEnum.TW) String consumerSecret)
     {
-        this.twitter = twitter;
+        super(socialLinker);
+        provider = new CommonsHttpOAuthProvider(
+                REQUEST_TOKEN_URL,
+                ACCESS_TOKEN_URL,
+                AUTHORIZE_URL);
+
+        consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
     }
 
-    @Override public void authenticate(final THAuthenticationProvider.THAuthenticationCallback callback)
+    @Override protected Observable<AuthData> createAuthDataObservable(Activity activity)
     {
-        if (currentOperationCallback != null)
-        {
-            cancel();
-        }
-        currentOperationCallback = callback;
-
-        Context context = baseContext == null ? null : baseContext.get();
-        if (context == null)
-        {
-            throw new IllegalStateException(
-                    "Context must be non-null for Twitter authentication to proceed.");
-        }
-
-        if (callback != null)
-        {
-            callback.onStart();
-        }
-
-        twitter.authorize(context, new THAuthenticationCallback()
-        {
-            @Override public void onCancel()
-            {
-                TwitterAuthenticationProvider.this.handleCancel(callback);
-            }
-
-            @Override public void onError(Throwable error)
-            {
-                if (TwitterAuthenticationProvider.this.currentOperationCallback != callback)
+        return createRequestTokenObservable(activity)
+                .flatMap(new Func1<String, Observable<AuthData>>()
                 {
-                    return;
-                }
+                    @Override public Observable<AuthData> call(String s)
+                    {
+                        return createRetrieveTokenObservable(s);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // do nothing
+    }
+
+    @Override public void logout()
+    {
+        consumer.setTokenWithSecret(null, null);
+    }
+
+    private Observable<String> createRequestTokenObservable(final Context context)
+    {
+        return Observable.create(new Observable.OnSubscribe<String>()
+        {
+
+            @Override public void call(Subscriber<? super String> subscriber)
+            {
                 try
                 {
-                    callback.onError(error);
+                    String requestToken = provider.retrieveRequestToken(consumer, CALLBACK_URL);
+                    CookieSyncManager.createInstance(context);
+                    subscriber.onNext(requestToken);
+                    subscriber.onCompleted();
                 }
-                finally
+                catch (Throwable e)
                 {
-                    TwitterAuthenticationProvider.this.currentOperationCallback = null;
+                    subscriber.onError(e);
                 }
             }
-
-            @Override public void onStart()
-            {
-                callback.onStart();
-            }
-
-            @Override public void onSuccess(JSONCredentials result)
-            {
-                if (TwitterAuthenticationProvider.this.currentOperationCallback != callback)
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<String, Observable<String>>()
                 {
-                    return;
-                }
+                    @Override public Observable<String> call(final String tokenRequestUrl)
+                    {
+                        return Observable.create(new OperatorOAuthDialog(context, tokenRequestUrl, CALLBACK_URL, SERVICE_URL_ID));
+                    }
+                })
+                .observeOn(Schedulers.io());
+    }
+
+    private Observable<AuthData> createRetrieveTokenObservable(final String verifier)
+    {
+        return Observable.create(new Observable.OnSubscribe<AuthData>()
+        {
+            @Override public void call(Subscriber<? super AuthData> subscriber)
+            {
                 try
                 {
-                    JSONCredentials authData;
-                    try
-                    {
-                        authData = TwitterAuthenticationProvider.this.getAuthData(
-                                TwitterAuthenticationProvider.this.twitter.getUserId(),
-                                TwitterAuthenticationProvider.this.twitter.getScreenName(),
-                                TwitterAuthenticationProvider.this.twitter.getAuthToken(),
-                                TwitterAuthenticationProvider.this.twitter.getAuthTokenSecret());
-                    }
-                    catch (JSONException e)
-                    {
-                        callback.onError(e);
-                        return;
-                    }
-                    callback.onSuccess(authData);
+                    Timber.d("Verifier: " + verifier);
+                    provider.retrieveAccessToken(consumer, verifier);
+                    // TODO lot of information can be extracted from response parameters
+                    provider.getResponseParameters();
+                    subscriber.onNext(new AuthData(SocialNetworkEnum.TW, null, consumer.getToken(), consumer.getTokenSecret()));
+                    subscriber.onCompleted();
                 }
-                finally
+                catch (Throwable e)
                 {
-                    TwitterAuthenticationProvider.this.currentOperationCallback = null;
+                    subscriber.onError(e);
                 }
             }
-        });
-    }
-
-    public JSONCredentials getAuthData(String userId, String screenName, String authToken, String authTokenSecret)
-            throws JSONException
-    {
-        JSONCredentials authData = new JSONCredentials();
-        authData.put(AUTH_TOKEN_KEY, authToken);
-        authData.put(AUTH_TOKEN_SECRET_KEY, authTokenSecret);
-        authData.put(ID_KEY, userId);
-        authData.put(SCREEN_NAME_KEY, screenName);
-        authData.put(CONSUMER_KEY_KEY, twitter.getConsumerKey());
-        authData.put(CONSUMER_SECRET_KEY, twitter.getConsumerSecret());
-        return authData;
-    }
-
-    @Override public void deauthenticate()
-    {
-        twitter.setAuthToken(null);
-        twitter.setAuthTokenSecret(null);
-        twitter.setScreenName(null);
-        twitter.setUserId(null);
-    }
-
-    @Override public String getAuthType()
-    {
-        return TwitterCredentialsDTO.TWITTER_AUTH_TYPE;
-    }
-
-    @Override public String getAuthHeaderParameter()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append(twitter.getAuthToken()).append(":").append(twitter.getAuthTokenSecret());
-        return sb.toString();
-    }
-
-    @Override public boolean restoreAuthentication(JSONCredentials authData)
-    {
-        if (authData == null)
-        {
-            deauthenticate();
-            return true;
-        }
-        try
-        {
-            twitter.setAuthToken(authData.getString(AUTH_TOKEN_KEY));
-            twitter.setAuthTokenSecret(authData.getString(AUTH_TOKEN_SECRET_KEY));
-            twitter.setUserId(authData.getString(ID_KEY));
-            twitter.setScreenName(authData.getString(SCREEN_NAME_KEY));
-
-            return true;
-        }
-        catch (Exception e)
-        {
-        }
-        return false;
+        }).observeOn(AndroidSchedulers.mainThread());
     }
 }

@@ -12,7 +12,8 @@ import dagger.Module;
                 DiscoveryDiscussionFragment.class,
                 LearningFragment.class,
 
-                RegionalNewsSelectorView.class
+                RegionalNewsSelectorView.class,
+                RegionalNewsSearchableSelectorView.class
         },
         library = true,
         complete = false

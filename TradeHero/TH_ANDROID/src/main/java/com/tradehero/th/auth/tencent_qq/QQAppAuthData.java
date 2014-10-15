@@ -2,26 +2,33 @@ package com.tradehero.th.auth.tencent_qq;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import timber.log.Timber;
 
 public class QQAppAuthData
 {
-    public String openid;
-    public String expires_in;
-    public String access_token;
+    public static final String JSON_KEY_OPEN_ID = "openid";
+    public static final String JSON_KEY_EXPIRES_IN = "expires_in";
+    public static final String JSON_KEY_ACCESS_TOKEN = "access_token";
 
-    public static QQAppAuthData parseAccessToken(JSONObject o)
+    public String openId;
+    public String expiresIn;
+    public String accessToken;
+
+    //<editor-fold desc="Constructors">
+    public QQAppAuthData(Object object) throws JSONException
     {
-        QQAppAuthData data = new QQAppAuthData();
-        try
-        {
-            data.openid = (String) o.get("openid");
-            data.expires_in = String.valueOf(o.get("expires_in"));
-            data.access_token = (String) o.get("access_token");
-        } catch (JSONException e)
-        {
-            Timber.e("QQAppAuthData " + e.toString());
-        }
-        return data;
+        this(object.toString());
     }
+
+    public QQAppAuthData(String object) throws JSONException
+    {
+        this(new JSONObject(object));
+    }
+
+    public QQAppAuthData(JSONObject jsonObject) throws JSONException
+    {
+        openId = (String) jsonObject.get(JSON_KEY_OPEN_ID);
+        expiresIn = String.valueOf(jsonObject.get(JSON_KEY_EXPIRES_IN));
+        accessToken = (String) jsonObject.get(JSON_KEY_ACCESS_TOKEN);
+    }
+    //</editor-fold>
 }

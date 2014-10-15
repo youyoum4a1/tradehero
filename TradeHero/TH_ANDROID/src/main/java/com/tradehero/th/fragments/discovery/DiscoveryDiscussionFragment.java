@@ -23,6 +23,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
@@ -63,7 +64,10 @@ public class DiscoveryDiscussionFragment extends Fragment
 
             @Override protected ListLoader<TimelineItemDTOKey> onCreateLoader(Bundle args)
             {
-                return new TimelineListLoader(getActivity(), currentUserId.toUserBaseKey(), UserTimelineService.TimelineSection.Hot);
+                TimelineListLoader timelineListLoader =
+                        new TimelineListLoader(getActivity(), currentUserId.toUserBaseKey(), UserTimelineService.TimelineSection.Hot);
+                timelineListLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);
+                return timelineListLoader;
             }
         });
 

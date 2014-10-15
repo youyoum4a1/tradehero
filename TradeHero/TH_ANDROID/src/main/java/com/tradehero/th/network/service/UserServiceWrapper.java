@@ -59,15 +59,21 @@ import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 @Singleton public class UserServiceWrapper
 {
     @NotNull private final UserService userService;
     @NotNull private final UserServiceAsync userServiceAsync;
+    @NotNull private final UserServiceRx userServiceRx;
+    @NotNull private final Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final DTOCacheUtil dtoCacheUtil;
     @NotNull private final Lazy<UserProfileCache> userProfileCache;
@@ -84,6 +90,7 @@ import retrofit.Callback;
     @Inject public UserServiceWrapper(
             @NotNull UserService userService,
             @NotNull UserServiceAsync userServiceAsync,
+            @NotNull UserServiceRx userServiceRx,
             @NotNull CurrentUserId currentUserId,
             @NotNull DTOCacheUtil dtoCacheUtil,
             @NotNull Lazy<UserProfileCache> userProfileCache,
@@ -94,6 +101,7 @@ import retrofit.Callback;
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull Lazy<ProviderCache> providerCache,
             @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache,
+            @NotNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
             @NotNull Lazy<HomeContentCache> homeContentCache)
     {
         this.userService = userService;
@@ -108,6 +116,8 @@ import retrofit.Callback;
         this.providerListCache = providerListCache;
         this.providerCache = providerCache;
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
+        this.userServiceRx = userServiceRx;
+        this.userFormBuilderProvider = userFormBuilderProvider;
         this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
@@ -165,6 +175,58 @@ import retrofit.Callback;
                     userFormDTO.profilePicture);
         }
         return createSignInUpProfileProcessor().process(created);
+    }
+
+    public Observable<UserProfileDTO> signUpWithEmailRx(
+            String authorization,
+            UserFormDTO userFormDTO)
+    {
+        Observable<UserProfileDTO> created;
+        if (userFormDTO.profilePicture == null)
+        {
+            created = userServiceRx.signUpWithEmail(
+                    authorization,
+                    userFormDTO.biography,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.location,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.username,
+                    userFormDTO.website);
+        }
+        else
+        {
+            created = userServiceRx.signUpWithEmail(
+                    authorization,
+                    userFormDTO.biography,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.location,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.username,
+                    userFormDTO.website,
+                    userFormDTO.profilePicture);
+        }
+
+        return created.doOnNext(new Action1<UserProfileDTO>()
+        {
+            @Override public void call(UserProfileDTO userProfileDTO)
+            {
+                createSignInUpProfileProcessor().process(userProfileDTO);
+            }
+        });
     }
 
     public MiddleCallback<UserProfileDTO> signUpWithEmail(
@@ -336,12 +398,65 @@ import retrofit.Callback;
         return middleCallback;
     }
 
+    public Observable<UserProfileDTO> updateProfileRx(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UserFormDTO userFormDTO)
+    {
+        Observable<UserProfileDTO> created;
+        if (userFormDTO.profilePicture == null)
+        {
+            created = userServiceRx.updateProfileRx(
+                    userBaseKey.key,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.username,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.biography,
+                    userFormDTO.location,
+                    userFormDTO.website);
+        }
+        else
+        {
+            created = userServiceRx.updateProfileRx(
+                    userBaseKey.key,
+                    userFormDTO.deviceToken,
+                    userFormDTO.displayName,
+                    userFormDTO.email,
+                    userFormDTO.firstName,
+                    userFormDTO.lastName,
+                    userFormDTO.password,
+                    userFormDTO.passwordConfirmation,
+                    userFormDTO.username,
+                    userFormDTO.emailNotificationsEnabled,
+                    userFormDTO.pushNotificationsEnabled,
+                    userFormDTO.biography,
+                    userFormDTO.location,
+                    userFormDTO.website,
+                    userFormDTO.profilePicture);
+        }
+
+        return created.map(new Func1<UserProfileDTO, UserProfileDTO>()
+        {
+            @Override public UserProfileDTO call(UserProfileDTO userProfileDTO)
+            {
+                return createUpdateProfileProcessor().process(userProfileDTO);
+            }
+        });
+    }
+
     public UserProfileDTO updateProfilePropertyEmailNotifications(
             @NotNull UserBaseKey userBaseKey,
             @NotNull Boolean emailNotificationsEnabled)
     {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
+        UserFormDTO userFormDTO = userFormBuilderProvider.get()
+                .emailNotificationsEnabled(emailNotificationsEnabled)
+                .build();
         return this.updateProfile(userBaseKey, userFormDTO);
     }
 
@@ -350,8 +465,9 @@ import retrofit.Callback;
             @NotNull Boolean emailNotificationsEnabled,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
+        UserFormDTO userFormDTO = userFormBuilderProvider.get()
+                .emailNotificationsEnabled(emailNotificationsEnabled)
+                .build();
         return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
 
@@ -359,8 +475,9 @@ import retrofit.Callback;
             @NotNull UserBaseKey userBaseKey,
             @NotNull Boolean pushNotificationsEnabled)
     {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
+        UserFormDTO userFormDTO = userFormBuilderProvider.get()
+                .pushNotificationsEnabled(pushNotificationsEnabled)
+                .build();
         return this.updateProfile(userBaseKey, userFormDTO);
     }
 
@@ -369,8 +486,9 @@ import retrofit.Callback;
             @NotNull Boolean pushNotificationsEnabled,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
+        UserFormDTO userFormDTO = userFormBuilderProvider.get()
+                .pushNotificationsEnabled(pushNotificationsEnabled)
+                .build();
         return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
     //</editor-fold>
@@ -486,6 +604,11 @@ import retrofit.Callback;
     public UserProfileDTO getUser(@NotNull UserBaseKey userKey)
     {
         return userService.getUser(userKey.key);
+    }
+
+    public Observable<UserProfileDTO> getUserRx(@NotNull UserBaseKey userKey)
+    {
+        return userService.getUserRx(userKey.key);
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> getUser(

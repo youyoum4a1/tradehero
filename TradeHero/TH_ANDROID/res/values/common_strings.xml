@@ -82,4 +82,6 @@
   <string name="ok">OK</string>
   <string name="downloading_relations">Downloading relations...</string>
   <string name="upgrade_now">Upgrade Now!</string>
+
+  <string name="device_no_camera">Unable to detect any camera.</string>
 </resources>

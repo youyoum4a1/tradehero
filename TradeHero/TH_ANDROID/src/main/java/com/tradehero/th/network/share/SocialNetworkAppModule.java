@@ -1,9 +1,11 @@
 package com.tradehero.th.network.share;
 
 import android.content.Context;
+import com.facebook.FacebookPermissionsConstants;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.ConsumerKey;
 import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.FacebookAppId;
@@ -17,9 +19,10 @@ import com.tradehero.th.models.share.ShareDestinationId;
 import com.tradehero.th.models.share.ShareDestinationIndexResComparator;
 import dagger.Module;
 import dagger.Provides;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import javax.inject.Singleton;
 import timber.log.Timber;
@@ -48,21 +51,21 @@ public class SocialNetworkAppModule
                     + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
                     + "follow_app_official_microblog," + "invitation_write";
 
-    @Provides @Singleton @ConsumerKey("Twitter") String provideTwitterConsumerKey()
+    @Provides @Singleton @ConsumerKey(SocialNetworkEnum.TW) String provideTwitterConsumerKey()
     {
         return TWITTER_CONSUMER_KEY;
     }
 
-    @Provides @Singleton @ConsumerSecret("Twitter") String provideTwitterConsumerSecret()
+    @Provides @Singleton @ConsumerSecret(SocialNetworkEnum.TW) String provideTwitterConsumerSecret()
     {
         return TWITTER_CONSUMER_SECRET;
     }
 
-    @Provides @Singleton @ConsumerKey("LinkedIn") String provideLinkedInConsumerKey()
+    @Provides @Singleton @ConsumerKey(SocialNetworkEnum.LN) String provideLinkedInConsumerKey()
     {
         return LINKEDIN_CONSUMER_KEY;
     }
-    @Provides @Singleton @ConsumerSecret("LinkedIn") String provideLinkedInConsumerSecret()
+    @Provides @Singleton @ConsumerSecret(SocialNetworkEnum.LN) String provideLinkedInConsumerSecret()
     {
         return LINKEDIN_CONSUMER_SECRET;
     }
@@ -75,16 +78,15 @@ public class SocialNetworkAppModule
     @Provides @Singleton @ForWeiboAppAuthData
     WeiboAppAuthData provideWeiboAppId()
     {
-        WeiboAppAuthData data = new WeiboAppAuthData();
-        data.appId = WEIBO_APP_ID;
-        data.redirectUrl = WEIBO_REDIRECT_URL;
-        data.scope = WEIBO_SCOPE;
-        return data;
+        return new WeiboAppAuthData(
+            WEIBO_APP_ID,
+            WEIBO_REDIRECT_URL,
+            WEIBO_SCOPE);
     }
 
-    @Provides @Singleton @FacebookPermissions Collection<String> provideFacebookPermissions()
+    @Provides @Singleton @FacebookPermissions List<String> provideFacebookPermissions()
     {
-        return null;
+        return Arrays.asList(FacebookPermissionsConstants.PUBLIC_PROFILE, FacebookPermissionsConstants.EMAIL);
     }
 
     @Provides @Singleton IWXAPI createWXAPI(Context context)

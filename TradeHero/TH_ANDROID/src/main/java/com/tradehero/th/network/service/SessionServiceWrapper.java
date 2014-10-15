@@ -4,9 +4,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -27,12 +25,14 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class SessionServiceWrapper
 {
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final SessionService sessionService;
     @NotNull private final SessionServiceAsync sessionServiceAsync;
+    @NotNull private final SessionServiceRx sessionServiceRx;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final DTOCacheUtil dtoCacheUtil;
     @NotNull private final Context context;
@@ -45,6 +45,7 @@ import retrofit.Callback;
             @NotNull CurrentUserId currentUserId,
             @NotNull SessionService sessionService,
             @NotNull SessionServiceAsync sessionServiceAsync,
+            @NotNull SessionServiceRx sessionServiceRx,
             @NotNull UserProfileCache userProfileCache,
             @NotNull DTOCacheUtil dtoCacheUtil,
             @NotNull Context context,
@@ -55,6 +56,7 @@ import retrofit.Callback;
         this.currentUserId = currentUserId;
         this.sessionService = sessionService;
         this.sessionServiceAsync = sessionServiceAsync;
+        this.sessionServiceRx = sessionServiceRx;
         this.userProfileCache = userProfileCache;
         this.dtoCacheUtil = dtoCacheUtil;
         this.context = context;
@@ -65,7 +67,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
-    @NotNull protected DTOProcessor<UserLoginDTO> createUserLoginProcessor()
+    @NotNull protected DTOProcessorUserLogin createUserLoginProcessor()
     {
         return new DTOProcessorUserLogin(
                 systemStatusCache.get(),
@@ -91,14 +93,21 @@ import retrofit.Callback;
     //<editor-fold desc="Login">
     @NotNull public UserLoginDTO login(
             @NotNull String authorization,
-            @NotNull LoginFormDTO loginFormDTO)
+            @NotNull LoginSignUpFormDTO loginFormDTO)
     {
         return createUserLoginProcessor().process(sessionService.login(authorization, loginFormDTO));
     }
 
+    @NotNull public Observable<UserLoginDTO> loginRx(
+            @NotNull String authorization,
+            @NotNull LoginSignUpFormDTO loginFormDTO)
+    {
+        return sessionServiceRx.login(authorization, loginFormDTO);
+    }
+
     @NotNull public MiddleCallback<UserLoginDTO> login(
             @NotNull String authorization,
-            @NotNull LoginFormDTO loginFormDTO,
+            @NotNull LoginSignUpFormDTO loginFormDTO,
             @Nullable Callback<UserLoginDTO> callback)
     {
         MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());
@@ -112,7 +121,7 @@ import retrofit.Callback;
             @NotNull String authorization,
             @NotNull LoginSignUpFormDTO loginSignUpFormDTO)
     {
-        return sessionService.signupAndLogin(authorization, loginSignUpFormDTO);
+        return createUserLoginProcessor().process(sessionService.signupAndLogin(authorization, loginSignUpFormDTO));
     }
 
     @NotNull public MiddleCallback<UserLoginDTO> signupAndLogin(
@@ -123,6 +132,21 @@ import retrofit.Callback;
         MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());
         sessionServiceAsync.signupAndLogin(authorization, loginSignUpFormDTO, middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<UserLoginDTO> signupAndLoginRx(@NotNull String authorizationHeader, @NotNull LoginSignUpFormDTO loginSignUpFormDTO)
+    {
+        Observable<UserLoginDTO> userLoginDTOObservable;
+        switch (loginSignUpFormDTO.authData.socialNetworkEnum)
+        {
+            case TH:
+                userLoginDTOObservable = sessionServiceRx.login(authorizationHeader, loginSignUpFormDTO);
+                break;
+            default:
+                userLoginDTOObservable = sessionServiceRx.signupAndLogin(authorizationHeader, loginSignUpFormDTO);
+        }
+
+        return userLoginDTOObservable.doOnNext(createUserLoginProcessor());
     }
     //</editor-fold>
 
@@ -155,17 +179,17 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Update Authorization Tokens">
-    @NotNull BaseResponseDTO updateAuthorizationTokens(@NotNull UserFormDTO userFormDTO)
+    @NotNull public BaseResponseDTO updateAuthorizationTokens(@NotNull LoginSignUpFormDTO userFormDTO)
     {
-        return sessionService.updateAuthorizationTokens(userFormDTO);
+        return sessionService.updateAuthorizationTokens(userFormDTO.authData.getTHToken(), userFormDTO);
     }
 
     @NotNull public MiddleCallback<BaseResponseDTO> updateAuthorizationTokens(
-            @NotNull UserFormDTO userFormDTO,
+            @NotNull LoginSignUpFormDTO userFormDTO,
             @Nullable Callback<BaseResponseDTO> callback)
     {
         MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        sessionServiceAsync.updateAuthorizationTokens(userFormDTO, middleCallback);
+        sessionServiceAsync.updateAuthorizationTokens(userFormDTO.authData.getTHToken(), userFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

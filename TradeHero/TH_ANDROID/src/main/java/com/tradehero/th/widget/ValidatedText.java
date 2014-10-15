@@ -148,7 +148,7 @@ public class ValidatedText extends EditText
     //</editor-fold>
 
     //<editor-fold desc="Listeners">
-    public void setListener(@Nullable ValidationListener listener)
+    public void setValidationListener(@Nullable ValidationListener listener)
     {
         this.listener = listener;
     }
