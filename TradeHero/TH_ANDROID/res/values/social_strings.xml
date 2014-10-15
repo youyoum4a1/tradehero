@@ -2,6 +2,8 @@
 <resources>
 
   <string name="social_search_people_hint">Enter a name</string>
+  <string name="account_already_linked_title">Already linked</string>
+  <string name="account_already_linked_message">This account is already linked with another TradeHero account.\nTry using another one</string>
 
   <integer name="social_destination_id_facebook">0</integer>
   <integer name="social_destination_id_linkedin">1</integer>
