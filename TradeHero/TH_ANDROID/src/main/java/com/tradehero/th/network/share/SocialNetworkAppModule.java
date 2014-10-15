@@ -1,7 +1,6 @@
 package com.tradehero.th.network.share;
 
 import android.content.Context;
-import com.facebook.FacebookPermissionsConstants;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tradehero.th.R;
@@ -26,6 +25,10 @@ import java.util.List;
 import java.util.Set;
 import javax.inject.Singleton;
 import timber.log.Timber;
+
+import static com.facebook.FacebookPermissionsConstants.EMAIL;
+import static com.facebook.FacebookPermissionsConstants.PUBLIC_PROFILE;
+import static com.facebook.FacebookPermissionsConstants.PUBLISH_WALL_FRIEND;
 
 @Module(
         injects = {
@@ -86,7 +89,8 @@ public class SocialNetworkAppModule
 
     @Provides @Singleton @FacebookPermissions List<String> provideFacebookPermissions()
     {
-        return Arrays.asList(FacebookPermissionsConstants.PUBLIC_PROFILE, FacebookPermissionsConstants.EMAIL);
+        // TODO separate read permission and publish/write permission
+        return Arrays.asList(PUBLIC_PROFILE, EMAIL, PUBLISH_WALL_FRIEND);
     }
 
     @Provides @Singleton IWXAPI createWXAPI(Context context)
