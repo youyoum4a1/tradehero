@@ -110,15 +110,15 @@ import retrofit.Callback;
     //</editor-fold>
 
     @NotNull public MiddleCallback<GetPositionsDTO> getPositionsDirect(
-            @NotNull int userId, int page, int perpage,
+            @NotNull int userId,
             @Nullable Callback<GetPositionsDTO> callback)
     {
         MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
 
         this.positionServiceAsync.getPositionsDirect(
                 userId,
-                page,
-                perpage,
+                //page,
+                //perpage,
                 middleCallback);
 
         return middleCallback;

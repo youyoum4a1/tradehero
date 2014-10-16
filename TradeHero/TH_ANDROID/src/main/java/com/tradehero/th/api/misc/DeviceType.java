@@ -8,7 +8,8 @@ public enum DeviceType
     Unknown(0),
     IOS(1),
     Android(2),
-    ChineseVersion(3)
+    ChineseVersion(3),
+    ChineseVersionAndroid(3)
     ;
 
     private final int serverValue;

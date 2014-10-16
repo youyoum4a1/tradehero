@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public enum MarketSegment
 {
-    CHINA(DeviceType.ChineseVersion),
+    CHINA(DeviceType.ChineseVersionAndroid),
     ROW(DeviceType.Android), // Rest Of World
     ;
 

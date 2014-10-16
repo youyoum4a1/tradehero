@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.chinabuild.fragment.portfolio;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,6 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -33,7 +31,6 @@ import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.PositionLockedItem;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
-import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -119,6 +116,8 @@ public class PortfolioFragment extends DashboardFragment
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
         initArgment();
+        adapter = new MyTradePositionListAdapter(getActivity());
+        startLoadding();
     }
 
     @Override
@@ -138,17 +137,17 @@ public class PortfolioFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.portfolio_layout, container, false);
         ButterKnife.inject(this, view);
 
-        displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
-        displayablePortfolioFetchAssistant.setFetchedListener(
-                new DisplayablePortfolioFetchAssistant.OnFetchedListener()
-                {
-                    @Override public void onFetched()
-                    {
-                        getDefaultPortfolio();
-                    }
-                });
+        //displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
+        //displayablePortfolioFetchAssistant.setFetchedListener(
+        //        new DisplayablePortfolioFetchAssistant.OnFetchedListener()
+        //        {
+        //            @Override public void onFetched()
+        //            {
+        //                getDefaultPortfolio();
+        //            }
+        //        });
 
-        adapter = new MyTradePositionListAdapter(getActivity());
+
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.DISABLED);
 
@@ -161,9 +160,8 @@ public class PortfolioFragment extends DashboardFragment
             }
         });
 
-        fetchCurrentUserProfile();
+         //fetchCurrentUserProfile();
 
-        startLoadding();
 
         return view;
     }
@@ -212,7 +210,8 @@ public class PortfolioFragment extends DashboardFragment
                 }
             }
             */
-            if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.allHeroCount >= 5){
+            if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.allHeroCount >= 5)
+            {
                 dialogContent = getActivity().getResources().getString(R.string.guest_user_dialog_summary);
                 showSuggestLoginDialogFragment(dialogContent);
                 return;
@@ -290,6 +289,7 @@ public class PortfolioFragment extends DashboardFragment
     {
         super.onResume();
         fetchCurrentUserProfile();
+        getDataFromNormalUser();
     }
 
     public void initArgment()
@@ -302,24 +302,35 @@ public class PortfolioFragment extends DashboardFragment
             portfolioCompactDTO = (PortfolioCompactDTO) bundle.getSerializable(BUNLDE_PORTFOLIO_DTO);
             competitionId = bundle.getInt(BUNLDE_COMPETITION_ID);
             if (leaderboardUserMarkId != 0)
-            { //来自比赛的持仓
+            {   //来自比赛的持仓
                 portfolio_type = PORTFOLIO_TYPE_COMPETITION;
                 showUserBaseKey = new UserBaseKey(portfolioUserKey);
                 getPositionsDTOKey = new LeaderboardMarkUserId((int) leaderboardUserMarkId);
             }
             else if (portfolioUserKey != 0)
-            { //来自股神持仓，股神的主账户持仓
+            {
+                //来自股神持仓，股神的主账户持仓
                 portfolio_type = PORTFOLIO_TYPE_OTHER_USER;
                 showUserBaseKey = new UserBaseKey(portfolioUserKey);
-                getDefaultPortfolio();
-                //getPositionDirectly(showUserBaseKey);
+                //getDataFromNormalUser();
             }
             else if (portfolioCompactDTO != null)
-            {//来自比赛的持仓，我的当前比赛持仓
+            {   //来自比赛的持仓，我的当前比赛持仓
                 portfolio_type = PORTFOLIO_TYPE_MINE;
                 getPositionsFromPortfolio(portfolioCompactDTO);
                 setPortfolioInfo(portfolioCompactDTO.userId, portfolioCompactDTO.id);
             }
+        }
+    }
+
+    public void getDataFromNormalUser()
+    {
+        //来自股神持仓，股神的主账户持仓
+        //getDefaultPortfolio();
+        if(portfolio_type == PORTFOLIO_TYPE_OTHER_USER)
+        {
+            startLoadding();
+            getPositionDirectly(showUserBaseKey);
         }
     }
 
@@ -444,6 +455,8 @@ public class PortfolioFragment extends DashboardFragment
             getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
             getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
         }
+
+        getDataFromNormalUser();
 
         //getPositionDirectly(showUserBaseKey);
     }
@@ -642,6 +655,6 @@ public class PortfolioFragment extends DashboardFragment
         detachGetPositionMiddleCallback();
         getPositionDTOCallback =
                 positionServiceWrapper.get()
-                        .getPositionsDirect(heroId.key, 1, 100, new GetPositionCallback());
+                        .getPositionsDirect(heroId.key,   new GetPositionCallback());
     }
 }
