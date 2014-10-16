@@ -76,7 +76,7 @@ public enum SocialNetworkEnum
 
     public static SocialNetworkEnum fromIndex(int index)
     {
-        if (index >= 0 && index <= values().length)
+        if (index >= 0 && index < values().length)
         {
             return values()[index];
         }
