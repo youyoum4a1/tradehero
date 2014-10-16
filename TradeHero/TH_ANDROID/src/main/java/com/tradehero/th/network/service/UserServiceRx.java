@@ -12,11 +12,13 @@ import retrofit.http.Path;
 import retrofit.mime.TypedOutput;
 import rx.Observable;
 
+import static com.tradehero.th.utils.Constants.AUTHORIZATION;
+
 public interface UserServiceRx
 {
     //<editor-fold desc="Sign-Up With Email">
     @FormUrlEncoded @POST("/SignupWithEmail") Observable<UserProfileDTO> signUpWithEmail(
-            @Header("Authorization") String authorization,
+            @Header(AUTHORIZATION) String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
             @Field("displayName") String displayName,
@@ -33,7 +35,7 @@ public interface UserServiceRx
             @Field("website") String website);
 
     @Multipart @POST("/SignupWithEmail") Observable<UserProfileDTO> signUpWithEmail(
-            @Header("Authorization") String authorization,
+            @Header(AUTHORIZATION) String authorization,
             @Part("biography") String biography,
             @Part("deviceToken") String deviceToken,
             @Part("displayName") String displayName,

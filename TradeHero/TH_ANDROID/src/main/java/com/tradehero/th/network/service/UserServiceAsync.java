@@ -39,11 +39,13 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.mime.TypedOutput;
 
+import static com.tradehero.th.utils.Constants.AUTHORIZATION;
+
 interface UserServiceAsync
 {
     //<editor-fold desc="Sign-Up With Email">
     @FormUrlEncoded @POST("/SignupWithEmail")
-    void signUpWithEmail(@Header("Authorization") String authorization,
+    void signUpWithEmail(@Header(AUTHORIZATION) String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
             @Field("displayName") String displayName,
@@ -62,7 +64,7 @@ interface UserServiceAsync
 
     @Multipart @POST("/SignupWithEmail")
     void signUpWithEmail(
-            @Header("Authorization") String authorization,
+            @Header(AUTHORIZATION) String authorization,
             @Part("biography") String biography,
             @Part("deviceToken") String deviceToken,
             @Part("displayName") String displayName,
@@ -84,7 +86,7 @@ interface UserServiceAsync
     //<editor-fold desc="Signup">
     @POST("/users")
     void signUp(
-            @Header("Authorization") String authorization,
+            @Header(AUTHORIZATION) String authorization,
             @Body UserFormDTO user,
             Callback<UserProfileDTO> callback);
     //</editor-fold>

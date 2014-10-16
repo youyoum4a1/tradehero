@@ -5,10 +5,12 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Query;
 
+import static com.tradehero.th.utils.Constants.AUTHORIZATION;
+
 public interface TranslationServiceBing
 {
     @GET("/v2/Http.svc/Translate") BingTranslationResult requestForTranslation(
-            @Header("Authorization") String authorization,
+            @Header(AUTHORIZATION) String authorization,
             @Query("from") String from,
             @Query("to") String to,
             @Query("contentType") String contentType,

@@ -7,16 +7,18 @@ import retrofit.http.Header;
 import retrofit.http.POST;
 import rx.Observable;
 
+import static com.tradehero.th.utils.Constants.AUTHORIZATION;
+
 interface SessionServiceRx
 {
     //<editor-fold desc="Login and social register">
     @POST("/login")
     Observable<UserLoginDTO> login(
-            @Header("Authorization") String authorization,
+            @Header(AUTHORIZATION) String authorization,
             @Body LoginSignUpFormDTO loginFormDTO);
 
     @POST("/signupAndLogin")
     Observable<UserLoginDTO> signupAndLogin(
-            @Header("Authorization") String authorization, @Body LoginSignUpFormDTO loginSignUpFormDTO);
+            @Header(AUTHORIZATION) String authorization, @Body LoginSignUpFormDTO loginSignUpFormDTO);
     //</editor-fold>
 }
