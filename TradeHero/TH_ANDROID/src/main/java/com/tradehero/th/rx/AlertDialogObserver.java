@@ -28,7 +28,8 @@ abstract public class AlertDialogObserver<T> implements Observer<T>
         THException reprocessed = new THException(e);
         String errorMessage = reprocessed.getMessage();
         if (errorMessage != null
-                && KnownServerErrors.isAccountAlreadyLinked(errorMessage))
+                && (KnownServerErrors.isAccountAlreadyLinked(errorMessage)
+                || KnownServerErrors.isAccountAlreadyRegistered(errorMessage)))
         {
             alertDialogUtil.popAccountAlreadyLinked(activityContext);
         }
