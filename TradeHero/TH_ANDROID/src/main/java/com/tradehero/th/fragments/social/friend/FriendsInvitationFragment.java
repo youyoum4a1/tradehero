@@ -381,23 +381,27 @@ public class FriendsInvitationFragment extends DashboardFragment
         //// TODO Pass a callback to be able to move to the social fragment
         //socialLinkHelper.link();
 
-        ((SocialAuthenticationProvider) authenticationProviders.get(socialNetworkEnum))
-                .socialLink(getActivity())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<UserProfileDTO>()
-                {
-                    @Override public void onNext(UserProfileDTO args)
+        AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetworkEnum);
+        if (socialAuthenticationProvider instanceof SocialAuthenticationProvider)
+        {
+            ((SocialAuthenticationProvider) socialAuthenticationProvider)
+                    .socialLink(getActivity())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new EmptyObserver<UserProfileDTO>()
                     {
-                        super.onNext(args);
-                        pushSocialInvitationFragment(socialNetworkEnum);
-                    }
+                        @Override public void onNext(UserProfileDTO args)
+                        {
+                            super.onNext(args);
+                            pushSocialInvitationFragment(socialNetworkEnum);
+                        }
 
-                    @Override public void onError(Throwable e)
-                    {
-                        super.onError(e);
-                        THToast.show("Error: " + e.getMessage());
-                    }
-                });
+                        @Override public void onError(Throwable e)
+                        {
+                            super.onError(e);
+                            THToast.show("Error: " + e.getMessage());
+                        }
+                    });
+        }
     }
 
     private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork)
