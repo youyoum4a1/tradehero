@@ -20,14 +20,13 @@ import javax.inject.Singleton;
 )
 public class AuthenticationModule
 {
-    /** TODO waiting for dagger to have map injection feature, it would make this method a lot nicer */
-    @Provides @Singleton @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> provideSocialAuthTypeMap(
+    /** TODO waiting for dagger to have map injection feature, it would make following method nicer */
+    @Provides @Singleton @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> provideSocialAuthTypeToSocialProviderMap(
             FacebookAuthenticationProvider facebookAuthenticationProvider,
             TwitterAuthenticationProvider twitterAuthenticationProvider,
             LinkedInAuthenticationProvider linkedInAuthenticationProvider,
             WeiboAuthenticationProvider weiboAuthenticationProvider,
-            QQAuthenticationProvider qqAuthenticationProvider,
-            EmailAuthenticationProvider emailAuthenticationProvider
+            QQAuthenticationProvider qqAuthenticationProvider
     )
     {
         Map<SocialNetworkEnum, AuthenticationProvider> enumToUtilMap = new HashMap<>();
@@ -36,7 +35,6 @@ public class AuthenticationModule
         enumToUtilMap.put(SocialNetworkEnum.LN, linkedInAuthenticationProvider);
         enumToUtilMap.put(SocialNetworkEnum.WB, weiboAuthenticationProvider);
         enumToUtilMap.put(SocialNetworkEnum.QQ, qqAuthenticationProvider);
-        enumToUtilMap.put(SocialNetworkEnum.TH, emailAuthenticationProvider);
         return Collections.unmodifiableMap(enumToUtilMap);
     }
 

@@ -56,10 +56,15 @@ public class SignInOrUpFragment extends Fragment
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
     @Inject Provider<AuthDataAction> authDataActionProvider;
 
-    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_email_sign_up_link) void handleSignUpButtonClick()
     {
         dashboardNavigator.pushFragment(EmailSignUpFragment.class);
+        subscription.unsubscribe();
+    }
+
+    @OnClick(R.id.authentication_email_sign_in_link) void handleEmailSignInButtonClick()
+    {
+        dashboardNavigator.pushFragment(EmailSignInFragment.class);
         subscription.unsubscribe();
     }
 
@@ -68,8 +73,7 @@ public class SignInOrUpFragment extends Fragment
             R.id.btn_twitter_signin,
             R.id.btn_linkedin_signin,
             R.id.btn_weibo_signin,
-            R.id.btn_qq_signin,
-            R.id.authentication_email_sign_in_link
+            R.id.btn_qq_signin
     })
     AuthenticationButton[] observableViews;
 
@@ -143,11 +147,7 @@ public class SignInOrUpFragment extends Fragment
                     {
                         progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
                                 getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),
-                                socialNetworkEnum != SocialNetworkEnum.TH);
-                        if (socialNetworkEnum == SocialNetworkEnum.TH)
-                        {
-                            progressDialog.hide();
-                        }
+                                true);
                     }
                 })
                 .map(new Func1<SocialNetworkEnum, AuthenticationProvider>()
@@ -172,11 +172,6 @@ public class SignInOrUpFragment extends Fragment
                         if (progressDialog != null)
                         {
                             progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
-                            if (authData.socialNetworkEnum == SocialNetworkEnum.TH)
-                            {
-                                progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero_only));
-                                progressDialog.show();
-                            }
                         }
                     }
                 })

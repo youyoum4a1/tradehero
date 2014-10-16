@@ -14,6 +14,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.LoginSignUpFormDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthData;
@@ -23,7 +26,9 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -34,20 +39,21 @@ import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidatedText;
-import java.util.concurrent.CancellationException;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.observers.EmptyObserver;
-import rx.subjects.PublishSubject;
+import rx.schedulers.Schedulers;
 
 public class EmailSignInFragment extends Fragment
 {
-    private PublishSubject<AuthData> authDataSubject;
-
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
 
@@ -55,11 +61,18 @@ public class EmailSignInFragment extends Fragment
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Analytics analytics;
     @Inject DashboardNavigator navigator;
+    @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
+    @Inject SessionServiceWrapper sessionServiceWrapper;
+    @Inject ToastOnErrorAction toastOnErrorAction;
+    @Inject Provider<AuthDataAction> authDataActionProvider;
 
     @InjectView(R.id.authentication_sign_in_email) SelfValidatedText email;
     @InjectView(R.id.et_pwd_login) ValidatedPasswordText password;
     @InjectView(R.id.btn_login) View loginButton;
     Subscription validationSubscription;
+    private ProgressDialog progressDialog;
+    private Observable<Pair<AuthData, UserProfileDTO>> signInObservable;
+    private Subscription signInSubscription;
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
@@ -120,7 +133,6 @@ public class EmailSignInFragment extends Fragment
         HierarchyInjector.inject(this);
         analytics.tagScreen(AnalyticsConstants.Login_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
-        authDataSubject = PublishSubject.create();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -166,7 +178,7 @@ public class EmailSignInFragment extends Fragment
                     }
                 });
 
-        ViewObservable.clicks(loginButton, false)
+        signInObservable = ViewObservable.clicks(loginButton, false)
                 .map(new Func1<View, AuthData>()
                 {
                     @Override public AuthData call(View view)
@@ -175,7 +187,87 @@ public class EmailSignInFragment extends Fragment
                         return new AuthData(email.getText().toString(), password.getText().toString());
                     }
                 })
-                .subscribe(authDataSubject);
+                .doOnNext(new Action1<AuthData>()
+                {
+                    @Override public void call(AuthData AuthData)
+                    {
+                        progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+                                getString(R.string.authentication_connecting_tradehero_only), true);
+                    }
+                })
+                .map(new Func1<AuthData, LoginSignUpFormDTO>()
+                {
+                    @Override public LoginSignUpFormDTO call(AuthData authData)
+                    {
+                        return loginSignUpFormDTOProvider.get()
+                                .authData(authData)
+                                .build();
+                    }
+                })
+                .flatMap(new Func1<LoginSignUpFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
+                {
+                    @Override public Observable<Pair<AuthData, UserProfileDTO>> call(final LoginSignUpFormDTO loginSignUpFormDTO)
+                    {
+                        AuthData authData = loginSignUpFormDTO.authData;
+                        Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
+                                authData.getTHToken(), loginSignUpFormDTO)
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .map(new Func1<UserLoginDTO, UserProfileDTO>()
+                                {
+                                    @Override public UserProfileDTO call(UserLoginDTO userLoginDTO)
+                                    {
+                                        return userLoginDTO.profileDTO;
+                                    }
+                                });
+
+                        return Observable.zip(Observable.just(authData), userLoginDTOObservable,
+                                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
+                                {
+                                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData authData, UserProfileDTO userLoginDTO)
+                                    {
+                                        return Pair.create(authData, userLoginDTO);
+                                    }
+                                })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(authDataActionProvider.get())
+                .doOnNext(new OpenDashboardAction(getActivity()))
+                .doOnError(toastOnErrorAction)
+                .doOnUnsubscribe(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        if (progressDialog != null)
+                        {
+                            progressDialog.dismiss();
+                        }
+                    }
+                })
+                .retry();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        if (signInSubscription == null || signInSubscription.isUnsubscribed())
+        {
+            signInSubscription = signInObservable.subscribe(new EmptyObserver<Pair<AuthData, UserProfileDTO>>());
+        }
+    }
+
+    @Override public void onPause()
+    {
+        if (signInSubscription != null && !signInSubscription.isUnsubscribed())
+        {
+            signInSubscription.unsubscribe();
+        }
+
+        super.onPause();
     }
 
     @Override public void onDestroyView()
@@ -185,13 +277,6 @@ public class EmailSignInFragment extends Fragment
         detachMiddleCallbackForgotPassword();
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        authDataSubject.onError(new CancellationException(getString(R.string.error_canceled)));
-        authDataSubject = null;
-        super.onDestroy();
     }
 
     protected void detachMiddleCallbackForgotPassword()
@@ -237,10 +322,5 @@ public class EmailSignInFragment extends Fragment
                 mProgressDialog.dismiss();
             }
         };
-    }
-
-    public Observable<AuthData> obtainAuthData()
-    {
-        return authDataSubject.asObservable();
     }
 }
