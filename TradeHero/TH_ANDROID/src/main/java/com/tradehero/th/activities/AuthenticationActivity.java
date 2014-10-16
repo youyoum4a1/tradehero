@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -538,12 +540,13 @@ public class AuthenticationActivity extends DashboardActivity
     public void getWeChatAccessToken()
     {
         String wechatCode = WXEntryActivity.getWeChatCode();
-        if(wechatCode!=null)
+        Log.d("123","wechatCode " + wechatCode);
+        if(TextUtils.isEmpty(wechatCode))
         {
             authenticateWithWechat(wechatCode);
-            //THToast.show("获取 微信 access token ！" + wechatCode);
             WXEntryActivity.setWeChatCodeNull();
-
+        }else{
+            THToast.show(R.string.login_by_wechat_account_failed);
         }
     }
 }
