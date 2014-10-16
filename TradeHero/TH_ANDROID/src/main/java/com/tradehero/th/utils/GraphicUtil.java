@@ -8,12 +8,14 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.media.ExifInterface;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageView;
 import com.tradehero.common.graphics.RotateTransformation;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
@@ -22,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -238,6 +241,35 @@ public class GraphicUtil implements BitmapForProfileFactory
         hsvVals[2] = 0.8f * hsvVals[2];
         return Color.HSVToColor(hsvVals);
     }
+
+    //<editor-fold desc="Color Filter">
+    public void applyColorFilter(@NotNull ImageView[] imageViews, int color)
+    {
+        for (ImageView imageView : imageViews)
+        {
+            applyColorFilter(imageView, color);
+        }
+    }
+
+    public void applyColorFilter(@NotNull Collection<? extends ImageView> imageViews, int color)
+    {
+        for (ImageView imageView : imageViews)
+        {
+            applyColorFilter(imageView, color);
+        }
+    }
+
+    public void applyColorFilter(@NotNull ImageView imageView, int color)
+    {
+        applyColorFilter(imageView.getDrawable(), color);
+    }
+
+    public void applyColorFilter(@NotNull Drawable d, int color)
+    {
+        d.clearColorFilter();
+        d.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+    }
+    //</editor-fold>
 
     public StateListDrawable createStateListDrawable(@NotNull Context context, int normal)
     {

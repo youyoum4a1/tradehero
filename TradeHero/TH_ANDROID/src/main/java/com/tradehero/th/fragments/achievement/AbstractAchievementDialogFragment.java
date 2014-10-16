@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import butterknife.InjectView;
+import butterknife.InjectViews;
 import butterknife.OnClick;
 import com.chrisbanes.colorfinder.ColorScheme;
 import com.chrisbanes.colorfinder.ColorUtils;
@@ -110,6 +111,14 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     @InjectView(R.id.btn_achievement_share) Button btnShare;
     @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
+
+    @InjectViews({
+            R.id.close,
+            R.id.achievement_pulse,
+            R.id.achievement_pulse2,
+            R.id.achievement_pulse3,
+            R.id.achievement_starburst})
+    ImageView[] imagesToColorFilter;
 
     @Inject UserAchievementCache userAchievementCache;
     @Inject Picasso picasso;
@@ -238,18 +247,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void setColor(int color)
     {
-        applyColorFilter(pulseEffect, color);
-        applyColorFilter(pulseEffect2, color);
-        applyColorFilter(pulseEffect3, color);
-        applyColorFilter(starBurst, color);
+        graphicUtil.applyColorFilter(imagesToColorFilter, color);
         title.setTextColor(color);
-    }
-
-    private void applyColorFilter(ImageView imageView, int color)
-    {
-        Drawable d = imageView.getDrawable();
-        d.clearColorFilter();
-        d.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
 
     private void displayHeader()
@@ -603,7 +602,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.achievement_dummy_container)
+    @OnClick({R.id.achievement_dummy_container, R.id.close})
     public void onOutsideContentClicked()
     {
         getDialog().dismiss();
