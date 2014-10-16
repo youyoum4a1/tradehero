@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/discussion_new_post_action_buttons"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,22 +14,25 @@
 
   <include layout="@layout/discussion_edit_post_mention_buttons"/>
 
-  <ToggleButton
+  <com.tradehero.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_fb"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_share_fb"
+      app:networkType="facebook"
       />
 
-  <ToggleButton
+  <com.tradehero.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_tw"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_share_tw"
+      app:networkType="twitter"
       />
 
-  <ToggleButton
+  <com.tradehero.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_li"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_share_li"
+      app:networkType="linkedin"
       />
 
   <ToggleButton
@@ -37,10 +41,11 @@
       android:background="@drawable/ic_wechat"
       />
 
-  <ToggleButton
+  <com.tradehero.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_wb"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_share_wb"
+      app:networkType="weibo"
       />
 
   <ToggleButton
@@ -56,6 +61,7 @@
       android:gravity="right"
       android:visibility="invisible"
       >
+
     <ToggleButton
         android:id="@+id/switch_share_public"
         style="@style/TH.ShareButtons"
@@ -67,5 +73,7 @@
         android:textOff="@string/buy_sell_confirm_share_private"
         android:textColor="@color/authentication_button_light"
         android:checked="false"/>
+
   </LinearLayout>
+
 </com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView>
