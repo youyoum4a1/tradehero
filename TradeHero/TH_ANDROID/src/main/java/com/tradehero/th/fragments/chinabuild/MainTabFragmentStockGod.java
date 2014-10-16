@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
@@ -120,8 +119,5 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
         }
     }
 
-    public void linkWithUserProfileDTO(UserProfileDTO value)
-    {
 
-    }
 }

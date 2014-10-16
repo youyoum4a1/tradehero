@@ -351,8 +351,5 @@ public class MainTabFragmentMe extends AbsBaseFragment
         gotoDashboard(FragmentTest03.class.getName(), new Bundle());
     }
 
-    public void linkWithUserProfileDTO(UserProfileDTO value)
-    {
-        initUserProfile(value);
-    }
+
 }

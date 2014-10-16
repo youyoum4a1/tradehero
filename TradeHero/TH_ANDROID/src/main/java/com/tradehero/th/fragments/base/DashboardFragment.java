@@ -59,6 +59,12 @@ abstract public class DashboardFragment extends BaseFragment
 
     public void onBackPressed(){}
 
+    public void hideActionBar()
+    {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+    }
 
     public void updateHeadView(boolean display)
     {

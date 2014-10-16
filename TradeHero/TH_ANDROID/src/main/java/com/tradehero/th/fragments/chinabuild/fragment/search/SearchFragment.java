@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.chinabuild.fragment.search;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -10,8 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -41,11 +44,9 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
-
 import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
@@ -53,7 +54,8 @@ import timber.log.Timber;
 /*
    搜索  热门／历史
  */
-public class SearchFragment extends DashboardFragment implements HasSelectedItem {
+public class SearchFragment extends DashboardFragment implements HasSelectedItem
+{
 
     @Inject
     Lazy<SecurityCompactListCache> securityCompactListCache;
@@ -66,12 +68,12 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
 
     public SecuritySearchListAdapter adapter;
 
-    @InjectView(R.id.tvSearch)TextView tvSearch;
-    @InjectView(R.id.edtSearchInput)EditText tvSearchInput;
-    @InjectView(R.id.btn_search_x)Button btnSearch_x;
-    @InjectView(R.id.listSearch)SecurityListView listSearch;
-    @InjectView(R.id.textview_security_searchresult)TextView tvResult;
     @InjectView(R.id.progressbar_trade_security_search) ProgressBar pbSearch;
+    @InjectView(R.id.tvSearch) TextView tvSearch;
+    @InjectView(R.id.edtSearchInput) EditText tvSearchInput;
+    @InjectView(R.id.btn_search_x) Button btnSearch_x;
+    @InjectView(R.id.listSearch) SecurityListView listSearch;
+    @InjectView(R.id.textview_security_searchresult) TextView tvResult;
 
     private SearchHotSecurityListType keyHot;
     private SearchSecurityListType keySearch;
@@ -82,7 +84,8 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     protected SecurityCompactDTO selectedItem;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
 
         super.onCreate(savedInstanceState);
         securityListTypeCacheListener = createSecurityListFetchListener();
@@ -91,55 +94,66 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //super.onCreateOptionsMenu(menu, inflater);
-        //setHeadViewMiddleMain("搜索");
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        hideActionBar();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.search_fragment_layout, container, false);
         ButterKnife.inject(this, view);
         initView();
+        hideActionBar();
         return view;
     }
 
-    public void initView() {
+    public void initView()
+    {
         searchStr = getActivity().getResources().getString(R.string.search_search);
         searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
-        if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch) {
+        if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch)
+        {
             fetchHotSecuritySearchList(true);
         }
 
-        tvSearchInput.addTextChangedListener(new TextWatcher() {
+        tvSearchInput.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+            {
 
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(Editable editable)
+            {
                 String inputStr = editable.toString();
-                if(TextUtils.isEmpty(inputStr)){
+                if (TextUtils.isEmpty(inputStr))
+                {
                     tvSearch.setText(searchCancelStr);
-                }else{
+                }
+                else
+                {
                     tvSearch.setText(searchStr);
                 }
             }
         });
 
-        tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
             @Override
-            public boolean onEditorAction(TextView textView, int actionId, android.view.KeyEvent keyEvent) {
-                switch (actionId) {
+            public boolean onEditorAction(TextView textView, int actionId, android.view.KeyEvent keyEvent)
+            {
+                switch (actionId)
+                {
                     case EditorInfo.IME_ACTION_SEARCH:
                         fetchSecuritySearchList(true);
                         break;
@@ -152,36 +166,49 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
 
         listSearch.setMode(PullToRefreshBase.Mode.BOTH);
         listSearch.setAdapter(adapter);
-        listSearch.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        listSearch.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
+        {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
+            {
                 Timber.d("下拉刷新");
-                if (isUserSearch) {
+                if (isUserSearch)
+                {
                     fetchSecuritySearchList(true);
-                } else {
+                }
+                else
+                {
                     fetchHotSecuritySearchList(true);
                 }
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
+            {
                 Timber.d("上拉加载更多");
-                if (isUserSearch) {
+                if (isUserSearch)
+                {
                     fetchSecuritySearchListMore();
-                } else {
+                }
+                else
+                {
                     fetchHotSecuritySearchListMore();
                 }
             }
         });
 
-        listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int id, long position) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
+            {
                 SecurityCompactDTO dto = (SecurityCompactDTO) adapter.getItem((int) position);
-                if (dto != null) {
+                if (dto != null)
+                {
                     Timber.d("list item clicked %s", dto.name);
                     enterSecurity(dto.getSecurityId(), dto.name, dto);
-                    if (isUserSearch) {
+                    if (isUserSearch)
+                    {
                         sendAnalytics(dto);
                     }
                 }
@@ -190,29 +217,33 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         listSearch.setEmptyView(tvResult);
     }
 
-    public void enterSecurity(SecurityId securityId, String securityName, SecurityCompactDTO dto) {
+    public void enterSecurity(SecurityId securityId, String securityName, SecurityCompactDTO dto)
+    {
         if (getArguments() != null && getArguments().containsKey(
-                DiscussSendFragment.BUNDLE_KEY_RETURN_FRAGMENT)) {
+                DiscussSendFragment.BUNDLE_KEY_RETURN_FRAGMENT))
+        {
             selectedItem = dto;
             popCurrentFragment();
             return;
-        } else {
+        }
+        else
+        {
             Bundle bundle = new Bundle();
             bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
             bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
             pushFragment(SecurityDetailFragment.class, bundle);
         }
-
     }
 
-
     @Override
-    public void onStop() {
+    public void onStop()
+    {
         super.onStop();
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroyView()
+    {
         detachSecurityHotListCache();
         detachSecurityListCache();
         ButterKnife.reset(this);
@@ -221,76 +252,102 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
     }
 
-    protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener() {
+    protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
+    {
         return new TrendingSecurityListFetchListener();
     }
 
     @Nullable
     @Override
-    public Object getSelectedItem() {
+    public Object getSelectedItem()
+    {
         return selectedItem;
     }
 
-    protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> {
+    protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>
+    {
         @Override
-        public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value) {
-            dismissLoadingProgress();
+        public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
+        {
             initAdapterSecurity(value, key);
             onFinish();
         }
 
         @Override
-        public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error) {
-            dismissLoadingProgress();
-            Timber.e("Error fetching the list of security %s", key, error);
+        public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
+        {
+
             onFinish();
         }
 
-        private void onFinish() {
-            listSearch.onRefreshComplete();
+        private void onFinish()
+        {
+            dismissLoadingProgress();
         }
     }
 
-    private void initAdapterSecurity(@NotNull SecurityCompactDTOList value, @NotNull SecurityListType key) {
-        if (key instanceof SearchSecurityListType) {
+    private void initAdapterSecurity(@NotNull SecurityCompactDTOList value, @NotNull SecurityListType key)
+    {
+        if (key instanceof SearchSecurityListType)
+        {
             isUserSearch = true;
         }
 
-        if (key.page == 1) {
+        if (key.page == 1)
+        {
             adapter.setSecurityList(value);
-        } else {
+        }
+        else
+        {
             adapter.addItems(value);
         }
 
-        if (value != null && value.size() > 0) {
+        if (value != null && value.size() > 0)
+        {
             key.page += 1;
         }
 
         adapter.notifyDataSetChanged();
+
+        if (adapter.getCount() > 0)
+        {
+            tvResult.setVisibility(View.GONE);
+        }
+        else
+        {
+            tvResult.setVisibility(View.VISIBLE);
+        }
     }
 
-    private void detachSecurityListCache() {
-        if (securityListTypeCacheListener != null) {
+    private void detachSecurityListCache()
+    {
+        if (securityListTypeCacheListener != null)
+        {
             securityCompactListCache.get().unregister(securityListTypeCacheListener);
         }
     }
 
-    private void detachSecurityHotListCache() {
-        if (securityListTypeHotCacheListener != null) {
+    private void detachSecurityHotListCache()
+    {
+        if (securityListTypeHotCacheListener != null)
+        {
             securityCompactListCache.get().unregister(securityListTypeHotCacheListener);
         }
     }
 
-    private void fetchSecuritySearchList(boolean force) {
+    private void fetchSecuritySearchList(boolean force)
+    {
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString())) return;
         detachSecurityListCache();
         keySearch = new SearchSecurityListType(getSearchString(), 1, 50);
@@ -298,58 +355,72 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         securityCompactListCache.get().getOrFetchAsync(keySearch, force);
     }
 
-    private void fetchHotSecuritySearchList(boolean force) {
+    private void fetchHotSecuritySearchList(boolean force)
+    {
         detachSecurityHotListCache();
         keyHot = new SearchHotSecurityListType(1, 50);
         securityCompactListCache.get().register(keyHot, securityListTypeHotCacheListener);
         securityCompactListCache.get().getOrFetchAsync(keyHot, force);
     }
 
-    private void fetchSecuritySearchListMore() {
+    private void fetchSecuritySearchListMore()
+    {
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString())) return;
         detachSecurityListCache();
         securityCompactListCache.get().register(keySearch, securityListTypeCacheListener);
         securityCompactListCache.get().getOrFetchAsync(keySearch, true);
     }
 
-    private void fetchHotSecuritySearchListMore() {
+    private void fetchHotSecuritySearchListMore()
+    {
         detachSecurityHotListCache();
         securityCompactListCache.get().register(keyHot, securityListTypeHotCacheListener);
         securityCompactListCache.get().getOrFetchAsync(keyHot, true);
     }
 
-    public String getSearchString() {
+    public String getSearchString()
+    {
         String strSearch = tvSearchInput.getText().toString();
-        if (strSearch != null && strSearch.length() > 0) {
+        if (strSearch != null && strSearch.length() > 0)
+        {
             return strSearch;
-        } else {
+        }
+        else
+        {
             return "";
         }
     }
 
     @OnClick(R.id.tvSearch)
-    public void onSearchClicked() {
-        if(TextUtils.isEmpty(getSearchString())){
+    public void onSearchClicked()
+    {
+        if (TextUtils.isEmpty(getSearchString()))
+        {
             popCurrentFragment();
             return;
         }
-        if (!StringUtils.isNullOrEmptyOrSpaces(getSearchString())) {
+        if (!StringUtils.isNullOrEmptyOrSpaces(getSearchString()))
+        {
             showLoadingProgress();
             fetchSecuritySearchList(true);
         }
     }
 
     @OnClick(R.id.btn_search_x)
-    public void onClearClicked() {
+    public void onClearClicked()
+    {
         tvSearchInput.setText("");
     }
 
-
-    private void sendAnalytics(final SecurityCompactDTO dto) {
-        Thread thread = new Thread(new Runnable() {
+    private void sendAnalytics(final SecurityCompactDTO dto)
+    {
+        Thread thread = new Thread(new Runnable()
+        {
             @Override
-            public void run() {
-                try {
+            public void run()
+            {
+                try
+                {
                     SearchSecurityEventForm analyticsEventForm = new SearchSecurityEventForm("search",
                             DateUtils.getFormattedUtcDateFromDate(getActivity().getResources(),
                                     new Date(System.currentTimeMillis())), dto.id,
@@ -358,7 +429,8 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
                     batchAnalyticsEventForm.events = new ArrayList<>();
                     batchAnalyticsEventForm.events.add(analyticsEventForm);
                     userServiceWrapper.sendAnalytics(batchAnalyticsEventForm);
-                } catch (Exception e) {
+                } catch (Exception e)
+                {
                     THToast.show(e.getMessage());
                     e.printStackTrace();
                 }
@@ -367,24 +439,32 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         thread.start();
     }
 
-    private void showLoadingProgress() {
+    private void showLoadingProgress()
+    {
         Handler handler = new Handler();
-        handler.post(new Runnable() {
+        handler.post(new Runnable()
+        {
             @Override
-            public void run() {
-                if (pbSearch != null) {
+            public void run()
+            {
+                if (pbSearch != null)
+                {
                     pbSearch.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
 
-    private void dismissLoadingProgress() {
+    private void dismissLoadingProgress()
+    {
         Handler handler = new Handler();
-        handler.post(new Runnable() {
+        handler.post(new Runnable()
+        {
             @Override
-            public void run() {
-                if (pbSearch != null&&pbSearch.getVisibility()==View.VISIBLE) {
+            public void run()
+            {
+                if (pbSearch != null && pbSearch.getVisibility() == View.VISIBLE)
+                {
                     pbSearch.setVisibility(View.GONE);
                 }
             }

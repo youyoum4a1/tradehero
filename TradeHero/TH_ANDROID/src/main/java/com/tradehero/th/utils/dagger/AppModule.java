@@ -36,7 +36,19 @@ import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
-import com.tradehero.th.fragments.chinabuild.fragment.*;
+import com.tradehero.th.fragments.chinabuild.fragment.BindEmailSignUpFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.InputInviteCodeFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.LoginSuggestDialogFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.MyEditAccountFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.MyEditNameFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.MySocialFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.SettingsAboutUsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.ShareSellDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCollegeFragment;
@@ -70,7 +82,6 @@ import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest03;
 import com.tradehero.th.fragments.chinabuild.fragment.test.WebViewSimpleFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotWatchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfMineFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfRisePercentFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfTypeBaseFragment;
@@ -452,7 +463,6 @@ import javax.inject.Singleton;
                         TradeOfMineFragment.class,
                         TradeOfTypeBaseFragment.class,
                         TradeOfChinaConceptFragment.class,
-                        TradeOfHotWatchFragment.class,
                         TradeOfRisePercentFragment.class,
                         TradeOfHotHoldFragment.class,
 

@@ -41,10 +41,6 @@ public class UserCompetitionDTO implements DTO, Serializable
         {
             return " + " + rankRise;
         }
-        else if (rankRise < 0)
-        {
-            return " - " + rankRise;
-        }
         else
         {
             return "" + rankRise;

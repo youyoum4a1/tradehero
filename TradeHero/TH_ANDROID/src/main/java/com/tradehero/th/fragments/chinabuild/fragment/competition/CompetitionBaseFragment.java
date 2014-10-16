@@ -67,6 +67,7 @@ public class CompetitionBaseFragment extends DashboardFragment
     private CompetitionListAdapter adapterList;
 
     private UserCompetitionDTOList userCompetitionVipDTOs;
+    public static boolean needRefresh = false;
 
     CompetitionListTypeMine mineKey = new CompetitionListTypeMine();
     CompetitionListTypeUser userKey = new CompetitionListTypeUser();
@@ -80,7 +81,7 @@ public class CompetitionBaseFragment extends DashboardFragment
         competitionListCacheListenerVip = createCompetitionListCacheListenerVip();
         competitionListCacheListenerMine = createCompetitionListCacheListenerMine();
         adapterList = new CompetitionListAdapter(getActivity(), getCompetitionPageType());
-        fetchCompetition(true);
+        //fetchCompetition(true);
     }
 
     @Override
@@ -110,10 +111,6 @@ public class CompetitionBaseFragment extends DashboardFragment
 
     private void initListView()
     {
-        if (adapterList != null && adapterList.getCount() == 0)
-        {
-            fetchCompetition(true);
-        }
 
         fetchVipCompetition(false);//获取官方推荐比赛
 
@@ -213,10 +210,22 @@ public class CompetitionBaseFragment extends DashboardFragment
         super.onDestroy();
     }
 
+
+
+    public boolean isNeedRefresh()
+    {
+        return needRefresh&&(getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE);
+    }
+
+
     @Override public void onResume()
     {
         super.onResume();
         Timber.d("OnRusme: StockGodList 1 ");
+        if (isNeedRefresh() || (adapterList != null && adapterList.getCount() == 0))
+        {
+            fetchCompetition(true);
+        }
     }
 
     public void fetchCompetition(boolean refresh)
@@ -324,6 +333,7 @@ public class CompetitionBaseFragment extends DashboardFragment
 
     public void fetchVipCompetition(boolean refresh)
     {
+        betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
         detachVipCompetition();
         CompetitionListTypeVip vipKey = new CompetitionListTypeVip();
         competitionNewCacheLazy.get().register(vipKey, competitionListCacheListenerVip);
@@ -332,8 +342,8 @@ public class CompetitionBaseFragment extends DashboardFragment
 
     public void fetchMineCompetition(boolean refresh)
     {
+        betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
         detachMineCompetition();
-
         competitionNewCacheLazy.get().register(mineKey, competitionListCacheListenerMine);
         competitionNewCacheLazy.get().getOrFetchAsync(mineKey, refresh);
     }
@@ -347,6 +357,7 @@ public class CompetitionBaseFragment extends DashboardFragment
     //我的比赛
     public void initMyCompetition(CompetitionListType key, UserCompetitionDTOList userCompetitionDTOs)
     {
+        needRefresh = false;
         if (adapterList != null)
         {
             if (key.page == 1)

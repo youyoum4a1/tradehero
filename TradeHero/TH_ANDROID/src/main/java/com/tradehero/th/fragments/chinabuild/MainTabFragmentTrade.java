@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
@@ -21,7 +20,6 @@ import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragme
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfMineFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfRisePercentFragment;
 import com.viewpagerindicator.TabPageIndicator;
-import timber.log.Timber;
 
 public class MainTabFragmentTrade extends AbsBaseFragment
 {
@@ -123,8 +121,4 @@ public class MainTabFragmentTrade extends AbsBaseFragment
         }
     }
 
-    public void linkWithUserProfileDTO(UserProfileDTO value)
-    {
-
-    }
 }

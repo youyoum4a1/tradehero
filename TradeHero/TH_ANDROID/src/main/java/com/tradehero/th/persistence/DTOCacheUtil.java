@@ -253,7 +253,7 @@ import org.jetbrains.annotations.Nullable;
         providerCache.get().invalidateAll();
         providerListCache.get().invalidateAll();
         securityPositionDetailCache.get().invalidateAll();
-        securityCompactListCache.get().invalidateAll();
+        //securityCompactListCache.get().invalidateAll();
         systemStatusCache.get().invalidateAll();
         tradeCache.get().invalidateAll();
         tradeListCache.get().invalidateAll();
