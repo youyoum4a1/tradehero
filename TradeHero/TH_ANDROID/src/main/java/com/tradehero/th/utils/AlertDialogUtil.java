@@ -276,8 +276,11 @@ public class AlertDialogUtil
         mProgressDialog.show();
     }
 
-    public void showProgressDialog(@NotNull final Context context, @Nullable String content)
+    public void showProgressDialog(final Context context, @Nullable String content)
     {
+        if(context ==null){
+            return;
+        }
         if (mProgressDialog != null)
         {
             mProgressDialog.dismiss();

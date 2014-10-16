@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.chinabuild.fragment;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,19 @@ import javax.inject.Inject;
 /**
  * Created by palmer on 14-10-15.
  */
-public class LoginSuggestDialogFragment extends BaseDialogFragment{
+public class LoginSuggestDialogFragment extends BaseDialogFragment {
 
-    @InjectView(R.id.textview_suggest_cancel) TextView mCancelBtn;
-    @InjectView(R.id.textview_suggest_signin) TextView mOKBtn;
+    @InjectView(R.id.textview_suggest_cancel)
+    TextView mCancelBtn;
+    @InjectView(R.id.textview_suggest_signin)
+    TextView mOKBtn;
+    @InjectView(R.id.textview_suggest_content)
+    TextView mContent;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
+    private String content = "";
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
     }
@@ -39,18 +46,26 @@ public class LoginSuggestDialogFragment extends BaseDialogFragment{
         return view;
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (mContent != null && !TextUtils.isEmpty(content)) {
+            mContent.setText(content);
+        }
     }
 
     @OnClick(R.id.textview_suggest_cancel)
-    public void gotoCancel(){
+    public void gotoCancel() {
         dismiss();
     }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+
     @OnClick(R.id.textview_suggest_signin)
-    public void gotoSignIn(){
+    public void gotoSignIn() {
         Bundle args = new Bundle();
         args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,
                 BindGuestUserFragment.class.getName());

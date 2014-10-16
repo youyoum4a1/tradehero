@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,8 +65,7 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     @Inject MainCredentialsPreference mainCredentialsPreference;
 
     private UserProfileDTO userProfileDTO;
-    private LoginSuggestDialogFragment dialogFragment;
-    private FragmentManager fm;
+    private String dialogContent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -170,23 +168,14 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
             return;
         }
         if (userProfileDTO.isVisitor) {
-            showSuggestLoginDialogFragment();
+            dialogContent = getActivity().getResources().getString(R.string.dialog_profile_suggest_signin);
+            showSuggestLoginDialogFragment(dialogContent);
         } else {
             goToFragment(MyEditNameFragment.class);
         }
     }
 
-    private void showSuggestLoginDialogFragment(){
-        if(dialogFragment==null){
-            dialogFragment =new LoginSuggestDialogFragment();
-        }
-        if(fm==null){
-            fm = getActivity().getSupportFragmentManager();
-        }
-        dialogFragment.show(fm, "abckdddd");
-    }
 
-    private void dismissSuggestLoginDialogFragment(){}
 
     private void showChooseImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

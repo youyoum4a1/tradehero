@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.base;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
@@ -16,6 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.chinabuild.fragment.LoginSuggestDialogFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
@@ -40,6 +42,9 @@ abstract public class DashboardFragment extends BaseFragment
     private TextView tvHeadRight1;
     private TextView tvHeadMiddleMain;
     private TextView tvHeadMiddleSub;
+
+    private LoginSuggestDialogFragment dialogFragment;
+    private FragmentManager fm;
 
     //Listen to back pressed
     private boolean needToMonitorBackPressed = false;
@@ -409,5 +414,16 @@ abstract public class DashboardFragment extends BaseFragment
         {
 
         }
+    }
+
+    protected void showSuggestLoginDialogFragment(String dialogContent){
+        if(dialogFragment==null){
+            dialogFragment =new LoginSuggestDialogFragment();
+        }
+        if(fm==null){
+            fm = getActivity().getSupportFragmentManager();
+        }
+        dialogFragment.setContent(dialogContent);
+        dialogFragment.show(fm, LoginSuggestDialogFragment.class.getName());
     }
 }

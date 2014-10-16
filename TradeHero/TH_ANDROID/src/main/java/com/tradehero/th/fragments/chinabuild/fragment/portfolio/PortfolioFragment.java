@@ -110,6 +110,8 @@ public class PortfolioFragment extends DashboardFragment
     private MiddleCallback<GetPositionsDTO> getPositionDTOCallback;
     @Inject Lazy<PositionServiceWrapper> positionServiceWrapper;
 
+    private String dialogContent;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -189,6 +191,7 @@ public class PortfolioFragment extends DashboardFragment
         else if (item instanceof PositionLockedItem)
         {
             Timber.d("Clicked follow user!!!");
+            /*
             if (mBindGuestUserDialogKeyPreference.get())
             {
                 if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor
@@ -207,6 +210,12 @@ public class PortfolioFragment extends DashboardFragment
                         }
                     });
                 }
+            }
+            */
+            if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.allHeroCount >= 5){
+                dialogContent = getActivity().getResources().getString(R.string.guest_user_dialog_summary);
+                showSuggestLoginDialogFragment(dialogContent);
+                return;
             }
             freeFollow(showUserBaseKey);
         }
