@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BooleanPreference extends AbstractPreference<Boolean>
 {
-    @Inject public BooleanPreference(
+    public BooleanPreference(
             @NotNull SharedPreferences preference,
             @NotNull String key,
             boolean defaultValue)

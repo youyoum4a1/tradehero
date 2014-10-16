@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class StringPreference extends AbstractPreference<String>
 {
-    @Inject public StringPreference(
+    public StringPreference(
             @NotNull SharedPreferences preference,
             @NotNull String key,
             @NotNull String defaultValue)

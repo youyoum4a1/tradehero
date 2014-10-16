@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class IntPreference extends AbstractPreference<Integer>
 {
-    @Inject public IntPreference(
+    public IntPreference(
             @NotNull SharedPreferences preference,
             @NotNull String key,
             int defaultValue)

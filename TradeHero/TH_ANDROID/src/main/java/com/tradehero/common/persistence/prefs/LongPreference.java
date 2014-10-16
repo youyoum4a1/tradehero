@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LongPreference extends AbstractPreference<Long>
 {
-    @Inject public LongPreference(
+    public LongPreference(
             @NotNull SharedPreferences preference,
             @NotNull String key,
             long defaultValue)
