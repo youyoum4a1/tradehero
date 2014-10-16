@@ -70,6 +70,7 @@ public class ProfileInfoView extends LinearLayout
     ProgressDialog progressDialog;
     private UserProfileDTO userProfileDTO;
     private String newImagePath;
+    private AlertDialog imagePickerDialog;
 
     public ProfileInfoView(Context context, AttributeSet attrs)
     {
@@ -278,16 +279,20 @@ public class ProfileInfoView extends LinearLayout
     {
         ImagePickerView imagePickerView = (ImagePickerView) LayoutInflater.from(getContext())
                 .inflate(R.layout.image_picker, null);
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+        imagePickerDialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.user_profile_choose_image_from_choice)
                 .setNegativeButton(R.string.cancel, null)
                 .setView(imagePickerView)
                 .create();
-        alertDialog.show();
+        imagePickerDialog.show();
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        if (imagePickerDialog != null)
+        {
+            imagePickerDialog.dismiss();
+        }
         // handle image upload
         if (resultCode == Activity.RESULT_OK)
         {
