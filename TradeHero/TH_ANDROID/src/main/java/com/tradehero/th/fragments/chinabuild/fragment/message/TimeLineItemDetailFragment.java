@@ -66,7 +66,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener
+public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener,View.OnClickListener
 {
 
     public static final String BUNDLE_ARGUMENT_DISCUSSTION_ID = "bundle_argment_discusstion_id";
@@ -103,18 +103,33 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.rlAllView) RelativeLayout rlAllView;
+    //@InjectView(R.id.tvEmpty) TextView tvEmpty;
 
-    @InjectView(R.id.llDisscurssOrNews) LinearLayout llDisscurssOrNews;
-    @InjectView(R.id.imgSecurityTLUserHeader) ImageView imgSecurityTLUserHeader;
-    @InjectView(R.id.tvUserTLTimeStamp) TextView tvUserTLTimeStamp;
-    @InjectView(R.id.tvUserTLContent) TextView tvUserTLContent;
-    @InjectView(R.id.tvUserTLName) TextView tvUserTLName;
-    @InjectView(R.id.llTLPraise) LinearLayout llTLPraise;
-    @InjectView(R.id.llTLComment) LinearLayout llTLComment;
-    @InjectView(R.id.llTLShare) LinearLayout llTLShare;
-    @InjectView(R.id.tvTLPraise) TextView tvTLPraise;
-    @InjectView(R.id.tvTLComment) TextView tvTLComment;
-    @InjectView(R.id.tvTLShare) TextView tvTLShare;
+    //@InjectView(R.id.llDisscurssOrNews)
+    LinearLayout llDisscurssOrNews;
+    //@InjectView(R.id.imgSecurityTLUserHeader)
+    ImageView imgSecurityTLUserHeader;
+    //@InjectView(R.id.tvUserTLTimeStamp)
+    TextView tvUserTLTimeStamp;
+    //@InjectView(R.id.tvUserTLContent)
+    TextView tvUserTLContent;
+    //@InjectView(R.id.tvUserTLName)
+    TextView tvUserTLName;
+    //@InjectView(R.id.llTLPraise)
+    LinearLayout llTLPraise;
+    //@InjectView(R.id.llTLComment)
+    LinearLayout llTLComment;
+    //@InjectView(R.id.llTLShare)
+    LinearLayout llTLShare;
+    //@InjectView(R.id.tvTLPraise)
+    TextView tvTLPraise;
+    //@InjectView(R.id.tvTLComment)
+    TextView tvTLComment;
+    //@InjectView(R.id.tvTLShare)
+    TextView tvTLShare;
+
+    private LinearLayout mRefreshView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -150,12 +165,12 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         View view = inflater.inflate(R.layout.timeline_item_detail, container, false);
         ButterKnife.inject(this, view);
 
-        //ListView lv = listTimeLine.getRefreshableView();
-        //mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item, container, false);
-        //lv.addHeaderView(mRefreshView);
-        //initRoot(mRefreshView);
+        ListView lv = listTimeLine.getRefreshableView();
+        mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item, null);
+        lv.addHeaderView(mRefreshView);
+        //llDisscurssOrNews.setLayoutParams(new ListView.LayoutParams(AbsoluteLayout.LayoutParams.FILL_PARENT,ListView.LayoutParams.FILL_PARENT));
+        initRoot(mRefreshView);
 
-        llDisscurssOrNews.setVisibility(View.INVISIBLE);
         initView();
 
         if (dataDto == null)
@@ -170,27 +185,30 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         return view;
     }
 
-    //public void initRoot(View view)
-    //{
-    //    llDisscurssOrNews = (LinearLayout) view.findViewById(R.id.llItemAll);
-    //    imgSecurityTLUserHeader = (ImageView) view.findViewById(R.id.imgSecurityTLUserHeader);
-    //    tvUserTLTimeStamp = (TextView) view.findViewById(R.id.tvUserTLTimeStamp);
-    //    tvUserTLContent = (TextView) view.findViewById(R.id.tvUserTLContent);
-    //    tvUserTLName = (TextView) view.findViewById(R.id.tvUserTLName);
-    //    llTLPraise = (LinearLayout) view.findViewById(R.id.llTLPraise);
-    //    llTLComment = (LinearLayout) view.findViewById(R.id.llTLComment);
-    //    llTLShare = (LinearLayout) view.findViewById(R.id.llTLShare);
-    //    tvTLPraise = (TextView) view.findViewById(R.id.tvTLPraise);
-    //    tvTLComment = (TextView) view.findViewById(R.id.tvTLComment);
-    //    tvTLShare = (TextView) view.findViewById(R.id.tvTLShare);
-    //}
+    public void initRoot(View view)
+    {
+        llDisscurssOrNews = (LinearLayout) view.findViewById(R.id.llItemAll);
+        imgSecurityTLUserHeader = (ImageView) view.findViewById(R.id.imgSecurityTLUserHeader);
+        tvUserTLTimeStamp = (TextView) view.findViewById(R.id.tvUserTLTimeStamp);
+        tvUserTLContent = (TextView) view.findViewById(R.id.tvUserTLContent);
+        tvUserTLName = (TextView) view.findViewById(R.id.tvUserTLName);
+        llTLPraise = (LinearLayout) view.findViewById(R.id.llTLPraise);
+        llTLComment = (LinearLayout) view.findViewById(R.id.llTLComment);
+        llTLShare = (LinearLayout) view.findViewById(R.id.llTLShare);
+        tvTLPraise = (TextView) view.findViewById(R.id.tvTLPraise);
+        tvTLComment = (TextView) view.findViewById(R.id.tvTLComment);
+        tvTLShare = (TextView) view.findViewById(R.id.tvTLShare);
+        llTLPraise.setOnClickListener(this);
+        llTLComment.setOnClickListener(this);
+        llTLShare.setOnClickListener(this);
+    }
 
-    private LinearLayout mRefreshView;
+
 
     public void initView()
     {
         tvUserTLContent.setMaxLines(1000);
-
+        //listTimeLine.setEmptyView(tvEmpty);
         listTimeLine.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         listTimeLine.setAdapter(adapter);
 
@@ -265,6 +283,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionCacheListener()
     {
         return new PrivateDiscussionViewDiscussionCacheListener();
+    }
+
+    @Override public void onClick(View view)
+    {
+        onOperaterClicked(view);
     }
 
     protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
@@ -463,7 +486,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         return !edtSend.getText().toString().trim().isEmpty();
     }
 
-    @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader})
+    //@OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader})
     public void onOperaterClicked(View view)
     {
         //if(view.getId() == R.id.llDisscurssOrNews)

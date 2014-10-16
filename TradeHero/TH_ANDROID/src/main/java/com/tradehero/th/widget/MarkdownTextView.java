@@ -57,7 +57,6 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
         setMovementMethod(LinkMovementMethod.getInstance());
     }
 
