@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ShortcutUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -29,6 +30,7 @@ public class GuideActivity extends Activity
 {
     private static final int CLOSE_IMAGE_ID = 0x88888;
     @Inject Analytics analytics;
+    @Inject CurrentUserId currentUserId;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -60,7 +62,14 @@ public class GuideActivity extends Activity
     @Override public void onClick(View v)
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.SplashScreenCancel));
-        ActivityHelper.launchAuthentication(this);
+        if (currentUserId.get() > 0)
+        {
+            ActivityHelper.launchDashboard(this);
+        }
+        else
+        {
+            ActivityHelper.launchAuthentication(this);
+        }
         finish();
     }
 
