@@ -26,8 +26,7 @@
         android:id="@+id/rlAllView"
         >
 
-
-      <include layout="@layout/security_time_line_item" android:id="@+id/llDisscurssOrNews"/>
+      <!--<include layout="@layout/security_time_line_item" android:id="@+id/llDisscurssOrNews"/>-->
 
       <RelativeLayout
           android:id="@+id/rlSend"
@@ -63,7 +62,6 @@
           android:id="@+id/listTimeLine"
           android:scrollingCache="false"
           android:layout_marginTop="20dp"
-          android:layout_below="@id/llDisscurssOrNews"
           android:layout_above="@id/rlSend"
           android:fadingEdge="none"
           android:dividerHeight="1px"
@@ -72,6 +70,7 @@
           android:layout_width="fill_parent"
           android:layout_height="fill_parent">
       </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+
     </RelativeLayout>
   </com.tradehero.common.widget.BetterViewAnimator>
 </RelativeLayout>
