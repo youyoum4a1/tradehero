@@ -29,10 +29,14 @@ public class SocialSharePreferenceHelperNew
     }
     //</editor-fold>
 
-    public void load()
+    public void reload()
     {
         sharePreferencesMap.clear();
+        load();
+    }
 
+    public void load()
+    {
         for (@NotNull SocialSharePreferenceDTO socialSharePreferenceDTO : socialShareSetPreference.getSocialSharePreference())
         {
             sharePreferencesMap.put(socialSharePreferenceDTO.getSocialNetworkEnum(), socialSharePreferenceDTO);

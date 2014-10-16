@@ -72,7 +72,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     {
         if (!isInEditMode())
         {
-            socialSharePreferenceHelperNew.load();
+            socialSharePreferenceHelperNew.reload();
             initSocialButton(mFacebookShareButton, SocialNetworkEnum.FB);
             initSocialButton(mTwitterShareButton, SocialNetworkEnum.TW);
             initSocialButton(mLinkedInShareButton, SocialNetworkEnum.LN);

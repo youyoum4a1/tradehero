@@ -383,18 +383,21 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         return mQuantityEditText.getText().toString();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.vquantity)
     public void onQuantityClicked(/*View v*/)
     {
         mPriceSelectionMethod = AnalyticsConstants.ManualQuantityInput;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.dialog_btn_cancel)
     public void onCancelClicked(/*View v*/)
     {
         getDialog().dismiss();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.dialog_btn_confirm)
     public void onConfirmClicked(/*View v*/)
     {
