@@ -17,6 +17,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.push.DeviceTokenHelper;
@@ -174,6 +175,10 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onBackPressed()
     {
+        if(getNavigator().getCurrentFragment() instanceof SignInFragment){
+            ActivityHelper.launchGuide(this);
+            return;
+        }
         Fragment fragment = getNavigator().getCurrentFragment();
         if(fragment instanceof DashboardFragment){
             DashboardFragment fragmentDF = (DashboardFragment)fragment;
@@ -197,13 +202,11 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override protected void onStart()
     {
         super.onStart();
-        //systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override protected void onResume()
     {
         super.onResume();
-        //launchActions();
         analytics.openSession();
     }
 

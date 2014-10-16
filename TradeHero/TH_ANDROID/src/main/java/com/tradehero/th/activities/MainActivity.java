@@ -27,6 +27,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentDiscovery;
@@ -352,9 +353,12 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                Bundle args = new Bundle();
-                args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, BindGuestUserFragment.class.getName());
-                ActivityHelper.launchDashboard(currentActivityHolder.getCurrentActivity(), args);
+//                Bundle args = new Bundle();
+//                args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, SignInFragment.class.getName());
+//                ActivityHelper.launchDashboard(currentActivityHolder.getCurrentActivity(), args);
+                Intent gotoAuthticationIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
+                startActivity(gotoAuthticationIntent);
+                finish();
             }
         });
     }

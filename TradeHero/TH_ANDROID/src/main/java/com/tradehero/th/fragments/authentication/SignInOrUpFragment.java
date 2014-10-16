@@ -38,15 +38,10 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
 
     public void setOnClickListener(View view)
     {
-        //view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
-        //view.findViewById(R.id.btn_twitter_signin).setOnClickListener(onClickListener);
-        //view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_weibo_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_qq_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_wechat_signin).setOnClickListener(onClickListener);
         view.findViewById(getEmailSignUpViewId()).setOnClickListener(onClickListener);
-        //view.findViewById(R.id.txt_term_of_service_signin).setOnClickListener(onClickListener);
-        //view.findViewById(R.id.txt_term_of_service_termsofuse).setOnClickListener(onClickListener);
     }
 
     @Override
@@ -84,9 +79,6 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     private void showViewForChinese()
     {
         View root = getView();
-        //root.findViewById(R.id.btn_facebook_signin).setVisibility(View.GONE);
-        //root.findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
-        //root.findViewById(R.id.btn_linkedin_signin).setVisibility(View.VISIBLE);
         root.findViewById(R.id.btn_weibo_signin).setVisibility(View.VISIBLE);
         root.findViewById(R.id.btn_qq_signin).setVisibility(View.VISIBLE);
         root.findViewById(R.id.btn_wechat_signin).setVisibility(View.VISIBLE);

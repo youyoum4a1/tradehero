@@ -49,9 +49,10 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/margin_medium"
+      android:padding="3dp"
       android:layout_gravity="center_horizontal"
       android:text="@string/login_with_offical_account"
       android:textColor="#1789d5"
-      android:textSize="@dimen/text_large"/>
+      android:textSize="@dimen/text_medium_plus"/>
 
 </LinearLayout>

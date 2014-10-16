@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.chinabuild.fragment;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
@@ -12,7 +13,12 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.authentication.EmailSignInFragment;
+import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
+import com.tradehero.th.fragments.authentication.SignInFragment;
+import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -66,11 +72,14 @@ public class LoginSuggestDialogFragment extends BaseDialogFragment {
 
     @OnClick(R.id.textview_suggest_signin)
     public void gotoSignIn() {
-        Bundle args = new Bundle();
-        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,
-                BindGuestUserFragment.class.getName());
-        ActivityHelper.launchDashboard(getActivity(), args);
-        dismiss();
+//        Bundle args = new Bundle();
+//        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,
+//                SignInFragment.class.getName());
+//        ActivityHelper.launchDashboard(getActivity(), args);
+//        dismiss();
+        Intent gotoAuthticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
+        getActivity().startActivity(gotoAuthticationIntent);
+        getActivity().finish();
     }
 
 }
