@@ -7,21 +7,27 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 import butterknife.InjectView;
+import butterknife.InjectViews;
 import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.auth.AuthenticationProvider;
+import com.tradehero.th.auth.SocialAuth;
+import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseShareableDialogFragment extends BaseDialogFragment
 {
@@ -29,17 +35,25 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject UserProfileCache userProfileCache;
     @Inject protected CurrentUserId currentUserId;
+    @Inject protected UserProfileDTOUtil userProfileDTOUtil;
+    @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
 
     @Optional @InjectView(R.id.btn_share_fb) public ToggleButton mBtnShareFb;
     @InjectView(R.id.btn_share_li) public ToggleButton mBtnShareLn;
     @Optional @InjectView(R.id.btn_share_tw) public ToggleButton mBtnShareTw;
     @InjectView(R.id.btn_share_wb) public ToggleButton mBtnShareWb;
-
     @InjectView(R.id.btn_share_wechat) public ToggleButton mBtnShareWeChat;
+
+    @Optional @InjectViews({
+            R.id.btn_share_fb,
+            R.id.btn_share_li,
+            R.id.btn_share_tw,
+            R.id.btn_share_wb})
+    ToggleButton[] socialLinkingButtons;
 
     public AlertDialog mSocialLinkingDialog;
 
-    protected UserProfileDTO userProfileDTO;
+    @Nullable protected UserProfileDTO userProfileDTO;
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
@@ -89,25 +103,14 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     @Nullable public Boolean isSocialLinked(SocialNetworkEnum socialNetwork)
     {
+        if (socialNetwork == SocialNetworkEnum.WECHAT)
+        {
+            return null;
+        }
         UserProfileDTO userProfileCopy = userProfileDTO;
         if (userProfileCopy != null)
         {
-            switch (socialNetwork)
-            {
-                case FB:
-                    return userProfileCopy.fbLinked;
-                case TW:
-                    return userProfileCopy.twLinked;
-                case LN:
-                    return userProfileCopy.liLinked;
-                case WB:
-                    return userProfileCopy.wbLinked;
-                case WECHAT:
-                    return null;
-                default:
-                    Timber.e(new IllegalArgumentException(), "Unhandled socialNetwork.%s", socialNetwork);
-                    return false;
-            }
+            return userProfileDTOUtil.checkLinkedStatus(userProfileCopy, socialNetwork);
         }
         return null;
     }
@@ -225,10 +228,37 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         );
     }
 
-    private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
+    private void linkSocialNetwork(@NotNull final SocialNetworkEnum socialNetworkEnum)
     {
-        //socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
-        //socialLinkHelper.link(new SocialLinkingCallback(socialNetworkEnum));
+        alertDialogUtil.showProgressDialog(
+                getActivity(),
+                getString(
+                        R.string.authentication_connecting_to,
+                        getString(socialNetworkEnum.nameResId)));
+        AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetworkEnum);
+        AndroidObservable.bindFragment(
+                this,
+                ((SocialAuthenticationProvider) socialAuthenticationProvider)
+                        .socialLink(getActivity()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AlertDialogObserver<UserProfileDTO>(getActivity(), alertDialogUtil)
+                {
+                    @Override public void onNext(UserProfileDTO args)
+                    {
+                        onSuccessSocialLink(args, socialNetworkEnum);
+                    }
+
+                    @Override public void onCompleted()
+                    {
+                        alertDialogUtil.dismissProgressDialog();
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                        super.onError(e);
+                        alertDialogUtil.dismissProgressDialog();
+                    }
+                });
     }
 
     @Override public void onDestroyView()
@@ -287,24 +317,5 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                 socialSharePreferenceHelperNew.updateSocialSharePreference(networkEnum, isChecked);
             }
         };
-    }
-
-    private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
-    {
-        final SocialNetworkEnum socialNetworkEnum;
-
-        SocialLinkingCallback(final SocialNetworkEnum socialNetworkEnum)
-        {
-            this.socialNetworkEnum = socialNetworkEnum;
-        }
-
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            onSuccessSocialLink(userProfileDTO, socialNetworkEnum);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-        }
     }
 }
