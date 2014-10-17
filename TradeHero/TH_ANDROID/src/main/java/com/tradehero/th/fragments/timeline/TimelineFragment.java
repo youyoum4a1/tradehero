@@ -28,8 +28,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -41,7 +39,6 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
@@ -88,6 +85,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         bundle.putBundle(USER_BASE_KEY_BUNDLE_KEY, userBaseKey.getArgs());
     }
+
     @Nullable protected static UserBaseKey getUserBaseKey(@NotNull Bundle args)
     {
         if (args.containsKey(USER_BASE_KEY_BUNDLE_KEY))
@@ -149,8 +147,20 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        shownUserBaseKey = getUserBaseKey(getArguments());
+        if (shownUserBaseKey == null)
+        {
+            thRouter.inject(this);
+        }
+        // This is due to THRouter creating
+        // noinspection ConstantConditions
+        if (shownUserBaseKey == null || shownUserBaseKey.key == null)
+        {
+            shownUserBaseKey = currentUserIdLazy.get().toUserBaseKey();
+        }
         userProfileCacheListener = createUserProfileCacheListener();
         messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
+        mainTimelineAdapter = createTimelineAdapter(shownUserBaseKey);
     }
 
     @Override protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()
@@ -166,16 +176,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
     {
         return new FreeUserFollowedCallback();
-    }
-
-    protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedForMessageListener()
-    {
-        return new TimelinePremiumUserForMessageFollowedListener();
-    }
-
-    protected OnFollowRequestedListener createFollowRequestedListener()
-    {
-        return new TimelineFollowRequestedListener();
     }
 
     protected OnFollowRequestedListener createFollowForMessageRequestedListener()
@@ -275,7 +275,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             timelineListView.addFooterView(loadingView);
         }
-        timelineListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        timelineListView.setAdapter(mainTimelineAdapter);
 
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         displayablePortfolioFetchAssistant.setFetchedListener(
@@ -324,11 +324,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        shownUserBaseKey = getUserBaseKey(getArguments());
-        if (shownUserBaseKey == null)
-        {
-            thRouter.inject(this);
-        }
         //create adapter and so on
         linkWith(shownUserBaseKey, true);
 
@@ -340,6 +335,33 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
+        mainTimelineAdapter.setProfileClickListener(createTimelineProfileClickListener());
+        mainTimelineAdapter.setOnLoadFinishedListener(
+                new MainTimelineAdapter.OnLoadFinishedListener()
+                {
+                    @Override public void onLoadFinished()
+                    {
+                        TimelineFragment.this.onLoadFinished();
+                    }
+
+                    @Override public void onBeginRefresh(TabType tabType)
+                    {
+                        refreshPortfolioList();
+                        fetchUserProfile(true);
+                    }
+                });
+
+        timelineListView.setOnRefreshListener(mainTimelineAdapter);
+        timelineListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        timelineListView.setOnLastItemVisibleListener(lastItemVisibleListener);
+        timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                onMainItemClick(adapterView, view, i, l);
+            }
+        });
+
         if (userProfileView != null && displayingProfileHeaderLayoutId != 0)
         {
             userProfileView.setDisplayedChildByLayoutId(displayingProfileHeaderLayoutId);
@@ -372,14 +394,18 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
         }
         dashboardTabHost.setOnTranslate(null);
+        mainTimelineAdapter.setProfileClickListener(null);
+        mainTimelineAdapter.setOnLoadFinishedListener(null);
+        timelineListView.setOnRefreshListener((MainTimelineAdapter) null);
+        timelineListView.setOnScrollListener(null);
+        timelineListView.setOnLastItemVisibleListener(null);
+        timelineListView.setOnItemClickListener(null);
         super.onPause();
     }
 
     @Override public void onStop()
     {
         detachUserProfileCache();
-        detachTimelineAdapter();
-        detachTimelineListView();
         detachFreeFollowMiddleCallback();
         detachMessageThreadHeaderFetchTask();
         detachFollowDialogCombo();
@@ -400,37 +426,19 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         this.userProfileView = null;
         this.loadingView = null;
-        timelineListView = null;
         lastItemVisibleListener = null;
         mainTimelineAdapter = null;
 
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
+        mainTimelineAdapter = null;
         messageThreadHeaderFetchListener = null;
         userProfileCacheListener = null;
         super.onDestroy();
-    }
-
-    protected void detachTimelineAdapter()
-    {
-        if (mainTimelineAdapter != null)
-        {
-            mainTimelineAdapter.setProfileClickListener(null);
-            mainTimelineAdapter.setOnLoadFinishedListener(null);
-        }
-    }
-
-    protected void detachTimelineListView()
-    {
-        if (timelineListView != null)
-        {
-            timelineListView.setOnRefreshListener((MainTimelineAdapter) null);
-            timelineListView.setOnScrollListener(null);
-            timelineListView.setOnLastItemVisibleListener(null);
-        }
     }
 
     protected void detachUserProfileCache()
@@ -514,30 +522,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
     }
 
-    private AdapterView.OnItemClickListener createTimelineOnClickListener()
-    {
-        return new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                Object item = parent.getItemAtPosition(position);
-
-                if (item instanceof TimelineItemDTO)
-                {
-                    pushDiscussion(((TimelineItemDTO) item).getDiscussionKey());
-                }
-            }
-        };
-    }
-
-    private void pushDiscussion(TimelineItemDTOKey timelineItemDTOKey)
-    {
-        Bundle bundle = new Bundle();
-        TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
-        navigator.pushFragment(TimelineDiscussionFragment.class, bundle);
-    }
-
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         this.shownProfile = userProfileDTO;
@@ -548,7 +532,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void linkWith(TabType tabType, boolean andDisplay)
+    protected void linkWith(@NotNull TabType tabType, boolean andDisplay)
     {
         currentTab = tabType;
         if (andDisplay)
@@ -623,34 +607,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void prepareTimelineAdapter(@NotNull final UserBaseKey shownUserBaseKey)
     {
-        mainTimelineAdapter = createTimelineAdapter(shownUserBaseKey);
-        mainTimelineAdapter.setProfileClickListener(createTimelineProfileClickListener());
-        mainTimelineAdapter.setOnLoadFinishedListener(
-                new MainTimelineAdapter.OnLoadFinishedListener()
-                {
-                    @Override public void onLoadFinished()
-                    {
-                        TimelineFragment.this.onLoadFinished();
-                    }
-
-                    @Override public void onBeginRefresh(TabType tabType)
-                    {
-                        refreshPortfolioList();
-                        fetchUserProfile(true);
-                    }
-                });
-        timelineListView.setOnRefreshListener(mainTimelineAdapter);
-        timelineListView.setOnLastItemVisibleListener(lastItemVisibleListener);
-        timelineListView.setAdapter(mainTimelineAdapter);
-        timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                onMainItemClick(adapterView, view, i, l);
-            }
-        });
     }
     //</editor-fold>
+
     /**item of Portfolio tab is clicked*/
     private void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
@@ -674,11 +633,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             Timber.d("TimelineFragment, unhandled view %s", view);
         }
-    }
-
-    private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
-    {
-        pushPositionListFragment(ownedPortfolioId, null);
     }
 
     /**
@@ -888,7 +842,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         return new TimelineProfileClickListener()
         {
-            @Override public void onBtnClicked(TabType tabType)
+            @Override public void onBtnClicked(@NotNull TabType tabType)
             {
                 linkWith(tabType, true);
             }
@@ -917,19 +871,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             super.success(userProfileDTO, response);
             pushPrivateMessageFragment();
-        }
-    }
-
-    public class TimelineFollowRequestedListener implements OnFollowRequestedListener
-    {
-        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            freeFollow(heroId, createFreeUserFollowedCallback());
-        }
-
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            premiumFollowUser(heroId);
         }
     }
 
@@ -982,18 +923,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
         {
             // Nothing for now
-        }
-    }
-
-    protected class TimelinePremiumUserForMessageFollowedListener extends TimelinePremiumUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(
-                @NotNull UserBaseKey userFollowed,
-                @NotNull UserProfileDTO currentUserProfileDTO)
-        {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
-            pushPrivateMessageFragment();
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
         }
     }
 

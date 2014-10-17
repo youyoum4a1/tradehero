@@ -26,6 +26,7 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -39,7 +40,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     public static final int EMPTY_ITEM_TYPE = 3;
 
     protected final LayoutInflater inflater;
-    private TimelineProfileClickListener profileClickListener;
+    @Nullable private TimelineProfileClickListener profileClickListener;
     private OnLoadFinishedListener onLoadFinishedListener;
     private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.PORTFOLIO_LIST;
 
@@ -49,7 +50,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     private final int statResId;
     private UserProfileDTO userProfileDTO;
 
-    public MainTimelineAdapter(Activity context,
+    public MainTimelineAdapter(@NotNull Activity context,
             LayoutInflater inflater,
             @NotNull UserBaseKey shownUserBaseKey,
             int timelineItemViewResId,
@@ -67,27 +68,23 @@ public class MainTimelineAdapter extends ArrayAdapter
         this.statResId = statResId;
     }
 
-    public TimelineFragment.TabType getCurrentTabType()
-    {
-        return currentTabType;
-    }
-
     public void setCurrentTabType(TimelineFragment.TabType currentTabType)
     {
         this.currentTabType = currentTabType;
         notifyDataSetChanged();
     }
 
-    public void setProfileClickListener(TimelineProfileClickListener profileClickListener)
+    public void setProfileClickListener(@Nullable TimelineProfileClickListener profileClickListener)
     {
         this.profileClickListener = profileClickListener;
     }
 
-    protected void notifyProfileClickListener(TimelineFragment.TabType tabType)
+    protected void notifyProfileClickListener(@NotNull TimelineFragment.TabType tabType)
     {
-        if (profileClickListener != null)
+        TimelineProfileClickListener listenerCopy = profileClickListener;
+        if (listenerCopy != null)
         {
-            profileClickListener.onBtnClicked(tabType);
+            listenerCopy.onBtnClicked(tabType);
         }
     }
 
@@ -128,7 +125,7 @@ public class MainTimelineAdapter extends ArrayAdapter
         castedView.changeButtonLook(currentTabType);
         castedView.setTimelineProfileClickListener(new TimelineProfileClickListener()
         {
-            @Override public void onBtnClicked(TimelineFragment.TabType tabType)
+            @Override public void onBtnClicked(@NotNull TimelineFragment.TabType tabType)
             {
                 notifyProfileClickListener(tabType);
             }
