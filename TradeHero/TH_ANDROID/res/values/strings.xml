@@ -339,12 +339,14 @@
   <string name="share_to_social">分享到社交网络</string>
   <string name="share_sell_title">恭喜你，盈利</string>
   <string name="share_sell_title2">快去跟小伙伴们炫耀下吧~</string>
+  <string name="share_sell_title11">啊，亏损了</string>
+  <string name="share_sell_title12">快去找你的小伙伴帮帮忙吧~</string>
   <string name="share_tips">小贴士：如果不想弹出分享界面</string>
   <string name="share_tips2">可以在出售时把分享开关关掉</string>
   <string name="share_sell_title_money">%1$s！</string>
   <string name="share_sell_to_wechat_title">新一代股神闪亮登场！ \n我刚出售了 %1$s 股 %2$s %3$s 股票，
-    涨跌 %4$s 共盈利 %5$s ， \n小伙伴们快一起来赚钱吧！ \nhttp://cn.tradehero.mobi/shr/trade.html?userId=%6$s&amp;positionId=%7$s
-  </string>
+    涨跌 %4$s 共盈利 %5$s ， \n小伙伴们快一起来赚钱吧！ \nhttp://cn.tradehero.mobi/shr/trade.html?userId=%6$s&amp;positionId=%7$s</string>
+  <string name="share_sell_to_wechat_title_losemoney">在股市亏本了，小伙伴们快来帮帮我吧！ \nhttp://cn.tradehero.mobi/shr/trade.html?userId=%1$s&amp;positionId=%2$s</string>
   <string name="share_amount_roi_value_title">您持有的股票收益率涨了10%\n这就是传说中的股神吗？</string>
   <string name="share_amount_roi_value_summary">我在高端模拟炒股软件\'全民股神\'中的单笔收益到达了%1$s, 想要知道那只股票吗？叫声大神，亲切点的那种~ \nhttp://cn.tradehero.mobi/shr/yield.html?userId=%2$s&amp;positionId=%3$s</string>
   <string name="share_amount_total_value_title">恭喜你！总资产达到15w \n你这么土豪你的朋友们知道吗？</string>
