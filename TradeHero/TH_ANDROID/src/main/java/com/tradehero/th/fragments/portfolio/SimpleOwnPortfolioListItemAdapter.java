@@ -20,9 +20,9 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
     private List<Object> orderedItems;
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
 
-    public SimpleOwnPortfolioListItemAdapter(Context context, LayoutInflater inflater, int portfolioLayoutResourceId)
+    public SimpleOwnPortfolioListItemAdapter(Context context, int portfolioLayoutResourceId)
     {
-        super(context, inflater, portfolioLayoutResourceId);
+        super(context, LayoutInflater.from(context), portfolioLayoutResourceId);
         this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         orderedItems = new ArrayList<>();
         HierarchyInjector.inject(context, this);

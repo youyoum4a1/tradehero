@@ -39,7 +39,6 @@ public class MainTimelineAdapter extends ArrayAdapter
     public static final int STATS_ITEM_TYPE = 2;
     public static final int EMPTY_ITEM_TYPE = 3;
 
-    protected final LayoutInflater inflater;
     @Nullable private TimelineProfileClickListener profileClickListener;
     private OnLoadFinishedListener onLoadFinishedListener;
     private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.PORTFOLIO_LIST;
@@ -51,19 +50,16 @@ public class MainTimelineAdapter extends ArrayAdapter
     private UserProfileDTO userProfileDTO;
 
     public MainTimelineAdapter(@NotNull Activity context,
-            LayoutInflater inflater,
             @NotNull UserBaseKey shownUserBaseKey,
             int timelineItemViewResId,
             int portfolioItemViewResId,
             int statResId)
     {
         super(context, 0);
-        this.inflater = inflater;
-
-        subTimelineAdapter = new SubTimelineAdapter(context, inflater, shownUserBaseKey.key, timelineItemViewResId);
+        subTimelineAdapter = new SubTimelineAdapter(context, shownUserBaseKey.key, timelineItemViewResId);
         subTimelineAdapter.setDTOLoaderCallback(createTimelineLoaderCallback(context, shownUserBaseKey));
 
-        portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, inflater, portfolioItemViewResId);
+        portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, portfolioItemViewResId);
 
         this.statResId = statResId;
     }
@@ -119,7 +115,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
         }
         TimelineHeaderButtonView castedView = (TimelineHeaderButtonView) convertView;
         castedView.changeButtonLook(currentTabType);
@@ -247,7 +243,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(statResId, viewGroup, false);
+            convertView = LayoutInflater.from(getContext()).inflate(statResId, viewGroup, false);
         }
         return convertView;
     }

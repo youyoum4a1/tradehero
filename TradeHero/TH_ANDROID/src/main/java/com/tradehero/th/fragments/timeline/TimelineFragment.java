@@ -587,14 +587,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    //<editor-fold desc="Init milestones">
     protected void fetchUserProfile(boolean force)
     {
         detachUserProfileCache();
         userProfileCache.get().register(shownUserBaseKey, userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(shownUserBaseKey, force);
     }
-    //</editor-fold>
 
     //<editor-fold desc="Initial methods">
     private MainTimelineAdapter createTimelineAdapter(@NotNull UserBaseKey shownUserBaseKey)
