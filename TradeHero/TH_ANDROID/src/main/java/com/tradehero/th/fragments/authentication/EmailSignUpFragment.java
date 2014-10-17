@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -85,12 +86,14 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private MiddleCallback<Response> sendCodeMiddleCallback;
     protected boolean mIsPhoneNumRegister;
 
-
     @Inject Analytics analytics;
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject Picasso picasso;
     @Inject UserServiceWrapper userServiceWrapper;
+
+    //Camera
+    private Bitmap photo;
 
     private static long last_time_request_verify_code = -1;
     private final long duration_verify_code = 60;
@@ -296,11 +299,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         });
         this.mPhoto = (ImageView) view.findViewById(R.id.image_optional);
         mPhoto.setOnClickListener(this);
-        //
-        //this.mPhoto.setOnTouchListenerOnFields(touchListener);
-        //this.profileView.setOnTouchListenerOnFields(touchListener);
-        //this.profileView.addValidationListenerOnFields(this);
-        //this.profileView.setListener(createProfileViewListener());
 
         this.mAgreeButton = (ImageView) view.findViewById(R.id.authentication_agree);
 
@@ -344,7 +342,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK) {
-            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null) {
+            if (requestCode == REQUEST_GALLERY && data != null) {
                 try {
                     handleDataFromLibrary(data);
                 } catch (OutOfMemoryError e) {
@@ -353,11 +351,38 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                     THToast.show(R.string.error_fetch_image_library);
                     Timber.e(e, "Failed to extract image from library");
                 }
-            } else if (requestCode == REQUEST_GALLERY) {
-                Timber.e(new Exception("Got null data from library"), "");
+                return;
             }
-        } else if (resultCode != Activity.RESULT_CANCELED) {
+            if(requestCode == REQUEST_CAMERA && data != null){
+                if(data.getData()!=null){
+                    try {
+                        handleDataFromLibrary(data);
+                    } catch (OutOfMemoryError e) {
+                        THToast.show(R.string.error_decode_image_memory);
+                    } catch (Exception e) {
+                        THToast.show(R.string.error_fetch_image_library);
+                        Timber.e(e, "Failed to extract image from library");
+                    }
+                }else{
+                    newImagePath = "";
+                    Bundle bundle = data.getExtras();
+                    if(bundle != null){
+                        photo = (Bitmap) bundle.get("data");
+                        if(photo!=null){
+                            mPhoto.setImageBitmap(photo);
+                        }
+                    }
+                }
+                return;
+            }
+            if (requestCode == REQUEST_GALLERY) {
+                Timber.e(new Exception("Got null data from library"), "");
+                return;
+            }
+        }
+        if (resultCode != Activity.RESULT_CANCELED) {
             Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
+            return;
         }
     }
 
@@ -400,14 +425,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     @Override
     public void onDestroyView() {
-        //if (this.profileView != null)
-        //{
-        //    this.profileView.setOnTouchListenerOnFields(null);
-        //    this.profileView.removeAllListenersOnFields();
-        //    this.profileView.setNullOnFields();
-        //    this.profileView.setListener(null);
-        //}
-        //this.profileView = null;
         detachSendCodeMiddleCallback();
         if (this.signButton != null) {
             this.signButton.setOnClickListener(null);
@@ -536,13 +553,18 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     protected BitmapTypedOutput safeCreateProfilePhoto() {
         BitmapTypedOutput created = null;
-        if (newImagePath != null) {
+        if (!TextUtils.isEmpty(newImagePath)) {
             try {
                 created = bitmapTypedOutputFactory.createForProfilePhoto(
                         getResources(), bitmapForProfileFactory, newImagePath);
             } catch (OutOfMemoryError e) {
                 THToast.show(R.string.error_decode_image_memory);
             }
+        }else {
+            if(photo==null){
+                return null;
+            }
+            created = new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, photo, String.valueOf(System.currentTimeMillis()), 75);
         }
         return created;
     }

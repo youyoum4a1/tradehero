@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,7 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
 
     private UserProfileDTO userProfileDTO;
     private String dialogContent;
+    private Bitmap photo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,7 +139,15 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
                         Timber.e(e, "Failed to extract image from library");
                     }
                 } else {
-
+                    newImagePath = "";
+                    Bundle bundle = data.getExtras();
+                    if(bundle != null){
+                        photo = (Bitmap) bundle.get("data");
+                        if(photo!=null){
+                            mPhoto.setImageBitmap(photo);
+                            updatePhoto();
+                        }
+                    }
                 }
             }
             if (requestCode == REQUEST_GALLERY) {
@@ -280,13 +290,18 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
 
     protected BitmapTypedOutput safeCreateProfilePhoto() {
         BitmapTypedOutput created = null;
-        if (newImagePath != null) {
+        if (!TextUtils.isEmpty(newImagePath)) {
             try {
                 created = bitmapTypedOutputFactory.createForProfilePhoto(
                         getResources(), bitmapForProfileFactory, newImagePath);
             } catch (OutOfMemoryError e) {
                 THToast.show(R.string.error_decode_image_memory);
             }
+        }else{
+            if(photo==null){
+                return null;
+            }
+            created = new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, photo, String.valueOf(System.currentTimeMillis()), 75);
         }
         return created;
     }
