@@ -542,9 +542,5 @@ public class AuthenticationActivity extends DashboardActivity
             authenticateWithWechat(wechatCode);
             WXEntryActivity.setWeChatCodeNull();
         }
-        else
-        {
-            THToast.show(R.string.login_by_wechat_account_failed);
-        }
     }
 }
