@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,21 +111,44 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK) {
-            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null) {
+            if (requestCode == REQUEST_GALLERY && data != null) {
                 try {
                     handleDataFromLibrary(data);
                     updatePhoto();
                 } catch (OutOfMemoryError e) {
                     THToast.show(R.string.error_decode_image_memory);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     THToast.show(R.string.error_fetch_image_library);
                     Timber.e(e, "Failed to extract image from library");
                 }
-            } else if (requestCode == REQUEST_GALLERY) {
-                Timber.e(new Exception("Got null data from library"), "");
+                return;
             }
-        } else if (resultCode != Activity.RESULT_CANCELED) {
+            if(requestCode==REQUEST_CAMERA && data!=null){
+                if(data.getData()!=null){
+                    try {
+                        handleDataFromLibrary(data);
+                        updatePhoto();
+                    } catch (OutOfMemoryError e) {
+                        THToast.show(R.string.error_decode_image_memory);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        THToast.show(R.string.error_fetch_image_library);
+                        Timber.e(e, "Failed to extract image from library");
+                    }
+                } else {
+
+                }
+            }
+            if (requestCode == REQUEST_GALLERY) {
+                Timber.e(new Exception("Got null data from library"), "");
+                return;
+            }
+            return;
+        }
+        if (resultCode != Activity.RESULT_CANCELED) {
             Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
+            return;
         }
     }
 

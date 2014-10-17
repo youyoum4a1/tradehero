@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.chinabuild.fragment.competition;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.api.competition.CompetitionDTOUtil;
 import com.tradehero.th.api.competition.ProviderId;
@@ -394,10 +396,12 @@ public class CompetitionDetailFragment extends DashboardFragment
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
-                            Bundle args = new Bundle();
-                            args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,
-                                    BindGuestUserFragment.class.getName());
-                            ActivityHelper.launchDashboard(getActivity(), args);
+                            if(getActivity()==null){
+                                return;
+                            }
+                            Intent gotoAuthticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
+                            startActivity(gotoAuthticationIntent);
+                            getActivity().finish();
                         }
                     });
                 }

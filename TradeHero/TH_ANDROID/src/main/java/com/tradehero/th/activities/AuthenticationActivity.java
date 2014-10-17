@@ -536,7 +536,6 @@ public class AuthenticationActivity extends DashboardActivity
     public void getWeChatAccessToken()
     {
         String wechatCode = WXEntryActivity.getWeChatCode();
-        Log.d("123", "wechatCode " + wechatCode);
         if (!TextUtils.isEmpty(wechatCode))
         {
             authenticateWithWechat(wechatCode);

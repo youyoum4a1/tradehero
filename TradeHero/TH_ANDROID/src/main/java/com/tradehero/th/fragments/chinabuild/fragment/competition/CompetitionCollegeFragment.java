@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.chinabuild.fragment.competition;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.text.*;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +52,8 @@ public class CompetitionCollegeFragment extends DashboardFragment{
 
     //Dialog
     private Dialog confirmCollegeDialog;
+    private String chooseCollegeStrA;
+    private String chooseCollegeStrB;
     private TextView tvConfirm;
     private TextView tvCancel;
     private TextView tvContent;
@@ -87,7 +89,7 @@ public class CompetitionCollegeFragment extends DashboardFragment{
     private void initConfirmDialog() {
         confirmCollegeDialog = new Dialog(getActivity());
         confirmCollegeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        confirmCollegeDialog.setContentView(R.layout.th_common_dialog_layout);
+        confirmCollegeDialog.setContentView(R.layout.competition_college_dialog_layout);
         tvConfirm = (TextView) confirmCollegeDialog.findViewById(R.id.textview_ok);
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,13 +116,24 @@ public class CompetitionCollegeFragment extends DashboardFragment{
             }
         });
         tvContent = (TextView) confirmCollegeDialog.findViewById(R.id.textview_content);
+        chooseCollegeStrA = getActivity().getResources().getString(R.string.dialog_competition_choose_college_a);
+        chooseCollegeStrB = getActivity().getResources().getString(R.string.dialog_competition_choose_college_b);
     }
 
     private void showDialog(String collegeName){
         if(confirmCollegeDialog==null){
             return;
         }
-        tvContent.setText(collegeName);
+        SpannableStringBuilder builder = new SpannableStringBuilder(chooseCollegeStrA+collegeName+chooseCollegeStrB);
+        ForegroundColorSpan redSpan = new ForegroundColorSpan(Color.RED);
+        ForegroundColorSpan blackSpan = new ForegroundColorSpan(Color.BLACK);
+        int lengthA = chooseCollegeStrA.length();
+        int lengthB = lengthA + collegeName.length();
+        int lengthC = lengthB + chooseCollegeStrB.length();
+        builder.setSpan(blackSpan, 0, lengthA, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(redSpan,lengthA, lengthB, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(blackSpan,lengthB, lengthC, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvContent.setText(builder);
         if(confirmCollegeDialog.isShowing()){
             return;
         }
@@ -175,7 +188,6 @@ public class CompetitionCollegeFragment extends DashboardFragment{
                         if(TextUtils.isEmpty(selectedCollege)){
                             return;
                         }
-                        Log.d("123",selectedCollege);
                         showDialog(selectedCollege);
                     }
                 });
@@ -229,7 +241,6 @@ public class CompetitionCollegeFragment extends DashboardFragment{
         {
             @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
             {
-                Log.d("123","response: " + userProfileDTO.school);
                 progressDialogUtil.dismiss(getActivity());
                 userProfileCache.put(currentUserId.toUserBaseKey(), userProfileDTO);
                 THToast.show(R.string.settings_update_profile_successful);
