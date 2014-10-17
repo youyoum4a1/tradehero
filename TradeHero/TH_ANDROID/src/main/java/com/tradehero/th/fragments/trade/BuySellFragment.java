@@ -404,6 +404,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             displayBuySellSwitch();
             displayBuySellPrice();
+            displayBuySellContainer();
         }
     }
 
@@ -629,13 +630,18 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayBuySellContainer()
     {
-        if (mBuySellBtnContainer.getVisibility() == View.GONE)
+        if (isBuySellReady() && mBuySellBtnContainer.getVisibility() == View.GONE)
         {
             Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom);
             slideIn.setFillAfter(true);
             mBuySellBtnContainer.setVisibility(View.VISIBLE);
             mBuySellBtnContainer.startAnimation(slideIn);
         }
+    }
+
+    public boolean isBuySellReady()
+    {
+        return quoteDTO != null && securityPositionDetailDTO != null;
     }
 
     public void displayBuySellSwitch()
