@@ -1,13 +1,16 @@
 package com.tradehero.th.fragments.chinabuild.fragment.competition;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -16,21 +19,50 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.CompetitionCollegesAdapter;
+import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.ProgressDialogUtil;
+import dagger.Lazy;
+
+import javax.inject.Inject;
 
 /*
     比赛选择高校
  */
-public class CompetitionCollegeFragment extends DashboardFragment implements TextWatcher, AdapterView.OnItemClickListener {
+public class CompetitionCollegeFragment extends DashboardFragment{
 
-    @InjectView(R.id.listview_competition_colleges)ListView lvColleges;
-    @InjectView(R.id.edittext_competition_search_college)EditText etSearchCollege;
+    @InjectView(R.id.listview_competition_colleges) ListView lvColleges;
+    @InjectView(R.id.edittext_competition_search_college) EditText etSearchCollege;
     @InjectView(R.id.textview_competition_search_college_noresult) TextView tvNoResult;
+
 
     private String[] colleges = new String[]{};
     private CompetitionCollegesAdapter collegesAdapter;
+
+    //Dialog
+    private Dialog confirmCollegeDialog;
+    private TextView tvConfirm;
+    private TextView tvCancel;
+    private TextView tvContent;
+
+    //Update college to server
+    private String selectedCollege = "";
+    private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
+    @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +80,58 @@ public class CompetitionCollegeFragment extends DashboardFragment implements Tex
         View view = inflater.inflate(R.layout.competition_college_fragment, container, false);
         ButterKnife.inject(this, view);
         initViews();
+        initConfirmDialog();
         return view;
+    }
+
+    private void initConfirmDialog() {
+        confirmCollegeDialog = new Dialog(getActivity());
+        confirmCollegeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        confirmCollegeDialog.setContentView(R.layout.th_common_dialog_layout);
+        tvConfirm = (TextView) confirmCollegeDialog.findViewById(R.id.textview_ok);
+        tvConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissDialog();
+                if(TextUtils.isEmpty(selectedCollege)){
+                    return;
+                }
+                UserFormDTO userFormDTO = createForm(selectedCollege);
+                detachMiddleCallbackUpdateUserProfile();
+                middleCallbackUpdateUserProfile = userServiceWrapper.get().uploadCollege(
+                        currentUserId.toUserBaseKey(),
+                        userFormDTO,
+                        createUpdateUserProfileCallback());
+
+                progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.updating);
+            }
+        });
+        tvCancel = (TextView) confirmCollegeDialog.findViewById(R.id.textview_cancel);
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissDialog();
+            }
+        });
+        tvContent = (TextView) confirmCollegeDialog.findViewById(R.id.textview_content);
+    }
+
+    private void showDialog(String collegeName){
+        if(confirmCollegeDialog==null){
+            return;
+        }
+        tvContent.setText(collegeName);
+        if(confirmCollegeDialog.isShowing()){
+            return;
+        }
+        confirmCollegeDialog.show();
+    }
+
+    private void dismissDialog(){
+        if(confirmCollegeDialog==null){
+            return;
+        }
+        confirmCollegeDialog.dismiss();
     }
 
     private void initViews() {
@@ -62,10 +145,43 @@ public class CompetitionCollegeFragment extends DashboardFragment implements Tex
                 colleges = getActivity().getResources().getStringArray(R.array.competition_colleges);
                 collegesAdapter = new CompetitionCollegesAdapter(getActivity(), colleges);
                 lvColleges.setAdapter(collegesAdapter);
+                etSearchCollege.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                        if (collegesAdapter != null) {
+                            collegesAdapter.getFilter().filter(charSequence);
+                        }
+                        if (!hasMatchedCollege(charSequence)) {
+                            tvNoResult.setVisibility(View.VISIBLE);
+                        } else {
+                            tvNoResult.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+                lvColleges.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                        selectedCollege = collegesAdapter.getItem(position).toString();
+                        if(TextUtils.isEmpty(selectedCollege)){
+                            return;
+                        }
+                        Log.d("123",selectedCollege);
+                        showDialog(selectedCollege);
+                    }
+                });
             }
         });
-        etSearchCollege.addTextChangedListener(this);
-        lvColleges.setOnItemClickListener(this);
+
     }
 
     @Override
@@ -89,42 +205,53 @@ public class CompetitionCollegeFragment extends DashboardFragment implements Tex
         super.onResume();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        if (collegesAdapter != null) {
-            collegesAdapter.getFilter().filter(charSequence);
-        }
-        if (!hasMatchedCollege(charSequence)) {
-            tvNoResult.setVisibility(View.VISIBLE);
-        }else{
-            tvNoResult.setVisibility(View.GONE);
-        }
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-
-    }
-
-    private boolean hasMatchedCollege(CharSequence charSequence){
+    private boolean hasMatchedCollege(CharSequence charSequence) {
         String input = charSequence.toString();
-        for(String college:colleges){
-            if(college.contains(input)){
+        for (String college : colleges) {
+            if (college.contains(input)) {
                 return true;
             }
         }
         return false;
+    }
+
+
+    public UserFormDTO createForm(String college)
+    {
+        UserFormDTO created = new UserFormDTO();
+        created.school = college;
+        return created;
+    }
+
+    private THCallback<UserProfileDTO> createUpdateUserProfileCallback()
+    {
+        return new THCallback<UserProfileDTO>()
+        {
+            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
+            {
+                Log.d("123","response: " + userProfileDTO.school);
+                progressDialogUtil.dismiss(getActivity());
+                userProfileCache.put(currentUserId.toUserBaseKey(), userProfileDTO);
+                THToast.show(R.string.settings_update_profile_successful);
+                popCurrentFragment();
+            }
+
+            @Override protected void failure(THException ex)
+            {
+                progressDialogUtil.dismiss(getActivity());
+                THToast.show(ex.getMessage());
+                popCurrentFragment();
+            }
+        };
+    }
+
+    private void detachMiddleCallbackUpdateUserProfile()
+    {
+        if (middleCallbackUpdateUserProfile != null)
+        {
+            middleCallbackUpdateUserProfile.setPrimaryCallback(null);
+        }
+        middleCallbackUpdateUserProfile = null;
     }
 
 }

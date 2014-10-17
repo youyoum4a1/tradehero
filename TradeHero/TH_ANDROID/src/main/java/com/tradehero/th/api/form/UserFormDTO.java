@@ -15,6 +15,7 @@ public class UserFormDTO
     public String phoneNumber;
     public String verifyCode;
     public String deviceAccessToken;
+    public String school;
 
     //notifications settings
     public Boolean pushNotificationsEnabled;

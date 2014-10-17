@@ -363,6 +363,19 @@ import retrofit.client.Response;
         return middleCallback;
     }
 
+    public MiddleCallback<UserProfileDTO> uploadCollege(
+            UserBaseKey userBaseKey,
+            UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        userServiceAsync.uploadCollege(
+                userBaseKey.key,
+                userFormDTO.school,
+                middleCallback);
+        return middleCallback;
+    }
+
     public MiddleCallback<UserProfileDTO> updateAccount(
             UserBaseKey userBaseKey,
             UserFormDTO userFormDTO,

@@ -145,6 +145,12 @@ interface UserServiceAsync
             Callback<UserProfileDTO> cb);
 
     @Multipart @PUT("/users/{userId}/updateUser")
+    void uploadCollege(
+            @Path("userId") int userId,
+            @Part("school") String college,
+            Callback<UserProfileDTO> cb);
+
+    @Multipart @PUT("/users/{userId}/updateUser")
     void updateAccount(
             @Path("userId") int userId,
             @Part("email") String email,

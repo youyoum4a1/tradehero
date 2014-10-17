@@ -23,7 +23,8 @@
             android:hint="@string/competition_enter_college"/>
     <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
         <ListView android:layout_width="match_parent" android:layout_height="match_parent"
-                  android:id="@+id/listview_competition_colleges"/>
+                  android:id="@+id/listview_competition_colleges"
+                  android:clickable="true"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:id="@+id/textview_competition_search_college_noresult"
                   android:layout_centerHorizontal="true"

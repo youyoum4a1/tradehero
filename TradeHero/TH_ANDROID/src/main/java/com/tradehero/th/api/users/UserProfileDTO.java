@@ -202,6 +202,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", tradesSharedCount_FB=" + tradesSharedCount_FB +
                 ", userAlertPlans=" + userAlertPlans +
                 ", enrolledProviders=" + enrolledProviders +
+                ", school=" + school +
                 '}';
     }
 

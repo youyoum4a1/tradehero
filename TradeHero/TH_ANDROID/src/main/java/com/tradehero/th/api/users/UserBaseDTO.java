@@ -15,6 +15,7 @@ public class UserBaseDTO extends ExtendedDTO
     public int id;
     @Nullable public String picture;
     public String displayName;
+    public String school;
     public String firstName;
     public String lastName;
     public Date memberSince;

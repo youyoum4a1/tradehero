@@ -72,11 +72,6 @@ public class LoginSuggestDialogFragment extends BaseDialogFragment {
 
     @OnClick(R.id.textview_suggest_signin)
     public void gotoSignIn() {
-//        Bundle args = new Bundle();
-//        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,
-//                SignInFragment.class.getName());
-//        ActivityHelper.launchDashboard(getActivity(), args);
-//        dismiss();
         Intent gotoAuthticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
         getActivity().startActivity(gotoAuthticationIntent);
         getActivity().finish();
