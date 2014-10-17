@@ -161,6 +161,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         userProfileCacheListener = createUserProfileCacheListener();
         messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
         mainTimelineAdapter = createTimelineAdapter(shownUserBaseKey);
+        mainTimelineAdapter.setCurrentTabType(currentTab);
+
+        getActivity().getSupportLoaderManager().initLoader(
+                mainTimelineAdapter.getTimelineLoaderId(), null,
+                mainTimelineAdapter.getLoaderTimelineCallback());
     }
 
     @Override protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()
@@ -307,17 +312,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         mIsHero = false;
     }
 
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        //create adapter and so on
-        linkWith(shownUserBaseKey, true);
-
-        getActivity().getSupportLoaderManager().initLoader(
-                mainTimelineAdapter.getTimelineLoaderId(), null,
-                mainTimelineAdapter.getLoaderTimelineCallback());
-    }
-
     @Override public void onStart()
     {
         super.onStart();
@@ -330,6 +324,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         displayPortfolios();
                     }
                 });
+
+        destroyInfoFetcher();
+        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), new FollowerSummaryListener());
+        infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
     }
 
     @Override public void onResume()
@@ -374,9 +372,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
 
+        fetchUserProfile(false);
         fetchMessageThreadHeader();
-
-        displayTab();
 
         dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
@@ -427,7 +424,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         this.userProfileView = null;
         this.loadingView = null;
         lastItemVisibleListener = null;
-        mainTimelineAdapter = null;
 
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -498,24 +494,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     //<editor-fold desc="Display methods">
-    protected void linkWith(@NotNull UserBaseKey userBaseKey, final boolean andDisplay)
-    {
-        this.shownUserBaseKey = userBaseKey;
-
-        prepareTimelineAdapter(userBaseKey);
-
-        fetchUserProfile(false);
-
-        destroyInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), new FollowerSummaryListener());
-        infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
-
-        if (andDisplay)
-        {
-            displayTab();
-        }
-    }
-
     private void refreshPortfolioList()
     {
         portfolioCompactListCache.get().invalidate(shownUserBaseKey);
@@ -532,13 +510,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void linkWith(@NotNull TabType tabType, boolean andDisplay)
+    protected void display(@NotNull TabType tabType)
     {
         currentTab = tabType;
-        if (andDisplay)
-        {
-            displayTab();
-        }
+        mainTimelineAdapter.setCurrentTabType(tabType);
     }
 
     protected void linkWithMessageThread(MessageHeaderDTO messageHeaderDTO, boolean andDisplay)
@@ -560,11 +535,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileView.display(shownProfile);
         }
         displayActionBarTitle();
-    }
-
-    public void displayTab()
-    {
-        mainTimelineAdapter.setCurrentTabType(currentTab);
     }
     //</editor-fold>
 
@@ -597,14 +567,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     //<editor-fold desc="Initial methods">
     private MainTimelineAdapter createTimelineAdapter(@NotNull UserBaseKey shownUserBaseKey)
     {
-        return new MainTimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
-                shownUserBaseKey, R.layout.timeline_item_view, R.layout.portfolio_list_item_2_0,
+        return new MainTimelineAdapter(getActivity(),
+                shownUserBaseKey,
+                R.layout.timeline_item_view,
+                R.layout.portfolio_list_item_2_0,
                 R.layout.user_profile_stat_view);
         // TODO set the layouts
-    }
-
-    private void prepareTimelineAdapter(@NotNull final UserBaseKey shownUserBaseKey)
-    {
     }
     //</editor-fold>
 
@@ -839,7 +807,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             @Override public void onBtnClicked(@NotNull TabType tabType)
             {
-                linkWith(tabType, true);
+                display(tabType);
             }
         };
     }

@@ -38,6 +38,7 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class PortfolioListItemView extends RelativeLayout
@@ -46,7 +47,6 @@ public class PortfolioListItemView extends RelativeLayout
     @InjectView(R.id.follower_profile_picture) @Optional protected ImageView userIcon;
     @InjectView(R.id.portfolio_title) protected TextView title;
     @InjectView(R.id.portfolio_description) protected TextView description;
-    @InjectView(R.id.following_image) @Optional protected ImageView followingStamp;
     @InjectView(R.id.roi_value) @Optional protected TextView roiValue;
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
@@ -59,30 +59,30 @@ public class PortfolioListItemView extends RelativeLayout
     @Inject UserProfileCache userProfileCache;
     @Inject GetPositionsCache getPositionsCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DisplayablePortfolioUtil displayablePortfolioUtil;
     @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> currentUserProfileCacheListener;
-    private DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> getPositionsListener;
-    private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> currentUserProfileCacheListener;
+    @Nullable private DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> getPositionsListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistListener;
 
     //<editor-fold desc="Constructors">
-    public PortfolioListItemView(Context context)
-    {
-        super(context);
-    }
+    //public PortfolioListItemView(Context context)
+    //{
+    //    super(context);
+    //}
 
+    @SuppressWarnings("UnusedDeclaration")
     public PortfolioListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public PortfolioListItemView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-    }
+    //public PortfolioListItemView(Context context, AttributeSet attrs, int defStyle)
+    //{
+    //    super(context, attrs, defStyle);
+    //}
     //</editor-fold>
 
     @Override protected void onFinishInflate()
@@ -135,6 +135,7 @@ public class PortfolioListItemView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.follower_profile_picture) @Optional
     protected void handleUserIconClicked()
     {
@@ -164,11 +165,6 @@ public class PortfolioListItemView extends RelativeLayout
         userWatchlistPositionCache.unregister(userWatchlistListener);
     }
 
-    public DisplayablePortfolioDTO getDisplayablePortfolioDTO()
-    {
-        return displayablePortfolioDTO;
-    }
-
     public void display(DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         linkWith(displayablePortfolioDTO, true);
@@ -185,7 +181,6 @@ public class PortfolioListItemView extends RelativeLayout
             displayUserIcon();
             displayTitle();
             displayDescription();
-            displayFollowingStamp();
             displayRoiValue();
         }
     }
@@ -267,7 +262,6 @@ public class PortfolioListItemView extends RelativeLayout
         displayUserIcon();
         displayTitle();
         displayDescription();
-        displayFollowingStamp();
         displayRoiValue();
     }
 
@@ -319,21 +313,6 @@ public class PortfolioListItemView extends RelativeLayout
         return displayablePortfolioUtil.getLongSubTitle(getContext(), displayablePortfolioDTO);
     }
 
-    public void displayFollowingStamp()
-    {
-        if (followingStamp != null)
-        {
-            if (isThisUserFollowed())
-            {
-                followingStamp.setVisibility(VISIBLE);
-            }
-            else
-            {
-                followingStamp.setVisibility(GONE);
-            }
-        }
-    }
-
     public void displayRoiValue()
     {
         if (roiValue != null)
@@ -363,12 +342,6 @@ public class PortfolioListItemView extends RelativeLayout
             }
         }
     }
-
-    public boolean isThisUserFollowed()
-    {
-        return currentUserProfileDTO != null && displayablePortfolioDTO != null &&
-                currentUserProfileDTO.isFollowingUser(displayablePortfolioDTO.userBaseDTO);
-    }
     //</editor-fold>
 
     protected class PortfolioListItemViewCurrentUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
@@ -376,7 +349,6 @@ public class PortfolioListItemView extends RelativeLayout
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             currentUserProfileDTO = value;
-            displayFollowingStamp();
             fetchAdditional();
         }
 

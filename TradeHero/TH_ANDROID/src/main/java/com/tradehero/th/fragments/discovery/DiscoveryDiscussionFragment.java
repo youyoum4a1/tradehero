@@ -54,7 +54,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         ButterKnife.inject(this, view);
 
-        mTimelineAdapter = new SubTimelineAdapter(getActivity(), getActivity().getLayoutInflater(), TIMELINE_LOADER_ID, R.layout.timeline_item_view);
+        mTimelineAdapter = new SubTimelineAdapter(getActivity(), TIMELINE_LOADER_ID, R.layout.timeline_item_view);
         mTimelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItemDTOKey>()
         {
             @Override protected void onLoadFinished(ListLoader<TimelineItemDTOKey> loader, List<TimelineItemDTOKey> data)

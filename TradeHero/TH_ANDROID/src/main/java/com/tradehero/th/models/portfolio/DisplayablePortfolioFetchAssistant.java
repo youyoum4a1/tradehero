@@ -31,6 +31,7 @@ public class DisplayablePortfolioFetchAssistant
     @NotNull private final Map<UserBaseKey, FlaggedDisplayablePortfolioDTOList> displayPortfolios;
     @Nullable private OnFetchedListener fetchedListener;
 
+    //<editor-fold desc="Constructors">
     @Inject public DisplayablePortfolioFetchAssistant(
             @NotNull PortfolioCompactListCache portfolioListCache,
             @NotNull PortfolioCache portfolioCache,
@@ -42,6 +43,7 @@ public class DisplayablePortfolioFetchAssistant
         this.userProfileCache = userProfileCache;
         displayPortfolios = new HashMap<>();
     }
+    //</editor-fold>
 
     public void setFetchedListener(@Nullable OnFetchedListener fetchedListener)
     {
