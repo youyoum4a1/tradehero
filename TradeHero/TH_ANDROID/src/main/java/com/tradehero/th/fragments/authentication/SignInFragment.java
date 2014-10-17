@@ -37,7 +37,6 @@ public class SignInFragment extends SignInOrUpFragment
     {
         View view = inflater.inflate(getViewId(), container, false);
         setOnClickListener(view);
-        //view.findViewById(R.id.authentication_by_sign_up_button).setOnClickListener(onClickListener);
         return view;
     }
 

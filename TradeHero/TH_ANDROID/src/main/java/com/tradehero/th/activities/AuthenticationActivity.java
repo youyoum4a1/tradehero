@@ -151,9 +151,6 @@ public class AuthenticationActivity extends DashboardActivity
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
-        //getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        //getSupportActionBar().setCustomView(R.layout.topbar_authentication);
-        //getSupportActionBar().hide();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -161,7 +158,6 @@ public class AuthenticationActivity extends DashboardActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
-        //facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
@@ -186,7 +182,6 @@ public class AuthenticationActivity extends DashboardActivity
                 return;
             }
         }
-        //TODO maybe shouldn't clear user information here
         THUser.clearCurrentUser();
         switch (view.getId())
         {
@@ -194,15 +189,6 @@ public class AuthenticationActivity extends DashboardActivity
             case R.id.btn_login:
                 authenticateWithEmail();
                 break;
-
-            //case R.id.btn_facebook_signin:
-            //    authenticateWithFacebook();
-            //    break;
-            //
-            //case R.id.btn_twitter_signin:
-            //    authenticateWithTwitter();
-            //    break;
-
             case R.id.authentication_twitter_email_button:
                 complementEmailForTwitterAuthentication();
                 break;
@@ -218,16 +204,9 @@ public class AuthenticationActivity extends DashboardActivity
                 break;
             case R.id.btn_wechat_signin:
                 startWeChatSign();
-                //authenticateWithWechat("00a2b1ae9ff0829bbcfcce92159b346c");
                 break;
 
             case R.id.txt_term_of_service_signin:
-                //TODO WebViewActivity not work, for chromium﹕ [INFO:CONSOLE(17)] "The page at
-                //TODO https://www.tradehero.mobi/privacy ran insecure content from
-                //TODO http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700,900.
-                //Intent pWebView = new Intent(this, WebViewActivity.class);
-                //pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
-                //startActivity(pWebView);
                 Uri uri = Uri.parse(Constants.PRIVACY_TERMS_OF_SERVICE);
                 Intent it = new Intent(Intent.ACTION_VIEW, uri);
                 try
@@ -239,9 +218,6 @@ public class AuthenticationActivity extends DashboardActivity
                 }
                 break;
             case R.id.txt_term_of_service_termsofuse:
-                //Intent pWebView2 = new Intent(this, WebViewActivity.class);
-                //pWebView2.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_USE);
-                //startActivity(pWebView2);
                 Uri uri2 = Uri.parse(Constants.PRIVACY_TERMS_OF_USE);
                 Intent it2 = new Intent(Intent.ACTION_VIEW, uri2);
                 try

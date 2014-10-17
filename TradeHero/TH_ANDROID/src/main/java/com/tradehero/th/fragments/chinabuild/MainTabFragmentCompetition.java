@@ -30,6 +30,8 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
     @InjectView(R.id.tvCreateCompetition) TextView tvCreateCompetition;//创建 浮标
     private FragmentPagerAdapter adapter;
 
+    private String dialogContent;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -123,7 +125,8 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
         //判断是否是游客，如果是游客不能创建比赛
         if (userProfileDTO != null && userProfileDTO.isVisitor)
         {
-            //提示用户去实名登录
+            dialogContent = getActivity().getResources().getString(R.string.guest_user_dialog_summary);
+            showSuggestLoginDialogFragment(dialogContent);
         }
         else
         {

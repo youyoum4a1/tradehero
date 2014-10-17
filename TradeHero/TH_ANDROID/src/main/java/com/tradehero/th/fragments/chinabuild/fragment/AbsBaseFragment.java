@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.chinabuild.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -41,6 +42,10 @@ public abstract class AbsBaseFragment extends Fragment
     @Inject Lazy<UserProfileCache> userProfileCache;
 
     public UserProfileDTO userProfileDTO;
+
+    //Show dialogfragment
+    private LoginSuggestDialogFragment dialogFragment;
+    private FragmentManager fm;
 
 
     public void gotoDashboard(String strFragment)
@@ -211,8 +216,15 @@ public abstract class AbsBaseFragment extends Fragment
         }
     }
 
-   //public abstract void linkWithUserProfileDTO(UserProfileDTO value);
-
-
+    protected void showSuggestLoginDialogFragment(String dialogContent){
+        if(dialogFragment==null){
+            dialogFragment =new LoginSuggestDialogFragment();
+        }
+        if(fm==null){
+            fm = getActivity().getSupportFragmentManager();
+        }
+        dialogFragment.setContent(dialogContent);
+        dialogFragment.show(fm, LoginSuggestDialogFragment.class.getName());
+    }
 
 }

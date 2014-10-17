@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:text="@string/or"
         android:textColor="#b0b0b0"
-        android:textSize="@dimen/text_large"/>
+        android:textSize="@dimen/text_medium"/>
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
