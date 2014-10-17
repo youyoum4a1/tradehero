@@ -54,7 +54,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-
 public class AuthenticationActivity extends DashboardActivity
         implements View.OnClickListener
 {
@@ -173,7 +172,7 @@ public class AuthenticationActivity extends DashboardActivity
         {
             if (view.getId() == R.id.authentication_by_sign_in_button)
             {
-                InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 setCurrentFragmentByPopBack(fragmentClass);
             }
@@ -234,8 +233,7 @@ public class AuthenticationActivity extends DashboardActivity
                 try
                 {
                     startActivity(it);
-                }
-                catch (android.content.ActivityNotFoundException anfe)
+                } catch (android.content.ActivityNotFoundException anfe)
                 {
                     THToast.show("Unable to open url: " + uri);
                 }
@@ -249,8 +247,7 @@ public class AuthenticationActivity extends DashboardActivity
                 try
                 {
                     startActivity(it2);
-                }
-                catch (android.content.ActivityNotFoundException anfe)
+                } catch (android.content.ActivityNotFoundException anfe)
                 {
                     THToast.show("Unable to open url: " + uri2);
                 }
@@ -347,7 +344,7 @@ public class AuthenticationActivity extends DashboardActivity
     {
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.WECHAT));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_wechat);
-        wechatUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.WECHAT),code);
+        wechatUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.WECHAT), code);
     }
 
     public void authenticateWithLinkedIn()
@@ -536,16 +533,17 @@ public class AuthenticationActivity extends DashboardActivity
         super.onBackPressed();
     }
 
-
     public void getWeChatAccessToken()
     {
         String wechatCode = WXEntryActivity.getWeChatCode();
-        Log.d("123","wechatCode " + wechatCode);
-        if(TextUtils.isEmpty(wechatCode))
+        Log.d("123", "wechatCode " + wechatCode);
+        if (!TextUtils.isEmpty(wechatCode))
         {
             authenticateWithWechat(wechatCode);
             WXEntryActivity.setWeChatCodeNull();
-        }else{
+        }
+        else
+        {
             THToast.show(R.string.login_by_wechat_account_failed);
         }
     }
