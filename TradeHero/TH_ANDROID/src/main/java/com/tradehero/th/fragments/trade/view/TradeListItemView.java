@@ -181,7 +181,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             THSignedNumber tradeQuantity = THSignedNumber.builder((double) Math.abs(trade.quantity))
                     .withOutSign()
                     .build();
-            THSignedNumber tradeValue = THSignedMoney.builder(trade.unitPriceRefCcy)
+            THSignedNumber tradeValue = THSignedMoney.builder(trade.getUnitPriceCurrency())
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();
@@ -355,7 +355,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         if (trade != null)
         {
             THSignedNumber tradeValue = THSignedMoney
-                    .builder(trade.quantity * trade.unitPriceRefCcy)
+                    .builder(trade.quantity * trade.getUnitPriceCurrency())
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();

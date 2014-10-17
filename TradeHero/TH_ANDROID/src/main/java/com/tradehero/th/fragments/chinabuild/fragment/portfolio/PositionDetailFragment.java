@@ -214,7 +214,7 @@ public class PositionDetailFragment extends DashboardFragment
                 .signTypeArrow()
                 .build();
         tvPositionTotalCcy.setTextColor(getResources().getColor(roi.getColorResId()));
-        tvPositionTotalCcy.setText("" + positionDTO.getTotalScoreOfTrade() + "(" + roi.toString() + ")");
+        tvPositionTotalCcy.setText("$" + positionDTO.getTotalScoreOfTrade() + "(" + roi.toString() + ")");
         tvPositionSumAmont.setText("$" + Math.round(positionDTO.sumInvestedAmountRefCcy));
         tvPositionStartTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.earliestTradeUtc));
         tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));

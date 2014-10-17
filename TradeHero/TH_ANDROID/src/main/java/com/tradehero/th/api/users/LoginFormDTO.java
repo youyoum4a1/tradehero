@@ -6,7 +6,7 @@ public class LoginFormDTO
 {
     public final String deviceToken;
     public final DeviceType clientType;
-    public boolean useOnlyHeroCount = true;
+    public boolean useOnlyHeroCount = false;
 
     // min. version support
     public final String clientVersion;

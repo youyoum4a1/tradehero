@@ -197,6 +197,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 tvSecurityPrice.setText(String.valueOf((((SecurityPositionItem) item)).security.lastPrice));
                 //currency
                 tvSecurityCurrency.setText(((SecurityPositionItem) item).security.getCurrencyDisplay());
+
                 //extro
                 //显示总盈亏
                 Double pl = ((SecurityPositionItem) item).position.getTotalScoreOfTrade();
@@ -205,10 +206,12 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 {
                     pl = 0.0;
                 }
+
                 THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
                         .withSign()
                         .signTypePlusMinusAlways()
-                        .currency(((SecurityPositionItem) item).security.getCurrencyDisplay())
+                        //.currency(((SecurityPositionItem) item).security.getCurrencyDisplay())
+                        .currency("$")
                         .build();
                 tvSecurityExtraInfo.setText(thPlSinceInception.toString());
                 tvSecurityExtraInfo.setTextColor(context.getResources().getColor(

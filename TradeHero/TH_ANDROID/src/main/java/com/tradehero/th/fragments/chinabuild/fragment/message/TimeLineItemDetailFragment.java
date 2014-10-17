@@ -198,6 +198,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         tvTLPraise = (TextView) view.findViewById(R.id.tvTLPraise);
         tvTLComment = (TextView) view.findViewById(R.id.tvTLComment);
         tvTLShare = (TextView) view.findViewById(R.id.tvTLShare);
+
+        tvUserTLName.setOnClickListener(this);
+        imgSecurityTLUserHeader.setOnClickListener(this);
         llTLPraise.setOnClickListener(this);
         llTLComment.setOnClickListener(this);
         llTLShare.setOnClickListener(this);
@@ -494,7 +497,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         //    enterTimeLineDetail(getAbstractDiscussionCompactDTO());
         //}
         //else
-        if (view.getId() == R.id.imgSecurityTLUserHeader)
+
+        if (view.getId() == R.id.imgSecurityTLUserHeader || view.getId() == R.id.tvUserTLName)
         {
             //
             AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();

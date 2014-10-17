@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.utils.SecurityUtils;
+import java.text.DecimalFormat;
 import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +12,7 @@ public class TradeDTO implements DTO
 {
     public int id;
     @JsonProperty("unit_price")
-    public double unitPriceRefCcy;
+    private double unitPriceRefCcy;
     @JsonProperty("transaction_cost")
     public double transactionCost;
     public int quantity;
@@ -67,5 +68,13 @@ public class TradeDTO implements DTO
     public boolean isBuy()
     {
         return quantity > 0 ? true : false;
+    }
+
+    public double getUnitPriceCurrency()
+    {
+        double d1 = unitPriceRefCcy;
+        DecimalFormat df = new DecimalFormat("#0.00");
+        String show = df.format(d1);
+        return Double.valueOf(show);
     }
 }
