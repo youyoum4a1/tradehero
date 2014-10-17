@@ -173,11 +173,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new TimelinePremiumUserFollowedListener();
     }
 
-    @Override protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
-    {
-        return new FreeUserFollowedCallback();
-    }
-
     protected OnFollowRequestedListener createFollowForMessageRequestedListener()
     {
         return new TimelineFollowForMessageRequestedListener();
@@ -278,15 +273,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         timelineListView.setAdapter(mainTimelineAdapter);
 
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
-        displayablePortfolioFetchAssistant.setFetchedListener(
-                new DisplayablePortfolioFetchAssistant.OnFetchedListener()
-                {
-                    @Override public void onFetched()
-                    {
-                        onLoadFinished();
-                        displayPortfolios();
-                    }
-                });
 
         lastItemVisibleListener = new TimelineLastItemVisibleListener();
     }
@@ -330,6 +316,20 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         getActivity().getSupportLoaderManager().initLoader(
                 mainTimelineAdapter.getTimelineLoaderId(), null,
                 mainTimelineAdapter.getLoaderTimelineCallback());
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        displayablePortfolioFetchAssistant.setFetchedListener(
+                new DisplayablePortfolioFetchAssistant.OnFetchedListener()
+                {
+                    @Override public void onFetched()
+                    {
+                        onLoadFinished();
+                        displayPortfolios();
+                    }
+                });
     }
 
     @Override public void onResume()
@@ -672,12 +672,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void onLoadFinished()
     {
-        if (timelineListView != null)
-        {
-            timelineListView.onRefreshComplete();
-            loadingView.setVisibility(View.GONE);
-            cancelRefreshingOnResume = true;
-        }
+        timelineListView.onRefreshComplete();
+        loadingView.setVisibility(View.GONE);
+        cancelRefreshingOnResume = true;
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
