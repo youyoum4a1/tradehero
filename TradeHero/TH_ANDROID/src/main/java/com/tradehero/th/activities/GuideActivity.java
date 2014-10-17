@@ -389,7 +389,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
         {
             TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
             String strIMEI = tm.getDeviceId();
-            if (strIMEI.isEmpty() || strIMEI.contains("000000000000000"))
+            if (strIMEI == null || strIMEI.isEmpty() || strIMEI.contains("000000000000000"))
             {
                 strIMEI = String.valueOf((int)Math.floor((Math.random() + 1) * TIMES));
                 strIMEI = strIMEI+String.valueOf((int)Math.floor((Math.random() + 1) * TIMES2));
