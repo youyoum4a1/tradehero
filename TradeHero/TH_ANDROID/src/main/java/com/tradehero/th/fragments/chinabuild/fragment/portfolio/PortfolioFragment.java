@@ -329,7 +329,6 @@ public class PortfolioFragment extends DashboardFragment
         //getDefaultPortfolio();
         if(portfolio_type == PORTFOLIO_TYPE_OTHER_USER)
         {
-            startLoadding();
             getPositionDirectly(showUserBaseKey);
         }
     }
@@ -455,7 +454,7 @@ public class PortfolioFragment extends DashboardFragment
             getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
             getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
         }
-
+        startLoadding();
         getDataFromNormalUser();
 
         //getPositionDirectly(showUserBaseKey);
