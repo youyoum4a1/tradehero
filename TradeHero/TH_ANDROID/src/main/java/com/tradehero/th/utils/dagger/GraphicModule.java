@@ -24,10 +24,10 @@ import javax.inject.Singleton;
 )
 public class GraphicModule
 {
-    @Provides @Singleton Picasso providePicasso(Context context, @ForPicasso LruCache lruFileCache)
+    @Provides @Singleton Picasso providePicasso(Context context, @ForPicasso LruCache lruFileCache, OkHttpClient okHttpClient)
     {
         Picasso mPicasso = new Picasso.Builder(context)
-                .downloader(new OkHttpDownloader(new OkHttpClient()))
+                .downloader(new OkHttpDownloader(okHttpClient))
                 .memoryCache(lruFileCache)
                 .build();
 		mPicasso.setIndicatorsEnabled(Constants.PICASSO_DEBUG);
