@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
@@ -8,12 +9,15 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BuyDialogFragment extends AbstractTransactionDialogFragment
 {
     private static final boolean IS_BUY = true;
+
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     public BuyDialogFragment()
     {

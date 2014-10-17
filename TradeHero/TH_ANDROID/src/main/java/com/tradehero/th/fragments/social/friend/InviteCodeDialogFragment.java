@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.social.friend;
 
-import android.app.Dialog;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +10,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import javax.inject.Inject;
 
 public class InviteCodeDialogFragment extends BaseDialogFragment
 {
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+
     public static InviteCodeDialogFragment showInviteCodeDialog(FragmentManager fragmentManager)
     {
         InviteCodeDialogFragment dialogFragment = new InviteCodeDialogFragment();
