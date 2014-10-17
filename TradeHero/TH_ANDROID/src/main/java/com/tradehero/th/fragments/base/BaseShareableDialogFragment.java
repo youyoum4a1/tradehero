@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.base;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -19,12 +21,13 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.fragments.base.dialog.AlertDialogOkCancelOnSubscribe;
-import com.tradehero.th.fragments.base.dialog.DialogResult;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.rx.AlertDialogObserver;
+import com.tradehero.th.rx.dialog.AlertButtonClickedFilterFunc1;
+import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
+import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.rx.view.CompoundButtonIsCheckedFunc1;
 import com.tradehero.th.rx.view.CompoundButtonSetCheckedAction1;
 import com.tradehero.th.rx.view.ViewArrayObservable;
@@ -258,22 +261,20 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
             @NotNull final SocialLinkToggleButton socialLinkToggleButton,
             @NotNull final SocialNetworkEnum socialNetwork)
     {
-        return Observable.create(new AlertDialogOkCancelOnSubscribe(alertDialogUtil,
-                getActivity(),
-                getActivity().getString(R.string.link, socialNetwork.getName()),
-                getActivity().getString(R.string.link_description, socialNetwork.getName()),
-                R.string.link_now,
-                R.string.later))
-                .filter(new Func1<DialogResult, Boolean>()
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+        alertBuilder.setIcon(R.drawable.th_app_logo)
+            .setCancelable(true)
+            .setTitle(getString(R.string.link, socialNetwork.getName()))
+            .setMessage(getString(R.string.link_description, socialNetwork.getName()));
+        AlertDialogOnSubscribe.Builder onSubscribeBuilder = new AlertDialogOnSubscribe.Builder(alertBuilder);
+        onSubscribeBuilder.setPositiveButton(getString(R.string.link_now))
+            .setNegativeButton(getString(R.string.later));
+
+        return Observable.create(onSubscribeBuilder.build())
+                .filter(new AlertButtonClickedFilterFunc1(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+                .doOnNext(new Action1<Pair<DialogInterface, Integer>>()
                 {
-                    @Override public Boolean call(DialogResult dialogResult)
-                    {
-                        return dialogResult.equals(DialogResult.OK);
-                    }
-                })
-                .doOnNext(new Action1<DialogResult>()
-                {
-                    @Override public void call(DialogResult dialogResult)
+                    @Override public void call(Pair<DialogInterface, Integer> dialogResult)
                     {
                         alertDialogUtil.showProgressDialog(
                                 getActivity(),
@@ -282,9 +283,10 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                                         getString(socialNetwork.nameResId)));
                     }
                 })
-                .flatMap(new Func1<DialogResult, Observable<Pair<SocialLinkToggleButton, UserProfileDTO>>>()
+                .flatMap(new Func1<Pair<DialogInterface, Integer>, Observable<Pair<SocialLinkToggleButton, UserProfileDTO>>>()
                 {
-                    @Override public Observable<Pair<SocialLinkToggleButton, UserProfileDTO>> call(DialogResult dialogResult)
+                    @Override public Observable<Pair<SocialLinkToggleButton, UserProfileDTO>> call(
+                            Pair<DialogInterface, Integer> dialogInterfaceIntegerPair)
                     {
                         AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetwork);
                         return ((SocialAuthenticationProvider) socialAuthenticationProvider)
