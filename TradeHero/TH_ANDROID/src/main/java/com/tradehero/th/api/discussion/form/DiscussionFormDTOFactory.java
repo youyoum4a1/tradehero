@@ -1,9 +1,10 @@
 package com.tradehero.th.api.discussion.form;
 
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.news.form.NewsItemDiscussionFormDTO;
-import com.tradehero.th.api.timeline.form.TimelineItemCommentFormDTO;
+import com.tradehero.th.api.news.form.NewsItemReplyDiscussionFormDTO;
+import com.tradehero.th.api.timeline.form.TimelineItemReplyCommentFormDTO;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class DiscussionFormDTOFactory
 {
@@ -12,28 +13,28 @@ public class DiscussionFormDTOFactory
         super();
     }
 
-    public DiscussionFormDTO createEmpty(DiscussionType discussionType)
+    @NotNull public DiscussionFormDTO createEmpty(@NotNull DiscussionType discussionType)
     {
         DiscussionFormDTO created;
         switch (discussionType)
         {
             case COMMENT:
-                created = new CommentFormDTO();
+                created = new ReplyCommentFormDTO();
                 break;
             case TIMELINE_ITEM:
-                created = new TimelineItemCommentFormDTO();
+                created = new TimelineItemReplyCommentFormDTO();
                 break;
             case SECURITY:
-                created = new SecurityDiscussionFormDTO();
+                created = new SecurityReplyDiscussionFormDTO();
                 break;
             case NEWS:
-                created = new NewsItemDiscussionFormDTO();
+                created = new NewsItemReplyDiscussionFormDTO();
                 break;
             case PRIVATE_MESSAGE:
-                created = new PrivateDiscussionFormDTO();
+                created = new PrivateReplyDiscussionFormDTO();
                 break;
             case BROADCAST_MESSAGE:
-                created = new BroadcastDiscussionFormDTO();
+                created = new BroadcastReplyDiscussionFormDTO();
                 break;
             default:
                 throw new IllegalStateException("Invalid type of DiscussionType" + discussionType);

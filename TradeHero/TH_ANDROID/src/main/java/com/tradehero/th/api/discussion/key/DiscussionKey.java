@@ -3,6 +3,7 @@ package com.tradehero.th.api.discussion.key;
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.discussion.DiscussionType;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class DiscussionKey implements DTOKey
 {
@@ -13,35 +14,20 @@ abstract public class DiscussionKey implements DTOKey
     public final Integer id;
 
     //<editor-fold desc="Constructors">
-    protected DiscussionKey(Integer id)
+    protected DiscussionKey(@NotNull Integer id)
     {
         this.id = id;
-        checkValid();
     }
 
-    protected DiscussionKey(Bundle args)
+    protected DiscussionKey(@NotNull Bundle args)
     {
         if (!args.containsKey(DiscussionKey.BUNDLE_KEY_ID))
         {
             throw new IllegalStateException("Discussion bundle should contain id of the discussion");
         }
         this.id = args.getInt(BUNDLE_KEY_ID);
-        checkValid();
     }
     //</editor-fold>
-
-    protected void checkValid()
-    {
-        if (!isValid())
-        {
-            throw new IllegalArgumentException("Invalid values");
-        }
-    }
-
-    public boolean isValid()
-    {
-        return id != null;
-    }
 
     abstract public DiscussionType getType();
 
@@ -62,7 +48,7 @@ abstract public class DiscussionKey implements DTOKey
     {
         DiscussionType type = getType();
         return (type == null ? 0 : type.hashCode()) ^
-                (id == null ? 0 : id.hashCode());
+                id.hashCode();
     }
 
     @Override public boolean equals(Object other)

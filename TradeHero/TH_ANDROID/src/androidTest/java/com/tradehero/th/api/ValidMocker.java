@@ -12,7 +12,7 @@ import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
-import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.CommentKey;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
@@ -146,9 +146,9 @@ public class ValidMocker
         {
             return new CommentKey(1);
         }
-        if (type.equals(DiscussionFormDTO.class))
+        if (type.equals(ReplyDiscussionFormDTO.class))
         {
-            return new DiscussionFormDTO()
+            return new ReplyDiscussionFormDTO()
             {
                 @Override public DiscussionType getInReplyToType()
                 {

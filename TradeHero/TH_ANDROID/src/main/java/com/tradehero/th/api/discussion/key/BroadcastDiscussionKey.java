@@ -2,18 +2,19 @@ package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
+import org.jetbrains.annotations.NotNull;
 
 public class BroadcastDiscussionKey extends DiscussionKey
 {
     private static final DiscussionType TYPE = DiscussionType.BROADCAST_MESSAGE;
 
     //<editor-fold desc="Constructors">
-    public BroadcastDiscussionKey(Integer id)
+    public BroadcastDiscussionKey(@NotNull Integer id)
     {
         super(id);
     }
 
-    protected BroadcastDiscussionKey(Bundle args)
+    protected BroadcastDiscussionKey(@NotNull Bundle args)
     {
         super(args);
     }

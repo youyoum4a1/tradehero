@@ -27,6 +27,7 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
+import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsItemDTO;
@@ -51,6 +52,7 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -85,7 +87,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private TextWatcher discussionEditTextWatcher;
 
     private HasSelectedItem selectionFragment;
-    private DiscussionKey discussionKey;
+    @Nullable private DiscussionKey discussionKey;
     private boolean isPosted;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -209,22 +211,25 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     protected DiscussionFormDTO buildDiscussionFormDTO()
     {
+        @NotNull DiscussionFormDTO discussionFormDTO;
         DiscussionType discussionType = getDiscussionType();
         if (discussionType != null)
         {
-            DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
-            if (discussionKey != null)
-            {
-                discussionFormDTO.inReplyToId = discussionKey.id;
-            }
-            discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
-            return discussionFormDTO;
+            discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
         }
-
-        return null;
+        else
+        {
+            discussionFormDTO = new DiscussionFormDTO();
+        }
+        if (discussionKey != null && discussionFormDTO instanceof ReplyDiscussionFormDTO)
+        {
+            ((ReplyDiscussionFormDTO) discussionFormDTO).inReplyToId = discussionKey.id;
+        }
+        discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
+        return discussionFormDTO;
     }
 
-    protected DiscussionType getDiscussionType()
+    @Nullable protected DiscussionType getDiscussionType()
     {
         if (discussionKey != null)
         {

@@ -3,22 +3,23 @@ package com.tradehero.th.api.discussion.form;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.SecurityDiscussionKey;
+import org.jetbrains.annotations.NotNull;
 
-public class SecurityDiscussionFormDTO extends DiscussionFormDTO
+public class SecurityReplyDiscussionFormDTO extends ReplyDiscussionFormDTO
 {
     public static final DiscussionType TYPE = DiscussionType.SECURITY;
 
-    public SecurityDiscussionFormDTO()
+    public SecurityReplyDiscussionFormDTO()
     {
         super();
     }
 
-    @Override public DiscussionType getInReplyToType()
+    @Override @NotNull public DiscussionType getInReplyToType()
     {
         return TYPE;
     }
 
-    @Override public DiscussionKey getInitiatingDiscussionKey()
+    @Override @NotNull public DiscussionKey getInitiatingDiscussionKey()
     {
         return new SecurityDiscussionKey(inReplyToId);
     }

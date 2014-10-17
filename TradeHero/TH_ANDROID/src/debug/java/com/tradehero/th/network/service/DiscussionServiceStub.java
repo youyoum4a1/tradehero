@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import retrofit.http.Body;
+import retrofit.http.Path;
 
 public class DiscussionServiceStub implements DiscussionService
 {
@@ -143,6 +145,11 @@ public class DiscussionServiceStub implements DiscussionService
             DiscussionType inReplyToType,
             int inReplyToId,
             TimelineItemShareRequestDTO timelineItemShareRequestDTO)
+    {
+        return null;
+    }
+
+    @Override public DiscussionDTO postToTimeline(@Path("userId") int userId, @Body DiscussionFormDTO discussionFormDTO)
     {
         return null;
     }
