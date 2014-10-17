@@ -14,8 +14,6 @@ import android.view.WindowManager;
 import android.widget.ListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
