@@ -1,6 +1,8 @@
 package com.tradehero.th.loaders;
 
 import android.content.Context;
+import com.android.internal.util.Predicate;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -53,7 +55,23 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
 
         try
         {
-            return timelineManager.getTimeline(query, true);
+            List<TimelineItemDTOKey> timelineResult = timelineManager.getTimeline(query, true);
+            return CollectionUtils.filter(timelineResult, new Predicate<TimelineItemDTOKey>()
+            {
+                @Override public boolean apply(TimelineItemDTOKey timelineItemDTOKey)
+                {
+                    boolean condition = true;
+                    if (lowerItemId != null)
+                    {
+                        condition = timelineItemDTOKey.id >= lowerItemId;
+                    }
+                    if (upperItemId != null)
+                    {
+                        condition &= timelineItemDTOKey.id <= upperItemId;
+                    }
+                    return condition;
+                }
+            });
         }
         catch (IOException e)
         {
