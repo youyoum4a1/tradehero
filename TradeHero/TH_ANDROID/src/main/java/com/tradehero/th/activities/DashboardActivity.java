@@ -118,7 +118,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class DashboardActivity extends BaseActivity
@@ -569,13 +568,7 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        CollectionUtils.apply(activityResultRequesters, new Action1<ActivityResultRequester>()
-        {
-            @Override public void call(ActivityResultRequester activityResultRequester)
-            {
-                activityResultRequester.onActivityResult(requestCode, resultCode, data);
-            }
-        });
+        CollectionUtils.apply(activityResultRequesters, requester -> requester.onActivityResult(requestCode, resultCode, data));
         // Passing it on just in case it is expecting something
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
     }

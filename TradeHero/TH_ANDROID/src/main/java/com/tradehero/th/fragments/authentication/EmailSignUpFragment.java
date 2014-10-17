@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
-import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -31,10 +30,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.observers.EmptyObserver;
 
 /**
@@ -84,51 +79,23 @@ public class EmailSignUpFragment extends Fragment
         DeviceUtil.showKeyboardDelayed(emailEditText);
 
         signUpObservable = ViewObservable.clicks(signUpButton, false)
-                .flatMap(new Func1<View, Observable<UserFormDTO>>()
-                {
-                    @Override public Observable<UserFormDTO> call(View view)
-                    {
-                        return profileView.obtainUserFormDTO();
-                    }
-                })
-                .doOnNext(new Action1<UserFormDTO>()
-                {
-                    @Override public void call(UserFormDTO userFormDTO)
-                    {
-                        progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                                getString(R.string.authentication_connecting_tradehero_only), true);
-                    }
-                })
-                .flatMap(new Func1<UserFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
-                {
-                    @Override public Observable<Pair<AuthData, UserProfileDTO>> call(UserFormDTO userFormDTO)
-                    {
-                        final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
-                        final Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.signUpWithEmailRx(authData.getTHToken(),
-                                userFormDTO);
-                        return Observable.zip(Observable.just(authData), userProfileDTOObservable, new Func2<AuthData, UserProfileDTO,
-                                Pair<AuthData, UserProfileDTO>>()
-                        {
-                            @Override public Pair<AuthData, UserProfileDTO> call(AuthData authData, UserProfileDTO userProfileDTO)
-                            {
-                                return Pair.create(authData, userProfileDTO);
-                            }
-                        });
-                    }
+                .flatMap(view1 -> profileView.obtainUserFormDTO())
+                .doOnNext(userFormDTO -> progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+                        getString(R.string.authentication_connecting_tradehero_only), true))
+                .flatMap(userFormDTO -> {
+                    final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
+                    final Observable<UserProfileDTO> profileDTOObservable = userServiceWrapper.signUpWithEmailRx(authData.getTHToken(), userFormDTO);
+                    return Observable.zip(Observable.just(authData), profileDTOObservable, Pair::create);
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authDataAction)
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(toastOnErrorAction)
-                .doOnUnsubscribe(new Action0()
-                {
-                    @Override public void call()
+                .doOnUnsubscribe(() -> {
+                    if (progressDialog != null)
                     {
-                        if (progressDialog != null)
-                        {
-                            progressDialog.dismiss();
-                        }
+                        progressDialog.dismiss();
                     }
                 })
                 .retry()
@@ -152,7 +119,7 @@ public class EmailSignUpFragment extends Fragment
         super.onResume();
         if (subscription == null || subscription.isUnsubscribed())
         {
-            subscription = signUpObservable.subscribe(new EmptyObserver<Pair<AuthData, UserProfileDTO>>());
+            subscription = signUpObservable.subscribe(new EmptyObserver<>());
         }
     }
 
