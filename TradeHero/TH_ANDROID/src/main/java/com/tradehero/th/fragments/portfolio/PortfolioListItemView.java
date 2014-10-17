@@ -21,7 +21,6 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
@@ -68,21 +67,11 @@ public class PortfolioListItemView extends RelativeLayout
     @Nullable private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistListener;
 
     //<editor-fold desc="Constructors">
-    //public PortfolioListItemView(Context context)
-    //{
-    //    super(context);
-    //}
-
     @SuppressWarnings("UnusedDeclaration")
     public PortfolioListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
-
-    //public PortfolioListItemView(Context context, AttributeSet attrs, int defStyle)
-    //{
-    //    super(context, attrs, defStyle);
-    //}
     //</editor-fold>
 
     @Override protected void onFinishInflate()

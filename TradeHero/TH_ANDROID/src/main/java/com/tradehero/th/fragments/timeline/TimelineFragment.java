@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshStickyListHeadersListView;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -114,7 +115,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject DashboardNavigator navigator;
     @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
-    @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
+    @InjectView(R.id.timeline_list_view) PullToRefreshStickyListHeadersListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
     @InjectView(R.id.follow_button) Button mFollowButton;
     @InjectView(R.id.message_button) Button mSendMsgButton;
