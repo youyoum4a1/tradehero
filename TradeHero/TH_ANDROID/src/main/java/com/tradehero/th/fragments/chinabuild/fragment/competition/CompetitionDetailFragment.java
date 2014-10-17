@@ -174,6 +174,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain("比赛详情");
+        setInviteFriendView();
     }
 
     @Override
@@ -214,7 +215,11 @@ public class CompetitionDetailFragment extends DashboardFragment
         initRankList();
         getMySelfRank();
         tvCompetitionDetailMore.setVisibility(userCompetitionDTO.detailUrl == null ? View.GONE : View.VISIBLE);
+        setInviteFriendView();
+    }
 
+    private void setInviteFriendView()
+    {
         if (userCompetitionDTO != null && userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing)
         {//比赛我参加了，并且还没结束。
             setHeadViewRight0("邀请好友");

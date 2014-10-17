@@ -78,8 +78,8 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         getCompetitionId();
         securityListTypeCacheListener = createSecurityListFetchListener();
-
         adapterSecurity = new SecurityListAdapter(getActivity(), getTradeType());
+        fetchSecurityList();
     }
 
     public void getCompetitionId()
@@ -110,7 +110,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     private void initView()
     {
         currentPage = 0;
-        fetchSecurityList();
+        //fetchSecurityList();
         initListView();
         searchStr = getActivity().getResources().getString(R.string.search_search);
         searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
