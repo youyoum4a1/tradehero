@@ -18,6 +18,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -84,13 +85,25 @@ public class LeaderboardListAdapter extends BaseAdapter
             ViewHolder holder = null;
             if (convertView == null)
             {
-                convertView = inflater.inflate(R.layout.leaderboard_user_list_item, viewGroup, false);
+                if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION ||leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
+                {
+                    convertView = inflater.inflate(R.layout.leaderboard_user_list_item_for_shool, viewGroup, false);
+                }
+                else
+                {
+                    convertView = inflater.inflate(R.layout.leaderboard_user_list_item, viewGroup, false);
+                }
+
                 holder = new ViewHolder();
                 holder.tvUserRank = (TextView) convertView.findViewById(R.id.tvUserRank);
                 holder.imgUserHead = (ImageView) convertView.findViewById(R.id.imgUserHead);
                 holder.imgUserName = (TextView) convertView.findViewById(R.id.tvUserName);
                 holder.tvUserExtraTitle = (TextView) convertView.findViewById(R.id.tvUserExtraTitle);
                 holder.tvUserExtraValue = (TextView) convertView.findViewById(R.id.tvUserExtraValue);
+                if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
+                {
+                    holder.tvSchool = (TextView) convertView.findViewById(R.id.tvSchool);
+                }
                 convertView.setTag(holder);
             }
             else
@@ -149,6 +162,20 @@ public class LeaderboardListAdapter extends BaseAdapter
                 holder.tvUserExtraValue.setText(roi.toString());
                 holder.tvUserExtraValue.setTextColor(context.getResources().getColor(roi.getColorResId()));
             }
+
+            if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
+            {
+                if (StringUtils.isNullOrEmpty(item.school) || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION)
+                {
+                    holder.tvSchool.setVisibility(View.GONE);
+                }
+                else
+                {
+                    holder.tvSchool.setText(item.school);
+                    holder.tvSchool.setVisibility(View.VISIBLE);
+                }
+                holder.tvUserExtraTitle.setText("");
+            }
         }
         return convertView;
     }
@@ -161,5 +188,6 @@ public class LeaderboardListAdapter extends BaseAdapter
         public TextView imgUserName = null;
         public TextView tvUserExtraTitle = null;
         public TextView tvUserExtraValue = null;
+        public TextView tvSchool = null;
     }
 }

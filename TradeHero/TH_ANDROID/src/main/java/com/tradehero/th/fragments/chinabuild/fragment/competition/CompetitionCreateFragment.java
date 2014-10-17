@@ -165,6 +165,7 @@ public class CompetitionCreateFragment extends DashboardFragment
     {
         initSpinnerViewPeriod();
         cbCompetitionInvite.setChecked(true);
+        cbExchangeCH.setChecked(true);
     }
 
     @Override public void onStop()

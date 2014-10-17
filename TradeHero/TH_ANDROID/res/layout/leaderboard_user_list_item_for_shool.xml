@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="72dp"
+    android:background="@drawable/listview_item_selector"
+    >
+
+
+  <ImageView
+      android:id="@+id/imgRightArrow"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="@dimen/right_arrow_margin"
+      android:visibility="gone"
+      android:background="@drawable/icon_arrow_right"
+      />
+
+  <LinearLayout
+      android:id="@+id/llRank"
+      android:layout_centerVertical="true"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:gravity="center"
+      android:layout_width="48dp"
+      android:layout_height="48dp">
+
+    <TextView
+        android:id="@+id/tvUserRank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:textColor="#c8c7cc"
+        android:textSize="24sp"/>
+  </LinearLayout>
+
+  <ImageView
+      android:id="@+id/imgUserHead"
+      android:layout_toRightOf="@id/llRank"
+      android:layout_margin="5dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_centerVertical="true"
+      />
+
+  <LinearLayout
+      android:layout_height="fill_parent"
+      android:layout_width="wrap_content"
+      android:orientation="vertical"
+      android:layout_toRightOf="@id/imgUserHead"
+      android:gravity="center_vertical"
+      >
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="Durex"
+        android:layout_toLeftOf="@+id/imgRightArrow"
+        android:layout_marginTop="1dp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tvSchool"
+        android:layout_below="@id/tvUserName"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@id/imgUserHead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#c8c7cc"
+        android:text="高校名字"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_alignParentRight="true"
+      android:layout_height="fill_parent"
+      android:layout_width="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:layout_marginRight="10dp"
+      android:layout_marginTop="2dp"
+      >
+    <TextView
+        android:id="@+id/tvUserExtraTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_gray_normal"
+        android:text=""
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/tvUserExtraValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_gray_normal"
+        android:text="9.99%"
+        android:textSize="14sp"/>
+  </LinearLayout>
+
+
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="1px"
+      android:layout_alignParentBottom="true"
+      android:layout_toRightOf="@id/llRank"
+      android:background="@color/separate_line_color"/>
+
+
+</RelativeLayout>
+

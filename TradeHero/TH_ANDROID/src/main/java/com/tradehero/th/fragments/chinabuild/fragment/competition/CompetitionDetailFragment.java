@@ -29,7 +29,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.api.competition.CompetitionDTOUtil;
@@ -50,7 +49,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
-import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.test.WebViewSimpleFragment;
@@ -185,10 +183,11 @@ public class CompetitionDetailFragment extends DashboardFragment
         if (userCompetitionDTO != null)
         {
             initView();
+            fetchCompetitionDetail(false);
         }
         else
         {
-            fetchCompetitionDetail();
+            fetchCompetitionDetail(true);
         }
 
         if (adapter.getCount() == 0)
@@ -215,7 +214,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         initRankList();
         getMySelfRank();
         tvCompetitionDetailMore.setVisibility(userCompetitionDTO.detailUrl == null ? View.GONE : View.VISIBLE);
-        setInviteFriendView();
     }
 
     private void setInviteFriendView()
@@ -230,7 +228,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         listRanks.setEmptyView(imgEmpty);
         listRanks.setAdapter(adapter);
-        listRanks.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        listRanks.setMode(PullToRefreshBase.Mode.BOTH);
         listRanks.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
@@ -308,6 +306,9 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             fetchCompetitionLeaderboard();
         }
+
+        setInviteFriendView();
+        setSchollView();
     }
 
     private void openUserProfile(int userId)
@@ -401,7 +402,8 @@ public class CompetitionDetailFragment extends DashboardFragment
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
-                            if(getActivity()==null){
+                            if (getActivity() == null)
+                            {
                                 return;
                             }
                             Intent gotoAuthticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
@@ -445,16 +447,19 @@ public class CompetitionDetailFragment extends DashboardFragment
     }
 
     //通过competitionId去获取比赛详情
-    public void fetchCompetitionDetail()
+    public void fetchCompetitionDetail(boolean showDialog)
     {
         if (competitionId == 0)
         {
             noFoundCompetition();
             return;
         }
+        if (showDialog)
+        {
+            mTransactionDialog = progressDialogUtil.show(CompetitionDetailFragment.this.getActivity(),
+                    R.string.processing, R.string.alert_dialog_please_wait);
+        }
 
-        mTransactionDialog = progressDialogUtil.show(CompetitionDetailFragment.this.getActivity(),
-                R.string.processing, R.string.alert_dialog_please_wait);
         competitionCacheLazy.get().getCompetitionDetail(competitionId, callbackgetCompetition);
     }
 
@@ -513,7 +518,6 @@ public class CompetitionDetailFragment extends DashboardFragment
             {
                 mTransactionDialog.dismiss();
             }
-            mTransactionDialog.dismiss();
         }
     }
 
@@ -540,7 +544,6 @@ public class CompetitionDetailFragment extends DashboardFragment
             {
                 mTransactionDialog.dismiss();
             }
-            mTransactionDialog.dismiss();
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -672,6 +675,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         public void onFinish()
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlRankAll);
+            listRanks.onRefreshComplete();
         }
     }
 
@@ -718,7 +722,8 @@ public class CompetitionDetailFragment extends DashboardFragment
         if (key.page == PagedLeaderboardKey.FIRST_PAGE)
         {
             adapter.setListData(listData);
-            adapter.setLeaderboardType(LeaderboardDefKeyKnowledge.COMPETITION);
+            adapter.setLeaderboardType(
+                    userCompetitionDTO.isForSchool ? LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL : LeaderboardDefKeyKnowledge.COMPETITION);
             if (listData != null && listData.size() > 0)
             {
                 setLeaderboardHeadLine();
@@ -811,8 +816,23 @@ public class CompetitionDetailFragment extends DashboardFragment
                 .error(R.drawable.superman_facebook)
                 .into(imgUserHead);
 
-        //设置是否显示 高线选择按钮
-        btnCollegeSelect.setVisibility(View.VISIBLE);
+        //设置是否显示 高校选择按钮
+        setSchollView();
+    }
+
+    public void setSchollView()
+    {
+        if (mUserProfileDTO == null || userCompetitionDTO == null) return;
+        boolean showSchoolButton = false;
+        if (userCompetitionDTO != null
+                && userCompetitionDTO.isEnrolled
+                && userCompetitionDTO.isOngoing
+                && userCompetitionDTO.isForSchool
+                && (!mUserProfileDTO.isHaveSchool()))
+        {
+            showSchoolButton = true;
+        }
+        btnCollegeSelect.setVisibility(showSchoolButton ? View.VISIBLE : View.GONE);
     }
 
     private void linkWith(PortfolioCompactDTO value)

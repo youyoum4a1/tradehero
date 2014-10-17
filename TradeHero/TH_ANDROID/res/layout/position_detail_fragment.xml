@@ -43,7 +43,7 @@
           style="@style/security_data_info"
           android:id="@+id/tvPositionTotalCcy"
           android:textColor="@color/black"
-          android:text="10000"/>
+          android:text="- - "/>
     </LinearLayout>
 
     <LinearLayout
@@ -60,7 +60,7 @@
           style="@style/security_data_info"
           android:id="@+id/tvPositionSumAmont"
           android:textColor="@color/black"
-          android:text="10000"/>
+          android:text="- - "/>
     </LinearLayout>
 
     <LinearLayout
@@ -76,7 +76,7 @@
           style="@style/security_data_info"
           android:id="@+id/tvPositionStartTime"
           android:textColor="@color/black"
-          android:text="2014.4.4"/>
+          android:text="- - "/>
     </LinearLayout>
 
     <LinearLayout
@@ -92,7 +92,7 @@
           style="@style/security_data_info"
           android:id="@+id/tvPositionLastTime"
           android:textColor="@color/black"
-          android:text="2014.4.6"/>
+          android:text="- - "/>
     </LinearLayout>
 
     <LinearLayout
@@ -109,7 +109,7 @@
           style="@style/security_data_info"
           android:id="@+id/tvPositionHoldTime"
           android:textColor="@color/black"
-          android:text="6天"/>
+          android:text="- - "/>
     </LinearLayout>
   </LinearLayout>
 

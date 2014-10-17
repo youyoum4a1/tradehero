@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.chinabuild.fragment.competition;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -180,8 +181,35 @@ public class CompetitionBaseFragment extends DashboardFragment
             });
         }
 
+        for (int i = 0; i < sizeVip; i++)
+        {
+            View view = layoutInflater.inflate(R.layout.competition_adv_item, null);
+            ImageView imgCompetitionAdv = (ImageView) view.findViewById(R.id.imgCompetitionAdv);
+            picasso.get()
+                    .load(userCompetitionVipDTOs.get(i).bannerUrl)
+                    .placeholder(R.drawable.default_image)
+                    .error(R.drawable.default_image)
+                    .into(imgCompetitionAdv);
+            views.add(view);
+            view.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    try{
+                        int position = pager.getCurrentItem();
+                        gotoCompetitionDetailFragment(userCompetitionVipDTOs.get(position));
+                    }catch (Exception e)
+                    {
+
+                    }
+                }
+            });
+        }
+
         pager.setAdapter(pageAdapter);
         indicator.setViewPager(pager);
+
+        startScrol();
     }
 
     @OnClick(R.id.llCompetitionAdv)
@@ -210,13 +238,10 @@ public class CompetitionBaseFragment extends DashboardFragment
         super.onDestroy();
     }
 
-
-
     public boolean isNeedRefresh()
     {
-        return needRefresh&&(getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE);
+        return needRefresh && (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE);
     }
-
 
     @Override public void onResume()
     {
@@ -285,7 +310,7 @@ public class CompetitionBaseFragment extends DashboardFragment
         @Override
         public int getCount()
         {
-            return views.size();
+            return (views == null) ? 0 : views.size();
         }
 
         //@Override
@@ -294,6 +319,26 @@ public class CompetitionBaseFragment extends DashboardFragment
         //    return titles.get(position);
         //}
     };
+
+    public void startScrol()
+    {
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    pager.setCurrentItem(((pageAdapter.getCount() + 1)) % 2, true);
+                    handler.postDelayed(this, 3000);
+                } catch (Exception e)
+                {
+                }
+            }
+        };
+        handler.postDelayed(runnable, 3000);
+    }
 
     protected void detachOfficalCompetition()
     {

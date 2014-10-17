@@ -8,6 +8,7 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,6 +166,12 @@ public class UserProfileDTO extends UserProfileCompactDTO
             }
         }
         return count;
+    }
+
+    public boolean isHaveSchool()
+    {
+        if(StringUtils.isNullOrEmpty(school))return false;
+        return true;
     }
 
     @Override public String toString()

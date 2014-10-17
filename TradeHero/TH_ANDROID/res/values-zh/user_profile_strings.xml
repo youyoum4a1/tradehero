@@ -2,7 +2,7 @@
 <resources>
 
   <string name="user_profile_count_followers">粉丝</string>
-  <string name="user_profile_count_heroes">英雄</string>
+  <string name="user_profile_count_heroes">股神</string>
   <string name="user_profile_count_trades">交易</string>
   <string name="user_profile_count_exchanges">交易所</string>
   <string name="user_profile_roi_below">回报率</string>

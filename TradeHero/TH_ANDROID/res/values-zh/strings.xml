@@ -14,7 +14,7 @@
   <string name="update">更新</string>
   <string name="empty_video_list">当前没有任何学习视频</string>
   <string name="loading_required_information">读取所需信息中</string>
-  <string name="server_response">"服务器响应: "</string>
+  <string name="server_response">""</string>
   <string name="link">连接 %1$s</string>
   <string name="link_description">分享前，请连接您的 %1$s 账号…</string>
   <string name="link_now">现在连接!</string>
@@ -52,7 +52,7 @@
   <string name="broadcast_message_waiting">请稍候</string>
   <string name="broadcast_message_sending_hint">信息传送中...</string>
   <string name="social_followers">粉丝</string>
-  <string name="social_heroes">英雄</string>
+  <string name="social_heroes">股神</string>
   <string name="common_loading_error">对不起，发生了点问题</string>
   <string name="no_message">您还没有任何消息。\n请下拉刷新通知列表!</string>
   <string name="message_fetch_error">对不起，发生了点问题。\n请点击重试</string>

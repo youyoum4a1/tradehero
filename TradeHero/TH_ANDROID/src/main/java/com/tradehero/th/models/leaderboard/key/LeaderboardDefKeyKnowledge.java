@@ -44,6 +44,7 @@ public class LeaderboardDefKeyKnowledge
     public static final int POPULAR = 6666;//人气榜
     public static final int WEALTH = 8888;//土豪榜
     public static final int COMPETITION = 9999;//比赛榜
+    public static final int COMPETITION_FOR_SCHOOL = 9998;//比赛榜
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefKeyKnowledge()

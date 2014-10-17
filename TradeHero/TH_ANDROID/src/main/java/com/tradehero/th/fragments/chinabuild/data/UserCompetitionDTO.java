@@ -34,6 +34,7 @@ public class UserCompetitionDTO implements DTO, Serializable
     public boolean isOfficial;
     public int rankRise;
     public double roi;
+    public boolean isForSchool;
 
     public String getRankRise()
     {
