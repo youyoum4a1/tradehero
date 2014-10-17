@@ -174,7 +174,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     String securityName = dto.getMedias().get(0).displaySecurityName();
                     StringBuffer sb = new StringBuffer();
                     sb.append("我以 ")
-                            .append(tradeDTO.unitPriceRefCcy)
+                            .append(tradeDTO.getUnitPriceCurrency())
                             .append(" 每股的价格，购买了 ")
                             .append(tradeDTO.displayTradeQuantity())
                             .append(" 股 ")
@@ -275,7 +275,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 TradeDTO tradeDTO = getTradeDTO(item.tradeId);
                 if (tradeDTO != null)
                 {
-                    holder.tvTradePrice.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.unitPriceRefCcy);
+                    holder.tvTradePrice.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.getUnitPriceCurrency());
                     holder.tvTradeCount.setText(tradeDTO.displayTradeQuantity());
                     holder.tvTradeMoney.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.displayTradeMoney());
                     holder.tvTradeCost.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.transactionCost);

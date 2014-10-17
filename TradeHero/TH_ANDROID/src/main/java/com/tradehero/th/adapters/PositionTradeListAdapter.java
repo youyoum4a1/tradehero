@@ -74,7 +74,7 @@ public class PositionTradeListAdapter extends BaseAdapter
 
             holder.tvTradeOperater.setText(item.isBuy() ? "购买" : "出售");
             holder.tvTradeQuantity.setText(item.displayTradeQuantity() + " x ");
-            holder.tvTradePrice.setText(item.getCurrencyDisplay() + item.unitPriceRefCcy);
+            holder.tvTradePrice.setText(item.getCurrencyDisplay() + item.getUnitPriceCurrency());
             holder.tvTradeTime.setText(DateUtils.getFormattedUtcDate(context.getResources(), item.dateTime));
         }
         return convertView;

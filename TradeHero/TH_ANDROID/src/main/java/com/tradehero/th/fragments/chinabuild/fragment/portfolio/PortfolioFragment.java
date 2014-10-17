@@ -565,7 +565,7 @@ public class PortfolioFragment extends DashboardFragment
     public void setCurrentUserDTO(UserProfileDTO userDTO)
     {
         this.currentUserProfileDTO = userDTO;
-        fetchSimplePage(true);
+        fetchSimplePage(false);
     }
 
     public boolean isFollowUserOrMe()
