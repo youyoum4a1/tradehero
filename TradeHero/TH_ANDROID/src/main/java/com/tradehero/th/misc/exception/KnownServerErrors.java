@@ -6,6 +6,7 @@ public class KnownServerErrors
 {
     private static final String ALREADY_REGISTERED = "This Facebook user is already registered";
     private static final String ALREADY_LINKED = "Error, this social account has already been linked to another user";
+    private static final String WRONG_DISCUSSION_TYPE = "Wrong Discussion Type";
 
     public static boolean isAccountAlreadyRegistered(@NotNull String errorMessage)
     {
@@ -15,5 +16,10 @@ public class KnownServerErrors
     public static boolean isAccountAlreadyLinked(@NotNull String errorMessage)
     {
         return errorMessage.contains(ALREADY_LINKED);
+    }
+
+    public static boolean isWrongDiscussionType(@NotNull String errorMessage)
+    {
+        return errorMessage.contains(WRONG_DISCUSSION_TYPE);
     }
 }
