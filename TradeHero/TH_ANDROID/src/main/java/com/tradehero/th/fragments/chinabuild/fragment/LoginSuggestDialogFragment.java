@@ -69,6 +69,10 @@ public class LoginSuggestDialogFragment extends BaseDialogFragment {
         this.content = content;
     }
 
+    public void setContent(int content_id){
+        String content = getActivity().getResources().getString(content_id);
+    }
+
 
     @OnClick(R.id.textview_suggest_signin)
     public void gotoSignIn() {

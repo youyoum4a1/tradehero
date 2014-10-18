@@ -371,5 +371,6 @@
   <string name="login_by_wechat_account_failed">微信信息获取失败</string>
   <string name="dialog_competition_choose_college_a">您所选择的学校</string>
   <string name="dialog_competition_choose_college_b">，确定选择以后不可更改</string>
+  <string name="dialog_competition_suggest_login">您当前是游客身份，不能参加比赛，请升级为正式用户</string>
 
 </resources>

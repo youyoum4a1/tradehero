@@ -239,7 +239,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         @Override
         public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
-            Timber.d("value");
             initAdapterSecurity(value, key);
             dismissLoadingProgress();
         }
@@ -247,7 +246,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         @Override
         public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
-            //THToast.show(getString(R.string.error_fetch_exchange_list));
             Timber.e("Error fetching the list of security %s", key, error);
             dismissLoadingProgress();
         }
@@ -283,7 +281,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         public void onDTOReceived(@NotNull ExchangeListType key, @NotNull ExchangeCompactDTOList value)
         {
             Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
-            //linkWith(value, true);
             initSpinnerView(value);
         }
 
