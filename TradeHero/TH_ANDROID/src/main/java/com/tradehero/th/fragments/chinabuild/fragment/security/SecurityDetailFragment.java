@@ -925,6 +925,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             //tvInfo2Value;//成交量
             //tvInfo3Value;//平均量
 
+            setHeadViewMiddleMain(securityCompactDTO.name);
+
             //涨跌幅
             if (securityCompactDTO.risePercent != null)
             {

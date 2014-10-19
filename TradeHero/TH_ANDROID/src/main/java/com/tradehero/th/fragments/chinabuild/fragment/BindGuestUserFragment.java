@@ -110,7 +110,7 @@ public class BindGuestUserFragment extends DashboardFragment implements View.OnC
             return;
         }
         progressDialogUtil.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                getString(R.string.authentication_connecting_tradehero, getString(R.string.linkedin)));
+                getString(R.string.authentication_connecting_tradehero));
         switch (view.getId())
         {
             case R.id.btn_weibo_signin:

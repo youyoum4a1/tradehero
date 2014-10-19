@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -74,10 +73,11 @@ public class AuthenticationActivity extends DashboardActivity
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject CredentialsDTOFactory credentialsDTOFactory;
 
+    public boolean isClickedWeChat = false;//fixed bug for wechat 2 times clicked and crash.
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         DaggerUtils.inject(this);
 
         currentActivityHolder.setCurrentActivity(this);
@@ -107,8 +107,8 @@ public class AuthenticationActivity extends DashboardActivity
         analytics.openSession();
         analytics.tagScreen(AnalyticsConstants.Login_Register);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));
-
         getWeChatAccessToken();
+        isClickedWeChat = false;
     }
 
     @Override protected void onPause()
@@ -163,6 +163,7 @@ public class AuthenticationActivity extends DashboardActivity
 
     @Override public void onClick(View view)
     {
+
         Class<?> fragmentClass = mapViewFragment.get(view.getId());
         if (fragmentClass != null)
         {
@@ -203,7 +204,10 @@ public class AuthenticationActivity extends DashboardActivity
                 authenticateWithQQ();
                 break;
             case R.id.btn_wechat_signin:
-                startWeChatSign();
+                if(!isClickedWeChat)
+                {
+                    startWeChatSign();
+                }
                 break;
 
             case R.id.txt_term_of_service_signin:

@@ -33,6 +33,7 @@
           android:singleLine="true"
           android:layout_gravity="right"
           android:layout_marginRight="2dp"
+          android:textSize="11sp"
           android:layout_alignParentRight="true"
           android:text="刚刚"
           />
@@ -44,6 +45,7 @@
           android:singleLine="true"
           android:layout_gravity="left"
           android:layout_marginLeft="2dp"
+          android:textSize="13sp"
           android:textColor="@color/tradehero_blue"
           android:text=""
           />
@@ -62,7 +64,7 @@
           android:layout_marginTop="6dip"
           android:textColorLink="@color/timeline_item_link"
           android:textColor="@color/timeline_item"
-          android:textSize="@dimen/text_small"
+          android:textSize="@dimen/text_medium"
           android:textStyle="normal"
           tools:text="Hello world!"
           android:maxLines="3"
