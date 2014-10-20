@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_large"
-        android:maxLines="1"
+        android:singleLine="true"
         android:hint="@string/login_account_hint"
         android:textColorHint="#bfbfbf"
         android:background="@color/white"/>
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:maxLength="20"
-        android:maxLines="1"
+        android:singleLine="true"
         android:textSize="@dimen/text_large"
         android:hint="@string/login_password_hint"
         android:textColorHint="#bfbfbf"
