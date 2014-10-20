@@ -18,6 +18,7 @@ import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
+import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 
 public class SecurityDiscussionFragment extends DashboardFragment
@@ -50,7 +51,8 @@ public class SecurityDiscussionFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.security_discussion, container, false);
         ButterKnife.inject(this, view);
-        securityDiscussionView.setScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        QuickReturnListViewOnScrollListener addBtnQuickScrollListener = new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, buttonAdd, - getResources().getDimensionPixelSize(R.dimen.clickable_element_min_dimen), null, 0);
+        securityDiscussionView.setScrollListener(new MultiScrollListener(dashboardBottomTabsListViewScrollListener.get(), addBtnQuickScrollListener));
         return view;
     }
 
