@@ -113,7 +113,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected THRouter thRouter;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @InjectView(R.id.timeline_list_view) PullToRefreshStickyListHeadersListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
@@ -376,7 +376,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         fetchUserProfile(false);
         fetchMessageThreadHeader();
 
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -391,7 +391,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
         }
-        dashboardTabHost.setOnTranslate(null);
+        dashboardTabHost.get().setOnTranslate(null);
         mainTimelineAdapter.setProfileClickListener(null);
         mainTimelineAdapter.setOnLoadFinishedListener(null);
         timelineListView.setOnRefreshListener((MainTimelineAdapter) null);
