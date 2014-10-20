@@ -320,7 +320,7 @@ public class UserMainPage extends DashboardFragment
     @OnClick(R.id.tvUserCared)
     public void onClickCare()
     {
-        if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.allHeroCount >= 5)
+        if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.getAllHeroCount() >= 5)
         {
             dialogContent = getActivity().getResources().getString(R.string.guest_user_dialog_summary);
             showSuggestLoginDialogFragment(dialogContent);

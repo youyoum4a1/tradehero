@@ -247,7 +247,7 @@ public class PortfolioFragment extends DashboardFragment
                 }
             }
             */
-            if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.allHeroCount >= 5)
+            if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.getAllHeroCount() >= 5)
             {
                 dialogContent = getActivity().getResources().getString(R.string.guest_user_dialog_summary);
                 showSuggestLoginDialogFragment(dialogContent);
