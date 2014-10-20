@@ -35,7 +35,7 @@ public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFr
 
     @Override protected void postDiscussion()
     {
-        unSpanedComment = unSpanText(discussionPostContent.getText());
+        unSpanedComment = editableUtil.unSpanText(discussionPostContent.getText());
         navigator.popFragment();
     }
 }

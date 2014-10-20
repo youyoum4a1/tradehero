@@ -1,6 +1,5 @@
 package com.tradehero.th.api.users;
 
-import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
 import org.jetbrains.annotations.Nullable;

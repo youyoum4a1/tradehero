@@ -3,22 +3,18 @@ package com.tradehero.th.fragments.discussion;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.fragment.HasSelectedItem;
-import com.tradehero.common.text.RichTextCreator;
-import com.tradehero.common.text.Span;
+import com.tradehero.common.utils.EditableUtil;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -31,23 +27,17 @@ import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.security.SecuritySearchFragment;
-import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
@@ -57,36 +47,36 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
 {
-    private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
-    private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
-
     @InjectView(R.id.discussion_post_content) EditText discussionPostContent;
     @InjectView(R.id.discussion_new_post_action_buttons) protected DiscussionPostActionButtonsView discussionPostActionButtonsView;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCache securityCompactCache;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject UserSearchResultCache userSearchResultCache;
     @Inject Lazy<SocialSharer> socialSharerLazy;
-    @Inject RichTextCreator parser;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     @Inject DiscussionCache discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
     @Inject DashboardNavigator navigator;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
+    @Inject EditableUtil editableUtil;
+    @Inject MentionTaggedStockHandler mentionTaggedStockHandler;
 
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
     private ProgressDialog progressDialog;
     protected MenuItem postMenuButton;
     private TextWatcher discussionEditTextWatcher;
+    private Subscription hasSelectedSubscription;
 
-    private HasSelectedItem selectionFragment;
     @Nullable private DiscussionKey discussionKey;
     private boolean isPosted;
 
@@ -102,6 +92,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         discussionEditTextWatcher = new DiscussionEditTextWatcher();
         discussionPostContent.addTextChangedListener(discussionEditTextWatcher);
+        discussionPostActionButtonsView.setReturnFragmentName(this.getClass().getName());
+        mentionTaggedStockHandler.setDiscussionPostContent(discussionPostContent);
+        subscribeHasSelected();
         DeviceUtil.showKeyboardDelayed(discussionPostContent);
     }
 
@@ -137,14 +130,48 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        isPosted = false;
+
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE))
+            {
+                DiscussionKey discussionKey = discussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
+                linkWith(discussionKey, true);
+            }
+        }
+
+        mentionTaggedStockHandler.collectSelection();
+        dashboardTabHost.get().animateHide();
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        dashboardTabHost.get().animateShow();
+    }
+
     @Override public void onDestroyView()
     {
         setActionBarSubtitle(null);
         unsetDiscussionEditMiddleCallback();
+        detachSelectedSubscription();
         discussionPostContent.removeTextChangedListener(discussionEditTextWatcher);
-
+        mentionTaggedStockHandler.setDiscussionPostContent(null);
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        mentionTaggedStockHandler.setHasSelectedItemFragment(null);
+        mentionTaggedStockHandler = null;
+        super.onDestroy();
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -152,31 +179,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         super.onSaveInstanceState(outState);
         unsetDiscussionEditMiddleCallback();
     }
-
-    @Override public void onDetach()
-    {
-        selectionFragment = null;
-        super.onDetach();
-    }
-
-    //<editor-fold desc="View's events handling">
-    // TODO following views' events should be handled inside DiscussionPostActionButtonsView
-    @OnClick(R.id.btn_security_tag)
-    void onSecurityButtonClicked(View clickedButton)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putString(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
-        selectionFragment = navigator.pushFragment(SecuritySearchFragment.class, bundle);
-    }
-
-    @OnClick(R.id.btn_mention)
-    void onMentionButtonClicked(View clickedButton)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putString(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
-        selectionFragment = navigator.pushFragment(PeopleSearchFragment.class, bundle);
-    }
-    //</editor-fold>
 
     private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
     {
@@ -225,7 +227,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         {
             ((ReplyDiscussionFormDTO) discussionFormDTO).inReplyToId = discussionKey.id;
         }
-        discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
+        discussionFormDTO.text = editableUtil.unSpanText(discussionPostContent.getText()).toString();
         return discussionFormDTO;
     }
 
@@ -253,97 +255,52 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return !discussionPostContent.getText().toString().trim().isEmpty();
     }
 
-    @Override public void onResume()
+    private void subscribeHasSelected()
     {
-        super.onResume();
+        detachSelectedSubscription();
+        hasSelectedSubscription = AndroidObservable.bindFragment(this, discussionPostActionButtonsView.getSelectedItemObservable())
+                .subscribe(createSelectedItemObserver());
+    }
 
-        isPosted = false;
-
-        Bundle args = getArguments();
-        if (args != null)
+    private void detachSelectedSubscription()
+    {
+        Subscription hasSelectedSubscriptionCopy = hasSelectedSubscription;
+        if (hasSelectedSubscriptionCopy != null)
         {
-            if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE))
+            hasSelectedSubscriptionCopy.unsubscribe();
+        }
+        hasSelectedSubscription = null;
+    }
+
+    private Observer<HasSelectedItem> createSelectedItemObserver()
+    {
+        return new Observer<HasSelectedItem>()
+        {
+            @Override public void onCompleted()
             {
-                DiscussionKey discussionKey = discussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
-                linkWith(discussionKey, true);
+                // do nothing
             }
-        }
 
-        if (selectionFragment != null)
-        {
-            @Nullable Object extraInput = selectionFragment.getSelectedItem();
-            handleExtraInput(extraInput);
-        }
+            @Override public void onError(Throwable e)
+            {
+                THToast.show(new THException(e));
+            }
 
-        dashboardTabHost.get().animateHide();
+            @Override public void onNext(HasSelectedItem hasSelectedItem)
+            {
+                mentionTaggedStockHandler.setHasSelectedItemFragment(hasSelectedItem);
+            }
+        };
     }
 
-    @Override public void onPause()
-    {
-        dashboardTabHost.get().animateShow();
-        super.onPause();
-    }
-
-    private void handleExtraInput(@Nullable Object extraInput)
-    {
-        String extraText = "";
-        Editable editable = discussionPostContent.getText();
-
-        if (extraInput instanceof SecurityCompactDTO)
-        {
-            SecurityCompactDTO taggedSecurity = (SecurityCompactDTO) extraInput;
-
-            String exchangeSymbol = taggedSecurity.getExchangeSymbol();
-            String exchangeSymbolUrl = exchangeSymbol.replace(':', '_');
-            extraText = String.format(SECURITY_TAG_FORMAT, exchangeSymbol, taggedSecurity.id, exchangeSymbolUrl);
-        }
-
-        if (extraInput instanceof UserBaseKey)
-        {
-            UserSearchResultDTO mentionedUserProfileDTO = userSearchResultCache.get((UserBaseKey) extraInput);
-            extraText = String.format(MENTIONED_FORMAT, mentionedUserProfileDTO.userthDisplayName, mentionedUserProfileDTO.userId);
-        }
-
-        String nonMarkUpText = extraText;
-        if (!editable.toString().isEmpty())
-        {
-            int start = discussionPostContent.getSelectionStart();
-            int end = discussionPostContent.getSelectionEnd();
-            editable = editable.replace(start, end, extraText);
-            nonMarkUpText = unSpanText(editable).toString();
-        }
-
-        Timber.d("Original text: %s", nonMarkUpText);
-        discussionPostContent.setText(parser.load(nonMarkUpText).create(), TextView.BufferType.SPANNABLE);
-        discussionPostContent.setSelection(discussionPostContent.length());
-    }
-
-    protected static Editable unSpanText(Editable editable)
-    {
-        // keep editable unchange
-        SpannableStringBuilder editableCopy = new SpannableStringBuilder(editable);
-        Span[] spans = editableCopy.getSpans(0, editableCopy.length(), Span.class);
-
-        // replace all span string with its original text
-        for (int i = spans.length - 1; i >= 0; --i)
-        {
-            Span span = spans[i];
-            int spanStart = editableCopy.getSpanStart(span);
-            int spanEnd = editableCopy.getSpanEnd(span);
-
-            editableCopy = editableCopy.replace(spanStart, spanEnd, span.getOriginalText());
-        }
-        return editableCopy;
-    }
-
-    private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
+    private void linkWith(@NotNull DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
         AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.get(discussionKey);
         linkWith(abstractDiscussionDTO, andDisplay);
     }
 
-    private void linkWith(AbstractDiscussionCompactDTO abstractDiscussionCompactDTO, boolean andDisplay)
+    private void linkWith(@Nullable AbstractDiscussionCompactDTO abstractDiscussionCompactDTO, boolean andDisplay)
     {
         // TODO question, should we subclass this to have a NewsEditPostFragment?
         if (abstractDiscussionCompactDTO instanceof NewsItemDTO)
@@ -352,7 +309,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(NewsItemDTO newsItemDTO, boolean andDisplay)
+    private void linkWith(@NotNull NewsItemDTO newsItemDTO, boolean andDisplay)
     {
         if (andDisplay)
         {

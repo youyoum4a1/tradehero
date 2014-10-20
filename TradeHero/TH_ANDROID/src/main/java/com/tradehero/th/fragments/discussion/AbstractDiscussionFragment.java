@@ -2,8 +2,11 @@ package com.tradehero.th.fragments.discussion;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.fragment.HasSelectedItem;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -11,21 +14,29 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.misc.exception.THException;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 
 abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
 {
     private static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
     @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
+    @InjectView(R.id.post_comment_text) protected EditText postCommentText;
+    @InjectView(R.id.mention_widget) protected MentionActionButtonsView mentionActionButtonsView;
 
     @Inject @NotNull protected DiscussionKeyFactory discussionKeyFactory;
     @Inject @BottomTabs protected Lazy<DashboardTabHost> dashboardTabHost;
+    @Inject protected MentionTaggedStockHandler mentionTaggedStockHandler;
 
     private DiscussionKey discussionKey;
+    private Subscription hasSelectedSubscription;
 
     //region Inflow bundling
     public static void putDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKey discussionKey)
@@ -53,6 +64,8 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     {
         ButterKnife.inject(this, view);
         discussionView.discussionList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        mentionTaggedStockHandler.setDiscussionPostContent(postCommentText);
+        subscribeHasSelected();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -62,16 +75,6 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         {
             discussionView.setCommentPostedListener(createCommentPostedListener());
         }
-    }
-
-    @Override public void onDestroyView()
-    {
-        if (discussionView != null)
-        {
-            discussionView.discussionList.setOnScrollListener(null);
-        }
-        ButterKnife.reset(this);
-        super.onDestroyView();
     }
 
     @Override public void onResume()
@@ -93,12 +96,31 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
                 }
             }
         });
+        mentionTaggedStockHandler.collectSelection();
     }
 
     @Override public void onPause()
     {
         dashboardTabHost.get().setOnTranslate(null);
         super.onPause();
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (discussionView != null)
+        {
+            discussionView.discussionList.setOnScrollListener(null);
+        }
+        mentionTaggedStockHandler.setDiscussionPostContent(null);
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        mentionTaggedStockHandler.setHasSelectedItemFragment(null);
+        mentionTaggedStockHandler = null;
+        super.onDestroy();
     }
 
     public DiscussionKey getDiscussionKey()
@@ -113,6 +135,44 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         {
             discussionView.display(discussionKey);
         }
+    }
+
+    private void subscribeHasSelected()
+    {
+        detachSelectedSubscription();
+        hasSelectedSubscription = AndroidObservable.bindFragment(this, mentionActionButtonsView.getSelectedItemObservable())
+                .subscribe(createSelectedItemObserver());
+    }
+
+    private void detachSelectedSubscription()
+    {
+        Subscription hasSelectedSubscriptionCopy = hasSelectedSubscription;
+        if (hasSelectedSubscriptionCopy != null)
+        {
+            hasSelectedSubscriptionCopy.unsubscribe();
+        }
+        hasSelectedSubscription = null;
+    }
+
+    private Observer<HasSelectedItem> createSelectedItemObserver()
+    {
+        return new Observer<HasSelectedItem>()
+        {
+            @Override public void onCompleted()
+            {
+                // do nothing
+            }
+
+            @Override public void onError(Throwable e)
+            {
+                THToast.show(new THException(e));
+            }
+
+            @Override public void onNext(HasSelectedItem hasSelectedItem)
+            {
+                mentionTaggedStockHandler.setHasSelectedItemFragment(hasSelectedItem);
+            }
+        };
     }
 
     protected PostCommentView.CommentPostedListener createCommentPostedListener()

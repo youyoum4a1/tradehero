@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <LinearLayout
+      android:id="@+id/mention_buttons_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_centerVertical="true"
+      >
+
+    <include layout="@layout/discussion_edit_post_mention_buttons" />
+
+  </LinearLayout>
+
+  <com.tradehero.common.widget.BetterViewAnimator
+      android:id="@+id/post_comment_action_wrapper"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignBottom="@+id/post_comment_text"
+      android:layout_alignTop="@+id/post_comment_text"
+      android:addStatesFromChildren="true"
+      android:background="@drawable/basic_transparent_selector"
+      >
+
+    <TextView
+        android:id="@+id/post_comment_action_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/timeline_discussion_post"
+        style="@style/TH.DiscussionPostButtons"
+        />
+
+    <ProgressBar
+        android:id="@+id/post_comment_action_processing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
+  </com.tradehero.common.widget.BetterViewAnimator>
+
+  <EditText
+      android:id="@+id/post_comment_text"
+      android:layout_centerVertical="true"
+      android:layout_toRightOf="@id/mention_buttons_container"
+      android:layout_toLeftOf="@id/post_comment_action_wrapper"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/timeline_discussion_comment_box_hint"
+      style="@style/TH.DiscussionTextBox"
+      >
+
+    <requestFocus/>
+
+  </EditText>
+
+</merge>

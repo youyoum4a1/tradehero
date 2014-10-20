@@ -5,16 +5,14 @@ import android.content.DialogInterface;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.form.PublishableFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -23,6 +21,8 @@ import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import rx.Observable;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
 {
@@ -33,9 +33,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @InjectView(R.id.btn_share_wechat) ToggleButton mWechatShareButton;
     @InjectView(R.id.btn_location) ToggleButton mLocationShareButton;
     @InjectView(R.id.switch_share_public) ToggleButton mIsPublic;
-
-    @InjectView(R.id.btn_mention) TextView mMention;
-    @InjectView(R.id.btn_security_tag) TextView mSecurityTag;
+    @InjectView(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
 
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
@@ -44,19 +42,9 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
-    public DiscussionPostActionButtonsView(Context context)
-    {
-        super(context);
-    }
-
     public DiscussionPostActionButtonsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public DiscussionPostActionButtonsView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
     //</editor-fold>
 
@@ -228,15 +216,17 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         mWeiboShareButton.setVisibility(GONE);
     }
 
-    //<editor-fold desc="To be used in future, we should encapsulate searching for people and stock within this view, instead of doing it in the parent fragment">
-    public static interface OnMentionListener
+    public void setReturnFragmentName(@NotNull String returnFragmentName)
     {
-        void onMentioned(UserBaseKey userBaseKey);
+        MentionActionButtonsView mentionActionButtonsViewCopy = mentionActionButtonsView;
+        if (mentionActionButtonsViewCopy != null)
+        {
+            mentionActionButtonsViewCopy.setReturnFragmentName(returnFragmentName);
+        }
     }
 
-    public static interface OnSecurityTaggedListener
+    @NotNull public Observable<HasSelectedItem> getSelectedItemObservable()
     {
-        void onTagged(SecurityId securityId);
+        return mentionActionButtonsView.getSelectedItemObservable();
     }
-    //</editor-fold>
 }
