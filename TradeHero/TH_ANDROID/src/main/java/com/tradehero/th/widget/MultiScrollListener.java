@@ -1,6 +1,8 @@
 package com.tradehero.th.widget;
 
 import android.widget.AbsListView;
+import com.tradehero.common.utils.CollectionUtils;
+import rx.functions.Action1;
 
 public class MultiScrollListener implements AbsListView.OnScrollListener
 {
@@ -23,11 +25,17 @@ public class MultiScrollListener implements AbsListView.OnScrollListener
         }
     }
 
-    @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+    @Override public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount, final int totalItemCount)
     {
-        for (AbsListView.OnScrollListener onScrollListener: onScrollListeners)
+        CollectionUtils.apply(onScrollListeners, new Action1<AbsListView.OnScrollListener>()
         {
-            onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-        }
+            @Override public void call(AbsListView.OnScrollListener onScrollListener)
+            {
+                if (onScrollListener != null)
+                {
+                    onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+                }
+            }
+        });
     }
 }
