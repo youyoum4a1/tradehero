@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class NewsHeadlineFragment extends Fragment
 {
-    private static final String NEWS_TYPE_KEY = NewsCarouselFragment.class.getName() + ".newsType";
+    private static final String NEWS_TYPE_KEY = NewsHeadlineFragment.class.getName() + ".newsType";
 
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
     @InjectView(android.R.id.list) ListView mNewsListView;
@@ -69,16 +69,6 @@ public class NewsHeadlineFragment extends Fragment
     public NewsHeadlineFragment()
     {
         super();
-
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            int newsTypeOrdinal = args.getInt(NEWS_TYPE_KEY);
-            if (newsTypeOrdinal >= 0 && newsTypeOrdinal < NewsType.values().length)
-            {
-                newsItemListKey = newsItemListKeyFromNewsType(NewsType.values()[newsTypeOrdinal]);
-            }
-        }
     }
 
     private NewsItemListKey newsItemListKeyFromNewsType(NewsType newsType)
@@ -106,6 +96,21 @@ public class NewsHeadlineFragment extends Fragment
         bundle.putInt(NEWS_TYPE_KEY, newsType.ordinal());
         newsHeadlineFragment.setArguments(bundle);
         return newsHeadlineFragment;
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            int newsTypeOrdinal = args.getInt(NEWS_TYPE_KEY);
+            if (newsTypeOrdinal >= 0 && newsTypeOrdinal < NewsType.values().length)
+            {
+                newsItemListKey = newsItemListKeyFromNewsType(NewsType.values()[newsTypeOrdinal]);
+            }
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
