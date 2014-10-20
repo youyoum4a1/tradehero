@@ -35,7 +35,7 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 
     public RegionalNewsHeadlineFragment()
     {
-        super(null);
+        super();
     }
 
     @Override public void onAttach(Activity activity)

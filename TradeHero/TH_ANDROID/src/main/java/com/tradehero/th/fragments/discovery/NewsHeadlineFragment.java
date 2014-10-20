@@ -38,6 +38,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class NewsHeadlineFragment extends Fragment
 {
+    private static final String NEWS_TYPE_KEY = NewsCarouselFragment.class.getName() + ".newsType";
+
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
     @InjectView(android.R.id.list) ListView mNewsListView;
     @OnItemClick(android.R.id.list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -67,27 +69,43 @@ public class NewsHeadlineFragment extends Fragment
     public NewsHeadlineFragment()
     {
         super();
+
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            int newsTypeOrdinal = args.getInt(NEWS_TYPE_KEY);
+            if (newsTypeOrdinal >= 0 && newsTypeOrdinal < NewsType.values().length)
+            {
+                newsItemListKey = newsItemListKeyFromNewsType(NewsType.values()[newsTypeOrdinal]);
+            }
+        }
     }
 
-    //TODO move this to setArgs
-    public NewsHeadlineFragment(NewsItemListKey newsItemListKey)
+    private NewsItemListKey newsItemListKeyFromNewsType(NewsType newsType)
     {
-        this.newsItemListKey = newsItemListKey;
+        switch (newsType)
+        {
+            case MotleyFool:
+                return new NewsItemListFeaturedKey(null, null);
+            case Global:
+                return new NewsItemListGlobalKey(null, null);
+            default:
+                return null;
+        }
     }
 
     public static NewsHeadlineFragment newInstance(NewsType newsType)
     {
-        switch (newsType)
+        if (newsType == NewsType.Region)
         {
-            case Region:
-                return new RegionalNewsHeadlineFragment();
-            case MotleyFool:
-                return new NewsHeadlineFragment(new NewsItemListFeaturedKey(null, null));
-            case Global:
-                return new NewsHeadlineFragment(new NewsItemListGlobalKey(null, null));
+            return new RegionalNewsHeadlineFragment();
         }
 
-        throw new IllegalArgumentException("No news for this news type: " + newsType);
+        NewsHeadlineFragment newsHeadlineFragment = new NewsHeadlineFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(NEWS_TYPE_KEY, newsType.ordinal());
+        newsHeadlineFragment.setArguments(bundle);
+        return newsHeadlineFragment;
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
