@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.base;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
@@ -47,9 +48,15 @@ public class BaseFragment extends Fragment
         return args.getBoolean(BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, DEFAULT_IS_OPTION_MENU_VISIBLE);
     }
 
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        HierarchyInjector.inject(this);
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
-        HierarchyInjector.inject(this);
         super.onCreate(savedInstanceState);
         actionBarOwnerMixin = ActionBarOwnerMixin.of(this);
 
