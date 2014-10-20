@@ -487,7 +487,8 @@ public class TradeOfMineFragment extends DashboardFragment
                 mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary,
                         currentUserId.get().toString()));
                 ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                        getString(R.string.share_amount_total_value_title));
+                        getString(R.string.share_amount_total_value_title),getString(R.string.share_amount_total_value_summary,
+                        currentUserId.get().toString()));
             }
         }
 
@@ -550,7 +551,9 @@ public class TradeOfMineFragment extends DashboardFragment
                                     R.string.share_amount_roi_value_summary, "10%", currentUserId.get().toString(),
                                     String.valueOf(listData.get(i).id)));
                             ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                                    getString(R.string.share_amount_roi_value_title));
+                                    getString(R.string.share_amount_roi_value_title), getString(
+                                    R.string.share_amount_roi_value_summary, "10%", currentUserId.get().toString(),
+                                    String.valueOf(listData.get(i).id)));
                         }
                     }
                 }

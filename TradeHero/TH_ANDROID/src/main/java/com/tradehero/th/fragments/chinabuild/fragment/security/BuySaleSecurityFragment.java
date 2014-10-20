@@ -732,7 +732,9 @@ public class BuySaleSecurityFragment extends DashboardFragment
                             securityId.getDisplayName(), currentUserId.get().toString(),
                             securityCompactDTO.id.toString()));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                            getString(R.string.share_buy_dialog_title, securityId.getDisplayName()));
+                            getString(R.string.share_buy_dialog_title, securityId.getDisplayName()),getString(R.string.share_buy_dialog_summary,
+                            securityId.getDisplayName(), currentUserId.get().toString(),
+                            securityCompactDTO.id.toString()));
                 }
                 else
                 {

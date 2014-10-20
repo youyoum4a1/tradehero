@@ -810,6 +810,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE, indexDiscussOrNews);
         bundle.putBundle(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+        if(securityCompactDTO==null){
+            if(getActivity()!=null){
+                getActivity().finish();
+            }
+        }
         bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityCompactDTO.id);
         pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
     }

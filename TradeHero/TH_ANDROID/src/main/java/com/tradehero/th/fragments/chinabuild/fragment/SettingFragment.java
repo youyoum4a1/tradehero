@@ -105,7 +105,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                     mShareDialogAfterScoreKeyPreference.set(false);
                     mShareSheetTitleCache.set(getString(R.string.share_score_summary));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                            getString(R.string.share_score_title));
+                            getString(R.string.share_score_title),getString(R.string.share_score_summary));
                 }
                 break;
             case R.id.settings_faq:

@@ -181,7 +181,8 @@ public class MainTabFragmentMe extends AbsBaseFragment
                     mShareSheetTitleCache.set(getString(R.string.share_amount_fans_num_summary,
                             currentUserId.get().toString()));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                            getString(R.string.share_amount_fans_num_title));
+                            getString(R.string.share_amount_fans_num_title),getString(R.string.share_amount_fans_num_summary,
+                            currentUserId.get().toString()));
                 }
             }
         }
