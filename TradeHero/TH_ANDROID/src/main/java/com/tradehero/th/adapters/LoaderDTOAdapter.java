@@ -20,9 +20,9 @@ public abstract class LoaderDTOAdapter<
     private ListLoaderCallback<DTOType> callback;
 
     //<editor-fold desc="Constructors">
-    public LoaderDTOAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
+    public LoaderDTOAdapter(Context context, int loaderId, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, LayoutInflater.from(context), layoutResourceId);
         this.loaderId = loaderId;
     }
     //</editor-fold>

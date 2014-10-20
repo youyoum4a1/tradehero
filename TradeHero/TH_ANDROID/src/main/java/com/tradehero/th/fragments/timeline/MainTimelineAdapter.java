@@ -26,6 +26,7 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -38,8 +39,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     public static final int STATS_ITEM_TYPE = 2;
     public static final int EMPTY_ITEM_TYPE = 3;
 
-    protected final LayoutInflater inflater;
-    private TimelineProfileClickListener profileClickListener;
+    @Nullable private TimelineProfileClickListener profileClickListener;
     private OnLoadFinishedListener onLoadFinishedListener;
     private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.PORTFOLIO_LIST;
 
@@ -49,27 +49,19 @@ public class MainTimelineAdapter extends ArrayAdapter
     private final int statResId;
     private UserProfileDTO userProfileDTO;
 
-    public MainTimelineAdapter(Activity context,
-            LayoutInflater inflater,
+    public MainTimelineAdapter(@NotNull Activity context,
             @NotNull UserBaseKey shownUserBaseKey,
             int timelineItemViewResId,
             int portfolioItemViewResId,
             int statResId)
     {
         super(context, 0);
-        this.inflater = inflater;
-
-        subTimelineAdapter = new SubTimelineAdapter(context, inflater, shownUserBaseKey.key, timelineItemViewResId);
+        subTimelineAdapter = new SubTimelineAdapter(context, shownUserBaseKey.key, timelineItemViewResId);
         subTimelineAdapter.setDTOLoaderCallback(createTimelineLoaderCallback(context, shownUserBaseKey));
 
-        portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, inflater, portfolioItemViewResId);
+        portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, portfolioItemViewResId);
 
         this.statResId = statResId;
-    }
-
-    public TimelineFragment.TabType getCurrentTabType()
-    {
-        return currentTabType;
     }
 
     public void setCurrentTabType(TimelineFragment.TabType currentTabType)
@@ -78,16 +70,17 @@ public class MainTimelineAdapter extends ArrayAdapter
         notifyDataSetChanged();
     }
 
-    public void setProfileClickListener(TimelineProfileClickListener profileClickListener)
+    public void setProfileClickListener(@Nullable TimelineProfileClickListener profileClickListener)
     {
         this.profileClickListener = profileClickListener;
     }
 
-    protected void notifyProfileClickListener(TimelineFragment.TabType tabType)
+    protected void notifyProfileClickListener(@NotNull TimelineFragment.TabType tabType)
     {
-        if (profileClickListener != null)
+        TimelineProfileClickListener listenerCopy = profileClickListener;
+        if (listenerCopy != null)
         {
-            profileClickListener.onBtnClicked(tabType);
+            listenerCopy.onBtnClicked(tabType);
         }
     }
 
@@ -122,13 +115,13 @@ public class MainTimelineAdapter extends ArrayAdapter
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
         }
         TimelineHeaderButtonView castedView = (TimelineHeaderButtonView) convertView;
         castedView.changeButtonLook(currentTabType);
         castedView.setTimelineProfileClickListener(new TimelineProfileClickListener()
         {
-            @Override public void onBtnClicked(TimelineFragment.TabType tabType)
+            @Override public void onBtnClicked(@NotNull TimelineFragment.TabType tabType)
             {
                 notifyProfileClickListener(tabType);
             }
@@ -250,7 +243,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(statResId, viewGroup, false);
+            convertView = LayoutInflater.from(getContext()).inflate(statResId, viewGroup, false);
         }
         return convertView;
     }

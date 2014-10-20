@@ -32,7 +32,6 @@ import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
@@ -48,7 +47,6 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -87,8 +85,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Nullable private MiddleCallback<BaseResponseDTO> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
     @Nullable private BroadcastReceiver broadcastReceiver;
-    @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -135,7 +132,7 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onResume();
 
         registerMessageReceiver();
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -145,13 +142,11 @@ public class MessagesCenterFragment extends DashboardFragment
                 }
             }
         });
-        Timber.d("onResume");
     }
 
     @Override public void onPause()
     {
-        Timber.d("onPause");
-        dashboardTabHost.setOnTranslate(null);
+        dashboardTabHost.get().setOnTranslate(null);
         unregisterMessageReceiver();
         super.onPause();
     }
@@ -323,11 +318,11 @@ public class MessagesCenterFragment extends DashboardFragment
                     messageHeaderDTO.senderUserId, currentUserId.get());
             if (currentUserId.toUserBaseKey().equals(targetUserKey))
             {
-                navigator.pushFragment(MeTimelineFragment.class, bundle);
+                navigator.get().pushFragment(MeTimelineFragment.class, bundle);
             }
             else
             {
-                navigator.pushFragment(PushableTimelineFragment.class, bundle);
+                navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
             }
         }
     }
@@ -338,7 +333,7 @@ public class MessagesCenterFragment extends DashboardFragment
         // TODO separate between Private and Broadcast
         ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKey);
         ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, correspondentId);
-        navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
+        navigator.get().pushFragment(ReplyPrivateMessageFragment.class, args);
     }
 
     private void initViews(View view)

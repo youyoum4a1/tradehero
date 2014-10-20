@@ -1,6 +1,7 @@
 package com.tradehero.th.api.discussion;
 
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import java.util.Date;
 import javax.inject.Inject;
@@ -50,7 +51,7 @@ public class DiscussionDTOFactory
         return created;
     }
 
-    public DiscussionDTO createEmptyChild(DiscussionType discussionType)
+    public DiscussionDTO createEmptyChild(@Nullable DiscussionType discussionType)
     {
         DiscussionDTO created = null;
         if (discussionType != null)
@@ -81,7 +82,17 @@ public class DiscussionDTOFactory
 
     private DiscussionDTO createStubStrict(DiscussionFormDTO fromForm)
     {
-        DiscussionDTO created = createEmptyChild(fromForm.getInReplyToType());
+        DiscussionDTO created;
+        if (fromForm instanceof ReplyDiscussionFormDTO)
+        {
+            created = createEmptyChild(((ReplyDiscussionFormDTO) fromForm).getInReplyToType());
+            created.inReplyToId = ((ReplyDiscussionFormDTO) fromForm).inReplyToId;
+        }
+        else
+        {
+            created = createEmptyChild(null);
+        }
+
         if (fromForm.stubKey != null)
         {
             created.id = fromForm.stubKey.id;
@@ -89,7 +100,6 @@ public class DiscussionDTOFactory
         created.stubKey = fromForm.stubKey;
         created.inReplyToType = DiscussionType.PRIVATE_MESSAGE;
         created.type = DiscussionType.PRIVATE_MESSAGE;
-        created.inReplyToId = fromForm.inReplyToId;
         created.text = fromForm.text;
         created.langCode = fromForm.langCode;
         created.userId = currentUserId.toUserBaseKey().key;

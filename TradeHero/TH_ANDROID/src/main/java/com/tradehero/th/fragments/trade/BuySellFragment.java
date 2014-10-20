@@ -51,7 +51,6 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -162,8 +161,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject Analytics analytics;
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
-    @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -288,7 +286,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             abstractTransactionDialogFragment.getDialog().show();
         }
 
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -302,7 +300,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(chartImageButtonClickReceiver);
         selectedPageIndex = mBottomViewPager.getCurrentItem();
-        dashboardTabHost.setOnTranslate(null);
+        dashboardTabHost.get().setOnTranslate(null);
         super.onPause();
     }
 
@@ -916,12 +914,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (alertId != null)
             {
                 AlertEditFragment.putAlertId(args, alertId);
-                navigator.pushFragment(AlertEditFragment.class, args);
+                navigator.get().pushFragment(AlertEditFragment.class, args);
             }
             else
             {
                 AlertCreateFragment.putSecurityId(args, securityId);
-                navigator.pushFragment(AlertCreateFragment.class, args);
+                navigator.get().pushFragment(AlertCreateFragment.class, args);
             }
         }
         else if (securityAlertAssistant.isFailed())
@@ -942,7 +940,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Bundle args = new Bundle();
             WatchlistEditFragment.putSecurityId(args, securityId);
-            navigator.pushFragment(WatchlistEditFragment.class, args);
+            navigator.get().pushFragment(WatchlistEditFragment.class, args);
         }
         else
         {
@@ -1225,7 +1223,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (isResumed())
         {
             // TODO find a better way to remove this fragment from the stack
-            navigator.popFragment();
+            navigator.get().popFragment();
 
             Bundle args = new Bundle();
             OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
@@ -1235,7 +1233,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
             PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
             PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-            navigator.pushFragment(PositionListFragment.class, args);
+            navigator.get().pushFragment(PositionListFragment.class, args);
         }
     }
 
@@ -1253,7 +1251,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
                     providerId.getArgs());
         }
-        navigator.pushFragment(StockInfoFragment.class, args);
+        navigator.get().pushFragment(StockInfoFragment.class, args);
     }
 
     private BroadcastReceiver createImageButtonClickBroadcastReceiver()

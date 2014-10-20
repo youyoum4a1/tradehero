@@ -15,6 +15,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.NetworkConstants;
+import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,7 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     protected THWebViewClient thWebViewClient;
     protected THWebChromeClient webChromeClient;
 
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     public static void putUrl(@NotNull Bundle args, @NotNull String url)
     {
@@ -115,13 +116,13 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.animateHide();
+        dashboardTabHost.get().animateHide();
     }
 
     @Override public void onPause()
     {
+        dashboardTabHost.get().animateShow();
         super.onPause();
-        dashboardTabHost.animateShow();
     }
 
     @Override public void onDestroyView()

@@ -42,4 +42,12 @@ public class CollectionUtils
             action.call(element);
         }
     }
+
+    public static <T> void apply(T[] collection, Action1<T> action)
+    {
+        for (T element : collection)
+        {
+            action.call(element);
+        }
+    }
 }

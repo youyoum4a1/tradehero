@@ -14,11 +14,12 @@ import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialogCloseTimes;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
+import dagger.Lazy;
 import javax.inject.Inject;
 
 public class AskForInviteDialogFragment extends BaseDialogFragment
 {
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject @ShowAskForInviteDialogCloseTimes IntPreference mShowAskForInviteDialogCloseTimesPreference;
 
@@ -59,7 +60,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
 
     private void pushInvitationFragment()
     {
-        navigator.pushFragment(FriendsInvitationFragment.class);
+        navigator.get().pushFragment(FriendsInvitationFragment.class);
     }
 
 }

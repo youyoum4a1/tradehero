@@ -226,13 +226,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     }
 
     //region Creation and Listener
-    @Deprecated
-    protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
-    {
-        // default will be used when this one return null
-        return null;
-    }
-
     protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()
     {
         return null;

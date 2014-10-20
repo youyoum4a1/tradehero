@@ -21,6 +21,7 @@ import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
+import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -206,7 +207,10 @@ public class PostCommentView extends RelativeLayout
 
     protected void populateFormDTO(DiscussionFormDTO discussionFormDTO)
     {
-        discussionFormDTO.inReplyToId = discussionKey.id;
+        if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
+        {
+            ((ReplyDiscussionFormDTO) discussionFormDTO).inReplyToId = discussionKey.id;
+        }
         discussionFormDTO.text = commentText.getText().toString();
         if (USE_QUICK_STUB_DISCUSSION)
         {

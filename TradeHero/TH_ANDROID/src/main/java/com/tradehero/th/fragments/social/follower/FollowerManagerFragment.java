@@ -21,7 +21,6 @@ import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
@@ -32,7 +31,6 @@ import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.THTabView;
 import dagger.Lazy;
 import java.text.MessageFormat;
@@ -56,12 +54,10 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Inject CurrentUserId currentUserId;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject GraphicUtil graphicUtil;
 
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
-    @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     public static void putHeroId(Bundle args, UserBaseKey heroId)
     {
@@ -159,7 +155,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -170,8 +166,8 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Override public void onPause()
     {
+        dashboardTabHost.get().setOnTranslate(null);
         super.onPause();
-        dashboardTabHost.setOnTranslate(null);
     }
 
     @Override public void onDestroyView()
@@ -358,6 +354,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, messageType.typeId);
         Timber.d("goToMessagePage index:%d, tabIndex:%d, followerType:%s, discussionType:%s", page,
                 page, followerType, discussionType);
-        navigator.pushFragment(SendMessageFragment.class, args);
+        navigator.get().pushFragment(SendMessageFragment.class, args);
     }
 }

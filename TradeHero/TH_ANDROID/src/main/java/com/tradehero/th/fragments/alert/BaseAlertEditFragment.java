@@ -15,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.ProductPurchase;
@@ -35,7 +36,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -49,16 +49,10 @@ import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.text.SimpleDateFormat;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dagger.Lazy;
+import java.text.SimpleDateFormat;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import timber.log.Timber;
 
@@ -95,7 +89,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject ResideMenu resideMenu;
-    @Inject DashboardNavigator navigator;
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
@@ -668,7 +661,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
-            navigator.popFragment();
+            navigator.get().popFragment();
         }
 
         @Override protected void failure(THException ex)

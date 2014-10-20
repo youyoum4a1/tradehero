@@ -36,7 +36,6 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -82,7 +81,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
-    @Inject DashboardNavigator navigator;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
 
     @NotNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
@@ -370,7 +368,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         if (navigator != null)
         {
-            navigator.pushFragment(target, bundle);
+            navigator.get().pushFragment(target, bundle);
         }
     }
 

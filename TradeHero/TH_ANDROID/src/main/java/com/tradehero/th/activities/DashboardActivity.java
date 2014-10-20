@@ -3,7 +3,6 @@ package com.tradehero.th.activities;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.AbsListView;
-import android.widget.TabHost;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.crashlytics.android.Crashlytics;
@@ -192,18 +190,10 @@ public class DashboardActivity extends BaseActivity
 
         appContainer.wrap(this);
 
-        purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
-        {
-            @Override public void onPurchaseRestored(
-                    int requestCode,
-                    List restoredPurchases,
-                    List failedRestorePurchases,
-                    List failExceptions)
+        purchaseRestorerFinishedListener = (requestCode, restoredPurchases, failedRestorePurchases, failExceptions) -> {
+            if (Integer.valueOf(requestCode).equals(restoreRequestCode))
             {
-                if (Integer.valueOf(requestCode).equals(restoreRequestCode))
-                {
-                    restoreRequestCode = null;
-                }
+                restoreRequestCode = null;
             }
         };
         launchBilling();
@@ -233,7 +223,7 @@ public class DashboardActivity extends BaseActivity
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
 
-        initAchievementBroadcastReceiver();
+        initBroadcastReceivers();
         ButterKnife.inject(this);
     }
 
@@ -245,28 +235,21 @@ public class DashboardActivity extends BaseActivity
     private void setupNavigator()
     {
         navigator = new DashboardNavigator(this, R.id.realtabcontent);
-        for (DashboardNavigator.DashboardFragmentWatcher watcher: dashboardFragmentWatchers)
-        {
-            navigator.addDashboardFragmentWatcher(watcher);
-        }
+        CollectionUtils.apply(dashboardFragmentWatchers, navigator::addDashboardFragmentWatcher);
     }
 
     private void setupDashboardTabHost()
     {
         dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
         dashboardTabHost.setup();
-        dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
-        {
-            @Override public void onTabChanged(String tabId)
-            {
-                RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
-                navigator.goToTab(selectedFragmentType);
-            }
+        dashboardTabHost.setOnTabChangedListener(tabId -> {
+            RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
+            navigator.goToTab(selectedFragmentType);
         });
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
     }
 
-    private void initAchievementBroadcastReceiver()
+    private void initBroadcastReceivers()
     {
         mAchievementBroadcastReceiver = new BroadcastReceiver()
         {
@@ -364,13 +347,9 @@ public class DashboardActivity extends BaseActivity
             alertDialogUtil.get().popWithOkCancelButton(
                     this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now,
                     R.string.later,
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialog, int which)
-                        {
-                            THToast.show(R.string.update_guide);
-                            marketUtilLazy.get().showAppOnMarket(DashboardActivity.this);
-                        }
+                    (dialog, which) -> {
+                        THToast.show(R.string.update_guide);
+                        marketUtilLazy.get().showAppOnMarket(DashboardActivity.this);
                     });
         }
     }

@@ -23,6 +23,14 @@
       android:orientation="vertical"
       android:background="@color/achievement_dialog_bg"
       >
+
+    <ImageView
+        android:id="@+id/btn_achievement_dismiss"
+        style="@style/TH.Btn_Popup_Close"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        />
+
     <RelativeLayout
         android:id="@+id/achievement_content"
         android:layout_width="match_parent"

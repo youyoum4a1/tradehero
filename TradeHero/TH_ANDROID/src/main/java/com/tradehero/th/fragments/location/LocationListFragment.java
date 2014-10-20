@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,8 +13,6 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -22,7 +22,6 @@ import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -52,7 +51,6 @@ public class LocationListFragment extends DashboardFragment
     @Inject UserProfileCache userProfileCache;
 
     @InjectView(android.R.id.list) ListView listView;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -227,7 +225,7 @@ public class LocationListFragment extends DashboardFragment
     private void backToSettings()
     {
         getProgressDialog().hide();
-        navigator.popFragment();
+        navigator.get().popFragment();
     }
 
     private ProgressDialog getProgressDialog()

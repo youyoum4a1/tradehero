@@ -239,7 +239,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     }
 
     private void pushInvitationFragment(){
-        navigator.pushFragment(FriendsInvitationFragment.class);
+        navigator.get().pushFragment(FriendsInvitationFragment.class);
     }
 
     @Override protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)

@@ -25,6 +25,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -38,7 +39,7 @@ import rx.observers.EmptyObserver;
 public class EmailSignUpFragment extends Fragment
 {
     @Inject Analytics analytics;
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject AuthDataAction authDataAction;
     @Inject ToastOnErrorAction toastOnErrorAction;
@@ -53,7 +54,7 @@ public class EmailSignUpFragment extends Fragment
 
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
-        navigator.popFragment();
+        navigator.get().popFragment();
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

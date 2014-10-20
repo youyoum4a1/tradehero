@@ -3,13 +3,14 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
-
-import android.view.Menu;
-import android.view.MenuItem;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -45,20 +46,14 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.BaseExpandingItemListener;
-
+import dagger.Lazy;
+import java.util.Date;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import dagger.Lazy;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
@@ -236,7 +231,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), leaderboardDefKey.key, R.layout.lbmu_item_roi_mode);
+                getActivity(), leaderboardDefKey.key, R.layout.lbmu_item_roi_mode);
     }
 
     protected void prepareLeaderboardMarkUserAdapter()
@@ -498,7 +493,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         Bundle args = new Bundle();
         LeaderboardFilterFragment.putPerPagedFilteredLeaderboardKey(args, (PerPagedFilteredLeaderboardKey) currentLeaderboardKey);
-        this.leaderboardFilterFragment = navigator.pushFragment(LeaderboardFilterFragment.class, args);
+        this.leaderboardFilterFragment = navigator.get().pushFragment(LeaderboardFilterFragment.class, args);
     }
 
     protected void displayFilterIcon(MenuItem filterIcon)

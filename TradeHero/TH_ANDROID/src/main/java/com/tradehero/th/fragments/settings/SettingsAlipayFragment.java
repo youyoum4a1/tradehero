@@ -3,11 +3,11 @@ package com.tradehero.th.fragments.settings;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -16,7 +16,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -49,7 +48,6 @@ public class SettingsAlipayFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject DashboardNavigator navigator;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -151,7 +149,7 @@ public class SettingsAlipayFragment extends DashboardFragment
                 {
                     THToast.show(getString(R.string.settings_alipay_successful_update));
                     progressDialog.hide();
-                    navigator.popFragment();
+                    navigator.get().popFragment();
                 }
             }
 

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -13,7 +12,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -22,12 +20,9 @@ import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
-
 import timber.log.Timber;
 
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
@@ -44,7 +39,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected LeaderboardDefDTO leaderboardDefDTO;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfileDTO;
-    @Inject DashboardNavigator navigator;
 
     public static void putLeaderboardDefKey(@NotNull Bundle args, @NotNull LeaderboardDefKey leaderboardDefKey)
     {
@@ -144,7 +138,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                navigator.pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+                navigator.get().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }
@@ -153,7 +147,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         Bundle args = new Bundle();
         FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
-        navigator.pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
+        navigator.get().pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
     }
 
     protected void pushHeroFragment()
@@ -165,7 +159,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        navigator.pushFragment(HeroManagerFragment.class, bundle);
+        navigator.get().pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -177,14 +171,14 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        navigator.pushFragment(FollowerManagerFragment.class, bundle);
+        navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     private void pushInvitationFragment()
     {
         if (navigator != null)
         {
-            navigator.pushFragment(FriendsInvitationFragment.class);
+            navigator.get().pushFragment(FriendsInvitationFragment.class);
         }
     }
 

@@ -36,6 +36,8 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+import com.tradehero.th.widget.ValidatedText;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
@@ -53,7 +55,7 @@ public class EmailSignInFragment extends Fragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Analytics analytics;
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject ToastOnErrorAction toastOnErrorAction;
@@ -70,7 +72,7 @@ public class EmailSignInFragment extends Fragment
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
-        navigator.popFragment();
+        navigator.get().popFragment();
     }
 
     @SuppressWarnings("UnusedDeclaration")

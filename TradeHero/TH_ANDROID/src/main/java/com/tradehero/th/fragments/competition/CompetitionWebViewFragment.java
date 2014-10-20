@@ -12,7 +12,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
@@ -28,7 +27,6 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
     @Inject ProviderUtil providerUtil;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -54,7 +52,7 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
         switch (item.getItemId())
         {
             case R.id.webview_done:
-                navigator.popFragment();
+                navigator.get().popFragment();
                 break;
         }
         return super.onOptionsItemSelected(item);

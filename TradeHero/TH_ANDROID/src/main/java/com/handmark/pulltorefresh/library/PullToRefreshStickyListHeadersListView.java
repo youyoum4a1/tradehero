@@ -823,4 +823,16 @@ public class PullToRefreshStickyListHeadersListView extends PullToRefreshBase<St
             }
         }
     }
+
+    //<editor-fold desc="Like StickyListHeadersListView">
+    public void addHeaderView(View view)
+    {
+        getRefreshableView().addHeaderView(view);
+    }
+
+    public void addFooterView(View view)
+    {
+        getRefreshableView().addFooterView(view);
+    }
+    //</editor-fold>
 }

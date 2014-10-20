@@ -113,7 +113,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
     @InjectViews({
-            R.id.close,
+            R.id.btn_achievement_dismiss,
             R.id.achievement_pulse,
             R.id.achievement_pulse2,
             R.id.achievement_pulse3,
@@ -594,7 +594,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick({R.id.achievement_dummy_container, R.id.close})
+    @OnClick({R.id.achievement_dummy_container, R.id.btn_achievement_dismiss})
     public void onOutsideContentClicked()
     {
         getDialog().dismiss();

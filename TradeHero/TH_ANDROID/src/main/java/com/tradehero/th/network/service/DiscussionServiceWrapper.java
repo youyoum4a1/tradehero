@@ -4,6 +4,7 @@ import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
@@ -13,6 +14,7 @@ import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussion;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussionReply;
@@ -106,22 +108,45 @@ import retrofit.Callback;
     //<editor-fold desc="Create Discussion">
     @NotNull public DiscussionDTO createDiscussion(@NotNull DiscussionFormDTO discussionFormDTO)
     {
-        return createDiscussionReplyProcessor(discussionFormDTO.getInitiatingDiscussionKey(), discussionFormDTO.stubKey).process(
-            discussionService.createDiscussion(discussionFormDTO));
+        if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
+        {
+            return createDiscussionReplyProcessor(((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(), discussionFormDTO.stubKey)
+                    .process(discussionService.createDiscussion(discussionFormDTO));
+        }
+        return createDiscussionProcessor().process(
+                discussionService.postToTimeline(
+                currentUserId.get(),
+                discussionFormDTO));
     }
 
     @NotNull public MiddleCallback<DiscussionDTO> createDiscussion(
             @NotNull DiscussionFormDTO discussionFormDTO,
             @Nullable Callback<DiscussionDTO> callback)
     {
+        DTOProcessor<DiscussionDTO> processor;
+        if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
+        {
+            processor = createDiscussionReplyProcessor(((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(), discussionFormDTO.stubKey);
+        }
+        else
+        {
+            processor = createDiscussionProcessor();
+        }
         MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
-                callback, createDiscussionReplyProcessor(discussionFormDTO.getInitiatingDiscussionKey(), discussionFormDTO.stubKey));
+                callback, processor);
         if (discussionFormDTO.stubKey != null)
         {
             DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
             middleCallback.success(stub, null);
         }
-        discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
+        if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
+        {
+            discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
+        }
+        else
+        {
+            discussionServiceAsync.postToTimeline(currentUserId.get(), discussionFormDTO, middleCallback);
+        }
         return middleCallback;
     }
     //</editor-fold>
@@ -184,7 +209,7 @@ import retrofit.Callback;
             @NotNull DiscussionVoteKey discussionVoteKey,
             @Nullable Callback<DiscussionDTO> callback)
     {
-        MiddleCallback<DiscussionDTO> middleCallback =  new BaseMiddleCallback<>(
+        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
                 callback, createDiscussionReplyProcessor(
                 discussionKeyFactory.create(discussionVoteKey.inReplyToType, discussionVoteKey.inReplyToId),
                 null));
@@ -218,6 +243,33 @@ import retrofit.Callback;
                 discussionKey.inReplyToType,
                 discussionKey.inReplyToId,
                 timelineItemShareRequestDTO,
+                middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Post to Timeline">
+    @NotNull public DiscussionDTO postToTimeline(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull DiscussionFormDTO discussionFormDTO)
+    {
+        return createDiscussionProcessor().process(
+                discussionService.postToTimeline(
+                        userBaseKey.key,
+                        discussionFormDTO));
+    }
+
+    @NotNull public MiddleCallback<DiscussionDTO> postToTimeline(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull DiscussionFormDTO discussionFormDTO,
+            @Nullable Callback<DiscussionDTO> callback)
+    {
+        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createDiscussionProcessor());
+        discussionServiceAsync.postToTimeline(
+                userBaseKey.key,
+                discussionFormDTO,
                 middleCallback);
         return middleCallback;
     }

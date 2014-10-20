@@ -1,13 +1,10 @@
 package com.tradehero.th.api.discussion.form;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.timeline.form.PublishableFormDTO;
 import org.jetbrains.annotations.Nullable;
 
-abstract public class DiscussionFormDTO extends PublishableFormDTO
+public class DiscussionFormDTO extends PublishableFormDTO
 {
     /**
      * This stub discussion key is used to simulate an immediate post,
@@ -17,7 +14,6 @@ abstract public class DiscussionFormDTO extends PublishableFormDTO
 
     public String text;
     public String langCode;
-    public int inReplyToId;
     public String url; // to post a link
     public Integer recipientUserId;
 
@@ -25,10 +21,4 @@ abstract public class DiscussionFormDTO extends PublishableFormDTO
     {
         super();
     }
-
-    @JsonProperty
-    abstract public DiscussionType getInReplyToType();
-
-    @JsonIgnore
-    abstract public DiscussionKey getInitiatingDiscussionKey();
 }

@@ -2,14 +2,16 @@ package com.tradehero.th.fragments.social;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import android.view.Menu;
-import android.view.MenuInflater;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.android.internal.util.Predicate;
+import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -27,38 +29,33 @@ import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
-import com.tradehero.th.persistence.user.UserProfileCompactCache;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.AlertDialogUtil;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dagger.Lazy;
+import java.util.List;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
-        implements AdapterView.OnItemClickListener
+        implements AdapterView.OnItemClickListener, HasSelectedItem
 {
     List<AllowableRecipientDTO> mRelationsList;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    @Inject UserProfileCompactCache userProfileCompactCache;
     @Inject AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
     @Inject UserMessagingRelationshipCache userMessagingRelationshipCache;
     @Inject Lazy<AdapterViewUtils> adapterViewUtils;
 
+    @InjectView(R.id.sending_to_header) View sendingToHeader;
+
     private
     DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>
             allowableRecipientCacheListener;
+    private AllowableRecipientDTO selectedItem;
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -91,11 +88,13 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         mRelationsListView.setAdapter(mRelationsListItemAdapter);
         mRelationsListView.setOnItemClickListener(this);
         mRelationsListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+
+        sendingToHeader.setVisibility(isForReturn() ? View.GONE : View.VISIBLE);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(R.string.message_center_new_message_title);
+        setActionBarTitle(isForReturn() ? R.string.message_pick_relation : R.string.message_center_new_message_title);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -131,6 +130,17 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         super.onDestroy();
     }
 
+    @Nullable @Override public AllowableRecipientDTO getSelectedItem()
+    {
+        return selectedItem;
+    }
+
+    private boolean isForReturn()
+    {
+        Bundle args = getArguments();
+        return args != null && args.containsKey(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT);
+    }
+
     public void downloadRelations()
     {
         alertDialogUtilLazy.get()
@@ -147,6 +157,12 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
+        selectedItem = mRelationsList.get(position);
+        if (isForReturn())
+        {
+            navigator.get().popFragment();
+            return;
+        }
         pushPrivateMessageFragment(position);
     }
 
@@ -155,7 +171,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         Bundle args = new Bundle();
         NewPrivateMessageFragment.putCorrespondentUserBaseKey(args,
                 mRelationsList.get(position).user.getBaseKey());
-        navigator.pushFragment(NewPrivateMessageFragment.class, args);
+        navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
     protected void handleFollowRequested(UserBaseKey userBaseKey)

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -24,9 +23,9 @@ public class LeaderboardMarkUserListAdapter extends
     protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardMarkUserListAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
+    public LeaderboardMarkUserListAdapter(Context context, int loaderId, int layoutResourceId)
     {
-        super(context, inflater, loaderId, layoutResourceId);
+        super(context, loaderId, layoutResourceId);
     }
     //</editor-fold>
 

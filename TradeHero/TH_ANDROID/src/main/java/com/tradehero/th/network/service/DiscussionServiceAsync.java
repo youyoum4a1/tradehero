@@ -80,4 +80,12 @@ interface DiscussionServiceAsync
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
             Callback<BaseResponseDTO> callback);
     //</editor-fold>
+
+    //<editor-fold desc="Post to Timeline">
+    @POST("/users/{userId}/timeline")
+    void postToTimeline(
+            @Path("userId") int userId,
+            @Body DiscussionFormDTO discussionFormDTO,
+            Callback<DiscussionDTO> callback);
+    //</editor-fold>
 }

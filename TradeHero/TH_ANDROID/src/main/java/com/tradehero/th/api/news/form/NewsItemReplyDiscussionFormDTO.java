@@ -1,25 +1,26 @@
 package com.tradehero.th.api.news.form;
 
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import org.jetbrains.annotations.NotNull;
 
-public class NewsItemDiscussionFormDTO extends DiscussionFormDTO
+public class NewsItemReplyDiscussionFormDTO extends ReplyDiscussionFormDTO
 {
     public static final DiscussionType TYPE = DiscussionType.NEWS;
 
-    public NewsItemDiscussionFormDTO()
+    public NewsItemReplyDiscussionFormDTO()
     {
         super();
     }
 
-    @Override public DiscussionType getInReplyToType()
+    @Override @NotNull public DiscussionType getInReplyToType()
     {
         return TYPE;
     }
 
-    @Override public DiscussionKey getInitiatingDiscussionKey()
+    @Override @NotNull public DiscussionKey getInitiatingDiscussionKey()
     {
         return new NewsItemDTOKey(inReplyToId);
     }

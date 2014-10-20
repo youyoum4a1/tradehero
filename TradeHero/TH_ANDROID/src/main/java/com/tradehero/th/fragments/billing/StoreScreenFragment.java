@@ -24,7 +24,6 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
@@ -56,7 +55,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
     @Inject protected THBillingInteractor userInteractor;
-    @Inject DashboardNavigator navigator;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
@@ -289,7 +287,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
     {
-        navigator.pushFragment(fragmentClass, bundle);
+        navigator.get().pushFragment(fragmentClass, bundle);
     }
 
     @Override public int getTutorialLayout()

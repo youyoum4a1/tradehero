@@ -43,6 +43,7 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
+import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,7 +57,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject UserProfileCache userProfileCache;
     @Inject ExchangeSectorCompactListCache exchangeSectorCompactListCache;
     @Inject LeaderboardUserListCache leaderboardUserListCache;
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
     @Inject BroadcastUtils broadcastUtils;
 
     @InjectView(R.id.next_button) Button nextButton;
@@ -286,7 +287,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         dismiss();
         submitStockWatchlist();
         userProfileCache.invalidate(currentUserId.toUserBaseKey());
-        navigator.goToTab(RootFragmentType.ME);
+        navigator.get().goToTab(RootFragmentType.ME);
         firstShowOnBoardDialogPreference.justHandled();
     }
 

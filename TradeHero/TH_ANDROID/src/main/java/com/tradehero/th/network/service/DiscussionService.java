@@ -78,4 +78,11 @@ public interface DiscussionService
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
     //</editor-fold>
+
+    //<editor-fold desc="Post to Timeline">
+    @POST("/users/{userId}/timeline")
+    DiscussionDTO postToTimeline(
+            @Path("userId") int userId,
+            @Body DiscussionFormDTO discussionFormDTO);
+    //</editor-fold>
 }

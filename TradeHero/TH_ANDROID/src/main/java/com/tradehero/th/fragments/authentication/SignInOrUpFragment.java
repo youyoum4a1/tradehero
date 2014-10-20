@@ -32,6 +32,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -47,7 +48,7 @@ import rx.schedulers.Schedulers;
 public class SignInOrUpFragment extends Fragment
 {
     @Inject Analytics analytics;
-    @Inject DashboardNavigator dashboardNavigator;
+    @Inject Lazy<DashboardNavigator> navigator;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject Provider<LoginSignUpFormDTO.Builder2> authenticationFormBuilderProvider;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
@@ -55,13 +56,13 @@ public class SignInOrUpFragment extends Fragment
 
     @OnClick(R.id.authentication_email_sign_up_link) void handleSignUpButtonClick()
     {
-        dashboardNavigator.pushFragment(EmailSignUpFragment.class);
+        navigator.get().pushFragment(EmailSignUpFragment.class);
         subscription.unsubscribe();
     }
 
     @OnClick(R.id.authentication_email_sign_in_link) void handleEmailSignInButtonClick()
     {
-        dashboardNavigator.pushFragment(EmailSignInFragment.class);
+        navigator.get().pushFragment(EmailSignInFragment.class);
         subscription.unsubscribe();
     }
 
@@ -243,7 +244,7 @@ public class SignInOrUpFragment extends Fragment
 
             if (authData.socialNetworkEnum == SocialNetworkEnum.TW)
             {
-                TwitterEmailFragment twitterEmailFragment = dashboardNavigator.pushFragment(TwitterEmailFragment.class);
+                TwitterEmailFragment twitterEmailFragment = navigator.get().pushFragment(TwitterEmailFragment.class);
                 if (progressDialog != null)
                 {
                     progressDialog.hide();

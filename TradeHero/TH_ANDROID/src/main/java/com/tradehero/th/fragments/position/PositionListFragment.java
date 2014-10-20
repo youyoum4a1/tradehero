@@ -30,7 +30,6 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
@@ -112,7 +111,6 @@ public class PositionListFragment
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Nullable protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject THRouter thRouter;
-    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NotNull Bundle args, @NotNull GetPositionsDTOKey getPositionsDTOKey)
@@ -332,7 +330,7 @@ public class PositionListFragment
             }
             if (navigator != null)
             {
-                navigator.pushFragment(TradeListFragment.class, args);
+                navigator.get().pushFragment(TradeListFragment.class, args);
             }
         }
     }
@@ -348,7 +346,7 @@ public class PositionListFragment
             TrendingFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        navigator.pushFragment(TrendingFragment.class, args);
+        navigator.get().pushFragment(TrendingFragment.class, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
@@ -629,11 +627,11 @@ public class PositionListFragment
         thRouter.save(args, userBaseKey);
         if (currentUserId.toUserBaseKey().equals(userBaseKey))
         {
-            navigator.pushFragment(MeTimelineFragment.class, args);
+            navigator.get().pushFragment(MeTimelineFragment.class, args);
         }
         else
         {
-            navigator.pushFragment(PushableTimelineFragment.class, args);
+            navigator.get().pushFragment(PushableTimelineFragment.class, args);
         }
     }
     //</editor-fold>

@@ -15,7 +15,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
@@ -35,7 +34,6 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @InjectView(R.id.settings_referral_code) TextView mReferralCode;
 
     @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -111,7 +109,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     {
         if (navigator != null)
         {
-            navigator.popFragment();
+            navigator.get().popFragment();
         }
     }
 }

@@ -138,7 +138,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.onResume();
         fetchCorrespondentProfile();
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -149,7 +149,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onPause()
     {
-        dashboardTabHost.setOnTranslate(null);
+        dashboardTabHost.get().setOnTranslate(null);
         super.onPause();
     }
 

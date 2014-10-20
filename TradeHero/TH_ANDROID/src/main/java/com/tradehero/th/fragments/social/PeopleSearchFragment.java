@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.social;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.Menu;
+import android.view.View;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -35,7 +35,6 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         implements HasSelectedItem
 {
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
-    @Inject DashboardNavigator navigator;
 
     protected void initViews(View view)
     {
@@ -94,7 +93,7 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         if (getArguments() != null && getArguments().containsKey(
                 DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT))
         {
-            navigator.popFragment();
+            navigator.get().popFragment();
             return;
         }
 
@@ -114,11 +113,11 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         thRouter.save(args, userSearchResultDTO.getUserBaseKey());
         if (currentUserId.toUserBaseKey().equals(userSearchResultDTO.getUserBaseKey()))
         {
-            navigator.pushFragment(MeTimelineFragment.class, args);
+            navigator.get().pushFragment(MeTimelineFragment.class, args);
         }
         else
         {
-            navigator.pushFragment(PushableTimelineFragment.class, args);
+            navigator.get().pushFragment(PushableTimelineFragment.class, args);
         }
     }
 

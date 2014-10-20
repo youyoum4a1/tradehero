@@ -165,7 +165,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                navigator.pushFragment(questListTestingFragmentClassProvider.get());
+                navigator.get().pushFragment(questListTestingFragmentClassProvider.get());
                 return true;
             }
         });
@@ -176,7 +176,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                navigator.pushFragment(achievementListTestingFragmentClassProvider.get());
+                navigator.get().pushFragment(achievementListTestingFragmentClassProvider.get());
                 return true;
             }
         });
@@ -187,7 +187,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                navigator.pushFragment(xpTestingFragmentClassProvider.get());
+                navigator.get().pushFragment(xpTestingFragmentClassProvider.get());
                 return true;
             }
         });

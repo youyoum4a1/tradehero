@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.Menu;
+import android.view.View;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -16,7 +16,6 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.BaseSearchFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -34,9 +33,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         SecurityItemView<SecurityCompactDTO>>
         implements HasSelectedItem
 {
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject DashboardNavigator navigator;
 
     protected void initViews(View view)
     {
@@ -94,7 +91,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
 
         if (getArguments() != null && getArguments().containsKey(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT))
         {
-            navigator.popFragment();
+            navigator.get().popFragment();
             return;
         }
 
@@ -117,7 +114,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         {
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        navigator.pushFragment(BuySellFragment.class, args);
+        navigator.get().pushFragment(BuySellFragment.class, args);
     }
 
     private DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityIdListCacheListener()

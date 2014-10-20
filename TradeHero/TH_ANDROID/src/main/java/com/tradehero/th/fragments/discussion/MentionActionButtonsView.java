@@ -1,42 +1,38 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.InjectViews;
+import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.user.UserSearchResultCache;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
+import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.rx.view.ViewArrayObservable;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import rx.Observable;
+import rx.functions.Func1;
 
 public class MentionActionButtonsView extends LinearLayout
 {
-    private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
-    private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
+    @Inject DashboardNavigator navigator;
 
-    @Inject UserSearchResultCache userSearchResultCache;
+    @NotNull private String returnFragmentName;
 
-    @InjectView(R.id.btn_mention) TextView mMention;
-    @InjectView(R.id.btn_security_tag) TextView mSecurityTag;
+    @InjectViews({R.id.btn_mention, R.id.btn_security_tag})
+    View[] buttons;
 
     //<editor-fold desc="Constructors">
-    public MentionActionButtonsView(Context context)
-    {
-        super(context);
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public MentionActionButtonsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-    }
-
-    public MentionActionButtonsView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
     }
     //</editor-fold>
 
@@ -47,21 +43,29 @@ public class MentionActionButtonsView extends LinearLayout
         HierarchyInjector.inject(this);
     }
 
-    @Override protected void onDetachedFromWindow()
+    public void setReturnFragmentName(@NotNull String returnFragmentName)
     {
-        ButterKnife.reset(this);
-        super.onDetachedFromWindow();
+        this.returnFragmentName = returnFragmentName;
     }
 
-    //<editor-fold desc="To be used in future, we should encapsulate searching for people and stock within this view, instead of doing it in the parent fragment">
-    public static interface OnMentionListener
+    @NotNull public Observable<HasSelectedItem> getSelectedItemObservable()
     {
-        void onMentioned(UserBaseKey userBaseKey);
+        return ViewArrayObservable.clicks(buttons, false)
+                .map(new Func1<View, HasSelectedItem>()
+                {
+                    @Override public HasSelectedItem call(View view)
+                    {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT, returnFragmentName);
+                        switch(view.getId())
+                        {
+                            case R.id.btn_mention:
+                                return navigator.pushFragment(AllRelationsFragment.class, bundle);
+                            case R.id.btn_security_tag:
+                                return navigator.pushFragment(SecuritySearchFragment.class, bundle);
+                        }
+                        throw new IllegalArgumentException("Unhandled view " + view);
+                    }
+                });
     }
-
-    public static interface OnSecurityTaggedListener
-    {
-        void onTagged(SecurityId securityId);
-    }
-    //</editor-fold>
 }

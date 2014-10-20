@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.discussion.form.SecurityReplyDiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
@@ -65,7 +66,7 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
             securityCompactDTO = securityCompactCache.get(securityId);
         }
 
-        DiscussionFormDTO discussionFormDTO = super.buildDiscussionFormDTO();
+        SecurityReplyDiscussionFormDTO discussionFormDTO = (SecurityReplyDiscussionFormDTO) super.buildDiscussionFormDTO();
         if (discussionFormDTO != null && securityCompactDTO != null)
         {
             discussionFormDTO.inReplyToId = securityCompactDTO.id;

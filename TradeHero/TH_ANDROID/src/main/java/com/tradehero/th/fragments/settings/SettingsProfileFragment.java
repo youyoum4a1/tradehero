@@ -24,7 +24,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.AuthDataAction;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -57,7 +56,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject DashboardNavigator navigator;
     @Inject Provider<AuthDataAction> authDataActionProvider;
 
     @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
@@ -213,7 +211,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                         {
                             profileView.progressDialog.hide(); // Before otherwise it is reset
                             THToast.show(R.string.settings_update_profile_successful);
-                            navigator.popFragment();
+                            navigator.get().popFragment();
                         }
                     })
                     .subscribe(authDataActionProvider.get());

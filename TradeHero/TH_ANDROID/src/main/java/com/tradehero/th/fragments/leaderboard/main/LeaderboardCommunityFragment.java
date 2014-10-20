@@ -27,7 +27,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
@@ -74,7 +73,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListFetchListener;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfileDTO;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -375,7 +373,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                navigator.pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+                navigator.get().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }
@@ -386,7 +384,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
         if (navigator != null)
         {
-            navigator.pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
+            navigator.get().pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
         }
     }
 
@@ -399,7 +397,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        navigator.pushFragment(HeroManagerFragment.class, bundle);
+        navigator.get().pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -411,7 +409,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        navigator.pushFragment(FollowerManagerFragment.class, bundle);
+        navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     private void pushLeaderboardDefSector(LeaderboardDefDTO leaderboardDefDTOSector)
@@ -421,7 +419,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOSector.getLeaderboardDefKey());
         if (navigator != null)
         {
-            navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
+            navigator.get().pushFragment(LeaderboardDefListFragment.class, bundle);
         }
     }
 
@@ -432,7 +430,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
         if (navigator != null)
         {
-            navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
+            navigator.get().pushFragment(LeaderboardDefListFragment.class, bundle);
         }
     }
 
@@ -440,7 +438,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         if (navigator != null)
         {
-            navigator.pushFragment(PeopleSearchFragment.class, null);
+            navigator.get().pushFragment(PeopleSearchFragment.class, null);
         }
     }
 
@@ -448,7 +446,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         if (navigator != null)
         {
-            navigator.pushFragment(FriendsInvitationFragment.class);
+            navigator.get().pushFragment(FriendsInvitationFragment.class);
         }
     }
     //</editor-fold>

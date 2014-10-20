@@ -16,10 +16,11 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.inject.HierarchyInjector;
+import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -42,7 +43,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     @Inject protected ProviderCache providerCache;
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -314,7 +315,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         {
             Bundle args = new Bundle();
             ProviderVideoListFragment.putProviderId(args, providerId);
-            navigator.pushFragment(ProviderVideoListFragment.class, args);
+            navigator.get().pushFragment(ProviderVideoListFragment.class, args);
         }
     }
 }
