@@ -3,15 +3,16 @@ package com.tradehero.th.fragments.trade;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -29,7 +30,6 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
@@ -39,7 +39,6 @@ import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -49,18 +48,12 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -96,7 +89,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
     private Dialog securityActionDialog;
-    @Inject DashboardNavigator navigator;
 
     public static void putPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKey positionDTOKey)
     {
@@ -436,7 +428,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             }
             if (navigator != null)
             {
-                navigator.pushFragment(WatchlistEditFragment.class, args);
+                navigator.get().pushFragment(WatchlistEditFragment.class, args);
             }
         }
 
@@ -455,7 +447,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 AlertEditFragment.putAlertId(args, alertId);
                 if (navigator != null)
                 {
-                    navigator.pushFragment(AlertEditFragment.class, args);
+                    navigator.get().pushFragment(AlertEditFragment.class, args);
                 }
             }
             else
@@ -463,7 +455,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 AlertCreateFragment.putSecurityId(args, securityId);
                 if (navigator != null)
                 {
-                    navigator.pushFragment(AlertCreateFragment.class, args);
+                    navigator.get().pushFragment(AlertCreateFragment.class, args);
                 }
             }
         }
@@ -480,7 +472,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             BuySellFragment.putSecurityId(args, securityId);
             if (navigator != null)
             {
-                navigator.pushFragment(BuySellFragment.class, args);
+                navigator.get().pushFragment(BuySellFragment.class, args);
             }
         }
     }

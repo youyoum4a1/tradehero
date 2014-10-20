@@ -251,7 +251,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         WebViewFragment.putIsOptionMenuVisible(args, false);
         if (navigator != null)
         {
-            this.webViewFragment = navigator.pushFragment(WebViewFragment.class, args);
+            this.webViewFragment = navigator.get().pushFragment(WebViewFragment.class, args);
             this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
         }
     }
@@ -293,7 +293,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
         @Override protected DashboardNavigator getNavigator()
         {
-            return navigator;
+            return navigator.get();
         }
 
         @Override protected Class<?> getClassToPop()

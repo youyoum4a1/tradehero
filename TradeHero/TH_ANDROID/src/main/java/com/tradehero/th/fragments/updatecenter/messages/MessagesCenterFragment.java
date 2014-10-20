@@ -32,7 +32,6 @@ import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
@@ -86,7 +85,6 @@ public class MessagesCenterFragment extends DashboardFragment
     @Nullable private MiddleCallback<BaseResponseDTO> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
     @Nullable private BroadcastReceiver broadcastReceiver;
-    @Inject DashboardNavigator navigator;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -320,11 +318,11 @@ public class MessagesCenterFragment extends DashboardFragment
                     messageHeaderDTO.senderUserId, currentUserId.get());
             if (currentUserId.toUserBaseKey().equals(targetUserKey))
             {
-                navigator.pushFragment(MeTimelineFragment.class, bundle);
+                navigator.get().pushFragment(MeTimelineFragment.class, bundle);
             }
             else
             {
-                navigator.pushFragment(PushableTimelineFragment.class, bundle);
+                navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
             }
         }
     }
@@ -335,7 +333,7 @@ public class MessagesCenterFragment extends DashboardFragment
         // TODO separate between Private and Broadcast
         ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKey);
         ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, correspondentId);
-        navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
+        navigator.get().pushFragment(ReplyPrivateMessageFragment.class, args);
     }
 
     private void initViews(View view)

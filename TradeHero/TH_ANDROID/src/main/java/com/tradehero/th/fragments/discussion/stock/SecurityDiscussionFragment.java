@@ -12,7 +12,6 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScro
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
@@ -27,7 +26,6 @@ public class SecurityDiscussionFragment extends DashboardFragment
     @InjectView(R.id.stock_discussion_view) SecurityDiscussionView securityDiscussionView;
     @InjectView(R.id.security_discussion_add) View buttonAdd;
     private SecurityId securityId;
-    @Inject DashboardNavigator navigator;
 
     public static void putSecurityId(Bundle args, SecurityId securityId)
     {
@@ -70,7 +68,7 @@ public class SecurityDiscussionFragment extends DashboardFragment
         {
             Bundle bundle = new Bundle();
             SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
-            navigator.pushFragment(SecurityDiscussionEditPostFragment.class, bundle);
+            navigator.get().pushFragment(SecurityDiscussionEditPostFragment.class, bundle);
         }
     }
 

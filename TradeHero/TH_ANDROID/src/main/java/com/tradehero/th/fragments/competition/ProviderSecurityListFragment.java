@@ -44,7 +44,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
-    @Inject DashboardNavigator navigator;
 
     private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
 
@@ -225,7 +224,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         CompetitionWebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         CompetitionWebViewFragment.putIsOptionMenuVisible(args, false);
 
-        this.webViewFragment = navigator.pushFragment(
+        this.webViewFragment = navigator.get().pushFragment(
                 CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -239,7 +238,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             SecuritySearchProviderFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        navigator.pushFragment(SecuritySearchProviderFragment.class, args);
+        navigator.get().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
     protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
@@ -289,7 +288,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
-            navigator.pushFragment(BuySellFragment.class, args);
+            navigator.get().pushFragment(BuySellFragment.class, args);
         }
     }
 
@@ -317,7 +316,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
         @Override protected DashboardNavigator getNavigator()
         {
-            return navigator;
+            return navigator.get();
         }
 
         @Override protected Class<?> getClassToPop()

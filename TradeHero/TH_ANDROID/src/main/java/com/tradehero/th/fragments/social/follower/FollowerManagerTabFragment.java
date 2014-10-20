@@ -2,13 +2,13 @@ package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -19,7 +19,6 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -46,7 +45,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     private FollowerSummaryDTO followerSummaryDTO;
     private FollowerManagerInfoFetcher infoFetcher;
     @Inject THRouter thRouter;
-    @Inject DashboardNavigator navigator;
 
     public static void putHeroId(Bundle args, UserBaseKey followerId)
     {
@@ -306,7 +304,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     {
         Bundle bundle = new Bundle();
         thRouter.save(bundle, new UserBaseKey(followerId));
-        navigator.pushFragment(PushableTimelineFragment.class, bundle);
+        navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
     }
 
     private void pushPayoutFragment(UserFollowerDTO followerDTO)
@@ -320,7 +318,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             Bundle args = new Bundle();
             args.putBundle(FollowerPayoutManagerFragment.BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
                     followerHeroRelationId.getArgs());
-            navigator.pushFragment(FollowerPayoutManagerFragment.class, args);
+            navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
         }
     }
 

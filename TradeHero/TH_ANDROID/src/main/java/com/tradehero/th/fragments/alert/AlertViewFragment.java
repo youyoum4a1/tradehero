@@ -27,7 +27,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -44,7 +43,6 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.ocpsoft.prettytime.PrettyTime;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -67,11 +65,9 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     protected DTOCacheNew.Listener<AlertId, AlertDTO> alertCacheListener;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
-    @Inject protected Lazy<PrettyTime> prettyTime;
     @Inject protected ProgressDialogUtil progressDialogUtil;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserId currentUserId;
-    @Inject DashboardNavigator navigator;
 
     private View headerView;
     protected AlertDTO alertDTO;
@@ -171,7 +167,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                     AlertEditFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
                 }
                 AlertEditFragment.putAlertId(bundle, alertId);
-                navigator.pushFragment(AlertEditFragment.class, bundle, null);
+                navigator.get().pushFragment(AlertEditFragment.class, bundle, null);
                 return true;
         }
         return super.onOptionsItemSelected(item);

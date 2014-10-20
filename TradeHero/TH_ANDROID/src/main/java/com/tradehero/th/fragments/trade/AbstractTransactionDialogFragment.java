@@ -110,7 +110,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject Analytics analytics;
 
     @Inject THBillingInteractor userInteractor;
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
 
     private ProgressDialog mTransactionDialog;
@@ -226,7 +226,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         super.onResume();
 
         /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
-        if (!(navigator.getCurrentFragment() instanceof BuySellFragment))
+        if (!(navigator.get().getCurrentFragment() instanceof BuySellFragment))
         {
             getDialog().hide();
         }
@@ -411,7 +411,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         Bundle bundle = new Bundle();
         SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
-        transactionCommentFragment = navigator.pushFragment(TransactionEditCommentFragment.class, bundle);
+        transactionCommentFragment = navigator.get().pushFragment(TransactionEditCommentFragment.class, bundle);
 
         getDialog().hide();
     }

@@ -18,7 +18,6 @@ import com.tradehero.th.api.translation.TranslatableLanguageDTOFactory;
 import com.tradehero.th.api.translation.TranslatableLanguageDTOFactoryFactory;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
@@ -39,7 +38,6 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> tokenFetchListener;
     @InjectView(android.R.id.list) ListView listView;
     @InjectView(android.R.id.empty) View emptyView;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -169,6 +167,6 @@ public class TranslatableLanguageListFragment extends DashboardFragment
                 Timber.e(e, "Failed saving preference %s", languageDTO);
             }
         }
-        navigator.popFragment();
+        navigator.get().popFragment();
     }
 }

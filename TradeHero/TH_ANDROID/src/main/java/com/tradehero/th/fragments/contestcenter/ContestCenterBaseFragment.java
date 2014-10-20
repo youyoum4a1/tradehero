@@ -19,7 +19,6 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -55,7 +54,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     private BaseWebViewFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
     protected UserProfileDTO currentUserProfileDTO;
-    @Inject DashboardNavigator navigator;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -251,7 +249,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         {
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-            navigator.pushFragment(MainCompetitionFragment.class, args);
+            navigator.get().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
         {
@@ -262,7 +260,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
-            webFragment = navigator.pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment = navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }

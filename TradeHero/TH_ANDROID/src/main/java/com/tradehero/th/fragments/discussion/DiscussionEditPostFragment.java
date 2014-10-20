@@ -65,7 +65,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     @Inject DiscussionCache discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
-    @Inject DashboardNavigator navigator;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject EditableUtil editableUtil;
     @Inject MentionTaggedStockHandler mentionTaggedStockHandler;
@@ -342,7 +341,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             isPosted = true;
 
             DeviceUtil.dismissKeyboard(getActivity());
-            navigator.popFragment();
+            navigator.get().popFragment();
         }
 
         @Override public void failure(RetrofitError error)

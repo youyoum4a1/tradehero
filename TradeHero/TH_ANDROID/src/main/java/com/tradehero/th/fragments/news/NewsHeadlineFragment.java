@@ -33,6 +33,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -51,7 +52,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     @Inject SecurityCompactCache securityCompactCache;
     @Inject NewsItemCompactListCacheNew newsTitleCache;
     @Inject protected DiscussionCache discussionCache;
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
     @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
@@ -117,7 +118,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         if (abstractDiscussionCompactDTO != null && ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url!=null)
         {
             WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
-            navigator.pushFragment(WebViewFragment.class, bundle);
+            navigator.get().pushFragment(WebViewFragment.class, bundle);
         }
         else
         {
@@ -301,7 +302,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
             NewsDiscussionFragment.putBackgroundResId(bundle, resId);
             NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
             NewsDiscussionFragment.putDiscussionKey(bundle, news);
-            navigator.pushFragment(NewsDiscussionFragment.class, bundle);
+            navigator.get().pushFragment(NewsDiscussionFragment.class, bundle);
         }
     }
 

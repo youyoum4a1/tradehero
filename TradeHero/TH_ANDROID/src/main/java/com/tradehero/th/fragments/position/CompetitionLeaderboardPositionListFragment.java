@@ -36,7 +36,7 @@ public class CompetitionLeaderboardPositionListFragment extends LeaderboardPosit
         Bundle args = new Bundle();
         ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         ProviderSecurityListFragment.putProviderId(args, providerId);
-        navigator.pushFragment(ProviderSecurityListFragment.class, args);
+        navigator.get().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
     @VisibleForTesting public ProviderId getProviderId()

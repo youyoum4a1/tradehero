@@ -31,6 +31,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.widget.MultiScrollListener;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -51,11 +52,11 @@ public class NewsHeadlineFragment extends Fragment
         {
             Bundle bundle = new Bundle();
             WebViewFragment.putUrl(bundle, newsItemDTO.url);
-            navigator.pushFragment(WebViewFragment.class, bundle);
+            navigator.get().pushFragment(WebViewFragment.class, bundle);
         }
     }
 
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
     @Inject DiscussionCache discussionCache;
     @Inject NewsItemCompactListCacheNew newsItemCompactListCache;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;

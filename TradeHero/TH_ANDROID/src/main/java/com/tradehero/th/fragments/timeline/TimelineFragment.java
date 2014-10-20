@@ -36,7 +36,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THPurchaseReporter;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -112,7 +111,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
     @Inject protected THRouter thRouter;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
-    @Inject DashboardNavigator navigator;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @InjectView(R.id.timeline_list_view) PullToRefreshStickyListHeadersListView timelineListView;
@@ -218,7 +216,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onEditProfileClicked()
     {
-        navigator.pushFragment(SettingsProfileFragment.class);
+        navigator.get().pushFragment(SettingsProfileFragment.class);
     }
 
     protected void pushHeroFragment()
@@ -232,7 +230,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        navigator.pushFragment(HeroManagerFragment.class, bundle);
+        navigator.get().pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -246,14 +244,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        navigator.pushFragment(FollowerManagerFragment.class, bundle);
+        navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     protected void pushAchievementFragment()
     {
         Bundle bundle = new Bundle();
         AchievementListFragment.putUserId(bundle, mIsOtherProfile? shownUserBaseKey : currentUserId.toUserBaseKey());
-        navigator.pushFragment(AchievementListFragment.class, bundle);
+        navigator.get().pushFragment(AchievementListFragment.class, bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -618,11 +616,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (portfolioDTO != null && portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
         {
             CompetitionLeaderboardPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
-            navigator.pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+            navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
         }
         else
         {
-            navigator.pushFragment(PositionListFragment.class, args);
+            navigator.get().pushFragment(PositionListFragment.class, args);
         }
     }
 
@@ -634,7 +632,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         Bundle args = new Bundle();
         WatchlistPositionFragment.putOwnedPortfolioId(args, ownedPortfolioId);
-        navigator.pushFragment(WatchlistPositionFragment.class, args);
+        navigator.get().pushFragment(WatchlistPositionFragment.class, args);
     }
 
     private void onLoadFinished()
@@ -754,13 +752,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             Bundle args = new Bundle();
             ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
             ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(messageThreadHeaderDTO));
-            navigator.pushFragment(NewPrivateMessageFragment.class, args);
+            navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
         }
         else
         {
             Bundle args = new Bundle();
             NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
-            navigator.pushFragment(NewPrivateMessageFragment.class, args);
+            navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
         }
     }
 

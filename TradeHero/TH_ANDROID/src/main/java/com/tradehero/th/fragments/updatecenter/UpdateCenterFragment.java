@@ -29,7 +29,6 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
@@ -72,7 +71,6 @@ public class UpdateCenterFragment extends DashboardFragment
     private FragmentTabHost mTabHost;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private BroadcastReceiver broadcastReceiver;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -153,7 +151,7 @@ public class UpdateCenterFragment extends DashboardFragment
         {
             case R.id.menu_private:
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Notification_New_Message));
-                navigator.pushFragment(AllRelationsFragment.class);
+                navigator.get().pushFragment(AllRelationsFragment.class);
                 return true;
             case R.id.menu_broadcast:
                 jumpToSendBroadcastMessage();
@@ -211,7 +209,7 @@ public class UpdateCenterFragment extends DashboardFragment
                 DiscussionType.BROADCAST_MESSAGE.value);
         args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE,
                 MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
-        navigator.pushFragment(SendMessageFragment.class, args);
+        navigator.get().pushFragment(SendMessageFragment.class, args);
     }
 
     @Override public void onStop()

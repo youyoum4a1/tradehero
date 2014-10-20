@@ -19,7 +19,7 @@ import dagger.Lazy;
 public class DashboardPreferenceFragment extends PreferenceFragment
 {
     @Inject Lazy<ResideMenu> resideMenuLazy;
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
     @Inject @BottomTabsQuickReturnListViewListener protected Lazy<AbsListView.OnScrollListener> dashboardBottomTabsScrollListener;
     private ActionBarOwnerMixin actionBarOwnerMixin;
 
@@ -51,7 +51,7 @@ public class DashboardPreferenceFragment extends PreferenceFragment
             case android.R.id.home:
                 if (actionBarOwnerMixin.shouldShowHomeAsUp())
                 {
-                    navigator.popFragment();
+                    navigator.get().popFragment();
                 }
                 else
                 {
@@ -62,8 +62,10 @@ public class DashboardPreferenceFragment extends PreferenceFragment
         return super.onOptionsItemSelected(item);
     }
 
+    // Should inject navigator instead of using this method
+    @Deprecated
     public DashboardNavigator getNavigator()
     {
-        return navigator;
+        return navigator.get();
     }
 }

@@ -20,7 +20,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.staff.StaffDTO;
@@ -39,7 +38,6 @@ public class AboutFragment extends DashboardFragment
 
     @Inject Analytics analytics;
     @Inject StaffDTOFactory staffDTOFactory;
-    @Inject DashboardNavigator navigator;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     private ObjectAnimator rotateAnimator;
@@ -147,7 +145,7 @@ public class AboutFragment extends DashboardFragment
                 @Override public void onAnimationEnd(Animator animation)
                 {
                     super.onAnimationEnd(animation);
-                    navigator.popFragment();
+                    navigator.get().popFragment();
                 }
             });
             scrollAnimator.setDuration(getResources().getInteger(R.integer.about_screen_scroll_duration));

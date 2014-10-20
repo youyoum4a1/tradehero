@@ -34,7 +34,6 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         implements HasSelectedItem
 {
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject DashboardNavigator navigator;
 
     protected void initViews(View view)
     {
@@ -92,7 +91,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
 
         if (getArguments() != null && getArguments().containsKey(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT))
         {
-            navigator.popFragment();
+            navigator.get().popFragment();
             return;
         }
 
@@ -115,7 +114,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         {
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        navigator.pushFragment(BuySellFragment.class, args);
+        navigator.get().pushFragment(BuySellFragment.class, args);
     }
 
     private DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityIdListCacheListener()

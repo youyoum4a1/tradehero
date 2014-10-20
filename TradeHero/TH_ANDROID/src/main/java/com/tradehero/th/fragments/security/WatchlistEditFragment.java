@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -16,19 +15,15 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -36,13 +31,10 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-
+import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
-
-import dagger.Lazy;
 import retrofit.Callback;
 import timber.log.Timber;
 
@@ -68,14 +60,10 @@ public class WatchlistEditFragment extends DashboardFragment
 
     @Inject SecurityCompactCache securityCompactCache;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
-    @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
-    @Inject DashboardNavigator navigator;
 
     public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
@@ -400,7 +388,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             if (isResumed())
             {
-                navigator.popFragment();
+                navigator.get().popFragment();
             }
             else
             {
@@ -420,7 +408,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             if (navigator != null)
             {
-                navigator.popFragment();
+                navigator.get().popFragment();
             }
             dismissProgress();
         }

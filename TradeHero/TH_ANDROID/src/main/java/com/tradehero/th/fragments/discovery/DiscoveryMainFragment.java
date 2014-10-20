@@ -64,7 +64,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     {
         if (item.getItemId() == R.id.discussion_edit_post)
         {
-            navigator.pushFragment(DiscussionEditPostFragment.class);
+            navigator.get().pushFragment(DiscussionEditPostFragment.class);
             return true;
         }
         return super.onOptionsItemSelected(item);

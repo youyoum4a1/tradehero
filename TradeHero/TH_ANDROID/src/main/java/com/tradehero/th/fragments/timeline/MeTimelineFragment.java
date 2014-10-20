@@ -72,7 +72,7 @@ public class MeTimelineFragment extends TimelineFragment
         switch (item.getItemId())
         {
             case R.id.action_bar_home_icon:
-                navigator.pushFragment(HomeFragment.class);
+                navigator.get().pushFragment(HomeFragment.class);
                 return true;
             default:
                 break;
@@ -109,7 +109,7 @@ public class MeTimelineFragment extends TimelineFragment
         switch (view.getId())
         {
             case R.id.action_bar_update_center_icon:
-                navigator.pushFragment(UpdateCenterFragment.class);
+                navigator.get().pushFragment(UpdateCenterFragment.class);
                 break;
         }
     }

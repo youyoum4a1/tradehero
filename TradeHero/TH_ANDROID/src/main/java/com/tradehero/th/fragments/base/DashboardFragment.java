@@ -22,7 +22,7 @@ import timber.log.Timber;
 abstract public class DashboardFragment extends BaseFragment
 {
     @Inject protected AlertDialogUtil alertDialogUtil;
-    @Inject protected DashboardNavigator navigator;
+    @Inject protected Lazy<DashboardNavigator> navigator;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @Inject @BottomTabsQuickReturnListViewListener protected Lazy<AbsListView.OnScrollListener> dashboardBottomTabsListViewScrollListener;
@@ -47,7 +47,7 @@ abstract public class DashboardFragment extends BaseFragment
             case android.R.id.home:
                 if (actionBarOwnerMixin.shouldShowHomeAsUp())
                 {
-                    navigator.popFragment();
+                    navigator.get().popFragment();
                 }
                 else
                 {

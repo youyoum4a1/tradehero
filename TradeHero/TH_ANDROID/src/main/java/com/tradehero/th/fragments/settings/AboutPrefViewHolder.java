@@ -1,13 +1,18 @@
 package com.tradehero.th.fragments.settings;
 
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.DashboardNavigator;
+import dagger.Lazy;
 import javax.inject.Inject;
 
 public class AboutPrefViewHolder extends OneSettingViewHolder
 {
+    private final Lazy<DashboardNavigator> dashboardNavigatorLazy;
+
     //<editor-fold desc="Constructors">
-    @Inject public AboutPrefViewHolder()
+    @Inject public AboutPrefViewHolder(Lazy<DashboardNavigator> dashboardNavigatorLazy)
     {
+        this.dashboardNavigatorLazy = dashboardNavigatorLazy;
     }
     //</editor-fold>
 
@@ -18,10 +23,6 @@ public class AboutPrefViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
-        if (preferenceFragmentCopy != null)
-        {
-            preferenceFragment.getNavigator().pushFragment(AboutFragment.class);
-        }
+        dashboardNavigatorLazy.get().pushFragment(AboutFragment.class);
     }
 }

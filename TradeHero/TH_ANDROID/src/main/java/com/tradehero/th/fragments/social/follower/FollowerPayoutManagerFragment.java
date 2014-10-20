@@ -16,7 +16,6 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -48,7 +47,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     private DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO> userFollowerListener;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
-    @Inject DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -252,7 +250,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
                 {
                     Bundle bundle = new Bundle();
                     thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
-                    navigator.pushFragment(PushableTimelineFragment.class, bundle);
+                    navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
                 }
             }
         };

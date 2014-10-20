@@ -4,14 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -21,21 +20,16 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-
-import org.jetbrains.annotations.NotNull;
-
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class StockInfoFragment extends DashboardFragment
@@ -44,7 +38,6 @@ public class StockInfoFragment extends DashboardFragment
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = StockInfoFragment.class.getName() + ".providerId";
 
     @Inject protected AlertDialogUtil alertDialogUtil;
-    @Inject DashboardNavigator navigator;
 
     protected ProviderId providerId;
 
@@ -338,7 +331,7 @@ public class StockInfoFragment extends DashboardFragment
         NewsDiscussionFragment.putDiscussionKey(bundle, newsItemDTOKey);
         int resId = newsHeadlineAdapter.getBackgroundRes(position);
         NewsDiscussionFragment.putBackgroundResId(bundle, resId);
-        navigator.pushFragment(NewsDiscussionFragment.class, bundle);
+        navigator.get().pushFragment(NewsDiscussionFragment.class, bundle);
     }
 
     protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
