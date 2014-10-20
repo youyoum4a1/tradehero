@@ -51,10 +51,11 @@ public class ShareSellDialogFragment extends BaseDialogFragment
     private String loseMoneyContentA;
     private String loseMoneyContentB;
     private int loseMoneyColor;
+    private static String mTradeId;
 
     public static ShareSellDialogFragment showSellDialog(FragmentManager fragmentManager,
             String stockName, String stockCode, String stockUp, String stockNum, String getMoney,
-            String userId, String positionId)
+            String userId, String positionId, String tradeId)
     {
         ShareSellDialogFragment dialogFragment = new ShareSellDialogFragment();
         dialogFragment.show(fragmentManager, ShareSellDialogFragment.class.getName());
@@ -65,6 +66,7 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         mGetMoney = getMoney;
         mUserId = userId;
         mPositionId = positionId;
+        mTradeId = tradeId;
         return dialogFragment;
     }
 
@@ -112,9 +114,9 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSell;
         if(!mGetMoney.startsWith("-")){
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId, mTradeId);
         }else{
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId, mTradeId);
         }
         socialSharerLazy.get().share(weChatDTO);
     }
@@ -126,9 +128,9 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
         if(!mGetMoney.startsWith("-")){
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId, mTradeId);
         }else{
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId, mTradeId);
         }
         socialSharerLazy.get().share(weChatDTO);
     }
@@ -143,11 +145,11 @@ public class ShareSellDialogFragment extends BaseDialogFragment
             {
                 if(!mGetMoney.startsWith("-")){
                     weiboSocialFriendHandlerProvider.get().inviteWeiboFriends(
-                        getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId),
+                        getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId, mTradeId),
                         currentUserId.toUserBaseKey(), new InviteFriendCallback());
                 }else{
                     weiboSocialFriendHandlerProvider.get().inviteWeiboFriends(
-                            getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId),
+                            getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId, mTradeId),
                             currentUserId.toUserBaseKey(), new InviteFriendCallback());
                 }
             }

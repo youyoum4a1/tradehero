@@ -742,7 +742,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
                             securityId.getDisplayName(), tvBuySaleRate.getText().toString(),
                             mQuantityEditText.getText().toString(),
                             tvBuySaleMayProfit.getText().toString(),
-                            currentUserId.get().toString(), securityCompactDTO.id.toString());
+                            currentUserId.get().toString(), securityCompactDTO.id.toString(), String.valueOf(securityPositionDetailDTO.tradeId));
                 }
             }
             popCurrentFragment();

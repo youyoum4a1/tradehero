@@ -19,6 +19,8 @@ public class SecurityPositionDetailDTO implements DTO
     public ProviderCompactDTOList providers;
     public int firstTradeAllTime;
 
+    public int tradeId;
+
     //<editor-fold desc="Constructors">
     public SecurityPositionDetailDTO()
     {

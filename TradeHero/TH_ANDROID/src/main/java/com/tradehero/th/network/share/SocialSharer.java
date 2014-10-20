@@ -1,5 +1,6 @@
 package com.tradehero.th.network.share;
 
+import android.app.Activity;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 

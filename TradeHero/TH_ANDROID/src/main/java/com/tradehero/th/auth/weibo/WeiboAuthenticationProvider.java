@@ -14,6 +14,7 @@ import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import javax.inject.Inject;
@@ -29,7 +30,7 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
     public static final String KEY_EXPIRES_IN = "expires_in";
     private static final String WEIBO_PACKAGE = "com.sina.weibo";
 
-    @NotNull final Context context;
+    @NotNull Context context;
     @NotNull private final WeiboAppAuthData mAuthData;
     //private THAuthenticationCallback mCallback;
 
@@ -100,12 +101,11 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         boolean contextValid = checkContext();
         if (!contextValid)
         {
-            throw new RuntimeException("Context is null or is not Activity");
+            context = Application.context();
+            if(context==null){
+                throw new RuntimeException("Context is null or is not Activity");
+            }
         }
-        //        if (true) {
-        //            doFakeAuthenti    cate();
-        //            return;
-        //        }
 
         if (callback == null)
         {

@@ -16,6 +16,7 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
@@ -165,6 +166,20 @@ public class SocialSharerImpl implements SocialSharer
         if (currentActivity != null)
         {
             currentActivity.startActivity(createWeChatIntent(currentActivity, weChatDTO));
+        }
+    }
+
+    public void share(@NotNull WeChatDTO weChatDTO, @NotNull Activity activity)
+    {
+        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        if (currentActivity != null)
+        {
+            currentActivity.startActivity(createWeChatIntent(currentActivity, weChatDTO));
+        }else{
+            Intent gotoShareToWeChatIntent = new Intent(activity, WXEntryActivity.class);
+            gotoShareToWeChatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            WXEntryActivity.putWeChatDTO(gotoShareToWeChatIntent, weChatDTO);
+            Application.context().startActivity(gotoShareToWeChatIntent);
         }
     }
 

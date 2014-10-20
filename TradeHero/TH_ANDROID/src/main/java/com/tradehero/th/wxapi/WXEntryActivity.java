@@ -275,45 +275,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             }
     }
 
-    ////<editor-fold desc="Wechat Callback">
-    //@Override
-    //public void onReq(BaseReq req)
-    //{
-    //    switch (req.getType())
-    //    {
-    //        case ConstantsAPI.COMMAND_GETMESSAGE_FROM_WX:
-    //            break;
-    //        case ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX:
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    //}
-    //
-    //@Override
-    //public void onResp(BaseResp resp)
-    //{
-    //    Timber.d("Tradeheor:: " + resp.toString());
-    //    THToast.show(resp.toString());
-    //
-    //
-    //    switch (resp.errCode)
-    //    {
-    //        case BaseResp.ErrCode.ERR_OK:
-    //
-    //            //THToast.show(getString(R.string.share_success));
-    //            //reportWeChatSuccessShareToServer();
-    //
-    //            break;
-    //        case BaseResp.ErrCode.ERR_USER_CANCEL:
-    //        case BaseResp.ErrCode.ERR_AUTH_DENIED:
-    //        default:
-    //            finish();
-    //            break;
-    //    }
-    //}
-    //</editor-fold>
-
     private void reportWeChatSuccessShareToServer()
     {
         WeChatTrackShareFormDTO weChatTrackShareFormDTO = new WeChatTrackShareFormDTO();

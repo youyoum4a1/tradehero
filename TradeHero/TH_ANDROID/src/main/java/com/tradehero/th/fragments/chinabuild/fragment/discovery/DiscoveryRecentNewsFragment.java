@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.chinabuild.fragment.discovery;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,11 +39,11 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import retrofit.Callback;
 
 import retrofit.RetrofitError;
@@ -213,17 +212,11 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
                         currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
             }
         }
-        Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                WeChatDTO weChatDTO = new WeChatDTO();
-                weChatDTO.id = 0;
-                weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
-                weChatDTO.title = strShare;
-                socialSharerLazy.get().share(weChatDTO);
-            }
-        });
+        WeChatDTO weChatDTO = new WeChatDTO();
+        weChatDTO.id = 0;
+        weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
+        weChatDTO.title = strShare;
+        ((SocialSharerImpl)socialSharerLazy.get()).share(weChatDTO, getActivity());
 
     }
 
