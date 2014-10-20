@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SecurityPositionDetailDTO extends SecurityPositionDTO
 {
-    @NotNull public ProviderDTOList providers;
+    @Nullable public ProviderDTOList providers;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration") // Necessary for deserialisation
@@ -19,7 +19,7 @@ public class SecurityPositionDetailDTO extends SecurityPositionDTO
             @NotNull SecurityCompactDTO security,
             @Nullable PositionDTOCompactList positions,
             int firstTradeAllTime,
-            @NotNull ProviderDTOList providers)
+            @Nullable ProviderDTOList providers)
     {
         super(security, positions, firstTradeAllTime);
         this.providers = providers;

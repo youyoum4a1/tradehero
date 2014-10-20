@@ -20,11 +20,14 @@ public class DTOProcessorSecurityPositionDetailReceived
 
     @Override public SecurityPositionDetailDTO process(@NotNull SecurityPositionDetailDTO value)
     {
-        for (@NotNull ProviderDTO providerDTO : value.providers)
+        if (value.providers != null)
         {
-            if (providerDTO.associatedPortfolio != null)
+            for (@NotNull ProviderDTO providerDTO : value.providers)
             {
-                providerDTO.associatedPortfolio.userId = ownerId.key;
+                if (providerDTO.associatedPortfolio != null)
+                {
+                    providerDTO.associatedPortfolio.userId = ownerId.key;
+                }
             }
         }
 

@@ -22,7 +22,7 @@ class SecurityPositionDetailCutDTO implements DTO
     @NotNull public final SecurityId securityId;
     @Nullable public final List<PositionCompactId> positionIds;
     public final int firstTradeAllTime;
-    @NotNull public final List<ProviderId> providerIds;
+    @Nullable public final List<ProviderId> providerIds;
 
     public SecurityPositionDetailCutDTO(
             @NotNull SecurityPositionDetailDTO securityPositionDetailDTO,
@@ -61,7 +61,7 @@ class SecurityPositionDetailCutDTO implements DTO
         }
 
         ProviderDTOList cachedProviderDTOs = providerCache.get(providerIds);
-        if (cachedProviderDTOs.hasNullItem())
+        if (cachedProviderDTOs != null && cachedProviderDTOs.hasNullItem())
         {
             return null;
         }
