@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -14,8 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
@@ -32,6 +32,8 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.social.friend.FriendsListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DeviceUtil;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +55,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     protected SocialFriendHandler socialFriendHandler;
     @Nullable protected MiddleCallback<UserProfileDTO> followFriendsMiddleCallback;
@@ -731,7 +733,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -743,16 +745,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Override public void onPause()
     {
         super.onPause();
-        // TODO test for nullity instead of try-catch
-        dashboardTabHost.setOnTranslate(null);
-        try
-        {
-            InputMethodManager inputMethodManager;
-            inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        } catch (Exception e)
-        {
-            Timber.d("SocialFriendsFragment onPause Error" + e.toString());
-        }
+        dashboardTabHost.get().setOnTranslate(null);
+        DeviceUtil.dismissKeyboard(getActivity());
     }
 }

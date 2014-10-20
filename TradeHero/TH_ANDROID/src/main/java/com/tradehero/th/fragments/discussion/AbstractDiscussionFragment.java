@@ -11,6 +11,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +23,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
 
     @Inject @NotNull protected DiscussionKeyFactory discussionKeyFactory;
-    @Inject @BottomTabs protected DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs protected Lazy<DashboardTabHost> dashboardTabHost;
 
     private DiscussionKey discussionKey;
 
@@ -82,7 +83,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
             linkWith(discussionKey, true);
         }
 
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -96,7 +97,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
     @Override public void onPause()
     {
-        dashboardTabHost.setOnTranslate(null);
+        dashboardTabHost.get().setOnTranslate(null);
         super.onPause();
     }
 

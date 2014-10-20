@@ -163,7 +163,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject Analytics analytics;
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
     @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -288,7 +288,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             abstractTransactionDialogFragment.getDialog().show();
         }
 
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -302,7 +302,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(chartImageButtonClickReceiver);
         selectedPageIndex = mBottomViewPager.getCurrentItem();
-        dashboardTabHost.setOnTranslate(null);
+        dashboardTabHost.get().setOnTranslate(null);
         super.onPause();
     }
 

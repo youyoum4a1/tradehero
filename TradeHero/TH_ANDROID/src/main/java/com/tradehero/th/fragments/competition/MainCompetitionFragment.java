@@ -60,6 +60,7 @@ import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.GraphicUtil;
+import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -88,7 +89,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
     @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @RouteProperty("providerId") Integer routedProviderId;
 
@@ -172,7 +173,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             this.webViewFragment.setThIntentPassedListener(null);
         }
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -184,7 +185,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onPause()
     {
-        dashboardTabHost.setOnTranslate(null);
+        dashboardTabHost.get().setOnTranslate(null);
         super.onPause();
     }
 

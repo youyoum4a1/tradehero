@@ -48,7 +48,6 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -88,7 +87,7 @@ public class MessagesCenterFragment extends DashboardFragment
     private boolean hasMorePage = true;
     @Nullable private BroadcastReceiver broadcastReceiver;
     @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -135,7 +134,7 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onResume();
 
         registerMessageReceiver();
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -145,13 +144,11 @@ public class MessagesCenterFragment extends DashboardFragment
                 }
             }
         });
-        Timber.d("onResume");
     }
 
     @Override public void onPause()
     {
-        Timber.d("onPause");
-        dashboardTabHost.setOnTranslate(null);
+        dashboardTabHost.get().setOnTranslate(null);
         unregisterMessageReceiver();
         super.onPause();
     }

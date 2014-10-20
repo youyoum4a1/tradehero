@@ -58,7 +58,7 @@ public class NotificationsView extends BetterViewAnimator
     @Inject NotificationServiceWrapper notificationServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsListViewScrollListener;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     private PaginatedNotificationListKey paginatedNotificationListKey;
     private boolean loading;
@@ -141,7 +141,7 @@ public class NotificationsView extends BetterViewAnimator
 
         fetchNextPageIfNecessary();
 
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -181,7 +181,7 @@ public class NotificationsView extends BetterViewAnimator
         notificationList.setOnRefreshListener((PullToRefreshBase.OnRefreshListener) null);
         notificationList.setOnItemClickListener(null);
 
-        dashboardTabHost.setOnTranslate(null);
+        dashboardTabHost.get().setOnTranslate(null);
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();

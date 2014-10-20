@@ -9,12 +9,10 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
@@ -30,7 +28,6 @@ public class SecurityDiscussionFragment extends DashboardFragment
     @InjectView(R.id.security_discussion_add) View buttonAdd;
     private SecurityId securityId;
     @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
 
     public static void putSecurityId(Bundle args, SecurityId securityId)
     {

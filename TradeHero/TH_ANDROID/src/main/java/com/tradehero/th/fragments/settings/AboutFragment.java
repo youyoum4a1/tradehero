@@ -28,6 +28,7 @@ import com.tradehero.th.models.staff.StaffDTOFactory;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import dagger.Lazy;
 import javax.inject.Inject;
 
 public class AboutFragment extends DashboardFragment
@@ -39,7 +40,7 @@ public class AboutFragment extends DashboardFragment
     @Inject Analytics analytics;
     @Inject StaffDTOFactory staffDTOFactory;
     @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     private ObjectAnimator rotateAnimator;
     private ObjectAnimator scrollAnimator;
@@ -126,12 +127,12 @@ public class AboutFragment extends DashboardFragment
     {
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_About));
-        dashboardTabHost.animateHide();
+        dashboardTabHost.get().animateHide();
     }
 
     @Override public void onPause()
     {
-        dashboardTabHost.animateShow();
+        dashboardTabHost.get().animateShow();
         super.onPause();
     }
 

@@ -78,7 +78,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject DiscussionCache discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
     @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
@@ -275,13 +275,13 @@ public class DiscussionEditPostFragment extends DashboardFragment
             handleExtraInput(extraInput);
         }
 
-        dashboardTabHost.animateHide();
+        dashboardTabHost.get().animateHide();
     }
 
     @Override public void onPause()
     {
+        dashboardTabHost.get().animateShow();
         super.onPause();
-        dashboardTabHost.animateShow();
     }
 
     private void handleExtraInput(@Nullable Object extraInput)

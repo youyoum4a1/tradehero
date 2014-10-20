@@ -61,7 +61,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
     @Inject DashboardNavigator navigator;
-    @Inject @BottomTabs DashboardTabHost dashboardTabHost;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     public static void putHeroId(Bundle args, UserBaseKey heroId)
     {
@@ -159,7 +159,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -170,8 +170,8 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Override public void onPause()
     {
+        dashboardTabHost.get().setOnTranslate(null);
         super.onPause();
-        dashboardTabHost.setOnTranslate(null);
     }
 
     @Override public void onDestroyView()
