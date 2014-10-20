@@ -8,6 +8,15 @@
     android:orientation="vertical"
     >
 
+  <LinearLayout
+      android:id="@+id/llUserAccountHead"
+      android:padding="15dp"
+      android:visibility="gone"
+      android:layout_height="wrap_content"
+      android:layout_width="fill_parent">
+    <include layout="@layout/user_account_head"/>
+  </LinearLayout>
+
 
   <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"

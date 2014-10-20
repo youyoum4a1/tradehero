@@ -71,7 +71,7 @@ public class TradeOfMineFragment extends DashboardFragment
 
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
     private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
-    private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionRefreshListener;
+    //private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionRefreshListener;
     private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
 
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
@@ -111,7 +111,7 @@ public class TradeOfMineFragment extends DashboardFragment
         adapter = new MyTradePositionListAdapter(getActivity());
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         userWatchlistPositionFetchListener = createWatchlistListener();
-        userWatchlistPositionRefreshListener = createRefreshWatchlistListener();
+        //userWatchlistPositionRefreshListener = createRefreshWatchlistListener();
         portfolioFetchListener = createPortfolioCacheListener();
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
     }
@@ -220,7 +220,7 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         fetchGetPositionsDTOListener = null;
         portfolioFetchListener = null;
-        userWatchlistPositionRefreshListener = null;
+        //userWatchlistPositionRefreshListener = null;
         userWatchlistPositionFetchListener = null;
         portfolioCompactListFetchListener = null;
         super.onDestroy();
@@ -247,7 +247,7 @@ public class TradeOfMineFragment extends DashboardFragment
     protected void fetchSimplePage(boolean force)
     {
         //if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
-        if (getPositionsDTOKey == null)
+        if (getPositionsDTOKey == null && shownPortfolioId!=null)
         {
             getPositionsDTOKey = new OwnedPortfolioId(shownPortfolioId.userId, shownPortfolioId.portfolioId);
         }
@@ -300,10 +300,10 @@ public class TradeOfMineFragment extends DashboardFragment
         userWatchlistPositionCache.unregister(userWatchlistPositionFetchListener);
     }
 
-    protected void detachUserWatchlistRefreshTask()
-    {
-        userWatchlistPositionCache.unregister(userWatchlistPositionRefreshListener);
-    }
+    //protected void detachUserWatchlistRefreshTask()
+    //{
+    //    userWatchlistPositionCache.unregister(userWatchlistPositionRefreshListener);
+    //}
 
     protected void detachPortfolioFetchTask()
     {
@@ -356,6 +356,7 @@ public class TradeOfMineFragment extends DashboardFragment
         public void finish()
         {
             listView.onRefreshComplete();
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeMyPositionList);
         }
     }
 
@@ -380,34 +381,35 @@ public class TradeOfMineFragment extends DashboardFragment
 
         private void onFinish()
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeMyPositionList);
+            //betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeMyPositionList);
             listView.onRefreshComplete();
+            fetchSimplePage(false);
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createRefreshWatchlistListener()
-    {
-        return new RefreshWatchlisListener();
-    }
-
-    protected class RefreshWatchlisListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
-        {
-            //watchlistPositionListView.onRefreshComplete();
-            //displayWatchlist(value);
-            Timber.d("");
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-            //watchlistPositionListView.onRefreshComplete();
-            //if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
-            //{
-            //    THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
-            //}
-        }
-    }
+    //protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createRefreshWatchlistListener()
+    //{
+    //    return new RefreshWatchlisListener();
+    //}
+    //
+    //protected class RefreshWatchlisListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
+    //{
+    //    @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
+    //    {
+    //        //watchlistPositionListView.onRefreshComplete();
+    //        //displayWatchlist(value);
+    //        Timber.d("");
+    //    }
+    //
+    //    @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+    //    {
+    //        //watchlistPositionListView.onRefreshComplete();
+    //        //if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
+    //        //{
+    //        //    THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
+    //        //}
+    //    }
+    //}
 
     protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener()
     {

@@ -1,17 +1,12 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.Security;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.chinabuild.data.UGCFromDTO;
-import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
-import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -60,7 +55,7 @@ public interface CompetitionService
     //);
 
     //用户创建比赛获取
-    @GET("/usercompetitions?filterType=1&sortType=1") UserCompetitionDTOList getUserCompetitions(
+    @GET("/usercompetitions?filterType=3&sortType=1") UserCompetitionDTOList getUserCompetitions(
             @Query("page") int page,
             @Query("perPage") int perPage
     );
@@ -84,7 +79,7 @@ public interface CompetitionService
     );
 
     //搜索出来的比赛
-    @GET("/usercompetitions/search?filterType=1") UserCompetitionDTOList getSearchCompetitions(
+    @GET("/usercompetitions/search?filterType=3") UserCompetitionDTOList getSearchCompetitions(
             @Query("name") String name,
             @Query("page") int page,
             @Query("perPage") int perPage

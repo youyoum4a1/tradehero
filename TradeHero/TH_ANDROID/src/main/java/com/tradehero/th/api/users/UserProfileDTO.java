@@ -100,6 +100,18 @@ public class UserProfileDTO extends UserProfileCompactDTO
         return userBaseDTO == null ? UserProfileDTOUtil.IS_NOT_FOLLOWER : getFollowType(userBaseDTO.id);
     }
 
+    public int getAllHeroCount()
+    {
+        if (heroIds != null)
+        {
+            return heroIds.size();
+        }
+        else
+        {
+            return allHeroCount;
+        }
+    }
+
     public int getFollowType(int userId)
     {
         if (this.heroIds != null)
@@ -170,7 +182,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public boolean isHaveSchool()
     {
-        if(StringUtils.isNullOrEmpty(school))return false;
+        if (StringUtils.isNullOrEmpty(school)) return false;
         return true;
     }
 

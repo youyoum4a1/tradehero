@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -54,7 +53,7 @@ public interface PortfolioService
     //getPortfolioCompact
     //获取比赛 protfolioCompactDTO
     @GET("/usercompetitions/{competitionId}/portfolio")
-    PortfolioCompactDTO getPortfolioCompact(
+    PortfolioDTO getPortfolioCompact(
             @Path("competitionId") int competitionId);
     //</editor-fold>
 }

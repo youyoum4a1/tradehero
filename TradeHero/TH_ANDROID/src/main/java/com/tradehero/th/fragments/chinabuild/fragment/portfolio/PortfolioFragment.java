@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -18,6 +20,7 @@ import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.PositionDTO;
@@ -35,6 +38,9 @@ import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFra
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.PositionServiceWrapper;
@@ -61,6 +67,7 @@ import timber.log.Timber;
  */
 public class PortfolioFragment extends DashboardFragment
 {
+    public static final String BUNLDE_NEED_SHOW_MAINPAGE = "bundle_need_show_mainpage";
     public static final String BUNDLE_LEADERBOARD_USER_MARK_ID = "bundle_leaderboard_user_mark_id";
     public static final String BUNLDE_SHOW_PROFILE_USER_ID = "bundle_show_profile_user_id";
     public static final String BUNLDE_PORTFOLIO_DTO = "bunlde_portfolio_dto";
@@ -97,6 +104,7 @@ public class PortfolioFragment extends DashboardFragment
     public static final int PORTFOLIO_TYPE_COMPETITION = 2;
 
     public int portfolio_type = 0;
+    public boolean isNeedShowMainPage = true;
 
     private PortfolioCompactDTO defaultPortfolio;
     @Inject @BindGuestUser BooleanPreference mBindGuestUserDialogKeyPreference;
@@ -109,6 +117,12 @@ public class PortfolioFragment extends DashboardFragment
 
     private String dialogContent;
 
+    @InjectView(R.id.llUserAccountHead) LinearLayout llUserAccountHead;
+    @InjectView(R.id.tvWatchListItemROI) TextView tvItemROI;
+    @InjectView(R.id.tvWatchListItemAllAmount) TextView tvItemAllAmount;
+    @InjectView(R.id.tvWatchListItemDynamicAmount) TextView tvItemDynamicAmount;
+    @InjectView(R.id.tvWatchListItemCash) TextView tvItemCash;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -118,16 +132,28 @@ public class PortfolioFragment extends DashboardFragment
         initArgment();
         adapter = new MyTradePositionListAdapter(getActivity());
         startLoadding();
+        isNeedShowMainPage = getIsNeedShowPortfolio();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain("TA的持仓");
+
         if (portfolioUserKey != 0)
         {
-            setHeadViewRight0("TA的主页");
+            if(isNeedShowMainPage){
+                setHeadViewRight0("TA的主页");
+            }
+        }
+
+        if (portfolio_type == PORTFOLIO_TYPE_MINE)
+        {
+            setHeadViewMiddleMain("我的持仓");
+        }
+        else
+        {
+            setHeadViewMiddleMain("TA的持仓");
         }
     }
 
@@ -147,7 +173,6 @@ public class PortfolioFragment extends DashboardFragment
         //            }
         //        });
 
-
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.DISABLED);
 
@@ -160,10 +185,22 @@ public class PortfolioFragment extends DashboardFragment
             }
         });
 
-         //fetchCurrentUserProfile();
+        //fetchCurrentUserProfile();
 
-
+        showUserPorfolioHead();
         return view;
+    }
+
+    public void showUserPorfolioHead()
+    {
+        llUserAccountHead.setVisibility(portfolio_type == PORTFOLIO_TYPE_MINE ? View.VISIBLE : View.GONE);
+        if (portfolio_type == PORTFOLIO_TYPE_MINE)
+        {
+            if (portfolioCompactDTO instanceof PortfolioDTO)
+            {
+                displayPortfolio((PortfolioDTO) portfolioCompactDTO);
+            }
+        }
     }
 
     public void startLoadding()
@@ -230,6 +267,7 @@ public class PortfolioFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, portfolioUserKey);
+        bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
         pushFragment(UserMainPage.class, bundle);
     }
 
@@ -327,7 +365,7 @@ public class PortfolioFragment extends DashboardFragment
     {
         //来自股神持仓，股神的主账户持仓
         //getDefaultPortfolio();
-        if(portfolio_type == PORTFOLIO_TYPE_OTHER_USER)
+        if (portfolio_type == PORTFOLIO_TYPE_OTHER_USER)
         {
             getPositionDirectly(showUserBaseKey);
         }
@@ -379,6 +417,14 @@ public class PortfolioFragment extends DashboardFragment
                 FetchedDefaultPortfolio();
             }
         });
+    }
+
+    public boolean getIsNeedShowPortfolio() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            this.isNeedShowMainPage = getArguments().getBoolean(BUNLDE_NEED_SHOW_MAINPAGE, true);
+        }
+        return isNeedShowMainPage;
     }
 
     protected List<UserBaseKey> getUserBaseKeys()
@@ -654,6 +700,41 @@ public class PortfolioFragment extends DashboardFragment
         detachGetPositionMiddleCallback();
         getPositionDTOCallback =
                 positionServiceWrapper.get()
-                        .getPositionsDirect(heroId.key,   new GetPositionCallback());
+                        .getPositionsDirect(heroId.key, new GetPositionCallback());
+    }
+
+    private void displayPortfolio(PortfolioDTO portfolio)
+    {
+
+        if (portfolio == null) return;
+
+        if (portfolio.roiSinceInception != null)
+        {
+            THSignedNumber roi = THSignedPercentage.builder(portfolio.roiSinceInception * 100)
+                    .withSign()
+                    .signTypeArrow()
+                    .build();
+            tvItemROI.setText(roi.toString());
+            tvItemROI.setTextColor(getResources().getColor(roi.getColorResId()));
+        }
+
+        String valueString = String.format("%s %,.0f", portfolio.getNiceCurrency(), portfolio.totalValue);
+        tvItemAllAmount.setText(valueString);
+
+        Double pl = portfolio.plSinceInception;
+        if (pl == null)
+        {
+            pl = 0.0;
+        }
+        THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
+                .withSign()
+                .signTypePlusMinusAlways()
+                .currency(portfolio.getNiceCurrency())
+                .build();
+        tvItemDynamicAmount.setText(thPlSinceInception.toString());
+        tvItemDynamicAmount.setTextColor(thPlSinceInception.getColor());
+
+        String vsCash = String.format("%s %,.0f", portfolio.getNiceCurrency(), portfolio.cashBalance);
+        tvItemCash.setText(vsCash);
     }
 }

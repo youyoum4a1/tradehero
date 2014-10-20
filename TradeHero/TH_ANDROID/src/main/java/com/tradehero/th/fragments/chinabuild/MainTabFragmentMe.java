@@ -170,7 +170,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 tvMeName.setText(user.displayName);
             }
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
-            tvAllHero.setText(String.valueOf(user.allHeroCount));
+            tvAllHero.setText(String.valueOf(user.getAllHeroCount()));
             //粉丝数达到10人
             if (user.allFollowerCount > 9)
             {
@@ -184,7 +184,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
                             getString(R.string.share_amount_fans_num_title));
                 }
             }
-
         }
     }
 
@@ -344,12 +343,16 @@ public class MainTabFragmentMe extends AbsBaseFragment
         }
     }
 
+    private int viewPointCount = 0;
+
     @OnClick(R.id.viewEndpoint)
     public void onEndPoint()
     {
-        Timber.d("onTestClicked FragmentTest02");
-        gotoDashboard(FragmentTest03.class.getName(), new Bundle());
+        viewPointCount++;
+        if (viewPointCount > 5)
+        {
+            Timber.d("onTestClicked FragmentTest02");
+            gotoDashboard(FragmentTest03.class.getName(), new Bundle());
+        }
     }
-
-
 }
