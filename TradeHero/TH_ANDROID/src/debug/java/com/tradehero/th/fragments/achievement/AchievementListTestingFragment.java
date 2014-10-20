@@ -54,13 +54,7 @@ public class AchievementListTestingFragment extends DashboardFragment
         achievementCategoryListCacheListener = createAchievementCategoryListCacheListener();
 
         initAdapter();
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                onListViewItemClicked(adapterView, view, i, l);
-            }
-        });
+        listView.setOnItemClickListener(this::onListViewItemClicked);
     }
 
     protected void onListViewItemClicked(AdapterView<?> adapterView, View view, int i, long l)
