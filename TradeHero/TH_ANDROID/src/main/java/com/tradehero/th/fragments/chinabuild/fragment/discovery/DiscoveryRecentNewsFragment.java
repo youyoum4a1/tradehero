@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.chinabuild.fragment.discovery;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +22,14 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
+import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormWeiboDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragment;
@@ -30,10 +37,16 @@ import com.tradehero.th.fragments.chinabuild.fragment.message.TimeLineItemDetail
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import retrofit.Callback;
+
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -44,6 +57,9 @@ import timber.log.Timber;
 public class DiscoveryRecentNewsFragment extends DashboardFragment
 {
 
+    @Inject UserProfileCache userProfileCache;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     private MiddleCallback<TimelineDTO> timeLineMiddleCallback;
@@ -58,6 +74,8 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
 
     private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
+
+    private boolean isSharing = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -123,7 +141,8 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
             {
                 Timber.d("Share position = " + position);
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
-                share(dto.text);
+                //share(dto.text);
+                shareToWechatMoment(dto.text);
             }
         });
 
@@ -177,6 +196,50 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
 
         mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
     }
+
+    //Share to wechat moment and share to weibo on the background
+    public void shareToWechatMoment(final String strShare)
+    {
+        if(TextUtils.isEmpty(strShare)){
+            return;
+        }
+        UserProfileDTO updatedUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        if (updatedUserProfileDTO != null)
+        {
+            if (updatedUserProfileDTO.wbLinked)
+            {
+                InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(strShare);
+                userServiceWrapper.get().inviteFriends(
+                        currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
+            }
+        }
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                WeChatDTO weChatDTO = new WeChatDTO();
+                weChatDTO.id = 0;
+                weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
+                weChatDTO.title = strShare;
+                socialSharerLazy.get().share(weChatDTO);
+            }
+        });
+
+    }
+
+    private class RequestCallback implements Callback{
+
+        @Override
+        public void success(Object o, Response response) {
+
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+
+        }
+    }
+
 
     @Override public void onStop()
     {
