@@ -4,7 +4,6 @@ import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -55,7 +54,8 @@ import org.jetbrains.annotations.Nullable;
         GetPositionsDTOKey getPositionsDTOKey;
         if (key instanceof OwnedPositionId)
         {
-            getPositionsDTOKey = new OwnedPortfolioId(((OwnedPositionId) key).userId, ((OwnedPositionId) key).portfolioId);
+            //getPositionsDTOKey = new OwnedPortfolioId(((OwnedPositionId) key).userId, ((OwnedPositionId) key).portfolioId);
+            getPositionsDTOKey = new OwnedPositionId(((OwnedPositionId) key).userId,((OwnedPositionId) key).portfolioId,((OwnedPositionId) key).positionId);
         }
         else if (key instanceof OwnedLeaderboardPositionId)
         {
@@ -71,6 +71,7 @@ import org.jetbrains.annotations.Nullable;
         {
             @Override public boolean apply(PositionDTO positionDTO)
             {
+                //return positionDTO.getPositionDTOKey().equals(key);
                 return positionDTO.getPositionDTOKey().equals(key);
             }
         });

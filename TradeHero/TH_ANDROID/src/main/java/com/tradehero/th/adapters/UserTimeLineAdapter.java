@@ -3,6 +3,7 @@ package com.tradehero.th.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -318,7 +319,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
             }
 
-            holder.tvTLPraise.setText(item.getVoteString());
+            holder.tvTLPraise.setText(Html.fromHtml(item.getVoteString()));
             holder.tvTLComment.setText("" + item.commentCount);
 
             holder.llItemAll.setOnClickListener(new View.OnClickListener()

@@ -181,10 +181,10 @@ public class UserMainPage extends DashboardFragment
         else
         {
             startLoadding();
-            fetchUserProfile();
-            fetchCurrentUserProfile();
             fetchTimeLine();
         }
+        fetchUserProfile();
+        fetchCurrentUserProfile();
     }
 
     public void initView()

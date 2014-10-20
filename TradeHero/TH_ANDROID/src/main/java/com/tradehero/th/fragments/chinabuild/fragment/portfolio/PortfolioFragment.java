@@ -180,6 +180,7 @@ public class PortfolioFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
             {
+                Timber.d("POSITION = "+position);
                 PositionInterface item = adapter.getItem((int) position);
                 dealSecurityItem(item);
             }

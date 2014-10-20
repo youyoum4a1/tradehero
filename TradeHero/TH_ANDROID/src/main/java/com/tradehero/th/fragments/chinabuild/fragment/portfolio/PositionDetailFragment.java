@@ -31,6 +31,7 @@ import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -95,8 +96,23 @@ public class PositionDetailFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+
         setHeadViewMiddleMain("交易详情");
+        getSecurityName();
         setHeadViewRight0("行情");
+    }
+
+    public void getSecurityName()
+    {
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            String securityName = args.getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME);
+            if(!StringUtils.isNullOrEmpty(securityName))
+            {
+                setHeadViewMiddleMain(securityName);
+            }
+        }
     }
 
     @Override public void onClickHeadRight0()
@@ -220,6 +236,7 @@ public class PositionDetailFragment extends DashboardFragment
         tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));
         tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,
                 DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.getLatestHoldDate())));
+
     }
 
     protected void fetchTrades()

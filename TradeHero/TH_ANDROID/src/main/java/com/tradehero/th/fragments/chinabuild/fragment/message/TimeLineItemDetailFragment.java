@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.chinabuild.fragment.message;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -367,7 +368,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             }
 
             tvTLComment.setText("" + dto.commentCount);
-            tvTLPraise.setText(dto.getVoteString());
+            tvTLPraise.setText(Html.fromHtml(dto.getVoteString()));
         }
     }
 

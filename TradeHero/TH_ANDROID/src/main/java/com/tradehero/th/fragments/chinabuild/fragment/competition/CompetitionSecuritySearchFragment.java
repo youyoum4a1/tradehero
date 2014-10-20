@@ -298,6 +298,19 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
                 }
             }
         });
+
+        listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
+            {
+                SecurityCompactDTO dto = (SecurityCompactDTO) adapterSecurity.getItem((int) position);
+                if (dto != null)
+                {
+                    Timber.d("list item clicked %s", dto.name);
+                    enterSecurity(dto.getSecurityId(), dto.name);
+                }
+            }
+        });
         listSearch.setEmptyView(tvResult);
     }
 
@@ -350,18 +363,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         {
             currentPage = 0;
             adapterSecurity.setSecurityList(list);
-            listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
-                {
-                    SecurityCompactDTO dto = (SecurityCompactDTO) adapterSecurity.getItem((int) position);
-                    if (dto != null)
-                    {
-                        Timber.d("list item clicked %s", dto.name);
-                        enterSecurity(dto.getSecurityId(), dto.name);
-                    }
-                }
-            });
+
         }
         else
         {

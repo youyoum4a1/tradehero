@@ -37,11 +37,12 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         return super.hashCode() ^ positionId.hashCode();
     }
 
-    public boolean equals(OwnedPositionId other)
+    @Override
+    public boolean equals(OwnedPortfolioId other)
     {
         return (other != null) &&
                 super.equals(other) &&
-                positionId.equals(other.positionId);
+                positionId.equals(((OwnedPositionId)other).positionId);
     }
 
     public int compareTo(OwnedPositionId other)

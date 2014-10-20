@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -187,6 +188,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @InjectView(R.id.chart_image_wrapper) @Optional protected BetterViewAnimator chartImageWrapper;
     @InjectView(R.id.chart_imageView) protected ChartImageView chartImage;
     @InjectView(R.id.chart_loading) protected TextView tvLoadingChart;
+    @InjectView(R.id.tvSecurityDiscussOrNewsMore) protected TextView tvSecurityDiscussOrNewsMore;
 
     @InjectView(R.id.tvSecurityDetailPrice) TextView tvSecurityPrice;//当前价格
     @InjectView(R.id.tvSecurityDetailRate) TextView tvSecurityDetailRate;//涨跌幅
@@ -496,7 +498,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
         else
         {
-            setDiscussOrNewsView(indexDiscussOrNews);
+            setDiscussOrNewsViewDefault();
         }
     }
 
@@ -725,9 +727,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
         //else
         //{
-            detachSecurityCompactCache();
-            securityCompactCache.get().register(securityId, compactCacheListener);
-            securityCompactCache.get().getOrFetchAsync(securityId, true);
+        detachSecurityCompactCache();
+        securityCompactCache.get().register(securityId, compactCacheListener);
+        securityCompactCache.get().getOrFetchAsync(securityId, true);
         //}
     }
 
@@ -817,19 +819,37 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @OnClick(R.id.tvSecurityDiscussOrNewsMore)
     public void onDiscussOrNewsMore()
     {
-        Timber.d("更多。。。");
-        //进入股票相关的更多讨论和资讯中
-        Bundle bundle = new Bundle();
-        bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE, indexDiscussOrNews);
-        bundle.putBundle(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        bundle.putString(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        if(securityCompactDTO==null){
-            if(getActivity()!=null){
-                getActivity().finish();
-            }
+        if (getString(R.string.no_useful_data).equals(tvSecurityDiscussOrNewsMore.getText().toString())) return;
+        if (securityCompactDTO == null) return;
+        if (getAbstractDiscussionCompactDTO() != null)
+        {//点击加载更多
+            Timber.d("更多。。。");
+            //进入股票相关的更多讨论和资讯中
+            Bundle bundle = new Bundle();
+            bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE, indexDiscussOrNews);
+            bundle.putBundle(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            bundle.putString(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+            bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityCompactDTO.id);
+            pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
         }
-        bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityCompactDTO.id);
-        pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
+        else
+        {//快来抢沙发
+            enterDiscussSend();
+        }
+    }
+
+    public void setTextForMoreButton()
+    {
+        tvSecurityDiscussOrNewsMore.setVisibility(View.VISIBLE);
+        if (getAbstractDiscussionCompactDTO() == null)
+        {
+            tvSecurityDiscussOrNewsMore.setText(
+                    (indexDiscussOrNews == 0) ? getString(R.string.quickly_to_get_first) : getString(R.string.no_useful_data));
+        }
+        else
+        {
+            tvSecurityDiscussOrNewsMore.setText(getString(R.string.click_to_get_more));
+        }
     }
 
     @OnClick({R.id.btnTabChart0, R.id.btnTabChart1, R.id.btnTabChart2, R.id.btnTabChart3
@@ -875,6 +895,17 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             }
             linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)), true);
         }
+    }
+
+    public void setDiscussOrNewsViewDefault()
+    {
+        indexDiscussOrNews = 0;
+        for (int i = 0; i < btnDiscussOrNews.length; i++)
+        {
+            btnDiscussOrNews[i].setBackgroundResource(
+                    (i == indexDiscussOrNews ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
+        }
+        tvSecurityDiscussOrNewsMore.setText("");
     }
 
     public void setDiscussOrNewsView(int select)
@@ -1574,8 +1605,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             {
                 strShare = (((DiscussionDTO) dto).text);
             }
-            if(TextUtils.isEmpty(strShare)){
-                if(tvUserTLContent.getText()==null){
+            if (TextUtils.isEmpty(strShare))
+            {
+                if (tvUserTLContent.getText() == null)
+                {
                     return;
                 }
                 shareToWechatMoment(tvUserTLContent.getText().toString());
@@ -1584,8 +1617,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             shareToWechatMoment(strShare);
         }
     }
-
-
 
     public void comments(AbstractDiscussionCompactDTO dto)
     {
@@ -1615,7 +1646,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     //Share to wechat moment and share to weibo on the background
     private void shareToWechatMoment(final String strShare)
     {
-        if(TextUtils.isEmpty(strShare)){
+        if (TextUtils.isEmpty(strShare))
+        {
             return;
         }
         UserProfileDTO updatedUserProfileDTO = userProfileCacheA.get(currentUserId.toUserBaseKey());
@@ -1624,7 +1656,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             if (updatedUserProfileDTO.wbLinked)
             {
                 String outputStr = strShare;
-                if(outputStr.length() > 140){
+                if (outputStr.length() > 140)
+                {
                     outputStr = outputStr.substring(0, 140);
                 }
                 InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
@@ -1636,8 +1669,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
         weChatDTO.title = strShare;
-        ((SocialSharerImpl)socialSharerLazy.get()).share(weChatDTO, getActivity());
-
+        ((SocialSharerImpl) socialSharerLazy.get()).share(weChatDTO, getActivity());
     }
 
     private void openUserProfile(int userId)
@@ -1680,8 +1712,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             }
 
             tvTLComment.setText("" + dto.commentCount);
-            tvTLPraise.setText(dto.getVoteString());
+            tvTLPraise.setText(Html.fromHtml(dto.getVoteString()));
         }
+
+        setTextForMoreButton();
     }
 
     public void clickedPraise()
@@ -1756,15 +1790,18 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
-    private class RequestCallback implements retrofit.Callback {
+    private class RequestCallback implements retrofit.Callback
+    {
 
         @Override
-        public void success(Object o, Response response) {
+        public void success(Object o, Response response)
+        {
 
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
+        public void failure(RetrofitError retrofitError)
+        {
 
         }
     }

@@ -45,7 +45,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.Callback;
-
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -95,11 +94,12 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.discovery_recent_news, container, false);
         ButterKnife.inject(this, view);
-        fetchTimeLine();
+
         initView();
 
         if (adapter.getCount() == 0)
         {
+            fetchTimeLine();
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
         }
         else
