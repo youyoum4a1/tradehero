@@ -1,22 +1,22 @@
 package com.tradehero.th.fragments.settings;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
+import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTONameComparator;
-import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFriendDTOView>
@@ -29,12 +29,12 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
     private Character[] sections;
     private List<UserFriendsDTO> originalItems;
 
-    public FriendListAdapter(Context context, LayoutInflater layoutInflater, int itemLayoutId)
+    public FriendListAdapter(Context context, int itemLayoutId)
     {
-        super(context, layoutInflater, itemLayoutId);
+        super(context, itemLayoutId);
     }
 
-    @Override public void setItems(List<UserFriendsDTO> items)
+    @Override public void setItems(@NotNull List<UserFriendsDTO> items)
     {
         filterOutInvitedFriends(items);
 

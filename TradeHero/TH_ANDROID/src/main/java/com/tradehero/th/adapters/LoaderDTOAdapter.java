@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.view.LayoutInflater;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.loaders.ListLoader;
 import java.util.List;
@@ -14,7 +13,7 @@ public abstract class LoaderDTOAdapter<
             DTOType,
             DTOViewType extends DTOView<DTOType>,
             LoaderType extends ListLoader<DTOType>>
-        extends DTOAdapter<DTOType, DTOViewType>
+        extends ArrayDTOAdapter<DTOType, DTOViewType>
 {
     private final int loaderId;
     private ListLoaderCallback<DTOType> callback;
@@ -22,7 +21,7 @@ public abstract class LoaderDTOAdapter<
     //<editor-fold desc="Constructors">
     public LoaderDTOAdapter(Context context, int loaderId, int layoutResourceId)
     {
-        super(context, LayoutInflater.from(context), layoutResourceId);
+        super(context, layoutResourceId);
         this.loaderId = loaderId;
     }
     //</editor-fold>
@@ -39,6 +38,7 @@ public abstract class LoaderDTOAdapter<
 
     public LoaderType getLoader()
     {
+        Context context = getContext();
         if (context instanceof FragmentActivity)
         {
             Loader loader = (Loader) ((FragmentActivity) context).getSupportLoaderManager().getLoader(getLoaderId());

@@ -41,7 +41,7 @@ public class TradeListItemAdapter
 
     public TradeListItemAdapter(final Context context, final LayoutInflater inflater)
     {
-        super(context, inflater, LAYOUT_RES_ID_ITEM_TRADE);
+        super(context, LAYOUT_RES_ID_ITEM_TRADE);
         this.itemTypes = new ArrayList<>();
         this.objects = new ArrayList<>();
     }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
@@ -22,7 +23,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
 
     public SimpleOwnPortfolioListItemAdapter(Context context, int portfolioLayoutResourceId)
     {
-        super(context, LayoutInflater.from(context), portfolioLayoutResourceId);
+        super(context, portfolioLayoutResourceId);
         this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         orderedItems = new ArrayList<>();
         HierarchyInjector.inject(context, this);
@@ -33,7 +34,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         return true;
     }
 
-    @Override public void setItems(List<DisplayablePortfolioDTO> items)
+    @Override public void setItems(@NotNull List<DisplayablePortfolioDTO> items)
     {
         super.setItems(items);
         // Prepare the data for display

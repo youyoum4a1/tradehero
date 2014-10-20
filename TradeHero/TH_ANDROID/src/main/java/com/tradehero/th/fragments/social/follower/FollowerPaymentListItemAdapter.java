@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
@@ -19,9 +18,9 @@ public class FollowerPaymentListItemAdapter extends ArrayDTOAdapter<FollowerTran
 
     private final int headerResId;
 
-    public FollowerPaymentListItemAdapter(Context context, LayoutInflater inflater, int followerPaymentLayoutResourceId, int headerResId)
+    public FollowerPaymentListItemAdapter(Context context, int followerPaymentLayoutResourceId, int headerResId)
     {
-        super(context, inflater, followerPaymentLayoutResourceId);
+        super(context, followerPaymentLayoutResourceId);
         this.headerResId = headerResId;
     }
 
@@ -73,7 +72,7 @@ public class FollowerPaymentListItemAdapter extends ArrayDTOAdapter<FollowerTran
             {
                 convertView = inflater.inflate(headerResId, parent, false);
             }
-            ((BaseListHeaderView) convertView).setHeaderTextContent(context.getString(R.string.manage_follower_payment_transaction_list_header));
+            ((BaseListHeaderView) convertView).setHeaderTextContent(getContext().getString(R.string.manage_follower_payment_transaction_list_header));
         }
         else
         {

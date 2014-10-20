@@ -3,24 +3,31 @@ package com.tradehero.th.adapters;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import com.tradehero.th.api.DTOView;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapter<T, V>
+public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 {
-    protected List<T> items;
+    @NotNull protected List<T> items = Collections.emptyList();
+    @NotNull protected final LayoutInflater inflater;
+    @NotNull private final Context context;
+    @LayoutRes protected final int layoutResourceId;
 
     public ArrayDTOAdapter(
             @NotNull Context context,
-            @NotNull LayoutInflater inflater,
             @LayoutRes int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        this.context = context;
+        this.inflater = LayoutInflater.from(context);
+        this.layoutResourceId = layoutResourceId;
     }
 
-    public void setItems(List<T> items)
+    public void setItems(@NotNull List<T> items)
     {
         this.items = items;
     }
@@ -30,13 +37,7 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapte
      */
     public void addItem(T item)
     {
-        List<T> itemsCopy = items;
-        if (itemsCopy == null)
-        {
-            itemsCopy = new ArrayList<>();
-        }
-        itemsCopy.add(item);
-        items = itemsCopy;
+        items.add(item);
     }
 
     /**
@@ -44,10 +45,9 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapte
      */
     public void addItems(T[] items)
     {
-        int len = items.length;
-        for (int i = 0; i < len; i++)
+        for (T item : items)
         {
-            addItem(items[i]);
+            addItem(item);
         }
     }
 
@@ -56,31 +56,55 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapte
      */
     public void addItems(List<T> data)
     {
-        List<T> itemsCopy = items;
-        if (itemsCopy != null)
-        {
-            itemsCopy.addAll(data);
-        }
+        items.addAll(data);
     }
 
-    @Override public void clear()
+    public void clear()
     {
-        super.clear();
-        if (items != null)
-        {
-            items.clear();
-        }
+        items.clear();
     }
 
     @Override public int getCount()
     {
-        List<T> itemsCopy = items;
-        return itemsCopy != null ? itemsCopy.size() : 0;
+        return items.size();
     }
 
     @Override public Object getItem(int i)
     {
-        List<T> itemsCopy = items;
-        return itemsCopy != null ? itemsCopy.get(i) : null;
+        return items.get(i);
+    }
+
+    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
+    {
+        convertView = conditionalInflate(position, convertView, viewGroup);
+
+        @SuppressWarnings("unchecked")
+        V dtoView = (V) convertView;
+        @SuppressWarnings("unchecked")
+        T dto = (T) getItem(position);
+        dtoView.display(dto);
+        fineTune(position, dto, dtoView);
+        return convertView;
+    }
+
+    protected View conditionalInflate(int position, View convertView, ViewGroup viewGroup)
+    {
+        if (convertView == null)
+        {
+            convertView = inflater.inflate(layoutResourceId, viewGroup, false);
+        }
+        return convertView;
+    }
+
+    protected abstract void fineTune(int position, T dto, V dtoView);
+
+    @Override public long getItemId(int position)
+    {
+        return position;
+    }
+
+    @NotNull public Context getContext()
+    {
+        return context;
     }
 }

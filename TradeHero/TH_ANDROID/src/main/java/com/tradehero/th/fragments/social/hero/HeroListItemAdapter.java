@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
@@ -11,6 +10,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 // TODO refactor with DTOAdapterNew and getItemTypeCount
@@ -34,10 +34,10 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
     private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
     private View.OnClickListener mostSkilledClicked;
 
-    public HeroListItemAdapter(Context context, LayoutInflater inflater, int heroEmptyPlaceholderResId, int heroLayoutResId, int headerActiveResId,
+    public HeroListItemAdapter(Context context, int heroEmptyPlaceholderResId, int heroLayoutResId, int headerActiveResId,
             int headerInactiveResId)
     {
-        super(context, inflater, heroLayoutResId);
+        super(context, heroLayoutResId);
         this.heroEmptyPlaceholderResId = heroEmptyPlaceholderResId;
         this.headerActiveResId = headerActiveResId;
         this.headerInactiveResId = headerInactiveResId;
@@ -68,7 +68,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
         return 5;
     }
 
-    @Override public void setItems(List<HeroDTO> items)
+    @Override public void setItems(@NotNull List<HeroDTO> items)
     {
         super.setItems(items);
         if (items == null)
@@ -208,7 +208,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                 {
                     convertView = inflater.inflate(headerActiveResId, parent, false);
                 }
-                ((BaseListHeaderView) convertView).setHeaderTextContent(context.getString(R.string.manage_heroes_active_header));
+                ((BaseListHeaderView) convertView).setHeaderTextContent(getContext().getString(R.string.manage_heroes_active_header));
                 break;
 
             case VIEW_TYPE_HEADER_INACTIVE:
@@ -216,7 +216,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                 {
                     convertView = inflater.inflate(headerInactiveResId, parent, false);
                 }
-                ((BaseListHeaderView) convertView).setHeaderTextContent(context.getString(R.string.manage_heroes_inactive_header));
+                ((BaseListHeaderView) convertView).setHeaderTextContent(getContext().getString(R.string.manage_heroes_inactive_header));
                 break;
 
             case VIEW_TYPE_ITEM_ACTIVE:

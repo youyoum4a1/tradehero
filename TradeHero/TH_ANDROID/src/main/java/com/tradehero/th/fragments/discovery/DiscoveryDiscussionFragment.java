@@ -34,7 +34,6 @@ public class DiscoveryDiscussionFragment extends Fragment
     private static final int TIMELINE_LOADER_ID = 0;
 
     @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
-    @InjectView(android.R.id.progress) ProgressBar mProgressBar;
     @InjectView(R.id.timeline_list_view) PullToRefreshListView mTimelineListView;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
@@ -42,6 +41,14 @@ public class DiscoveryDiscussionFragment extends Fragment
     private SubTimelineAdapter mTimelineAdapter;
     private ProgressBar mBottomLoadingView;
     @Inject CurrentUserId currentUserId;
+    private DiscoveryDiscussionAdapter discoveryDiscussionAdapter;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        discoveryDiscussionAdapter = new DiscoveryDiscussionAdapter(getActivity(), R.layout.timeline_item_view);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

@@ -70,7 +70,7 @@ public class StockInfoFragment extends DashboardFragment
 
     private void initViews(View view)
     {
-        newsHeadlineAdapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.news_headline_item_view);
+        newsHeadlineAdapter = new NewsHeadlineAdapter(getActivity(), R.layout.news_headline_item_view);
 
         yahooNewsListView = (ListView) view.findViewById(R.id.list_news_headline);
         if (yahooNewsListView != null)
