@@ -11,7 +11,7 @@ import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
-import com.tradehero.th.fragments.social.PeopleSearchFragment;
+import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public class MentionActionButtonsView extends LinearLayout
                         switch(view.getId())
                         {
                             case R.id.btn_mention:
-                                return navigator.pushFragment(PeopleSearchFragment.class, bundle);
+                                return navigator.pushFragment(AllRelationsFragment.class, bundle);
                             case R.id.btn_security_tag:
                                 return navigator.pushFragment(SecuritySearchFragment.class, bundle);
                         }

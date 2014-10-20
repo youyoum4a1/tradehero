@@ -8,6 +8,7 @@ import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.utils.EditableUtil;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -55,11 +56,15 @@ public class MentionTaggedStockHandler
             {
                 onMentioned((UserSearchResultDTO) selected);
             }
+            else if (selected instanceof AllowableRecipientDTO)
+            {
+                onMentioned((AllowableRecipientDTO) selected);
+            }
             else if (selected instanceof SecurityCompactDTO)
             {
                 onTagged((SecurityCompactDTO) selected);
             }
-            else
+            else if (selected != null)
             {
                 throw new IllegalArgumentException("Unhandled selected type: " + selected);
             }
@@ -69,6 +74,11 @@ public class MentionTaggedStockHandler
     public void onMentioned(@NotNull UserSearchResultDTO userSearchResultDTO)
     {
         handleExtraText(String.format(MENTIONED_FORMAT, userSearchResultDTO.userthDisplayName, userSearchResultDTO.userId));
+    }
+
+    public void onMentioned(@NotNull AllowableRecipientDTO allowableRecipientDTO)
+    {
+        handleExtraText(String.format(MENTIONED_FORMAT, allowableRecipientDTO.user.displayName, allowableRecipientDTO.user.id));
     }
 
     public void onTagged(@NotNull SecurityCompactDTO securityCompactDTO)

@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
 
 abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
 {
@@ -107,6 +106,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
     @Override public void onDestroyView()
     {
+        detachSelectedSubscription();
         if (discussionView != null)
         {
             discussionView.discussionList.setOnScrollListener(null);
@@ -140,7 +140,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     private void subscribeHasSelected()
     {
         detachSelectedSubscription();
-        hasSelectedSubscription = AndroidObservable.bindFragment(this, mentionActionButtonsView.getSelectedItemObservable())
+        hasSelectedSubscription = mentionActionButtonsView.getSelectedItemObservable()
                 .subscribe(createSelectedItemObserver());
     }
 

@@ -49,7 +49,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
@@ -257,7 +256,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private void subscribeHasSelected()
     {
         detachSelectedSubscription();
-        hasSelectedSubscription = AndroidObservable.bindFragment(this, discussionPostActionButtonsView.getSelectedItemObservable())
+        hasSelectedSubscription = discussionPostActionButtonsView.getSelectedItemObservable()
                 .subscribe(createSelectedItemObserver());
     }
 
