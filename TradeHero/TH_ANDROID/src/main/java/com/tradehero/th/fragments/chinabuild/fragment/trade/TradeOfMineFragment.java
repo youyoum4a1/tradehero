@@ -276,13 +276,6 @@ public class TradeOfMineFragment extends DashboardFragment
         portfolioCache.getOrFetchAsync(shownPortfolioId);
     }
 
-    //protected void refetchWatchPositionList()
-    //{
-    //    detachUserWatchlistRefreshTask();
-    //    userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionRefreshListener);
-    //    userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
-    //}
-
     protected void fetchWatchPositionList(boolean force)
     {
         detachUserWatchlistFetchTask();

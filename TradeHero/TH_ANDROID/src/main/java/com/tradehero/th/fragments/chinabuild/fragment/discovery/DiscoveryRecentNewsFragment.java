@@ -197,7 +197,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     }
 
     //Share to wechat moment and share to weibo on the background
-    public void shareToWechatMoment(final String strShare)
+    private void shareToWechatMoment(final String strShare)
     {
         if(TextUtils.isEmpty(strShare)){
             return;

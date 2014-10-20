@@ -328,6 +328,13 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     timeLineOperater.OnTimeLineItemClicked(position);
                 }
             });
+            holder.tvUserTLContent.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    timeLineOperater.OnTimeLineItemClicked(position);
+                }
+            });
             holder.llTLPraise.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)

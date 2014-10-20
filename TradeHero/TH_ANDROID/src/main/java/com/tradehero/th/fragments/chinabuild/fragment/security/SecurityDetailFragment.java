@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,11 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
+import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormWeiboDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
@@ -79,7 +85,10 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
@@ -119,6 +128,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     private MiddleCallback<DiscussionDTO> voteCallback;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCacheA;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -1561,9 +1574,18 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             {
                 strShare = (((DiscussionDTO) dto).text);
             }
-            share(strShare);
+            if(TextUtils.isEmpty(strShare)){
+                if(tvUserTLContent.getText()==null){
+                    return;
+                }
+                shareToWechatMoment(tvUserTLContent.getText().toString());
+                return;
+            }
+            shareToWechatMoment(strShare);
         }
     }
+
+
 
     public void comments(AbstractDiscussionCompactDTO dto)
     {
@@ -1588,6 +1610,34 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                     }
                 });
         mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
+    }
+
+    //Share to wechat moment and share to weibo on the background
+    private void shareToWechatMoment(final String strShare)
+    {
+        if(TextUtils.isEmpty(strShare)){
+            return;
+        }
+        UserProfileDTO updatedUserProfileDTO = userProfileCacheA.get(currentUserId.toUserBaseKey());
+        if (updatedUserProfileDTO != null)
+        {
+            if (updatedUserProfileDTO.wbLinked)
+            {
+                String outputStr = strShare;
+                if(outputStr.length() > 140){
+                    outputStr = outputStr.substring(0, 140);
+                }
+                InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
+                userServiceWrapper.get().inviteFriends(
+                        currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
+            }
+        }
+        WeChatDTO weChatDTO = new WeChatDTO();
+        weChatDTO.id = 0;
+        weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
+        weChatDTO.title = strShare;
+        ((SocialSharerImpl)socialSharerLazy.get()).share(weChatDTO, getActivity());
+
     }
 
     private void openUserProfile(int userId)
@@ -1703,6 +1753,19 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         @Override public void failure(RetrofitError error)
         {
             Timber.d("VoteCallback failed :" + error.toString());
+        }
+    }
+
+    private class RequestCallback implements retrofit.Callback {
+
+        @Override
+        public void success(Object o, Response response) {
+
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+
         }
     }
 }
