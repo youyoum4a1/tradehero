@@ -234,7 +234,7 @@ public class DashboardActivity extends BaseActivity
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
 
-        initAchievementBroadcastReceiver();
+        initBroadcastReceivers();
         ButterKnife.inject(this);
     }
 
@@ -267,7 +267,7 @@ public class DashboardActivity extends BaseActivity
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
     }
 
-    private void initAchievementBroadcastReceiver()
+    private void initBroadcastReceivers()
     {
         mAchievementBroadcastReceiver = new BroadcastReceiver()
         {
