@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -100,7 +100,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
         return 0;
     }
 
-    @Override protected MiddleCallback<SecurityPositionDetailDTO> getTransactionMiddleCallback(TransactionFormDTO transactionFormDTO)
+    @Override protected MiddleCallback<SecurityPositionTransactionDTO> getTransactionMiddleCallback(TransactionFormDTO transactionFormDTO)
     {
         return securityServiceWrapper.doTransaction(
                 securityId, transactionFormDTO, IS_BUY,

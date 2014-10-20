@@ -1,44 +1,24 @@
 package com.tradehero.th.models.security;
 
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import org.jetbrains.annotations.NotNull;
 
-public class DTOProcessorSecurityPositionReceived implements DTOProcessor<SecurityPositionDetailDTO>
+public class DTOProcessorSecurityPositionReceived<SecurityPositionDTOType extends SecurityPositionDTO>
+        extends ThroughDTOProcessor<SecurityPositionDTOType>
 {
     @NotNull protected final SecurityId securityId;
-    @NotNull protected final CurrentUserId currentUserId;
+    @NotNull protected final UserBaseKey ownerId;
 
-    //<editor-fold desc="Description">
+    //<editor-fold desc="Constructors">
     public DTOProcessorSecurityPositionReceived(
             @NotNull SecurityId securityId,
-            @NotNull CurrentUserId currentUserId)
+            @NotNull UserBaseKey ownerId)
     {
         this.securityId = securityId;
-        this.currentUserId = currentUserId;
+        this.ownerId = ownerId;
     }
     //</editor-fold>
-
-    @Override public SecurityPositionDetailDTO process(@NotNull SecurityPositionDetailDTO value)
-    {
-        if (value.portfolio != null)
-        {
-            value.portfolio.userId = currentUserId.get();
-        }
-        if (value.providers != null)
-        {
-            for (@NotNull ProviderDTO providerDTO : value.providers)
-            {
-                if (providerDTO.associatedPortfolio != null)
-                {
-                    providerDTO.associatedPortfolio.userId = currentUserId.get();
-                }
-            }
-        }
-
-        return value;
-    }
 }

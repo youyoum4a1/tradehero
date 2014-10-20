@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
@@ -18,13 +19,13 @@ import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.security.DTOProcessorMultiSecurities;
-import com.tradehero.th.models.security.DTOProcessorSecurityPositionReceived;
-import com.tradehero.th.models.security.DTOProcessorSecurityPositionUpdated;
+import com.tradehero.th.models.security.DTOProcessorSecurityPositionDetailReceived;
+import com.tradehero.th.models.security.DTOProcessorSecurityPositionTransactionUpdated;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,9 +41,9 @@ import rx.functions.Func1;
     @NotNull private final SecurityServiceAsync securityServiceAsync;
     @NotNull private final SecurityServiceRx securityServiceRx;
     @NotNull private final ProviderServiceWrapper providerServiceWrapper;
-    @NotNull private final SecurityPositionDetailCache securityPositionDetailCache;
     @NotNull private final SecurityCompactCache securityCompactCache;
-    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final SecurityPositionDetailCache securityPositionDetailCache;
+    @NotNull private final PortfolioCache portfolioCache;
     @NotNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
@@ -51,9 +52,9 @@ import rx.functions.Func1;
             @NotNull SecurityServiceAsync securityServiceAsync,
             @NotNull SecurityServiceRx securityServiceRx,
             @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull SecurityPositionDetailCache securityPositionDetailCache,
             @NotNull SecurityCompactCache securityCompactCache,
-            @NotNull UserProfileCache userProfileCache,
+            @NotNull SecurityPositionDetailCache securityPositionDetailCache,
+            @NotNull PortfolioCache portfolioCache,
             @NotNull CurrentUserId currentUserId)
     {
         super();
@@ -61,9 +62,9 @@ import rx.functions.Func1;
         this.securityServiceAsync = securityServiceAsync;
         this.securityServiceRx = securityServiceRx;
         this.providerServiceWrapper = providerServiceWrapper;
-        this.securityPositionDetailCache = securityPositionDetailCache;
         this.securityCompactCache = securityCompactCache;
-        this.userProfileCache = userProfileCache;
+        this.securityPositionDetailCache = securityPositionDetailCache;
+        this.portfolioCache = portfolioCache;
         this.currentUserId = currentUserId;
     }
     //</editor-fold>
@@ -314,7 +315,7 @@ import rx.functions.Func1;
     //<editor-fold desc="Get Security">
     @NotNull protected DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionDetailDTOProcessor(@NotNull SecurityId securityId)
     {
-        return new DTOProcessorSecurityPositionReceived(securityId, currentUserId);
+        return new DTOProcessorSecurityPositionDetailReceived(securityId, currentUserId.toUserBaseKey());
     }
 
     public SecurityPositionDetailDTO getSecurity(@NotNull SecurityId securityId)
@@ -336,29 +337,29 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
-    @NotNull private DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionUpdatedProcessor(@NotNull SecurityId securityId)
+    @NotNull private DTOProcessor<SecurityPositionTransactionDTO> createSecurityPositionTransactionUpdatedProcessor(@NotNull SecurityId securityId)
     {
-        return new DTOProcessorSecurityPositionUpdated(
+        return new DTOProcessorSecurityPositionTransactionUpdated(
+                securityId,
+                currentUserId.toUserBaseKey(),
                 securityPositionDetailCache,
-                userProfileCache,
-                currentUserId,
-                securityId);
+                portfolioCache);
     }
 
-    public SecurityPositionDetailDTO buy(
+    public SecurityPositionTransactionDTO buy(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO)
     {
-        return createSecurityPositionUpdatedProcessor(securityId).process(
+        return createSecurityPositionTransactionUpdatedProcessor(securityId).process(
                 this.securityService.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
     }
 
-    @NotNull public MiddleCallback<SecurityPositionDetailDTO> buy(
+    @NotNull public MiddleCallback<SecurityPositionTransactionDTO> buy(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO,
-            @Nullable Callback<SecurityPositionDetailDTO> callback)
+            @Nullable Callback<SecurityPositionTransactionDTO> callback)
     {
-        MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionUpdatedProcessor(
+        MiddleCallback<SecurityPositionTransactionDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionTransactionUpdatedProcessor(
                 securityId));
         this.securityServiceAsync.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO, middleCallback);
         return middleCallback;
@@ -366,20 +367,20 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
-    public SecurityPositionDetailDTO sell(
+    public SecurityPositionTransactionDTO sell(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO)
     {
-        return createSecurityPositionUpdatedProcessor(securityId).process(
+        return createSecurityPositionTransactionUpdatedProcessor(securityId).process(
                 this.securityService.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
     }
 
-    @NotNull public MiddleCallback<SecurityPositionDetailDTO> sell(
+    @NotNull public MiddleCallback<SecurityPositionTransactionDTO> sell(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO,
-            @Nullable Callback<SecurityPositionDetailDTO> callback)
+            @Nullable Callback<SecurityPositionTransactionDTO> callback)
     {
-        MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionUpdatedProcessor(
+        MiddleCallback<SecurityPositionTransactionDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionTransactionUpdatedProcessor(
                 securityId));
         this.securityServiceAsync.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO, middleCallback);
         return middleCallback;
@@ -387,7 +388,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Buy or Sell Security">
-    public SecurityPositionDetailDTO doTransaction(
+    public SecurityPositionTransactionDTO doTransaction(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO,
             boolean isBuy)
@@ -399,11 +400,11 @@ import rx.functions.Func1;
         return sell(securityId, transactionFormDTO);
     }
 
-    @NotNull public MiddleCallback<SecurityPositionDetailDTO> doTransaction(
+    @NotNull public MiddleCallback<SecurityPositionTransactionDTO> doTransaction(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO,
             boolean isBuy,
-            @Nullable Callback<SecurityPositionDetailDTO> callback)
+            @Nullable Callback<SecurityPositionTransactionDTO> callback)
     {
         if (isBuy)
         {

@@ -33,6 +33,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -115,7 +116,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private ProgressDialog mTransactionDialog;
 
-    private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
+    private MiddleCallback<SecurityPositionTransactionDTO> buySellMiddleCallback;
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListCacheListener;
@@ -143,7 +144,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected abstract double getQuickButtonMaxValue();
 
-    protected abstract MiddleCallback<SecurityPositionDetailDTO> getTransactionMiddleCallback(TransactionFormDTO transactionFormDTO);
+    protected abstract MiddleCallback<SecurityPositionTransactionDTO> getTransactionMiddleCallback(TransactionFormDTO transactionFormDTO);
 
     public abstract Double getPriceCcy();
 
@@ -851,7 +852,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         };
     }
 
-    protected class BuySellCallback implements retrofit.Callback<SecurityPositionDetailDTO>
+    protected class BuySellCallback implements retrofit.Callback<SecurityPositionTransactionDTO>
     {
         private final boolean isBuy;
 
@@ -861,7 +862,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         }
 
         @Override
-        public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response)
+        public void success(SecurityPositionTransactionDTO securityPositionDetailDTO, Response response)
         {
             onFinish();
 
@@ -873,7 +874,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
             if (buySellTransactionListener != null)
             {
-                buySellTransactionListener.onTransactionSuccessful(isBuy);
+                buySellTransactionListener.onTransactionSuccessful(isBuy, securityPositionDetailDTO);
             }
         }
 
@@ -957,7 +958,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     public interface BuySellTransactionListener
     {
-        void onTransactionSuccessful(boolean isBuy);
+        void onTransactionSuccessful(boolean isBuy, @NotNull SecurityPositionTransactionDTO securityPositionTransactionDTO);
 
         void onTransactionFailed(boolean isBuy, THException error);
     }
