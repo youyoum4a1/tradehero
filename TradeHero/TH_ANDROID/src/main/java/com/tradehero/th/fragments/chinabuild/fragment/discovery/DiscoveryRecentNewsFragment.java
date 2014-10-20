@@ -207,7 +207,11 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         {
             if (updatedUserProfileDTO.wbLinked)
             {
-                InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(strShare);
+                String outputStr = strShare;
+                if(outputStr.length() > 140){
+                    outputStr = outputStr.substring(0, 140);
+                }
+                InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
                 userServiceWrapper.get().inviteFriends(
                         currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
             }

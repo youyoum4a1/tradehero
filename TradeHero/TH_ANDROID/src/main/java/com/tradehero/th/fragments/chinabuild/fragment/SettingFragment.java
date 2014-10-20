@@ -99,14 +99,14 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
             case R.id.settings_score:
                 showAppOnMarket();
                 //评分后
-                if (mShareDialogKeyPreference.get() && mShareDialogAfterScoreKeyPreference.get())
-                {
-                    mShareDialogKeyPreference.set(false);
-                    mShareDialogAfterScoreKeyPreference.set(false);
-                    mShareSheetTitleCache.set(getString(R.string.share_score_summary));
-                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                            getString(R.string.share_score_title),getString(R.string.share_score_summary));
-                }
+//                if (mShareDialogKeyPreference.get() && mShareDialogAfterScoreKeyPreference.get())
+//                {
+//                    mShareDialogKeyPreference.set(false);
+//                    mShareDialogAfterScoreKeyPreference.set(false);
+//                    mShareSheetTitleCache.set(getString(R.string.share_score_summary));
+//                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+//                            getString(R.string.share_score_title),getString(R.string.share_score_summary));
+//                }
                 break;
             case R.id.settings_faq:
                 Uri uri = Uri.parse("http://cn.tradehero.mobi/help/");
