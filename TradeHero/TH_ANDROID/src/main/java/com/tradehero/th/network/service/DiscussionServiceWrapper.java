@@ -113,41 +113,31 @@ import retrofit.Callback;
             return createDiscussionReplyProcessor(((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(), discussionFormDTO.stubKey)
                     .process(discussionService.createDiscussion(discussionFormDTO));
         }
-        return createDiscussionProcessor().process(
-                discussionService.postToTimeline(
-                currentUserId.get(),
-                discussionFormDTO));
+        return postToTimeline(
+                currentUserId.toUserBaseKey(),
+                discussionFormDTO);
     }
 
     @NotNull public MiddleCallback<DiscussionDTO> createDiscussion(
             @NotNull DiscussionFormDTO discussionFormDTO,
             @Nullable Callback<DiscussionDTO> callback)
     {
-        DTOProcessor<DiscussionDTO> processor;
         if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
         {
-            processor = createDiscussionReplyProcessor(((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(), discussionFormDTO.stubKey);
-        }
-        else
-        {
-            processor = createDiscussionProcessor();
-        }
-        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
-                callback, processor);
-        if (discussionFormDTO.stubKey != null)
-        {
-            DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
-            middleCallback.success(stub, null);
-        }
-        if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
-        {
+            DTOProcessor<DiscussionDTO> processor = createDiscussionReplyProcessor(
+                    ((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(),
+                    discussionFormDTO.stubKey);
+            MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
+                    callback, processor);
+            if (discussionFormDTO.stubKey != null)
+            {
+                DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
+                middleCallback.success(stub, null);
+            }
             discussionServiceAsync.createDiscussion(discussionFormDTO, middleCallback);
+            return middleCallback;
         }
-        else
-        {
-            discussionServiceAsync.postToTimeline(currentUserId.get(), discussionFormDTO, middleCallback);
-        }
-        return middleCallback;
+        return postToTimeline(currentUserId.toUserBaseKey(), discussionFormDTO, callback);
     }
     //</editor-fold>
 
@@ -267,6 +257,11 @@ import retrofit.Callback;
         MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createDiscussionProcessor());
+        if (discussionFormDTO.stubKey != null)
+        {
+            DiscussionDTO stub = discussionDTOFactory.createStub(discussionFormDTO);
+            middleCallback.success(stub, null);
+        }
         discussionServiceAsync.postToTimeline(
                 userBaseKey.key,
                 discussionFormDTO,
