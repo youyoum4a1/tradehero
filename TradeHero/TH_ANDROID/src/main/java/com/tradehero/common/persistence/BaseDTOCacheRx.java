@@ -5,13 +5,13 @@ import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 import rx.Observer;
 import rx.functions.Func1;
-import rx.subjects.PublishSubject;
+import rx.subjects.BehaviorSubject;
 
 abstract public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheRx<DTOKeyType, DTOType>
 {
     @NotNull final private THLruCache<DTOKeyType, DTOType> cachedValues;
-    @NotNull final private THLruCache<DTOKeyType, PublishSubject<Pair<DTOKeyType, DTOType>>> cachedSubjects;
+    @NotNull final private THLruCache<DTOKeyType, BehaviorSubject<Pair<DTOKeyType, DTOType>>> cachedSubjects;
 
     //<editor-fold desc="Constructors">
     protected BaseDTOCacheRx(int maxSize)
@@ -31,10 +31,10 @@ abstract public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends 
 
     @NotNull protected Observable<Pair<DTOKeyType, DTOType>> getOrCreateBehavior(@NotNull final DTOKeyType key)
     {
-        PublishSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.get(key);
+        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.get(key);
         if (cachedSubject == null)
         {
-            cachedSubject = PublishSubject.create();
+            cachedSubject = BehaviorSubject.create();
             cachedSubjects.put(key, cachedSubject);
             cachedSubject.subscribe(new Observer<Pair<DTOKeyType, DTOType>>()
             {

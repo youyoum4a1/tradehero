@@ -1201,11 +1201,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 securityPositionTransactionDTO.portfolio.id));
     }
 
-    private void pushPortfolioFragment()
-    {
-        pushPortfolioFragment(getApplicablePortfolioId());
-    }
-
     protected interface PushPortfolioFragmentRunnable
     {
         void pushPortfolioFragment(SecurityPositionTransactionDTO securityPositionTransactionDTO);

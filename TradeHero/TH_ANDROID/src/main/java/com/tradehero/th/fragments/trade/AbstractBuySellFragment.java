@@ -458,25 +458,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO> createSecurityPositionCacheListener()
-    {
-        return new AbstractBuySellSecurityPositionCacheListener();
-    }
-
-    protected class AbstractBuySellSecurityPositionCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO>
-    {
-        @Override public void onDTOReceived(@NotNull final SecurityId key, @NotNull final SecurityPositionDetailDTO value)
-        {
-            linkWith(value, true);
-        }
-
-        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
-        {
-            THToast.show(R.string.error_fetch_detailed_security_info);
-            Timber.e("Error fetching the security position detail %s", key, error);
-        }
-    }
-
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
         return new AbstractBuySellUserProfileCacheListener();
