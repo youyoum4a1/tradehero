@@ -9,5 +9,5 @@
     android:contentDescription="@null"
     app:dominantMeasurement="width"
     app:aspectRatioEnabled="false"
-    tools:src="@drawable/lb_philip_macquarie_large_notjoined"
+    tools:src="@drawable/salesforce"
     />
