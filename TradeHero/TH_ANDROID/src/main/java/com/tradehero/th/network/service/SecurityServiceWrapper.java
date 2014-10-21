@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 @Singleton public class SecurityServiceWrapper
@@ -333,6 +335,32 @@ import rx.functions.Func1;
                 createSecurityPositionDetailDTOProcessor(securityId));
         this.securityServiceAsync.getSecurity(securityId.getExchange(), securityId.getPathSafeSymbol(), middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<SecurityPositionDetailDTO> getSecurityRx(
+            @NotNull SecurityId securityId)
+    {
+        return securityServiceRx.getSecurity(
+                securityId.getExchange(),
+                securityId.getPathSafeSymbol())
+                .map(new Func1<SecurityPositionDetailDTO, SecurityPositionDetailDTO>()
+                {
+                    @Override public SecurityPositionDetailDTO call(SecurityPositionDetailDTO securityPositionDetailDTO)
+                    {
+                        if (securityPositionDetailDTO.providers != null)
+                        {
+                            for (@NotNull ProviderDTO providerDTO : securityPositionDetailDTO.providers)
+                            {
+                                if (providerDTO.associatedPortfolio != null)
+                                {
+                                    providerDTO.associatedPortfolio.userId = currentUserId.get();
+                                }
+                            }
+                        }
+
+                        return securityPositionDetailDTO;
+                    }
+                });
     }
     //</editor-fold>
 

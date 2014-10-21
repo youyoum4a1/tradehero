@@ -1,6 +1,5 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -17,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
 @Singleton public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
-    implements DTOCache<UserBaseKey, UserProfileDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -100,7 +98,7 @@ import rx.Observable;
         }
     }
 
-    @NotNull @Override public Observable<UserProfileDTO> createObservable(@NotNull UserBaseKey key)
+    @NotNull public Observable<UserProfileDTO> createObservable(@NotNull UserBaseKey key)
     {
         UserProfileDTO cached = get(key);
         if (cached != null)
