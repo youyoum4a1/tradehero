@@ -107,7 +107,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
     @Override protected double getQuickButtonMaxValue()
     {
         Integer maxSellableShares = getMaxSellableShares();
-        if (maxSellableShares != null)
+        if (maxSellableShares != null && quoteDTO != null && quoteDTO.bid != null)
         {
             // TODO see other currencies
             return maxSellableShares * quoteDTO.bid * quoteDTO.toUSDRate;

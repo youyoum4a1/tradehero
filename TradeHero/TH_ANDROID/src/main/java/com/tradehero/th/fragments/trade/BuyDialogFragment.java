@@ -93,7 +93,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
 
     @Override protected double getQuickButtonMaxValue()
     {
-        if (this.userProfileDTO != null && userProfileDTO.portfolio != null)
+        if (portfolioCompactDTO != null)
         {
             return portfolioCompactDTO.cashBalance;
         }
