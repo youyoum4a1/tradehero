@@ -738,20 +738,20 @@ public class BuySaleSecurityFragment extends DashboardFragment
                 }
                 else
                 {
+                    if(securityPositionDetailDTO==null || securityPositionDetailDTO.positions==null || securityPositionDetailDTO.positions.size()<=0){
+                        return;
+                    }
+                    int positionId = securityPositionDetailDTO.positions.get(0).id;
                     //sell share
                     ShareSellDialogFragment.showSellDialog(
                             getActivity().getSupportFragmentManager(), getSecurityName(),
                             securityId.getDisplayName(), tvBuySaleRate.getText().toString(),
                             mQuantityEditText.getText().toString(),
                             tvBuySaleMayProfit.getText().toString(),
-                            currentUserId.get().toString(), securityCompactDTO.id.toString(), String.valueOf(securityPositionDetailDTO.tradeId));
+                            currentUserId.get().toString(), String.valueOf(positionId), String.valueOf(securityPositionDetailDTO.tradeId));
                 }
             }
             popCurrentFragment();
-            //if (buySellTransactionListener != null)
-            //{
-            //    buySellTransactionListener.onTransactionSuccessful(isBuy);
-            //}
         }
 
         private void onFinish()
