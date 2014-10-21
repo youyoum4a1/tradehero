@@ -179,8 +179,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
 
     public void share(String strShare)
     {
-
-        mShareSheetTitleCache.set(strShare);
+        mShareSheetTitleCache.set(getUnParsedText(strShare));
 
         ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                 .inflate(R.layout.share_sheet_dialog_layout, null);
@@ -196,10 +195,13 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
     }
 
+
+
     //Share to wechat moment and share to weibo on the background
     private void shareToWechatMoment(final String strShare)
     {
-        if(TextUtils.isEmpty(strShare)){
+        String show  = getUnParsedText(strShare);
+        if(TextUtils.isEmpty(show)){
             return;
         }
         UserProfileDTO updatedUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
@@ -207,7 +209,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         {
             if (updatedUserProfileDTO.wbLinked)
             {
-                String outputStr = strShare;
+                String outputStr = show;
                 if(outputStr.length() > 140){
                     outputStr = outputStr.substring(0, 140);
                 }
@@ -219,7 +221,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
-        weChatDTO.title = strShare;
+        weChatDTO.title = show;
         ((SocialSharerImpl)socialSharerLazy.get()).share(weChatDTO, getActivity());
 
     }

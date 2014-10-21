@@ -32,9 +32,9 @@ public class MyTradePositionListAdapter extends BaseAdapter
     private Context context;
     private LayoutInflater inflater;
     private ArrayList<PositionInterface> listData;
-    private ArrayList<SecurityPositionItem> securityPositionList;//持仓（open）
-    private ArrayList<SecurityPositionItem> securityPositionListClosed;//平仓（Close）
-    private ArrayList<WatchPositionItem> watchPositionList;//自选股
+    private ArrayList<SecurityPositionItem> securityPositionList = new ArrayList<>();//持仓（open）
+    private ArrayList<SecurityPositionItem> securityPositionListClosed = new ArrayList<>();//平仓（Close）
+    private ArrayList<WatchPositionItem> watchPositionList = new ArrayList<>();//自选股
     private boolean isLocked = false;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
@@ -84,18 +84,18 @@ public class MyTradePositionListAdapter extends BaseAdapter
         }
         else
         {
-            if (getSecurityPositionCount() > 0)
-            {
+            //if (getSecurityPositionCount() > 0)
+            //{
                 listData.add(new PositionHeadItem(getHeadStrOfSecurityPosition()));
                 listData.addAll(securityPositionList);
-            }
+            //}
         }
 
-        if (getSecurityPositionClosedCount() > 0)
-        {
+        //if (getSecurityPositionClosedCount() > 0)
+        //{
             listData.add(new PositionHeadItem(getHeadStrOfSecurityClosedPosition()));
             listData.addAll(securityPositionListClosed);
-        }
+        //}
 
         if (getWatchPositionCount() > 0)
         {

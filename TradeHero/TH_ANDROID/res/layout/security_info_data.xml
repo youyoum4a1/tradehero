@@ -7,8 +7,9 @@
 
     android:layout_height="fill_parent">
 
-  <LinearLayout android:layout_width="fill_parent"
+  <LinearLayout
       android:layout_weight="3"
+      android:layout_width="fill_parent"
       android:layout_height="fill_parent">
 
     <TextView
@@ -42,11 +43,12 @@
 
   <LinearLayout
       android:layout_weight="2"
+      android:orientation="horizontal"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
 
-    <RelativeLayout android:layout_weight="3"
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:gravity="center_vertical|center_horizontal"
         >
@@ -72,7 +74,7 @@
           android:layout_toRightOf="@id/tvInfo0Title"
           android:textSize="@dimen/sucurity_detail_info"
           android:textColor="@color/black"
-          android:text=""/>
+          android:text="－－"/>
 
       <TextView
           android:id="@+id/tvInfo1Value"
@@ -82,13 +84,14 @@
           android:layout_below="@id/tvInfo0Title"
           android:textSize="@dimen/sucurity_detail_info"
           android:textColor="@color/black"
-          android:text=""/>
+          android:text="－－"/>
 
     </RelativeLayout>
 
-    <RelativeLayout android:layout_weight="2"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_marginLeft="5dp"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent">
 
       <TextView
@@ -115,7 +118,7 @@
           android:textSize="@dimen/sucurity_detail_info"
           android:textColor="@color/black"
           android:singleLine="true"
-          android:text=""/>
+          android:text="－－"/>
 
       <TextView
           android:id="@+id/tvInfo3Value"
@@ -126,7 +129,7 @@
           android:textSize="@dimen/sucurity_detail_info"
           android:textColor="@color/black"
           android:singleLine="true"
-          android:text=""/>
+          android:text="－－"/>
     </RelativeLayout>
   </LinearLayout>
 </LinearLayout>

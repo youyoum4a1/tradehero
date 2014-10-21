@@ -204,7 +204,9 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
 
     public void share(String strShare)
     {
-        mShareSheetTitleCache.set(strShare);
+        String show = getUnParsedText(strShare);
+
+        mShareSheetTitleCache.set(show);
         ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                 .inflate(R.layout.share_sheet_dialog_layout, null);
         contentView.setLocalSocialClickedListener(

@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -45,6 +46,7 @@ abstract public class DashboardFragment extends BaseFragment
 
     private LoginSuggestDialogFragment dialogFragment;
     private FragmentManager fm;
+    @Inject RichTextCreator parser;
 
     //Listen to back pressed
     private boolean needToMonitorBackPressed = false;
@@ -431,5 +433,16 @@ abstract public class DashboardFragment extends BaseFragment
         }
         dialogFragment.setContent(dialogContent);
         dialogFragment.show(fm, LoginSuggestDialogFragment.class.getName());
+    }
+
+    protected String getUnParsedText(String text)
+    {
+        if (parser != null && text != null)
+        {
+            text = text.toString().replace("*", "");
+            CharSequence cs = parser.load(text.toString().trim()).create();
+            return cs.toString();
+        }
+        return text;
     }
 }
