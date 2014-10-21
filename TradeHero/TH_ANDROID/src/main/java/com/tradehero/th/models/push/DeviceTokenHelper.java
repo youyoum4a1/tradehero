@@ -9,6 +9,7 @@ import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.persistence.prefs.DiviceID;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.StringUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -69,7 +70,7 @@ public class DeviceTokenHelper
             TelephonyManager tm = (TelephonyManager) currentActivityHolder
                     .getCurrentActivity().getSystemService(Context.TELEPHONY_SERVICE);
             String strIMEI = tm.getDeviceId();
-            if (strIMEI.isEmpty() || strIMEI.contains("000000000000000"))
+            if (StringUtils.isNullOrEmpty(strIMEI) || strIMEI.contains("000000000000000"))
             {
                 strIMEI = String.valueOf((int) Math.floor((Math.random() + 1) * GuideActivity.TIMES));
                 strIMEI = strIMEI + String.valueOf((int) Math.floor((Math.random() + 1) * GuideActivity.TIMES2));

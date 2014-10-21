@@ -30,6 +30,7 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
         this.portfolioId = portfolioId;
     }
 
+
     public OwnedPortfolioId(@NotNull OwnedPortfolioId ownedPortfolioId)
     {
         this.userId = ownedPortfolioId.userId;

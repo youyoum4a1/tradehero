@@ -41,7 +41,7 @@
       android:textAppearance="?android:textAppearanceSmall"
       android:padding="5dp"
       android:gravity="top"
-      android:maxLength="200"
+      android:maxLength="500"
       android:layout_above="@id/rlDiscussSelectButtons"
       android:background="@color/transparent"
       android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"

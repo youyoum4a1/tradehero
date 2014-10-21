@@ -77,7 +77,9 @@ public class TrendingAllSecurityListType extends TrendingSecurityListType
 
     @Override public boolean equals(TrendingSecurityListType other)
     {
-        return (other instanceof TrendingAllSecurityListType) && super.equals(other);
+        return (other instanceof TrendingAllSecurityListType) && super.equals(other) && (((TrendingAllSecurityListType) other).type == this.type
+        && (((TrendingAllSecurityListType) other).competitionId == this.competitionId) && ((TrendingAllSecurityListType) other).q.equals(this.q)
+        );
     }
 
     @Override public int compareTo(TrendingSecurityListType another)

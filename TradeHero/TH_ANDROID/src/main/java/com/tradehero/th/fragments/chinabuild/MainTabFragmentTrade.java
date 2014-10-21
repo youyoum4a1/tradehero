@@ -79,7 +79,7 @@ public class MainTabFragmentTrade extends AbsBaseFragment
         super.onResume();
     }
 
-    private static final String[] CONTENT = new String[] {"我的交易", "热门持有", "涨幅榜单", "中国概念"};
+    private static final String[] CONTENT = new String[] {"我的交易","热门持有","涨幅榜单","中国概念"};
 
     class CustomAdapter extends FragmentPagerAdapter
     {

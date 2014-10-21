@@ -1,8 +1,10 @@
 package com.tradehero.th.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tradehero.th.R;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.base.Application;
 import java.util.Date;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,13 +68,23 @@ abstract public class AbstractDiscussionCompactDTO extends ExtendedDTO
 
     public String getVoteString()
     {
-        if (voteDirection == 1)
+        //if (voteDirection == 1)
+        //{
+        //    return "已赞";
+        //}
+        //else
+        //{
+        //    return "" + upvoteCount;
+        //}
+
+        String str = "" + upvoteCount;
+        if(voteDirection == 1)
         {
-            return "已赞";
+            return Application.context().getString(R.string.html_string_blue,str);
         }
         else
         {
-            return "" + upvoteCount;
+            return Application.context().getString(R.string.html_string_gray,str);
         }
     }
 }

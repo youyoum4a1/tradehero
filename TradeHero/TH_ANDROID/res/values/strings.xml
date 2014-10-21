@@ -373,4 +373,11 @@
   <string name="dialog_competition_choose_college_b">，确定选择以后不可更改</string>
   <string name="dialog_competition_suggest_login">您当前是游客身份，不能参加比赛，请升级为正式用户</string>
 
+
+
+  <string name="quickly_to_get_first">快来抢沙发</string>
+  <string name="no_useful_data">空空如也</string>
+  <string name="click_to_get_more">点击加载更多</string>
+  <string name="html_string_blue"><Data><![CDATA[ <font color="#1789d5">%s</font> ]]></Data></string>
+  <string name="html_string_gray"><Data><![CDATA[ <font color="#bfbfbf">%s</font> ]]></Data></string>
 </resources>

@@ -2,6 +2,7 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,7 +180,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                 });
             }
 
-            holder.tvTLPraise.setText(item.getVoteString());
+            holder.tvTLPraise.setText(Html.fromHtml(item.getVoteString()));
             holder.tvTLComment.setText("" + item.commentCount);
 
             holder.llItemAll.setOnClickListener(new View.OnClickListener()
