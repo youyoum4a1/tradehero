@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.security.auth.Subject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.ReplaySubject;
 
 /**
@@ -17,7 +19,7 @@ import rx.subjects.ReplaySubject;
 @Singleton
 public class RxLoaderManager
 {
-    private final Map<Object, ReplaySubject<?>> cachedRequests = new HashMap<>();
+    private final Map<Object, BehaviorSubject<?>> cachedRequests = new HashMap<>();
 
     @Inject public RxLoaderManager()
     {}
@@ -31,14 +33,14 @@ public class RxLoaderManager
     public final <K, V> Observable<V> create(final K key, Observable<V> task)
     {
         // get the cached request if presence
-        ReplaySubject<V> cachedRequest = getCachedRequest(key);
+        BehaviorSubject<V> cachedRequest = getCachedRequest(key);
         if (cachedRequest != null)
         {
             return cachedRequest;
         }
 
         // cache the request
-        cachedRequest = ReplaySubject.create();
+        cachedRequest = BehaviorSubject.create();
         cachedRequests.put(key, cachedRequest);
 
         // invalidate request cache on complete/error
@@ -73,8 +75,8 @@ public class RxLoaderManager
     }
 
     @SuppressWarnings("unchecked")
-    private <K, V> ReplaySubject<V> getCachedRequest(K key)
+    private <K, V> BehaviorSubject<V> getCachedRequest(K key)
     {
-        return (ReplaySubject<V>) cachedRequests.get(key);
+        return (BehaviorSubject<V>) cachedRequests.get(key);
     }
 }
