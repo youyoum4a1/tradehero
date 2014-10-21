@@ -21,6 +21,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -327,5 +328,11 @@ interface UserServiceAsync
     void sendCode(
             @Query("phoneNumber") String phoneNumber,
             Callback<Response> cb);
+    //</editor-fold>
+
+    //<editor_fold desc="Download App Version Info">
+    @GET("/checkVersion")
+    void downloadAppVersion(
+            Callback<AppInfoDTO> cb);
     //</editor-fold>
 }

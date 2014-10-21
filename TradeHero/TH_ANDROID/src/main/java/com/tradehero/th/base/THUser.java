@@ -286,56 +286,6 @@ public class THUser
         }
     }
 
-    //private static void checkNeedToRenewSocialToken(THException error, CredentialsDTO credentialsDTO)
-    //{
-    //    if (error.getCode() == ExceptionCode.RenewSocialToken)
-    //    {
-    //        mainCredentialsPreference.delete();
-    //        final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
-    //
-    //        if (currentActivity instanceof AuthenticationActivity)
-    //        {
-    //            if (credentialsDTO instanceof FacebookCredentialsDTO)
-    //            {
-    //                ((AuthenticationActivity) currentActivity).authenticateWithFacebook();
-    //                return;
-    //            }
-    //            if (credentialsDTO instanceof LinkedinCredentialsDTO)
-    //            {
-    //                ((AuthenticationActivity) currentActivity).authenticateWithLinkedIn();
-    //                return;
-    //            }
-    //            if (credentialsDTO instanceof QQCredentialsDTO)
-    //            {
-    //                ((AuthenticationActivity) currentActivity).authenticateWithQQ();
-    //                return;
-    //            }
-    //            if (credentialsDTO instanceof TwitterCredentialsDTO)
-    //            {
-    //                ((AuthenticationActivity) currentActivity).authenticateWithTwitter();
-    //                return;
-    //            }
-    //            if (credentialsDTO instanceof WeiboCredentialsDTO)
-    //            {
-    //                ((AuthenticationActivity) currentActivity).authenticateWithWeibo();
-    //                return;
-    //            }
-    //        }
-    //
-    //        alertDialogUtil.get().popWithOkCancelButton(currentActivity,
-    //                R.string.please_update_token_title,
-    //                R.string.please_update_token_description,
-    //                R.string.ok,
-    //                R.string.later,
-    //                new DialogInterface.OnClickListener()
-    //                {
-    //                    @Override public void onClick(DialogInterface dialog, int which)
-    //                    {
-    //                    }
-    //                });
-    //    }
-    //}
-
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
     {
         authenticationProviders.put(provider.getAuthType(), provider);

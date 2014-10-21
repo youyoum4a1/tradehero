@@ -27,6 +27,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
@@ -948,4 +949,8 @@ import retrofit.client.Response;
         userService.sendAnalytics(batchAnalyticsEventForm);
     }
     //</editor-fold>
+
+    public void downloadAppVersionInfo(@Nullable Callback<AppInfoDTO> callback){
+        userServiceAsync.downloadAppVersion(callback);
+    }
 }

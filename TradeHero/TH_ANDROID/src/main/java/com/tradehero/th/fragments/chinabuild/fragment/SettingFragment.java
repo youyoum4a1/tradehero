@@ -6,9 +6,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,18 +27,28 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.ShareDialogAfterScoreKey;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+
 import javax.inject.Inject;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
-public class SettingFragment extends DashboardFragment implements View.OnClickListener
-{
+public class SettingFragment extends DashboardFragment implements View.OnClickListener {
     @InjectView(R.id.settings_score) RelativeLayout mScoreLayout;
     @InjectView(R.id.settings_faq) RelativeLayout mFaqLayout;
+    @InjectView(R.id.imageview_new_version) ImageView mNewVersionImageView;
     @InjectView(R.id.settings_version_code) TextView mVersionCode;
+    @InjectView(R.id.settings_version) RelativeLayout mVersionLayout;
     @InjectView(R.id.settings_about) RelativeLayout mAboutLayout;
     @InjectView(R.id.settings_logout) LinearLayout mLogoutLayout;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
@@ -44,79 +56,75 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(R.string.settings);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.setting_fragment_layout, container, false);
         ButterKnife.inject(this, view);
         mScoreLayout.setOnClickListener(this);
         mFaqLayout.setOnClickListener(this);
         PackageInfo packageInfo = null;
-        try
-        {
+        try {
             packageInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e)
-        {
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        if (packageInfo != null)
-        {
-            mVersionCode.setText("V"+packageInfo.versionName+"."+packageInfo.versionCode);
+        if (packageInfo != null) {
+            mVersionCode.setText("V" + packageInfo.versionName + "." + packageInfo.versionCode);
         }
         mAboutLayout.setOnClickListener(this);
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO.isVisitor)
-        {
+        if (userProfileDTO.isVisitor) {
             mLogoutLayout.setVisibility(View.GONE);
         }
         mLogoutLayout.setOnClickListener(this);
+        mVersionLayout.setOnClickListener(this);
+
+        AppInfoDTO appInfoDTO = THSharePreferenceManager.getAppVersionInfo(getActivity());
+        if(appInfoDTO.isSuggestUpgrade()){
+            mVersionLayout.setClickable(true);
+            mNewVersionImageView.setVisibility(View.VISIBLE);
+            mVersionCode.setVisibility(View.GONE);
+        }else{
+            mVersionLayout.setClickable(false);
+            mNewVersionImageView.setVisibility(View.GONE);
+            mVersionCode.setVisibility(View.VISIBLE);
+        }
+        gotoDownloadAppInfo();
         return view;
     }
 
-    @Override public void onResume()
-    {
+    @Override
+    public void onResume() {
         super.onResume();
     }
 
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.settings_score:
                 showAppOnMarket();
                 //评分后
-//                if (mShareDialogKeyPreference.get() && mShareDialogAfterScoreKeyPreference.get())
-//                {
-//                    mShareDialogKeyPreference.set(false);
-//                    mShareDialogAfterScoreKeyPreference.set(false);
-//                    mShareSheetTitleCache.set(getString(R.string.share_score_summary));
-//                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-//                            getString(R.string.share_score_title),getString(R.string.share_score_summary));
-//                }
+                //gotoShareScoreDialog()
                 break;
             case R.id.settings_faq:
                 Uri uri = Uri.parse("http://cn.tradehero.mobi/help/");
                 Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                try
-                {
+                try {
                     startActivity(it);
-                }
-                catch (android.content.ActivityNotFoundException anfe)
-                {
+                } catch (android.content.ActivityNotFoundException anfe) {
                     THToast.show("Unable to open url: " + uri);
                 }
                 break;
@@ -127,51 +135,99 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
             case R.id.settings_about:
                 goToFragment(SettingsAboutUsFragment.class);
                 break;
+            case R.id.settings_version:
+                gotoDownloadAppPage();
+                break;
         }
     }
 
-    @Override public void onStop()
-    {
+    @Override
+    public void onStop() {
         super.onStop();
     }
 
-    @Override public void onDestroyView()
-    {
+    @Override
+    public void onDestroyView() {
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
     }
 
-    public void showAppOnMarket()
-    {
-        try
-        {
+    public void showAppOnMarket() {
+        try {
             getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
                     "market://details?id=" + getActivity().getPackageName())));
-                    //"market://details?id=" + PLAYSTORE_APP_ID)));
-        }
-        catch (ActivityNotFoundException ex)
-        {
-            try
-            {
+        } catch (ActivityNotFoundException ex) {
+            try {
                 getActivity().startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://play.google.com/store/apps/details?id="
                                 + getActivity().getPackageName())));
-                                //+ PLAYSTORE_APP_ID)));
-            }
-            catch (Exception e)
-            {
-                Timber.e(e, "Cannot send to Google Play store");
-                //alertDialogUtil.popWithNegativeButton(
-                //        activity,
-                //        R.string.webview_error_no_browser_for_intent_title,
-                //        R.string.webview_error_no_browser_for_intent_description,
-                //        R.string.cancel);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
+
+    private void gotoShareScoreDialog() {
+        if (mShareDialogKeyPreference.get() && mShareDialogAfterScoreKeyPreference.get()) {
+            mShareDialogKeyPreference.set(false);
+            mShareDialogAfterScoreKeyPreference.set(false);
+            mShareSheetTitleCache.set(getString(R.string.share_score_summary));
+            ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                    getString(R.string.share_score_title), getString(R.string.share_score_summary));
+        }
+    }
+
+    private void gotoDownloadAppInfo(){
+        userServiceWrapper.get().downloadAppVersionInfo(createDownloadAppInfoCallback());
+    }
+
+    private THCallback<AppInfoDTO> createDownloadAppInfoCallback(){
+        return new THCallback<AppInfoDTO>() {
+            @Override
+            protected void success(AppInfoDTO appInfoDTO, THResponse thResponse) {
+                if(appInfoDTO==null){
+                    return;
+                }
+                Timber.d("------> " + appInfoDTO.toString());
+                boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
+                boolean forceUpdate = appInfoDTO.isForceUpgrade();
+                String url = appInfoDTO.getLatestVersionDownloadUrl();
+                THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(getActivity(), url, suggestUpdate,forceUpdate);
+                if(suggestUpdate){
+                    mVersionLayout.setClickable(true);
+                    mNewVersionImageView.setVisibility(View.VISIBLE);
+                    mVersionCode.setVisibility(View.GONE);
+                }else{
+                    mVersionLayout.setClickable(false);
+                    mNewVersionImageView.setVisibility(View.GONE);
+                    mVersionCode.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            protected void failure(THException ex) {
+                THToast.show(ex.getMessage());
+            }
+        };
+    }
+
+    private void gotoDownloadAppPage(){
+        AppInfoDTO dto = THSharePreferenceManager.getAppVersionInfo(getActivity());
+        if(dto==null){
+            return;
+        }
+        String url = dto.getLatestVersionDownloadUrl();
+        if(TextUtils.isEmpty(url)){
+            return;
+        }
+        Uri uri = Uri.parse(url.trim());
+        Intent gotoWebIntent = new Intent(Intent.ACTION_VIEW, uri);
+        getActivity().startActivity(gotoWebIntent);
+    }
+
 }
