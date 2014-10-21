@@ -11,6 +11,7 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.THNotificationBuilder;
 import com.tradehero.th.network.service.SessionServiceWrapper;
@@ -116,6 +117,10 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     private void createAndNotify(Context context, int pushId)
     {
+        //If notifications setting is off, return
+        if(!THSharePreferenceManager.isNotificationsOn(context)){
+            return;
+        }
         Notification notification = thNotificationBuilder.buildNotification(pushId);
 
         if (notification != null)

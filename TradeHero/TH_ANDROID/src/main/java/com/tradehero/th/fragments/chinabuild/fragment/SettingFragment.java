@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.chinabuild.fragment;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -10,10 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -51,6 +49,8 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     @InjectView(R.id.settings_version) RelativeLayout mVersionLayout;
     @InjectView(R.id.settings_about) RelativeLayout mAboutLayout;
     @InjectView(R.id.settings_logout) LinearLayout mLogoutLayout;
+    @InjectView(R.id.togglebutton_setting_notifications) ToggleButton mNotificationTB;
+    @InjectView(R.id.relativelayout_setting_notification) RelativeLayout mNotificationsLayout;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @Inject @ShareDialogAfterScoreKey BooleanPreference mShareDialogAfterScoreKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
@@ -102,6 +102,12 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
             mNewVersionImageView.setVisibility(View.GONE);
             mVersionCode.setVisibility(View.VISIBLE);
         }
+        mNotificationsLayout.setOnClickListener(this);
+        if(THSharePreferenceManager.isNotificationsOn(getActivity())){
+            mNotificationTB.setBackgroundResource(R.drawable.setting_notifications_on);
+        }else{
+            mNotificationTB.setBackgroundResource(R.drawable.setting_notificaitons_off);
+        }
         gotoDownloadAppInfo();
         return view;
     }
@@ -137,6 +143,9 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                 break;
             case R.id.settings_version:
                 gotoDownloadAppPage();
+                break;
+            case R.id.relativelayout_setting_notification:
+                gotoSetNotifications();
                 break;
         }
     }
@@ -228,6 +237,20 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         Uri uri = Uri.parse(url.trim());
         Intent gotoWebIntent = new Intent(Intent.ACTION_VIEW, uri);
         getActivity().startActivity(gotoWebIntent);
+    }
+
+    private void gotoSetNotifications(){
+        Context context = getActivity();
+        if(context==null){
+            return;
+        }
+        if(THSharePreferenceManager.isNotificationsOn(context)){
+            THSharePreferenceManager.setNotificaitonsStatus(context, false);
+            mNotificationTB.setBackgroundResource(R.drawable.setting_notificaitons_off);
+        }else{
+            THSharePreferenceManager.setNotificaitonsStatus(context, true);
+            mNotificationTB.setBackgroundResource(R.drawable.setting_notifications_on);
+        }
     }
 
 }

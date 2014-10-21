@@ -132,6 +132,7 @@
   <string name="settings_score">去评分</string>
   <string name="settings_logout">退出当前账号</string>
   <string name="settings_version">版本</string>
+  <string name="settings_notification">推送通知</string>
   <string name="invite_friends_title">邀请好友成功登录全民股神，输入邀请码，你和TA都将获得10000虚拟资金奖励，邀请得越多奖励越多。</string>
   <string name="invite_friends_input">输入邀请码</string>
   <string name="invite_friends_me">我的邀请码:</string>

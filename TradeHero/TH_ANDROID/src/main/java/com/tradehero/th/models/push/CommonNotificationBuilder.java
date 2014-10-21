@@ -15,6 +15,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import java.util.ArrayList;
 import java.util.List;
@@ -255,6 +256,10 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         {
             Notification notification = buildNotification(value);
 
+            //If notifications setting is off, return
+            if(!THSharePreferenceManager.isNotificationsOn(context)){
+                return;
+            }
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(getNotifyId(value.pushId), notification);
         }

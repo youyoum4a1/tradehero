@@ -31,6 +31,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="1px"
                 android:background="@color/separate_line_color"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/right_arrow_margin"
                 android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 
@@ -55,12 +57,46 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/right_arrow_margin"/>
     </RelativeLayout>
+    <RelativeLayout
+            android:id="@+id/relativelayout_setting_notification"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/more_bang_item_height"
+            android:layout_marginTop="@dimen/margin_small"
+            android:clickable="false"
+            android:background="@drawable/listview_item_selector">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/more_bang_text_size"
+                android:clickable="false"
+                android:textColor="@dimen/text_default_color"
+                android:text="@string/settings_notification"/>
 
+        <ToggleButton android:id="@+id/togglebutton_setting_notifications" android:layout_width="51dp"
+                      android:layout_height="31dp"
+                      android:layout_gravity="center_horizontal"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:clickable="false"
+                      android:textOn=""
+                      android:textOff=""
+                      android:layout_marginRight="@dimen/right_arrow_margin"
+                      android:background="@drawable/setting_notifications_on"/>
+        <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:clickable="false"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:background="@color/separate_line_color"
+                android:layout_marginRight="@dimen/right_arrow_margin"
+                android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
     <RelativeLayout
             android:id="@+id/settings_version"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/more_bang_item_height"
-            android:layout_marginTop="@dimen/margin_small"
             android:clickable="false"
             android:background="@drawable/listview_item_selector">
         <TextView
@@ -94,7 +130,9 @@
         <View
                 android:layout_width="fill_parent"
                 android:layout_height="1px"
+                android:layout_marginLeft="@dimen/margin_small"
                 android:clickable="false"
+                android:layout_marginRight="@dimen/right_arrow_margin"
                 android:background="@color/separate_line_color"
                 android:layout_alignParentBottom="true"/>
     </RelativeLayout>

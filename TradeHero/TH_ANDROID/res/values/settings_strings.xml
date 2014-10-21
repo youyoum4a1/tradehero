@@ -89,4 +89,7 @@
   <string name="settings_transaction_balance">BALANCE</string>
   <string name="settings_transaction_comment">COMMENT</string>
 
+  <string name="settings_about_us_company">上海迈和信息科技有限公司</string>
+  <string name="settings_about_us_company2">版权 2012-2014 My Manisku Pte. Ltd.</string>
+
 </resources>
