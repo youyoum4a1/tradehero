@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/transparent"
+    android:animateLayoutChanges="true"
     >
 
   <ProgressBar
@@ -21,7 +22,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:padding="8dp"
-      android:visibility="visible"
+      android:visibility="gone"
       android:background="@drawable/basic_transparent_selector"
       >
     <!--TODO use dropdown/spinner view-->
