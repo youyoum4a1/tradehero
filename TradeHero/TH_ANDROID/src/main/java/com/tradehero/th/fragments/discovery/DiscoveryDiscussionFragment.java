@@ -125,6 +125,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         {
             mContentWrapper.setDisplayedChildByLayoutId(mDisplayedViewId);
         }
+        mTimelineAdapter.getLoader().loadNext();
     }
 
     @Override public void onPause()

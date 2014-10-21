@@ -347,6 +347,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         fetchUserProfile(true);
                     }
                 });
+        mainTimelineAdapter.getTimelineLoader().loadNext();
 
         timelineListView.setOnRefreshListener(mainTimelineAdapter);
         timelineListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
