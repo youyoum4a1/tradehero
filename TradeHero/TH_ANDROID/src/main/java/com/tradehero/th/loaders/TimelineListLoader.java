@@ -56,6 +56,10 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         try
         {
             List<TimelineItemDTOKey> timelineResult = timelineManager.getTimeline(query, true);
+            if (timelineResult == null)
+            {
+                return null;
+            }
             return CollectionUtils.filter(timelineResult, new Predicate<TimelineItemDTOKey>()
             {
                 @Override public boolean apply(TimelineItemDTOKey timelineItemDTOKey)
