@@ -991,7 +991,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 tvSecurityPrice.setText(String.valueOf(securityCompactDTO.lastPrice));
                 tvSecurityPrice.setTextColor(getResources().getColor(roi.getColorResId()));
 
-                tvSecurityDetailNum.setText(securityCompactDTO.getPriceDifferent());
+                tvSecurityDetailNum.setText("    " + securityCompactDTO.getPriceDifferent());
 
                 if (securityCompactDTO.high != null)
                 {
@@ -1646,7 +1646,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     //Share to wechat moment and share to weibo on the background
     private void shareToWechatMoment(final String strShare)
     {
-        if (TextUtils.isEmpty(strShare))
+        String show = getUnParsedText(strShare);
+        if (TextUtils.isEmpty(show))
         {
             return;
         }
@@ -1655,7 +1656,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             if (updatedUserProfileDTO.wbLinked)
             {
-                String outputStr = strShare;
+                String outputStr = show;
                 if (outputStr.length() > 140)
                 {
                     outputStr = outputStr.substring(0, 140);
@@ -1668,7 +1669,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
-        weChatDTO.title = strShare;
+        weChatDTO.title = show;
         ((SocialSharerImpl) socialSharerLazy.get()).share(weChatDTO, getActivity());
     }
 

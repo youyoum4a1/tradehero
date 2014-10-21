@@ -98,9 +98,15 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         initListView();
     }
 
+    public PullToRefreshBase.Mode getRefreshMode()
+    {
+        return PullToRefreshBase.Mode.PULL_FROM_END;
+    }
+
     private void initListView()
     {
-        listSecurity.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
+
+        listSecurity.setMode(getRefreshMode());
 
         listSecurity.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
@@ -108,6 +114,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 Timber.d("下拉刷新");
+                fetchSecurityList(0);
             }
 
             @Override

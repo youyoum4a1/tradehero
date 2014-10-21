@@ -142,7 +142,8 @@ public class PortfolioFragment extends DashboardFragment
 
         if (portfolioUserKey != 0)
         {
-            if(isNeedShowMainPage){
+            if (isNeedShowMainPage)
+            {
                 setHeadViewRight0("TA的主页");
             }
         }
@@ -180,7 +181,7 @@ public class PortfolioFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
             {
-                Timber.d("POSITION = "+position);
+                Timber.d("POSITION = " + position);
                 PositionInterface item = adapter.getItem((int) position);
                 dealSecurityItem(item);
             }
@@ -420,9 +421,11 @@ public class PortfolioFragment extends DashboardFragment
         });
     }
 
-    public boolean getIsNeedShowPortfolio() {
+    public boolean getIsNeedShowPortfolio()
+    {
         Bundle bundle = getArguments();
-        if (bundle != null) {
+        if (bundle != null)
+        {
             this.isNeedShowMainPage = getArguments().getBoolean(BUNLDE_NEED_SHOW_MAINPAGE, true);
         }
         return isNeedShowMainPage;
@@ -496,15 +499,20 @@ public class PortfolioFragment extends DashboardFragment
     {
         if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
         {
-            startLoadding();
+            //startLoadding();
             detachGetPositionsTask();
             getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
             getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
         }
-        startLoadding();
+        //startLoadding();
         getDataFromNormalUser();
 
         //getPositionDirectly(showUserBaseKey);
+
+        if (adapter != null && adapter.getCount() == 0)
+        {
+            startLoadding();
+        }
     }
 
     private void detachCurrentUserProfileCache()

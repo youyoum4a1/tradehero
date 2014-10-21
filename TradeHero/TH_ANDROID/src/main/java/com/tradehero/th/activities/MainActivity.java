@@ -27,14 +27,11 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.authentication.SignInFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentDiscovery;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
-import com.tradehero.th.fragments.chinabuild.fragment.BindGuestUserFragment;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
@@ -314,7 +311,10 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
     @Override public boolean onKeyDown(int keyCode, KeyEvent event)
     {
-        exitApp();
+        if(keyCode ==KeyEvent.KEYCODE_BACK)
+        {
+            exitApp();
+        }
         return super.onKeyDown(keyCode, event);
     }
 
