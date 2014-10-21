@@ -32,7 +32,7 @@ import retrofit.Callback;
 
     //<editor-fold desc="Get Global Timeline">
     // TODO create a proper key that contains the values max / min
-    protected TimelineDTO getGlobalTimeline(Integer maxCount, Integer maxId, Integer minId)
+    @NotNull protected TimelineDTO getGlobalTimeline(Integer maxCount, Integer maxId, Integer minId)
     {
         return userTimelineService.getGlobalTimeline(maxCount, maxId, minId);
     }
@@ -44,7 +44,7 @@ import retrofit.Callback;
         return middleCallback;
     }
 
-    public TimelineItemDTO getTimelineDetail(@NotNull TimelineItemDTOKey key)
+    @NotNull public TimelineItemDTO getTimelineDetail(@NotNull TimelineItemDTOKey key)
     {
         return userTimelineService.getTimelineDetail(key.id);
     }
@@ -60,13 +60,13 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
-    public TimelineDTO getDefaultTimeline(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
+    @NotNull public TimelineDTO getDefaultTimeline(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
         return userTimelineService.getTimeline(UserTimelineService.TimelineSection.Timeline, userId.key, maxCount, maxId, minId);
     }
 
-    public TimelineDTO getTimelineBySection(UserTimelineService.TimelineSection section,
+    @NotNull public TimelineDTO getTimelineBySection(UserTimelineService.TimelineSection section,
             @NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
@@ -83,7 +83,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">
-    public BaseResponseDTO shareTimelineItem(
+    @NotNull public BaseResponseDTO shareTimelineItem(
             @NotNull UserBaseKey userId,
             @NotNull TimelineItemDTOKey timelineItemId,
             @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO)
@@ -104,7 +104,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Delete Timeline Item">
-    public BaseResponseDTO deleteTimelineItem(
+    @NotNull public BaseResponseDTO deleteTimelineItem(
             @NotNull UserBaseKey userId,
             @NotNull TimelineItemDTOKey timelineItemId)
     {
