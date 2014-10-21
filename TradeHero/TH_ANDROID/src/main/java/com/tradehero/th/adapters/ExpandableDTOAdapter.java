@@ -26,7 +26,7 @@ public abstract class ExpandableDTOAdapter<
         //THLog.d(TAG, "getView " + position);
         if (convertView == null)
         {
-            convertView = inflater.inflate(layoutResourceId, viewGroup, false);
+            convertView = getInflater().inflate(layoutResourceId, viewGroup, false);
         }
 
         DTOViewType dtoView = (DTOViewType) convertView;

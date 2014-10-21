@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.portfolio;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
@@ -102,7 +101,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
             switch (itemType)
             {
                 case MainTimelineAdapter.PORTFOLIO_ITEM_TYPE:
-                    view = inflater.inflate(layoutResourceId, parent, false);
+                    view = getInflater().inflate(layoutResourceId, parent, false);
                     if (item instanceof DisplayablePortfolioDTO)
                     {
                         ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) item);

@@ -195,7 +195,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
         switch (getItemViewType(position))
         {
             case VIEW_TYPE_EMPTY_PLACEHOLDER:
-                convertView = inflater.inflate(heroEmptyPlaceholderResId, parent, false);
+                convertView = getInflater().inflate(heroEmptyPlaceholderResId, parent, false);
                 View mostSkilledButton = convertView.findViewById(R.id.btn_leaderboard_most_skilled);
                 if (mostSkilledButton != null)
                 {
@@ -206,7 +206,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
             case VIEW_TYPE_HEADER_ACTIVE:
                 if (!(convertView instanceof BaseListHeaderView))
                 {
-                    convertView = inflater.inflate(headerActiveResId, parent, false);
+                    convertView = getInflater().inflate(headerActiveResId, parent, false);
                 }
                 ((BaseListHeaderView) convertView).setHeaderTextContent(getContext().getString(R.string.manage_heroes_active_header));
                 break;
@@ -214,7 +214,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
             case VIEW_TYPE_HEADER_INACTIVE:
                 if (!(convertView instanceof BaseListHeaderView))
                 {
-                    convertView = inflater.inflate(headerInactiveResId, parent, false);
+                    convertView = getInflater().inflate(headerInactiveResId, parent, false);
                 }
                 ((BaseListHeaderView) convertView).setHeaderTextContent(getContext().getString(R.string.manage_heroes_inactive_header));
                 break;
@@ -223,7 +223,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
             case VIEW_TYPE_ITEM_INACTIVE:
                 if (!(convertView instanceof HeroListItemView))
                 {
-                    convertView = inflater.inflate(layoutResourceId, parent, false);
+                    convertView = getInflater().inflate(layoutResourceId, parent, false);
                 }
                 ((HeroListItemView) convertView).setFollowerId(followerId);
                 ((HeroListItemView) convertView).display((HeroDTO) getItem(position));

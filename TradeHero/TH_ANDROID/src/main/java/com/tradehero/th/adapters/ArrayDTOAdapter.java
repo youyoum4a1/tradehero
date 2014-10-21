@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 {
     @NotNull protected List<T> items = Collections.emptyList();
-    @NotNull protected final LayoutInflater inflater;
+    @NotNull private final LayoutInflater inflater;
     @NotNull private final Context context;
     @LayoutRes protected final int layoutResourceId;
 
@@ -30,33 +30,6 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends BaseAdapt
     public void setItems(@NotNull List<T> items)
     {
         this.items = items;
-    }
-
-    /**
-     * If called in non-UI thread, must be synchronized(see source code of ArrayAdapter) TODO
-     */
-    public void addItem(T item)
-    {
-        items.add(item);
-    }
-
-    /**
-     * If called in non-UI thread, must be synchronized TODO
-     */
-    public void addItems(T[] items)
-    {
-        for (T item : items)
-        {
-            addItem(item);
-        }
-    }
-
-    /**
-     * If called in non-UI thread, must be synchronized TODO
-     */
-    public void addItems(List<T> data)
-    {
-        items.addAll(data);
     }
 
     public void clear()
@@ -106,5 +79,9 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends BaseAdapt
     @NotNull public Context getContext()
     {
         return context;
+    }
+    @NotNull public LayoutInflater getInflater()
+    {
+        return inflater;
     }
 }

@@ -67,27 +67,6 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
     }
 
     @Override
-    public void addItems(List<NewsItemDTOKey> data)
-    {
-        super.addItems(data);
-        setBackgroundsArray();
-    }
-
-    @Override
-    public void addItems(NewsItemDTOKey[] items)
-    {
-        super.addItems(items);
-        setBackgroundsArray();
-    }
-
-    @Override
-    public void addItem(NewsItemDTOKey item)
-    {
-        super.addItem(item);
-        setBackgroundsArray();
-    }
-
-    @Override
     public void setItems(@NotNull List<NewsItemDTOKey> items)
     {
         super.setItems(items);

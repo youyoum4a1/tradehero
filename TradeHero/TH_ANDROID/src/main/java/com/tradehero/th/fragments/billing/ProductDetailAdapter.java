@@ -97,7 +97,7 @@ abstract public class ProductDetailAdapter<
         ProductDetailQuickDescriptionView
                 quickDescription = convertView instanceof ProductDetailQuickDescriptionView ?
                 (ProductDetailQuickDescriptionView) convertView :
-                (ProductDetailQuickDescriptionView) inflater.inflate(R.layout.store_quick_message, viewGroup, false);
+                (ProductDetailQuickDescriptionView) getInflater().inflate(R.layout.store_quick_message, viewGroup, false);
         quickDescription.linkWithProductDomain(skuDomain, true);
         return quickDescription;
     }

@@ -72,7 +72,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         SectionViewHolder sectionViewHolder;
         if (convertView == null)
         {
-            convertView = inflater.inflate(R.layout.refer_friend_header_view, parent, false);
+            convertView = getInflater().inflate(R.layout.refer_friend_header_view, parent, false);
             TextView sectionTextView = (TextView) convertView.findViewById(R.id.refer_friend_list_header);
             sectionViewHolder = new SectionViewHolder();
             sectionViewHolder.labelText = sectionTextView;

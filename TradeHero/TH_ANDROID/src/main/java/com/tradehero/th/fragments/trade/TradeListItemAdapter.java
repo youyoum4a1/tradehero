@@ -160,7 +160,7 @@ public class TradeListItemAdapter
             case ITEM_TYPE_HEADER_POSITION_SUMMARY:
                 if (convertView == null)
                 {
-                    convertView = inflater.inflate(LAYOUT_RES_ID_ITEM_HEADER, viewGroup, false);
+                    convertView = getInflater().inflate(LAYOUT_RES_ID_ITEM_HEADER, viewGroup, false);
                 }
                 ((BaseListHeaderView) convertView).setHeaderTextContent((int) item);
                 break;
@@ -168,7 +168,7 @@ public class TradeListItemAdapter
             case ITEM_TYPE_POSITION_SUMMARY:
                 if (convertView == null)
                 {
-                    convertView = inflater.inflate(getPositionLayoutResId(), viewGroup, false);
+                    convertView = getInflater().inflate(getPositionLayoutResId(), viewGroup, false);
                 }
 
                 ((PositionView) convertView).linkWith(this.shownPositionDTO, false);
@@ -184,7 +184,7 @@ public class TradeListItemAdapter
             case ITEM_TYPE_HEADER_TRADE_HISTORY:
                 if (convertView == null)
                 {
-                    convertView = inflater.inflate(LAYOUT_RES_ID_ITEM_HEADER, viewGroup, false);
+                    convertView = getInflater().inflate(LAYOUT_RES_ID_ITEM_HEADER, viewGroup, false);
                 }
                 ((BaseListHeaderView) convertView).setHeaderTextContent((int) item);
                 break;
@@ -192,7 +192,7 @@ public class TradeListItemAdapter
             case ITEM_TYPE_TRADE:
                 if (convertView == null)
                 {
-                    convertView = inflater.inflate(layoutResourceId, viewGroup, false);
+                    convertView = getInflater().inflate(layoutResourceId, viewGroup, false);
                 }
                 ((TradeListItemView) convertView).display((ExpandableTradeItem) item);
                 toggleExpanded((ExpandableTradeItem) item, convertView);

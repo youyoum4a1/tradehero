@@ -70,7 +70,7 @@ public class FollowerPaymentListItemAdapter extends ArrayDTOAdapter<FollowerTran
         {
             if (!(convertView instanceof BaseListHeaderView))
             {
-                convertView = inflater.inflate(headerResId, parent, false);
+                convertView = getInflater().inflate(headerResId, parent, false);
             }
             ((BaseListHeaderView) convertView).setHeaderTextContent(getContext().getString(R.string.manage_follower_payment_transaction_list_header));
         }
@@ -78,7 +78,7 @@ public class FollowerPaymentListItemAdapter extends ArrayDTOAdapter<FollowerTran
         {
             if (!(convertView instanceof FollowerPaymentListItemView))
             {
-                convertView = inflater.inflate(layoutResourceId, parent, false);
+                convertView = getInflater().inflate(layoutResourceId, parent, false);
             }
             ((FollowerPaymentListItemView) convertView).display((FollowerTransactionDTO) getItem(position));
         }
