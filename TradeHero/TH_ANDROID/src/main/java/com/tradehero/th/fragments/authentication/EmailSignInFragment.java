@@ -21,6 +21,7 @@ import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -111,12 +112,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             }
         });
 
-        // HACK
-        if (!Constants.RELEASE)
-        {
-            email.setText(getString(R.string.test_email));
-            password.setText(getString(R.string.test_password));
-        }
+        email.setText(THSharePreferenceManager.getAccount(getActivity()));
 
         forgotPasswordLink = (TextView) view.findViewById(R.id.authentication_sign_in_forgot_password);
         forgotPasswordLink.setOnClickListener(this);
@@ -167,6 +163,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                 THUser.clearCurrentUser();
                 if (checkEmailAndPassword())
                 {
+                    //Save account
+                    THSharePreferenceManager.saveAccount(getActivity(), email.getText().toString());
                     handleSignInOrUpButtonClicked(view);
                 }
                 break;

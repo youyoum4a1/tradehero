@@ -13,6 +13,7 @@ public class THSharePreferenceManager {
     public final static String KEY_APP_SUGGEST_UPDATE = "key_app_suggest_update";
     public final static String KEY_APP_FORCE_UPDATE = "key_app_force_update";
     public final static String KEY_APP_NOTIFICATION_ON_OFF = "key_app_notification_on_off";
+    public final static String KEY_SIGN_IN_ACCOUNT = "key_sign_in_account";
 
     private final static String TH_SP_NAME = "th_sp_name_app_version";
 
@@ -65,4 +66,21 @@ public class THSharePreferenceManager {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME,Context.MODE_PRIVATE);
         sp.edit().putBoolean(KEY_APP_NOTIFICATION_ON_OFF, notificationsStatus).commit();
     }
+
+    public static void saveAccount(Context context, String account){
+        if(context==null){
+            return;
+        }
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME,Context.MODE_PRIVATE);
+        sp.edit().putString(KEY_SIGN_IN_ACCOUNT, account).commit();
+    }
+
+    public static String getAccount(Context context){
+        if(context==null){
+            return "";
+        }
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME,Context.MODE_PRIVATE);
+        return sp.getString(KEY_SIGN_IN_ACCOUNT, "");
+    }
+
 }
