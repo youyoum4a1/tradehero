@@ -78,7 +78,7 @@ public class FollowerPaymentListItemAdapter extends ArrayDTOAdapter<FollowerTran
         {
             if (!(convertView instanceof FollowerPaymentListItemView))
             {
-                convertView = getInflater().inflate(layoutResourceId, parent, false);
+                convertView = conditionalInflate(position, convertView, parent);
             }
             ((FollowerPaymentListItemView) convertView).display((FollowerTransactionDTO) getItem(position));
         }

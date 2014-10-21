@@ -190,10 +190,7 @@ public class TradeListItemAdapter
                 break;
 
             case ITEM_TYPE_TRADE:
-                if (convertView == null)
-                {
-                    convertView = getInflater().inflate(layoutResourceId, viewGroup, false);
-                }
+                convertView = conditionalInflate(position, convertView, viewGroup);
                 ((TradeListItemView) convertView).display((ExpandableTradeItem) item);
                 toggleExpanded((ExpandableTradeItem) item, convertView);
                 break;

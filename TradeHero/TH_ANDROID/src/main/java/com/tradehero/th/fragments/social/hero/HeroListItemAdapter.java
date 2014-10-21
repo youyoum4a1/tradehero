@@ -223,7 +223,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
             case VIEW_TYPE_ITEM_INACTIVE:
                 if (!(convertView instanceof HeroListItemView))
                 {
-                    convertView = getInflater().inflate(layoutResourceId, parent, false);
+                    convertView = conditionalInflate(position, convertView, parent);
                 }
                 ((HeroListItemView) convertView).setFollowerId(followerId);
                 ((HeroListItemView) convertView).display((HeroDTO) getItem(position));

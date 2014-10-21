@@ -16,11 +16,9 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends BaseAdapt
     @NotNull protected List<T> items = Collections.emptyList();
     @NotNull private final LayoutInflater inflater;
     @NotNull private final Context context;
-    @LayoutRes protected final int layoutResourceId;
+    @LayoutRes private final int layoutResourceId;
 
-    public ArrayDTOAdapter(
-            @NotNull Context context,
-            @LayoutRes int layoutResourceId)
+    public ArrayDTOAdapter(@NotNull Context context, @LayoutRes int layoutResourceId)
     {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -30,6 +28,7 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends BaseAdapt
     public void setItems(@NotNull List<T> items)
     {
         this.items = items;
+        notifyDataSetChanged();
     }
 
     public void clear()
@@ -76,11 +75,12 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends BaseAdapt
         return position;
     }
 
-    @NotNull public Context getContext()
+    @NotNull public final Context getContext()
     {
         return context;
     }
-    @NotNull public LayoutInflater getInflater()
+
+    @NotNull public final LayoutInflater getInflater()
     {
         return inflater;
     }

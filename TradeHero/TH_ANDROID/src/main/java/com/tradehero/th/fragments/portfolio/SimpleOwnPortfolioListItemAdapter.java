@@ -101,7 +101,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
             switch (itemType)
             {
                 case MainTimelineAdapter.PORTFOLIO_ITEM_TYPE:
-                    view = getInflater().inflate(layoutResourceId, parent, false);
+                    view = conditionalInflate(position, convertView, parent);
                     if (item instanceof DisplayablePortfolioDTO)
                     {
                         ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) item);

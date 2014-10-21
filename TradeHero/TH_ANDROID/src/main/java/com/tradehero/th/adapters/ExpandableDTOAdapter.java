@@ -23,11 +23,7 @@ public abstract class ExpandableDTOAdapter<
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        //THLog.d(TAG, "getView " + position);
-        if (convertView == null)
-        {
-            convertView = getInflater().inflate(layoutResourceId, viewGroup, false);
-        }
+        convertView = conditionalInflate(position, convertView, viewGroup);
 
         DTOViewType dtoView = (DTOViewType) convertView;
         WrappedDTOType expandableWrapper = (WrappedDTOType) getItem(position);
