@@ -207,6 +207,9 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                 boolean forceUpdate = appInfoDTO.isForceUpgrade();
                 String url = appInfoDTO.getLatestVersionDownloadUrl();
                 THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(getActivity(), url, suggestUpdate,forceUpdate);
+                if(mVersionLayout==null||mNewVersionImageView==null||mVersionCode==null){
+                    return;
+                }
                 if(suggestUpdate){
                     mVersionLayout.setClickable(true);
                     mNewVersionImageView.setVisibility(View.VISIBLE);
