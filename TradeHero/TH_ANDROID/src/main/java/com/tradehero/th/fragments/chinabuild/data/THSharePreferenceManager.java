@@ -83,4 +83,9 @@ public class THSharePreferenceManager {
         return sp.getString(KEY_SIGN_IN_ACCOUNT, "");
     }
 
+    public static void recordShareDialog(String useriId){
+
+    }
+
+
 }
