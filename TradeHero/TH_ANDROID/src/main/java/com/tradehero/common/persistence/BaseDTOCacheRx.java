@@ -58,7 +58,7 @@ abstract public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends 
         DTOType cachedValue = cachedValues.get(key);
         if (cachedValue != null && isValid(cachedValue))
         {
-            cachedSubject.startWith(Pair.create(key, cachedValue));
+            cachedSubject.onNext(Pair.create(key, cachedValue));
         }
 
         fetch(key)

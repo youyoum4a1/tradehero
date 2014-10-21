@@ -34,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 @Singleton public class SecurityServiceWrapper
