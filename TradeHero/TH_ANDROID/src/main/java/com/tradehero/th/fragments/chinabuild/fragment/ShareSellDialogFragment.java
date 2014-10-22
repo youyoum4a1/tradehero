@@ -58,7 +58,12 @@ public class ShareSellDialogFragment extends BaseDialogFragment
             String userId, String positionId, String tradeId)
     {
         ShareSellDialogFragment dialogFragment = new ShareSellDialogFragment();
-        dialogFragment.show(fragmentManager, ShareSellDialogFragment.class.getName());
+        try{
+            dialogFragment.show(fragmentManager, ShareSellDialogFragment.class.getName());
+        }catch (Exception e){
+            e.printStackTrace();
+            return dialogFragment;
+        }
         mStockName = stockName;
         mStockCode = stockCode;
         mStockUp = stockUp;

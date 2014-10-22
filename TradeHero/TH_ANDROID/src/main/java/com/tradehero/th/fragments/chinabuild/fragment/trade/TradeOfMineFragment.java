@@ -111,7 +111,6 @@ public class TradeOfMineFragment extends DashboardFragment
         adapter = new MyTradePositionListAdapter(getActivity());
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         userWatchlistPositionFetchListener = createWatchlistListener();
-        //userWatchlistPositionRefreshListener = createRefreshWatchlistListener();
         portfolioFetchListener = createPortfolioCacheListener();
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
     }

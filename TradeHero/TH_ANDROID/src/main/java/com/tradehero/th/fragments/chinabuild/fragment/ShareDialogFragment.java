@@ -1,7 +1,5 @@
 package com.tradehero.th.fragments.chinabuild.fragment;
 
-//import android.app.FragmentManager;
-
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
