@@ -610,20 +610,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     protected void setInitialBuyQuantityIfCan()
     {
-        //if (mBuyQuantity == null)
-        //{
         Integer maxPurchasableShares = getMaxPurchasableShares();
         if (maxPurchasableShares != null)
         {
             linkWithBuyQuantity((int) Math.ceil(((double) maxPurchasableShares) / 2), true);
         }
-        //}
     }
 
     protected void setInitialSellQuantityIfCan()
     {
-        //if (mSellQuantity == null)
-        //{
         Integer maxSellableShares = getMaxSellableShares();
         if (maxSellableShares != null)
         {
@@ -633,7 +628,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 setTransactionTypeBuy(true);
             }
         }
-        //}
     }
 
     protected Integer getClampedBuyQuantity(Integer candidate)
@@ -680,12 +674,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     {
         @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
         {
-            //if (mQuoteRefreshProgressBar != null)
-            //{
-            //    mQuoteRefreshProgressBar.setProgress(
-            //            (int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
-            //}
-            //Timber.d("BuySellFreshQuoteListener progress:" + (int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
         }
     }
 
@@ -725,12 +713,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             linkWith(securityCompactDTO);
         }
-        //else
-        //{
         detachSecurityCompactCache();
         securityCompactCache.get().register(securityId, compactCacheListener);
         securityCompactCache.get().getOrFetchAsync(securityId, true);
-        //}
     }
 
     protected void detachSecurityCompactCache()
@@ -763,11 +748,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         this.portfolioCompactDTO = portfolioCompactDTO;
         clampBuyQuantity(andDisplay);
         clampSellQuantity(andDisplay);
-        //if (andDisplay)
-        //{
-        //    // TODO max purchasable shares
-        //    displayBuySellPrice();
-        //}
     }
 
     protected void clampSellQuantity(boolean andDisplay)
@@ -949,12 +929,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             // HACK TODO find something better than skipCache to avoid OutOfMemory
             this.picasso
                     .load(imageURL)
-                            //.skipMemoryCache()
                     .into(image, chartImageCallback);
-            //if (chartImageWrapper != null)
-            //{
-            //    chartImageWrapper.setDisplayedChildByLayoutId(tvLoadingChart.getId());
-            //}
         }
     }
 
@@ -966,13 +941,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     {
         if (securityCompactDTO != null)
         {
-            //tvSecurityPrice;//当前价格
-            //tvSecurityDetailRate;//涨跌幅
-            //tvSecurityDetailNum;//涨跌值
-            //tvInfo0Value;//最高
-            //tvInfo1Value;//最低
-            //tvInfo2Value;//成交量
-            //tvInfo3Value;//平均量
 
             setHeadViewMiddleMain(securityCompactDTO.name);
 
@@ -1009,17 +977,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
                 if (securityCompactDTO.volume != null)
                 {
-                    //tvInfo2Value.setText(THSignedMoney.builder(securityCompactDTO.volume)
-                    //        //.currency(securityCompactDTO.getCurrencyDisplay())
-                    //        .build().toString());
                     tvInfo2Value.setText(NumberDisplayUtils.getString(securityCompactDTO.volume));
                 }
 
                 if (securityCompactDTO.averageDailyVolume != null)
                 {
-                    //tvInfo3Value.setText(THSignedMoney.builder(securityCompactDTO.averageDailyVolume)
-                    //        //.currency(securityCompactDTO.getCurrencyDisplay())
-                    //        .build().toString());
                     tvInfo3Value.setText(NumberDisplayUtils.getString(securityCompactDTO.averageDailyVolume));
                 }
             }
@@ -1041,13 +1003,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         int id = view.getId();
         if (id == R.id.llSecurityBuy || id == R.id.llSecuritySale)
         {
-            //Timber.d("OnClicked buy sale discuss");
-            //llSecuritySale.setVisibility(View.VISIBLE);
             enterBuySale(id == R.id.llSecurityBuy);
         }
         else if (id == R.id.llSecurityDiscuss)
         {
-            //llSecuritySale.setVisibility(View.GONE);
             enterDiscussSend();
         }
     }
@@ -1100,10 +1059,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
         if (!isBuyOrSaleValid()) return;
         Bundle bundle = new Bundle();
-        //securityId,
-        //purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
-        //quoteDTO,
-        //isTransactionTypeBuy
         bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
         bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
         bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
@@ -1117,9 +1072,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     public void enterDiscussSend()
     {
         Bundle bundle = new Bundle();
-        //bundle.putBundle(SecurityDetail.BUNDLE_KEY_SECURITY_ID_BUNDLE,securityId.getArgs());
-        //gotoDashboard(DiscussSendFragment.class.getName(), bundle);
-        //getDashboardNavigator().pushFragment();
         bundle.putBundle(SecurityDiscussSendFragment.BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
         pushFragment(SecurityDiscussSendFragment.class, bundle);
     }
@@ -1133,13 +1085,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     {
         @Override public void onDTOReceived(@NotNull final PositionDTOKey key, @NotNull final PositionDTOCompact value)
         {
-            //linkWith(value, true);
             linkWith(value);
         }
 
         @Override public void onErrorThrown(@NotNull PositionDTOKey key, @NotNull Throwable error)
         {
-            //THToast.show(R.string.error_fetch_detailed_security_info);
             Timber.e("PositionNewCacheListener", key, error);
         }
     }
@@ -1213,10 +1163,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             linkWith((PositionDTOCompactList) null, andDisplay);
         }
 
-        if (andDisplay)
-        {
-            // Nothing to do in this class
-        }
     }
 
     public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
@@ -1235,21 +1181,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             throw new IllegalArgumentException("This security compact is not for " + this.securityId);
         }
         this.securityCompactDTO = securityCompactDTO;
-        if (andDisplay)
-        {
-            //displayMarketClose();
 
-        }
     }
 
     public void linkWith(final UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         this.userProfileDTO = userProfileDTO;
         setInitialBuySaleQuantityIfCan();
-        if (andDisplay)
-        {
-            // Nothing to do really in this class
-        }
     }
 
     protected void requestUserProfile()
@@ -1411,11 +1349,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
         @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO, THResponse response)
         {
-            //DashboardNavigator navigator = getDashboardNavigator();
-            //if (navigator != null)
-            //{
-            //    navigator.popFragment();
-            //}
             dismissProgress();
             THToast.show("添加自选成功");
             isInWatchList = true;
@@ -1573,10 +1506,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 
-    @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader})
+    @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader, R.id.tvUserTLContent})
     public void onOperaterClicked(View view)
     {
-        if (view.getId() == R.id.llDisscurssOrNews)
+        if (view.getId() == R.id.llDisscurssOrNews||view.getId()==R.id.tvUserTLContent)
         {
             enterTimeLineDetail(getAbstractDiscussionCompactDTO());
         }
@@ -1627,7 +1560,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         pushFragment(DiscussSendFragment.class, bundle);
     }
 
-    public void share(String strShare)
+    private void share(String strShare)
     {
         mShareSheetTitleCache.set(strShare);
         ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())

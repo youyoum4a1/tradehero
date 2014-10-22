@@ -193,6 +193,15 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                     }
                 }
             });
+            holder.tvUserTLContent.setOnClickListener(new View.OnClickListener(){
+                @Override public void onClick(View view)
+                {
+                    if (timeLineOperater != null)
+                    {
+                        timeLineOperater.OnTimeLineItemClicked(position);
+                    }
+                }
+            });
             holder.llTLPraise.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
