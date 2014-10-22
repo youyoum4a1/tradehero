@@ -189,6 +189,9 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
         }
         else
         {
+            if(tvNotificationCount==null){
+                getActivity().finish();
+            }
             tvNotificationCount.setVisibility(View.GONE);
         }
     }

@@ -34,12 +34,8 @@ import retrofit.client.Response;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-//import com.tradehero.th.activities.MarketUtil;
-//import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
-//import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 
-public class ShareDialogFragment extends BaseDialogFragment implements View.OnClickListener
-{
+public class ShareDialogFragment extends BaseDialogFragment implements View.OnClickListener {
 
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @InjectView(R.id.title) TextView mTitleText;
@@ -54,11 +50,14 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
     private static String mTitle;
     private static String mShareContent;
 
-    public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title)
-    {
+    public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title) {
         mTitle = title;
         ShareDialogFragment dialogFragment = new ShareDialogFragment();
-        dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
+        try {
+            dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return dialogFragment;
     }
 
@@ -70,41 +69,44 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
      * @param shareContent
      * @return
      */
-    public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title, String shareContent)
-    {
+    public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title, String shareContent) {
+        ShareDialogFragment dialogFragment = new ShareDialogFragment();
         mTitle = title;
         mShareContent = shareContent;
-        ShareDialogFragment dialogFragment = new ShareDialogFragment();
-        dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
+        try {
+            dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
         return dialogFragment;
     }
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
         setCancelable(false);
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
-    {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.share_dialog_layout, container, false);
         return view;
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTitleText.setText(mTitle);
         mCancelBtn.setOnClickListener(this);
         mOKBtn.setOnClickListener(this);
     }
 
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.btn_cancel:
                 dismiss();
                 break;
@@ -115,23 +117,20 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         }
     }
 
-    private void showWeiboWechatWechatmoment(){
+    private void showWeiboWechatWechatmoment() {
         ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                 .inflate(R.layout.share_sheet_dialog_layout, null);
         THDialog.showUpDialog(getActivity(), contentView);
     }
 
     //Share to WeChat moment and share to WeiBo on the background
-    private void shareToWeChatMoment()
-    {
-        if(TextUtils.isEmpty(mShareContent)){
+    private void shareToWeChatMoment() {
+        if (TextUtils.isEmpty(mShareContent)) {
             return;
         }
         UserProfileDTO updatedUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (updatedUserProfileDTO != null)
-        {
-            if (updatedUserProfileDTO.wbLinked)
-            {
+        if (updatedUserProfileDTO != null) {
+            if (updatedUserProfileDTO.wbLinked) {
                 InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(mShareContent);
                 userServiceWrapper.get().inviteFriends(
                         currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
@@ -141,7 +140,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
         weChatDTO.title = mShareContent;
-        ((SocialSharerImpl)socialSharerLazy.get()).share(weChatDTO, getActivity());
+        ((SocialSharerImpl) socialSharerLazy.get()).share(weChatDTO, getActivity());
 
     }
 

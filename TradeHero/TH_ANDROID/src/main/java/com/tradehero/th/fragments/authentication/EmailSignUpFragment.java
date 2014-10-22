@@ -421,12 +421,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     @Override
     public boolean areFieldsValid() {
-        //return this.profileView.areFieldsValid();
-        //if (mDisplayName.getText().toString().isEmpty())
-        //{
-        //    THToast.show(R.string.register_error_displayname);
-        //    return false;
-        //}
         return true;
     }
 

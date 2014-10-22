@@ -381,4 +381,5 @@
   <string name="click_to_get_more">点击加载更多</string>
   <string name="html_string_blue"><Data><![CDATA[ <font color="#1789d5">%s</font> ]]></Data></string>
   <string name="html_string_gray"><Data><![CDATA[ <font color="#bfbfbf">%s</font> ]]></Data></string>
+  <string name="app_name_cn">全民股神</string>
 </resources>
