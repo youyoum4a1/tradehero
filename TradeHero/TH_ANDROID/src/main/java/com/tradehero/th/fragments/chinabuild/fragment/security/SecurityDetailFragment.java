@@ -193,6 +193,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @InjectView(R.id.tvSecurityDetailPrice) TextView tvSecurityPrice;//当前价格
     @InjectView(R.id.tvSecurityDetailRate) TextView tvSecurityDetailRate;//涨跌幅
     @InjectView(R.id.tvSecurityDetailNum) TextView tvSecurityDetailNum;//涨跌值
+    @InjectView(R.id.tvSecurityDetailNumHead) TextView tvSecurityDetailNumHead;//涨跌值的符号占位
     @InjectView(R.id.tvInfo0Value) TextView tvInfo0Value;//最高
     @InjectView(R.id.tvInfo1Value) TextView tvInfo1Value;//最低
     @InjectView(R.id.tvInfo2Value) TextView tvInfo2Value;//成交量
@@ -959,7 +960,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 tvSecurityPrice.setText(String.valueOf(securityCompactDTO.lastPrice));
                 tvSecurityPrice.setTextColor(getResources().getColor(roi.getColorResId()));
 
-                tvSecurityDetailNum.setText("    " + securityCompactDTO.getPriceDifferent());
+                tvSecurityDetailNum.setText(securityCompactDTO.getPriceDifferent());
+
+                if(securityCompactDTO.getPriceDifferent().startsWith("-")||securityCompactDTO.getPriceDifferent().startsWith("0.00"))
+                {tvSecurityDetailNumHead.setVisibility(View.GONE);}
+                else
+                {tvSecurityDetailNumHead.setVisibility(View.INVISIBLE);}
+
 
                 if (securityCompactDTO.high != null)
                 {
