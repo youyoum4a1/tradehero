@@ -139,9 +139,8 @@ public class THUser
         {
             userFormDTO.deviceToken = deviceTokenHelper.getDeviceToken();
         }
-        Timber.d("APID: %s,authenticationMode :%s", userFormDTO.deviceToken,/*PushManager.shared().getAPID()*/
+        Timber.d("APID: %s,authenticationMode :%s", userFormDTO.deviceToken,
                 authenticationMode);
-        //userFormDTO.deviceToken = DeviceTokenHelper.getDeviceToken();//PushManager.shared().getAPID();
 
         if (authenticationMode == null)
         {

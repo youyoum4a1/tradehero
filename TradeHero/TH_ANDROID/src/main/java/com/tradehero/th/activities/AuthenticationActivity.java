@@ -518,6 +518,7 @@ public class AuthenticationActivity extends DashboardActivity
         String wechatCode = WXEntryActivity.getWeChatCode();
         if (!TextUtils.isEmpty(wechatCode))
         {
+            THUser.setAuthenticationMode(AuthenticationMode.SignIn);
             authenticateWithWechat(wechatCode);
             WXEntryActivity.setWeChatCodeNull();
         }
