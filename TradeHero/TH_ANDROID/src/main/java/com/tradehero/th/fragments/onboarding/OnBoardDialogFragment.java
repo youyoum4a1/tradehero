@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.onboarding;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCache;
 import com.tradehero.th.persistence.market.ExchangeSectorCompactListCache;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
-import com.tradehero.th.persistence.security.SecurityCompactListCache;
+import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -47,6 +48,9 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
@@ -76,9 +80,9 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Nullable DTOCacheNew.Listener<SuggestHeroesListType, LeaderboardUserDTOList> leaderboardUserListCacheListener;
 
     //stock
-    @Inject SecurityCompactListCache securityCompactListCache;
+    @Inject SecurityCompactListCacheRx securityCompactListCache;
     @NotNull OnBoardPickStockViewHolder stockViewHolder;
-    @Nullable DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListCacheListener;
+    @Nullable Subscription securityListCacheSubscription;
 
     public static OnBoardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
     {
@@ -99,7 +103,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         leaderboardUserListCacheListener = new OnboardPickHeroLeaderboardCacheListener();
         //stock
         stockViewHolder = new OnBoardPickStockViewHolder(getActivity());
-        securityListCacheListener = new OnBoardPickStockCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -217,38 +220,45 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         if (exchangeSectorSecurityListType != null)
         {
-            detachSecurityListCache();
-            securityCompactListCache.register(exchangeSectorSecurityListType, securityListCacheListener);
-            securityCompactListCache.getOrFetchAsync(exchangeSectorSecurityListType);
+            unsubscribeSecurityListSubscription();
+            securityCompactListCache.get(exchangeSectorSecurityListType)
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Pair<SecurityListType, SecurityCompactDTOList>>()
+                    {
+                        @Override public void onCompleted()
+                        {
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            THToast.show(R.string.error_fetch_security_list_info);
+                        }
+
+                        @Override public void onNext(Pair<SecurityListType, SecurityCompactDTOList> pair)
+                        {
+                            mStockSwitcher.setDisplayedChild(1);
+                            stockViewHolder.setStocks(pair.second);
+                            submitHeroes();
+                        }
+                    });
         }
     }
 
-    protected void detachSecurityListCache()
+    protected void unsubscribeSecurityListSubscription()
     {
-        securityCompactListCache.unregister(securityListCacheListener);
-    }
-
-    protected class OnBoardPickStockCacheListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>
-    {
-        @Override public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
+        Subscription subscriptionCopy = securityListCacheSubscription;
+        if (subscriptionCopy != null)
         {
-            //Timber.d("lyl stock "+value.toString());
-            mStockSwitcher.setDisplayedChild(1);
-            stockViewHolder.setStocks(value);
-            submitHeroes();
+            subscriptionCopy.unsubscribe();
         }
-
-        @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
-        {
-            THToast.show(R.string.error_fetch_security_list_info);
-        }
+        securityListCacheSubscription = null;
     }
 
     @Override public void onDestroyView()
     {
         detachExchangeSectorCompactListCache();
         detachLeaderboardUserListCache();
-        detachSecurityListCache();
+        unsubscribeSecurityListSubscription();
         detachUserProfileCache();
         exchangeSectorViewHolder.detachView();
         heroViewHolder.detachView();
@@ -268,7 +278,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         userProfileListener = null;
         exchangeSectorListener = null;
         leaderboardUserListCacheListener = null;
-        securityListCacheListener = null;
         super.onDestroy();
     }
 

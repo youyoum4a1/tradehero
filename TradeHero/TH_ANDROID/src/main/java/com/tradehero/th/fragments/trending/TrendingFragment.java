@@ -33,7 +33,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -80,7 +79,6 @@ public class TrendingFragment extends SecurityListFragment
     @Inject Lazy<ProviderListCache> providerListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Analytics analytics;
 
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;

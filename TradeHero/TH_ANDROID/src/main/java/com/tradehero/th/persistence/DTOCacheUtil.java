@@ -55,9 +55,10 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.position.PositionCompactCache;
 import com.tradehero.th.persistence.position.PositionCompactIdCache;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
+import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.persistence.system.SystemStatusCache;
@@ -71,7 +72,6 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -114,8 +114,9 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<ProviderCache> providerCache;
     protected final Lazy<ProviderListCache> providerListCache;
     protected final Lazy<QuestBonusListCache> questBonusListCacheLazy;
-    protected final Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    protected final Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
     protected final Lazy<SecurityCompactListCache> securityCompactListCache;
+    protected final Lazy<SecurityCompactListCacheRx> securityCompactListCacheRx;
     protected final Lazy<SystemStatusCache> systemStatusCache;
     protected final Lazy<TradeCache> tradeCache;
     protected final Lazy<TradeListCache> tradeListCache;
@@ -169,8 +170,9 @@ import org.jetbrains.annotations.Nullable;
             Lazy<ProductPurchaseCache> productPurchaseCache,
             Lazy<ProviderCache> providerCache,
             Lazy<ProviderListCache> providerListCache,
-            Lazy<SecurityPositionDetailCache> securityPositionDetailCache,
+            Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache,
             Lazy<SecurityCompactListCache> securityCompactListCache,
+            Lazy<SecurityCompactListCacheRx> securityCompactListCacheRx,
             Lazy<SystemStatusCache> systemStatusCache,
             Lazy<TradeCache> tradeCache,
             Lazy<TradeListCache> tradeListCache,
@@ -225,6 +227,7 @@ import org.jetbrains.annotations.Nullable;
         this.questBonusListCacheLazy = questBonusListCacheLazy;
         this.securityPositionDetailCache = securityPositionDetailCache;
         this.securityCompactListCache = securityCompactListCache;
+        this.securityCompactListCacheRx = securityCompactListCacheRx;
         this.systemStatusCache = systemStatusCache;
         this.tradeCache = tradeCache;
         this.tradeListCache = tradeListCache;

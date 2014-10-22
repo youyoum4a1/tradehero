@@ -16,7 +16,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
@@ -33,7 +33,6 @@ import retrofit.Callback;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(THRobolectricTestRunner.class)
@@ -45,7 +44,7 @@ public class WatchlistEditFragmentTest
     private static final Integer GOOGLE_STOCK_WATCHING_QUANTITY = 1;
 
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
-    @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    @Inject protected Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
     @Inject protected SecurityCompactCache securityCompactCache;
 
     private WatchlistEditFragment watchlistFragment;

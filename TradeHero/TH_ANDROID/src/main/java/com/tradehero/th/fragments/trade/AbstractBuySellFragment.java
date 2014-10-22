@@ -26,6 +26,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.prefs.ShowMarketClosed;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -52,7 +53,10 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject CurrentUserId currentUserId;
+    @Inject Lazy<SecurityCompactCacheRx> securityCompactCache;
+    protected Subscription securityCompactSubscription;
     @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
+    protected Subscription securityPositionDetailSubscription;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject THRouter thRouter;
@@ -64,7 +68,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected PositionDTOCompactList positionDTOCompactList;
     protected PortfolioCompactDTO portfolioCompactDTO;
     protected boolean querying = false;
-    protected Subscription securityPositionDetailSubscription;
 
     protected ProviderId providerId;
     protected UserProfileDTO userProfileDTO;
@@ -198,6 +201,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroyView()
     {
+        detachSecurityCompactSubscription();
         detachSecurityPositionDetailSubscription();
         detachUserProfileCache();
         destroyFreshQuoteHolder();
@@ -219,6 +223,16 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         userProfileCacheListener = null;
         super.onDestroy();
+    }
+
+    protected void detachSecurityCompactSubscription()
+    {
+        Subscription subscriptionCopy = securityCompactSubscription;
+        if (subscriptionCopy != null)
+        {
+            subscriptionCopy.unsubscribe();
+        }
+        securityCompactSubscription = null;
     }
 
     protected void detachSecurityPositionDetailSubscription()
@@ -265,6 +279,31 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return 0;
     }
 
+    protected void requestCompactDetail()
+    {
+        detachSecurityCompactSubscription();
+        securityCompactSubscription = securityCompactCache.get()
+                .get(this.securityId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+
+                    }
+
+                    @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                    {
+                        linkWith(pair.second, true);
+                    }
+                });
+    }
+
     protected void requestPositionDetail()
     {
         detachSecurityPositionDetailSubscription();
@@ -283,9 +322,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                         Timber.e(e, "getting %s", securityId);
                     }
 
-                    @Override public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> securityIdSecurityPositionDetailDTOPair)
+                    @Override public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> pair)
                     {
-                        linkWith(securityIdSecurityPositionDetailDTOPair.second, true);
+                        linkWith(pair.second, true);
                     }
                 });
     }
@@ -308,6 +347,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
 
         prepareFreshQuoteHolder();
+        requestCompactDetail();
         requestPositionDetail();
 
         if (andDisplay)
