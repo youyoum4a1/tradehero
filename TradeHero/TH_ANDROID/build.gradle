@@ -325,7 +325,7 @@ dependencies {
   }
   compile 'org.twitter4j:twitter4j-core:3.0+'
 
-  compile ('com.localytics.android:library:2.19.0') {
+  compile ('com.localytics.android:library:2.70.0') {
     exclude group: 'com.google.android', module: 'support-v4'
   }
 
