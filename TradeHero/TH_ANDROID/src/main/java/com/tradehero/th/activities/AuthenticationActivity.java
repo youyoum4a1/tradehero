@@ -193,17 +193,19 @@ public class AuthenticationActivity extends DashboardActivity
             case R.id.authentication_twitter_email_button:
                 complementEmailForTwitterAuthentication();
                 break;
-
             case R.id.btn_linkedin_signin:
                 authenticateWithLinkedIn();
                 break;
             case R.id.btn_weibo_signin:
+                THUser.setAuthenticationMode(AuthenticationMode.SignIn);
                 authenticateWithWeibo();
                 break;
             case R.id.btn_qq_signin:
+                THUser.setAuthenticationMode(AuthenticationMode.SignIn);
                 authenticateWithQQ();
                 break;
             case R.id.btn_wechat_signin:
+                THUser.setAuthenticationMode(AuthenticationMode.SignIn);
                 if(!isClickedWeChat)
                 {
                     startWeChatSign();
@@ -518,7 +520,6 @@ public class AuthenticationActivity extends DashboardActivity
         String wechatCode = WXEntryActivity.getWeChatCode();
         if (!TextUtils.isEmpty(wechatCode))
         {
-            THUser.setAuthenticationMode(AuthenticationMode.SignIn);
             authenticateWithWechat(wechatCode);
             WXEntryActivity.setWeChatCodeNull();
         }
