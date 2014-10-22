@@ -70,31 +70,62 @@ public class MyTradePositionListAdapter extends BaseAdapter
         doRefreshData();
     }
 
+    public String getHeadText(int i)
+    {
+        if (i > getLevel1())
+        {
+            return getHeadStrOfWatchPosition();
+        }
+        else if (i > getLevel0())
+        {
+            return getHeadStrOfSecurityClosedPosition();
+        }
+        else
+        {
+            return getHeadStrOfSecurityPosition();
+        }
+    }
+
+    public int getLevel0()
+    {
+        return 1 + getSecurityPositionCount();
+    }
+
+    public int getLevel1()
+    {
+        return 2 + getSecurityPositionCount() + getSecurityPositionClosedCount();
+    }
+
+    public int getLevel2()
+    {
+        return 3 + getSecurityPositionCount() + getSecurityPositionClosedCount() + getWatchPositionCount();
+    }
+
     private void doRefreshData()
     {
         listData = new ArrayList<PositionInterface>();
 
-        if(isLocked)
+        if (isLocked)
         {
             //if (getSecurityPositionCount() > 0)
             //{
-                listData.add(new PositionHeadItem("持仓"));
-                listData.add(new PositionLockedItem());
+            listData.add(new PositionHeadItem("持仓"));
+            listData.add(new PositionLockedItem());
             //}
         }
         else
         {
             //if (getSecurityPositionCount() > 0)
             //{
-                listData.add(new PositionHeadItem(getHeadStrOfSecurityPosition()));
-                listData.addAll(securityPositionList);
+            listData.add(new PositionHeadItem(getHeadStrOfSecurityPosition()));
+            listData.addAll(securityPositionList);
             //}
         }
 
         //if (getSecurityPositionClosedCount() > 0)
         //{
-            listData.add(new PositionHeadItem(getHeadStrOfSecurityClosedPosition()));
-            listData.addAll(securityPositionListClosed);
+        listData.add(new PositionHeadItem(getHeadStrOfSecurityClosedPosition()));
+        listData.addAll(securityPositionListClosed);
         //}
 
         if (getWatchPositionCount() > 0)
@@ -210,7 +241,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
                         .withSign()
                         .signTypePlusMinusAlways()
-                        //.currency(((SecurityPositionItem) item).security.getCurrencyDisplay())
+                                //.currency(((SecurityPositionItem) item).security.getCurrencyDisplay())
                         .currency("$")
                         .build();
                 tvSecurityExtraInfo.setText(thPlSinceInception.toString());

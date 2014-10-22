@@ -31,6 +31,7 @@ import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.home.HomeContentCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
@@ -114,6 +115,8 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     protected final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     protected final Lazy<WatchlistPositionCache> watchlistPositionCache;
+    protected final Lazy<LeaderboardCache> leaderboardCache;
+
     //</editor-fold>
 
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
@@ -138,6 +141,7 @@ import org.jetbrains.annotations.Nullable;
             Lazy<FollowerSummaryCache> followerSummaryCache,
             Lazy<GetPositionsCache> getPositionsCache,
             Lazy<HomeContentCache> homeContentCache,
+            Lazy<LeaderboardCache> leaderboardCache,
             Lazy<LeaderboardDefCache> leaderboardDefCache,
             Lazy<LeaderboardDefListCache> leaderboardDefListCache,
             Lazy<LeaderboardPositionIdCache> leaderboardPositionIdCache,
@@ -185,6 +189,7 @@ import org.jetbrains.annotations.Nullable;
         this.followerSummaryCache = followerSummaryCache;
         this.getPositionsCache = getPositionsCache;
         this.homeContentCache = homeContentCache;
+        this.leaderboardCache = leaderboardCache;
         this.leaderboardDefCache = leaderboardDefCache;
         this.leaderboardDefListCache = leaderboardDefListCache;
         this.leaderboardPositionIdCache = leaderboardPositionIdCache;
@@ -264,7 +269,7 @@ import org.jetbrains.annotations.Nullable;
         // exchangeListCache.get().invalidateAll();
         userWatchlistPositionCache.get().invalidateAll();
         watchlistPositionCache.get().invalidateAll();
-
+        leaderboardCache.get().invalidateAll();
         warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
     }

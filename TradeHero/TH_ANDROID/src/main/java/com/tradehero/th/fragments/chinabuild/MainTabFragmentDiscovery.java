@@ -182,6 +182,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
 
     public void showNotification(UserProfileDTO value)
     {
+        if(tvNotificationCount == null)return;
         if (value.unreadNotificationsCount > 0)
         {
             tvNotificationCount.setVisibility(View.VISIBLE);

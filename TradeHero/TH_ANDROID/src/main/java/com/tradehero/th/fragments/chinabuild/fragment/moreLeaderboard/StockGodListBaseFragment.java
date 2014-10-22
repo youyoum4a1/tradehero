@@ -5,13 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -39,6 +43,11 @@ public class StockGodListBaseFragment extends DashboardFragment
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
 
     @InjectView(R.id.listBang) SecurityListView listBang;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(R.id.imgEmpty) ImageView imgEmpty;
+
+
     private LeaderboardListAdapter adapter;
 
     private int currentPage = 0;
@@ -77,7 +86,19 @@ public class StockGodListBaseFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.stock_god_list, container, false);
         ButterKnife.inject(this, view);
+
+
         initView();
+
+        if (adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listBang);
+        }
+
         return view;
     }
 
@@ -96,7 +117,7 @@ public class StockGodListBaseFragment extends DashboardFragment
     private void initView()
     {
         listBang.setAdapter(adapter);
-        listBang.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
+        listBang.setMode(PullToRefreshBase.Mode.BOTH);
         listBang.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
@@ -171,8 +192,9 @@ public class StockGodListBaseFragment extends DashboardFragment
         detachLeaderboardCacheListener();
         PagedLeaderboardKey key = new PagedLeaderboardKey(getLeaderboardDTO().key, PagedLeaderboardKey.FIRST_PAGE);
         key.perPage = ITEMS_PER_PAGE;
+        key.page = 1;
         leaderboardCache.register(key, leaderboardCacheListener);
-        leaderboardCache.getOrFetchAsync(key);
+        leaderboardCache.getOrFetchAsync(key,true);
     }
 
     protected void fetchLeaderboardMore()
@@ -201,13 +223,19 @@ public class StockGodListBaseFragment extends DashboardFragment
             //linkWith(value, true);
             //Timber.d("value:" + value);
             setListData(key, value.users);
-            listBang.onRefreshComplete();
+            onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to leaderboard", error);
-            //THToast.show(R.string.error_fetch_leaderboard_info);
+            THToast.show(R.string.error_fetch_leaderboard_info);
+            onFinish();
+        }
+
+        public void onFinish()
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listBang);
             listBang.onRefreshComplete();
         }
     }

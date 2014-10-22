@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
@@ -39,11 +40,16 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
+
+/*
+    通知系统
+ */
 public class NotificationFragment extends DashboardFragment
 {
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.listNotification) SecurityListView listView;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
     @Inject Lazy<NotificationListCache> notificationListCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;
@@ -109,6 +115,7 @@ public class NotificationFragment extends DashboardFragment
     {
         listView.setMode(PullToRefreshBase.Mode.BOTH);
         listView.setAdapter(adapter);
+        listView.setEmptyView(imgEmpty);
         adapter.setNotificationLister(new NotificationListAdapter.NotificationClickListener()
         {
             @Override public void OnNotificationItemClicked(int position)

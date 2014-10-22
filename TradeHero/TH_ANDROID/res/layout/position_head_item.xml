@@ -13,7 +13,7 @@
      android:layout_margin="10dp"
      android:textColor="@color/black"
      android:textSize="15sp"
-     android:text="自选股"/>
+     android:text=""/>
 
 </LinearLayout>
 

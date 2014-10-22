@@ -122,15 +122,7 @@ import retrofit.Callback;
         }
         else if (leaderboardKey instanceof PagedLeaderboardKey)
         {
-            if (leaderboardKey.id == LeaderboardDefKeyKnowledge.DAYS_30)//返回月盈利榜
-            {
-                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
-                return leaderboardService.getLeaderboard(
-                        pagedLeaderboardKey.id,
-                        pagedLeaderboardKey.page,
-                        pagedLeaderboardKey.perPage);
-            }
-            else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.DAYS_ROI)//返回推荐榜
+            if (leaderboardKey.id == LeaderboardDefKeyKnowledge.DAYS_ROI)//返回推荐榜
             {
                 PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
                 UserTrendingDTOList data = leaderboardService.getLeaderboardDayROI(
@@ -153,6 +145,14 @@ import retrofit.Callback;
                         pagedLeaderboardKey.page,
                         pagedLeaderboardKey.perPage);
                 return processFromExtraData(data);
+            }
+            else
+            {
+                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+                return leaderboardService.getLeaderboard(
+                        pagedLeaderboardKey.id,
+                        pagedLeaderboardKey.page,
+                        pagedLeaderboardKey.perPage);
             }
         }
         return leaderboardService.getLeaderboard(leaderboardKey.id, null, null);

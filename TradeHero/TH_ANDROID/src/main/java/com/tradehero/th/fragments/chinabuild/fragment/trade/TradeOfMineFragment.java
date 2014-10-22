@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -71,7 +73,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
     private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
-    //private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionRefreshListener;
     private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
 
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
@@ -92,6 +93,10 @@ public class TradeOfMineFragment extends DashboardFragment
     @InjectView(R.id.tradeMyPositionList) SecurityListView listView;
     @InjectView(R.id.llEmpty) LinearLayout llEmpty;
     @InjectView(R.id.btnEmptyAction) Button btnEmptyAction;
+
+    @InjectView(R.id.rlListAll) RelativeLayout rlListAll;
+    @InjectView(R.id.llPositionHeadItem) LinearLayout llPositionHeadItem;
+    @InjectView(R.id.tvPositionHead) TextView tvPositionHead;
 
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
@@ -134,14 +139,16 @@ public class TradeOfMineFragment extends DashboardFragment
         }
         else
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeMyPositionList);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
+        llPositionHeadItem.setVisibility(View.GONE);
         return view;
     }
 
     public void initView()
     {
         listView.setEmptyView(llEmpty);
+        //listView.setAdapter((ListAdapter)adapter);
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
 
@@ -165,6 +172,28 @@ public class TradeOfMineFragment extends DashboardFragment
             {
                 PositionInterface item = adapter.getItem((int) position);
                 dealSecurityItem(item);
+            }
+        });
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener()
+        {
+            @Override public void onScrollStateChanged(AbsListView absListView, int i)
+            {
+
+            }
+
+            @Override public void onScroll(AbsListView absListView, int i, int i2, int i3)
+            {
+                Timber.d("onScroll i = " + i + " i2 = " + i2 + "i3 = " + i3);
+                if (i == 0)
+                {
+                    llPositionHeadItem.setVisibility(View.GONE);
+                }
+                else
+                {
+                    llPositionHeadItem.setVisibility(View.VISIBLE);
+                    tvPositionHead.setText(adapter.getHeadText(i));
+                }
             }
         });
     }
@@ -246,7 +275,7 @@ public class TradeOfMineFragment extends DashboardFragment
     protected void fetchSimplePage(boolean force)
     {
         //if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
-        if (getPositionsDTOKey == null && shownPortfolioId!=null)
+        if (getPositionsDTOKey == null && shownPortfolioId != null)
         {
             getPositionsDTOKey = new OwnedPortfolioId(shownPortfolioId.userId, shownPortfolioId.portfolioId);
         }
@@ -348,7 +377,7 @@ public class TradeOfMineFragment extends DashboardFragment
         public void finish()
         {
             listView.onRefreshComplete();
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeMyPositionList);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
     }
 
@@ -479,7 +508,7 @@ public class TradeOfMineFragment extends DashboardFragment
                 mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary,
                         currentUserId.get().toString()));
                 ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                        getString(R.string.share_amount_total_value_title),getString(R.string.share_amount_total_value_summary,
+                        getString(R.string.share_amount_total_value_title), getString(R.string.share_amount_total_value_summary,
                         currentUserId.get().toString()));
             }
         }

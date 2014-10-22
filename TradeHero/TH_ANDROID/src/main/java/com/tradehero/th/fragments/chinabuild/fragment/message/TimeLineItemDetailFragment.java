@@ -450,6 +450,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             onFinish();
             DeviceUtil.dismissKeyboard(getActivity());
             fetchDiscussList(true);
+            fetchDiscussion(timelineItemDTOKey, true);
         }
 
         @Override public void failure(RetrofitError error)
@@ -614,6 +615,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         public void failure(RetrofitError retrofitError) {
 
         }
+
     }
 
     private void openUserProfile(int userId)
