@@ -17,6 +17,7 @@ import com.tradehero.th.api.social.InviteFormWeiboDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.social.WeiboSocialLinkHelper;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerWeibo;
@@ -35,21 +36,35 @@ import javax.inject.Provider;
 
 public class ShareDialogFragment extends BaseDialogFragment implements View.OnClickListener {
 
-    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @InjectView(R.id.title) TextView mTitleText;
-    @InjectView(R.id.btn_cancel) TextView mCancelBtn;
-    @InjectView(R.id.btn_ok) TextView mOKBtn;
-    @Inject Lazy<SocialSharer> socialSharerLazy;
-    @Inject Provider<SocialFriendHandlerWeibo> weiboSocialFriendHandlerProvider;
-    @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
-    @Inject Provider<WeiboSocialLinkHelper> weiboSocialLinkHelperProvider;
+    @Inject
+    Lazy<UserServiceWrapper> userServiceWrapper;
+    @InjectView(R.id.title)
+    TextView mTitleText;
+    @InjectView(R.id.btn_cancel)
+    TextView mCancelBtn;
+    @InjectView(R.id.btn_ok)
+    TextView mOKBtn;
+    @Inject
+    Lazy<SocialSharer> socialSharerLazy;
+    @Inject
+    Provider<SocialFriendHandlerWeibo> weiboSocialFriendHandlerProvider;
+    @Inject
+    CurrentUserId currentUserId;
+    @Inject
+    UserProfileCache userProfileCache;
+    @Inject
+    Provider<WeiboSocialLinkHelper> weiboSocialLinkHelperProvider;
 
     private static String mTitle;
     private static String mShareContent;
+    private static String mType;
+    private static int mUserId = -1;
 
     public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title) {
         mTitle = title;
+        mShareContent = "";
+        mType = "";
+        mUserId = -1;
         ShareDialogFragment dialogFragment = new ShareDialogFragment();
         try {
             dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
@@ -71,6 +86,31 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         ShareDialogFragment dialogFragment = new ShareDialogFragment();
         mTitle = title;
         mShareContent = shareContent;
+        mType = "";
+        mUserId = -1;
+        try {
+            dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return dialogFragment;
+    }
+
+    /**
+     * Share to WeChat moment and share to WeiBo on the background
+     *
+     * @param fragmentManager
+     * @param title
+     * @param shareContent
+     * @return
+     */
+    public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title, String shareContent, String type, int userId) {
+        ShareDialogFragment dialogFragment = new ShareDialogFragment();
+        mTitle = title;
+        mShareContent = shareContent;
+        mType = type;
+        mUserId = userId;
         try {
             dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
         } catch (Exception e) {
@@ -106,12 +146,50 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_cancel:
+                recordCancel();
                 dismiss();
                 break;
             case R.id.btn_ok:
                 dismiss();
+                recordConfirm();
                 shareToWeChatMoment();
                 break;
+        }
+    }
+
+    private void recordCancel() {
+        if (getActivity() == null) {
+            return;
+        }
+        if (mUserId == -1) {
+            return;
+        }
+        if (TextUtils.isEmpty(mType)) {
+            return;
+        }
+        if (mType.equals(THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN)) {
+            THSharePreferenceManager.recordShareDialogMoreThanFifteen(mUserId, false, getActivity());
+        }
+        if (mType.equals(THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE)) {
+            THSharePreferenceManager.recordShareDialogMoreThanTwentyFive(mUserId, false, getActivity());
+        }
+    }
+
+    private void recordConfirm() {
+        if (getActivity() == null) {
+            return;
+        }
+        if (mUserId == -1) {
+            return;
+        }
+        if (TextUtils.isEmpty(mType)) {
+            return;
+        }
+        if (mType.equals(THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN)) {
+            THSharePreferenceManager.recordShareDialogMoreThanFifteen(mUserId, true, getActivity());
+        }
+        if (mType.equals(THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE)) {
+            THSharePreferenceManager.recordShareDialogMoreThanTwentyFive(mUserId, true, getActivity());
         }
     }
 

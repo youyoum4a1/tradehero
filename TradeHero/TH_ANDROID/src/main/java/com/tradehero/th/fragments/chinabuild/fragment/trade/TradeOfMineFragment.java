@@ -40,6 +40,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
@@ -499,17 +500,33 @@ public class TradeOfMineFragment extends DashboardFragment
         String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
         tvItemAllAmount.setText(valueString);
         //总资产数达到15w
-        if (cached.totalValue > 150000)
+        if (cached.totalValue > 150000 && getActivity()!=null)
         {
-            if (mShareDialogKeyPreference.get() && mShareDialogTotalValueKeyPreference.get())
-            {
-                mShareDialogKeyPreference.set(false);
-                mShareDialogTotalValueKeyPreference.set(false);
-                mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary,
-                        currentUserId.get().toString()));
-                ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                        getString(R.string.share_amount_total_value_title), getString(R.string.share_amount_total_value_summary,
-                        currentUserId.get().toString()));
+            int userId = currentUserId.toUserBaseKey().getUserId();
+            if(THSharePreferenceManager.isShareDialogMoreThanFifteenAvailable(userId, getActivity())){
+                if (mShareDialogKeyPreference.get() && mShareDialogTotalValueKeyPreference.get()) {
+                    mShareDialogKeyPreference.set(false);
+                    mShareDialogTotalValueKeyPreference.set(false);
+                    mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary,
+                            currentUserId.get().toString()));
+                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                            getString(R.string.share_amount_total_value_title), getString(R.string.share_amount_total_value_summary,
+                            currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN, userId);
+                }
+            }else{
+                if (cached.totalValue > 250000){
+                    if(THSharePreferenceManager.isShareDialogMoreThanFifteenAvailable(userId, getActivity())){
+                        if (mShareDialogKeyPreference.get() && mShareDialogTotalValueKeyPreference.get()) {
+                            mShareDialogKeyPreference.set(false);
+                            mShareDialogTotalValueKeyPreference.set(false);
+                            mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary25,
+                                    currentUserId.get().toString()));
+                            ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                                    getString(R.string.share_amount_total_value_title25), getString(R.string.share_amount_total_value_summary25,
+                                    currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
+                        }
+                    }
+                }
             }
         }
 

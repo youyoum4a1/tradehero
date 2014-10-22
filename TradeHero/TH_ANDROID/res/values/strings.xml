@@ -352,6 +352,8 @@
   <string name="share_amount_roi_value_summary">我在高端模拟炒股软件\'全民股神\'中的单笔收益到达了%1$s, 想要知道那只股票吗？叫声大神，亲切点的那种~ \nhttp://cn.tradehero.mobi/shr/yield.html?userId=%2$s&amp;positionId=%3$s</string>
   <string name="share_amount_total_value_title">恭喜你！总资产达到15w \n你这么土豪你的朋友们知道吗？</string>
   <string name="share_amount_total_value_summary">一不小心在高端模拟炒股软件\'全民股神\'中资产已经破15W了，本人多年前夜观天象，早已看出我炒股的慧根，可谓奇才一枚。 \nhttp://cn.tradehero.mobi/shr/assets.html?userId=%1$s</string>
+  <string name="share_amount_total_value_title25">恭喜你！总资产达到25w \n你这么土豪你的朋友们知道吗？</string>
+  <string name="share_amount_total_value_summary25">一不小心在高端模拟炒股软件\'全民股神\'中资产已经破25W了，本人多年前夜观天象，早已看出我炒股的慧根，可谓奇才一枚。 \nhttp://cn.tradehero.mobi/shr/assets.html?userId=%1$s</string>
   <string name="share_amount_fans_num_title">恭喜！你已经有10个小跟班，如此魅力十足还不赶紧去炫耀一记？</string>
   <string name="share_amount_fans_num_summary">本人在高端模拟炒股软件\'全民股神\'中的粉丝量到达两位数了！邀请我开个讲座，签个名什么的都不是问题，好说好说~ \nhttp://cn.tradehero.mobi/shr/assets.html?userId=%1$s</string>
   <string name="share_buy_dialog_title">我买了 %1$s 股票，求预测我是赚还是亏？</string>
