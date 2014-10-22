@@ -14,7 +14,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
@@ -229,7 +228,7 @@ public class StockGodListBaseFragment extends DashboardFragment
         @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to leaderboard", error);
-            THToast.show(R.string.error_fetch_leaderboard_info);
+            //THToast.show(R.string.error_fetch_leaderboard_info);
             onFinish();
         }
 

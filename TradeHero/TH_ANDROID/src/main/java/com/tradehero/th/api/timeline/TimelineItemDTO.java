@@ -25,6 +25,7 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
     public String imageUrl;
 
     public UserProfileCompactDTO user;
+    public boolean isHighlight;
 
     //<editor-fold desc="Constructors">
     public TimelineItemDTO()

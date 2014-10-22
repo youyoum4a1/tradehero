@@ -291,6 +291,7 @@ public class UserMainPage extends DashboardFragment
 
     public void displayFollow()
     {
+        if(tvUserCared == null) return;
         tvUserCared.setVisibility(View.VISIBLE);
         if (isFollowUser())
         {
@@ -395,6 +396,7 @@ public class UserMainPage extends DashboardFragment
         freeFollowMiddleCallback = null;
         freeUnFollowMiddleCallback = null;
         timeLineMiddleCallback = null;
+
         super.onDestroy();
     }
 

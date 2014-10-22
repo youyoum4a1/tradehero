@@ -212,6 +212,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.imgUserTLUserHeader = (ImageView) convertView.findViewById(R.id.imgUserTLUserHeader);
                 holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
                 holder.tvUserTLTimeStamp2 = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp2);
+                holder.tvTipInTop = (TextView) convertView.findViewById(R.id.tvTipInTop);
 
                 //是股票交易
                 holder.rlUserTLTrade = (RelativeLayout) convertView.findViewById(R.id.rlUserTLTrade);
@@ -249,6 +250,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
             holder.tvUserTLTimeStamp.setVisibility(isShowHeadAndName ? View.GONE : View.VISIBLE);
             holder.tvUserTLTimeStamp2.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
+            holder.tvTipInTop.setVisibility(item.isHighlight ? View.VISIBLE : View.GONE);
             holder.tvUserTLName.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
             holder.imgUserTLUserHeader.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
 
@@ -442,6 +444,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
         public ImageView imgUserTLUserHeader = null;
         public TextView tvUserTLTimeStamp2 = null;
+        public TextView tvTipInTop = null;
         public TextView tvUserTLName = null;
 
         //不是一个交易相关
