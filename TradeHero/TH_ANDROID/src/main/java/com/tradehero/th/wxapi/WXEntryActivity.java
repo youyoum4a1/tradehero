@@ -31,6 +31,8 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import org.jetbrains.annotations.NotNull;
@@ -95,7 +97,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         //loadImage();
 
         boolean isWXInstalled = mWeChatApi.isWXAppInstalled();
-        if(weChatDTO == null){
+        if (weChatDTO == null) {
             return;
         }
         if (isWXInstalled && weChatDTO.type != null) {
@@ -141,7 +143,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         }
 
         if (weChatMessageType == WeChatMessageType.ShareSell || weChatMessageType == WeChatMessageType.ShareSellToTimeline) {
-            if(TextUtils.isEmpty(url)){
+            if (TextUtils.isEmpty(url) || !isTradeHeroURL(url)) {
                 WXTextObject textObject = new WXTextObject();
                 textObject.text = totalShare;
                 WXMediaMessage msg = new WXMediaMessage();
@@ -149,30 +151,53 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 msg.mediaObject = textObject;
                 msg.description = textObject.text;
                 return msg;
-            }else{
+            } else {
                 WXWebpageObject sellWebPage = new WXWebpageObject();
                 sellWebPage.webpageUrl = url;
                 WXMediaMessage msg = new WXMediaMessage(sellWebPage);
-                msg.title = title;
+                msg.title = content;
                 msg.description = content;
                 msg.setThumbImage(thumbBmp);
                 return msg;
             }
-        } else {
-            WXWebpageObject webPage = new WXWebpageObject();
-            webPage.webpageUrl = Constants.WECHAT_SHARE_URL;
-
-            WXMediaMessage weChatMsg = new WXMediaMessage(webPage);
-            if(TextUtils.isEmpty(totalShare)){
-                weChatMsg.description = getString(weChatMessageType.getTitleResId());
-                weChatMsg.title = title;
-            }else{
-                weChatMsg.title = title;
-                weChatMsg.description = totalShare;
-            }
-            weChatMsg.setThumbImage(thumbBmp);
-            return weChatMsg;
         }
+
+        WXWebpageObject webPage = new WXWebpageObject();
+        webPage.webpageUrl = Constants.WECHAT_SHARE_URL;
+
+        WXMediaMessage weChatMsg = new WXMediaMessage(webPage);
+        if (TextUtils.isEmpty(totalShare)) {
+            weChatMsg.description = getString(weChatMessageType.getTitleResId());
+            weChatMsg.title = title;
+        } else {
+            weChatMsg.title = content;
+            weChatMsg.description = content;
+        }
+        weChatMsg.setThumbImage(thumbBmp);
+        return weChatMsg;
+    }
+
+    public static boolean isTradeHeroURL(String str) {
+        if(!str.contains("cn.tradehero.mobi")){
+            return false;
+        }
+        //转换为小写
+        str = str.toLowerCase();
+        String regex = "^((https|http|ftp|rtsp|mms)?://)"
+                + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" //ftp的user@
+                + "(([0-9]{1,3}\\.){3}[0-9]{1,3}" // IP形式的URL- 199.194.52.184
+                + "|" // 允许IP和DOMAIN（域名）
+                + "([0-9a-z_!~*'()-]+\\.)*" // 域名- www.
+                + "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\\." // 二级域名
+                + "[a-z]{2,6})" // first level domain- .com or .museum
+                + "(:[0-9]{1,4})?" // 端口- :80
+                + "((/?)|" // a slash isn't required if there is no file name
+                + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(str);
+        return m.matches();
+
+
     }
 
     private void loadImage() {
