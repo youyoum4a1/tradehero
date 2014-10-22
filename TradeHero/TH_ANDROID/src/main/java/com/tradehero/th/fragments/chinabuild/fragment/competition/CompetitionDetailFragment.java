@@ -736,7 +736,7 @@ public class CompetitionDetailFragment extends DashboardFragment
                 adapter.addItems(listData);
             }
         }
-        listRanks.onRefreshComplete();
+        //listRanks.onRefreshComplete();
 
         //如果返回数据已经为空了，说明没有了下一页。
         if (listData.size() > 0)

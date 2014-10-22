@@ -88,6 +88,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfTypeBaseFragm
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.th.fragments.chinabuild.listview.SecurityExpandableListView;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
@@ -478,6 +479,7 @@ import javax.inject.Singleton;
                         FragmentTest03.class,
 
                         SecurityListView.class,
+                        SecurityExpandableListView.class,
 
                         LeaderboardListAdapter.class,
                         UserFriendsListAdapter.class,

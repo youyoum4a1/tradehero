@@ -12,7 +12,7 @@ public class PagedLeaderboardKey extends LeaderboardKey
     public static final String STRING_SET_LEFT_PAGE = "page";
     public static final int FIRST_PAGE = 1;
 
-    @Nullable public final Integer page;
+    @Nullable public Integer page;
 
     public int perPage = 50;
 
