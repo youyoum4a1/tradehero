@@ -132,8 +132,6 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.trade_of_mine, container, false);
         ButterKnife.inject(this, view);
-        initView();
-        fetchPortfolio();
         if (adapter.getCount() == 0)
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
@@ -142,6 +140,9 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
+
+        initView();
+        fetchPortfolio();
         llPositionHeadItem.setVisibility(View.GONE);
         return view;
     }
@@ -322,11 +323,6 @@ public class TradeOfMineFragment extends DashboardFragment
         userWatchlistPositionCache.unregister(userWatchlistPositionFetchListener);
     }
 
-    //protected void detachUserWatchlistRefreshTask()
-    //{
-    //    userWatchlistPositionCache.unregister(userWatchlistPositionRefreshListener);
-    //}
-
     protected void detachPortfolioFetchTask()
     {
         portfolioCache.unregister(portfolioFetchListener);
@@ -349,9 +345,6 @@ public class TradeOfMineFragment extends DashboardFragment
                 @NotNull GetPositionsDTOKey key,
                 @NotNull GetPositionsDTO value)
         {
-            //linkWith(value, true);
-            //showResultIfNecessary();
-            Timber.d("");
             initPositionSecurity(value);
             finish();
         }
@@ -360,9 +353,6 @@ public class TradeOfMineFragment extends DashboardFragment
                 @NotNull GetPositionsDTOKey key,
                 @NotNull GetPositionsDTO value)
         {
-            //linkWith(value, true);
-            //showResultIfNecessary();
-            Timber.d("");
             initPositionSecurity(value);
             finish();
         }
@@ -371,7 +361,6 @@ public class TradeOfMineFragment extends DashboardFragment
                 @NotNull GetPositionsDTOKey key,
                 @NotNull Throwable error)
         {
-            Timber.d("error:  " + error.toString());
             finish();
         }
 
@@ -403,7 +392,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
         private void onFinish()
         {
-            //betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeMyPositionList);
             listView.onRefreshComplete();
             fetchSimplePage(false);
         }
