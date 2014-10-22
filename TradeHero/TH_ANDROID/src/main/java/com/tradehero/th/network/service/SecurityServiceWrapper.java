@@ -25,7 +25,7 @@ import com.tradehero.th.models.security.DTOProcessorSecurityPositionTransactionU
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import java.util.Map;
 import javax.inject.Inject;
@@ -43,7 +43,7 @@ import rx.functions.Func1;
     @NotNull private final SecurityServiceRx securityServiceRx;
     @NotNull private final ProviderServiceWrapper providerServiceWrapper;
     @NotNull private final SecurityCompactCache securityCompactCache;
-    @NotNull private final SecurityPositionDetailCache securityPositionDetailCache;
+    @NotNull private final SecurityPositionDetailCacheRx securityPositionDetailCache;
     @NotNull private final PortfolioCache portfolioCache;
     @NotNull private final CurrentUserId currentUserId;
 
@@ -54,7 +54,7 @@ import rx.functions.Func1;
             @NotNull SecurityServiceRx securityServiceRx,
             @NotNull ProviderServiceWrapper providerServiceWrapper,
             @NotNull SecurityCompactCache securityCompactCache,
-            @NotNull SecurityPositionDetailCache securityPositionDetailCache,
+            @NotNull SecurityPositionDetailCacheRx securityPositionDetailCache,
             @NotNull PortfolioCache portfolioCache,
             @NotNull CurrentUserId currentUserId)
     {
@@ -237,7 +237,7 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    public Observable<SecurityCompactDTO> getSecuritiesRx(@NotNull SecurityListType key)
+    public Observable<SecurityCompactDTOList> getSecuritiesRx(@NotNull SecurityListType key)
     {
         Observable<SecurityCompactDTOList> received;
         if (key instanceof TrendingSecurityListType)
@@ -250,66 +250,58 @@ import rx.functions.Func1;
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
-            //else if (trendingKey instanceof TrendingPriceSecurityListType)
-            //{
-            //    received =  this.securityServiceRx.getTrendingSecuritiesByPrice(
-            //            trendingKey.exchange,
-            //            trendingKey.getPage(),
-            //            trendingKey.perPage);
-            //}
-            //else if (trendingKey instanceof TrendingVolumeSecurityListType)
-            //{
-            //    received =  this.securityServiceRx.getTrendingSecuritiesByVolume(
-            //            trendingKey.exchange,
-            //            trendingKey.getPage(),
-            //            trendingKey.perPage);
-            //}
-            //else if (trendingKey instanceof TrendingAllSecurityListType)
-            //{
-            //    received =  this.securityServiceRx.getTrendingSecuritiesAllInExchange(
-            //            trendingKey.exchange,
-            //            trendingKey.getPage(),
-            //            trendingKey.perPage);
-            //}
+            else if (trendingKey instanceof TrendingPriceSecurityListType)
+            {
+                received =  this.securityServiceRx.getTrendingSecuritiesByPrice(
+                        trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else if (trendingKey instanceof TrendingVolumeSecurityListType)
+            {
+                received =  this.securityServiceRx.getTrendingSecuritiesByVolume(
+                        trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else if (trendingKey instanceof TrendingAllSecurityListType)
+            {
+                received =  this.securityServiceRx.getTrendingSecuritiesAllInExchange(
+                        trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
             else
             {
                 throw new IllegalArgumentException("Unhandled type " + ((Object) trendingKey).getClass().getName());
             }
         }
-        //else if (key instanceof SearchSecurityListType)
-        //{
-        //    SearchSecurityListType searchKey = (SearchSecurityListType) key;
-        //    received =  this.securityServiceRx.searchSecurities(
-        //            searchKey.searchString,
-        //            searchKey.getPage(),
-        //            searchKey.perPage);
-        //}
-        //else if (key instanceof ProviderSecurityListType)
-        //{
-        //    received =  providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key);
-        //}
-        //else if (key instanceof ExchangeSectorSecurityListType)
-        //{
-        //    ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
-        //    received = this.securityService.getBySectorAndExchange(
-        //            exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
-        //            exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
-        //            key.page,
-        //            key.perPage);
-        //}
+        else if (key instanceof SearchSecurityListType)
+        {
+            SearchSecurityListType searchKey = (SearchSecurityListType) key;
+            received =  this.securityServiceRx.searchSecurities(
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage);
+        }
+        else if (key instanceof ProviderSecurityListType)
+        {
+            received =  providerServiceWrapper.getProviderSecuritiesRx((ProviderSecurityListType) key);
+        }
+        else if (key instanceof ExchangeSectorSecurityListType)
+        {
+            ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
+            received = this.securityServiceRx.getBySectorAndExchange(
+                    exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
+                    exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
+                    key.page,
+                    key.perPage);
+        }
         else
         {
             throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
         }
-        return received
-                .flatMap(new Func1<SecurityCompactDTOList, Observable<SecurityCompactDTO>>()
-                {
-                    @Override public Observable<SecurityCompactDTO> call(
-                            @NotNull SecurityCompactDTOList securityCompactDTOs)
-                    {
-                        return Observable.from(securityCompactDTOs);
-                    }
-                });
+        return received;
     }
     //</editor-fold>
 

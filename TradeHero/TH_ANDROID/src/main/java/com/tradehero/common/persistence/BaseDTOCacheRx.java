@@ -1,76 +1,72 @@
 package com.tradehero.common.persistence;
 
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
-import rx.Observer;
-import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 
-abstract public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
+public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheRx<DTOKeyType, DTOType>
 {
     @NotNull final private THLruCache<DTOKeyType, DTOType> cachedValues;
     @NotNull final private THLruCache<DTOKeyType, BehaviorSubject<Pair<DTOKeyType, DTOType>>> cachedSubjects;
 
     //<editor-fold desc="Constructors">
-    protected BaseDTOCacheRx(int maxSize)
+    protected BaseDTOCacheRx(int valueSize, int subjectSize)
     {
-        this.cachedValues = new THLruCache<>(maxSize);
-        this.cachedSubjects = new THLruCache<>(maxSize);
+        this.cachedValues = new THLruCache<>(valueSize);
+        this.cachedSubjects = new THLruCache<>(subjectSize);
     }
     //</editor-fold>
 
-    @NotNull abstract protected Observable<DTOType> fetch(@NotNull DTOKeyType key);
-
     @NotNull @Override
-    public Observable<Pair<DTOKeyType, DTOType>> get(@NotNull DTOKeyType key)
+    public Observable<Pair<DTOKeyType, DTOType>> get(@NotNull final DTOKeyType key)
     {
         return getOrCreateBehavior(key);
     }
 
-    @NotNull protected Observable<Pair<DTOKeyType, DTOType>> getOrCreateBehavior(@NotNull final DTOKeyType key)
+    @NotNull protected BehaviorSubject<Pair<DTOKeyType, DTOType>> getOrCreateBehavior(@NotNull final DTOKeyType key)
     {
         BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.get(key);
         if (cachedSubject == null)
         {
             cachedSubject = BehaviorSubject.create();
             cachedSubjects.put(key, cachedSubject);
-            cachedSubject.subscribe(new Observer<Pair<DTOKeyType, DTOType>>()
-            {
-                @Override public void onNext(Pair<DTOKeyType, DTOType> dtoKeyTypeDTOTypePair)
-                {
-                    cachedValues.put(key, dtoKeyTypeDTOTypePair.second);
-                }
-
-                @Override public void onCompleted()
-                {
-                    cachedSubjects.remove(key);
-                }
-
-                @Override public void onError(Throwable e)
-                {
-                    cachedSubjects.remove(key);
-                }
-            });
         }
 
-        DTOType cachedValue = cachedValues.get(key);
-        if (cachedValue != null && isValid(cachedValue))
+        DTOType cachedValue = getValue(key);
+        if (cachedValue != null)
         {
             cachedSubject.onNext(Pair.create(key, cachedValue));
         }
 
-        fetch(key)
-                .map(new Func1<DTOType, Pair<DTOKeyType, DTOType>>()
-                {
-                    @Override public Pair<DTOKeyType, DTOType> call(DTOType dtoType)
-                    {
-                        return Pair.create(key, dtoType);
-                    }
-                })
-                .subscribe(cachedSubject);
         return cachedSubject;
+    }
+
+    @Override public void onNext(DTOKeyType key, DTOType value)
+    {
+        putValue(key, value);
+        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.get(key);
+        if (cachedSubject != null)
+        {
+            cachedSubject.onNext(Pair.create(key, value));
+        }
+    }
+
+    protected DTOType putValue(@NotNull DTOKeyType key, @NotNull DTOType value)
+    {
+        return cachedValues.put(key, value);
+    }
+
+    @Nullable protected DTOType getValue(@NotNull DTOKeyType key)
+    {
+        DTOType cachedValue = cachedValues.get(key);
+        if (cachedValue != null && !isValid(cachedValue))
+        {
+            cachedValue = null;
+        }
+        return cachedValue;
     }
 
     protected boolean isValid(@NotNull DTOType value)

@@ -5,7 +5,7 @@ import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorSecurityPositionTransactionUpdated extends DTOProcessorSecurityPositionTransactionReceived
@@ -16,7 +16,7 @@ public class DTOProcessorSecurityPositionTransactionUpdated extends DTOProcessor
     public DTOProcessorSecurityPositionTransactionUpdated(
             @NotNull SecurityId securityId,
             @NotNull UserBaseKey ownerId,
-            @NotNull SecurityPositionDetailCache securityPositionDetailCache,
+            @NotNull SecurityPositionDetailCacheRx securityPositionDetailCache,
             @NotNull PortfolioCache portfolioCache)
     {
         super(securityId, ownerId, securityPositionDetailCache);

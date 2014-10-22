@@ -7,6 +7,7 @@ import rx.Observable;
 public interface DTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
 {
     @NotNull Observable<Pair<DTOKeyType, DTOType>> get(@NotNull DTOKeyType key);
+    void onNext(DTOKeyType key, DTOType value);
 
     void invalidate(@NotNull DTOKeyType key);
     void invalidateAll();

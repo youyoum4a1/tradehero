@@ -9,9 +9,9 @@ abstract public class BaseDTOListCacheRx<
         extends BaseDTOCacheRx<DTOKeyType, DTOListType>
 {
     //<editor-fold desc="Constructors">
-    protected BaseDTOListCacheRx(int maxSize)
+    protected BaseDTOListCacheRx(int valueSize, int subjectSize)
     {
-        super(maxSize);
+        super(valueSize, subjectSize);
     }
     //</editor-fold>
 }

@@ -23,22 +23,26 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class ProviderServiceWrapper
 {
     @NotNull private final ProviderService providerService;
     @NotNull private final ProviderServiceAsync providerServiceAsync;
+    @NotNull private final ProviderServiceRx providerServiceRx;
     @NotNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderServiceWrapper(
             @NotNull ProviderService providerService,
             @NotNull ProviderServiceAsync providerServiceAsync,
+            @NotNull ProviderServiceRx providerServiceRx,
             @NotNull CurrentUserId currentUserId)
     {
         super();
         this.providerService = providerService;
         this.providerServiceAsync = providerServiceAsync;
+        this.providerServiceRx = providerServiceRx;
         this.currentUserId = currentUserId;
     }
     //</editor-fold>
@@ -140,6 +144,39 @@ import retrofit.Callback;
             throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
         }
         return middleCallback;
+    }
+
+    public Observable<SecurityCompactDTOList> getProviderSecuritiesRx(@NotNull ProviderSecurityListType key)
+    {
+        Observable<SecurityCompactDTOList> received;
+        if (key instanceof SearchProviderSecurityListType)
+        {
+            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
+            received = this.providerServiceRx.searchSecurities(
+                    searchKey.providerId.key,
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage);
+        }
+        else if (key instanceof BasicProviderSecurityListType)
+        {
+            received = this.providerServiceRx.getSecurities(
+                    key.getProviderId().key,
+                    key.getPage(),
+                    key.perPage);
+        }
+        else if (key instanceof WarrantProviderSecurityListType)
+        {
+            received = this.providerServiceRx.getWarrantUnderlyers(
+                    key.getProviderId().key,
+                    key.getPage(),
+                    key.perPage);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
+        }
+        return received;
     }
     //</editor-fold>
 

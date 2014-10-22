@@ -7,7 +7,6 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -20,18 +19,15 @@ import org.jetbrains.annotations.Nullable;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @NotNull protected final Lazy<SecurityServiceWrapper> securityServiceWrapper;
-    @NotNull protected final Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @NotNull protected final SecurityIdCache securityIdCache;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityCompactCache(
             @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
-            @NotNull Lazy<SecurityPositionDetailCache> securityPositionDetailCache,
             @NotNull SecurityIdCache securityIdCache)
     {
         super(DEFAULT_MAX_SIZE);
         this.securityServiceWrapper = securityServiceWrapper;
-        this.securityPositionDetailCache = securityPositionDetailCache;
         this.securityIdCache = securityIdCache;
     }
     //</editor-fold>
@@ -43,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 
         if (securityPositionDetailDTO != null)
         {
-            securityPositionDetailCache.get().put(key, securityPositionDetailDTO);
             securityCompactDTO = securityPositionDetailDTO.security;
         }
 
