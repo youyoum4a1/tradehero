@@ -15,7 +15,11 @@ import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class MainTabFragmentStockGod extends AbsBaseFragment
@@ -23,6 +27,7 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
     FragmentPagerAdapter adapter;
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -89,18 +94,26 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
                     fragment = new StockGodListBaseFragment();
                     args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.DAYS_ROI);
                     fragment.setArguments(args);
+
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_ROI));
                     return fragment;
                 case 1:
                     fragment = new StockGodListBaseFragment();
                     args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.POPULAR);
                     fragment.setArguments(args);
+
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_HOT));
                     return fragment;
                 case 2:
                     fragment = new StockGodListBaseFragment();
                     args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.WEALTH);
                     fragment.setArguments(args);
+
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_WEALTH));
                     return fragment;
                 case 3:
+
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_MORE));
                     return new StockGodListMoreFragment();
             }
             return null;

@@ -144,7 +144,7 @@ public class StockGodListBaseFragment extends DashboardFragment
                 LeaderboardUserDTO dto = (LeaderboardUserDTO) adapter.getItem((int) position);
                 if(leaderboard_key == LeaderboardDefKeyKnowledge.WEALTH)
                 {
-                    enterMainPage(dto);
+                    enterPortfolio(dto);
                 }
                 else if(leaderboard_key == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID
                         ||leaderboard_key == LeaderboardDefKeyKnowledge.DAYS_90

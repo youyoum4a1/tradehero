@@ -179,7 +179,44 @@ public class AnalyticsConstants
 
 
     //Analytics Windy
-    public static final String LEADERBOARD_USER_CLICKED_POSITION = "leaderboard_user_clicked_position";
+    //股神中每个榜单内每个用户的点击量
+    public static final String LEADERBOARD_USER_CLICKED_POSITION = "LEADERBOARD_USER_CLICKED_POSITION";
+    //股神中推荐榜，人气榜，土豪榜，更多榜，总盈利榜，季度榜，半年榜
+    public static final String BUTTON_STOCK_ROI = "BUTTON_STOCK_ROI";
+    public static final String BUTTON_STOCK_HOT = "BUTTON_STOCK_HOT";
+    public static final String BUTTON_STOCK_WEALTH = "BUTTON_STOCK_WEALTH";
+    public static final String BUTTON_STOCK_MORE = "BUTTON_STOCK_MORE";
+    public static final String BUTTON_STOCK_MOST_SKILL = "BUTTON_STOCK_MOST_SKILL";
+    public static final String BUTTON_STOCK_90DAY = "BUTTON_STOCK_90DAY";
+    public static final String BUTTON_STOCK_180DAY = "BUTTON_STOCK_180DAY";
+    //竞赛中所有比赛和我的比赛及这两个栏目的banner条的点击量，及右上角的搜索量
+    public static final String BUTTON_COMPETITION_DETAIL_BANNER = "BUTTON_COMPETITION_DETAIL_BANNER";
+    public static final String BUTTON_COMPETITION_DETAIL_SEARCH = "BUTTON_COMPETITION_DETAIL_SEARCH";
+    //竞赛中所有比赛的，官方比赛和热点比赛的点击量，创建比赛的点击量，右上角的搜索量
+    //竞赛中我的比赛的，官方比赛和热点比赛的点击量，创建比赛的点击量，右上角的搜索量
+    public static final String BUTTON_COMPETITION_DETAIL_LIST_ITEM = "BUTTON_COMPETITION_DETAIL_LIST_ITEM";
+    public static final String BUTTON_COMPETITION_DETAIL_CREATE = "BUTTON_COMPETITION_DETAIL_CREATE";
+    //每个比赛的比赛详情，参加比赛和去比赛的点击量，邀请好友的点击量，排行中每个用户的点击量。
+    public static final String BUTTON_COMPETITION_DETAIL_JOIN = "BUTTON_COMPETITION_DETAIL_JOIN";
+    public static final String BUTTON_COMPETITION_DETAIL_GOTO = "BUTTON_COMPETITION_DETAIL_GOTO";
+    public static final String BUTTON_COMPETITION_DETAIL_INVITE = "BUTTON_COMPETITION_DETAIL_INVITE";
+    public static final String BUTTON_COMPETITION_DETAIL_RANK_POSITION = "BUTTON_COMPETITION_DETAIL_RANK_POSITION";
+    //个股页面右上角点击+自选股，取消自选 ,1天，5天，3个月，1年，讨论tab，资讯tab的点击量，最下方购买，出售，讨论的点击量。讨论tab和资讯tab下方的点击加载更多,抢沙发 的点击量
+    public static final String BUTTON_STOCK_DETAIL_ADDWATCH = "BUTTON_STOCK_DETAIL_ADDWATCH";
+    public static final String BUTTON_STOCK_DETAIL_CANCELWATCH = "BUTTON_STOCK_DETAIL_CANCELWATCH";
+    public static final String BUTTON_STOCK_DETAIL_CHART_ONEDAY = "BUTTON_STOCK_DETAIL_CHART_ONEDAY";
+    public static final String BUTTON_STOCK_DETAIL_CHART_FIVEDAY = "BUTTON_STOCK_DETAIL_CHART_FIVEDAY";
+    public static final String BUTTON_STOCK_DETAIL_CHART_90DAY = "BUTTON_STOCK_DETAIL_CHART_90DAY";
+    public static final String BUTTON_STOCK_DETAIL_CHART_YEAR = "BUTTON_STOCK_DETAIL_CHART_YEAR";
+    public static final String BUTTON_STOCK_DETAIL_TAB_DISCUSS = "BUTTON_STOCK_DETAIL_TAB_DISCUSS";
+    public static final String BUTTON_STOCK_DETAIL_TAB_NEWS = "BUTTON_STOCK_DETAIL_TAB_NEWS";
+    public static final String BUTTON_STOCK_DETAIL_OPER_BUY = "BUTTON_STOCK_DETAIL_OPER_BUY";
+    public static final String BUTTON_STOCK_DETAIL_OPER_SALE = "BUTTON_STOCK_DETAIL_OPER_SALE";
+    public static final String BUTTON_STOCK_DETAIL_OPER_DISCUSS = "BUTTON_STOCK_DETAIL_OPER_DISCUSS";
+    public static final String BUTTON_STOCK_DETAIL_GETMORE = "BUTTON_STOCK_DETAIL_GETMORE";
+    public static final String BUTTON_STOCK_DETAIL_SAFA = "BUTTON_STOCK_DETAIL_SAFA";
+    //他的持仓页面中关注点击量，及关注后持仓和平仓个股点击量，他的主页的点击量
+    //Todo
 
     //Windy
 }
