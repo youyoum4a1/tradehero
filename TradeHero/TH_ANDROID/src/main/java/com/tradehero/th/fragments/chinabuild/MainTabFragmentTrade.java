@@ -19,7 +19,12 @@ import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptF
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfMineFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfRisePercentFragment;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
+
+import javax.inject.Inject;
 
 public class MainTabFragmentTrade extends AbsBaseFragment
 {
@@ -28,6 +33,8 @@ public class MainTabFragmentTrade extends AbsBaseFragment
     @InjectView(R.id.indicator) TabPageIndicator indicator;
     @InjectView(R.id.imgSearch) ImageView imgSearch;
     private FragmentPagerAdapter adapter;
+
+    @Inject Analytics analytics;
 
     public static final String TAG = "main_tab_fragment_trade";
 
@@ -58,6 +65,7 @@ public class MainTabFragmentTrade extends AbsBaseFragment
     @OnClick(R.id.imgSearch)
     public void onSearchClicked()
     {
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_SEARCH));
         gotoDashboard(SearchFragment.class.getName());
     }
 
