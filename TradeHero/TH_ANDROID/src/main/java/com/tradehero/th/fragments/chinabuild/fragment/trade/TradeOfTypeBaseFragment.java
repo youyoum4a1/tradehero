@@ -62,6 +62,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 20;
     private String strExchangeName;
+    private int currentPosition = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -100,7 +101,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     public PullToRefreshBase.Mode getRefreshMode()
     {
-        return PullToRefreshBase.Mode.PULL_FROM_END;
+        return PullToRefreshBase.Mode.BOTH;
     }
 
     private void initListView()
@@ -114,7 +115,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 Timber.d("下拉刷新");
-                fetchSecurityList(0);
+                fetchSecurityList(currentPosition);
             }
 
             @Override
@@ -150,6 +151,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     private void fetchSecurityList(int position)
     {
+        currentPosition = position;
         strExchangeName = "";
         currentPage = 0;
         if (position > 0)
@@ -247,14 +249,20 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
             initAdapterSecurity(value, key);
-            dismissLoadingProgress();
+            onFinished();
         }
 
         @Override
         public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
             Timber.e("Error fetching the list of security %s", key, error);
+            onFinished();
+        }
+
+        public void onFinished()
+        {
             dismissLoadingProgress();
+            listSecurity.onRefreshComplete();
         }
     }
 
@@ -323,7 +331,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
         }
 
-        listSecurity.onRefreshComplete();
+
     }
 
     public void enterSecurity(SecurityId securityId, String securityName)

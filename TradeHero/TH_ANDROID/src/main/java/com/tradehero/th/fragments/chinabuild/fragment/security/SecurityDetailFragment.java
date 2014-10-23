@@ -1545,6 +1545,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             {
                 strShare = (((DiscussionDTO) dto).text);
             }
+
+            if(securityName!=null && securityId.getDisplayName()!=null)
+            {
+                strShare = securityName + "(" + securityId.getDisplayName() + ")  " + strShare;
+            }
+
             if (TextUtils.isEmpty(strShare))
             {
                 if (tvUserTLContent.getText() == null)

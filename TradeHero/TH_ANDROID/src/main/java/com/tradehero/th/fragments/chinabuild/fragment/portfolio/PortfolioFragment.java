@@ -34,6 +34,7 @@ import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.PositionLockedItem;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -156,6 +157,11 @@ public class PortfolioFragment extends DashboardFragment
         {
             setHeadViewMiddleMain("TA的持仓");
         }
+
+        if (portfolio_type == PORTFOLIO_TYPE_MINE)
+        {
+            setHeadViewRight0("去比赛");
+        }
     }
 
     @Override
@@ -262,7 +268,22 @@ public class PortfolioFragment extends DashboardFragment
     @Override public void onClickHeadRight0()
     {
         super.onClickHeadRight0();
-        enterUserMainPage();
+        if (portfolio_type == PORTFOLIO_TYPE_MINE)
+        {
+            toPlayCompetition();
+        }
+        else
+        {
+            enterUserMainPage();
+        }
+    }
+
+    public void toPlayCompetition()
+    {
+        Timber.d("去比赛");
+        Bundle bundle = new Bundle();
+        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
+        pushFragment(CompetitionSecuritySearchFragment.class, bundle);
     }
 
     public void enterUserMainPage()

@@ -51,12 +51,11 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-
-import com.tradehero.th.persistence.user.UserProfileCache;
-import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
@@ -244,6 +243,9 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
     private void shareToWechatMoment(final String strShare)
     {
         String show = getUnParsedText(strShare);
+
+        show = securityName + "(" + securityId.getDisplayName() + ") " + show;
+
         if (TextUtils.isEmpty(show))
         {
             return;

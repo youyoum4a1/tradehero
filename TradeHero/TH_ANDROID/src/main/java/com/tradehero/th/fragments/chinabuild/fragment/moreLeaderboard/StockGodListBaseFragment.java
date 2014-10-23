@@ -29,6 +29,9 @@ import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -46,6 +49,7 @@ public class StockGodListBaseFragment extends DashboardFragment
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
+    @Inject Analytics analytics;
 
     private LeaderboardListAdapter adapter;
 
@@ -109,7 +113,7 @@ public class StockGodListBaseFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachLeaderboardCacheListener();
-        ButterKnife.reset(this);
+        //ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -134,10 +138,19 @@ public class StockGodListBaseFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
             {
+
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.LEADERBOARD_USER_CLICKED_POSITION, ""+position));
+
                 LeaderboardUserDTO dto = (LeaderboardUserDTO) adapter.getItem((int) position);
                 if(leaderboard_key == LeaderboardDefKeyKnowledge.WEALTH)
                 {
                     enterMainPage(dto);
+                }
+                else if(leaderboard_key == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID
+                        ||leaderboard_key == LeaderboardDefKeyKnowledge.DAYS_90
+                        ||leaderboard_key == LeaderboardDefKeyKnowledge.MONTHS_6)
+                {
+                    enterPortfolio2(dto);
                 }
                 else
                 {
@@ -165,6 +178,16 @@ public class StockGodListBaseFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
         gotoDashboard(PortfolioFragment.class, bundle);
+    }
+
+    /*
+进入持仓页面2 打开二级页面
+*/
+    private void enterPortfolio2(LeaderboardUserDTO userDTO)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
+        pushFragment(PortfolioFragment.class, bundle);
     }
 
     @Override public void onDestroy()

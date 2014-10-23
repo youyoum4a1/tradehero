@@ -497,26 +497,44 @@ public class CompetitionBaseFragment extends DashboardFragment
             if (key instanceof CompetitionListTypeOffical)
             {
                 initOfficalCompetition(value);
+                onFinish();
             }
             else if (key instanceof CompetitionListTypeUser)
             {
                 initUserCompetition(key, value);
+                onFinish();
             }
             else if (key instanceof CompetitionListTypeVip)
             {
                 initVipCompetition(value);
+                onFinishVip();
             }
             else if (key instanceof CompetitionListTypeMine)
             {
                 initMyCompetition(key, value);
+                onFinish();
             }
-            onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull CompetitionListType key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.fetch_error));
             onFinish();
+            onFinishVip();
+        }
+
+        public void onFinishVip()
+        {
+            try
+            {
+                //betterViewAnimator.setDisplayedChildByLayoutId(R.id.listCompetitions);
+                if (listCompetitions != null)
+                {
+                    listCompetitions.onRefreshComplete();
+                }
+            } catch (Exception e)
+            {
+            }
         }
 
         public void onFinish()

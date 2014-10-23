@@ -129,6 +129,7 @@ public class AnalyticsConstants
     public static final String Twitter = "Twitter";//
     public static final String WeiBo = "WeiBo";//
 
+    public static final String CHINA_BUILD_BUTTON_CLICKED = "china_build_button_clicked";
 
     //Analytics Palmer
     //打开软件看到介绍图片，浏览到第几个页面点击或马上体验和登陆
@@ -143,4 +144,10 @@ public class AnalyticsConstants
 
 
     //Palmer
+
+
+    //Analytics Windy
+    public static final String LEADERBOARD_USER_CLICKED_POSITION = "leaderboard_user_clicked_position";
+
+    //Windy
 }

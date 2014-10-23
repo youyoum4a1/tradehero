@@ -21,7 +21,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
@@ -459,7 +458,8 @@ public class TradeOfMineFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            THToast.show(R.string.error_fetch_portfolio_list_info);
+            //THToast.show(R.string.error_fetch_portfolio_list_info);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
     }
 
