@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.DTO;
 
 public class SystemStatusDTO implements DTO
 {
-    public static final boolean DEFAULT_ALERTS_ARE_FREE = false;
+    public static final boolean DEFAULT_ALERTS_ARE_FREE = true;
 
     /**
      * When true, alerts are free and need no IAP

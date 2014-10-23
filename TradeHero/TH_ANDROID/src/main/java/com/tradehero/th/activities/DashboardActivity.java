@@ -43,6 +43,7 @@ import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -439,7 +440,7 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onStart()
     {
         super.onStart();
-        systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        systemStatusCache.get(new SystemStatusKey());
     }
 
     @Override protected void onResume()
