@@ -137,8 +137,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCacheA;
 
-    @Inject Analytics analytics;
-
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     @Inject Picasso picasso;
