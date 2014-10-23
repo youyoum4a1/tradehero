@@ -26,6 +26,14 @@ public class Analytics
         return this;
     }
 
+    public final Analytics addEventAuto(AnalyticsEvent analyticsEvent)
+    {
+        openSession();
+        pendingActions.add(new AddEventAction(analyticsEvent));
+        closeSession();
+        return this;
+    }
+
     public final Analytics tagScreen(String screenName)
     {
         pendingActions.add(new TagScreenAction(screenName));

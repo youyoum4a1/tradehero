@@ -129,4 +129,13 @@ public class AnalyticsConstants
     public static final String Twitter = "Twitter";//
     public static final String WeiBo = "WeiBo";//
 
+
+    //Analytics Palmer
+    //打开软件看到介绍图片，浏览到第几个页面点击或马上体验和登陆
+    public static final String SIGNIN_ANONYMOUS = "signin_anonymous";
+    public static final String SIGNIN_ACCOUNT = "signin_account";
+    //我的页面，个人主页的点击量，设置点击量，我的动态点击量，消息中心的点击量，邀请好友的点击量，右上角设置的点击量
+
+
+    //Palmer
 }
