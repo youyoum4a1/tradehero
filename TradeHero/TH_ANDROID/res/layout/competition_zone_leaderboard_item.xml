@@ -49,7 +49,7 @@
       android:layout_below="@id/competition_zone_title"
       android:layout_toRightOf="@id/icn_competition_zone"
       android:layout_toLeftOf="@+id/competition_roi"
-      android:textSize="@dimen/text_xsmall"
+      android:textSize="@dimen/text_caption"
       android:textColor="@color/text_gray_normal"
       tools:text="1st to 28th February"
       />

@@ -19,19 +19,17 @@
 
   <Button
       android:id="@+id/btn_buy"
-      style="@style/TH.Btn_Price_Bar"
+      style="@style/TH.Btn_Buy_Sell"
       android:layout_marginBottom="5dp"
       android:text="@string/buy"
-      android:background="@drawable/blue_rounded_button_selector"
       />
 
   <Button
       android:id="@+id/btn_sell"
-      style="@style/TH.Btn_Price_Bar"
+      style="@style/TH.Btn_Buy_Sell"
       android:layout_marginLeft="@dimen/common_margin_10"
       android:layout_marginBottom="5dp"
       android:text="@string/sell"
-      android:background="@drawable/blue_rounded_button_selector"
       android:visibility="gone"
       />
 

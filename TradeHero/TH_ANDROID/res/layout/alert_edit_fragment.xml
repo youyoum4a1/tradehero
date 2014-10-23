@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/stock_alert_edit_note"
-        android:textSize="@dimen/text_small"
+        android:textSize="@dimen/text_body"
         android:gravity="center_horizontal"
         android:textColor="@color/text_gray_normal"
         android:padding="15dp"

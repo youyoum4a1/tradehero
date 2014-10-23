@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="2dp"
         android:layout_weight="0"
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:gravity="right"
         tools:text="In Period Profit"
         />
@@ -33,7 +33,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentLeft="true"
-          style="@style/TH.SmallValue"
+          style="@style/TH.InfoValue"
           tools:text="US$ 839"
           />
 
@@ -42,7 +42,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
-          style="@style/TH.SmallValue"
+          style="@style/TH.InfoValue"
           tools:text="8.39%"
           />
 
@@ -58,14 +58,14 @@
 
     <TextView
         android:layout_marginRight="2dp"
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:gravity="right"
         android:text="@string/position_in_period_additional_invested"
         />
 
     <TextView
         android:id="@+id/in_period_additional_invested"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         tools:text="US$ 10,000"
         />
 
@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="2dp"
         android:layout_weight="0"
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:gravity="right"
         android:text="@string/position_in_period_start_value"
         />
@@ -97,7 +97,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentLeft="true"
-          style="@style/TH.SmallValue"
+          style="@style/TH.InfoValue"
           tools:text="Unknown"
           />
 
@@ -106,8 +106,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
-          style="@style/TH.SmallTitle"
-          android:textSize="@dimen/text_xxsmall"
+          style="@style/TH.Caption"
           tools:text="as of 27 Jan 2014"
           />
 

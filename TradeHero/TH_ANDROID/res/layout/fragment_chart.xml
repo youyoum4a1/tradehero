@@ -86,24 +86,22 @@
             >
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_type"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vwarrant_type"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
-              tools:text="Put"
-              android:textSize="@dimen/text_small" />
+              tools:text="Put" />
 
         </TableRow>
 
@@ -116,24 +114,22 @@
             >
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_code"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vwarrant_code"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
-              tools:text="T1IW"
-              android:textSize="@dimen/text_small" />
+              tools:text="T1IW"/>
 
         </TableRow>
 
@@ -146,24 +142,22 @@
             >
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_expiry"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vwarrant_expiry"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
-              tools:text="1 Apr 14"
-              android:textSize="@dimen/text_small" />
+              tools:text="1 Apr 14" />
 
         </TableRow>
 
@@ -174,24 +168,22 @@
             >
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_previous_close"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vprevious_close"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="@dimen/text_small"
               tools:text="US$ 567.8"/>
 
         </TableRow>
@@ -202,24 +194,22 @@
             android:layout_marginTop="4dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_open"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vopen"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="@dimen/text_small"
               tools:text="US$ 564.1"/>
 
         </TableRow>
@@ -230,24 +220,22 @@
             android:layout_marginTop="4dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_days_high"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vdays_high"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="@dimen/text_small"
               tools:text="US$ 571.9"/>
 
         </TableRow>
@@ -258,24 +246,22 @@
             android:layout_marginTop="4dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_days_low"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vdays_low"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="@dimen/text_small"
               tools:text="US$ 563.9"/>
 
         </TableRow>
@@ -297,24 +283,22 @@
             >
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_strike_price"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vwarrant_strike_price"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
-              tools:text="SG$ 2.000"
-              android:textSize="@dimen/text_small" />
+              tools:text="SG$ 2.000" />
 
         </TableRow>
 
@@ -327,24 +311,22 @@
             >
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_underlying"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vwarrant_underlying"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
               tools:text="Ascendas REOT"
-              android:textSize="@dimen/text_small"
               />
 
         </TableRow>
@@ -358,24 +340,22 @@
             >
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_issuer"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vwarrant_issuer"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
               tools:text="MB"
-              android:textSize="@dimen/text_small"
               />
 
         </TableRow>
@@ -387,24 +367,22 @@
             >
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_pe_ratio"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vpe_ratio"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
               android:text=""
-              android:textSize="@dimen/text_small"
               tools:text="14.11"/>
 
         </TableRow>
@@ -415,24 +393,22 @@
             android:layout_marginTop="4dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_eps"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/veps"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
               android:text=""
-              android:textSize="@dimen/text_small"
               tools:text="40.23"
               />
 
@@ -444,23 +420,21 @@
             android:layout_marginTop="4dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_volume"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vvolume"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
-              android:textSize="@dimen/text_small"
               tools:text="13,938,402"
               />
 
@@ -472,23 +446,21 @@
             android:layout_marginTop="4dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_avg_volume"
-              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
           <TextView
               android:id="@+id/vavg_volume"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
-              android:textSize="@dimen/text_small"
               tools:text="10,840,800"
               />
 

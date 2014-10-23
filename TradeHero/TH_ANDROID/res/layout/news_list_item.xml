@@ -16,7 +16,7 @@
         android:maxLines="1"
         android:text="Medium Text"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_medium" />
+        android:textSize="@dimen/text_subhead" />
 
     <TextView
         android:id="@+id/date"

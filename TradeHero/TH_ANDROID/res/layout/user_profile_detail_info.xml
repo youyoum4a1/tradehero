@@ -11,37 +11,10 @@
       android:layout_height="wrap_content"
       >
 
-    <!--TableRow>
-
-      <TextView
-          style="@style/TH.SmallTitle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textColor="@color/black"
-          android:text="@string/user_profile_roi"
-          android:layout_weight="3"
-          android:gravity="right"
-          android:textStyle="bold"/>
-
-      <TextView
-          style="@style/TH.SmallValue"
-          android:id="@+id/user_profile_roi"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="3dp"
-          android:textColor="@color/black"
-          android:textStyle="bold"
-          android:layout_weight="4"
-          android:gravity="left"
-          tools:text="0/17%"
-          />
-
-    </TableRow-->
-
     <TableRow>
 
       <TextView
-          style="@style/TH.SmallTitle"
+          style="@style/TH.InfoKey"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="3"
@@ -53,7 +26,7 @@
 
       <TextView
           android:id="@+id/txt_total_wealth"
-          style="@style/TH.SmallValue"
+          style="@style/TH.InfoValue"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="4"
@@ -67,24 +40,22 @@
     <TableRow>
 
       <TextView
-          style="@style/TH.SmallTitle"
+          style="@style/TH.InfoKey"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="3"
           android:gravity="right"
           android:paddingRight="@dimen/trade_screen_info_title_padding_right"
-          android:textColor="@color/text_gray_normal"
           android:text="@string/user_profile_additional_cash"
           />
 
       <TextView
           android:id="@+id/txt_additional_cash"
-          style="@style/TH.SmallValue"
+          style="@style/TH.InfoValue"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="4"
           android:gravity="left"
-          android:textColor="@color/black"
           tools:text="US$ 20,000"
           />
 
@@ -93,7 +64,7 @@
     <TableRow>
 
       <TextView
-          style="@style/TH.SmallTitle"
+          style="@style/TH.InfoKey"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="3"
@@ -105,7 +76,7 @@
 
       <TextView
           android:id="@+id/txt_cash_on_hand"
-          style="@style/TH.SmallValue"
+          style="@style/TH.InfoValue"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="4"

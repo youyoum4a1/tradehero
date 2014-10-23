@@ -91,7 +91,7 @@
           >
 
         <TextView
-            style="@style/TH.SmallTitle"
+            style="@style/TH.InfoKey"
             android:id="@+id/unrealised_pl_value_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
 
         <TextView
             android:id="@+id/unrealised_pl_value"
-            style="@style/TH.SmallValue"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -115,7 +115,7 @@
 
         <TextView
             android:id="@+id/realised_pl_value_header"
-            style="@style/TH.SmallTitle"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
@@ -124,7 +124,7 @@
 
         <TextView
             android:id="@+id/realised_pl_value"
-            style="@style/TH.SmallValue"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="US$ 700"
@@ -138,7 +138,7 @@
           >
 
         <TextView
-            style="@style/TH.SmallTitle"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
@@ -147,7 +147,7 @@
 
         <TextView
             android:id="@+id/total_invested_value"
-            style="@style/TH.SmallValue"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="US$ 20,000"

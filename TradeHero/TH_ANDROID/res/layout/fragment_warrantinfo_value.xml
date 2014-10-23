@@ -12,31 +12,23 @@
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
-    <RelativeLayout
+    <Button
         android:id="@+id/warrant_help_video_link"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
+        style="@style/TH.Button"
         tools:background="@drawable/btn_provider_22_phillip_macquarie"
+        tools:text="Learn More About Warrants"
         android:padding="8dp">
-
-      <TextView
-          android:id="@+id/warrant_help_video_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerInParent="true"
-          android:padding="4dp"
-          tools:text="Learn More About Warrants"
-          tools:textColor="@color/white"
-          />
-
-    </RelativeLayout>
+    </Button>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/warrant_info_header_warrant_data"
         android:gravity="center_horizontal"
+        style="@style/TH.Subhead"
         />
 
     <LinearLayout
@@ -61,24 +53,23 @@
             android:layout_marginBottom="8dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_type"
-              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
           <TextView
               android:id="@+id/vwarrant_type"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               tools:text="Put"
-              android:textSize="@dimen/text_medium" />
+               />
         </TableRow>
 
         <TableRow
@@ -87,24 +78,23 @@
             android:layout_marginBottom="8dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_code"
-              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
           <TextView
               android:id="@+id/vwarrant_code"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               tools:text="T1IW"
-              android:textSize="@dimen/text_medium" />
+               />
         </TableRow>
 
         <TableRow
@@ -113,24 +103,23 @@
             android:layout_marginBottom="8dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_expiry"
-              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
           <TextView
               android:id="@+id/vwarrant_expiry"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               tools:text="1 Apr 14"
-              android:textSize="@dimen/text_medium" />
+               />
         </TableRow>
 
       </TableLayout>
@@ -147,24 +136,23 @@
             android:layout_marginBottom="8dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_strike_price"
-              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
           <TextView
               android:id="@+id/vwarrant_strike_price"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               tools:text="SG$ 2.000"
-              android:textSize="@dimen/text_medium" />
+               />
         </TableRow>
 
         <TableRow
@@ -173,24 +161,22 @@
             android:layout_marginBottom="8dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_underlying"
-              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
           <TextView
               android:id="@+id/vwarrant_underlying"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               tools:text="Ascendas REOT"
-              android:textSize="@dimen/text_medium"
               />
         </TableRow>
 
@@ -200,24 +186,22 @@
             android:layout_marginBottom="8dp">
 
           <TextView
-              style="@style/TH.Title"
+              style="@style/TH.InfoKey"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_issuer"
-              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
           <TextView
               android:id="@+id/vwarrant_issuer"
-              style="@style/TH.Value"
+              style="@style/TH.InfoValue"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="left"
               tools:text="MB"
-              android:textSize="@dimen/text_medium"
               />
         </TableRow>
 

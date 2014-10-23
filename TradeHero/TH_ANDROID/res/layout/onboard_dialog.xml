@@ -74,7 +74,7 @@
           android:paddingLeft="@dimen/common_margin_20"
           android:paddingRight="@dimen/common_margin_20"
           android:text="@string/next"
-          android:textSize="@dimen/text_large"
+          android:textSize="@dimen/text_title"
           android:textColor="@color/white"
           android:background="@drawable/blue_rounded_button_selector"
           />
@@ -88,7 +88,7 @@
           android:paddingLeft="@dimen/common_margin_20"
           android:paddingRight="@dimen/common_margin_20"
           android:text="@string/done"
-          android:textSize="@dimen/text_large"
+          android:textSize="@dimen/text_title"
           android:textColor="@color/white"
           android:background="@drawable/blue_rounded_button_selector"
           android:visibility="gone"

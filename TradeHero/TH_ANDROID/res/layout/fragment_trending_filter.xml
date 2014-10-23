@@ -55,8 +55,8 @@
 
         <ImageView
             android:id="@+id/trending_filter_title_icon"
-            android:layout_width="@dimen/text_medium"
-            android:layout_height="@dimen/text_medium"
+            android:layout_width="@dimen/text_subhead"
+            android:layout_height="@dimen/text_subhead"
             android:scaleType="centerInside"
             android:baselineAlignBottom="true"
             android:contentDescription="@null"
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textStyle="bold"
-            android:textSize="@dimen/text_medium"
+            android:textSize="@dimen/text_subhead"
             android:drawableLeft="@null"
             tools:text="Unusual Volumes"
             />

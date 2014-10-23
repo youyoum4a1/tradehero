@@ -53,7 +53,7 @@
         android:lines="2"
         tools:text="Telus Corp."
         android:textColor="@color/black"
-        android:textSize="@dimen/text_small"
+        android:textSize="@dimen/text_body"
         android:textStyle="bold"/>
 
     <ImageView
@@ -91,7 +91,7 @@
         android:lines="1"
         tools:text="NYSE:TU"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_subhead"
         android:textStyle="bold"/>
 
     <LinearLayout
@@ -122,7 +122,7 @@
           android:lines="1"
           tools:text="@string/arrow_prefix_positive"
           android:textColor="@color/black"
-          android:textSize="@dimen/text_xlarge"/>
+          android:textSize="@dimen/text_title"/>
 
       <TextView
           android:id="@+id/currency_display"
@@ -133,7 +133,7 @@
           android:lines="1"
           tools:text="US$"
           android:textColor="@color/text_gray_normal"
-          android:textSize="@dimen/text_small"/>
+          android:textSize="@dimen/text_body"/>
 
       <TextView
           android:id="@+id/last_price"
@@ -142,7 +142,7 @@
           android:lines="1"
           tools:text="8.80"
           android:textColor="@color/text_gray_normal"
-          android:textSize="@dimen/text_small"/>
+          android:textSize="@dimen/text_body"/>
 
     </LinearLayout>
 
@@ -156,7 +156,7 @@
         android:lines="1"
         tools:text="19 Feb 19:06"
         android:textColor="@color/text_gray_normal"
-        android:textSize="@dimen/text_xsmall"/>
+        android:textSize="@dimen/text_caption"/>
 
     <TextView
         android:id="@+id/sec_type"
@@ -166,7 +166,7 @@
         android:lines="1"
         tools:text="Equity"
         android:textColor="@color/sec_type"
-        android:textSize="@dimen/text_small"/>
+        android:textSize="@dimen/text_body"/>
 
   </LinearLayout>
 

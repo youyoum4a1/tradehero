@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/security_on_board_select_invitation_title"
-        android:textSize="@dimen/text_large"
+        android:textSize="@dimen/text_title"
         android:textStyle="bold"
         android:textColor="@color/black"
         />

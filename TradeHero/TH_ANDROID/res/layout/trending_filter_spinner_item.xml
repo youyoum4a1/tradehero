@@ -23,7 +23,7 @@
       android:id="@+id/trending_filter_spinner_item_label"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:textSize="@dimen/text_medium"
+      android:textSize="@dimen/text_subhead"
       android:layout_gravity="center"
       android:maxLines="1"
       tools:text="US NYSE - NYSE"

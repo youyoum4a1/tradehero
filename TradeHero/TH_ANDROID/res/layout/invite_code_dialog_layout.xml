@@ -45,7 +45,7 @@
           android:layout_margin="@dimen/common_margin_10"
           android:maxLength="6"
           style="@style/TH.DiscussionTextBox"
-          android:textSize="@dimen/text_xlarge"
+          android:textSize="@dimen/text_title"
           android:textStyle="bold"
           android:textColor="@color/tradehero_blue"/>
 
@@ -66,7 +66,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/cancel"
-            android:textSize="@dimen/text_small"
+            android:textSize="@dimen/text_body"
             android:textColor="@color/black"
             android:background="@drawable/basic_white_selector"/>
 
@@ -77,7 +77,7 @@
             android:layout_weight="1"
             android:background="@drawable/basic_white_selector"
             android:text="@string/ok"
-            android:textSize="@dimen/text_small"
+            android:textSize="@dimen/text_body"
             android:textColor="@color/tradehero_blue"
             android:layout_marginLeft="1dp"/>
 
@@ -106,7 +106,7 @@
           android:layout_height="@dimen/medium_logo_w_h"
           android:layout_width="match_parent"
           android:text="@string/cancel"
-          android:textSize="@dimen/text_small"
+          android:textSize="@dimen/text_body"
           android:textColor="@color/black"
           android:background="@drawable/basic_white_selector"/>
 
@@ -135,7 +135,7 @@
           android:layout_height="@dimen/medium_logo_w_h"
           android:layout_width="match_parent"
           android:text="@string/ok"
-          android:textSize="@dimen/text_small"
+          android:textSize="@dimen/text_body"
           android:textColor="@color/tradehero_blue"
           android:background="@drawable/basic_white_selector"/>
 

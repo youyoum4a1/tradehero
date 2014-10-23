@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:text="@string/buy_sell_portfolio_selected_title"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_subhead"
         android:layout_centerVertical="true"/>
 
     <ImageView
@@ -54,7 +54,7 @@
         android:layout_toLeftOf="@id/portfolio_drop_down_hint"
         android:layout_toRightOf="@id/selected_title_anchor"
         tools:text="Main Portfolio"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_subhead"
         android:layout_centerVertical="true"/>
 
   </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
@@ -114,7 +114,7 @@
 
     <TextView
         android:id="@+id/buy_price"
-        style="@style/TH.Value"
+        style="@style/TH.InfoValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_margin_10"
@@ -123,13 +123,13 @@
         android:layout_toRightOf="@id/logo_layout"
         android:layout_toEndOf="@id/logo_layout"
         android:text="@string/buy_sell_loading_ask_price"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_subhead"
         android:textColor="@color/font_roi"
         />
 
     <TextView
         android:id="@+id/sell_price"
-        style="@style/TH.Value"
+        style="@style/TH.InfoValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/logo_layout"
@@ -138,14 +138,14 @@
         android:layout_marginTop="-5dp"
         android:layout_marginLeft="@dimen/common_margin_10"
         android:layout_marginStart="@dimen/common_margin_10"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_subhead"
         android:textColor="@color/red"
         android:text="@string/buy_sell_loading_bid_price"
         />
 
     <TextView
         android:id="@+id/vprice_as_of"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/sell_price"
@@ -154,7 +154,7 @@
         android:layout_marginLeft="@dimen/common_margin_10"
         android:layout_marginStart="@dimen/common_margin_10"
         tools:text="06 Feb 05:00"
-        android:textSize="@dimen/text_small"
+        android:textSize="@dimen/text_body"
         android:textColor="#4e4e4e"
         android:layout_marginTop="-4dp"/>
 

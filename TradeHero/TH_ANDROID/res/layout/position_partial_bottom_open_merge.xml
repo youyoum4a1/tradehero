@@ -17,14 +17,14 @@
         android:id="@+id/unrealised_pl_value_header"
         android:layout_marginRight="2dp"
         android:layout_gravity="right"
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:gravity="right"
         tools:text="Unrealized Profit"
         />
 
     <TextView
         android:id="@+id/unrealised_pl_value"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         tools:text="US$ 56,283"
         />
 
@@ -40,14 +40,14 @@
         android:id="@+id/realised_pl_value_header"
         android:layout_marginRight="2dp"
         android:layout_gravity="right"
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:gravity="right"
         tools:text="Realized Profit"
         />
 
     <TextView
         android:id="@+id/realised_pl_value"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         tools:text="-US$ 30"
         />
 
@@ -63,14 +63,14 @@
         android:id="@+id/total_invested_header"
         android:layout_marginRight="2dp"
         android:layout_gravity="right"
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:gravity="right"
         android:text="@string/position_total_invested_header"
         />
 
     <TextView
         android:id="@+id/total_invested_value"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         tools:text="US$ 101,105"
         />
 
@@ -86,14 +86,14 @@
         android:id="@+id/market_value_header"
         android:layout_marginRight="2dp"
         android:layout_gravity="right"
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:gravity="right"
         android:text="@string/position_market_value_header"
         />
 
     <TextView
         android:id="@+id/market_value_value"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         tools:text="US$ 157,388"
         />
 
@@ -109,14 +109,14 @@
         android:id="@+id/quantity_header"
         android:layout_marginRight="2dp"
         android:layout_gravity="right"
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:gravity="right"
         android:text="@string/position_quantity_header"
         />
 
     <TextView
         android:id="@+id/quantity_value"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         tools:text="2,418"
         />
 
@@ -132,14 +132,14 @@
         android:id="@+id/average_price_header"
         android:layout_marginRight="2dp"
         android:layout_gravity="right"
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:gravity="right"
         android:text="@string/position_average_price_header"
         />
 
     <TextView
         android:id="@+id/average_price_value"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         tools:text="US$ 41.8135"
         />
 

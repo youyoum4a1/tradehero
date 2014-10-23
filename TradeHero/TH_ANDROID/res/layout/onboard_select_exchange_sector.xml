@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/common_margin_15"
         android:gravity="center"
         android:text="@string/onboard_exchange_title"
-        android:textSize="@dimen/text_large"
+        android:textSize="@dimen/text_title"
         android:textStyle="bold"
         android:textColor="@color/black"
         />

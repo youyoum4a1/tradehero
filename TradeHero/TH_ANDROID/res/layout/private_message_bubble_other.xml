@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         tools:text="moments ago"
-        android:textSize="@dimen/text_xsmall"
+        android:textSize="@dimen/text_caption"
         android:textColor="@color/gray_1"
         />
 

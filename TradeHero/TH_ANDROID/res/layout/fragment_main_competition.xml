@@ -29,7 +29,7 @@
       android:layout_width="match_parent"
       android:layout_height="@dimen/clickable_element_min_dimen"
       android:text="@string/competition_trade_now"
-      android:textSize="@dimen/text_xlarge"
+      android:textSize="@dimen/text_title"
       android:textStyle="bold"
       android:layout_alignParentBottom="true"
       android:layout_centerHorizontal="true"

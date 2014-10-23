@@ -37,7 +37,7 @@
       android:layout_toRightOf="@id/logo"
       android:layout_below="@id/stock_symbol"
       android:paddingLeft="5dp"
-      android:textSize="@dimen/text_xsmall"
+      android:textSize="@dimen/text_caption"
       tools:text="alert description"
       />
 
@@ -48,7 +48,7 @@
       android:layout_toRightOf="@id/logo"
       android:layout_below="@id/alert_description"
       android:paddingLeft="5dp"
-      android:textSize="@dimen/text_xsmall"
+      android:textSize="@dimen/text_caption"
       tools:text="alert status"
       />
 
@@ -66,7 +66,7 @@
       android:background="@drawable/authentication_button"
       android:text="@string/timeline_trade"
       android:textColor="@color/white"
-      android:textSize="@dimen/text_xsmall"
+      android:textSize="@dimen/text_caption"
       />
 
   <ImageView

@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/onboard_invitation_follow_hero_header"
-        android:textSize="@dimen/text_large"
+        android:textSize="@dimen/text_title"
         android:textStyle="bold"
         android:textColor="@color/black"/>
 

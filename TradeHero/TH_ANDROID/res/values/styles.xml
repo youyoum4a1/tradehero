@@ -1,98 +1,84 @@
-<resources
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
   <!--
       Base application theme, dependent on API level. This theme is replaced
       by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
   -->
-  <style name="TradeHero" parent="@android:style/Theme.Holo.Light">
+  <style name="TradeHero"
+      parent="@android:style/Theme.Holo.Light">
     <item name="android:windowActionBar">true</item>
     <item name="android:windowNoTitle">false</item>
     <item name="android:windowActionBarOverlay">true</item>
   </style>
 
-  <style name="TradeHero.Settings" parent="TradeHero">
+  <style name="TradeHero.Settings"
+      parent="TradeHero">
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
     <item name="android:windowActionBarOverlay">false</item>
   </style>
 
-  <style name="AppBaseTheme.NoActionBar" parent="TradeHero">
+  <style name="AppBaseTheme.NoActionBar"
+      parent="TradeHero">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
     <item name="android:background">@color/splash_background_solid</item>
   </style>
 
-  <style name="AppBaseTheme.NoActionBar2" parent="TradeHero">
+  <style name="AppBaseTheme.NoActionBar2"
+      parent="TradeHero">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowBackground">@drawable/authentication_bg</item>
   </style>
 
   <!--<style name="TradeHero.Menu.ItemTextIcon" parent="@android:style/TextAppearance.Holo.Light.SearchResult">-->
-    <!--<item name="android:textStyle">bold</item>-->
-    <!--<item name="android:textSize">@dimen/text_xlarge</item>-->
+  <!--<item name="android:textStyle">bold</item>-->
+  <!--<item name="android:textSize">@dimen/text_xlarge</item>-->
   <!--</style>-->
 
-  <style name="TH"/>
+  <style name="TH" />
 
-  <style name="TH.Title">
-    <item name="android:textColor">@color/title</item>
-    <item name="android:padding">2dp</item>
+  <style name="TH.Btn_Bar_Base" parent="TH.Button">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:background">@drawable/basic_transparent_selector</item>
   </style>
 
-  <style name="TH.SmallTitle" parent="TH.Title">
-    <item name="android:textSize">@dimen/text_small</item>
+  <style name="TH.Btn_Buy_Sell"
+      parent="TH.Btn_Bar_Base">
+    <item name="android:background">@drawable/blue_rounded_button_selector</item>
+    <item name="android:textColor">@color/text_primary_inverse</item>
   </style>
 
-  <style name="TH.TabStyle" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
+  <style name="TH.Btn_Time_Span"
+      parent="TH.Btn_Bar_Base">
+    <item name="android:textColor">@color/text_secondary_inverse</item>
+    <item name="android:textSize">@dimen/text_caption</item>
+    <item name="android:minHeight">@dimen/timespan_button_min_height</item>
+  </style>
+
+  <style name="TH.BtnQuickPriceSet"
+      parent="TH.Btn_Bar_Base">
+    <item name="android:textColor">@color/text_secondary_inverse</item>
+    <item name="android:textSize">@dimen/text_caption</item>
+  </style>
+
+  <style name="TH.TabStyle"
+      parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
     <item name="android:background">@drawable/tab_indicator_ab_th</item>
     <item name="android:layout_width">0dip</item>
     <item name="android:layout_weight">1</item>
     <item name="android:minWidth">80dip</item>
   </style>
 
-  <style name="TH.Value">
-    <item name="android:textColor">@color/black</item>
-    <item name="android:padding">2dp</item>
-  </style>
-
-  <style name="TH.SmallValue" parent="TH.Value">
-    <item name="android:textSize">@dimen/text_small</item>
-  </style>
-
-  <style name="TH.Btn_Price_Bar_Base">
-    <item name="android:layout_width">0dp</item>
-    <item name="android:layout_height">match_parent</item>
-    <item name="android:layout_weight">1</item>
-    <item name="android:gravity">center</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
-  <style name="TH.Btn_Price_Bar" parent="TH.Btn_Price_Bar_Base">
-    <item name="android:background">@drawable/basic_transparent_selector</item>
-    <item name="android:textColor">@color/white</item>
-    <item name="android:textSize">@dimen/text_xlarge</item>
-  </style>
-
-  <style name="TH.Btn_Time_Span" parent="TH.Btn_Price_Bar_Base">
-    <item name="android:background">@drawable/basic_transparent_selector</item>
-    <item name="android:textColor">@color/price_bar_text_default</item>
-    <item name="android:textSize">@dimen/text_xsmall</item>
-    <item name="android:minHeight">@dimen/timespan_button_min_height</item>
-  </style>
-
-  <style name="TH.BtnQuickPriceSet" parent="TH.Btn_Price_Bar_Base">
-    <item name="android:background">@drawable/basic_transparent_selector</item>
-    <item name="android:textColor">@color/price_bar_text_default</item>
-    <item name="android:textSize">@dimen/text_xsmall</item>
-
-  </style>
-
   <style name="TH.Btn_Price_Bar_Separator">
     <item name="android:layout_width">1dp</item>
     <item name="android:layout_height">match_parent</item>
-    <item name="android:background">@color/price_bar_text_default</item>
+    <item name="android:background">@color/dark_gray</item>
   </style>
 
   <style name="TradeHero.Authentication"
@@ -104,14 +90,16 @@
     <item name="android:paddingBottom">@dimen/common_margin_10</item>
   </style>
 
-  <style name="AppBaseTheme.Welcome" parent="TradeHero">
+  <style name="AppBaseTheme.Welcome"
+      parent="TradeHero">
     <item name="android:paddingTop">65dip</item>
     <item name="android:paddingLeft">30dip</item>
     <item name="android:paddingRight">30dip</item>
     <item name="android:background">@color/authentication_background_color</item>
   </style>
 
-  <style name="AppBaseTheme.Welcome.SignIn" parent="@android:style/Widget.Button">
+  <style name="AppBaseTheme.Welcome.SignIn"
+      parent="@android:style/Widget.Button">
     <item name="android:layout_marginTop">0dip</item>
   </style>
 
@@ -137,7 +125,8 @@
     <item name="android:paddingRight">@dimen/authentication_button_horizontal_padding</item>
   </style>
 
-  <style name="TradeHero.Dashboard" parent="TradeHero">
+  <style name="TradeHero.Dashboard"
+      parent="TradeHero">
     <item name="android:windowActionBarOverlay">false</item>
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
     <item name="android:actionBarTabStyle">@style/TradeHero.Dashboard.ActionBar.TabView</item>
@@ -153,7 +142,8 @@
     <item name="android:dropDownListViewStyle">@style/TradeHero.Dashboard.ActionBar.DropDownListView</item>
   </style>
 
-  <style name="TradeHero.Authentication.EditText" parent="@android:style/Widget.EditText">
+  <style name="TradeHero.Authentication.EditText"
+      parent="@android:style/Widget.EditText">
     <item name="android:ems">10</item>
     <item name="android:paddingRight">@dimen/common_margin_4</item>
     <item name="android:paddingTop">@dimen/common_margin_4</item>
@@ -163,15 +153,17 @@
     <item name="android:textColor">@color/black</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+  <style name="TradeHero.Dashboard.ActionBar"
+      parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
     <item name="android:titleTextStyle">@style/TradeHero.Dashboard.ActionBar.TitleTextStyle</item>
     <item name="android:actionMenuTextColor">@color/tradehero_blue</item>
     <item name="android:background">@drawable/ab_background</item>
   </style>
 
-    <style name="TradeHero.Dashboard.ActionBarButton" parent="@android:style/Widget.Holo.Light.ActionButton">
-        <item name="android:background">@drawable/basic_transparent_selector</item>
-    </style>
+  <style name="TradeHero.Dashboard.ActionBarButton"
+      parent="@android:style/Widget.Holo.Light.ActionButton">
+    <item name="android:background">@drawable/basic_transparent_selector</item>
+  </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TitleTextStyle"
       parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
@@ -180,25 +172,29 @@
 
   <style name="TradeHero.Dashboard.ActionBar.Menu"
       parent="android:style/TextAppearance.Holo.Widget.ActionBar.Menu">
-    <item name="android:textSize">@dimen/text_medium</item>
+    <item name="android:textSize">@dimen/text_subhead</item>
     <!--<item name="android:textStyle">bold</item>-->
     <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:textAllCaps">false</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.DropDownListView" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
+  <style name="TradeHero.Dashboard.ActionBar.DropDownListView"
+      parent="@android:style/Widget.Holo.Light.ListView.DropDown">
     <item name="android:listSelector">@drawable/basic_transparent_selector</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.PopupMenu" parent="@android:style/Widget.Holo.Light.PopupMenu">
+  <style name="TradeHero.Dashboard.ActionBar.PopupMenu"
+      parent="@android:style/Widget.Holo.Light.PopupMenu">
     <item name="android:listSelector">@drawable/basic_transparent_selector</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.OverflowButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton.Overflow">
+  <style name="TradeHero.Dashboard.ActionBar.OverflowButtonStyle"
+      parent="@android:style/Widget.Holo.Light.ActionButton.Overflow">
     <item name="android:src">@drawable/ic_action_core_overflow</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.WidgetStyle" parent="@android:style/Widget">
+  <style name="TradeHero.Dashboard.ActionBar.WidgetStyle"
+      parent="@android:style/Widget">
     <item name="android:textColor">@color/tradehero_blue</item>
   </style>
 
@@ -207,24 +203,8 @@
     <item name="android:minHeight">48dp</item>
   </style>
 
-  <style name="TutorialTextContent">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:textSize">@dimen/text_small</item>
-    <item name="android:textColor">@color/white</item>
-  </style>
-
-  <style name="TutorialTextHeader">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:gravity">center_vertical</item>
-    <item name="android:textSize">@dimen/text_header</item>
-    <item name="android:textColor">@color/white</item>
-    <item name="android:textStyle">bold</item>
-    <item name="android:drawableLeft">@drawable/icn_info_normal_small</item>
-  </style>
-
-  <style name="TH.VoteView" parent="TH.DiscussionActionButtons.Text">
+  <style name="TH.VoteView"
+      parent="TH.DiscussionActionButtons.Text">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:gravity">center_vertical</item>
@@ -234,7 +214,7 @@
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_weight">1</item>
-    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textSize">@dimen/text_body</item>
     <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:singleLine">true</item>
     <item name="android:ellipsize">middle</item>
@@ -245,7 +225,8 @@
     <item name="android:background">@drawable/basic_white_selector</item>
   </style>
 
-  <style name="TH.SeekBar" parent="android:Widget.Holo.Light.SeekBar">
+  <style name="TH.SeekBar"
+      parent="android:Widget.Holo.Light.SeekBar">
     <item name="android:progressDrawable">@drawable/tradehero_scrubber_progress_horizontal_holo_light</item>
     <item name="android:indeterminateDrawable">@drawable/tradehero_scrubber_progress_horizontal_holo_light</item>
     <item name="android:thumb">@drawable/tradehero_scrubber_control_selector_holo_light</item>
@@ -254,7 +235,7 @@
   <style name="TH.Btn_Invite_Action">
     <item name="android:background">@drawable/leaderboard_user_item_follow_action_button</item>
     <item name="android:textColor">@color/white</item>
-    <item name="android:textSize">@dimen/text_medium</item>
+    <item name="android:textSize">@dimen/text_subhead</item>
     <item name="android:gravity">center</item>
     <item name="android:paddingTop">5dp</item>
     <item name="android:paddingBottom">5dp</item>
@@ -263,35 +244,8 @@
     <item name="android:minWidth">100dp</item>
   </style>
 
-  <style name="TH.Time_Text">
-    <item name="android:textSize">@dimen/text_xsmall</item>
-    <item name="android:textColor">#777</item>
-  </style>
-
-  <style name="TH.Time_Text.Header">
-    <item name="android:textSize">@dimen/text_xlarge</item>
-    <item name="android:textColor">@color/white</item>
-  </style>
-
-  <style name="TH.Time_Text.Header.Inverse">
-    <item name="android:textSize">@dimen/text_xlarge</item>
-    <item name="android:textColor">@color/black</item>
-  </style>
-
-  <style name="TH.Loading_Error_Text">
-    <item name="android:textSize">@dimen/text_medium</item>
-    <item name="android:textColor">#777</item>
-    <item name="android:textStyle">italic</item>
-  </style>
-
-  <style name="TH.Loading_Empty_Text" parent="@style/TH.Loading_Error_Text">
-    <item name="android:textSize">@dimen/text_large</item>
-    <item name="android:gravity">center</item>
-    <item name="android:layout_gravity">center</item>
-  </style>
-
-
-  <style name="TH.BuySell_ViewPager_Belt" parent="@android:style/Widget">
+  <style name="TH.BuySell_ViewPager_Belt"
+      parent="@android:style/Widget">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:gravity">center</item>
@@ -301,25 +255,16 @@
     <item name="android:background">@color/white</item>
   </style>
 
-  <style name="TH.BuySell_ViewPager_Button" parent="@android:style/Widget.Holo.Light.Tab">
+  <style name="TH.BuySell_ViewPager_Button"
+      parent="@android:style/Widget.Holo.Light.Tab">
     <item name="android:layout_height">match_parent</item>
     <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:gravity">center</item>
     <item name="android:background">@drawable/tab_indicator_ab_th</item>
-    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textSize">@dimen/text_body</item>
     <item name="android:paddingTop">12dp</item>
     <item name="android:paddingBottom">12dp</item>
     <item name="android:measureWithLargestChild">true</item>
-  </style>
-
-  <style name="TH.UserNameTitle">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/black</item>
-    <item name="android:textSize">@dimen/text_medium</item>
-    <item name="android:textStyle">bold</item>
-    <item name="android:ellipsize">middle</item>
-    <item name="android:singleLine">true</item>
   </style>
 
   <style name="TH.ShareButtons">
@@ -359,14 +304,6 @@
     <item name="android:layout_marginBottom">10dp</item>
   </style>
 
-  <style name="TH.NumericalAnimatedTextView">
-    <item name="android:gravity">center</item>
-    <item name="animatedDuration">2500</item>
-    <item name="animatedInterval">50</item>
-    <item name="showAnimation">true</item>
-    <item name="textSize">@dimen/text_large</item>
-  </style>
-
   <style name="TH.DiscussionActionButtons">
     <item name="android:paddingLeft">@dimen/discussion_action_buttons_horizontal_padding</item>
     <item name="android:paddingRight">@dimen/discussion_action_buttons_horizontal_padding</item>
@@ -374,30 +311,24 @@
     <item name="android:paddingBottom">@dimen/discussion_action_buttons_vertical_padding</item>
   </style>
 
-  <style name="TH.DiscussionActionButtons.Text" parent="TH.DiscussionActionButtons">
+  <style name="TH.DiscussionActionButtons.Text"
+      parent="TH.DiscussionActionButtons">
     <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
-    <item name="android:textSize">@dimen/text_medium</item>
+    <item name="android:textSize">@dimen/text_subhead</item>
     <item name="android:layout_gravity">center_vertical</item>
     <item name="android:drawablePadding">@dimen/discussion_action_buttons_drawable_padding</item>
-  </style>
-
-  <style name="TH.DiscussionTextBox">
-    <item name="android:gravity">left|center_vertical</item>
-    <item name="android:background">@drawable/textbox_light_background</item>
-    <item name="android:padding">@dimen/discussion_action_buttons_drawable_padding</item>
-    <item name="android:textSize">@dimen/text_small</item>
-    <item name="android:inputType">text|textMultiLine|textImeMultiLine|textCapSentences|textAutoCorrect|textAutoComplete</item>
   </style>
 
   <style name="TH.DiscussionPostButtons">
     <item name="android:gravity">center</item>
     <item name="android:padding">@dimen/discussion_action_buttons_drawable_padding</item>
-    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textSize">@dimen/text_body</item>
     <item name="android:textStyle">bold</item>
     <item name="android:textColor">@color/tradehero_blue</item>
   </style>
 
-  <style name="TH.Spinner" parent="android:Widget.Holo.Light.Spinner">
+  <style name="TH.Spinner"
+      parent="android:Widget.Holo.Light.Spinner">
     <item name="android:background">@drawable/tradehero_spinner_background_holo_light</item>
   </style>
 
@@ -418,70 +349,31 @@
     <item name="android:drawingCacheQuality">low</item>
   </style>
 
-  <style name="TH.Achievement.Header" parent="TH.Achievement">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_large</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
-  <style name="TH.Achievement.Title" parent="TH.Achievement">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_xlarge</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
-  <style name="TH.Achievement.Description" parent="TH.Achievement">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_small</item>
-  </style>
-
-  <style name="TH.Achievement.Indicator" parent="TH.Achievement">
+  <style name="TH.Achievement.Indicator"
+      parent="TH.Achievement">
     <item name="android:tag">@string/tag_achievement_indicator</item>
     <item name="android:layout_marginLeft">3dp</item>
     <item name="android:layout_marginRight">3dp</item>
   </style>
 
-  <style name="TH.Achievement.Indicator.Image" parent="TH.Achievement.Indicator">
+  <style name="TH.Achievement.Indicator.Image"
+      parent="TH.Achievement.Indicator">
     <item name="android:scaleType">fitCenter</item>
     <item name="android:padding">@dimen/achievement_indicator_star_padding</item>
     <item name="android:background">@drawable/achievement_indicator_bg_padded</item>
     <item name="android:src">@drawable/ic_achievement_star_off</item>
   </style>
 
-  <style name="TH.Achievement.Indicator.Text" parent="TH.Achievement.Indicator">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_xxsmall</item>
-  </style>
+  <style name="TH.Level.Current"
+      parent="TH.Level"></style>
 
-  <style name="TH.Achievement.Indicator.Text.Top" parent="TH.Achievement.Indicator.Text">
-    <item name="android:gravity">center_horizontal|bottom</item>
-  </style>
-
-  <style name="TH.Achievement.Indicator.Text.Bot" parent="TH.Achievement.Indicator.Text">
-    <item name="android:gravity">center_horizontal|top</item>
-  </style>
-
-  <style name="TH.Achievement.Share" parent="TH.Achievement">
-    <item name="android:textColor">@color/white</item>
-    <item name="android:textStyle">bold</item>
-    <item name="android:minWidth">80dp</item>
-    <item name="android:background">@drawable/blue_rounded_button_selector</item>
-  </style>
-
-  <style name="TH.Level">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/user_level_progressbar_indicator_text_size</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
-  <style name="TH.Level.Current" parent="TH.Level">
-  </style>
-
-  <style name="TH.Level.Next" parent="TH.Level">
+  <style name="TH.Level.Next"
+      parent="TH.Level">
     <item name="android:alpha">0.7</item>
   </style>
 
-  <style name="TH.Level.Up" parent="TH.Level">
+  <style name="TH.Level.Up"
+      parent="TH.Level">
     <item name="android:shadowDy">1</item>
     <item name="android:shadowDx">1</item>
     <item name="android:shadowRadius">1</item>
@@ -489,55 +381,34 @@
     <item name="android:textColor">@color/white</item>
   </style>
 
-  <style name="TH.Level.Up.Header" parent="TH.Level.Up">
-    <item name="android:textSize">@dimen/text_xxlarge</item>
-  </style>
-
-  <style name="TH.Level.Up.Desc" parent="TH.Level.Up">
-    <item name="android:textSize">@dimen/text_xlarge</item>
-  </style>
-
-  <style name="TH.ButtonClose" parent="android:Widget.Holo.Button.Small">
+  <style name="TH.ButtonClose"
+      parent="android:Widget.Holo.Button.Small">
     <item name="android:textColor">@color/black</item>
   </style>
 
-  <style name="TH.Level.ProgressBar" parent="android:Widget.Holo.ProgressBar.Horizontal">
+  <style name="TH.Level.ProgressBar"
+      parent="android:Widget.Holo.ProgressBar.Horizontal">
     <item name="android:progressDrawable">@drawable/user_level_progress</item>
     <item name="android:minHeight">@dimen/user_level_progressbar_height</item>
     <item name="android:maxHeight">@dimen/user_level_progressbar_height</item>
   </style>
 
-  <style name="TH.Achievement.Earned" parent="android:TextAppearance.Holo.Small">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_large</item>
-  </style>
-
-  <style name="TH.Achievement.Earned.VirtualDollar" parent="TH.Achievement.Earned">
-    <item name="android:textColor">#F3A422</item>
-  </style>
-
-  <style name="TH.Achievement.Earned.XP" parent="TH.Achievement.Earned">
-    <item name="android:textColor">#407304</item>
-  </style>
-
-  <style name="TH.Achievement.Earned.LevelUp" parent="TH.Achievement.Earned">
-    <item name="android:textColor">#CE021B</item>
-    <item name="android:textSize">@dimen/text_small</item>
-  </style>
-
-  <style name="TH.Achievement.Dialog" parent="android:Theme.Holo.Light.Dialog" >
+  <style name="TH.Achievement.Dialog"
+      parent="android:Theme.Holo.Light.Dialog">
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowFullscreen">true</item>
     <item name="android:windowIsFloating">false</item>
     <item name="android:windowBackground">@null</item>
   </style>
 
-  <style name="TH.Achievement.Dialog.Animation" parent="@android:style/Animation.Activity" >
+  <style name="TH.Achievement.Dialog.Animation"
+      parent="@android:style/Animation.Activity">
     <item name="android:windowEnterAnimation">@anim/achievement_zoom_in</item>
     <item name="android:windowExitAnimation">@anim/achievement_dismiss_left</item>
   </style>
 
-  <style name="TH.Achievement.Dialog.NoAnimation" parent="@android:style/Animation.Activity" >
+  <style name="TH.Achievement.Dialog.NoAnimation"
+      parent="@android:style/Animation.Activity">
     <item name="android:windowEnterAnimation">@null</item>
     <item name="android:windowExitAnimation">@null</item>
   </style>
@@ -557,26 +428,21 @@
     <item name="android:background">@drawable/basic_transparent_selector</item>
   </style>
 
-  <style name="TH.RatingBarSmall" parent="android:Widget.Holo.Light.RatingBar.Small">
+  <style name="TH.RatingBarSmall"
+      parent="android:Widget.Holo.Light.RatingBar.Small">
     <item name="android:progressDrawable">@drawable/th_ratingbar_small</item>
     <item name="android:indeterminateDrawable">@drawable/th_ratingbar_small</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.TabView" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
+  <style name="TradeHero.Dashboard.ActionBar.TabView"
+      parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
     <item name="android:background">@drawable/tab_indicator_ab_th</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.TabText" parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
-    <item name="android:textColor">@color/tradehero_blue</item>
-    <item name="android:textAllCaps">false</item>
-    <item name="android:textSize">@dimen/text_small</item>
-    <item name="android:textStyle">normal</item>
-  </style>
-
-  <style name="TradeHero.Dashboard.ActionBar.TabBar" parent="@android:style/Widget.Holo.Light.ActionBar.TabBar">
+  <style name="TradeHero.Dashboard.ActionBar.TabBar"
+      parent="@android:style/Widget.Holo.Light.ActionBar.TabBar">
     <item name="android:background">@android:color/white</item>
   </style>
-
 
   <style name="TradeHero.TabView">
     <item name="android:gravity">center_horizontal</item>
@@ -586,15 +452,6 @@
     <item name="android:layout_width">0dip</item>
     <item name="android:layout_weight">1</item>
     <item name="android:minWidth">80dip</item>
-  </style>
-
-  <style name="TradeHero.TabText">
-    <item name="android:textColor">@color/tradehero_blue</item>
-    <item name="android:textSize">@dimen/text_small</item>
-    <item name="android:textStyle">normal</item>
-    <item name="android:ellipsize">marquee</item>
-    <item name="android:maxLines">2</item>
-    <item name="android:maxWidth">180dip</item>
   </style>
 
   <style name="TH.ContentPartnersLogo">
@@ -607,18 +464,15 @@
     <item name="android:alpha">0.5</item>
   </style>
 
-  <style name="TH.ResideMenuSmall.Icon" parent="TH.ResideMenuSmall">
+  <style name="TH.ResideMenuSmall.Icon"
+      parent="TH.ResideMenuSmall">
     <item name="android:layout_width">30dp</item>
     <item name="android:layout_height">30dp</item>
     <item name="android:scaleType">fitCenter</item>
   </style>
 
-  <style name="TH.ResideMenuSmall.Text" parent="TH.ResideMenuSmall">
-    <item name="android:textSize">@dimen/text_medium</item>
-    <item name="android:textColor">@color/white</item>
-  </style>
-
-  <style name="TH.Dialog" parent="android:Theme.Holo.Light.Dialog">
+  <style name="TH.Dialog"
+      parent="android:Theme.Holo.Light.Dialog">
     <item name="android:windowBackground">@android:color/transparent</item>
     <item name="android:colorBackgroundCacheHint">@null</item>
     <item name="android:windowFrame">@null</item>
@@ -631,8 +485,9 @@
     <item name="android:windowCloseOnTouchOutside">true</item>
   </style>
 
-  <style name="TH.onBoardDialog" parent="TH.Dialog">
-      <item name="android:windowCloseOnTouchOutside">true</item>
+  <style name="TH.onBoardDialog"
+      parent="TH.Dialog">
+    <item name="android:windowCloseOnTouchOutside">true</item>
   </style>
 
   <style name="TradeHero.CarouselNavigationButton">

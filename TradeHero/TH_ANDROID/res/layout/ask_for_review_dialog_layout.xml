@@ -25,7 +25,7 @@
       android:gravity="center_horizontal"
       android:text="@string/ask_for_review_title"
       android:textColor="@color/black"
-      android:textSize="@dimen/text_xlarge"
+      android:textSize="@dimen/text_title"
       android:textStyle="bold"
       android:layout_alignParentTop="true"
       android:layout_centerHorizontal="true"
@@ -40,7 +40,7 @@
       android:text="@string/ask_for_review_summary"
       android:textColor="@color/price_bar_bg_selected"
       android:layout_margin="@dimen/margin_medium"
-      android:textSize="@dimen/text_small"
+      android:textSize="@dimen/text_body"
       android:layout_below="@id/review_dialog_title"
 
       />
@@ -72,7 +72,7 @@
         android:gravity="center"
         android:text="@string/ask_for_review_rate"
         android:textColor="@color/button_blue"
-        android:textSize="@dimen/text_large"
+        android:textSize="@dimen/text_title"
         android:textStyle="bold"
         />
 
@@ -102,7 +102,7 @@
       android:background="@drawable/basic_transparent_selector"
       android:text="@string/maybe_later"
       android:textColor="@color/black"
-      android:textSize="@dimen/text_small"
+      android:textSize="@dimen/text_body"
       android:layout_below="@id/review_dialog_horizontal_divider_bot"
       />
 
