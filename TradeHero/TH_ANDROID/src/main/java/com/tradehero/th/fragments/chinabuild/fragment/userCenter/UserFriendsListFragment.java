@@ -120,7 +120,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 Timber.d("下拉刷新");
-                fetchUserFriendList();
+                fetchUserFriendList(true);
             }
 
             @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
@@ -160,30 +160,54 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
     {
         if (typeFriends == TYPE_FRIENDS_HERO)
         {
-            fetchHeros();
+            fetchHeros(false);
         }
         else if (typeFriends == TYPE_FRIENDS_FOLLOWS)
         {
-            fetchFollowers();
+            fetchFollowers(false);
         }
         else if (typeFriends == TYPE_FRIENDS_ALL)
         {
-            fetchHeros();
-            fetchFollowers();
+            fetchHeros(false);
+            fetchFollowers(false);
         }
     }
 
-    protected void fetchHeros()
+    public void fetchUserFriendList(boolean force)
     {
-        detachHeroFetcher();
-        this.heroInfoFetcher.fetch(showUserBaseKey);
+        if (typeFriends == TYPE_FRIENDS_HERO)
+        {
+            fetchHeros(force);
+        }
+        else if (typeFriends == TYPE_FRIENDS_FOLLOWS)
+        {
+            fetchFollowers(force);
+        }
+        else if (typeFriends == TYPE_FRIENDS_ALL)
+        {
+            fetchHeros(force);
+            fetchFollowers(force);
+        }
     }
 
-    protected void fetchFollowers()
+    protected void fetchHeros(boolean force)
+    {
+        detachHeroFetcher();
+        if(force)
+        {
+            this.heroInfoFetcher.reloadHeroes(showUserBaseKey);
+        }
+        else
+        {
+            this.heroInfoFetcher.fetch(showUserBaseKey);
+        }
+    }
+
+    protected void fetchFollowers(boolean force)
     {
         detachFollowerFetcher();
         followerInfoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
-        followerInfoFetcher.fetch(this.showUserBaseKey);
+        followerInfoFetcher.fetch(this.showUserBaseKey,force);
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheListener()
