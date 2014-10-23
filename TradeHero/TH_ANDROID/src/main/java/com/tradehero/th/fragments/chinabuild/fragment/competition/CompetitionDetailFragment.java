@@ -63,6 +63,9 @@ import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCache;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -88,6 +91,8 @@ public class CompetitionDetailFragment extends DashboardFragment
     private Callback<UserCompetitionDTO> callbackEnrollUGC;
     private Callback<UserCompetitionDTO> callbackgetCompetition;
     private Callback<LeaderboardDTO> callbackMySelfRank;
+
+    @Inject Analytics analytics;
 
     @Inject protected PortfolioCompactNewCache portfolioCompactNewCache;
     private DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> portfolioCompactNewFetchListener;
@@ -221,6 +226,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         if (userCompetitionDTO != null && userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing)
         {//比赛我参加了，并且还没结束。
             setHeadViewRight0("邀请好友");
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_INVITE));
         }
     }
 
@@ -247,6 +253,8 @@ public class CompetitionDetailFragment extends DashboardFragment
             {
                 LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
                 enterPortfolio(userDTO);
+
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_RANK_POSITION, "" + position));
             }
         });
     }
@@ -469,13 +477,16 @@ public class CompetitionDetailFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, userCompetitionDTO.id);
         pushFragment(CompetitionSecuritySearchFragment.class, bundle);
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_GOTO));
     }
 
     public void toJoinCompetition()
     {
+        Timber.d("参加");
         mTransactionDialog = progressDialogUtil.show(CompetitionDetailFragment.this.getActivity(),
                 R.string.processing, R.string.alert_dialog_please_wait);
         competitionCacheLazy.get().enrollUGCompetition(userCompetitionDTO.id, callbackEnrollUGC);
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_JOIN));
     }
 
     public void getMySelfRank()

@@ -36,6 +36,9 @@ import com.tradehero.th.fragments.chinabuild.data.CompetitionInterface;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -56,6 +59,7 @@ public class CompetitionBaseFragment extends DashboardFragment
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerVip;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerMine;
 
+    @Inject Analytics analytics;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
@@ -126,6 +130,8 @@ public class CompetitionBaseFragment extends DashboardFragment
                 if (item instanceof CompetitionDataItem)
                 {
                     gotoCompetitionDetailFragment(((CompetitionDataItem) item).userCompetitionDTO);
+
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_LIST_ITEM, ""+position));
                 }
             }
         });
@@ -177,6 +183,9 @@ public class CompetitionBaseFragment extends DashboardFragment
                 {
                     int position = pager.getCurrentItem();
                     gotoCompetitionDetailFragment(userCompetitionVipDTOs.get(position));
+
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_BANNER, ""+position));
+
                 }
             });
         }
