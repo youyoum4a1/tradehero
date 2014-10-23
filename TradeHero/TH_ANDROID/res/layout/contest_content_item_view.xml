@@ -10,5 +10,7 @@
     android:background="@drawable/basic_white_selector"
     app:aspectRatioEnabled="false"
     >
+
   <include layout="@layout/contest_content_item_view_inner"/>
+
 </com.tradehero.th.fragments.contestcenter.ContestContentView>

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.utils.EditableUtil;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -65,6 +66,7 @@ public class PostCommentView extends RelativeLayout
     @Nullable private MessageType messageType = null;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject CurrentUserId currentUserId;
+    @Inject EditableUtil editableUtil;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject DiscussionKeyFactory discussionKeyFactory;
@@ -211,7 +213,7 @@ public class PostCommentView extends RelativeLayout
         {
             ((ReplyDiscussionFormDTO) discussionFormDTO).inReplyToId = discussionKey.id;
         }
-        discussionFormDTO.text = commentText.getText().toString();
+        discussionFormDTO.text = editableUtil.unSpanText(commentText.getText()).toString();
         if (USE_QUICK_STUB_DISCUSSION)
         {
             discussionFormDTO.stubKey = moveNextStubKey();
@@ -230,7 +232,7 @@ public class PostCommentView extends RelativeLayout
     @NotNull protected MessageCreateFormDTO buildMessageCreateFormDTO()
     {
         MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
-        messageCreateFormDTO.message = commentText.getText().toString();
+        messageCreateFormDTO.message = editableUtil.unSpanText(commentText.getText()).toString();
         messageCreateFormDTO.senderUserId = currentUserId.toUserBaseKey().key;
         return messageCreateFormDTO;
     }

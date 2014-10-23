@@ -42,6 +42,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -1079,9 +1080,9 @@ public class BuySellFragment extends AbstractBuySellFragment
                 pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
                 {
                     @Override
-                    public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+                    public void pushPortfolioFragment(SecurityPositionTransactionDTO securityPositionTransactionDTO)
                     {
-                        BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
+                        BuySellFragment.this.pushPortfolioFragment(securityPositionTransactionDTO);
                     }
                 };
 
@@ -1093,14 +1094,14 @@ public class BuySellFragment extends AbstractBuySellFragment
                 abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
                 abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
                 {
-                    @Override public void onTransactionSuccessful(boolean isBuy)
+                    @Override public void onTransactionSuccessful(boolean isBuy, @NotNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
                     {
                         if (pushPortfolioFragmentRunnable == null)
                         {
                             pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
                             {
                                 @Override
-                                public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+                                public void pushPortfolioFragment(SecurityPositionTransactionDTO securityPositionDetailDTO)
                                 {
                                     BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
                                 }
@@ -1109,7 +1110,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                         if (pushPortfolioFragmentRunnable != null)
                         {
                             setActionBarSubtitle(null);
-                            pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
+                            pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionTransactionDTO);
                         }
 
                         showPrettyReviewAndInvite(isBuy);
@@ -1193,18 +1194,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         buySellMiddleCallback = null;
     }
 
-    private void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+    private void pushPortfolioFragment(@NotNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
     {
-        if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null)
-        {
-            pushPortfolioFragment(new OwnedPortfolioId(
-                    currentUserId.get(),
-                    securityPositionDetailDTO.portfolio.id));
-        }
-        else
-        {
-            pushPortfolioFragment();
-        }
+        pushPortfolioFragment(new OwnedPortfolioId(
+                currentUserId.get(),
+                securityPositionTransactionDTO.portfolio.id));
     }
 
     private void pushPortfolioFragment()
@@ -1214,7 +1208,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     protected interface PushPortfolioFragmentRunnable
     {
-        void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO);
+        void pushPortfolioFragment(SecurityPositionTransactionDTO securityPositionTransactionDTO);
     }
 
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)

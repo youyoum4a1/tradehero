@@ -58,8 +58,7 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
     protected void pushNewDiscussion()
     {
         Bundle bundle = new Bundle();
-        bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
-                discussionKey.getArgs());
+        bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE, discussionKey.getArgs());
         getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
     }
 

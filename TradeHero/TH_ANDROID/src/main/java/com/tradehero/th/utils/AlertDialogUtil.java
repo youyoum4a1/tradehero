@@ -271,18 +271,6 @@ public class AlertDialogUtil
                 R.string.ok);
     }
 
-    public void showProgressDialog(@NotNull final Context context)
-    {
-        if (mProgressDialog != null)
-        {
-            mProgressDialog.dismiss();
-        }
-        mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.show();
-    }
-
     public void showProgressDialog(@NotNull final Context context, @Nullable String content)
     {
         if (mProgressDialog != null)
@@ -298,10 +286,12 @@ public class AlertDialogUtil
 
     public void dismissProgressDialog()
     {
-        if (mProgressDialog != null)
+        ProgressDialog progressDialogCopy = mProgressDialog;
+        if (progressDialogCopy != null)
         {
-            mProgressDialog.dismiss();
+            progressDialogCopy.dismiss();
         }
+        mProgressDialog = null;
     }
 
     public static interface OnClickListener<DTOType>

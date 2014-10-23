@@ -264,6 +264,14 @@ public class DashboardActivity extends BaseActivity
                     {
                         abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
                     }
+                    else
+                    {
+                        broadcastUtilsLazy.get().nextPlease();
+                    }
+                }
+                else
+                {
+                    broadcastUtilsLazy.get().nextPlease();
                 }
             }
         };
@@ -277,6 +285,10 @@ public class DashboardActivity extends BaseActivity
                     Bundle b = intent.getBundleExtra(XpModule.KEY_XP_BROADCAST);
                     UserXPAchievementDTO userXPAchievementDTO = new UserXPAchievementDTO(b);
                     xpToast.showWhenReady(userXPAchievementDTO);
+                }
+                else
+                {
+                    broadcastUtilsLazy.get().nextPlease();
                 }
             }
         };
@@ -617,22 +629,29 @@ public class DashboardActivity extends BaseActivity
         @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_provider_competition_list);
+            broadcastUtilsLazy.get().nextPlease();
         }
     }
 
     private void openEnrollmentPageIfNecessary(ProviderDTOList providerDTOs)
     {
+        boolean isHandled = false;
         for (@NotNull ProviderDTO providerDTO : providerDTOs)
         {
             if (!providerDTO.isUserEnrolled
                     && !enrollmentScreenOpened.contains(providerDTO.id))
             {
+                isHandled = true;
                 enrollmentScreenOpened.add(providerDTO.id);
 
                 Runnable handleCompetitionRunnable = createHandleCompetitionRunnable(providerDTO);
                 runOnUiThread(handleCompetitionRunnable);
-                return;
+                break;
             }
+        }
+        if (!isHandled)
+        {
+            broadcastUtilsLazy.get().nextPlease();
         }
     }
 
@@ -724,7 +743,8 @@ public class DashboardActivity extends BaseActivity
 
         @Provides @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener provideDashboardBottomTabScrollListener()
         {
-            QuickReturnListViewOnScrollListener listener =  new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
+            QuickReturnListViewOnScrollListener listener =
+                    new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
             listener.setCanSlideInIdleScrollState(true);
             return listener;
         }

@@ -8,7 +8,6 @@ import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import java.util.ArrayList;
@@ -35,43 +34,26 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 
     @Override public List<TimelineItemDTOKey> request()
     {
-        if (query != null)
+        TimelineDTO timelineDTO = timelineServiceWrapper.getTimelineBySection(
+                query.getSection(),
+                new UserBaseKey((Integer) query.getId()),
+                (Integer) query.getProperty(PER_PAGE),
+                query.getUpper(),
+                query.getLower());
+
+        List<TimelineItemDTOKey> timelineItemDTOKeys = new ArrayList<>();
+        if (timelineDTO.getEnhancedItems() != null)
         {
-            TimelineDTO timelineDTO = null;
-            try
+            for (TimelineItemDTO itemDTO: timelineDTO.getEnhancedItems())
             {
-                timelineDTO = timelineServiceWrapper.getTimelineBySection(
-                        query.getSection(),
-                        new UserBaseKey((Integer) query.getId()),
-                        (Integer) query.getProperty(PER_PAGE),
-                        query.getUpper(),
-                        query.getLower());
-            }
-            catch (RetrofitError retrofitError)
-            {
-                BasicRetrofitErrorHandler.handle(retrofitError);
-            }
-
-            if (timelineDTO != null)
-            {
-
-                List<TimelineItemDTOKey> timelineItemDTOKeys = new ArrayList<>();
-                if (timelineDTO.getEnhancedItems() != null)
-                {
-                    for (TimelineItemDTO itemDTO: timelineDTO.getEnhancedItems())
-                    {
-                        itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
-                        TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();
-                        discussionCache.put(timelineKey, itemDTO);
-                        timelineItemDTOKeys.add(timelineKey);
-                    }
-                }
-
-                return timelineItemDTOKeys;
+                itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
+                TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();
+                discussionCache.put(timelineKey, itemDTO);
+                timelineItemDTOKeys.add(timelineKey);
             }
         }
 
-        return null;
+        return timelineItemDTOKeys;
     }
 
     @Override public void store(SQLiteDatabase db, List<TimelineItemDTOKey> items)

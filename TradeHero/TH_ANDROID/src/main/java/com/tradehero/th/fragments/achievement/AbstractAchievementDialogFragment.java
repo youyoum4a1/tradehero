@@ -337,6 +337,10 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                         createShareAchievementCallback());
                 showSharing();
             }
+            else
+            {
+                showShareSuccess();
+            }
         }
     }
 

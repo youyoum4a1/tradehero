@@ -6,12 +6,14 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 public class CompetitionEnrollmentWebViewFragment extends CompetitionWebViewFragment
 {
     @Inject Context dummyContextDoNotRemove;
+    @Inject BroadcastUtils broadcastUtils;
 
     @Override public void onAttach(Activity activity)
     {
@@ -25,6 +27,12 @@ public class CompetitionEnrollmentWebViewFragment extends CompetitionWebViewFrag
 
         thIntentPassedListener = createCompetitionTHIntentPassedListener();
         setThIntentPassedListener(thIntentPassedListener);
+    }
+
+    @Override public void onDestroy()
+    {
+        super.onDestroy();
+        broadcastUtils.nextPlease();
     }
 
     //<editor-fold desc="Intent Listener">
