@@ -42,6 +42,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -201,10 +202,11 @@ public class MainTabFragmentMe extends AbsBaseFragment
         switch (id)
         {
             case R.id.me_layout:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_PERSONAL_PAGE));
                 gotoDashboard(MyProfileFragment.class.getName());
                 break;
             case R.id.rlMeDynamic:
-                //analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MI))
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_MY_MOMENT));
                 Timber.d("clicked rlMeDynamic");
                 enterMyMainPager();
                 break;
@@ -212,11 +214,13 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 Timber.d("clicked rlMeMessageCenter");
                 break;
             case R.id.rlMeInviteFriends:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_INVITE_FRIENDS));
                 Timber.d("clicked rlMeInviteFriends");
                 gotoDashboard(InviteFriendsFragment.class.getName());
                 break;
             case R.id.rlMeSetting:
                 Timber.d("clicked rlMeSetting");
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_SETTING));
                 gotoDashboard(SettingFragment.class.getName());
                 break;
             case R.id.llItemAllAmount:

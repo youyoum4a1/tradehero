@@ -25,11 +25,15 @@ import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryStockGo
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
 
 public class MainTabFragmentDiscovery extends AbsBaseFragment
 {
@@ -48,6 +52,8 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
     @InjectView(R.id.tvHeadLeft) TextView tvHeadLeft;
     @InjectView(R.id.tvHeadMiddleMain) TextView tvHeadTitle;
     @InjectView(R.id.tvHeadRight0) TextView tvHeadRight;
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -82,6 +88,8 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
     @OnClick(R.id.btnNotification)
     public void onButtonNoticifation()
     {
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_MESSAGE_CENTER));
+
         enterNotificationFragment();
     }
 

@@ -42,6 +42,9 @@ import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -74,6 +77,8 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     private boolean isSharing = false;
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -126,11 +131,13 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
 
             @Override public void OnTimeLinePraiseClicked(int position)
             {
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PRAISE));
                 Timber.d("Praise position = " + position);
             }
 
             @Override public void OnTimeLineCommentsClicked(int position)
             {
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_COMMENT));
                 Timber.d("Comments position = " + position);
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 comments(dto);
@@ -138,6 +145,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
 
             @Override public void OnTimeLineShareClied(int position)
             {
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_SHARE));
                 Timber.d("Share position = " + position);
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 //share(dto.text);

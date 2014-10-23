@@ -44,6 +44,9 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
@@ -135,6 +138,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         //enable baidu push
         pushNotificationManager.get().enablePush();
         mBindGuestUserPreference.set(false);
+
+        analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.LAUNCH_MAIN_PAGE));
     }
 
     @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabMe})
@@ -144,18 +149,28 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         switch (id)
         {
             case R.id.llTabTrade:
+                Timber.d("------> Analytics MainActivity to Trade");
+                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_TRADE));
                 setTabCurrent(TAB_TRADE);
                 break;
             case R.id.llTabStockGod:
+                Timber.d("------> Analytics MainActivity to Stock");
+                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_STOCK));
                 setTabCurrent(TAB_STOCKGOD);
                 break;
             case R.id.llTabDiscovery:
+                Timber.d("------> Analytics MainActivity to Discovery");
+                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_DISCOVERY));
                 setTabCurrent(TAB_DISCOVERY);
                 break;
             case R.id.llTabCompetition:
+                Timber.d("------> Analytics MainActivity to Competition");
+                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_COMPETITION));
                 setTabCurrent(TAB_COMPETITION);
                 break;
             case R.id.llTabMe:
+                Timber.d("------> Analytics MainActivity to Me");
+                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_MINE));
                 setTabCurrent(TAB_ME);
                 break;
         }
@@ -231,18 +246,15 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Override protected void onStart()
     {
         super.onStart();
-        //systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override protected void onResume()
     {
         super.onResume();
-        analytics.openSession();
     }
 
     @Override protected void onPause()
     {
-        analytics.closeSession();
         super.onPause();
     }
 
@@ -328,7 +340,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         else
         {
             killApp();
-            //sendAppToBackground();
         }
     }
 
@@ -353,9 +364,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-//                Bundle args = new Bundle();
-//                args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, SignInFragment.class.getName());
-//                ActivityHelper.launchDashboard(currentActivityHolder.getCurrentActivity(), args);
                 Intent gotoAuthticationIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
                 startActivity(gotoAuthticationIntent);
                 finish();

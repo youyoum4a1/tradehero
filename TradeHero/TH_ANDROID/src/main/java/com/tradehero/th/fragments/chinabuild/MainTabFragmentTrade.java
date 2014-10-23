@@ -27,7 +27,10 @@ public class MainTabFragmentTrade extends AbsBaseFragment
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
     @InjectView(R.id.imgSearch) ImageView imgSearch;
-    FragmentPagerAdapter adapter;
+    private FragmentPagerAdapter adapter;
+
+    public static final String TAG = "main_tab_fragment_trade";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -95,13 +98,10 @@ public class MainTabFragmentTrade extends AbsBaseFragment
             {
                 case 0:
                     return new TradeOfMineFragment();
-
                 case 1:
                     return new TradeOfHotHoldFragment();
-
                 case 2:
                     return new TradeOfRisePercentFragment();
-
                 case 3:
                     return new TradeOfChinaConceptFragment();
             }

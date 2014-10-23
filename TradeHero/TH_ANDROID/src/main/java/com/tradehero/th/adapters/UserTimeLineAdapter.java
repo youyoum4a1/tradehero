@@ -33,6 +33,9 @@ import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +62,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     public boolean isShowHeadAndName = false;
 
     public boolean isMySelf = false;
+
+    @Inject Analytics analytics;
 
     public UserTimeLineAdapter(Context context)
     {
@@ -390,6 +395,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     {
         if (userId >= 0)
         {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PERSON));
             Bundle bundle = new Bundle();
             bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
             if (getNavigator() != null)

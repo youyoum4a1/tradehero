@@ -57,6 +57,9 @@ import com.tradehero.th.persistence.prefs.ShareDialogROIValueKey;
 import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +111,8 @@ public class TradeOfMineFragment extends DashboardFragment
     @Inject @ShareDialogTotalValueKey BooleanPreference mShareDialogTotalValueKeyPreference;
     @Inject @ShareDialogROIValueKey BooleanPreference mShareDialogROIValueKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -257,6 +262,8 @@ public class TradeOfMineFragment extends DashboardFragment
 
     @Override public void onResume()
     {
+        Timber.d("------> Analytics TradeOfMineFragment onResume");
+        analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_MINE_TRADE));
         refreshData(false);
         super.onResume();
     }

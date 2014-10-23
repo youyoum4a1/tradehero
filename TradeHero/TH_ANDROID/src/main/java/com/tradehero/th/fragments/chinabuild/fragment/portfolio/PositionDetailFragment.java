@@ -131,14 +131,7 @@ public class PositionDetailFragment extends DashboardFragment
 
         initListView();
 
-        //if (adapter.getCount() == 0)
-        //{
-        //    betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
-        //}
-        //else
-        //{
         betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
-        //}
 
         return view;
     }

@@ -102,6 +102,9 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -245,6 +248,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     public static final int ERROR_NO_ASK_BID = 0;
     public static final int ERROR_NO_ASK = 1;
     public static final int ERROR_NO_BID = 2;
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -1526,15 +1531,21 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
         else if (view.getId() == R.id.llTLPraise)
         {
+            Timber.d("------> Analytics SecurityDetailFragment praise");
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_PRAISE));
             clickedPraise();
         }
         else if (view.getId() == R.id.llTLComment)
         {
+            Timber.d("------> Analytics SecurityDetailFragment comment");
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_COMMENT));
             AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
             comments(dto);
         }
         else if (view.getId() == R.id.llTLShare)
         {
+            Timber.d("------> Analytics SecurityDetailFragment share");
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_SHARE));
             AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
             String strShare = "";
             if (dto instanceof NewsItemCompactDTO)

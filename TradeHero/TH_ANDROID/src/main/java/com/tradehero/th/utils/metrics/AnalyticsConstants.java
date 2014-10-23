@@ -132,16 +132,48 @@ public class AnalyticsConstants
     public static final String CHINA_BUILD_BUTTON_CLICKED = "china_build_button_clicked";
 
     //Analytics Palmer
+
     //打开软件看到介绍图片，浏览到第几个页面点击或马上体验和登陆
-    public static final String SIGN_IN_ANONYMOUS = "sign_in_anonymous";
-    public static final String SIGN_IN_ACCOUNT = "sign_in_account";
+    public static final String SIGN_IN_ANONYMOUS = "SIGN_IN_ANONYMOUS";
+    public static final String SIGN_IN_ACCOUNT = "SIGN_IN_ACCOUNT";
+
     //我的页面，个人主页的点击量，设置点击量，我的动态点击量，邀请好友的点击量
-    public static final String MINE_PERSONAL_PAGE = "mine_personal_page";
-    public static final String MINE_SETTING = "mine_setting";
-    public static final String MINE_INVITE_FRIENDS = "mine_invite_friends";
-    public static final String MINE_MY_MOMENT = "mine_my_moment";
+    public static final String MINE_PERSONAL_PAGE = "MINE_PERSONAL_PAGE";
+    public static final String MINE_SETTING = "MINE_SETTING";
+    public static final String MINE_INVITE_FRIENDS = "MINE_INVITE_FRIENDS";
+    public static final String MINE_MY_MOMENT = "MINE_MY_MOMENT";
 
+    //个股页面每条讨论，每条资讯的点赞，评论，分享的点击量
+    public static final String USER_PAGE_PRAISE = "USER_PAGE_PRAISE";
+    public static final String USER_PAGE_COMMENT = "USER_PAGE_COMMENT";
+    public static final String USER_PAGE_SHARE = "USER_PAGE_SHARE";
 
+    //发现页面，最新动态中每条咨询你的点击量，点赞次数，点评论次数，点击分享次数
+    public static final String DISCOVERY_MESSAGE_CENTER = "DISCOVERY_MESSAGE_CENTER";
+    public static final String DISCOVERY_ITEM_PERSON = "DISCOVERY_ITEM_PERSON";
+    public static final String DISCOVERY_ITEM_PRAISE = "DISCOVERY_ITEM_PRAISE";
+    public static final String DISCOVERY_ITEM_COMMENT = "DISCOVERY_ITEM_COMMENT";
+    public static final String DISCOVERY_ITEM_SHARE = "DISCOVERY_ITEM_SHARE";
+
+    //交易，股神，发现，竞赛，我的这五块的点击量及默认点击量
+    public static final String MAIN_PAGE_TRADE = "MAIN_PAGE_TRADE";
+    public static final String MAIN_PAGE_STOCK = "MAIN_PAGE_STOCK";
+    public static final String MAIN_PAGE_DISCOVERY = "MAIN_PAGE_DISCOVERY";
+    public static final String MAIN_PAGE_COMPETITION = "MAIN_PAGE_COMPETITION";
+    public static final String MAIN_PAGE_MINE = "MAIN_PAGE_MINE";
+
+    public static final String LAUNCH_MAIN_PAGE = "LAUNCH_MAIN_PAGE";
+
+    //交易中我的交易，热门关注，热门持有，中国概念的点击量，右上角的搜索点击量
+    public static final String TRADE_PAGE_MINE_TRADE = "TRADE_PAGE_MINE_TRADE";
+    public static final String TRADE_PAGE_RISE = "TRADE_PAGE_RISE";
+    public static final String TRADE_PAGE_HOLD = "TRADE_PAGE_HOLD";
+    public static final String TRADE_PAGE_CHINA = "TRADE_PAGE_CHINA";
+    public static final String TRADE_PAGE_SEARCH = "TRADE_PAGE_SEARCH";
+
+    //交易中热门关注和热门持有的证券切换内容及次数
+    public static final String TRADE_PAGE_HOLD_PARTIES = "TRADE_PAGE_HOLD_PARTIES";
+    public static final String TRADE_PAGE_RISE_PARTIES = "TRADE_PAGE_RISE_PARTIES";
 
     //Palmer
 

@@ -33,6 +33,10 @@ import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFra
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +68,8 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     private String strExchangeName;
     private int currentPosition = 0;
 
+    @Inject Analytics analytics;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -85,6 +91,14 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         securityListTypeCacheListener = createSecurityListFetchListener();
         spinnerSelectListener = createSpinnerItemSelectListener();
         initView();
+
+        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD){
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_HOLD_PARTIES));
+        }
+        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT){
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
+        }
+
         return view;
     }
 
@@ -363,6 +377,12 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     private void getExchangSecurity(int position)
     {
+        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD){
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_HOLD_PARTIES));
+        }
+        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT){
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
+        }
         showLoadingProgress();
         fetchSecurityList(position);
     }
@@ -393,6 +413,19 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     @Override
     public void onResume()
     {
+        analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_MINE_TRADE));
+        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD){
+            Timber.d("------> Analytics Trade hold");
+            analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_HOLD));
+        }
+        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT){
+            Timber.d("------> Analytics Trade China");
+            analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_CHINA));
+        }
+        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT){
+            Timber.d("------> Analytics Trade rise");
+            analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_RISE));
+        }
         super.onResume();
     }
 }
