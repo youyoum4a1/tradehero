@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
@@ -173,7 +173,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         if (unreadSettingPreferenceHolder.hasUnread())
         {
             ListView listView = (ListView) getView().findViewById(android.R.id.list);
-            BaseAdapter adapter = (BaseAdapter) listView.getAdapter();
+            ListAdapter adapter = listView.getAdapter();
             SettingViewHolder unreadHolder = allSettingViewHolders.getFirstUnread();
             if (unreadHolder != null)
             {
