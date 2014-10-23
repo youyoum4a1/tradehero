@@ -57,11 +57,9 @@
           android:layout_weight="1"
           android:paddingLeft="20dp"
           android:paddingRight="20dp"
-          android:gravity="center"
           android:background="@drawable/btn_follow_green"
           android:text="@string/follow"
-          android:textSize="@dimen/text_subhead"
-          android:textColor="@color/white"
+          style="@style/TH.Button"
           android:drawableLeft="@drawable/icn_star_white"
           android:visibility="gone"/>
 
@@ -72,11 +70,9 @@
           android:layout_weight="1"
           android:paddingLeft="15dp"
           android:paddingRight="15dp"
-          android:gravity="center"
           android:background="@drawable/btn_message_blue"
           android:text="@string/message"
-          android:textSize="@dimen/text_subhead"
-          android:textColor="@color/white"
+          style="@style/TH.Button"
           android:drawableLeft="@drawable/icn_message_white"
           android:visibility="gone"/>
 

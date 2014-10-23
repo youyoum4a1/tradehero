@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <color name="text_primary">#ff181818</color>
+  <color name="text_primary">#ff1f1f1f</color>
   <color name="text_secondary">#ff888888</color>
-  <color name="text_primary_inverse">#ffe7e7e7</color>
+  <color name="text_primary_inverse">#ffe0e0e0</color>
   <color name="text_secondary_inverse">#ff777777</color>
   <color name="text_primary_accented">@color/tradehero_blue</color>
   <color name="text_secondary_accented">#ff499bfb</color>
@@ -59,6 +59,7 @@
 
   <style name="TH.Button" parent="TH.Body">
     <item name="android:textAllCaps">true</item>
+    <item name="android:gravity">center</item>
   </style>
 
   <!-- Inverses -->
