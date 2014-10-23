@@ -16,6 +16,7 @@ import rx.Observable;
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
+    public static final int DEFAULT_MAX_FETCHER_SIZE = 5;
 
     @NotNull private final Lazy<SecurityServiceWrapper> securityServiceWrapper;
 
@@ -23,7 +24,7 @@ import rx.Observable;
     @Inject protected SecurityCompactListCacheRx(
             @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE);
+        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_FETCHER_SIZE);
         this.securityServiceWrapper = securityServiceWrapper;
     }
     //</editor-fold>

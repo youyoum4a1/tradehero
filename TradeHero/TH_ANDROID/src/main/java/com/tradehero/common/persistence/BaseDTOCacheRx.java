@@ -2,6 +2,7 @@ package com.tradehero.common.persistence;
 
 import android.support.annotation.Nullable;
 import android.util.Pair;
+import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -23,7 +24,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
     @NotNull @Override
     public Observable<Pair<DTOKeyType, DTOType>> get(@NotNull final DTOKeyType key)
     {
-        return getOrCreateBehavior(key);
+        return getOrCreateBehavior(key).asObservable();
     }
 
     @NotNull protected BehaviorSubject<Pair<DTOKeyType, DTOType>> getOrCreateBehavior(@NotNull final DTOKeyType key)
@@ -31,14 +32,16 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.get(key);
         if (cachedSubject == null)
         {
-            cachedSubject = BehaviorSubject.create();
+            DTOType cachedValue = getValue(key);
+            if (cachedValue != null)
+            {
+                cachedSubject = BehaviorSubject.create(Pair.create(key, cachedValue));
+            }
+            else
+            {
+                cachedSubject = BehaviorSubject.create();
+            }
             cachedSubjects.put(key, cachedSubject);
-        }
-
-        DTOType cachedValue = getValue(key);
-        if (cachedValue != null)
-        {
-            cachedSubject.onNext(Pair.create(key, cachedValue));
         }
 
         return cachedSubject;
@@ -51,6 +54,15 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         if (cachedSubject != null)
         {
             cachedSubject.onNext(Pair.create(key, value));
+        }
+    }
+
+    @Override public void onError(DTOKeyType key, Throwable error)
+    {
+        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.remove(key);
+        if (cachedSubject != null)
+        {
+            cachedSubject.onError(error);
         }
     }
 
@@ -81,13 +93,22 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
 
     @Override public void invalidate(@NotNull DTOKeyType key)
     {
-        cachedSubjects.remove(key);
         cachedValues.remove(key);
+        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.remove(key);
+        if (cachedSubject != null)
+        {
+            cachedSubject.onCompleted();
+        }
     }
 
     @Override public void invalidateAll()
     {
-        cachedSubjects.evictAll();
         cachedValues.evictAll();
+        Collection<BehaviorSubject<Pair<DTOKeyType, DTOType>>> subjects = cachedSubjects.snapshot().values();
+        cachedSubjects.evictAll();
+        for (BehaviorSubject<Pair<DTOKeyType, DTOType>> subject : subjects)
+        {
+            subject.onCompleted();
+        }
     }
 }
