@@ -1,6 +1,7 @@
 package com.tradehero.th.models.user;
 
 import com.tradehero.th.api.system.SystemStatusDTO;
+import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -53,7 +54,7 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
                 {
                     value.systemStatusDTO = new SystemStatusDTO();
                 }
-                systemStatusCache.put(userKey, value.systemStatusDTO);
+                systemStatusCache.onNext(new SystemStatusKey(), value.systemStatusDTO);
             }
         }
         return value;

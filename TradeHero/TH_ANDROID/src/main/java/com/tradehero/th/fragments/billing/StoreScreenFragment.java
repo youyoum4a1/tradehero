@@ -26,6 +26,7 @@ import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
@@ -38,6 +39,8 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Subscription;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable({
@@ -60,11 +63,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @InjectView(R.id.store_option_list) protected ListView listView;
     private StoreItemAdapter storeItemAdapter;
+    private Subscription storeItemSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
+        storeItemAdapter = new StoreItemAdapter(getActivity());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -77,7 +82,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        storeItemAdapter = new StoreItemAdapter(getActivity());
         if (listView != null)
         {
             listView.setAdapter(storeItemAdapter);
@@ -92,15 +96,24 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override public void onResume()
+    @Override public void onStart()
     {
-        super.onResume();
+        super.onStart();
 
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         storeItemAdapter.clear();
-        storeItemAdapter.addAll(storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS));
-        storeItemAdapter.notifyDataSetChanged();
+        detachStoreItemSubscription();
+        storeItemSubscription = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
+                .subscribe(new EmptyObserver<StoreItemDTOList>()
+                {
+                    @Override public void onNext(StoreItemDTOList storeItemDTOs)
+                    {
+                        detachStoreItemSubscription();
+                        storeItemAdapter.addAll(storeItemDTOs);
+                        storeItemAdapter.notifyDataSetChanged();
+                    }
+                });
 
         cancelOthersAndShowBillingAvailable();
     }
@@ -111,15 +124,26 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         super.onDestroyOptionsMenu();
     }
 
+    @Override public void onStop()
+    {
+        detachStoreItemSubscription();
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
-        storeItemAdapter = null;
         if(listView != null)
         {
             listView.setOnScrollListener(null);
         }
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        storeItemAdapter = null;
+        super.onDestroy();
     }
 
     public void cancelOthersAndShowBillingAvailable()
@@ -135,6 +159,16 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         }
         showBillingAvailableRequestCode = showBillingAvailable();
         alreadyNotifiedNeedCreateAccount = true;
+    }
+
+    protected void detachStoreItemSubscription()
+    {
+        Subscription subscriptionCopy = storeItemSubscription;
+        if (subscriptionCopy != null)
+        {
+            subscriptionCopy.unsubscribe();
+        }
+        storeItemSubscription = null;
     }
 
     public int showBillingAvailable()
