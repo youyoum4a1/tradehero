@@ -132,9 +132,14 @@ public class AnalyticsConstants
 
     //Analytics Palmer
     //打开软件看到介绍图片，浏览到第几个页面点击或马上体验和登陆
-    public static final String SIGNIN_ANONYMOUS = "signin_anonymous";
-    public static final String SIGNIN_ACCOUNT = "signin_account";
-    //我的页面，个人主页的点击量，设置点击量，我的动态点击量，消息中心的点击量，邀请好友的点击量，右上角设置的点击量
+    public static final String SIGN_IN_ANONYMOUS = "sign_in_anonymous";
+    public static final String SIGN_IN_ACCOUNT = "sign_in_account";
+    //我的页面，个人主页的点击量，设置点击量，我的动态点击量，邀请好友的点击量
+    public static final String MINE_PERSONAL_PAGE = "mine_personal_page";
+    public static final String MINE_SETTING = "mine_setting";
+    public static final String MINE_INVITE_FRIENDS = "mine_invite_friends";
+    public static final String MINE_MY_MOMENT = "mine_my_moment";
+
 
 
     //Palmer

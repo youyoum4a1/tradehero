@@ -67,6 +67,9 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
     @InjectView(R.id.guide_screen_login) Button mLogin;
     private ProgressDialog mProgressDialog;
 
+    @Inject
+    private ViewPager viewpager;
+
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -74,7 +77,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_guide);
         ButterKnife.inject(this);
-        final ViewPager viewpager = (ViewPager) findViewById(R.id.viewpager);
+        viewpager = (ViewPager) findViewById(R.id.viewpager);
         List<Integer> list = new ArrayList<>();
         list.add(R.drawable.guide_screen1);
         list.add(R.drawable.guide_screen2);
@@ -238,9 +241,15 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
         switch (v.getId())
         {
             case R.id.guide_screen_fast_login:
+                if(viewpager!=null){
+                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN_ANONYMOUS, String.valueOf(viewpager.getCurrentItem())));
+                }
                 authenticateWithDevice();
                 break;
             case R.id.guide_screen_login:
+                if(viewpager!=null){
+                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN_ACCOUNT, String.valueOf(viewpager.getCurrentItem())));
+                }
                 ActivityHelper.launchAuthentication(this);
                 break;
         }

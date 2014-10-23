@@ -40,6 +40,9 @@ import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -83,6 +86,8 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @InjectView(R.id.tvEarning) TextView tvEarning;
 
     @InjectView(R.id.viewEndpoint) View viewEndpoint;
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -199,6 +204,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 gotoDashboard(MyProfileFragment.class.getName());
                 break;
             case R.id.rlMeDynamic:
+                //analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MI))
                 Timber.d("clicked rlMeDynamic");
                 enterMyMainPager();
                 break;
