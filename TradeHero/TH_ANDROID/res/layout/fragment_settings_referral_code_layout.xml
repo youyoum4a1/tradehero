@@ -27,8 +27,7 @@
           android:layout_height="wrap_content"
           android:layout_margin="@dimen/common_margin_10"
           android:gravity="center_horizontal"
-          android:textSize="@dimen/text_headline"
-          android:textColor="@color/tradehero_blue"
+          style="@style/TH.Headline.Accented"
           android:textColorHighlight="@color/light_grey_transparent"
           android:textStyle="bold"
           android:textIsSelectable="true"
@@ -41,7 +40,7 @@
           android:layout_margin="@dimen/common_margin_10"
           android:gravity="center_horizontal"
           android:text="@string/settings_referral_code_message"
-          android:textSize="@dimen/common_text_size_25"
+          style="@style/TH.Body"
           />
 
     </LinearLayout>
@@ -75,8 +74,8 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/referral_dollars_claimed"
-            android:textSize="@dimen/text_title"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            style="@style/TH.Title"/>
 
       </LinearLayout>
 

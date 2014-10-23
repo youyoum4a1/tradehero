@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.friend.InviteCodeViewLinear
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.social.friend.InviteCodeViewLinear xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/invite_code_dialog_key"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    >
 
   <TextView
       android:layout_width="match_parent"
@@ -14,8 +14,9 @@
       android:layout_margin="@dimen/common_margin_10"
       android:gravity="center_horizontal"
       android:text="@string/invite_code_title"
+      style="@style/TH.Headline"
       android:textStyle="bold"
-      android:textSize="@dimen/common_text_size_30"/>
+      />
 
   <TextView
       android:layout_width="match_parent"
@@ -23,7 +24,8 @@
       android:layout_margin="@dimen/common_margin_10"
       android:gravity="center_horizontal"
       android:text="@string/invite_code_message"
-      android:textSize="@dimen/common_text_size_25"/>
+      style="@style/TH.Body"
+      />
 
   <ViewFlipper
       android:id="@+id/action_view_switcher"
@@ -40,25 +42,29 @@
 
       <EditText
           android:id="@+id/invite_code"
+          style="@style/TH.Title.Accented"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_margin="@dimen/common_margin_10"
           android:maxLength="6"
-          style="@style/TH.DiscussionTextBox"
-          android:textSize="@dimen/text_title"
-          android:textStyle="bold"
-          android:textColor="@color/tradehero_blue"/>
+          android:padding="@dimen/discussion_action_buttons_drawable_padding"
+          android:inputType="text|textCapCharacters"
+          android:background="@drawable/textbox_light_background"
+          />
 
       <ImageView
           android:layout_width="match_parent"
           android:layout_height="1dp"
-          android:background="@color/light_grey"/>
+          android:background="@color/light_grey"
+          />
 
       <LinearLayout
           android:layout_width="match_parent"
-          android:layout_height="@dimen/medium_logo_w_h"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:orientation="horizontal"
-          android:background="@color/light_grey">
+          android:background="@color/light_grey"
+          >
 
         <Button
             android:id="@+id/btn_cancel"
@@ -66,9 +72,9 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/cancel"
-            android:textSize="@dimen/text_body"
-            android:textColor="@color/black"
-            android:background="@drawable/basic_white_selector"/>
+            style="@style/TH.Button"
+            android:background="@drawable/basic_white_selector"
+            />
 
         <Button
             android:id="@+id/btn_send_code"
@@ -77,9 +83,9 @@
             android:layout_weight="1"
             android:background="@drawable/basic_white_selector"
             android:text="@string/ok"
-            android:textSize="@dimen/text_body"
-            android:textColor="@color/tradehero_blue"
-            android:layout_marginLeft="1dp"/>
+            style="@style/TH.Button.Accented"
+            android:layout_marginLeft="1dp"
+            />
 
       </LinearLayout>
 
@@ -96,19 +102,21 @@
           android:layout_height="wrap_content"
           />
 
-      <ImageView
+      <View
           android:layout_width="match_parent"
           android:layout_height="1dp"
-          android:background="@color/light_grey"/>
+          android:background="@color/light_grey"
+          />
 
       <Button
           android:id="@+id/btn_cancel_submit"
-          android:layout_height="@dimen/medium_logo_w_h"
+          android:layout_height="wrap_content"
           android:layout_width="match_parent"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/cancel"
-          android:textSize="@dimen/text_body"
-          android:textColor="@color/black"
-          android:background="@drawable/basic_white_selector"/>
+          style="@style/TH.Button"
+          android:background="@drawable/basic_white_selector"
+          />
 
     </LinearLayout>
 
@@ -125,19 +133,21 @@
           android:text="@string/referral_code_callback_success"
           />
 
-      <ImageView
+      <View
           android:layout_width="match_parent"
           android:layout_height="1dp"
-          android:background="@color/light_grey"/>
+          android:background="@color/light_grey"
+          />
 
       <Button
           android:id="@+id/btn_done"
-          android:layout_height="@dimen/medium_logo_w_h"
+          android:layout_height="wrap_content"
           android:layout_width="match_parent"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/ok"
-          android:textSize="@dimen/text_body"
-          android:textColor="@color/tradehero_blue"
-          android:background="@drawable/basic_white_selector"/>
+          style="@style/TH.Button.Accented"
+          android:background="@drawable/basic_white_selector"
+          />
 
     </LinearLayout>
 

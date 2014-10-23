@@ -200,19 +200,19 @@
       <TextView
           android:id="@+id/info"
           android:text="@string/security_info"
-          style="@style/TH.BuySell_ViewPager_Button"
+          style="@style/TH.BuySell_ViewPager_Tabs"
           />
 
       <TextView
           android:id="@+id/discussions"
           android:text="@string/security_discussions"
-          style="@style/TH.BuySell_ViewPager_Button"
+          style="@style/TH.BuySell_ViewPager_Tabs"
           />
 
       <TextView
           android:id="@+id/news"
           android:text="@string/security_news"
-          style="@style/TH.BuySell_ViewPager_Button"
+          style="@style/TH.BuySell_ViewPager_Tabs"
           />
 
     </LinearLayout>

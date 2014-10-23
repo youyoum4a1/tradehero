@@ -203,6 +203,7 @@
   </style>
 
   <style name="TH.UserROI" parent="TH.Body">
+    <item name="android:textStyle">bold</item>
   </style>
 
   <style name="UserProfile.Contained.Value" parent="TH.Title.Accented">
@@ -221,124 +222,14 @@
     <item name="showAnimation">true</item>
   </style>
 
-  <style name="TH.DiscussionTextBox">
+  <style name="TH.DiscussionTextBox" parent="TH.Body">
     <item name="android:gravity">left|center_vertical</item>
     <item name="android:background">@drawable/textbox_light_background</item>
     <item name="android:padding">@dimen/discussion_action_buttons_drawable_padding</item>
-    <item name="android:textSize">@dimen/text_body</item>
     <item name="android:inputType">text|textMultiLine|textImeMultiLine|textCapSentences|textAutoCorrect|textAutoComplete</item>
   </style>
 
-
-  <style name="TH.Achievement.Header"
-      parent="TH.Achievement">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_title</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
-  <style name="TH.Achievement.Title"
-      parent="TH.Achievement">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_title</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
-  <style name="TH.Achievement.Description"
-      parent="TH.Achievement">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_body</item>
-  </style>
-
-
-  <style name="TH.Achievement.Indicator.Text"
-      parent="TH.Achievement.Indicator">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_xxsmall</item>
-  </style>
-
-  <style name="TH.Achievement.Indicator.Text.Top"
-      parent="TH.Achievement.Indicator.Text">
-    <item name="android:gravity">center_horizontal|bottom</item>
-  </style>
-
-  <style name="TH.Achievement.Indicator.Text.Bot"
-      parent="TH.Achievement.Indicator.Text">
-    <item name="android:gravity">center_horizontal|top</item>
-  </style>
-
-  <style name="TH.Achievement.Share"
-      parent="TH.Achievement">
-    <item name="android:textColor">@color/white</item>
-    <item name="android:textStyle">bold</item>
-    <item name="android:minWidth">80dp</item>
-    <item name="android:background">@drawable/blue_rounded_button_selector</item>
-  </style>
-
-  <style name="TH.Level">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/user_level_progressbar_indicator_text_size</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
-  <style name="TH.Level.Up.Header"
-      parent="TH.Level.Up">
-    <item name="android:textSize">@dimen/text_headline</item>
-  </style>
-
-  <style name="TH.Level.Up.Desc"
-      parent="TH.Level.Up">
-    <item name="android:textSize">@dimen/text_title</item>
-  </style>
-
-  <style name="TH.Achievement.Earned"
-      parent="android:TextAppearance.Holo.Small">
-    <item name="android:gravity">center</item>
-    <item name="android:textSize">@dimen/text_title</item>
-  </style>
-
-  <style name="TH.Achievement.Earned.VirtualDollar"
-      parent="TH.Achievement.Earned">
-    <item name="android:textColor">#F3A422</item>
-  </style>
-
-  <style name="TH.Achievement.Earned.XP"
-      parent="TH.Achievement.Earned">
-    <item name="android:textColor">#407304</item>
-  </style>
-
-  <style name="TH.Achievement.Earned.LevelUp"
-      parent="TH.Achievement.Earned">
-    <item name="android:textColor">#CE021B</item>
-    <item name="android:textSize">@dimen/text_body</item>
-  </style>
-
-  <style name="TradeHero.Dashboard.ActionBar.TabText"
-      parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
-    <item name="android:textColor">@color/tradehero_blue</item>
-    <item name="android:textAllCaps">false</item>
-    <item name="android:textSize">@dimen/text_body</item>
-    <item name="android:textStyle">normal</item>
-  </style>
-
-  <style name="TradeHero.TabText">
-    <item name="android:textColor">@color/tradehero_blue</item>
-    <item name="android:textSize">@dimen/text_body</item>
-    <item name="android:textStyle">normal</item>
-    <item name="android:ellipsize">marquee</item>
-    <item name="android:maxLines">2</item>
-    <item name="android:maxWidth">180dip</item>
-  </style>
-
-
-  <style name="TH.ResideMenuSmall.Text"
-      parent="TH.ResideMenuSmall">
-    <item name="android:textSize">@dimen/text_subhead</item>
-    <item name="android:textColor">@color/white</item>
-  </style>
-
-  <style name="TradeHero_Settings_About_Text">
-    <item name="android:textSize">@dimen/text_title</item>
+  <style name="TradeHero_Settings_About_Text" parent="TH.Title">
     <item name="android:textColor">@color/settings_about_font_colour</item>
     <item name="android:textAllCaps">false</item>
     <item name="android:background">@null</item>
