@@ -67,7 +67,6 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
     @InjectView(R.id.guide_screen_login) Button mLogin;
     private ProgressDialog mProgressDialog;
 
-    @Inject
     private ViewPager viewpager;
 
     @Override protected void onCreate(Bundle savedInstanceState)
