@@ -72,6 +72,8 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     private String searchStr;
     private String searchCancelStr;
 
+    private String noSearchResult;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -79,7 +81,6 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         getCompetitionId();
         securityListTypeCacheListener = createSecurityListFetchListener();
         adapterSecurity = new SecurityListAdapter(getActivity(), getTradeType());
-        fetchSecurityList();
     }
 
     public void getCompetitionId()
@@ -104,13 +105,15 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         initView();
         hideActionBar();
+        fetchSecurityList();
+        showLoadingProgress();
         return view;
     }
 
     private void initView()
     {
         currentPage = 0;
-        //fetchSecurityList();
+        noSearchResult = getActivity().getResources().getString(R.string.search_no_result);
         initListView();
         searchStr = getActivity().getResources().getString(R.string.search_search);
         searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
@@ -243,7 +246,6 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     {
         detachSecurityListCache();
         closeInputMethod();
-        //ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -323,7 +325,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
-            Timber.d("value");
+            tvResult.setText(noSearchResult);
             initAdapterSecurity(value, key);
             dismissLoadingProgress();
             onFinish();
@@ -331,7 +333,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
-            Timber.e("Error fetching the list of security %s", key, error);
+            tvResult.setText(noSearchResult);
             dismissLoadingProgress();
             onFinish();
         }
@@ -374,8 +376,6 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         {
             currentPage += 1;
         }
-
-        adapterSecurity.notifyDataSetChanged();
 
         adapterSecurity.notifyDataSetChanged();
         if (adapterSecurity.getCount() > 0)

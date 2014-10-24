@@ -115,6 +115,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch)
         {
+            showLoadingProgress();
             fetchHotSecuritySearchList(true);
         }
 
@@ -281,14 +282,14 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
             initAdapterSecurity(value, key);
-            tvSearch.setText(searchNoResult);
+            tvResult.setText(searchNoResult);
             onFinish();
         }
 
         @Override
         public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
-            tvSearch.setText(searchNoResult);
+            tvResult.setText(searchNoResult);
             onFinish();
         }
 
