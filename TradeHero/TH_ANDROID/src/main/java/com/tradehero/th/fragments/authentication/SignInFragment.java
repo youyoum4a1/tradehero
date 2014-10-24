@@ -9,10 +9,13 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.utils.metrics.Analytics;
+
 import javax.inject.Inject;
 
 public class SignInFragment extends SignInOrUpFragment
 {
+    @Inject Analytics analytics;
 
     @Override protected int getViewId()
     {
