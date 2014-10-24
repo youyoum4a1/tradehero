@@ -21,6 +21,8 @@ public class THSharePreferenceManager {
     public final static String PROPERTY_MORE_THAN_FIFTEEN = "property_more_than_fifteen";
     public final static String PROPERTY_MORE_THAN_TWENTY_FIVE = "property_more_than_twenty_five";
 
+    public final static String FANS_MORE_THAN_NINE = "fans_more_than_nine";
+
     public static void saveValuesByKey() {
     }
 
@@ -130,6 +132,31 @@ public class THSharePreferenceManager {
             return false;
         }
         int cancelRecord = sp.getInt(userId + "false" + PROPERTY_MORE_THAN_TWENTY_FIVE, 0);
+        if (cancelRecord >= 3) {
+            return false;
+        }
+        return true;
+    }
+
+
+    public static void recordShareDialogFANSMoreThanNine(int userId, boolean isConfirm, Context context) {
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
+        if (isConfirm) {
+            sp.edit().putInt(userId + "true" + FANS_MORE_THAN_NINE, 1).commit();
+        } else {
+            int cancelRecord = sp.getInt(userId + "false" + FANS_MORE_THAN_NINE, 0);
+            cancelRecord++;
+            sp.edit().putInt(userId + "false" + FANS_MORE_THAN_NINE, cancelRecord).commit();
+        }
+    }
+
+    public static boolean isShareDialogFANSMoreThanNineAvailable(int userId, Context context) {
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
+        int confirmRecord = sp.getInt(userId + "true" + FANS_MORE_THAN_NINE, 0);
+        if (confirmRecord > 0) {
+            return false;
+        }
+        int cancelRecord = sp.getInt(userId + "false" + FANS_MORE_THAN_NINE, 0);
         if (cancelRecord >= 3) {
             return false;
         }

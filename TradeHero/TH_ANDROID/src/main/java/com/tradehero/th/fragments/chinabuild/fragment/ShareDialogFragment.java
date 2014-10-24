@@ -189,6 +189,9 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         if (mType.equals(THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE)) {
             THSharePreferenceManager.recordShareDialogMoreThanTwentyFive(mUserId, false, getActivity());
         }
+        if (mType.equals(THSharePreferenceManager.FANS_MORE_THAN_NINE)){
+            THSharePreferenceManager.recordShareDialogFANSMoreThanNine(mUserId, false, getActivity());
+        }
     }
 
     private void recordConfirm() {
@@ -206,6 +209,9 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         }
         if (mType.equals(THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE)) {
             THSharePreferenceManager.recordShareDialogMoreThanTwentyFive(mUserId, true, getActivity());
+        }
+        if (mType.equals(THSharePreferenceManager.FANS_MORE_THAN_NINE)){
+            THSharePreferenceManager.recordShareDialogFANSMoreThanNine(mUserId, true, getActivity());
         }
     }
 

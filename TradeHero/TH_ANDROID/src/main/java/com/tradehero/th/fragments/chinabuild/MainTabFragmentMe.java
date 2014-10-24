@@ -22,6 +22,7 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
@@ -180,15 +181,18 @@ public class MainTabFragmentMe extends AbsBaseFragment
             //粉丝数达到10人
             if (user.allFollowerCount > 9)
             {
+                int userId = currentUserId.toUserBaseKey().getUserId();
                 if (mShareDialogKeyPreference.get() && mShareDialogFollowerCountKeyPreference.get())
                 {
-                    mShareDialogKeyPreference.set(false);
-                    mShareDialogFollowerCountKeyPreference.set(false);
-                    mShareSheetTitleCache.set(getString(R.string.share_amount_fans_num_summary,
-                            currentUserId.get().toString()));
-                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                            getString(R.string.share_amount_fans_num_title),getString(R.string.share_amount_fans_num_summary,
-                            currentUserId.get().toString()));
+                    if(THSharePreferenceManager.isShareDialogFANSMoreThanNineAvailable(userId, getActivity())){
+                        mShareDialogKeyPreference.set(false);
+                        mShareDialogFollowerCountKeyPreference.set(false);
+                        mShareSheetTitleCache.set(getString(R.string.share_amount_fans_num_summary,
+                                currentUserId.get().toString()));
+                        ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                                getString(R.string.share_amount_fans_num_title), getString(R.string.share_amount_fans_num_summary,
+                                currentUserId.get().toString()), THSharePreferenceManager.FANS_MORE_THAN_NINE, userId);
+                    }
                 }
             }
         }
