@@ -34,7 +34,11 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
 
     @Override public void invalidateAll()
     {
-        lruCache.evictAll();
+        try{
+            lruCache.evictAll();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override public void unregister(@Nullable Listener<DTOKeyType, DTOType> callback)
