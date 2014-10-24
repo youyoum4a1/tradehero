@@ -37,9 +37,8 @@
       android:marqueeRepeatLimit="marquee_forever"
       android:lines="1"
       android:textColor="@color/trending_grid_item_stock_name"
-      android:textStyle="bold"
+      style="@style/TH.Subhead"
       android:singleLine="true"
-
       tools:text="Company Name"
       />
 
@@ -65,6 +64,7 @@
       android:layout_centerHorizontal="true"
       android:ellipsize="end"
       android:lines="1"
+      style="@style/TH.Body"
       android:textColor="@color/trending_grid_item_stock_name"
       tools:text="GOOG"/>
 
@@ -84,7 +84,7 @@
         android:layout_marginLeft="2dp"
         android:lines="1"
         tools:text="@string/arrow_prefix_positive"
-        android:textColor="@color/black"
+        style="@style/TH.Body"
         android:textStyle="bold"
         />
 
@@ -95,7 +95,7 @@
         android:layout_marginLeft="2dp"
         android:layout_marginRight="4dp"
         android:lines="1"
-        android:textColor="@color/black"
+        style="@style/TH.Body"
         tools:text="US$"
         />
 
@@ -105,7 +105,7 @@
         android:layout_height="wrap_content"
         android:lines="1"
         tools:text="1,014"
-        android:textColor="@color/black"
+        style="@style/TH.Body"
         android:textStyle="bold"
         />
 
@@ -113,8 +113,8 @@
 
   <ImageView
       android:id="@+id/ic_market_close"
-      android:layout_width="20dp"
-      android:layout_height="20dp"
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
       android:layout_alignParentBottom="true"
       android:layout_alignParentRight="true"
       android:paddingBottom="8dp"

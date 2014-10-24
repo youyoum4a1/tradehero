@@ -68,8 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_subhead"
+            style="@style/TH.Subhead"
             android:drawableLeft="@null"
             tools:text="Unusual Volumes"
             />
@@ -81,7 +80,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
-          android:textSize="@dimen/text_xxsmall"
+          style="@style/TH.Caption"
           android:maxLines="1"
           tools:text="previous day volume > average daily volume"
           />
