@@ -39,6 +39,9 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.BitmapForProfileFactory;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 
 import java.util.Date;
@@ -69,6 +72,8 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     private UserProfileDTO userProfileDTO;
     private String dialogContent;
     private Bitmap photo;
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -183,9 +188,11 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.photo_layout:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_PERSONAL_INFORMATION_AVATAR));
                 showChooseImageDialog();
                 break;
             case R.id.name_layout:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_PERSONAL_INFORMATION_NAME));
                 gotoEditName();
                 break;
             case R.id.account_layout:

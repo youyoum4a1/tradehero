@@ -38,6 +38,9 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 
 import javax.inject.Inject;
 
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import timber.log.Timber;
 
@@ -57,6 +60,8 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,11 +126,13 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.settings_score:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_SCORE));
                 showAppOnMarket();
                 //评分后
                 //gotoShareScoreDialog()
                 break;
             case R.id.settings_faq:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_FAQ));
                 Uri uri = Uri.parse("http://cn.tradehero.mobi/help/");
                 Intent it = new Intent(Intent.ACTION_VIEW, uri);
                 try {
@@ -145,6 +152,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                 gotoDownloadAppPage();
                 break;
             case R.id.relativelayout_setting_notification:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_NOTIFICAITONS_ON_OFF));
                 gotoSetNotifications();
                 break;
         }

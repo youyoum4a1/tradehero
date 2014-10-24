@@ -22,6 +22,9 @@ import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 
 import javax.inject.Inject;
 
@@ -30,14 +33,13 @@ import javax.inject.Inject;
  */
 public class LoginSuggestDialogFragment extends BaseDialogFragment {
 
-    @InjectView(R.id.textview_suggest_cancel)
-    TextView mCancelBtn;
-    @InjectView(R.id.textview_suggest_signin)
-    TextView mOKBtn;
-    @InjectView(R.id.textview_suggest_content)
-    TextView mContent;
+    @InjectView(R.id.textview_suggest_cancel) TextView mCancelBtn;
+    @InjectView(R.id.textview_suggest_signin) TextView mOKBtn;
+    @InjectView(R.id.textview_suggest_content) TextView mContent;
 
     private String content = "";
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class LoginSuggestDialogFragment extends BaseDialogFragment {
 
     @OnClick(R.id.textview_suggest_cancel)
     public void gotoCancel() {
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ANONYMOUS_TO_REAL_ACCOUNT_CANCEL));
         dismiss();
     }
 
@@ -76,8 +79,9 @@ public class LoginSuggestDialogFragment extends BaseDialogFragment {
 
     @OnClick(R.id.textview_suggest_signin)
     public void gotoSignIn() {
-        Intent gotoAuthticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
-        getActivity().startActivity(gotoAuthticationIntent);
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ANONYMOUS_TO_REAL_ACCOUNT_CONFIRM));
+        Intent gotoAuthenticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
+        getActivity().startActivity(gotoAuthenticationIntent);
         getActivity().finish();
     }
 

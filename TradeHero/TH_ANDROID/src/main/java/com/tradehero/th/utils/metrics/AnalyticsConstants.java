@@ -224,6 +224,10 @@ public class AnalyticsConstants
     public static final String SETTING_FAQ = "SETTING_FAQ";
     public static final String SETTING_NOTIFICAITONS_ON_OFF = "SETTING_NOTIFICAITONS_ON_OFF";
 
+    //匿名用户登陆进来提示的转成实名弹出框的确认及取消
+    public static final String ANONYMOUS_TO_REAL_ACCOUNT_CONFIRM = "ANONYMOUS_TO_REAL_ACCOUNT_CONFIRM";
+    public static final String ANONYMOUS_TO_REAL_ACCOUNT_CANCEL = "ANONYMOUS_TO_REAL_ACCOUNT_CANCEL";
+
     //Palmer
 
 
