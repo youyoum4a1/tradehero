@@ -4,6 +4,7 @@ import com.tradehero.THRobolectricTestRunner;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,6 +18,7 @@ public class FacebookAuthenticationProviderTest
         String received = "2014-07-31T01:00:32.000Z";
         Date parsed = FacebookAuthenticationProvider.PRECISE_DATE_FORMAT.parse(received);
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
         calendar.set(Calendar.YEAR, 2014);
         calendar.set(Calendar.MONTH, 6);
         calendar.set(Calendar.DAY_OF_MONTH, 31);
@@ -33,6 +35,7 @@ public class FacebookAuthenticationProviderTest
         String received = "2014-08-20T01:25:43.000Z";
         Date parsed = FacebookAuthenticationProvider.PRECISE_DATE_FORMAT.parse(received);
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
         calendar.set(Calendar.YEAR, 2014);
         calendar.set(Calendar.MONTH, 7);
         calendar.set(Calendar.DAY_OF_MONTH, 20);
