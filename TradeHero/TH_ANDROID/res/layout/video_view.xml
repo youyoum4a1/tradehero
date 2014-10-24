@@ -20,6 +20,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:padding="2dp"
+      style="@style/TH.Body"
       android:background="@color/video_title_background"/>
 
   <ImageView

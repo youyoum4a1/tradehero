@@ -12,8 +12,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
       android:gravity="center_horizontal"
-      android:textSize="@dimen/text_title"
-      android:textStyle="bold"
+      style="@style/TH.Title"
       android:maxLines="1"
       android:layout_marginTop="8dp"
       android:text="@string/regional_news"
@@ -24,6 +23,7 @@
       android:layout_width="@dimen/discovery_news_carousel_spinner_width"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
+      style="@style/TH.Spinner"
       />
 
 </com.tradehero.th.fragments.discovery.RegionalNewsSelectorView>

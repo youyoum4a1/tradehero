@@ -10,8 +10,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:text="@string/global_news"
-      android:textSize="@dimen/text_title"
-      android:textStyle="bold"
+      style="@style/TH.Title"
       />
 
 </FrameLayout>
