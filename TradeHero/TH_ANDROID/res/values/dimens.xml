@@ -64,7 +64,7 @@
   <dimen name="trending_grid_padding_left">3dp</dimen>
   <dimen name="trending_horizontal_spacing">8dp</dimen>
   <dimen name="trending_vertical_spacing">8dp</dimen>
-  <dimen name="trending_padding_top">95dp</dimen>
+  <dimen name="trending_padding_top">100dp</dimen>
   <dimen name="trending_padding_bottom">95dp</dimen>
   <dimen name="trending_grid_item_padding">0dp</dimen>
   <dimen name="timeline_bottom_button_drawable_adjustment">0dp</dimen>

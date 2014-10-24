@@ -91,6 +91,7 @@
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
           android:dropDownSelector="@drawable/basic_transparent_selector"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:paddingLeft="@dimen/margin_small"
           style="@style/TH.Spinner"
           />
