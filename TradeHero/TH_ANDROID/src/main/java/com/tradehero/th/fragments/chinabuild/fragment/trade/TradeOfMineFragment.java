@@ -56,6 +56,7 @@ import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareDialogROIValueKey;
 import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
+import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -113,6 +114,11 @@ public class TradeOfMineFragment extends DashboardFragment
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @Inject Analytics analytics;
+
+
+    private static long time_stamp = -1;
+    private final long duration_showing_dialog = 120000;
+    private boolean availableShowDialog = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -239,8 +245,14 @@ public class TradeOfMineFragment extends DashboardFragment
         gotoDashboard(SecurityDetailFragment.class.getName(), bundle);
     }
 
+    @Override public void onStart(){
+        availableShowDialog = true;
+        super.onStart();
+    }
+
     @Override public void onStop()
     {
+        availableShowDialog = false;
         super.onStop();
     }
 
@@ -495,11 +507,11 @@ public class TradeOfMineFragment extends DashboardFragment
         String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
         tvItemAllAmount.setText(valueString);
         //总资产数达到15w
-        if (cached.totalValue > 150000 && getActivity()!=null)
+        if (cached.totalValue > 150000 && getActivity()!=null && availableShowDialog)
         {
+            Timber.d("------> More than 150000");
             int userId = currentUserId.toUserBaseKey().getUserId();
             if(THSharePreferenceManager.isShareDialogMoreThanFifteenAvailable(userId, getActivity())){
-                if (mShareDialogKeyPreference.get() && mShareDialogTotalValueKeyPreference.get()) {
                     mShareDialogKeyPreference.set(false);
                     mShareDialogTotalValueKeyPreference.set(false);
                     mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary,
@@ -507,19 +519,19 @@ public class TradeOfMineFragment extends DashboardFragment
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_amount_total_value_title), getString(R.string.share_amount_total_value_summary,
                             currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN, userId);
-                }
+                    time_stamp = System.currentTimeMillis();
             }else{
-                if (cached.totalValue > 250000){
+                Timber.d("------> More than 250000");
+                if (cached.totalValue > 250000 && (System.currentTimeMillis()-time_stamp)>duration_showing_dialog){
                     if(THSharePreferenceManager.isShareDialogMoreThanTwentyFiveAvailable(userId, getActivity())){
-                        if (mShareDialogKeyPreference.get() && mShareDialogTotalValueKeyPreference.get()) {
-                            mShareDialogKeyPreference.set(false);
-                            mShareDialogTotalValueKeyPreference.set(false);
-                            mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary25,
-                                    currentUserId.get().toString()));
-                            ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                                    getString(R.string.share_amount_total_value_title25), getString(R.string.share_amount_total_value_summary25,
-                                    currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
-                        }
+                          mShareDialogKeyPreference.set(false);
+                          mShareDialogTotalValueKeyPreference.set(false);
+                          mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary25,
+                                 currentUserId.get().toString()));
+                          ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                                 getString(R.string.share_amount_total_value_title25), getString(R.string.share_amount_total_value_summary25,
+                                 currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
+                        time_stamp = -1;
                     }
                 }
             }
