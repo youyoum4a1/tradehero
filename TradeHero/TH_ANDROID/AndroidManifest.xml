@@ -15,8 +15,6 @@
 
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-  <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>-->
-  <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>-->
   <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
@@ -43,10 +41,8 @@
   <!--android:protectionLevel="signature"/>-->
   <!--<uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE"/>-->
 
-  <!-- OPTIONAL - This permission is only necessary if your app has multiple processes -->
-  <!-- <uses-permission android:name="android.permission.BROADCAST_STICKY" /> -->
-  <!-- END OPTIONAL Urban Airship Settings -->
-  <!-- END push notification permission -->
+  <!-- his permission is only necessary if your app has multiple processes -->
+  <uses-permission android:name="android.permission.BROADCAST_STICKY" />
 
   <!--Baidu push-->
   <uses-permission android:name="android.permission.WRITE_SETTINGS"/>

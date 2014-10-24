@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.chinabuild.fragment.userCenter;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,10 @@ import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
+import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormWeiboDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -44,12 +49,15 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -63,6 +71,9 @@ public class UserMainPage extends DashboardFragment
     public static final String BUNDLE_NEED_SHOW_PROFILE = "bundle_need_show_profile";//是否需要显示他的持仓再右上角
     public static final String BUNDLE_USER_BASE_KEY = "bundle_user_base_key";//用户ID
 
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
+    @Inject UserProfileCache userProfileCacheA;
     @Inject Lazy<UserProfileCache> userProfileCache;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> currentUserProfileCacheListener;
@@ -222,7 +233,7 @@ public class UserMainPage extends DashboardFragment
             public void OnTimeLineShareClied(int position)
             {
                 Timber.d("Share position = " + position);
-                share(adapter.getItemString(position));
+                shareToWechatMoment(adapter.getItemString(position));
             }
         });
 
@@ -279,6 +290,48 @@ public class UserMainPage extends DashboardFragment
                 });
 
         mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
+    }
+
+    //Share to wechat moment and share to weibo on the background
+    private void shareToWechatMoment(final String strShare)
+    {
+        String show  = getUnParsedText(strShare);
+        if(TextUtils.isEmpty(show)){
+            return;
+        }
+        UserProfileDTO updatedUserProfileDTO = userProfileCacheA.get(currentUserId.toUserBaseKey());
+        if (updatedUserProfileDTO != null)
+        {
+            if (updatedUserProfileDTO.wbLinked)
+            {
+                String outputStr = show;
+                if(outputStr.length() > 140){
+                    outputStr = outputStr.substring(0, 140);
+                }
+                InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
+                userServiceWrapper.get().inviteFriends(
+                        currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
+            }
+        }
+        WeChatDTO weChatDTO = new WeChatDTO();
+        weChatDTO.id = 0;
+        weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
+        weChatDTO.title = show;
+        ((SocialSharerImpl)socialSharerLazy.get()).share(weChatDTO, getActivity());
+
+    }
+
+    private class RequestCallback implements Callback {
+
+        @Override
+        public void success(Object o, Response response) {
+
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+
+        }
     }
 
     public void startLoadding()

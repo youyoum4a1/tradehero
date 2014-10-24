@@ -175,13 +175,27 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             if (isTrade)
             {
                 TradeDTO tradeDTO = getTradeDTO(dto.tradeId);
-                if (tradeDTO != null)
-                {
+                if(tradeDTO==null){
+                    return "";
+                }
+                if (tradeDTO.isBuy()) {
+
                     String securityName = dto.getMedias().get(0).displaySecurityName();
                     StringBuffer sb = new StringBuffer();
                     sb.append("我以 ")
                             .append(tradeDTO.getUnitPriceCurrency())
                             .append(" 每股的价格，购买了 ")
+                            .append(tradeDTO.displayTradeQuantity())
+                            .append(" 股 ")
+                            .append(
+                                    securityName);
+                    return sb.toString();
+                } else {
+                    String securityName = dto.getMedias().get(0).displaySecurityName();
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("我以 ")
+                            .append(tradeDTO.getUnitPriceCurrency())
+                            .append(" 每股的价格，卖出了 ")
                             .append(tradeDTO.displayTradeQuantity())
                             .append(" 股 ")
                             .append(
