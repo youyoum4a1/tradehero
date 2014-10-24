@@ -50,8 +50,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
-          android:textColor="@color/text_gray_normal"
-          android:textSize="@dimen/timeline_item_date"
+          style="@style/TH.Caption"
           android:layout_below="@id/user_profile_name"
           tools:text="A moment ago"
           />
@@ -62,9 +61,7 @@
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dip"
           android:textColorLink="@color/timeline_item_link"
-          android:textColor="@color/timeline_item"
-          android:textSize="@dimen/text_caption"
-          android:textStyle="normal"
+          style="@style/TH.Body"
           android:layout_below="@id/discussion_time"
           tools:text="Tho Nguyen has become the best trader of the world!"
           />
