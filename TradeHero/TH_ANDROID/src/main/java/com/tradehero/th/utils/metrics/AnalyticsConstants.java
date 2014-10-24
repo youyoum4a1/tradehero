@@ -2,6 +2,7 @@ package com.tradehero.th.utils.metrics;
 
 public class AnalyticsConstants
 {
+    /** Analytics Global Release
     public static final String AppLaunch = "AppLaunch";
     public static final String TabBar_Me = "TabBar/Me";
     public static final String TabBar_Trade = "TabBar/Trade";
@@ -11,10 +12,10 @@ public class AnalyticsConstants
     public static final String TabBar_Store = "TabBar/Store";
     public static final String TabBar_Settings = "TabBar/Settings";
     public static final String SignUp = "SignUp"; //User tap sign up on the landing
-    public static final String SignUp_Tap = "SignUp/Tap"; //User tap sign up on the landing
+
     public static final String SignUp_Success = "SignUp/Success"; //User tap sign up on the landing
     public static final String SignIn = "SignIn"; //User tap sign in on the landing
-    public static final String SignUp_Email = "SignUp/Email"; //User tap on sign up via email on
+
     public static final String Authentication_Facebook = "SignUp/Facebook"; // User tap on sign up via Facebook on sign up screen
     public static final String Authentication_LinkedIn = "SignUp/LinkedIn"; // User tap on sign up via LinkedIn
     public static final String Authentication_Twitter = "SignUp/Twitter"; // User tap on sign up via Twitter
@@ -25,10 +26,6 @@ public class AnalyticsConstants
     public static final String Settings_TransactionHistory = "Settings/TransactionHistory";
     public static final String Referrals_Settings = "Referrals_Settings";
     public static final String Settings_About = "Settings/About";
-    public static final String BuyCreditsDialog_Show = "BuyCreditsDialog/Show";
-    public static final String BuyExtraCashDialog_Show = "BuyExtraCashDialog/Show";
-    public static final String BuyStockAlertDialog_Show = "BuyStockAlertDialog/Show";
-    public static final String ResetPortfolioDialog_Show = "ResetPortfolioDialog/Show";
     public static final String ResetPortfolioPopUp_Show = "ResetPortfolioPopUp/Show";
     public static final String ResetPortfolioPopUp_Buy = "ResetPortfolioPopUp/Buy";
     public static final String ResetPortfolio_Close = "ResetPortfolio/Close";
@@ -85,18 +82,14 @@ public class AnalyticsConstants
     public static final String Monitor_BuySell = "Monitor/BuySell";// source
     public static final String Monitor_TradeHistory = "Monitor/TradeHistory";// source
     public static final String StockAlerts_Save = "StockAlerts/Save";// Saving stock alert on stock alert
-    public static final String TrendingStock = "TrendingStock"; // Tapping on a stock item in Trending screen
-    public static final String BuySellPanel_Chart = "BuySellPanel/Chart_%s"; // Open the buy sell screen with a chart
-    public static final String PickChart = "PickChart/%s"; // Changing a chart
 
-    public static final String BroadcastAllFollowers = "Broadcast All Followers";//
-    public static final String BroadcastFreeFollowers = "Broadcast Free Followers";//
-    public static final String BroadcastPremiumFollowers = "Broadcast Premium Followers";//
+    public static final String BuySellPanel_Chart = "BuySellPanel/Chart_%s"; // Open the buy sell screen with a chart
+
     public static final String Default = "Default";//
     public static final String DefaultPriceSelectionMethod = Default;//
     public static final String Email = "Email";//
     public static final String Facebook = "Facebook";//
-    public static final String FollowedFromScreen = "FollowedFromScreen";
+
     public static final String FreeFollow_Success = "FreeFollow/Success";
     public static final String InviteFriends = "InviteFriends";//
     public static final String Leaderboard = "Leaderboard";
@@ -113,7 +106,6 @@ public class AnalyticsConstants
     public static final String MoneySelection = "MoneySelection";//
     public static final String PositionList = "PositionList";
     public static final String PremiumFollow_Success = "PremiumFollow/Success";
-    public static final String PrivateMessage = "Private Message";//
     public static final String Profile = "Profile";
     public static final String QQ = "QQ";//
     public static final String WECHAT = "Wechat";//
@@ -128,8 +120,51 @@ public class AnalyticsConstants
     public static final String Trade_Sell = "Trade/Sell";//
     public static final String Twitter = "Twitter";//
     public static final String WeiBo = "WeiBo";//
+    **/
+
+    public static final String PrivateMessage = "Private Message";
+    public static final String BroadcastAllFollowers = "Broadcast All Followers";
+    public static final String BroadcastFreeFollowers = "Broadcast Free Followers";
+    public static final String BroadcastPremiumFollowers = "Broadcast Premium Followers";
+    public static final String BuyCreditsDialog_Show = "BuyCreditsDialog/Show";
+    public static final String BuyExtraCashDialog_Show = "BuyExtraCashDialog/Show";
+    public static final String BuyStockAlertDialog_Show = "BuyStockAlertDialog/Show";
+    public static final String ResetPortfolioDialog_Show = "ResetPortfolioDialog/Show";
+    public static final String FollowedFromScreen = "FollowedFromScreen";
+    public static final String Trade_Buy = "Trade/Buy";
+    public static final String Trade_Sell = "Trade/Sell";
+    public static final String PickChart = "PickChart/%s"; // Changing a chart
+    public static final String TrendingStock = "TrendingStock"; // Tapping on a stock item in Trending screen
+    public static final String TabBar_Trending = "TabBar/Trending";
+    public static final String TabBar_Settings = "TabBar/Settings";
+
+    //Splash & Guide
+    public static final String Splash = "Splash";
+    public static final String SplashScreen = "SplashScreen";
+    public static final String SplashScreenCancel = "SplashScreenCancel";
+    public static final String Email = "Email";
+    public static final String Screen = "Screen ";
+
+    public static final String SignUp_Success = "SignUp/Success"; //User tap sign up on the landing
+
+    public static final String SignUp_Email = "SignUp/Email"; //User tap on sign up via email on
+
+    //Launch app
+    public static final String AppLaunch = "AppLaunch";
 
     public static final String CHINA_BUILD_BUTTON_CLICKED = "china_build_button_clicked";
+
+    //Go to login
+    public static final String Login_Register = "Login/Register";
+    public static final String LoginRegisterScreen = "LoginRegisterScreen";
+
+    //Sign Up
+    public static final String SignUp_Tap = "SignUp/Tap"; //User tap sign up on the landing
+    public static final String Twitter = "Twitter";
+    public static final String WeiBo = "WeiBo";
+    public static final String QQ = "QQ";
+    public static final String WECHAT = "Wechat";
+    public static final String Linkedin = "Linkedin";
 
     //Analytics Palmer
 

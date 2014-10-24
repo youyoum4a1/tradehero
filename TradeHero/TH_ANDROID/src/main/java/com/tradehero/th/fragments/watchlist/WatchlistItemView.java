@@ -41,9 +41,6 @@ import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
@@ -58,7 +55,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
 
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
-    @Inject Analytics analytics;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
@@ -152,8 +148,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                     morePopupMenu = createMoreOptionsPopupMenu();
                 }
                 morePopupMenu.show();
-
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
             }
         };
     }

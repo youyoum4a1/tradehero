@@ -57,12 +57,9 @@ import timber.log.Timber;
 public class SearchFragment extends DashboardFragment implements HasSelectedItem
 {
 
-    @Inject
-    Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject
-    CurrentUserId currentUserId;
-    @Inject
-    UserServiceWrapper userServiceWrapper;
+    @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserServiceWrapper userServiceWrapper;
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeCacheListener;
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeHotCacheListener;
 
@@ -80,6 +77,8 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     boolean isUserSearch = false;
     private String searchStr;
     private String searchCancelStr;
+
+    private String searchNoResult;
 
     protected SecurityCompactDTO selectedItem;
 
@@ -111,6 +110,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
 
     public void initView()
     {
+        searchNoResult = getActivity().getResources().getString(R.string.search_no_result);
         searchStr = getActivity().getResources().getString(R.string.search_search);
         searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch)
@@ -281,13 +281,14 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
             initAdapterSecurity(value, key);
+            tvSearch.setText(searchNoResult);
             onFinish();
         }
 
         @Override
         public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
-
+            tvSearch.setText(searchNoResult);
             onFinish();
         }
 

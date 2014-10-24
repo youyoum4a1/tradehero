@@ -26,9 +26,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +45,6 @@ public class SettingsAlipayFragment extends DashboardFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -64,8 +60,6 @@ public class SettingsAlipayFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_Alipay));
     }
 
     //<editor-fold desc="ActionBar">

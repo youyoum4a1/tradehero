@@ -23,9 +23,6 @@ import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import java.util.Date;
 import javax.inject.Inject;
@@ -44,7 +41,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Nullable protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
     private TextView leaderboardMarkUserMarkingTime;
     @Nullable private DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> leaderboardFriendsKeyDTOListener;
-    @Inject Analytics analytics;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCache leaderboardFriendsCache;
@@ -126,7 +122,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.FriendsLeaderboard_Filter_FoF));
         fetchLeaderboardFriends();
         mProgress.setVisibility(View.VISIBLE);
     }

@@ -24,7 +24,7 @@
         </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
         <TextView android:id="@+id/textview_security_searchresult"
                   android:layout_width="match_parent" android:layout_height="match_parent" android:textSize="14sp"
-                  android:text="@string/search_no_result"
+                  android:text=""
                   android:textColor="@color/color_gray_plus"
                   android:gravity="center_horizontal"
                   android:paddingTop="60dp"

@@ -43,9 +43,6 @@ import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TypeEvent;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -88,8 +85,6 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
-    @Inject Analytics analytics;
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -103,7 +98,6 @@ public class SendMessageFragment extends DashboardFragment
         middleCallbackSendMessages = new ArrayList<>();
 
         Timber.d("onCreate messageType:%s,discussionType:%s", messageType, discussionType);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.MessageComposer_Show));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -458,8 +452,7 @@ public class SendMessageFragment extends DashboardFragment
             dismissDialog(progressDialog);
             invalidateMessageCache();
             THToast.show(getActivity().getString(R.string.broadcast_success));
-            analytics.addEvent(new TypeEvent(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource));
-            //TODO close me?
+            //analytics.addEvent(new TypeEvent(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource));
             closeMe();
         }
     }

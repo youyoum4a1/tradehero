@@ -18,8 +18,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trending.PeopleItemViewAdapter;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -121,7 +119,6 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         public void onDTOReceived(@NotNull UserListType key, @NotNull UserSearchResultDTOList value)
         {
             super.onDTOReceived(key, value);
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_User));
         }
 
         @Override public void onErrorThrown(@NotNull UserListType key, @NotNull Throwable error)

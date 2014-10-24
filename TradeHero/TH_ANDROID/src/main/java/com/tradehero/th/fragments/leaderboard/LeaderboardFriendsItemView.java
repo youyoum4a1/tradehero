@@ -45,9 +45,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -56,11 +53,6 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-//import com.facebook.FacebookException;
-//import com.facebook.FacebookOperationCanceledException;
-//import com.facebook.Session;
-//import com.facebook.widget.WebDialog;
-//import com.tradehero.th.utils.FacebookUtils;
 
 public class LeaderboardFriendsItemView extends RelativeLayout
         implements DTOView<UserFriendsDTO>, View.OnClickListener
@@ -92,7 +84,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
-    @Inject Analytics analytics;
 
     public LeaderboardFriendsItemView(Context context)
     {
@@ -351,14 +342,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         if (userFriendsDTO instanceof UserFriendsLinkedinDTO || userFriendsDTO instanceof UserFriendsTwitterDTO)
         {
-            if (userFriendsDTO instanceof UserFriendsLinkedinDTO)
-            {
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Linkedin));
-            }
-            else
-            {
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Twitter));
-            }
             InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
             inviteFriendForm.add(userFriendsDTO);
             getProgressDialog().show();
@@ -367,21 +350,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                     .inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm,
                             new TrackShareCallback());
         }
-        else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
-        {
-            //analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
-            //if (Session.getActiveSession() == null)
-            //{
-            //    detachTrackbackFacebook();
-            //    middleTrackbackFacebook = new MiddleLogInCallback(new TrackFacebookCallback());
-            //    facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
-            //            middleTrackbackFacebook);
-            //}
-            //else
-            //{
-            //    sendRequestDialogFacebook();
-            //}
-        }
+
     }
 
     //private void sendRequestDialogFacebook()

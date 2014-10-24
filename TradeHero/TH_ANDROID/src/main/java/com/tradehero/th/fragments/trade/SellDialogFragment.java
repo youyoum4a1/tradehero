@@ -18,11 +18,6 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         super();
     }
 
-    @Override protected void setBuyEventFor(SharingOptionsEvent.Builder builder)
-    {
-        builder.setBuyEvent(IS_BUY);
-    }
-
     @Override protected String getLabel()
     {
         THSignedNumber sthSignedNumber = THSignedMoney

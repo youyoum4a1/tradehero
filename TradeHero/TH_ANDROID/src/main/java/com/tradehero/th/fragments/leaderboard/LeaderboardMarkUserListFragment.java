@@ -41,10 +41,6 @@ import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
@@ -60,7 +56,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListFragment.class.getName();
 
-    @Inject Analytics analytics;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject @ForUser SharedPreferences preferences;
     @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
@@ -204,7 +199,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Back));
                 break;
             case R.id.button_leaderboard_filter:
                 pushFilterFragmentIn();
@@ -481,7 +475,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             heroAlertDialogUtilLazy.get().dismissProgressDialog();
             setCurrentUserProfileDTO(userProfileDTO);
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
 
             updateListViewRow(heroId);
         }
@@ -504,7 +497,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             setCurrentUserProfileDTO(currentUserProfileDTO);
             updateListViewRow(userFollowed);
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
         }
 
         @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)

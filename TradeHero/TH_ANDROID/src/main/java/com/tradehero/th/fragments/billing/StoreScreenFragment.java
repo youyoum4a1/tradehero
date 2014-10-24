@@ -31,9 +31,6 @@ import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -49,7 +46,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected Integer showBillingAvailableRequestCode;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
@@ -91,8 +87,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         storeItemAdapter.clear();
         storeItemAdapter.addAll(storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS));

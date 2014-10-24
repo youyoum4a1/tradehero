@@ -44,9 +44,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +51,6 @@ import javax.inject.Inject;
 import retrofit.client.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-//import com.facebook.FacebookException;
-//import com.facebook.FacebookOperationCanceledException;
-//import com.facebook.Session;
-//import com.facebook.widget.WebDialog;
-//import com.tradehero.th.utils.FacebookUtils;
 
 public class InviteFriendFragment extends DashboardFragment
 {
@@ -73,8 +65,6 @@ public class InviteFriendFragment extends DashboardFragment
     @Inject Lazy<SocialService> socialService;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
-    //@Inject Lazy<FacebookUtils> facebookUtils;
-    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     private FriendListAdapter referFriendListAdapter;
@@ -315,8 +305,6 @@ public class InviteFriendFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Referrals_Settings));
 
         getProgressDialog().show();
 

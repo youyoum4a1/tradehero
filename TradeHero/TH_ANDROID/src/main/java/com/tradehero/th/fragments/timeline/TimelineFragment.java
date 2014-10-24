@@ -58,9 +58,6 @@ import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -102,7 +99,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<CurrentUserId> currentUserIdLazy;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @Inject Analytics analytics;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject MessageThreadHeaderCache messageThreadHeaderCache;
@@ -903,7 +899,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             heroAlertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Profile));
+            //analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Profile));
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -958,7 +954,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 linkWith(currentUserProfileDTO, true);
             }
             updateBottomButton();
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
+            //analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
         }
 
         @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
@@ -974,7 +970,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             pushPrivateMessageFragment();
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
+            //analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
         }
     }
 

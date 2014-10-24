@@ -49,9 +49,6 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
@@ -72,7 +69,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject Lazy<LeaderboardCache> leaderboardCache;
     @Inject Lazy<Picasso> picasso;
-    @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
@@ -505,21 +501,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @OnClick(R.id.leaderboard_user_item_open_profile)
     protected void handleProfileClicked()
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
         handleOpenProfileButtonClicked();
     }
 
     @OnClick(R.id.leaderboard_user_item_open_positions_list)
     protected void handlePositionButtonClicked()
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
         handleOpenPositionListClicked();
     }
 
     @OnClick(R.id.leaderboard_user_item_follow)
     protected void handleFollowButtonClicked()
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
         follow(leaderboardItem);
     }
 

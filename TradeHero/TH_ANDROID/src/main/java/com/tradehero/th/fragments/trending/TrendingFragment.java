@@ -59,9 +59,6 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import dagger.Lazy;
 import java.util.HashSet;
@@ -86,7 +83,6 @@ public class TrendingFragment extends SecurityListFragment
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DTOCacheUtil dtoCacheUtil;
-    @Inject Analytics analytics;
 
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;
 
@@ -141,7 +137,7 @@ public class TrendingFragment extends SecurityListFragment
     {
         super.onResume();
 
-        analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
+        //analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
 
         // fetch user
         detachUserProfileCache();
@@ -450,8 +446,6 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
     {
-        analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
-
         Bundle args = new Bundle();
         BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
 

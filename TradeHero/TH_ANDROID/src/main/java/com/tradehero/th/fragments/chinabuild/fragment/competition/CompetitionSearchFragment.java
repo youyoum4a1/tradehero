@@ -61,6 +61,7 @@ public class CompetitionSearchFragment extends DashboardFragment
     @InjectView(R.id.listSearch) SecurityListView listSearch;
     @InjectView(R.id.textview_security_searchresult)TextView tvResult;
 
+    private String searchNoResult;
 
     private String searchStr;
     private String searchCancelStr;
@@ -92,6 +93,7 @@ public class CompetitionSearchFragment extends DashboardFragment
 
     private void initView()
     {
+        searchNoResult = getActivity().getResources().getString(R.string.search_no_result);
         searchStr = getActivity().getResources().getString(R.string.search_search);
         searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
         initListView();
@@ -154,12 +156,12 @@ public class CompetitionSearchFragment extends DashboardFragment
         toSearch();
     }
 
-    public String getSearchString()
+    private String getSearchString()
     {
         return StringUtils.isNullOrEmptyOrSpaces(tvSearchInput.getText().toString()) ? "" : tvSearchInput.getText().toString();
     }
 
-    public void toSearch()
+    private void toSearch()
     {
         if (StringUtils.isNullOrEmptyOrSpaces(tvSearchInput.getText().toString()))
         {
@@ -202,18 +204,17 @@ public class CompetitionSearchFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(@NotNull CompetitionListType key, @NotNull UserCompetitionDTOList value)
         {
-
-            //linkWith(value, true);
             if (key instanceof CompetitionListTypeSearch)
             {
                 initSearchCompetition(value);
             }
-
+            tvResult.setText(searchNoResult);
             onFinish();
         }
 
         @Override public void onErrorThrown(@NotNull CompetitionListType key, @NotNull Throwable error)
         {
+            tvResult.setText(searchNoResult);
             THToast.show(getString(R.string.fetch_error));
             onFinish();
         }
@@ -233,7 +234,7 @@ public class CompetitionSearchFragment extends DashboardFragment
         competitionNewCacheLazy.get().unregister(competitionListCacheListenerSearch);
     }
 
-    public void fetchSearchCompetition(boolean refresh, String searchWord)
+    private void fetchSearchCompetition(boolean refresh, String searchWord)
     {
         mTransactionDialog = progressDialogUtil.show(CompetitionSearchFragment.this.getActivity(),
                 R.string.processing, R.string.alert_dialog_please_wait);
@@ -244,7 +245,7 @@ public class CompetitionSearchFragment extends DashboardFragment
     }
 
     //搜索出来的比赛
-    public void initSearchCompetition(UserCompetitionDTOList userCompetitionDTOs)
+    private void initSearchCompetition(UserCompetitionDTOList userCompetitionDTOs)
     {
         if (adapterList != null)
         {
@@ -261,9 +262,7 @@ public class CompetitionSearchFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, userCompetitionDTO);
-        //gotoDashboard(CompetitionDetailFragment.class.getName(), bundle);
         pushFragment(CompetitionDetailFragment.class, bundle);
-        //THToast.show(userCompetitionDTO.name);
     }
 
     private void initListView()
@@ -284,21 +283,6 @@ public class CompetitionSearchFragment extends DashboardFragment
                 {
                     gotoCompetitionDetailFragment(((CompetitionDataItem) item).userCompetitionDTO);
                 }
-            }
-        });
-
-        listCompetitions.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
-            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
-                Timber.d("下拉刷新");
-                //fetchCompetition(true);
-            }
-
-            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
-                Timber.d("上拉加载更多");
-                //fetchSearchCompetition(true,getSearchString());
             }
         });
         listCompetitions.setEmptyView(tvResult);

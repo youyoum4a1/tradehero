@@ -58,8 +58,6 @@ public class CompetitionCollegeFragment extends DashboardFragment{
     private TextView tvCancel;
     private TextView tvContent;
 
-    private String searchNoResult;
-
     //Update college to server
     private String selectedCollege = "";
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
@@ -150,8 +148,6 @@ public class CompetitionCollegeFragment extends DashboardFragment{
     }
 
     private void initViews() {
-        tvNoResult.setText("");
-        searchNoResult = getActivity().getResources().getString(R.string.search_no_result);
         Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
@@ -175,7 +171,6 @@ public class CompetitionCollegeFragment extends DashboardFragment{
                         }
                         if (!hasMatchedCollege(charSequence)) {
                             tvNoResult.setVisibility(View.VISIBLE);
-                            tvNoResult.setText(searchNoResult);
                         } else {
                             tvNoResult.setVisibility(View.GONE);
                         }

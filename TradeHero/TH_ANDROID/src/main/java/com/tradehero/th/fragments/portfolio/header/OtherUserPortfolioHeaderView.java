@@ -25,10 +25,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
@@ -48,7 +44,6 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userCache;
     @Inject Picasso picasso;
-    @Inject Analytics analytics;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -119,7 +114,6 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
      */
     public void showFollowDialog()
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
         detachFollowDialogCombo();
         followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER,
@@ -183,7 +177,6 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.PositionList));
         }
 
         @Override public void failure(RetrofitError retrofitError)

@@ -44,10 +44,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 
 import java.util.Date;
 import java.util.Map;
@@ -86,7 +82,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private MiddleCallback<Response> sendCodeMiddleCallback;
     protected boolean mIsPhoneNumRegister;
 
-    @Inject Analytics analytics;
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject Picasso picasso;
@@ -125,9 +120,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
-        analytics.tagScreen(AnalyticsConstants.Register_Form);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.RegisterFormScreen));
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
     }
 
     @Override

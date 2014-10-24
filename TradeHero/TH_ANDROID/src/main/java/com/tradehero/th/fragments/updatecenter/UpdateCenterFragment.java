@@ -39,9 +39,6 @@ import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.PreRoutable;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
@@ -64,7 +61,6 @@ public class UpdateCenterFragment extends DashboardFragment
 
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject MessageHeaderListCache messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
@@ -159,7 +155,6 @@ public class UpdateCenterFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case R.id.menu_private:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Notification_New_Message));
                 ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
                         .pushFragment(AllRelationsFragment.class);
                 return true;
@@ -213,7 +208,6 @@ public class UpdateCenterFragment extends DashboardFragment
 
     private void jumpToSendBroadcastMessage()
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Notification_New_Broadcast));
         Bundle args = new Bundle();
         args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
                 DiscussionType.BROADCAST_MESSAGE.value);

@@ -40,9 +40,6 @@ import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +55,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioHeaderFactory headerFactory;
     @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
 
     private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
     private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionRefreshListener;
@@ -126,7 +122,6 @@ public class WatchlistPositionFragment extends DashboardFragment
                         SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
                         WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
                         adapter.remove(deletedSecurityId);
-                        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Delete));
                         watchlistListView.closeOpenedItems();
                     }
                 }
@@ -216,9 +211,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_List));
-
         LocalBroadcastManager.getInstance(this.getActivity())
                 .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
 
@@ -430,7 +422,6 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         @Override public void onStartOpen(int position, int action, boolean right)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_CellSwipe));
             super.onStartOpen(position, action, right);
         }
 

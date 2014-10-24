@@ -27,11 +27,7 @@ import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.MetricsModule;
-import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -54,7 +50,6 @@ public class SplashActivity extends SherlockActivity
     @Inject MobileAppTracker mobileAppTracker;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DTOCacheUtil dtoCacheUtil;
-    @Inject Analytics analytics;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @InjectView(R.id.tips) TextView mTipsText;
 
@@ -108,8 +103,8 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
-        analytics.openSession();
-        analytics.tagScreen(AnalyticsConstants.Loading);
+//        analytics.openSession();
+//        analytics.tagScreen(AnalyticsConstants.Loading);
 
         tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
 
@@ -126,16 +121,12 @@ public class SplashActivity extends SherlockActivity
 
     @Override protected void onPause()
     {
-        analytics.closeSession();
-
+        //analytics.closeSession();
         super.onPause();
     }
 
     protected void initialisation()
     {
-        analytics.addEvent(new AppLaunchEvent())
-                .addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
-
         if (firstLaunchPreference.get())
         {
             ActivityHelper.launchGuide(SplashActivity.this);

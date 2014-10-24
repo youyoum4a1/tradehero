@@ -47,9 +47,6 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +61,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
-    @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
     @Inject UserProfileCache userProfileCache;
@@ -116,7 +112,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
         fetchCurrentUserProfile();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
 
         // We came back into view so we have to forget the web fragment
         detachWebFragment();
@@ -350,7 +346,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
         {
             DrillDownLeaderboardDefDTO drillDownLeaderboardDefDTO = (DrillDownLeaderboardDefDTO) leaderboardDefDTO;
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_DrillDown));
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_DrillDown));
             if (drillDownLeaderboardDefDTO instanceof SectorContainerLeaderboardDefDTO)
             {
                 pushLeaderboardDefSector();
@@ -366,7 +362,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard));
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard));
             pushLeaderboardListViewFragment(leaderboardDefDTO);
         }
     }

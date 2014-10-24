@@ -31,9 +31,6 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import java.util.Map;
 import javax.inject.Inject;
@@ -49,7 +46,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject Analytics analytics;
 
     protected MiddleCallback<ForgotPasswordDTO> middleCallbackForgotPassword;
 
@@ -57,8 +53,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
-        analytics.tagScreen(AnalyticsConstants.Login_Form);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+//        analytics.tagScreen(AnalyticsConstants.Login_Form);
+//        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)

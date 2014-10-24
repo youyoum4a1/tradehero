@@ -17,9 +17,6 @@ import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +28,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
 
     @Inject UserTransactionHistoryListCache userTransactionHistoryListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     protected DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryDTOList> transactionListCacheListener;
@@ -68,9 +64,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_TransactionHistory));
-
         fetchTransactionList();
     }
 

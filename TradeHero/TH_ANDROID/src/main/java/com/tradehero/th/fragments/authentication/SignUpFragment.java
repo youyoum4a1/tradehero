@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 
 /**
@@ -17,7 +14,6 @@ import javax.inject.Inject;
  */
 public class SignUpFragment extends SignInOrUpFragment
 {
-    @Inject Analytics analytics;
 
     @Override protected int getViewId()
     {
@@ -45,17 +41,10 @@ public class SignUpFragment extends SignInOrUpFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SignUp));
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        if (item.getItemId() == android.R.id.home)
-        {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.SignUp_Back));
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }

@@ -18,8 +18,6 @@ import com.tradehero.th.fragments.BaseSearchFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -120,7 +118,6 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
             super.onDTOReceived(key, value);
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
         }
 
         @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)

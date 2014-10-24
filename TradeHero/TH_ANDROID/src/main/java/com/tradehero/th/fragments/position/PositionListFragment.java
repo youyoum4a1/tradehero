@@ -49,9 +49,6 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -78,7 +75,6 @@ public class PositionListFragment
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject Lazy<SecurityIdCache> securityIdCache;
-    @Inject Analytics analytics;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCache portfolioCache;
     @Inject UserProfileCache userProfileCache;
@@ -712,7 +708,7 @@ public class PositionListFragment
         {
             displayHeaderView();
             fetchSimplePage(true);
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
+            //analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
         }
 
         @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)

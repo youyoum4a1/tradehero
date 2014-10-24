@@ -45,9 +45,6 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -71,7 +68,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
     @Inject THRouter thRouter;
     @Inject WatchlistPositionCache watchlistPositionCache;
-    @Inject Analytics analytics;
     @Inject SecurityAlertAssistant securityAlertAssistant;
     SecurityActionDialogFactory securityActionDialogFactory = new SecurityActionDialogFactory(); // no inject, 65k
 
@@ -420,12 +416,10 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             WatchlistEditFragment.putSecurityId(args, securityId);
             if (watchlistPositionCache.get(securityId) != null)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
                 WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
             }
             else
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
                 WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_add_title));
             }
             DashboardNavigator navigator = getDashboardNavigator();

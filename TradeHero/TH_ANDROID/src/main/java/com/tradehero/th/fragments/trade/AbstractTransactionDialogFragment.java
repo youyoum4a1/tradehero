@@ -66,9 +66,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -121,7 +118,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialLinkHelperFactory socialLinkHelperFactory;
-    @Inject Analytics analytics;
 
     @Inject THBillingInteractor userInteractor;
     @Inject Provider<THUIBillingRequest> uiBillingRequestProvider;
@@ -142,7 +138,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected UserProfileDTO userProfileDTO;
 
     private AlertDialog mSocialLinkingDialog;
-    private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TextWatcher mQuantityTextWatcher;
     private TransactionEditCommentFragment transactionCommentFragment;
     Editable unSpannedComment;
@@ -405,7 +400,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @OnClick(R.id.vquantity)
     public void onQuantityClicked()
     {
-        mPriceSelectionMethod = AnalyticsConstants.ManualQuantityInput;
     }
 
     @OnClick(R.id.dialog_btn_cancel)
@@ -768,27 +762,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     protected void fireBuySellReport()
     {
-        analytics.fireEvent(getSharingOptionEvent());
     }
-
-    public SharingOptionsEvent getSharingOptionEvent()
-    {
-        SharingOptionsEvent.Builder builder = new SharingOptionsEvent.Builder()
-                .setSecurityId(securityId)
-                .setProviderId(portfolioCompactDTO == null ? null : portfolioCompactDTO.getProviderIdKey())
-                .setPriceSelectionMethod(mPriceSelectionMethod)
-                .hasComment(!mCommentsEditText.getText().toString().isEmpty())
-                //.facebookEnabled(shareForTransaction(SocialNetworkEnum.FB))
-                //.twitterEnabled(shareForTransaction(SocialNetworkEnum.TW))
-                .linkedInEnabled(shareForTransaction(SocialNetworkEnum.LN))
-                .wechatEnabled(shareForTransaction(SocialNetworkEnum.WECHAT))
-                .weiboEnabled(shareForTransaction(SocialNetworkEnum.WB));
-        setBuyEventFor(builder);
-
-        return builder.build();
-    }
-
-    protected abstract void setBuyEventFor(SharingOptionsEvent.Builder builder);
 
     @Override public void onDestroy()
     {
@@ -919,7 +893,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                 {
                     mTransactionQuantity = progress;
                     updateTransactionDialog();
-                    mPriceSelectionMethod = AnalyticsConstants.Slider;
                 }
             }
 
@@ -1037,7 +1010,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                 Integer selectedQuantity = mTransactionQuantity;
                 mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
                 updateTransactionDialog();
-                mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
             }
         };
     }
