@@ -6,6 +6,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import org.jetbrains.annotations.NotNull;
 
 public class TimelineItemDTOKey extends DiscussionKey
+    implements Comparable<TimelineItemDTOKey>
 {
     private static final DiscussionType TYPE = DiscussionType.TIMELINE_ITEM;
 
@@ -24,5 +25,14 @@ public class TimelineItemDTOKey extends DiscussionKey
     @Override public DiscussionType getType()
     {
         return TYPE;
+    }
+
+    @Override public int compareTo(TimelineItemDTOKey another)
+    {
+        if (another == null)
+        {
+            return 1;
+        }
+        return id - another.id;
     }
 }

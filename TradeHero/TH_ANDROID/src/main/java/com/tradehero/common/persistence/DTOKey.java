@@ -1,6 +1,6 @@
 package com.tradehero.common.persistence;
 
-public interface DTOKey
+public interface DTOKey extends DTO
 {
     // DTOKeys should carefully write these methods to work with Map and LruCache as intended
     /**
