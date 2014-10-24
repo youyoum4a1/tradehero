@@ -40,4 +40,13 @@ public class AmazonPurchaseReportDTO implements PurchaseReportDTO
         this.amazonUserId = other.amazonUserId;
     }
     //</editor-fold>
+
+    @Override public String toString()
+    {
+        return "AmazonPurchaseReportDTO{" +
+                "amazonSku='" + amazonSku + '\'' +
+                ", amazonPurchaseToken='" + amazonPurchaseToken + '\'' +
+                ", amazonUserId='" + amazonUserId + '\'' +
+                '}';
+    }
 }
