@@ -44,7 +44,7 @@ public class MetricsModule
 
     @Provides @ForLocalytics String provideLocalyticsAppKey()
     {
-        return Constants.DOGFOOD_BUILD ? Constants.LOCALYTICS_APP_KEY_RELEASE : Constants.LOCALYTICS_APP_KEY_DEBUG;
+        return Constants.RELEASE ? Constants.LOCALYTICS_APP_KEY_RELEASE : Constants.LOCALYTICS_APP_KEY_DEBUG;
     }
 
     @Provides(type = Provides.Type.SET_VALUES) @ForAnalytics Set<String> provideAnalyticsPredefineDimensions()
