@@ -60,6 +60,7 @@ import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -275,7 +276,7 @@ public class TradeOfMineFragment extends DashboardFragment
     @Override public void onResume()
     {
         Timber.d("------> Analytics TradeOfMineFragment onResume");
-        analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_MINE_TRADE));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_MINE_TRADE));
         refreshData(false);
         super.onResume();
     }

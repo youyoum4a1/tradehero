@@ -224,6 +224,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 gotoDashboard(SettingFragment.class.getName());
                 break;
             case R.id.llItemAllAmount:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_TOTAL_PROPERTY));
                 Timber.d("clicked llItemAllAmount");
                 enterUserAllAmount();
                 break;

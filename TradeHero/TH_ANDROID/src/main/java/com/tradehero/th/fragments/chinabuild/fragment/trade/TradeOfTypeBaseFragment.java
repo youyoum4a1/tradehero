@@ -416,15 +416,15 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_MINE_TRADE));
         if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD){
             Timber.d("------> Analytics Trade hold");
-            analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_HOLD));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_HOLD));
         }
         if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT){
             Timber.d("------> Analytics Trade China");
-            analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_CHINA));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_CHINA));
         }
         if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT){
             Timber.d("------> Analytics Trade rise");
-            analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_RISE));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE));
         }
         super.onResume();
     }

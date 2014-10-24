@@ -197,8 +197,6 @@ public class AnalyticsConstants
     public static final String MAIN_PAGE_COMPETITION = "MAIN_PAGE_COMPETITION";
     public static final String MAIN_PAGE_MINE = "MAIN_PAGE_MINE";
 
-    public static final String LAUNCH_MAIN_PAGE = "LAUNCH_MAIN_PAGE";
-
     //交易中我的交易，热门关注，热门持有，中国概念的点击量，右上角的搜索点击量
     public static final String TRADE_PAGE_MINE_TRADE = "TRADE_PAGE_MINE_TRADE";
     public static final String TRADE_PAGE_RISE = "TRADE_PAGE_RISE";
@@ -209,6 +207,21 @@ public class AnalyticsConstants
     //交易中热门关注和热门持有的证券切换内容及次数
     public static final String TRADE_PAGE_HOLD_PARTIES = "TRADE_PAGE_HOLD_PARTIES";
     public static final String TRADE_PAGE_RISE_PARTIES = "TRADE_PAGE_RISE_PARTIES";
+
+    //我的页面，头像的点击量，及点击进去后，头像和名字的点击量
+    public static final String ME_AVATAR = "ME_AVATAR";
+    public static final String ME_PERSONAL_INFORMATION_AVATAR = "ME_PERSONAL_INFORMATION_AVATAR";
+    public static final String ME_PERSONAL_INFORMATION_NAME = "ME_PERSONAL_INFORMATION_NAME";
+
+    //我的页面，总资产，股神，粉丝点击数
+    public static final String ME_TOTAL_PROPERTY = "ME_TOTAL_PROPERTY";
+    public static final String ME_STOCK_HEROES = "ME_STOCK_HEROES";
+    public static final String ME_STOCK_FOLLOWER = "ME_STOCK_FOLLOWER";
+
+    //设置内去评分，FAQ，推送通知
+    public static final String SETTING_SCORE = "SETTING_SCORE";
+    public static final String SETTING_FAQ = "SETTING_FAQ";
+    public static final String SETTING_NOTIFICAITONS_ON_OFF = "SETTING_NOTIFICAITONS_ON_OFF";
 
     //Palmer
 

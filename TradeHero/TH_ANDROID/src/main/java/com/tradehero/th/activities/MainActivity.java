@@ -139,7 +139,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         pushNotificationManager.get().enablePush();
         mBindGuestUserPreference.set(false);
 
-        analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.LAUNCH_MAIN_PAGE));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
     }
 
     @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabMe})
@@ -150,27 +150,27 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         {
             case R.id.llTabTrade:
                 Timber.d("------> Analytics MainActivity to Trade");
-                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_TRADE));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_TRADE));
                 setTabCurrent(TAB_TRADE);
                 break;
             case R.id.llTabStockGod:
                 Timber.d("------> Analytics MainActivity to Stock");
-                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_STOCK));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
                 setTabCurrent(TAB_STOCKGOD);
                 break;
             case R.id.llTabDiscovery:
                 Timber.d("------> Analytics MainActivity to Discovery");
-                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_DISCOVERY));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_DISCOVERY));
                 setTabCurrent(TAB_DISCOVERY);
                 break;
             case R.id.llTabCompetition:
                 Timber.d("------> Analytics MainActivity to Competition");
-                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_COMPETITION));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_COMPETITION));
                 setTabCurrent(TAB_COMPETITION);
                 break;
             case R.id.llTabMe:
                 Timber.d("------> Analytics MainActivity to Me");
-                analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.MAIN_PAGE_MINE));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_MINE));
                 setTabCurrent(TAB_ME);
                 break;
         }
