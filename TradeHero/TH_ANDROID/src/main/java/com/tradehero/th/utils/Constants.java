@@ -10,7 +10,7 @@ public class Constants
 
     public static final boolean USE_BETA_HOME_PAGE = true;
 
-    public static final boolean DOGFOOD_BUILD = RELEASE;
+    public static final boolean DOGFOOD_BUILD = false;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 

@@ -152,6 +152,12 @@ public class StockGodListBaseFragment extends DashboardFragment
                 {
                     enterPortfolio2(dto);
                 }
+                else if(leaderboard_key == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID
+                        ||leaderboard_key == LeaderboardDefKeyKnowledge.DAYS_90
+                        ||leaderboard_key == LeaderboardDefKeyKnowledge.MONTHS_6)
+                {
+                    enterPortfolio2(dto);
+                }
                 else
                 {
                     enterPortfolio(dto);
