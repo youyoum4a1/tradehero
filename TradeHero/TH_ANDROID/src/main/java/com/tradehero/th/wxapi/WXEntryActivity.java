@@ -55,19 +55,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private Bitmap mBitmap;
     private MiddleCallback<Response> trackShareMiddleCallback;
 
-    @Inject
-    CurrentUserId currentUserId;
-    @Inject
-    IWXAPI mWeChatApi;
-    @Inject
-    WeChatServiceWrapper weChatServiceWrapper;
-    @Inject
-    Lazy<Picasso> picassoLazy;
-    @Inject
-    @ForSecurityItemForeground
-    protected Transformation foregroundTransformation;
+    @Inject CurrentUserId currentUserId;
+    @Inject IWXAPI mWeChatApi;
+    @Inject WeChatServiceWrapper weChatServiceWrapper;
+    @Inject Lazy<Picasso> picassoLazy;
+    @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
 
     private static String WECHAT_CODE;
+
+    private String download_tradehero_android_on_wechat = "";
 
     public static void putWeChatDTO(@NotNull Intent intent, @NotNull WeChatDTO weChatDTO) {
         intent.putExtra(WECHAT_DTO_INTENT_KEY, weChatDTO.getArgs());
@@ -89,6 +85,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         // WeChatDTO method to read from Intent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        download_tradehero_android_on_wechat = getResources().getString(R.string.download_tradehero_android_app_on_wechat);
 
         weChatDTO = getWeChatDTO(getIntent());
         if (weChatDTO == null) {
@@ -144,12 +141,19 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
         if (weChatMessageType == WeChatMessageType.ShareSell || weChatMessageType == WeChatMessageType.ShareSellToTimeline) {
             if (TextUtils.isEmpty(url) || !isTradeHeroURL(url)) {
-                WXTextObject textObject = new WXTextObject();
-                textObject.text = totalShare;
-                WXMediaMessage msg = new WXMediaMessage();
-                msg.title = title;
-                msg.mediaObject = textObject;
-                msg.description = textObject.text;
+//                WXTextObject textObject = new WXTextObject();
+//                textObject.text = totalShare;
+//                WXMediaMessage msg = new WXMediaMessage();
+//                msg.title = title;
+//                msg.mediaObject = textObject;
+//                msg.description = textObject.text;
+//                return msg;
+                WXWebpageObject sellWebPage = new WXWebpageObject();
+                sellWebPage.webpageUrl = download_tradehero_android_on_wechat;
+                WXMediaMessage msg = new WXMediaMessage(sellWebPage);
+                msg.title=totalShare;
+                msg.description = totalShare;
+                msg.setThumbImage(thumbBmp);
                 return msg;
             } else {
                 WXWebpageObject sellWebPage = new WXWebpageObject();

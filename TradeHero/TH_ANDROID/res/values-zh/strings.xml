@@ -195,4 +195,6 @@
   <string name="dialog_competition_suggest_login">您当前是游客身份，不能参加比赛，请升级为正式用户</string>
   <string name="app_name_cn">全民股神</string>
 
+  <string name="download_tradehero_android_app_on_wechat">http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th</string>
+
 </resources>
