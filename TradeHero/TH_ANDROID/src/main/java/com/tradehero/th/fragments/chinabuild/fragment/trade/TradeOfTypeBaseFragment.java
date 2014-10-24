@@ -70,6 +70,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     @Inject Analytics analytics;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {

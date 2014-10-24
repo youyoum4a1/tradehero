@@ -279,4 +279,5 @@ public class AnalyticsConstants
     public static final String BUTTON_PORTFOLIO_MAIN_PAGE = "BUTTON_PORTFOLIO_MAIN_PAGE";
     public static final String BUTTON_PORTFOLIO_GOTO_COMPETITION = "BUTTON_PORTFOLIO_GOTO_COMPETITION";
     //Windy
+
 }

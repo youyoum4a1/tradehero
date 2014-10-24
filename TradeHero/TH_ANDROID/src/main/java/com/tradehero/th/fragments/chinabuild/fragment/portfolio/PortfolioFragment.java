@@ -169,6 +169,7 @@ public class PortfolioFragment extends DashboardFragment
             setHeadViewRight0("去比赛");
             analytics.addEventAuto(
                     new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_GOTO_COMPETITION));
+
         }
     }
 
@@ -198,7 +199,7 @@ public class PortfolioFragment extends DashboardFragment
                 Timber.d("POSITION = " + position);
                 PositionInterface item = adapter.getItem((int) position);
                 dealSecurityItem(item);
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_PORTFOLIO_POSITION_CLICKED, ""+position));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_PORTFOLIO_POSITION_CLICKED, "" + position));
             }
         });
 
