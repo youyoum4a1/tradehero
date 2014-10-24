@@ -28,9 +28,9 @@ public class Analytics
 
     public final Analytics addEventAuto(AnalyticsEvent analyticsEvent)
     {
-        openSession();
+        //openSession();
         pendingActions.add(new AddEventAction(analyticsEvent));
-        closeSession();
+        //closeSession();
         return this;
     }
 

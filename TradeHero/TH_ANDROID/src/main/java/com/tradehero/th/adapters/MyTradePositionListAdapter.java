@@ -218,14 +218,23 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 //name
                 tvSecurityName.setText(((SecurityPositionItem) item).security.name);
                 //roi
-                THSignedNumber roi = THSignedPercentage.builder(((SecurityPositionItem) item).position.getROISinceInception() * 100)
-                        .withSign()
-                        .signTypeArrow()
-                        .build();
-                tvSecurityRate.setText(roi.toString());
-                tvSecurityRate.setTextColor(context.getResources().getColor(roi.getColorResId()));
+                if(((SecurityPositionItem) item).position.getROISinceInception()!=null)
+                {
+                    THSignedNumber roi = THSignedPercentage.builder(((SecurityPositionItem) item).position.getROISinceInception() * 100)
+                            .withSign()
+                            .signTypeArrow()
+                            .build();
+                    tvSecurityRate.setText(roi.toString());
+                    tvSecurityRate.setTextColor(context.getResources().getColor(roi.getColorResId()));
+                }
+
                 //price
-                tvSecurityPrice.setText(String.valueOf((((SecurityPositionItem) item)).security.lastPrice));
+                if((((SecurityPositionItem) item)).security.lastPrice!=null)
+                {
+                    tvSecurityPrice.setText(String.valueOf((((SecurityPositionItem) item)).security.lastPrice));
+                }
+
+
                 //currency
                 tvSecurityCurrency.setText(((SecurityPositionItem) item).security.getCurrencyDisplay());
 
@@ -254,14 +263,22 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 tvSecurityName.setText(((WatchPositionItem) item).watchlistPosition.securityDTO.name);
 
                 //roi
-                THSignedNumber roi = THSignedPercentage.builder(((WatchPositionItem) item).watchlistPosition.securityDTO.risePercent * 100)
-                        .withSign()
-                        .signTypeArrow()
-                        .build();
-                tvSecurityRate.setText(roi.toString());
-                tvSecurityRate.setTextColor(context.getResources().getColor(roi.getColorResId()));
+                if(((WatchPositionItem) item).watchlistPosition.securityDTO.risePercent!=null)
+                {
+                    THSignedNumber roi = THSignedPercentage.builder(((WatchPositionItem) item).watchlistPosition.securityDTO.risePercent * 100)
+                            .withSign()
+                            .signTypeArrow()
+                            .build();
+                    tvSecurityRate.setText(roi.toString());
+                    tvSecurityRate.setTextColor(context.getResources().getColor(roi.getColorResId()));
+                }
+
                 //price
-                tvSecurityPrice.setText(String.valueOf((((WatchPositionItem) item)).watchlistPosition.securityDTO.lastPrice));
+                if((((WatchPositionItem) item)).watchlistPosition.securityDTO.lastPrice!=null)
+                {
+                    tvSecurityPrice.setText(String.valueOf((((WatchPositionItem) item)).watchlistPosition.securityDTO.lastPrice));
+                }
+
                 //currency
                 tvSecurityCurrency.setText(((WatchPositionItem) item).watchlistPosition.securityDTO.getCurrencyDisplay());
 

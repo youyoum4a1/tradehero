@@ -198,7 +198,7 @@ public class PortfolioFragment extends DashboardFragment
                 Timber.d("POSITION = " + position);
                 PositionInterface item = adapter.getItem((int) position);
                 dealSecurityItem(item);
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_PORTFOLIO_POSITION_CLICKED, ""+position));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_PORTFOLIO_POSITION_CLICKED, ""+position));
             }
         });
 

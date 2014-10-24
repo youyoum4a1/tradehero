@@ -32,7 +32,7 @@
         android:layout_marginTop="2dp"
         android:textSize="12sp"
         android:visibility="visible"
-        android:text="1001人关注"/>
+        android:text="--人关注"/>
   </LinearLayout>
 
   <TextView
@@ -42,7 +42,7 @@
       android:layout_alignParentRight="true"
       android:layout_width="80dp"
       android:layout_height="wrap_content"
-      android:text="+10%"
+      android:text="--%"
       android:id="@+id/tvSecurityRate"/>
 
   <TextView
@@ -52,7 +52,7 @@
       android:layout_toLeftOf="@+id/tvSecurityRate"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="22.27"
+      android:text="--"
       android:textSize="18sp"
       android:textColor="@color/black"
       android:id="@+id/tvSecurityPrice"/>
