@@ -60,7 +60,12 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
     private static String mType;
     private static int mUserId = -1;
 
+    private static boolean isDialogShowing = false;
+
     public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title) {
+        if(isDialogShowing){
+            return null;
+        }
         mTitle = title;
         mShareContent = "";
         mType = "";
@@ -68,6 +73,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         ShareDialogFragment dialogFragment = new ShareDialogFragment();
         try {
             dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
+            isDialogShowing = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,6 +89,9 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
      * @return
      */
     public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title, String shareContent) {
+        if(isDialogShowing){
+            return null;
+        }
         ShareDialogFragment dialogFragment = new ShareDialogFragment();
         mTitle = title;
         mShareContent = shareContent;
@@ -90,6 +99,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         mUserId = -1;
         try {
             dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
+            isDialogShowing = true;
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -106,6 +116,9 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
      * @return
      */
     public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title, String shareContent, String type, int userId) {
+        if(isDialogShowing){
+            return null;
+        }
         ShareDialogFragment dialogFragment = new ShareDialogFragment();
         mTitle = title;
         mShareContent = shareContent;
@@ -113,6 +126,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         mUserId = userId;
         try {
             dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
+            isDialogShowing = true;
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -146,10 +160,12 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_cancel:
+                isDialogShowing = false;
                 recordCancel();
                 dismiss();
                 break;
             case R.id.btn_ok:
+                isDialogShowing = false;
                 dismiss();
                 recordConfirm();
                 shareToWeChatMoment();

@@ -61,7 +61,6 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -510,7 +509,6 @@ public class TradeOfMineFragment extends DashboardFragment
         //总资产数达到15w
         if (cached.totalValue > 150000 && getActivity()!=null && availableShowDialog)
         {
-            Timber.d("------> More than 150000");
             int userId = currentUserId.toUserBaseKey().getUserId();
             if(THSharePreferenceManager.isShareDialogMoreThanFifteenAvailable(userId, getActivity())){
                     mShareDialogKeyPreference.set(false);
@@ -522,7 +520,6 @@ public class TradeOfMineFragment extends DashboardFragment
                             currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN, userId);
                     time_stamp = System.currentTimeMillis();
             }else{
-                Timber.d("------> More than 250000");
                 if (cached.totalValue > 250000 && (System.currentTimeMillis()-time_stamp)>duration_showing_dialog){
                     if(THSharePreferenceManager.isShareDialogMoreThanTwentyFiveAvailable(userId, getActivity())){
                           mShareDialogKeyPreference.set(false);

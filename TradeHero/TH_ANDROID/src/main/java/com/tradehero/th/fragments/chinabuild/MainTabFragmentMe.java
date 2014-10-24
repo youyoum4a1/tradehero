@@ -230,9 +230,11 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 break;
             case R.id.llItemAllHero:
                 Timber.d("clicked llItemAllHero");
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_STOCK_HEROES));
                 enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_HERO);
                 break;
             case R.id.llItemAllFans:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_STOCK_FOLLOWER));
                 Timber.d("clicked llItemAllFans");
                 enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_FOLLOWS);
                 break;

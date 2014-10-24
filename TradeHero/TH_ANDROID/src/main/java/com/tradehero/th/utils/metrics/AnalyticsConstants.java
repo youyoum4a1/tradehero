@@ -208,8 +208,7 @@ public class AnalyticsConstants
     public static final String TRADE_PAGE_HOLD_PARTIES = "TRADE_PAGE_HOLD_PARTIES";
     public static final String TRADE_PAGE_RISE_PARTIES = "TRADE_PAGE_RISE_PARTIES";
 
-    //我的页面，头像的点击量，及点击进去后，头像和名字的点击量
-    public static final String ME_AVATAR = "ME_AVATAR";
+    //我的页面点击进去后，头像和名字的点击量
     public static final String ME_PERSONAL_INFORMATION_AVATAR = "ME_PERSONAL_INFORMATION_AVATAR";
     public static final String ME_PERSONAL_INFORMATION_NAME = "ME_PERSONAL_INFORMATION_NAME";
 
