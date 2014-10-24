@@ -11,11 +11,13 @@
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:animateLayoutChanges="true"
       android:background="@color/white">
 
     <com.tradehero.common.widget.BetterViewAnimator
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:id="@+id/chart_image_wrapper"
         >
 

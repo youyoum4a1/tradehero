@@ -178,8 +178,6 @@
       parent="TradeHero.TabView">
     <item name="android:layout_height">match_parent</item>
     <item name="android:gravity">center</item>
-    <item name="android:paddingTop">12dp</item>
-    <item name="android:paddingBottom">12dp</item>
     <item name="android:measureWithLargestChild">true</item>
   </style>
 
@@ -255,18 +253,16 @@
     <item name="android:gravity">center_vertical</item>
   </style>
 
-  <style name="TH.Btn_BuySell_Action">
+  <style name="TH.Btn_BuySell_Action" parent="TH.Button.Small.Accented">
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_weight">1</item>
-    <item name="android:textSize">@dimen/text_body</item>
-    <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:singleLine">true</item>
     <item name="android:ellipsize">middle</item>
     <item name="android:layout_marginLeft">5dp</item>
     <item name="android:layout_marginRight">5dp</item>
-    <item name="android:gravity">center</item>
     <item name="android:minHeight">@dimen/button_height_30</item>
+    <item name="android:maxWidth">180dp</item>
     <item name="android:background">@drawable/basic_white_selector</item>
   </style>
 

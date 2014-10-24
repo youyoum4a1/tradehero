@@ -66,6 +66,10 @@
     <item name="android:gravity">center</item>
   </style>
 
+  <style name="TH.Button.Small" parent="TH.Button">
+    <item name="android:textSize">@dimen/text_caption</item>
+  </style>
+
   <!-- Inverses -->
   <style name="TH.Display4.Inverse" parent="TH.Display4">
     <item name="android:textColor">@color/text_secondary_inverse</item>
@@ -111,6 +115,10 @@
     <item name="android:textColor">@color/text_primary_inverse</item>
   </style>
 
+  <style name="TH.Button.Inverse.Small" parent="TH.Button.Small">
+    <item name="android:textColor">@color/text_primary_inverse</item>
+  </style>
+
   <!-- Accented Styles -->
   <style name="TH.Display4.Accented" parent="TH.Display4">
     <item name="android:textColor">@color/text_secondary_accented</item>
@@ -153,6 +161,10 @@
   </style>
 
   <style name="TH.Button.Accented" parent="TH.Button">
+    <item name="android:textColor">@color/text_primary_accented</item>
+  </style>
+
+  <style name="TH.Button.Small.Accented" parent="TH.Button.Small">
     <item name="android:textColor">@color/text_primary_accented</item>
   </style>
 

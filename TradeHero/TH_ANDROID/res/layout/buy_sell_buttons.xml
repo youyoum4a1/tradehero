@@ -9,11 +9,10 @@
     android:layout_centerHorizontal="true"
     android:layout_alignParentBottom="true"
     android:paddingTop="@dimen/common_margin_10"
-    android:paddingBottom="5dp"
     android:paddingLeft="@dimen/common_margin_10"
     android:paddingRight="@dimen/common_margin_10"
     android:background="@drawable/buy_sell_action_buttons_background"
-    android:layout_marginBottom="@dimen/dashboard_tabhost_height"
+    android:paddingBottom="@dimen/dashboard_tabhost_height"
     android:animateLayoutChanges="true"
     >
 

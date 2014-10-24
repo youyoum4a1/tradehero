@@ -22,7 +22,7 @@
 
       <com.tradehero.th.widget.news.TimeSpanButtonSet
           android:id="@+id/chart_time_span_button_set"
-          android:layout_width="50dp"
+          android:layout_width="@dimen/clickable_element_min_dimen"
           android:layout_height="wrap_content"
           android:orientation="vertical"
           android:background="@drawable/trend_price_bar"
@@ -74,10 +74,8 @@
       android:layout_height="30dp"
       android:layout_marginTop="@dimen/common_margin_10"
       android:layout_marginRight="@dimen/common_margin_10"
-      android:textSize="@dimen/text_body"
+      style="@style/TH.Button.Small.Accented"
       android:text="@string/security_close"
-      android:textColor="@color/tab_scroll_color"
-      android:textStyle="bold"
       android:background="@drawable/basic_yellow_selector"
       android:layout_gravity="top|right"
       />
