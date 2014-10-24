@@ -364,6 +364,23 @@
     <item name="android:background">@drawable/tradehero_spinner_background_holo_light</item>
   </style>
 
+  <style name="TH.Button.Timeline" parent="TH.Button">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:paddingLeft">15dp</item>
+    <item name="android:paddingRight">15dp</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
+
+  <style name="TH.Button.Timeline.Follow" parent="TH.Button.Timeline">
+    <item name="android:drawableLeft">@drawable/icn_star_white</item>
+  </style>
+
+  <style name="TH.Button.Timeline.Message" parent="TH.Button.Timeline">
+    <item name="android:drawableLeft">@drawable/icn_message_white</item>
+  </style>
+
   <!-- Achievement Styles -->
   <style name="TH.Achievement"
       parent="TH.TextPrimary"></style>

@@ -151,13 +151,17 @@ public class FollowDialogView extends LinearLayout
         }
     }
 
-
     public void setFollowType(int followType)
     {
         switch (followType)
         {
             case UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG:
-                mUserTitle.setText(getContext().getString(R.string.not_follow_msg_title, mUsername.getText()));
+                String username = mUsername.getText().toString();
+                if (userBaseDTO != null)
+                {
+                    username = userBaseDTO.displayName;
+                }
+                mUserTitle.setText(getContext().getString(R.string.not_follow_msg_title, username));
                 mUsername.setVisibility(View.GONE);
                 break;
             case UserProfileDTOUtil.IS_NOT_FOLLOWER:

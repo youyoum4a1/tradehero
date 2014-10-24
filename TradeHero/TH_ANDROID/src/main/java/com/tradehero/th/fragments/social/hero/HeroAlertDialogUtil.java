@@ -78,8 +78,8 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
 
         LayoutInflater inflater = LayoutInflater.from(context);
         FollowDialogView followDialogView = (FollowDialogView) inflater.inflate(R.layout.follow_dialog, null);
-        followDialogView.setFollowType(followType);
         followDialogView.display(userBaseDTO);
+        followDialogView.setFollowType(followType);
 
         final AlertDialog mFollowDialog = new AlertDialog.Builder(context)
                 .setView(followDialogView)
