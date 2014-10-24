@@ -40,6 +40,7 @@ import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
@@ -105,11 +106,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         storeItemAdapter.clear();
         detachStoreItemSubscription();
         storeItemSubscription = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new EmptyObserver<StoreItemDTOList>()
                 {
                     @Override public void onNext(StoreItemDTOList storeItemDTOs)
                     {
                         detachStoreItemSubscription();
+                        storeItemAdapter.clear();
                         storeItemAdapter.addAll(storeItemDTOs);
                         storeItemAdapter.notifyDataSetChanged();
                     }
