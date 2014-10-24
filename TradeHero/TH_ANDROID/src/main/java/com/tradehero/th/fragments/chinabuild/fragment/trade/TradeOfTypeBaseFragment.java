@@ -175,7 +175,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         detachSecurityListCache();
         SecurityListType key = new TrendingAllSecurityListType(getTradeType(), getStrExchangeName(), currentPage + 1, ITEMS_PER_PAGE);
         securityCompactListCache.get().register(key, securityListTypeCacheListener);
-        securityCompactListCache.get().getOrFetchAsync(key, true);
+        securityCompactListCache.get().getOrFetchAsync(key, false);
     }
 
     private void showLoadingProgress()

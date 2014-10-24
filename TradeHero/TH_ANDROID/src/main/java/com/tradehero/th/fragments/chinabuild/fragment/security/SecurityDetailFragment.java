@@ -161,7 +161,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     protected WatchlistPositionDTOList watchedList;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     protected FreshQuoteHolder freshQuoteHolder;
-    protected boolean querying = false;
+    //protected boolean querying = false;
     @Nullable protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
     protected boolean isTransactionTypeBuy = true;
@@ -440,7 +440,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @Override public void onPause()
     {
         detachSecurityCompactCache();
-
+        destroyFreshQuoteHolder();
+        //querying = false;
         super.onPause();
     }
 
@@ -453,11 +454,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         detachSecurityPositionDetailCache();
         detachCompetitionPositionCache();
         detachWatchlistFetchTask();
-
         detachSecurityDiscuss();
         detachSecurityNews();
-
-        querying = false;
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -1531,9 +1529,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public void enterTimeLineDetail(AbstractDiscussionCompactDTO dto)
     {
-        Bundle bundle = new Bundle();
-        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
-        pushFragment(TimeLineItemDetailFragment.class, bundle);
+        if(dto!=null)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
+            pushFragment(TimeLineItemDetailFragment.class, bundle);
+        }
     }
 
     @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader, R.id.tvUserTLContent})

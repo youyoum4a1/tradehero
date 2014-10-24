@@ -154,7 +154,7 @@ public class AnalyticsConstants
 
 
     public static final String MainActivityScreen = "MainActivityScreen";
-    public static final String CHINA_BUILD_BUTTON_CLICKED = "china_build_button_clicked";
+    public static final String CHINA_BUILD_BUTTON_CLICKED = "CHINA_BUILD_BUTTON_CLICKED";
 
     //Go to login
     public static final String Login_Register = "Login/Register";

@@ -10,7 +10,7 @@ public class Constants
 
     public static final boolean USE_BETA_HOME_PAGE = true;
 
-    public static final boolean DOGFOOD_BUILD = false;
+    public static final boolean DOGFOOD_BUILD = RELEASE;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
@@ -54,8 +54,9 @@ public class Constants
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 
     // Localytics
-    public static final String LOCALYTICS_APP_KEY_RELEASE = "f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207";
-    public static final String LOCALYTICS_APP_KEY_DEBUG = "731adfbe0df8a59ff8e1117-4a8d02de-01d4-11e4-9d24-005cf8cbabd8";
+    //public static final String LOCALYTICS_APP_KEY_RELEASE = "f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207";
+    public static final String LOCALYTICS_APP_KEY_RELEASE = "10a8a8e1d386d096bfe1641-8b2cc16e-5b52-11e4-a386-005cf8cbabd8";
+    public static final String LOCALYTICS_APP_KEY_DEBUG =   "731adfbe0df8a59ff8e1117-4a8d02de-01d4-11e4-9d24-005cf8cbabd8";
 
     // GCM
     public static final String GCM_STAGING_SENDER = "927417497470";
