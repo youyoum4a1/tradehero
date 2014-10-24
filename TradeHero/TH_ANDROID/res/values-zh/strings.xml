@@ -196,5 +196,7 @@
   <string name="app_name_cn">全民股神</string>
 
   <string name="download_tradehero_android_app_on_wechat">http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th</string>
+  <string name="share_amount_total_value_title25">恭喜你！总资产达到25w \n你这么土豪你的朋友们知道吗？</string>
+  <string name="share_amount_total_value_summary25">一不小心在高端模拟炒股软件\'全民股神\'中资产已经破25W了，本人多年前夜观天象，早已看出我炒股的慧根，可谓奇才一枚。 \nhttp://cn.tradehero.mobi/shr/assets.html?userId=%1$s</string>
 
 </resources>
