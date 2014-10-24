@@ -312,7 +312,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         if (!isInWatchList)
         {
             addSecurityToWatchList();
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_ADDWATCH));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_ADDWATCH));
         }
         else
         {
@@ -353,7 +353,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                         {
                             //取消关注
                             handleButtonDeleteClicked();
-                            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CANCELWATCH));
+                            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CANCELWATCH));
                         }
                     }
                 });
@@ -820,12 +820,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityCompactDTO.id);
             pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
 
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_GETMORE));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_GETMORE));
         }
         else
         {//快来抢沙发
             enterDiscussSend();
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_SAFA));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_SAFA));
         }
     }
 
@@ -851,33 +851,33 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         if (view.getId() == R.id.btnTabChart0)
         {
             setChartView(0);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
         }
         else if (view.getId() == R.id.btnTabChart1)
         {
             setChartView(1);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
         }
         else if (view.getId() == R.id.btnTabChart2)
         {
             setChartView(2);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
         }
         else if (view.getId() == R.id.btnTabChart3)
         {
             setChartView(3);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
         }
         else if (view.getId() == R.id.btnTabDiscuss)
         {
             setDiscussOrNewsView(0);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
         }
 
         else if (view.getId() == R.id.btnTabNews)
         {
             setDiscussOrNewsView(1);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
         }
     }
 
@@ -1027,17 +1027,17 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         if (id == R.id.llSecurityBuy )
         {
             enterBuySale(id == R.id.llSecurityBuy);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_BUY));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_BUY));
         }
         else if( id == R.id.llSecuritySale)
         {
             enterBuySale(id == R.id.llSecurityBuy);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_SALE));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_SALE));
         }
         else if (id == R.id.llSecurityDiscuss)
         {
             enterDiscussSend();
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_DISCUSS));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_DISCUSS));
         }
     }
 

@@ -226,7 +226,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         if (userCompetitionDTO != null && userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing)
         {//比赛我参加了，并且还没结束。
             setHeadViewRight0("邀请好友");
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_INVITE));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_INVITE));
         }
     }
 
@@ -477,7 +477,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, userCompetitionDTO.id);
         pushFragment(CompetitionSecuritySearchFragment.class, bundle);
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_GOTO));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_GOTO));
     }
 
     public void toJoinCompetition()
@@ -486,7 +486,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         mTransactionDialog = progressDialogUtil.show(CompetitionDetailFragment.this.getActivity(),
                 R.string.processing, R.string.alert_dialog_please_wait);
         competitionCacheLazy.get().enrollUGCompetition(userCompetitionDTO.id, callbackEnrollUGC);
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_JOIN));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_JOIN));
     }
 
     public void getMySelfRank()
