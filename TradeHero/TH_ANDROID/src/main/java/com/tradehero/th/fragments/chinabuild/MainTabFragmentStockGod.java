@@ -50,6 +50,38 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(5);
         indicator.setViewPager(pager);
+        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override public void onPageScrolled(int i, float v, int i2)
+            {
+
+            }
+
+            @Override public void onPageSelected(int i)
+            {
+                if (i == 0)
+                {
+                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_ROI));
+                }
+                else if (i == 1)
+                {
+                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_HOT));
+                }
+                else if (i == 2)
+                {
+                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_WEALTH));
+                }
+                else if (i == 3)
+                {
+                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_MORE));
+                }
+            }
+
+            @Override public void onPageScrollStateChanged(int i)
+            {
+
+            }
+        });
     }
 
     @Override public void onStop()
@@ -95,25 +127,21 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
                     args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.DAYS_ROI);
                     fragment.setArguments(args);
 
-                    analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_ROI));
                     return fragment;
                 case 1:
                     fragment = new StockGodListBaseFragment();
                     args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.POPULAR);
                     fragment.setArguments(args);
 
-                    analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_HOT));
                     return fragment;
                 case 2:
                     fragment = new StockGodListBaseFragment();
                     args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.WEALTH);
                     fragment.setArguments(args);
 
-                    analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_WEALTH));
                     return fragment;
                 case 3:
 
-                    analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_MORE));
                     return new StockGodListMoreFragment();
             }
             return null;
@@ -131,6 +159,4 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
             return CONTENT.length;
         }
     }
-
-
 }

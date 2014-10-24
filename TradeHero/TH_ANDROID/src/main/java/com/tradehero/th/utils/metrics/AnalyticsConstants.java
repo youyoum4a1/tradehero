@@ -181,6 +181,7 @@ public class AnalyticsConstants
     //Analytics Windy
     //股神中每个榜单内每个用户的点击量
     public static final String LEADERBOARD_USER_CLICKED_POSITION = "LEADERBOARD_USER_CLICKED_POSITION";
+
     //股神中推荐榜，人气榜，土豪榜，更多榜，总盈利榜，季度榜，半年榜
     public static final String BUTTON_STOCK_ROI = "BUTTON_STOCK_ROI";
     public static final String BUTTON_STOCK_HOT = "BUTTON_STOCK_HOT";
@@ -189,13 +190,16 @@ public class AnalyticsConstants
     public static final String BUTTON_STOCK_MOST_SKILL = "BUTTON_STOCK_MOST_SKILL";
     public static final String BUTTON_STOCK_90DAY = "BUTTON_STOCK_90DAY";
     public static final String BUTTON_STOCK_180DAY = "BUTTON_STOCK_180DAY";
+
     //竞赛中所有比赛和我的比赛及这两个栏目的banner条的点击量，及右上角的搜索量
     public static final String BUTTON_COMPETITION_DETAIL_BANNER = "BUTTON_COMPETITION_DETAIL_BANNER";
     public static final String BUTTON_COMPETITION_DETAIL_SEARCH = "BUTTON_COMPETITION_DETAIL_SEARCH";
+
     //竞赛中所有比赛的，官方比赛和热点比赛的点击量，创建比赛的点击量，右上角的搜索量
     //竞赛中我的比赛的，官方比赛和热点比赛的点击量，创建比赛的点击量，右上角的搜索量
     public static final String BUTTON_COMPETITION_DETAIL_LIST_ITEM = "BUTTON_COMPETITION_DETAIL_LIST_ITEM";
     public static final String BUTTON_COMPETITION_DETAIL_CREATE = "BUTTON_COMPETITION_DETAIL_CREATE";
+
     //每个比赛的比赛详情，参加比赛和去比赛的点击量，邀请好友的点击量，排行中每个用户的点击量。
     public static final String BUTTON_COMPETITION_DETAIL_JOIN = "BUTTON_COMPETITION_DETAIL_JOIN";
     public static final String BUTTON_COMPETITION_DETAIL_GOTO = "BUTTON_COMPETITION_DETAIL_GOTO";
@@ -215,8 +219,11 @@ public class AnalyticsConstants
     public static final String BUTTON_STOCK_DETAIL_OPER_DISCUSS = "BUTTON_STOCK_DETAIL_OPER_DISCUSS";
     public static final String BUTTON_STOCK_DETAIL_GETMORE = "BUTTON_STOCK_DETAIL_GETMORE";
     public static final String BUTTON_STOCK_DETAIL_SAFA = "BUTTON_STOCK_DETAIL_SAFA";
-    //他的持仓页面中关注点击量，及关注后持仓和平仓个股点击量，他的主页的点击量
-    //Todo
 
+    //他的持仓页面中关注点击量，及关注后持仓和平仓个股点击量，他的主页的点击量
+    public static final String BUTTON_PORTFOLIO_FOLLOW_USER = "BUTTON_PORTFOLIO_FOLLOW_USER";
+    public static final String BUTTON_PORTFOLIO_POSITION_CLICKED = "BUTTON_PORTFOLIO_POSITION_CLICKED";
+    public static final String BUTTON_PORTFOLIO_MAIN_PAGE = "BUTTON_PORTFOLIO_MAIN_PAGE";
+    public static final String BUTTON_PORTFOLIO_GOTO_COMPETITION = "BUTTON_PORTFOLIO_GOTO_COMPETITION";
     //Windy
 }

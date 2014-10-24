@@ -99,21 +99,21 @@ public class StockGodListMoreFragment extends DashboardFragment
                 bundle.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
                 gotoDashboard(StockGodListBaseFragment.class.getName(), bundle);
 
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_MOST_SKILL));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_MOST_SKILL));
 
                 break;
             case R.id.rlMoreBangSeason://季度榜
                 bundle.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.DAYS_90);
                 gotoDashboard(StockGodListBaseFragment.class.getName(), bundle);
 
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_90DAY));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_90DAY));
 
                 break;
             case R.id.rlMoreBang6Month://半年榜
                 bundle.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.MONTHS_6);
                 gotoDashboard(StockGodListBaseFragment.class.getName(), bundle);
 
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_180DAY));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_180DAY));
 
                 break;
         }

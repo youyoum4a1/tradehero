@@ -51,6 +51,9 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +80,8 @@ public class PortfolioFragment extends DashboardFragment
     public int portfolioUserKey = 0;//通过查看他人主账户进入持仓，需要知道UserID
     public PortfolioCompactDTO portfolioCompactDTO;//直接查看portforlioCompactDTO
     public int competitionId;
+
+    @Inject Analytics analytics;
 
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
@@ -146,6 +151,7 @@ public class PortfolioFragment extends DashboardFragment
             if (isNeedShowMainPage)
             {
                 setHeadViewRight0("TA的主页");
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_MAIN_PAGE));
             }
         }
 
@@ -161,6 +167,8 @@ public class PortfolioFragment extends DashboardFragment
         if (portfolio_type == PORTFOLIO_TYPE_MINE)
         {
             setHeadViewRight0("去比赛");
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_GOTO_COMPETITION));
         }
     }
 
@@ -190,6 +198,7 @@ public class PortfolioFragment extends DashboardFragment
                 Timber.d("POSITION = " + position);
                 PositionInterface item = adapter.getItem((int) position);
                 dealSecurityItem(item);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_PORTFOLIO_POSITION_CLICKED, ""+position));
             }
         });
 
@@ -261,6 +270,8 @@ public class PortfolioFragment extends DashboardFragment
                 showSuggestLoginDialogFragment(dialogContent);
                 return;
             }
+
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_FOLLOW_USER));
             freeFollow(showUserBaseKey);
         }
     }

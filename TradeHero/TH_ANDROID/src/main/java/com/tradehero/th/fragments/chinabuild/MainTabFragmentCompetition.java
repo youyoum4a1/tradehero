@@ -79,7 +79,7 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
         Timber.d("CompetitionSearchClicked!");
         gotoDashboard(CompetitionSearchFragment.class.getName());
 
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_SEARCH));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_SEARCH));
     }
 
     private void InitView()
@@ -140,6 +140,6 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
             gotoDashboard(CompetitionCreateFragment.class.getName());
         }
 
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_CREATE));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_CREATE));
     }
 }
