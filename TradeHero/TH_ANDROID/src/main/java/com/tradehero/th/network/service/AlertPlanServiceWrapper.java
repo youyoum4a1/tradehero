@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.alert.AlertPlanDTO;
+import com.tradehero.th.api.alert.AlertPlanDTOList;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -20,11 +21,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import retrofit.Callback;
+import rx.Observable;
 
 public class AlertPlanServiceWrapper
 {
     @NotNull protected final AlertPlanService alertPlanService;
     @NotNull protected final AlertPlanServiceAsync alertPlanServiceAsync;
+    @NotNull protected final AlertPlanServiceRx alertPlanServiceRx;
     @NotNull protected final UserProfileCache userProfileCache;
     @NotNull protected final HomeContentCache homeContentCache;
 
@@ -32,23 +35,20 @@ public class AlertPlanServiceWrapper
     @Inject public AlertPlanServiceWrapper(
             @NotNull AlertPlanService alertPlanService,
             @NotNull AlertPlanServiceAsync alertPlanServiceAsync,
+            @NotNull AlertPlanServiceRx alertPlanServiceRx,
             @NotNull UserProfileCache userProfileCache,
             @NotNull HomeContentCache homeContentCache)
     {
         super();
         this.alertPlanService = alertPlanService;
         this.alertPlanServiceAsync = alertPlanServiceAsync;
+        this.alertPlanServiceRx = alertPlanServiceRx;
         this.userProfileCache = userProfileCache;
         this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Alert Plans">
-    public List<AlertPlanDTO> getAlertPlans(@NotNull UserBaseKey userBaseKey)
-    {
-        return alertPlanService.getAlertPlans(userBaseKey.key);
-    }
-
     public MiddleCallback<List<AlertPlanDTO>> getAlertPlans(
             @NotNull UserBaseKey userBaseKey,
             @Nullable Callback<List<AlertPlanDTO>> callback)
@@ -57,16 +57,14 @@ public class AlertPlanServiceWrapper
         alertPlanServiceAsync.getAlertPlans(userBaseKey.key, middleCallback);
         return middleCallback;
     }
+
+    public Observable<AlertPlanDTOList> getAlertPlansRx(@NotNull UserBaseKey userBaseKey)
+    {
+        return alertPlanServiceRx.getAlertPlans(userBaseKey.key);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Subscribe to Alert Plan">
-    public UserProfileDTO subscribeToAlertPlan(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull PurchaseReportDTO purchaseDTO)
-    {
-        return createDTOProcessorUserProfile().process(alertPlanService.subscribeToAlertPlan(userBaseKey.key, purchaseDTO));
-    }
-
     public MiddleCallback<UserProfileDTO> subscribeToAlertPlan(
             @NotNull UserBaseKey userBaseKey,
             @NotNull PurchaseReportDTO purchaseDTO,
@@ -76,15 +74,16 @@ public class AlertPlanServiceWrapper
         alertPlanServiceAsync.subscribeToAlertPlan(userBaseKey.key, purchaseDTO, middleCallback);
         return middleCallback;
     }
+
+    public Observable<UserProfileDTO> subscribeToAlertPlanRx(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull PurchaseReportDTO purchaseDTO)
+    {
+        return alertPlanServiceRx.subscribeToAlertPlan(userBaseKey.key, purchaseDTO);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Check Alert Plan Subscription">
-    public UserProfileDTO checkAlertPlanSubscription(
-            @NotNull UserBaseKey userBaseKey)
-    {
-        return alertPlanService.checkAlertPlanSubscription(userBaseKey.key);
-    }
-
     public MiddleCallback<UserProfileDTO> checkAlertPlanSubscription(
             @NotNull UserBaseKey userBaseKey,
             Callback<UserProfileDTO> callback)
@@ -93,16 +92,15 @@ public class AlertPlanServiceWrapper
         alertPlanServiceAsync.checkAlertPlanSubscription(userBaseKey.key, middleCallback);
         return middleCallback;
     }
+
+    public Observable<UserProfileDTO> checkAlertPlanSubscriptionRx(
+            @NotNull UserBaseKey userBaseKey)
+    {
+        return alertPlanServiceRx.checkAlertPlanSubscription(userBaseKey.key);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Restore Purchases">
-    public UserProfileDTO restorePurchases(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull RestorePurchaseForm restorePurchaseForm)
-    {
-        return createDTOProcessorUserProfile().process(alertPlanService.restorePurchases(userBaseKey.key, restorePurchaseForm));
-    }
-
     public MiddleCallback<UserProfileDTO> restorePurchases(
             @NotNull UserBaseKey userBaseKey,
             @NotNull RestorePurchaseForm restorePurchaseForm,
@@ -111,6 +109,13 @@ public class AlertPlanServiceWrapper
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUserProfile());
         alertPlanServiceAsync.restorePurchases(userBaseKey.key, restorePurchaseForm, middleCallback);
         return middleCallback;
+    }
+
+    public Observable<UserProfileDTO> restorePurchasesRx(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull RestorePurchaseForm restorePurchaseForm)
+    {
+        return alertPlanServiceRx.restorePurchases(userBaseKey.key, restorePurchaseForm);
     }
     //</editor-fold>
 

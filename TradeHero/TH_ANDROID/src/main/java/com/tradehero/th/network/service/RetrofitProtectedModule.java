@@ -29,6 +29,11 @@ public class RetrofitProtectedModule
         return adapter.create(AlertPlanServiceAsync.class);
     }
 
+    @Provides @Singleton AlertPlanServiceRx provideAlertPlanServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(AlertPlanServiceRx.class);
+    }
+
     @Provides @Singleton AlertServiceAsync provideAlertServiceAsync(RestAdapter adapter)
     {
         return adapter.create(AlertServiceAsync.class);

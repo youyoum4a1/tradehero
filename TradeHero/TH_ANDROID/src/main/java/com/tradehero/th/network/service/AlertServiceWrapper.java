@@ -82,16 +82,6 @@ import rx.Observable;
         return alertService.getAlerts(userBaseKey.key);
     }
 
-    public MiddleCallback<AlertCompactDTOList> getAlerts(
-            @NotNull UserBaseKey userBaseKey,
-            @Nullable Callback<AlertCompactDTOList> callback)
-    {
-        basicCheck(userBaseKey);
-        MiddleCallback<AlertCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        alertServiceAsync.getAlerts(userBaseKey.key, middleCallback);
-        return middleCallback;
-    }
-
     public Observable<AlertCompactDTOList> getAlertsRx(@NotNull UserBaseKey userBaseKey)
     {
         basicCheck(userBaseKey);
@@ -119,13 +109,6 @@ import rx.Observable;
         return this.alertService.getAlert(alertId.userId, alertId.alertId);
     }
 
-    public MiddleCallback<AlertDTO> getAlert(AlertId alertId, Callback<AlertDTO> callback)
-    {
-        MiddleCallback<AlertDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        this.alertServiceAsync.getAlert(alertId.userId, alertId.alertId, middleCallback);
-        return middleCallback;
-    }
-
     public Observable<AlertDTO> getAlertRx(@NotNull AlertId alertId)
     {
         basicCheck(alertId);
@@ -135,12 +118,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Create Alert">
-    public AlertCompactDTO createAlert(@NotNull UserBaseKey userBaseKey, @NotNull AlertFormDTO alertFormDTO)
-    {
-        basicCheck(userBaseKey);
-        return createDTOProcessorCreateAlert(userBaseKey).process(this.alertService.createAlert(userBaseKey.key, alertFormDTO));
-    }
-
     public MiddleCallback<AlertCompactDTO> createAlert(@NotNull UserBaseKey userBaseKey, @NotNull AlertFormDTO alertFormDTO, @Nullable Callback<AlertCompactDTO> callback)
     {
         basicCheck(userBaseKey);
@@ -157,12 +134,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Update Alert">
-    public AlertCompactDTO updateAlert(@NotNull AlertId alertId, @NotNull AlertFormDTO alertFormDTO)
-    {
-        basicCheck(alertId);
-        return createDTOProcessorUpdateAlert(alertId).process(this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO));
-    }
-
     public MiddleCallback<AlertCompactDTO> updateAlert(@NotNull AlertId alertId, @NotNull AlertFormDTO alertFormDTO, @Nullable Callback<AlertCompactDTO> callback)
     {
         basicCheck(alertId);
