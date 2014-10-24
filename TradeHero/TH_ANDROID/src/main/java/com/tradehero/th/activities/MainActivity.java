@@ -45,7 +45,6 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.Date;
@@ -251,10 +250,13 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Override protected void onResume()
     {
         super.onResume();
+        analytics.openSession();
+        analytics.tagScreen(AnalyticsConstants.MainActivityScreen);
     }
 
     @Override protected void onPause()
     {
+        analytics.closeSession();
         super.onPause();
     }
 

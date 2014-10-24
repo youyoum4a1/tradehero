@@ -152,6 +152,8 @@ public class AnalyticsConstants
     //Launch app
     public static final String AppLaunch = "AppLaunch";
 
+
+    public static final String MainActivityScreen = "MainActivityScreen";
     public static final String CHINA_BUILD_BUTTON_CLICKED = "china_build_button_clicked";
 
     //Go to login
