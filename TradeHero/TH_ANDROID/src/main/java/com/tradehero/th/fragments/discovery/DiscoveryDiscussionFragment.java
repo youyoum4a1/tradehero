@@ -30,12 +30,18 @@ import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 import static com.tradehero.th.network.service.UserTimelineServiceRx.TimelineSection.Hot;
+import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 
 public class DiscoveryDiscussionFragment extends Fragment
 {
@@ -50,9 +56,8 @@ public class DiscoveryDiscussionFragment extends Fragment
 
     private DiscoveryDiscussionAdapter discoveryDiscussionAdapter;
     private Subscription timelineSubscription;
-    private Observable<PullToRefreshBase.Mode> onRefreshObservable;
 
-    private RangeDTO currentRangeDTO = new RangeDTO(Constants.TIMELINE_ITEM_PER_PAGE, null, null);
+    private RangeDTO currentRangeDTO = new RangeDTO(TIMELINE_ITEM_PER_PAGE, null, null);
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -68,19 +73,20 @@ public class DiscoveryDiscussionFragment extends Fragment
             @Override public void call(List<TimelineItemDTOKey> timelineItemDTOKeys)
             {
                 discoveryDiscussionAdapter.setItems(timelineItemDTOKeys);
-                mTimelineListView.onRefreshComplete();
             }
         };
     }
 
     private RangeDTO createTimelineRangeDTO(Integer maxId, Integer minId)
     {
-        return RangeDTO.create(Constants.TIMELINE_ITEM_PER_PAGE, maxId, minId);
+        return RangeDTO.create(TIMELINE_ITEM_PER_PAGE, maxId, minId);
     }
 
     private Observable<List<TimelineItemDTOKey>> timelineTask(final RangeDTO rangeDTO)
     {
         return userTimelineServiceRx.getTimelineRx(Hot, currentUserId.get(), rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<TimelineDTO, List<TimelineItemDTO>>()
                 {
                     @Override public List<TimelineItemDTO> call(TimelineDTO timelineDTO)
@@ -130,34 +136,53 @@ public class DiscoveryDiscussionFragment extends Fragment
             }
         });
 
+        PublishSubject<List<TimelineItemDTOKey>> timelineSubject = PublishSubject.create();
         // emit item on pull up/down
-        onRefreshObservable = Observable.create(new Observable.OnSubscribe<PullToRefreshBase.Mode>()
-        {
-
-            @Override public void call(final Subscriber<? super PullToRefreshBase.Mode> subscriber)
-            {
-                mTimelineListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+        Observable<List<TimelineItemDTOKey>> timelineRefreshRangeObservable = Observable
+                .create(new Observable.OnSubscribe<PullToRefreshBase.Mode>()
                 {
-                    @Override public void onRefresh(PullToRefreshBase<ListView> listViewPullToRefreshBase)
+                    @Override public void call(final Subscriber<? super PullToRefreshBase.Mode> subscriber)
                     {
-                        subscriber.onNext(listViewPullToRefreshBase.getCurrentMode());
+                        mTimelineListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+                        {
+
+                            @Override public void onRefresh(PullToRefreshBase<ListView> listViewPullToRefreshBase)
+                            {
+                                subscriber.onNext(listViewPullToRefreshBase.getCurrentMode());
+                            }
+                        });
+                    }
+                })
+                .map(new Func1<PullToRefreshBase.Mode, RangeDTO>()
+                {
+                    @Override public RangeDTO call(PullToRefreshBase.Mode mode)
+                    {
+                        switch (mode)
+                        {
+                            case PULL_FROM_END:
+                                return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
+                            case PULL_FROM_START:
+                            default:
+                                return RangeDTO.create(currentRangeDTO.maxCount, null, currentRangeDTO.maxId);
+                        }
+                    }
+                })
+                .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null))
+                .flatMap(new Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>()
+                {
+                    @Override public Observable<List<TimelineItemDTOKey>> call(RangeDTO rangeDTO)
+                    {
+                        return timelineTask(rangeDTO);
                     }
                 });
-            }
-        });
 
-        Observable<RangeDTO> rangeObservable = Observable.just(RangeDTO.create(Constants.TIMELINE_ITEM_PER_PAGE, null, null));
+        timelineSubject.subscribe(intoAdapter());
+        timelineSubject.subscribe(new RefreshCompleteObserver());
+        timelineSubject.subscribe(new UpdateRangeObserver());
 
-        timelineSubscription = rxLoaderManager.create(currentUserId.toUserBaseKey(), PaginationObservable.create(
-                currentUserId.toUserBaseKey(),
-                rangeObservable,
-                new Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>()
-        {
-            @Override public Observable<List<TimelineItemDTOKey>> call(RangeDTO rangeDTO)
-            {
-                return timelineTask(rangeDTO);
-            }
-        })).subscribe(intoAdapter());
+        timelineSubscription = rxLoaderManager.create(currentUserId.toUserBaseKey(), timelineRefreshRangeObservable)
+                .subscribe(timelineSubject);
+
     }
 
     @Override public void onDestroyView()
@@ -179,6 +204,46 @@ public class DiscoveryDiscussionFragment extends Fragment
         if (isDetached())
         {
             rxLoaderManager.remove(currentUserId.toUserBaseKey());
+        }
+    }
+
+    private class RefreshCompleteObserver implements Observer<List<TimelineItemDTOKey>>
+    {
+        private void refreshComplete()
+        {
+            mTimelineListView.onRefreshComplete();
+        }
+
+        @Override public void onCompleted()
+        {
+            refreshComplete();
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            refreshComplete();
+        }
+
+        @Override public void onNext(List<TimelineItemDTOKey> timelineItemDTOKeys)
+        {
+            refreshComplete();
+        }
+    }
+
+    private class UpdateRangeObserver implements Action1<List<TimelineItemDTOKey>>
+    {
+        @Override public void call(List<TimelineItemDTOKey> timelineItemDTOKeys)
+        {
+            if (timelineItemDTOKeys != null && !timelineItemDTOKeys.isEmpty())
+            {
+                Integer min = timelineItemDTOKeys.get(0).id;
+                Integer max = timelineItemDTOKeys.get(timelineItemDTOKeys.size() - 1).id;
+                currentRangeDTO = RangeDTO.create(TIMELINE_ITEM_PER_PAGE, max, min);
+            }
+            else
+            {
+                currentRangeDTO = RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null);
+            }
         }
     }
 }
