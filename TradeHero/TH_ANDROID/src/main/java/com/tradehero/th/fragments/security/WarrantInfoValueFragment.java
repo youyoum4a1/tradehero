@@ -2,12 +2,15 @@ package com.tradehero.th.fragments.security;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -19,11 +22,14 @@ import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -38,7 +44,8 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     @InjectView(R.id.vwarrant_underlying) protected TextView mUnderlying;
     @InjectView(R.id.vwarrant_issuer) protected TextView mIssuer;
 
-    @Inject protected SecurityCompactCache securityCompactCache;
+    @Inject protected SecurityCompactCacheRx securityCompactCache;
+    @Nullable Subscription securityCompactCacheSubscription;
     protected WarrantDTO warrantDTO;
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
@@ -90,6 +97,8 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     @Override public void onDestroyView()
     {
+        detachSubscription(securityCompactCacheSubscription);
+        securityCompactCacheSubscription = null;
         if (mHelpVideoLink != null)
         {
             mHelpVideoLink.setOnClickListener(null);
@@ -99,7 +108,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         super.onDestroyView();
     }
 
-    @Override protected SecurityCompactCache getInfoCache()
+    @Override protected SecurityCompactCacheRx getInfoCache()
     {
         return securityCompactCache;
     }
@@ -130,12 +139,30 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         }
     }
 
-    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
+    @Override public void linkWith(SecurityId securityId, final boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
-            linkWith(securityCompactCache.get(this.securityId), andDisplay);
+            detachSubscription(securityCompactCacheSubscription);
+            securityCompactCacheSubscription = securityCompactCache.get(securityId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                    {
+                        @Override public void onCompleted()
+                        {
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            THToast.show(R.string.error_fetch_security_info);
+                        }
+
+                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                        {
+                            linkWith(pair.second, andDisplay);
+                        }
+                    });
         }
     }
 

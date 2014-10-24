@@ -2,13 +2,12 @@ package com.tradehero.th.fragments.discussion.stock;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -22,15 +21,19 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.Collection;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class SecurityDiscussionView extends BetterViewAnimator
@@ -40,7 +43,8 @@ public class SecurityDiscussionView extends BetterViewAnimator
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
 
-    @Inject SecurityCompactCache securityCompactCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
+    @Nullable private Subscription securityCompactCacheSubscription;
     @Inject DiscussionListCacheNew discussionListCache;
 
     private DiscussionSetAdapter securityDiscussionAdapter;
@@ -50,7 +54,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
     private boolean loading;
     private int nextPageDelta;
-    private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
 
     //<editor-fold desc="Constructors">
     public SecurityDiscussionView(Context context)
@@ -72,7 +75,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
         HierarchyInjector.inject(this);
 
         securityDiscussionListScrollListener = new SecurityDiscussionListScrollListener();
-        securityCompactCacheFetchListener = createSecurityCompactCacheListener();
         securityDiscussionAdapter = createDiscussionAdapter(null);
     }
 
@@ -89,10 +91,6 @@ public class SecurityDiscussionView extends BetterViewAnimator
         super.onAttachedToWindow();
 
         ButterKnife.inject(this);
-        if (securityCompactCacheFetchListener == null)
-        {
-            securityCompactCacheFetchListener = createSecurityCompactCacheListener();
-        }
         securityDiscussionList.setEmptyView(emptyView);
         securityDiscussionList.setAdapter(securityDiscussionAdapter);
 
@@ -112,8 +110,8 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
     @Override protected void onDetachedFromWindow()
     {
-        detachSecurityCompactCacheTask();
-        securityCompactCacheFetchListener = null;
+        detachSecurityCompactCacheSubscription();
+        securityCompactCacheSubscription = null;
         discussionListCache.unregister(this);
         ButterKnife.reset(this);
 
@@ -143,14 +141,37 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
     @Override public void display(SecurityId securityId)
     {
-        detachSecurityCompactCacheTask();
-        securityCompactCache.register(securityId, securityCompactCacheFetchListener);
-        securityCompactCache.getOrFetchAsync(securityId, false);
+        detachSecurityCompactCacheSubscription();
+        securityCompactCacheSubscription = securityCompactCache.get(securityId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                        THToast.show(new THException(e));
+                    }
+
+                    @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                    {
+                        discussionListKey = new DiscussionListKey(DiscussionType.SECURITY, pair.second.id);
+                        nextPageDelta = 0;
+                        fetchNextPageIfNecessary(true);
+                    }
+                });
     }
 
-    private void detachSecurityCompactCacheTask()
+    private void detachSecurityCompactCacheSubscription()
     {
-        securityCompactCache.unregister(securityCompactCacheFetchListener);
+        Subscription subscriptionCopy = securityCompactCacheSubscription;
+        if (subscriptionCopy != null)
+        {
+            subscriptionCopy.unsubscribe();
+        }
+        securityCompactCacheSubscription = null;
     }
 
     private class SecurityDiscussionListScrollListener implements AbsListView.OnScrollListener
@@ -214,25 +235,5 @@ public class SecurityDiscussionView extends BetterViewAnimator
         loading = false;
 
         setDisplayedChildByLayoutId(securityDiscussionList.getId());
-    }
-
-    private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
-    {
-        return new SecurityCompactCacheListener();
-    }
-
-    private class SecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
-    {
-        @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO securityCompactDTO)
-        {
-            discussionListKey = new DiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id);
-            nextPageDelta = 0;
-            fetchNextPageIfNecessary(true);
-        }
-
-        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
-        {
-            THToast.show(new THException(error));
-        }
     }
 }

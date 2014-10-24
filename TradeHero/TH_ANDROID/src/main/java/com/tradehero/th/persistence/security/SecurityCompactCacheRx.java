@@ -12,16 +12,13 @@ import org.jetbrains.annotations.NotNull;
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NotNull private final SecurityCompactCache securityCompactCache;
     @NotNull private final SecurityIdCache securityIdCache;
 
     //<editor-fold desc="Constructors">
     @Inject protected SecurityCompactCacheRx(
-            @NotNull SecurityCompactCache securityCompactCache,
             @NotNull SecurityIdCache securityIdCache)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE);
-        this.securityCompactCache = securityCompactCache;
         this.securityIdCache = securityIdCache;
     }
     //</editor-fold>
@@ -30,8 +27,7 @@ import org.jetbrains.annotations.NotNull;
             @NotNull SecurityId key, @NotNull SecurityCompactDTO value)
     {
         SecurityCompactDTO previous = super.putValue(key, value);
-        securityIdCache.put(value.getSecurityIntegerId(), key);
-        securityCompactCache.put(key, value);
+        securityIdCache.onNext(value.getSecurityIntegerId(), key);
         return previous;
     }
 }

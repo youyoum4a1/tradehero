@@ -7,7 +7,6 @@ import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.models.security.WarrantDTOUnderlyerTypeComparator;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -15,7 +14,6 @@ import javax.inject.Inject;
 
 public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<WarrantDTO>
 {
-    @Inject SecurityCompactCache securityCompactCache;
     @Inject WarrantDTOUnderlyerTypeComparator warrantDTOComparator;
     protected final Filter filterToUse;
     @Inject ListCharSequencePredicateFilter<WarrantDTO> warrantPredicateFilter;

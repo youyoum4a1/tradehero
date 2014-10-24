@@ -106,7 +106,7 @@ abstract public class PagedDTOCacheLoaderNew<
         }
         catch (Throwable throwable)
         {
-            Timber.e("Failed to get %s from cache", this.queryKey, throwable);
+            Timber.e(throwable, "Failed to get %s from cache", this.queryKey);
         }
         finally
         {

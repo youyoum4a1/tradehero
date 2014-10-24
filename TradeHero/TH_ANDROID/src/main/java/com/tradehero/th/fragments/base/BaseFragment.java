@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import com.tradehero.th.inject.HierarchyInjector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Subscription;
 import timber.log.Timber;
 
 public class BaseFragment extends Fragment
@@ -119,5 +120,13 @@ public class BaseFragment extends Fragment
     protected void setActionBarSubtitle(String subtitle)
     {
         actionBarOwnerMixin.setActionBarSubtitle(subtitle);
+    }
+
+    protected void detachSubscription(@Nullable Subscription subscription)
+    {
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
     }
 }
