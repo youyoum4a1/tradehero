@@ -510,7 +510,7 @@ public class TradeOfMineFragment extends DashboardFragment
                 }
             }else{
                 if (cached.totalValue > 250000){
-                    if(THSharePreferenceManager.isShareDialogMoreThanFifteenAvailable(userId, getActivity())){
+                    if(THSharePreferenceManager.isShareDialogMoreThanTwentyFiveAvailable(userId, getActivity())){
                         if (mShareDialogKeyPreference.get() && mShareDialogTotalValueKeyPreference.get()) {
                             mShareDialogKeyPreference.set(false);
                             mShareDialogTotalValueKeyPreference.set(false);
