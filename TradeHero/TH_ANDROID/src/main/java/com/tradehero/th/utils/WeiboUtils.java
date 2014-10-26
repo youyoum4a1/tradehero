@@ -41,13 +41,13 @@ public class WeiboUtils {
         if(TextUtils.isEmpty(url)||!NetworkUtils.isCNTradeHeroURL(url)){
             int nowLimit = Constants.SHARE_WEIBO_CONTENT_LENGTH_LIMIT -downloadCNTradeHeroAPKURl.length();
             if (outputStr.length() > nowLimit) {
-                outputStr = outputStr.substring(0, nowLimit) + downloadCNTradeHeroAPKURl;
+                outputStr = outputStr.substring(0, nowLimit - 3) + "..." + downloadCNTradeHeroAPKURl;
             }else{
                 outputStr = outputStr + downloadCNTradeHeroAPKURl;
             }
         }else{
             if (outputStr.length() > Constants.SHARE_WEIBO_CONTENT_LENGTH_LIMIT) {
-                outputStr = outputStr.substring(0, Constants.SHARE_WEIBO_CONTENT_LENGTH_LIMIT);
+                outputStr = content.substring(0, Constants.SHARE_WEIBO_CONTENT_LENGTH_LIMIT - url.length() - 5) + "...  " + url;
             }
         }
         return outputStr;
