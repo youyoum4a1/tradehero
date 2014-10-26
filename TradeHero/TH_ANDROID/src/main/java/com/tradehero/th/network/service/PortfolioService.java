@@ -26,6 +26,15 @@ public interface PortfolioService
             @Path("portfolioId") int portfolioId);
     //</editor-fold>
 
+    //<editor-fold desc="Get One User Portfolio ">
+    //http://localhost/api/users/552948/portfolio
+    @GET("/users/{userId}/portfolio")
+    PortfolioDTO getPortfolioDefault(
+            @Path("userId") int userId);
+    //</editor-fold>
+
+
+
     //<editor-fold desc="Reset One User Portfolio">
     @POST("/users/{userId}/portfolios/{portfolioId}/reset")
     UserProfileDTO resetPortfolio(

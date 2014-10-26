@@ -237,6 +237,11 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         notifyDataSetChanged();
     }
 
+    //public OnPageChangeListener getOnPageChangeListener()
+    //{
+    //    return this;
+    //}
+
     public void notifyDataSetChanged()
     {
         mTabLayout.removeAllViews();

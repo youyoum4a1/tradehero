@@ -130,6 +130,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 Timber.d("下拉刷新");
+                //fetchSecurityList(currentPosition);
                 fetchSecurityList(currentPosition);
             }
 
@@ -176,8 +177,23 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         detachSecurityListCache();
         SecurityListType key = new TrendingAllSecurityListType(getTradeType(), getStrExchangeName(), currentPage + 1, ITEMS_PER_PAGE);
         securityCompactListCache.get().register(key, securityListTypeCacheListener);
-        securityCompactListCache.get().getOrFetchAsync(key, false);
+        securityCompactListCache.get().getOrFetchAsync(key, true);
     }
+
+    //private void fetchSecurityList(int position,boolean force)
+    //{
+    //    currentPosition = position;
+    //    strExchangeName = "";
+    //    currentPage = 0;
+    //    if (position > 0)
+    //    {
+    //        strExchangeName = exchangeCompactDTOs.get(position - 1).name;
+    //    }
+    //    detachSecurityListCache();
+    //    SecurityListType key = new TrendingAllSecurityListType(getTradeType(), getStrExchangeName(), currentPage + 1, ITEMS_PER_PAGE);
+    //    securityCompactListCache.get().register(key, securityListTypeCacheListener);
+    //    securityCompactListCache.get().getOrFetchAsync(key, true);
+    //}
 
     private void showLoadingProgress()
     {

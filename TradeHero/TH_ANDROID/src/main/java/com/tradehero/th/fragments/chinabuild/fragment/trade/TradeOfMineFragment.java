@@ -56,7 +56,6 @@ import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareDialogROIValueKey;
 import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
-import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -152,8 +151,8 @@ public class TradeOfMineFragment extends DashboardFragment
         }
 
         initView();
-        fetchPortfolio();
-        llPositionHeadItem.setVisibility(View.GONE);
+        //fetchPortfolio();
+        llPositionHeadItem.setVisibility(View.GONE);//用来显示浮动的标签
         return view;
     }
 
@@ -274,10 +273,10 @@ public class TradeOfMineFragment extends DashboardFragment
 
     @Override public void onResume()
     {
+        super.onResume();
         Timber.d("------> Analytics TradeOfMineFragment onResume");
         analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_MINE_TRADE));
         refreshData(false);
-        super.onResume();
     }
 
     @OnClick(R.id.btnEmptyAction)
@@ -295,16 +294,24 @@ public class TradeOfMineFragment extends DashboardFragment
     protected void fetchSimplePage(boolean force)
     {
         //if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
-        if (getPositionsDTOKey == null && shownPortfolioId != null)
-        {
-            getPositionsDTOKey = new OwnedPortfolioId(shownPortfolioId.userId, shownPortfolioId.portfolioId);
-        }
-        if (getPositionsDTOKey != null)
+        //if (getPositionsDTOKey == null && shownPortfolioId != null)
+        //{
+        //    getPositionsDTOKey = new OwnedPortfolioId(shownPortfolioId.userId, shownPortfolioId.portfolioId);
+        //}
+        //if (getPositionsDTOKey != null)
+        //{
+        //    detachGetPositionsTask();
+        //    fetchGetPositionsDTOListener = createGetPositionsCacheListener();
+        //    getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
+        //    getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
+        //}
+
+        if (shownPortfolioId != null)
         {
             detachGetPositionsTask();
             fetchGetPositionsDTOListener = createGetPositionsCacheListener();
-            getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
-            getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
+            getPositionsCache.get().register(shownPortfolioId, fetchGetPositionsDTOListener);
+            getPositionsCache.get().getOrFetchAsync(shownPortfolioId, force);
         }
     }
 
@@ -317,8 +324,7 @@ public class TradeOfMineFragment extends DashboardFragment
 
     protected void fetchPortfolio()
     {
-        if (shownPortfolioId == null) return;
-        if (portfolioFetchListener == null) return;
+        if (shownPortfolioId == null ||portfolioFetchListener == null) return;
         detachPortfolioFetchTask();
         portfolioCache.register(shownPortfolioId, portfolioFetchListener);
         portfolioCache.getOrFetchAsync(shownPortfolioId);
@@ -398,7 +404,6 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
         {
-            Timber.d("");
             initWatchList(value);
             onFinish();
         }
@@ -406,6 +411,7 @@ public class TradeOfMineFragment extends DashboardFragment
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             onFinish();
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
 
         private void onFinish()
@@ -488,8 +494,11 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             shownPortfolioId = defaultIfNotInArgs.getOwnedPortfolioId();
         }
-        fetchPortfolio();
-        fetchSimplePage(false);
+        if(shownPortfolioId != null)
+        {
+            fetchPortfolio();
+            fetchSimplePage(false);
+        }
     }
 
     private void displayProfolioDTO(PortfolioDTO cached)
