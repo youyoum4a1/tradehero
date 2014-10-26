@@ -386,4 +386,5 @@
   <string name="app_name_cn">全民股神</string>
 
   <string name="download_tradehero_android_app_on_wechat">http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th</string>
+  <string name="download_tradehero_android_app_on_weibo">http://tradehero.b0.upaiyun.com/th_android.apk</string>
 </resources>

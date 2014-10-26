@@ -66,4 +66,6 @@ public class Constants
     private static final int VERSION = 1;
 
     public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
+
+    public static final int SHARE_WEIBO_CONTENT_LENGTH_LIMIT = 140;
 }

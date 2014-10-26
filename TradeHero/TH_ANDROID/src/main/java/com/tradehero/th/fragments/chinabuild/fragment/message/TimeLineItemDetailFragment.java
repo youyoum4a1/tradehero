@@ -67,6 +67,7 @@ import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener,View.OnClickListener
 {
@@ -224,13 +224,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
                 fetchDiscussList(true);
             }
 
             @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("上拉加载更多");
                 //refreshDataMore(false);
             }
         });
@@ -309,8 +307,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
         @Override public void onErrorThrown(@NotNull DiscussionKey key, @NotNull Throwable error)
         {
-            //THToast.show(R.string.error_fetch_private_message_initiating_discussion);
-            Timber.d("");
             OnFinish();
         }
 
@@ -392,7 +388,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     @OnClick(R.id.btnSend)
     public void OnSendClicked()
     {
-        Timber.d("OnSendClicked!!");
         postDiscussion();
     }
 
@@ -576,26 +571,23 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     //Share to wechat moment and share to weibo on the background
     private void shareToWechatMoment(final String strShare)
     {
-        Timber.d("------> 1 " + strShare);
         if(TextUtils.isEmpty(strShare)){
             return;
         }
+        String show = getUnParsedText(strShare);
         UserProfileDTO updatedUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         if (updatedUserProfileDTO != null)
         {
             if (updatedUserProfileDTO.wbLinked)
             {
-                String outputStr = strShare;
-                if(outputStr.length() > 140){
-                    outputStr = outputStr.substring(0, 140);
-                }
-                Timber.d("------> 2 " + outputStr);
+                String downloadCNTradeHeroWeibo = getActivity().getResources().getString(R.string.download_tradehero_android_app_on_weibo);
+                String outputStr = show;
+                outputStr = WeiboUtils.getShareContentWeibo(outputStr, downloadCNTradeHeroWeibo);
                 InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
                 userServiceWrapper.get().inviteFriends(
                         currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
             }
         }
-        Timber.d("------> 3 ");
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
@@ -655,20 +647,16 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     protected class VoteCallback implements retrofit.Callback<DiscussionDTO>
     {
-        //<editor-fold desc="Constructors">
         public VoteCallback(VoteDirection voteDirection)
         {
         }
-        //</editor-fold>
 
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
-            Timber.d("VoteCallback success");
         }
 
         @Override public void failure(RetrofitError error)
         {
-            Timber.d("VoteCallback failed :" + error.toString());
         }
     }
 }

@@ -52,6 +52,7 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -256,10 +257,8 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
             if (updatedUserProfileDTO.wbLinked)
             {
                 String outputStr = show;
-                if (outputStr.length() > 140)
-                {
-                    outputStr = outputStr.substring(0, 140);
-                }
+                String downloadCNTradeHeroWeibo = getActivity().getResources().getString(R.string.download_tradehero_android_app_on_weibo);
+                outputStr = WeiboUtils.getShareContentWeibo(outputStr, downloadCNTradeHeroWeibo);
                 InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
                 userServiceWrapper.get().inviteFriends(
                         currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());

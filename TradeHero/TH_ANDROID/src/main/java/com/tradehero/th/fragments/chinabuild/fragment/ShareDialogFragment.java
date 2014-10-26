@@ -25,6 +25,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -229,7 +230,9 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         UserProfileDTO updatedUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         if (updatedUserProfileDTO != null) {
             if (updatedUserProfileDTO.wbLinked) {
-                InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(mShareContent);
+                String dowloadCNTradeHeroWeiboURL = getActivity().getResources().getString(R.string.download_tradehero_android_app_on_weibo);
+                String outputStr = WeiboUtils.getShareContentWeibo(mShareContent, dowloadCNTradeHeroWeiboURL);
+                InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
                 userServiceWrapper.get().inviteFriends(
                         currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
             }

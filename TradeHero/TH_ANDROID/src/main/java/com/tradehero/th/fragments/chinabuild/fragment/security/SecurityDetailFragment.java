@@ -102,6 +102,7 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
@@ -1633,10 +1634,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             if (updatedUserProfileDTO.wbLinked)
             {
                 String outputStr = show;
-                if (outputStr.length() > 140)
-                {
-                    outputStr = outputStr.substring(0, 140);
-                }
+                String downloadCNTradeHeroWeibo = getActivity().getResources().getString(R.string.download_tradehero_android_app_on_weibo);
+                outputStr = WeiboUtils.getShareContentWeibo(outputStr, downloadCNTradeHeroWeibo);
                 InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
                 userServiceWrapper.get().inviteFriends(
                         currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
