@@ -272,6 +272,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         if(TextUtils.isEmpty(shareContent)){
             return;
         }
+
+        //If the number of fans more than 9, the share content of it does not have url but need to track the share.
+        String fansSummary = getResources().getString(R.string.share_amount_fans_num_summary).substring(0, 10);
+        if(shareContent.contains(fansSummary)){
+            userServiceWrapper.get().trackShare("fans", new TrackCallback());
+            return;
+        }
+
         String[] contents = parseContent(shareContent);
         String content = contents[0];
         String url = contents[1];
