@@ -35,7 +35,6 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     @Override
     public void authenticate(THAuthenticationCallback callback)
     {
-        Timber.d("windy QQ authenticate!");
         doAuthenticate(callback);
     }
 
@@ -166,7 +165,6 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
         @Override
         public void onComplete(Object response)
         {
-            Timber.d("windy BaseUiListener on Complete:" + response.toString());
             JSONObject jsonObject;
             try
             {

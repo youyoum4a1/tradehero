@@ -20,7 +20,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class SocialFriendUserView extends SocialFriendItemView
 {
@@ -136,7 +135,6 @@ public class SocialFriendUserView extends SocialFriendItemView
                 {
                     @Override public void onSuccess()
                     {
-                        Timber.d("windy display User Icon success!");
                     }
 
                     @Override public void onError()

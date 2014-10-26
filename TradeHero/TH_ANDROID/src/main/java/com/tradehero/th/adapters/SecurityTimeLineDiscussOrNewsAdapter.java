@@ -19,6 +19,7 @@ import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.chinabuild.data.EmptyDiscussionCompactDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -56,6 +57,10 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 
     public void setListData(List<AbstractDiscussionCompactDTO> listCompactDTO)
     {
+        if(listCompactDTO!=null&&listCompactDTO.size()==0)
+        {
+            listCompactDTO.add(new EmptyDiscussionCompactDTO());
+        }
         listData = listCompactDTO;
         notifyDataSetChanged();
     }
@@ -104,7 +109,12 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
     @Override public View getView(final int position, View convertView, ViewGroup viewGroup)
     {
         final AbstractDiscussionCompactDTO item = (AbstractDiscussionCompactDTO) getItem(position);
-        if (item != null)
+        if(item!=null && item instanceof EmptyDiscussionCompactDTO)
+        {
+            convertView = inflater.inflate(R.layout.separate_line_transpant, viewGroup, false);
+            return convertView;
+        }
+        else if (item != null)
         {
             ViewHolder holder = null;
             if (convertView == null)

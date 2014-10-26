@@ -117,6 +117,9 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<WatchlistPositionCache> watchlistPositionCache;
     protected final Lazy<LeaderboardCache> leaderboardCache;
 
+    protected final Lazy<ExchangeCompactListCache> exchangeCompactListCacheLazy;
+
+
     //</editor-fold>
 
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
@@ -169,6 +172,8 @@ import org.jetbrains.annotations.Nullable;
             Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
             Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
             Lazy<WatchlistPositionCache> watchlistPositionCache,
+            Lazy<ExchangeCompactListCache> exchangeCompactListCacheLazy,
+
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
             @NotNull UserBaseDTOUtil userBaseDTOUtil,
@@ -217,6 +222,7 @@ import org.jetbrains.annotations.Nullable;
         this.userFollowerCache = userFollowerCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
+        this.exchangeCompactListCacheLazy =exchangeCompactListCacheLazy;
         this.watchlistPositionCache = watchlistPositionCache;
         this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
@@ -258,15 +264,15 @@ import org.jetbrains.annotations.Nullable;
         providerCache.get().invalidateAll();
         providerListCache.get().invalidateAll();
         securityPositionDetailCache.get().invalidateAll();
-        //securityCompactListCache.get().invalidateAll();
+        securityCompactListCache.get().invalidateAll();
         systemStatusCache.get().invalidateAll();
         tradeCache.get().invalidateAll();
         tradeListCache.get().invalidateAll();
         userProfileCache.get().invalidateAll();
         userFollowerCache.get().invalidateAll();
         userMessagingRelationshipCache.get().invalidateAll();
-        // exchange list will never change per user, and need to be preloaded. Beside, autoFetch will automatically update it (?)
-        // exchangeListCache.get().invalidateAll();
+        //exchange list will never change per user, and need to be preloaded. Beside, autoFetch will automatically update it (?)
+        exchangeCompactListCacheLazy.get().invalidateAll();
         userWatchlistPositionCache.get().invalidateAll();
         watchlistPositionCache.get().invalidateAll();
         leaderboardCache.get().invalidateAll();

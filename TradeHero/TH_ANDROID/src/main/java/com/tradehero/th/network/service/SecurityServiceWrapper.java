@@ -32,7 +32,6 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import timber.log.Timber;
 
 @Singleton public class SecurityServiceWrapper
 {
@@ -138,7 +137,6 @@ import timber.log.Timber;
             else if (trendingKey instanceof TrendingAllSecurityListType)
             {
                 SecurityCompactExtraDTOList data = null;
-                Timber.d("windy::: --> " + ((TrendingAllSecurityListType) trendingKey).type);
                 if (((TrendingAllSecurityListType) trendingKey).type == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_WATCH)
                 {
                     data = this.securityService.getTrendingSecuritiesAllInExchangeWatch(

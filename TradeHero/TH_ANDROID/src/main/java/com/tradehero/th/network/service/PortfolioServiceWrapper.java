@@ -8,7 +8,6 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.chinabuild.cache.PortfolioDTOKey;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioListReceived;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioMarked;
@@ -105,6 +104,12 @@ import retrofit.Callback;
                 this.portfolioService.getPortfolio(
                         ownedPortfolioId.userId,
                         ownedPortfolioId.portfolioId));
+    }
+
+    @NotNull public PortfolioDTO getPortfolioDefault(
+            @NotNull int userId)
+    {
+        return this.portfolioService.getPortfolioDefault(userId);
     }
 
     @NotNull public BaseMiddleCallback<PortfolioDTO> getPortfolio(

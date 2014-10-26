@@ -23,7 +23,6 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-
 import javax.inject.Inject;
 
 public class MainTabFragmentTrade extends AbsBaseFragment

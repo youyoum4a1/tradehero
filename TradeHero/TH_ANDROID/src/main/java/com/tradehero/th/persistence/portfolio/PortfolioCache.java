@@ -43,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
     @Override @NotNull public PortfolioDTO fetch(@NotNull OwnedPortfolioId key) throws Throwable
     {
         return portfolioServiceWrapper.get().getPortfolio(key);
+        //return portfolioServiceWrapper.get().getPortfolioDefault(key.userId);
     }
 
     @Nullable
