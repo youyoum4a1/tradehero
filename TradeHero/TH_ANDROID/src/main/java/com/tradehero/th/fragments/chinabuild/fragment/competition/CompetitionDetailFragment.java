@@ -203,6 +203,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlRankAll);
         }
+
         return view;
     }
 
@@ -343,6 +344,15 @@ public class CompetitionDetailFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    @Override public void onPause()
+    {
+        super.onPause();
+        if(listRanks!=null)
+        {
+            listRanks.onRefreshComplete();
+        }
+    }
+
     @Override public void onDestroy()
     {
         competitionLeaderboardCacheListener = null;
@@ -359,6 +369,8 @@ public class CompetitionDetailFragment extends DashboardFragment
         super.onResume();
         refreshStatus();
     }
+
+
 
     public void refreshStatus()
     {
@@ -673,7 +685,6 @@ public class CompetitionDetailFragment extends DashboardFragment
             {
                 setListData(key, userDTOs);
             }
-
             onFinish();
         }
 
@@ -747,7 +758,8 @@ public class CompetitionDetailFragment extends DashboardFragment
                 adapter.addItems(listData);
             }
         }
-        //listRanks.onRefreshComplete();
+
+        listRanks.onRefreshComplete();
 
         //如果返回数据已经为空了，说明没有了下一页。
         if (listData.size() > 0)

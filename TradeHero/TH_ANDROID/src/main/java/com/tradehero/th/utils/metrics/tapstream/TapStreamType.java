@@ -58,6 +58,8 @@ public enum TapStreamType
     Channel14(48, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel14_install, R.string.tap_stream_type_channel14_open),
     Channel15(49, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel15_install, R.string.tap_stream_type_channel15_open),
     Ftp(50, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_ftp_install, R.string.tap_stream_type_ftp_open),
+
+    ThreeG(60, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_threeg_install, R.string.tap_stream_type_threeg_open),
     ;
 
     public final int type;
