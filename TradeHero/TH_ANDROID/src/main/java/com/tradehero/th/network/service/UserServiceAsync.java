@@ -22,6 +22,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
+import com.tradehero.th.fragments.chinabuild.data.TrackShareDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -334,5 +335,10 @@ interface UserServiceAsync
     @GET("/checkVersion")
     void downloadAppVersion(
             Callback<AppInfoDTO> cb);
+    //</editor-fold>
+
+    //<editor_fold desc="Track Share">
+    @GET("/social/trackShare")
+    void trackShare(@Query("eventName") String eventName, Callback<TrackShareDTO> cb);
     //</editor-fold>
 }

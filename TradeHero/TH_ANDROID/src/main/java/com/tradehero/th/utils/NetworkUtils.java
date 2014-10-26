@@ -123,6 +123,15 @@ public final class NetworkUtils
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(str);
         return m.matches();
+    }
 
+    public static String getEventName(String url) {
+        int startPoint = url.lastIndexOf("/") + 1;
+        int endPoint = url.lastIndexOf(".html?");
+        if(endPoint<=startPoint){
+            return "";
+        }
+        String eventName = url.substring(startPoint, endPoint);
+        return eventName;
     }
 }

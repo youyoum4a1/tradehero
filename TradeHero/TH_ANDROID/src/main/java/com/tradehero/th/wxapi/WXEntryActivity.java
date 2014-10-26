@@ -24,7 +24,9 @@ import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
+import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
@@ -32,15 +34,13 @@ import com.tradehero.th.utils.NetworkUtils;
 import dagger.Lazy;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
+import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
 {
@@ -55,6 +55,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private WeChatDTO weChatDTO;
     private Bitmap mBitmap;
     private MiddleCallback<Response> trackShareMiddleCallback;
+
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
 
     @Inject CurrentUserId currentUserId;
     @Inject IWXAPI mWeChatApi;
@@ -251,6 +253,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 } else {
                     THToast.show(getString(R.string.share_success));
                     reportWeChatSuccessShareToServer();
+                    sendTackMessage();
                 }
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
@@ -260,6 +263,40 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 break;
         }
     }
+
+    private void sendTackMessage(){
+        if (weChatDTO == null) {
+            return;
+        }
+        String shareContent = weChatDTO.title;
+        if(TextUtils.isEmpty(shareContent)){
+            return;
+        }
+        String[] contents = parseContent(shareContent);
+        String content = contents[0];
+        String url = contents[1];
+        if(TextUtils.isEmpty(url)||!NetworkUtils.isCNTradeHeroURL(url)){
+            return;
+        }
+        String eventName = NetworkUtils.getEventName(url);
+        if(TextUtils.isEmpty(eventName)){
+            return;
+        }
+
+        userServiceWrapper.get().trackShare(eventName, new TrackCallback());
+    }
+
+    private class TrackCallback implements Callback{
+        @Override
+        public void success(Object o, Response response) {
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+
+        }
+    }
+
 
 
     private void reportWeChatSuccessShareToServer() {
@@ -290,7 +327,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private class TrackShareCallback implements Callback<Response> {
         @Override
         public void success(Response response, Response response2) {
-            // do nothing for now
+
             finish();
         }
 
