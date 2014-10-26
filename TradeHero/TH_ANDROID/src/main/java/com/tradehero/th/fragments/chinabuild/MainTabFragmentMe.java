@@ -182,16 +182,13 @@ public class MainTabFragmentMe extends AbsBaseFragment
             if (user.allFollowerCount > 9)
             {
                 int userId = currentUserId.toUserBaseKey().getUserId();
-                if (mShareDialogKeyPreference.get() && mShareDialogFollowerCountKeyPreference.get())
-                {
-                    if(THSharePreferenceManager.isShareDialogFANSMoreThanNineAvailable(userId, getActivity())){
-                        String moreThanNineFans = getActivity().getResources().getString(R.string.share_amount_fans_num_summary);
-                        mShareDialogKeyPreference.set(false);
-                        mShareDialogFollowerCountKeyPreference.set(false);
-                        mShareSheetTitleCache.set(moreThanNineFans);
-                        ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                                getString(R.string.share_amount_fans_num_title), moreThanNineFans, THSharePreferenceManager.FANS_MORE_THAN_NINE, userId);
-                    }
+                if (THSharePreferenceManager.isShareDialogFANSMoreThanNineAvailable(userId, getActivity())) {
+                    String moreThanNineFans = getActivity().getResources().getString(R.string.share_amount_fans_num_summary);
+                    mShareDialogKeyPreference.set(false);
+                    mShareDialogFollowerCountKeyPreference.set(false);
+                    mShareSheetTitleCache.set(moreThanNineFans);
+                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                            getString(R.string.share_amount_fans_num_title), moreThanNineFans, THSharePreferenceManager.FANS_MORE_THAN_NINE, userId);
                 }
             }
         }
