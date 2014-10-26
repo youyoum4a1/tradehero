@@ -20,6 +20,7 @@ public class SecurityPositionDetailDTO implements DTO
     public int firstTradeAllTime;
 
     public int tradeId;
+    public int positionId;
 
     //<editor-fold desc="Constructors">
     public SecurityPositionDetailDTO()

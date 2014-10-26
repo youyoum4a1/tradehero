@@ -738,10 +738,11 @@ public class BuySaleSecurityFragment extends DashboardFragment
                 }
                 else
                 {
-                    if(securityPositionDetailDTO==null || securityPositionDetailDTO.positions==null || securityPositionDetailDTO.positions.size()<=0){
+                    if(securityPositionDetailDTO==null || securityPositionDetailDTO.positionId<=0){
                         return;
                     }
-                    int positionId = securityPositionDetailDTO.positions.get(0).id;
+                    Timber.d("------> " + securityPositionDetailDTO.positionId);
+                    int positionId = securityPositionDetailDTO.positionId;
                     //sell share
                     ShareSellDialogFragment.showSellDialog(
                             getActivity().getSupportFragmentManager(), getSecurityName(),
