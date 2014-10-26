@@ -195,6 +195,11 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         {
             mListener.onPageScrollStateChanged(arg0);
         }
+
+        if(outsideListener != null)
+        {
+            outsideListener.onPageScrollStateChanged(arg0);
+        }
     }
 
     @Override
@@ -203,6 +208,11 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         if (mListener != null)
         {
             mListener.onPageScrolled(arg0, arg1, arg2);
+        }
+
+        if(outsideListener != null)
+        {
+            outsideListener.onPageScrolled(arg0, arg1, arg2);
         }
     }
 
@@ -213,6 +223,10 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         if (mListener != null)
         {
             mListener.onPageSelected(arg0);
+        }
+        if(outsideListener != null)
+        {
+            outsideListener.onPageSelected(arg0);
         }
     }
 
@@ -235,6 +249,12 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         mViewPager = view;
         view.setOnPageChangeListener(this);
         notifyDataSetChanged();
+    }
+
+    private OnPageChangeListener outsideListener;
+    public void setOutsideListener(OnPageChangeListener listener)
+    {
+        outsideListener = listener;
     }
 
     //public OnPageChangeListener getOnPageChangeListener()

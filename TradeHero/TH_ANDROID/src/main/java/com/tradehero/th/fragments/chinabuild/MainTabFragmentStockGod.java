@@ -22,7 +22,7 @@ import com.viewpagerindicator.TabPageIndicator;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class MainTabFragmentStockGod extends AbsBaseFragment
+public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPager.OnPageChangeListener
 {
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
@@ -50,38 +50,7 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(5);
         indicator.setViewPager(pager);
-        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
-        {
-            @Override public void onPageScrolled(int i, float v, int i2)
-            {
-
-            }
-
-            @Override public void onPageSelected(int i)
-            {
-                if (i == 0)
-                {
-                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_ROI));
-                }
-                else if (i == 1)
-                {
-                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_HOT));
-                }
-                else if (i == 2)
-                {
-                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_WEALTH));
-                }
-                else if (i == 3)
-                {
-                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_MORE));
-                }
-            }
-
-            @Override public void onPageScrollStateChanged(int i)
-            {
-
-            }
-        });
+        indicator.setOutsideListener(this);
     }
 
     @Override public void onStop()
@@ -159,4 +128,37 @@ public class MainTabFragmentStockGod extends AbsBaseFragment
             return CONTENT.length;
         }
     }
+
+
+    @Override public void onPageScrolled(int i, float v, int i2)
+    {
+        //Timber.d("WINDY: onPageScrolled" + i);
+    }
+
+    @Override public void onPageSelected(int i)
+    {
+        Timber.d("WINDY: 股神 ：onPageSelected" + i);
+        if (i == 0)
+        {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_ROI));
+        }
+        else if (i == 1)
+        {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_HOT));
+        }
+        else if (i == 2)
+        {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_WEALTH));
+        }
+        else if (i == 3)
+        {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_MORE));
+        }
+    }
+
+    @Override public void onPageScrollStateChanged(int i)
+    {
+        //Timber.d("WINDY: onPageScrollStateChanged" + i);
+    }
+
 }

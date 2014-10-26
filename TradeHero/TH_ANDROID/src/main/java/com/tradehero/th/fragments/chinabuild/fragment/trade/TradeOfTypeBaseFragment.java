@@ -36,7 +36,6 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -430,19 +429,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     @Override
     public void onResume()
     {
-        analytics.addEventAuto(new SimpleEvent(AnalyticsConstants.TRADE_PAGE_MINE_TRADE));
-        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD){
-            Timber.d("------> Analytics Trade hold");
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_HOLD));
-        }
-        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT){
-            Timber.d("------> Analytics Trade China");
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_CHINA));
-        }
-        if(getTradeType()==TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT){
-            Timber.d("------> Analytics Trade rise");
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE));
-        }
         super.onResume();
     }
 }

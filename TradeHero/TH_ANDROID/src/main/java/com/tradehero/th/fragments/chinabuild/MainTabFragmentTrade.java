@@ -24,8 +24,9 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
 import javax.inject.Inject;
+import timber.log.Timber;
 
-public class MainTabFragmentTrade extends AbsBaseFragment
+public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.OnPageChangeListener
 {
 
     @InjectView(R.id.pager) ViewPager pager;
@@ -36,7 +37,6 @@ public class MainTabFragmentTrade extends AbsBaseFragment
     @Inject Analytics analytics;
 
     public static final String TAG = "main_tab_fragment_trade";
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -59,6 +59,7 @@ public class MainTabFragmentTrade extends AbsBaseFragment
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(5);
         indicator.setViewPager(pager);
+        indicator.setOutsideListener(this);
     }
 
     @OnClick(R.id.imgSearch)
@@ -89,7 +90,40 @@ public class MainTabFragmentTrade extends AbsBaseFragment
         super.onResume();
     }
 
-    private static final String[] CONTENT = new String[] {"我的交易","热门持有","涨幅榜单","中国概念"};
+    private static final String[] CONTENT = new String[] {"我的交易", "热门持有", "涨幅榜单", "中国概念"};
+
+    @Override public void onPageScrolled(int i, float v, int i2)
+    {
+        //Timber.d("WINDY: onPageScrolled" + i);
+    }
+
+
+
+    @Override public void onPageSelected(int i)
+    {
+        Timber.d("WINDY: 交易 ：onPageSelected" + i);
+        if (i == 0)
+        {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_MINE_TRADE));
+        }
+        else if (i == 1)
+        {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_HOLD));
+        }
+        else if (i == 2)
+        {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_CHINA));
+        }
+        else if (i == 3)
+        {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE));
+        }
+    }
+
+    @Override public void onPageScrollStateChanged(int i)
+    {
+        //Timber.d("WINDY: onPageScrollStateChanged" + i);
+    }
 
     class CustomAdapter extends FragmentPagerAdapter
     {
@@ -127,5 +161,4 @@ public class MainTabFragmentTrade extends AbsBaseFragment
             return CONTENT.length;
         }
     }
-
 }
