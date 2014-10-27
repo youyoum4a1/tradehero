@@ -3,14 +3,14 @@
 <com.tradehero.th.widget.list.BaseListHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:background="@color/white">
+    style="@style/TH.ListItem">
 
   <TextView
       android:id="@+id/header_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:maxLines="1"
+      android:layout_marginTop="@dimen/margin_small"
+      style="@style/TH.Subhead"
       android:text="@string/manage_followers_follower_none"
     />
 

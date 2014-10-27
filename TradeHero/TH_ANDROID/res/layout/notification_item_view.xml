@@ -7,9 +7,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:descendantFocusability="blocksDescendants"
-    android:padding="@dimen/timeline_item_padding"
     tools:background="@color/number_green"
-    style="@style/TH.ListItem"
+    style="@style/TH.ListItem.Clickable"
     >
 
   <ImageView

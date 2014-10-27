@@ -17,7 +17,7 @@
       android:gravity="center_vertical"
       android:paddingLeft="10dp"
       android:paddingRight="10dp"
-      android:background="@drawable/list_item_bg"
+      android:background="@drawable/basic_white_selector"
       tools:background="#a88"
       >
 
