@@ -572,6 +572,20 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         super.onDestroyView();
     }
 
+    @Override public void onSaveInstanceState(@NotNull Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        if (badge != null)
+        {
+            picasso.cancelRequest(badge);
+        }
+        levelDefListCache.unregister(levelDefListCacheListener);
+        if (userLevelProgressBar != null)
+        {
+            userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
+        }
+    }
+
     @Override public void onDestroy()
     {
         levelDefListCacheListener = null;
