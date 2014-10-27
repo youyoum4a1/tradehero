@@ -18,10 +18,14 @@ public class THSharePreferenceManager {
     private final static String TH_SP_NAME = "th_sp_name_app_version";
 
 
+    //Dialog record
     public final static String PROPERTY_MORE_THAN_FIFTEEN = "property_more_than_fifteen";
     public final static String PROPERTY_MORE_THAN_TWENTY_FIVE = "property_more_than_twenty_five";
+    public static boolean isMoreThanFifteenShowed = false;
+    public static boolean isMoreThanTwentyShowed = false;
 
     public final static String FANS_MORE_THAN_NINE = "fans_more_than_nine";
+    public static boolean FansMoreThanNineShowed = false;
 
     public static void saveValuesByKey() {
     }
@@ -102,6 +106,9 @@ public class THSharePreferenceManager {
     }
 
     public static boolean isShareDialogMoreThanFifteenAvailable(int userId, Context context) {
+        if(isMoreThanFifteenShowed){
+            return false;
+        }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         int confirmRecord = sp.getInt(userId + "true" + PROPERTY_MORE_THAN_FIFTEEN, 0);
         if (confirmRecord > 0) {
@@ -126,6 +133,9 @@ public class THSharePreferenceManager {
     }
 
     public static boolean isShareDialogMoreThanTwentyFiveAvailable(int userId, Context context) {
+        if(isMoreThanTwentyShowed){
+            return false;
+        }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         int confirmRecord = sp.getInt(userId + "true" + PROPERTY_MORE_THAN_TWENTY_FIVE, 0);
         if (confirmRecord > 0) {
@@ -151,6 +161,9 @@ public class THSharePreferenceManager {
     }
 
     public static boolean isShareDialogFANSMoreThanNineAvailable(int userId, Context context) {
+        if(FansMoreThanNineShowed){
+            return false;
+        }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         int confirmRecord = sp.getInt(userId + "true" + FANS_MORE_THAN_NINE, 0);
         if (confirmRecord > 0) {
@@ -162,5 +175,16 @@ public class THSharePreferenceManager {
         }
         return true;
     }
+
+    /**
+     * Only for static mark
+     */
+    public static void clearDialogShowedRecord(){
+        //Clear static record for >150000, >250000, > 9 fans
+        THSharePreferenceManager.isMoreThanFifteenShowed = false;
+        THSharePreferenceManager.isMoreThanTwentyShowed = false;
+        THSharePreferenceManager.FansMoreThanNineShowed = false;
+    }
+
 
 }

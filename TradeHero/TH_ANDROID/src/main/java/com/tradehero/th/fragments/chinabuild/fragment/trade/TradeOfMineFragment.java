@@ -526,6 +526,7 @@ public class TradeOfMineFragment extends DashboardFragment
                             getString(R.string.share_amount_total_value_title), getString(R.string.share_amount_total_value_summary,
                             currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN, userId);
                     time_stamp = System.currentTimeMillis();
+                    THSharePreferenceManager.isMoreThanFifteenShowed = true;
             }else{
                 if (cached.totalValue > 250000 && (System.currentTimeMillis()-time_stamp)>duration_showing_dialog){
                     if(THSharePreferenceManager.isShareDialogMoreThanTwentyFiveAvailable(userId, getActivity())){
@@ -537,6 +538,7 @@ public class TradeOfMineFragment extends DashboardFragment
                                  getString(R.string.share_amount_total_value_title25), getString(R.string.share_amount_total_value_summary25,
                                  currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
                         time_stamp = -1;
+                        THSharePreferenceManager.isMoreThanTwentyShowed = true;
                     }
                 }
             }

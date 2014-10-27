@@ -21,6 +21,7 @@ import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
@@ -224,6 +225,9 @@ public class BindEmailSignUpFragment extends EmailSignUpFragment
 
     private void launchDashboard(UserLoginDTO userLoginDTO)
     {
+        //Clear static record for >150000, >250000, > 9 fans
+        THSharePreferenceManager.clearDialogShowedRecord();
+
         Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

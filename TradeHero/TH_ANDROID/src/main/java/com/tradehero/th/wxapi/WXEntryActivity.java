@@ -66,7 +66,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
     private static String WECHAT_CODE;
 
-    private String download_tradehero_android_on_wechat = "";
+    private String traget_user_millionaire_page = "";
 
     public static void putWeChatDTO(@NotNull Intent intent, @NotNull WeChatDTO weChatDTO) {
         intent.putExtra(WECHAT_DTO_INTENT_KEY, weChatDTO.getArgs());
@@ -88,7 +88,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         // WeChatDTO method to read from Intent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        download_tradehero_android_on_wechat = getResources().getString(R.string.download_tradehero_android_app_on_wechat);
+        traget_user_millionaire_page = getResources().getString(R.string.target_user_millionaire_page);
 
         weChatDTO = getWeChatDTO(getIntent());
         if (weChatDTO == null) {
@@ -152,7 +152,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 //                msg.description = textObject.text;
 //                return msg;
                 WXWebpageObject sellWebPage = new WXWebpageObject();
-                sellWebPage.webpageUrl = download_tradehero_android_on_wechat;
+                sellWebPage.webpageUrl = traget_user_millionaire_page;
                 WXMediaMessage msg = new WXMediaMessage(sellWebPage);
                 msg.title=totalShare;
                 msg.description = totalShare;

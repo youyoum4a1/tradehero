@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 
 public class ActivityHelper
 {
@@ -31,6 +32,9 @@ public class ActivityHelper
 
     public static void launchMainActivity(Activity activity)
     {
+        //Clear static record for >150000, >250000, > 9 fans
+        THSharePreferenceManager.clearDialogShowedRecord();
+
         presentFromActivity(activity, MainActivity.class, /* Intent.FLAG_ACTIVITY_NO_HISTORY*/ Intent.FLAG_ACTIVITY_CLEAR_TOP,new Bundle());
     }
 

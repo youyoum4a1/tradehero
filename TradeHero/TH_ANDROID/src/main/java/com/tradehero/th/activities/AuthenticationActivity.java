@@ -26,6 +26,7 @@ import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
@@ -418,6 +419,9 @@ public class AuthenticationActivity extends DashboardActivity
 
     private void launchDashboard(UserLoginDTO userLoginDTO)
     {
+        //Clear static record for >150000, >250000, > 9 fans
+        THSharePreferenceManager.clearDialogShowedRecord();
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

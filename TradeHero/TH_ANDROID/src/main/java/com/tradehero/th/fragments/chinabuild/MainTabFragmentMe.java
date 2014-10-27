@@ -189,6 +189,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
                     mShareSheetTitleCache.set(moreThanNineFans);
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_amount_fans_num_title), moreThanNineFans, THSharePreferenceManager.FANS_MORE_THAN_NINE, userId);
+                    THSharePreferenceManager.FansMoreThanNineShowed = true;
                 }
             }
         }
