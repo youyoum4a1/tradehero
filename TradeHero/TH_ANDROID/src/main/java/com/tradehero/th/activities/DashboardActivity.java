@@ -504,6 +504,7 @@ public class DashboardActivity extends BaseActivity
         }
         navigator = null;
 
+        ButterKnife.reset(this);
         super.onDestroy();
     }
 
