@@ -19,6 +19,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:paddingRight="@dimen/leaderboard_title_text_padding"
+        android:paddingTop="@dimen/margin_small"
         android:contentDescription="@null"
         tools:src="@drawable/square_ae"
         />
@@ -39,6 +40,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:paddingLeft="@dimen/leaderboard_title_text_padding"
+        android:paddingBottom="@dimen/margin_small"
         android:contentDescription="@null"
         android:alpha="0.7"
         tools:src="@drawable/square_ag"
@@ -54,7 +56,8 @@
       android:gravity="center_vertical"
       android:layout_gravity="center_vertical"
       android:layout_centerVertical="true"
-      android:paddingLeft="@dimen/leaderboard_title_text_padding"
+      android:layout_marginLeft="@dimen/leaderboard_title_text_padding"
+      android:layout_marginStart="@dimen/leaderboard_title_text_padding"
       >
 
     <TextView android:id="@+id/leaderboard_def_item_name"
