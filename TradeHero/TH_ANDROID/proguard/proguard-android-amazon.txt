@@ -4,3 +4,6 @@
 -dontwarn com.amazon.**
 -keep class com.amazon.** {*;}
 -keepattributes *Annotation*
+
+# Retrolambda
+-dontwarn java.lang.invoke.**

@@ -19,6 +19,9 @@ public class StoreItemFactory
     public static final boolean WITH_IGNORE_SYSTEM_STATUS = true;
     public static final boolean WITH_FOLLOW_SYSTEM_STATUS = false;
 
+    public static final boolean WITH_INCLUDE_ALERTS = true;
+    public static final boolean WITH_EXCLUDE_ALERTS = false;
+
     @NotNull private final SystemStatusCache systemStatusCache;
 
     //<editor-fold desc="Constructors">
@@ -42,7 +45,7 @@ public class StoreItemFactory
                 });
     }
 
-    @NotNull private StoreItemDTOList createList(boolean includeAlerts)
+    @NotNull protected StoreItemDTOList createList(boolean includeAlerts)
     {
         StoreItemDTOList created = new StoreItemDTOList();
 

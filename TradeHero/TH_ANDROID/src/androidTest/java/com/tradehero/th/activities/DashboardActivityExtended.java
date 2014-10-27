@@ -1,15 +1,17 @@
 package com.tradehero.th.activities;
 
 import com.tradehero.th.UITestModule;
-import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.Module;
+import java.util.List;
 
 public class DashboardActivityExtended extends DashboardActivity
 {
-    @Override protected ExInjector loadInjector(ExInjector injector)
+    @Override protected List<Object> getModules()
     {
-        return super.loadInjector(injector).plus(new DashboardActivityExtendedModule());
+        List<Object> modules = super.getModules();
+        modules.add(new DashboardActivityExtendedModule());
+        return modules;
     }
 
     @Module(

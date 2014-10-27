@@ -123,9 +123,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
 
-    //for dialog
-    private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
-
     @InjectView(R.id.quote_refresh_countdown) protected ProgressBar mQuoteRefreshProgressBar;
     @InjectView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
     @InjectView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
@@ -226,16 +223,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBuySellBtnContainer.setVisibility(View.GONE);
     }
 
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        progressDialogUtil.dismiss(getActivity());
-        detachWatchlistFetchTask();
-        detachBuySellMiddleCallback();
-
-        outState.putInt(BUNDLE_KEY_SELECTED_PAGE_INDEX, selectedPageIndex);
-    }
-
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
@@ -310,17 +297,28 @@ public class BuySellFragment extends AbstractBuySellFragment
         detachWatchlistFetchTask();
         detachBuySellMiddleCallback();
         detachPortfolioMenuSubscription();
+        detachBuySellDialog();
 
         securityAlertAssistant.setOnPopulatedListener(null);
 
         bottomViewPagerAdapter = null;
 
-        pushPortfolioFragmentRunnable = null;
-
         resideMenu.removeIgnoredView(mBottomViewPager);
         ButterKnife.reset(this);
 
         super.onDestroyView();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        progressDialogUtil.dismiss(getActivity());
+        detachWatchlistFetchTask();
+        detachBuySellMiddleCallback();
+        detachPortfolioMenuSubscription();
+        detachBuySellDialog();
+
+        outState.putInt(BUNDLE_KEY_SELECTED_PAGE_INDEX, selectedPageIndex);
     }
 
     @Override public void onDestroy()
@@ -338,10 +336,18 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void detachPortfolioMenuSubscription()
     {
-        if (portfolioMenuSubscription != null)
+        unsubscribe(portfolioMenuSubscription);
+        portfolioMenuSubscription = null;
+    }
+
+    private void detachBuySellDialog()
+    {
+        AbstractTransactionDialogFragment dialogCopy = abstractTransactionDialogFragment;
+        if (dialogCopy != null)
         {
-            portfolioMenuSubscription.unsubscribe();
+            dialogCopy.setBuySellTransactionListener(null);
         }
+        abstractTransactionDialogFragment = null;
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -1076,16 +1082,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             OwnedPortfolioId currentMenu = mSelectedPortfolioContainer.getCurrentMenu();
             if (currentMenu != null)
             {
-                pushPortfolioFragmentRunnable = null;
-                pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
-                {
-                    @Override
-                    public void pushPortfolioFragment(SecurityPositionTransactionDTO securityPositionTransactionDTO)
-                    {
-                        BuySellFragment.this.pushPortfolioFragment(securityPositionTransactionDTO);
-                    }
-                };
-
                 abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
                         securityId,
                         currentMenu.getPortfolioIdKey(),
@@ -1096,24 +1092,8 @@ public class BuySellFragment extends AbstractBuySellFragment
                 {
                     @Override public void onTransactionSuccessful(boolean isBuy, @NotNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
                     {
-                        if (pushPortfolioFragmentRunnable == null)
-                        {
-                            pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
-                            {
-                                @Override
-                                public void pushPortfolioFragment(SecurityPositionTransactionDTO securityPositionDetailDTO)
-                                {
-                                    BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
-                                }
-                            };
-                        }
-                        if (pushPortfolioFragmentRunnable != null)
-                        {
-                            setActionBarSubtitle(null);
-                            pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionTransactionDTO);
-                        }
-
                         showPrettyReviewAndInvite(isBuy);
+                        pushPortfolioFragment(securityPositionTransactionDTO);
                     }
 
                     @Override public void onTransactionFailed(boolean isBuy, THException error)
@@ -1201,9 +1181,15 @@ public class BuySellFragment extends AbstractBuySellFragment
                 securityPositionTransactionDTO.portfolio.id));
     }
 
+<<<<<<< HEAD
     protected interface PushPortfolioFragmentRunnable
     {
         void pushPortfolioFragment(SecurityPositionTransactionDTO securityPositionTransactionDTO);
+=======
+    private void pushPortfolioFragment()
+    {
+        pushPortfolioFragment(getApplicablePortfolioId());
+>>>>>>> develop
     }
 
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)

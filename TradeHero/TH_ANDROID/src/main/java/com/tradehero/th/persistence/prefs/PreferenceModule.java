@@ -20,6 +20,7 @@ import dagger.Provides;
 import java.util.HashSet;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
@@ -155,6 +156,7 @@ public class PreferenceModule
             }
         }
 
+        Timber.e(new NullPointerException(), "There was no AuthHeader available");
         return null;
     }
 }

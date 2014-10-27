@@ -29,12 +29,22 @@ public class RetrofitProtectedModule
         return adapter.create(AlertPlanServiceAsync.class);
     }
 
-    @Provides @Singleton AlertServiceAsync provideAlertService(RestAdapter adapter)
+    @Provides @Singleton AlertPlanServiceRx provideAlertPlanServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(AlertPlanServiceRx.class);
+    }
+
+    @Provides @Singleton AlertServiceAsync provideAlertServiceAsync(RestAdapter adapter)
     {
         return adapter.create(AlertServiceAsync.class);
     }
 
-    @Provides @Singleton CompetitionServiceAsync provideCompetitionService(RestAdapter adapter)
+    @Provides @Singleton AlertServiceRx provideAlertServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(AlertServiceRx.class);
+    }
+
+    @Provides @Singleton CompetitionServiceAsync provideCompetitionServiceAsync(RestAdapter adapter)
     {
         return adapter.create(CompetitionServiceAsync.class);
     }
@@ -49,12 +59,12 @@ public class RetrofitProtectedModule
         return adapter.create(DiscussionServiceAsync.class);
     }
 
-    @Provides @Singleton FollowerServiceAsync provideFollowerService(RestAdapter adapter)
+    @Provides @Singleton FollowerServiceAsync provideFollowerServiceAsync(RestAdapter adapter)
     {
         return adapter.create(FollowerServiceAsync.class);
     }
 
-    @Provides @Singleton LeaderboardServiceAsync provideLeaderboardService(RestAdapter adapter)
+    @Provides @Singleton LeaderboardServiceAsync provideLeaderboardServiceAsync(RestAdapter adapter)
     {
         return adapter.create(LeaderboardServiceAsync.class);
     }
@@ -150,7 +160,7 @@ public class RetrofitProtectedModule
     {
         return adapter.create(UserServiceRx.class);
     }
-    @Provides @Singleton UserServiceAsync provideUserService(RestAdapter adapter)
+    @Provides @Singleton UserServiceAsync provideUserServiceAsync(RestAdapter adapter)
     {
         return adapter.create(UserServiceAsync.class);
     }
