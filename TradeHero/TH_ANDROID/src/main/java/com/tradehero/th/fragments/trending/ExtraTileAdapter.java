@@ -28,6 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class ExtraTileAdapter extends BaseAdapter
@@ -38,8 +39,8 @@ public class ExtraTileAdapter extends BaseAdapter
 
     private int itemHeight = 0;
 
-    private final ListAdapter wrappedAdapter;
-    private final LayoutInflater inflater;
+    @NotNull private final ListAdapter wrappedAdapter;
+    @NotNull private final LayoutInflater inflater;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -55,7 +56,7 @@ public class ExtraTileAdapter extends BaseAdapter
     private int headingTilesCount;
 
     //<editor-fold desc="Constructors">
-    public ExtraTileAdapter(Context context, ListAdapter wrappedAdapter)
+    public ExtraTileAdapter(Context context, @NotNull ListAdapter wrappedAdapter)
     {
         this.inflater = LayoutInflater.from(context);
         this.wrappedAdapter = wrappedAdapter;
@@ -68,18 +69,12 @@ public class ExtraTileAdapter extends BaseAdapter
 
     @Override public void registerDataSetObserver(DataSetObserver observer)
     {
-        if (wrappedAdapter != null)
-        {
-            wrappedAdapter.registerDataSetObserver(observer);
-        }
+        wrappedAdapter.registerDataSetObserver(observer);
     }
 
     @Override public void unregisterDataSetObserver(DataSetObserver observer)
     {
-        if (wrappedAdapter != null)
-        {
-            wrappedAdapter.unregisterDataSetObserver(observer);
-        }
+        wrappedAdapter.unregisterDataSetObserver(observer);
     }
 
     @Override public int getCount()
@@ -197,14 +192,7 @@ public class ExtraTileAdapter extends BaseAdapter
 
     @Override public int getViewTypeCount()
     {
-        if (wrappedAdapter != null)
-        {
-            return TileType.values().length;
-        }
-        else
-        {
-            throw new IllegalAccessError("wrappedAdapter should not be null");
-        }
+        return TileType.values().length;
     }
 
     @Override public boolean isEmpty()
@@ -212,7 +200,7 @@ public class ExtraTileAdapter extends BaseAdapter
         return wrappedAdapter.isEmpty();
     }
 
-    @Override public ListAdapter getWrappedAdapter()
+    @Override @NotNull public ListAdapter getWrappedAdapter()
     {
         return wrappedAdapter;
     }
