@@ -392,7 +392,6 @@
   <style name="TH.Achievement.Title"
       parent="TH.Title">
     <item name="android:gravity">center</item>
-    <item name="android:textStyle">bold</item>
   </style>
 
   <style name="TH.Achievement.Description"

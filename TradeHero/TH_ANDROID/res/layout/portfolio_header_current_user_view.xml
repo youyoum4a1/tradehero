@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
+    style="@style/TH.ListItem"
+    android:gravity="center_vertical"
     android:background="@color/portfolio_header_background_color"
     >
 
@@ -20,13 +20,13 @@
         android:text="@string/portfolio_header_total_value"
         android:gravity="center"
         android:textColor="@color/portfolio_header_text_color"
-        android:textSize="@dimen/text_caption"/>
+        style="@style/TH.Caption"/>
     <TextView
         android:id="@+id/header_portfolio_total_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/portfolio_header_text_color"
-        android:textStyle="bold"
+        style="@style/TH.Subhead"
         android:gravity="center"/>
   </LinearLayout>
   <LinearLayout
@@ -40,12 +40,12 @@
         android:text="@string/portfolio_header_cash_value"
         android:gravity="center"
         android:textColor="@color/portfolio_header_text_color"
-        android:textSize="@dimen/text_caption"/>
+        style="@style/TH.Caption"/>
     <TextView
         android:id="@+id/header_portfolio_cash_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        style="@style/TH.Subhead"
         android:textColor="@color/portfolio_header_text_color"
         android:gravity="center"/>
   </LinearLayout>
