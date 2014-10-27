@@ -1,93 +1,107 @@
 package com.tradehero.th.rx;
 
-import android.util.Pair;
-import com.tradehero.th.api.pagination.RangeDTO;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 import rx.Observable;
-import rx.Observer;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 /**
  * Created by thonguyen on 23/10/14.
  */
 public class PaginationObservable
 {
-    private static Map<Object, Observable<?>> cachedRequests = new WeakHashMap<>();
-    private static Map<Object, RangeDTO> currentRanges = new WeakHashMap<>();
-
-    /**
-     * TODO compare RangeDTO with the previous for better merging, maybe we don't need to sort ...
-     * Transform a list into a Observable of an paginated list
-     * @param rangeObservable observable of a range
-     * @return observable of paginatable list of items
-     */
-    public static <K, T extends Comparable<T>> Observable<List<T>> create(
-            final K key,
-            final Observable<RangeDTO> rangeObservable,
-            final Func1<RangeDTO, Observable<List<T>>> fetchFunc)
+    public static <T extends Comparable<T>> Observable<List<T>> create(Observable<List<T>> listObservable)
     {
-        final PublishSubject<T> proxy = PublishSubject.create();
-        proxy.subscribe(new Observer<T>()
-        {
-            @Override public void onCompleted()
-            {
-                cachedRequests.put(key, proxy);
-            }
-
-            @Override public void onError(Throwable e)
-            {
-            }
-
-            @Override public void onNext(T ts)
-            {
-            }
-        });
-        rangeObservable
-                .flatMap(new Func1<RangeDTO, Observable<List<T>>>()
+        return listObservable
+                .scan(new LinkedList<T>(), new Func2<LinkedList<T>, List<T>, LinkedList<T>>()
                 {
-                    @Override public Observable<List<T>> call(final RangeDTO rangeDTO)
+                    @Override public LinkedList<T> call(LinkedList<T> collector, List<T> newList)
                     {
-                        return fetchFunc.call(rangeDTO);
+                        int newListSize = newList.size();
+                        if (newListSize > 0)
+                        {
+                            if (collector.size() == 0)
+                            {
+                                collector.addAll(newList);
+                            }
+                            else
+                            {
+                                T first = collector.getFirst();
+                                T last = collector.getLast();
+
+                                T newFirst = newList.get(0);
+                                T newLast = newList.get(newList.size() - 1);
+
+                                boolean isFirstNewItemOutsideBound =
+                                        ((int) Math.signum(first.compareTo(newFirst))) * ((int) Math.signum(last.compareTo(newFirst))) > 0;
+                                boolean isLastNewItemOutsideBound =
+                                        ((int) Math.signum(first.compareTo(newLast))) * ((int) Math.signum(last.compareTo(newLast))) > 0;
+
+                                if (isFirstNewItemOutsideBound && isLastNewItemOutsideBound)
+                                {
+                                    boolean isSmallerNewList =
+                                            ((int) Math.signum(first.compareTo(newFirst))) * ((int) Math.signum(first.compareTo(last))) < 0;
+                                    if (isSmallerNewList)
+                                    {
+                                        collector.addAll(0, newList);
+                                    }
+                                    else
+                                    {
+                                        collector.addAll(newList);
+                                    }
+                                    return collector;
+                                }
+                                else if (!isFirstNewItemOutsideBound && !isLastNewItemOutsideBound)
+                                {
+                                    return collector;
+                                }
+
+                                if (isFirstNewItemOutsideBound)
+                                {
+                                    int outBound = -1;
+                                    for (T item : newList)
+                                    {
+                                        boolean isOut = ((int) Math.signum(first.compareTo(item))) * ((int) Math.signum(last.compareTo(item))) < 0;
+                                        if (isOut)
+                                        {
+                                            ++outBound;
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    collector.addAll(0, newList.subList(0, outBound));
+                                }
+
+                                if (isLastNewItemOutsideBound)
+                                {
+                                    boolean isOut = false;
+                                    for (T item : newList)
+                                    {
+                                        if (isOut)
+                                        {
+                                            collector.add(item);
+                                        }
+                                        else
+                                        {
+                                            isOut = ((int) Math.signum(first.compareTo(item))) * ((int) Math.signum(last.compareTo(item))) < 0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        return collector;
                     }
                 })
-                .flatMap(new Func1<List<T>, Observable<T>>()
+                .map(new Func1<LinkedList<T>, List<T>>()
                 {
-                    @Override public Observable<T> call(List<T> ts)
+                    @Override public List<T> call(LinkedList<T> ts)
                     {
-                        return Observable.from(ts);
+                        return ts;
                     }
-                })
-                .compose(new Observable.Transformer<T, T>()
-                {
-                    @Override public Observable<T> call(Observable<? extends T> observable)
-                    {
-                        Observable<T> cachedRequest = getCachedRequest(key);
-                        return cachedRequest.mergeWith(observable);
-                    }
-                })
-                .subscribe(proxy);
-        return proxy.toSortedList(new Func2<T, T, Integer>()
-        {
-            @Override public Integer call(T t, T t2)
-            {
-                return -t.compareTo(t2);
-            }
-        });
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <K, T> Observable<T> getCachedRequest(K key)
-    {
-        Observable<T> result = (Observable<T>) cachedRequests.get(key);
-        if (result == null)
-        {
-            result = Observable.empty();
-        }
-        return result;
+                });
     }
 }
