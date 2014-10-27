@@ -122,15 +122,9 @@ public class BaseFragment extends Fragment
         actionBarOwnerMixin.setActionBarSubtitle(subtitle);
     }
 
-<<<<<<< HEAD
-    protected void detachSubscription(@Nullable Subscription subscription)
-    {
-        if (subscription != null)
-=======
     protected void unsubscribe(@Nullable Subscription subscription)
     {
         if (subscription != null && !subscription.isUnsubscribed())
->>>>>>> develop
         {
             subscription.unsubscribe();
         }

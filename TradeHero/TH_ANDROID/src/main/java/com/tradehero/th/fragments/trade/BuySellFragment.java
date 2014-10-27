@@ -1181,17 +1181,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 securityPositionTransactionDTO.portfolio.id));
     }
 
-<<<<<<< HEAD
-    protected interface PushPortfolioFragmentRunnable
-    {
-        void pushPortfolioFragment(SecurityPositionTransactionDTO securityPositionTransactionDTO);
-=======
-    private void pushPortfolioFragment()
-    {
-        pushPortfolioFragment(getApplicablePortfolioId());
->>>>>>> develop
-    }
-
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)
     {
         shareToWeChat();
