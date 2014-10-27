@@ -12,7 +12,6 @@ import com.tradehero.th.R;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 public class TwitterEmailFragment extends Fragment
@@ -34,13 +33,7 @@ public class TwitterEmailFragment extends Fragment
 
         ViewObservable.clicks(twitterConfirm, false)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<View, String>()
-                {
-                    @Override public String call(View view)
-                    {
-                        return twitterEmail.getText().toString();
-                    }
-                })
+                .map(view1 -> twitterEmail.getText().toString())
                 .subscribe(loginRequestSubject);
     }
 

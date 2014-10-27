@@ -41,10 +41,7 @@ import rx.Subscription;
 import rx.android.observables.Assertions;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 
@@ -87,8 +84,7 @@ public class SignInOrUpFragment extends Fragment
     @OnClick({
             R.id.txt_term_of_service_signin,
             R.id.txt_term_of_service_termsofuse
-    })
-    void handleTermOfServiceClick(View view)
+    }) void handleTermOfServiceClick(View view)
     {
         String url = null;
         switch (view.getId())
@@ -121,130 +117,59 @@ public class SignInOrUpFragment extends Fragment
         ButterKnife.inject(this, view);
 
         authenticationObservable = Observable.from(observableViews)
-                .filter(new Func1<AuthenticationButton, Boolean>()
-                {
-                    @Override public Boolean call(AuthenticationButton authenticationButton)
-                    {
-                        return authenticationButton != null;
-                    }
-                })
-                .flatMap(new Func1<AuthenticationButton, Observable<AuthenticationButton>>()
-                {
-                    @Override public Observable<AuthenticationButton> call(AuthenticationButton authenticationButton)
-                    {
-                        return ViewObservable.clicks(authenticationButton, false);
-                    }
-                })
-                .map(new Func1<AuthenticationButton, SocialNetworkEnum>()
-                {
-                    @Override public SocialNetworkEnum call(AuthenticationButton view)
-                    {
-                        return view.getType();
-                    }
-                })
-                .doOnNext(new Action1<SocialNetworkEnum>()
-                {
-                    @Override public void call(SocialNetworkEnum socialNetworkEnum)
-                    {
-                        progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                                getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),
-                                true);
-                    }
-                })
-                .map(new Func1<SocialNetworkEnum, AuthenticationProvider>()
-                {
-                    @Override public AuthenticationProvider call(SocialNetworkEnum socialNetworkEnum)
-                    {
-                        return enumToAuthProviderMap.get(socialNetworkEnum);
-                    }
-                })
-                .flatMap(new Func1<AuthenticationProvider, Observable<AuthData>>()
-                {
-                    @Override public Observable<AuthData> call(AuthenticationProvider authenticationProvider)
-                    {
-                        return authenticationProvider.logIn(getActivity());
-                    }
-                })
+                .filter(authenticationButton -> authenticationButton != null)
+                .flatMap(authenticationButton -> ViewObservable.clicks(authenticationButton, false))
+                .map(AuthenticationButton::getType)
+                .doOnNext(socialNetworkEnum -> progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+                        getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),
+                        true))
+                .map(enumToAuthProviderMap::get)
+                .flatMap(authenticationProvider -> authenticationProvider.logIn(getActivity()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<AuthData>()
-                {
-                    @Override public void call(AuthData authData)
+                .doOnNext(authData -> {
+                    if (progressDialog != null)
                     {
-                        if (progressDialog != null)
-                        {
-                            progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
-                        }
+                        progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
                     }
                 })
-                .map(new Func1<AuthData, LoginSignUpFormDTO>()
-                {
-                    @Override public LoginSignUpFormDTO call(AuthData authData)
-                    {
-                        return authenticationFormBuilderProvider.get()
-                                .authData(authData)
-                                .build();
-                    }
-                })
-                .flatMap(new Func1<LoginSignUpFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
-                {
-                    @Override public Observable<Pair<AuthData, UserProfileDTO>> call(final LoginSignUpFormDTO loginSignUpFormDTO)
-                    {
-                        AuthData authData = loginSignUpFormDTO.authData;
-                        Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
-                                authData.getTHToken(), loginSignUpFormDTO)
-                                .retry(new Func2<Integer, Throwable, Boolean>()
+                .map(authData -> authenticationFormBuilderProvider.get()
+                        .authData(authData)
+                        .build())
+                .flatMap(loginSignUpFormDTO -> {
+                    AuthData authData = loginSignUpFormDTO.authData;
+                    Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
+                            authData.getTHToken(), loginSignUpFormDTO)
+                            .retry((integer, throwable) -> {
+                                THException thException = new THException(throwable);
+                                if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
                                 {
-                                    @Override public Boolean call(Integer integer, Throwable throwable)
+                                    try
                                     {
-                                        THException thException = new THException(throwable);
-                                        if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
-                                        {
-                                            try
-                                            {
-                                                sessionServiceWrapper.updateAuthorizationTokens(loginSignUpFormDTO);
-                                                return true;
-                                            }
-                                            catch (Exception ignored)
-                                            {
-                                                return false;
-                                            }
-                                        }
+                                        sessionServiceWrapper.updateAuthorizationTokens(loginSignUpFormDTO);
+                                        return true;
+                                    }
+                                    catch (Exception ignored)
+                                    {
                                         return false;
                                     }
-                                })
-                                .subscribeOn(AndroidSchedulers.mainThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData))
-                                .map(new Func1<UserLoginDTO, UserProfileDTO>()
-                                {
-                                    @Override public UserProfileDTO call(UserLoginDTO userLoginDTO)
-                                    {
-                                        return userLoginDTO.profileDTO;
-                                    }
-                                });
+                                }
+                                return false;
+                            })
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData))
+                            .map(userLoginDTO -> userLoginDTO.profileDTO);
 
-                        return Observable.zip(Observable.just(authData), userLoginDTOObservable,
-                                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
-                                {
-                                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData authData, UserProfileDTO userLoginDTO)
-                                    {
-                                        return Pair.create(authData, userLoginDTO);
-                                    }
-                                })
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
-                    }
+                    return Observable.zip(Observable.just(authData), userLoginDTOObservable, Pair::create)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread());
                 })
                 .doOnError(toastOnErrorActionProvider.get())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnUnsubscribe(new Action0()
-                {
-                    @Override public void call()
+                .doOnUnsubscribe(() -> {
+                    if (progressDialog != null)
                     {
-                        if (progressDialog != null)
-                        {
-                            progressDialog.dismiss();
-                        }
+                        progressDialog.dismiss();
                     }
                 })
                 .doOnNext(authDataActionProvider.get())
@@ -325,54 +250,26 @@ public class SignInOrUpFragment extends Fragment
                     progressDialog.hide();
                 }
                 return twitterEmailFragment.obtainEmail()
-                        .map(new Func1<String, LoginSignUpFormDTO>()
-                        {
-                            @Override public LoginSignUpFormDTO call(String email)
-                            {
-                                return authenticationFormBuilderProvider.get()
-                                        .authData(authData)
-                                        .email(email)
-                                        .build();
-                            }
-                        })
-                        .doOnNext(new Action1<LoginSignUpFormDTO>()
-                        {
-                            @Override public void call(LoginSignUpFormDTO loginSignUpFormDTO)
-                            {
-                                if (progressDialog != null)
-                                {
-                                    progressDialog.show();
-                                }
-                            }
-                        })
-                        .flatMap(new Func1<LoginSignUpFormDTO, Observable<UserLoginDTO>>()
-                        {
-                            @Override public Observable<UserLoginDTO> call(LoginSignUpFormDTO loginSignUpFormDTO)
-                            {
-                                return sessionServiceWrapper.signupAndLoginRx(
-                                        loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO);
-                            }
-                        })
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnError(toastOnErrorActionProvider.get())
-                        .retry()
-                        .doOnNext(new Action1<UserLoginDTO>()
-                        {
-                            @Override public void call(UserLoginDTO userLoginDTO)
+                        .map(email -> authenticationFormBuilderProvider.get()
+                                .authData(authData)
+                                .email(email)
+                                .build())
+                        .doOnNext(loginSignUpFormDTO -> {
+                            if (progressDialog != null)
                             {
                                 progressDialog.show();
                             }
                         })
-                        .doOnCompleted(new Action0()
-                        {
-                            @Override public void call()
-                            {
-                                resubscribe();
-                            }
-                        });
+                        .flatMap(loginSignUpFormDTO -> sessionServiceWrapper.signupAndLoginRx(
+                                loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(toastOnErrorActionProvider.get())
+                        .retry()
+                        .doOnNext(userLoginDTO -> progressDialog.show())
+                        .doOnCompleted(() -> resubscribe());
             }
-            
+
             throw new RuntimeException(throwable);
         }
     }

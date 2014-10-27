@@ -158,3 +158,6 @@
 
 # Not sure this is needed
 -dontwarn com.actionbarsherlock.BuildConfig
+
+# Retrolambda
+-dontwarn java.lang.invoke.**

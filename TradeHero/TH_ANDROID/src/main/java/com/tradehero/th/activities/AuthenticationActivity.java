@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class AuthenticationActivity extends BaseActivity
@@ -72,13 +71,7 @@ public class AuthenticationActivity extends BaseActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
-        CollectionUtils.apply(activityResultRequesters, new Action1<ActivityResultRequester>()
-        {
-            @Override public void call(ActivityResultRequester activityResultRequester)
-            {
-                activityResultRequester.onActivityResult(requestCode, resultCode, data);
-            }
-        });
+        CollectionUtils.apply(activityResultRequesters, requester -> requester.onActivityResult(requestCode, resultCode, data));
     }
 
     @Override protected boolean requireLogin()
