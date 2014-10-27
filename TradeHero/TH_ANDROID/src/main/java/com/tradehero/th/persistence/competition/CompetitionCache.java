@@ -119,8 +119,6 @@ import retrofit.Callback;
         return competitionServiceWrapper.getCompetitionDetail(competitionId, callback);
     }
 
-
-
     public MiddleCallback<LeaderboardDTO> getMySelfRank(int leaderboardsId, int userId, @Nullable
     Callback<LeaderboardDTO> callback)
     {

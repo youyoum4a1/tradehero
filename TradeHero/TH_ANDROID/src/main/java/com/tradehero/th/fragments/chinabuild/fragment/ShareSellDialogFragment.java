@@ -119,7 +119,7 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSell;
         if(!mGetMoney.startsWith("-")){
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId, mTradeId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title,/* mStockNum, mStockName, mStockCode, mStockUp, mGetMoney,*/ mUserId, mPositionId, mTradeId);
         }else{
             weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId, mTradeId);
         }
@@ -133,7 +133,7 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
         if(!mGetMoney.startsWith("-")){
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId, mTradeId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title, /*mStockNum, mStockName, mStockCode, mStockUp, mGetMoney,*/ mUserId, mPositionId, mTradeId);
         }else{
             weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId, mTradeId);
         }
@@ -150,7 +150,7 @@ public class ShareSellDialogFragment extends BaseDialogFragment
             {
                 if(!mGetMoney.startsWith("-")){
                     weiboSocialFriendHandlerProvider.get().inviteWeiboFriends(
-                        getString(R.string.share_sell_to_wechat_title, mStockNum, mStockName, mStockCode, mStockUp, mGetMoney, mUserId, mPositionId, mTradeId),
+                        getString(R.string.share_sell_to_wechat_title, /*mStockNum, mStockName, mStockCode, mStockUp, mGetMoney,*/ mUserId, mPositionId, mTradeId),
                         currentUserId.toUserBaseKey(), new InviteFriendCallback());
                 }else{
                     weiboSocialFriendHandlerProvider.get().inviteWeiboFriends(

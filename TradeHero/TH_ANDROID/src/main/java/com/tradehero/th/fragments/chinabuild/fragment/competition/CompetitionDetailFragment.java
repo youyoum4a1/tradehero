@@ -89,7 +89,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     @Inject Lazy<CompetitionCache> competitionCacheLazy;
     private Callback<UserCompetitionDTO> callbackEnrollUGC;
-    private Callback<UserCompetitionDTO> callbackgetCompetition;
+    private Callback<UserCompetitionDTO> callbackGetCompetition;
     private Callback<LeaderboardDTO> callbackMySelfRank;
 
     @Inject Analytics analytics;
@@ -146,7 +146,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         getBundleCompetition();
         callbackEnrollUGC = new EnrollUGCCallback();
-        callbackgetCompetition = new GetCompetitionDetailCallback();
+        callbackGetCompetition = new GetCompetitionDetailCallback();
         callbackMySelfRank = new MySelfRanCallback();
         competitionLeaderboardCacheListener = createCompetitionLeaderboardListener();
         portfolioCompactNewFetchListener = createPortfolioCompactNewFetchListener();
@@ -209,7 +209,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void noFoundCompetition()
     {
-        THToast.show("没有找到比赛");
+        //THToast.show("没有找到比赛");
         popCurrentFragment();
     }
 
@@ -359,7 +359,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         portfolioCompactNewFetchListener = null;
         userProfileCacheListener = null;
         callbackEnrollUGC = null;
-        callbackgetCompetition = null;
+        callbackGetCompetition = null;
         callbackMySelfRank = null;
         super.onDestroy();
     }
@@ -369,7 +369,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         super.onResume();
         refreshStatus();
     }
-
 
 
     public void refreshStatus()
@@ -480,7 +479,7 @@ public class CompetitionDetailFragment extends DashboardFragment
                     R.string.processing, R.string.alert_dialog_please_wait);
         }
 
-        competitionCacheLazy.get().getCompetitionDetail(competitionId, callbackgetCompetition);
+        competitionCacheLazy.get().getCompetitionDetail(competitionId, callbackGetCompetition);
     }
 
     public void toPlayCompetition()

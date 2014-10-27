@@ -287,6 +287,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
     {
         super.onResume();
         fetchUserProfile();
+        fetchPortfolio();
     }
 
     @OnClick(R.id.tvHeadRight0)

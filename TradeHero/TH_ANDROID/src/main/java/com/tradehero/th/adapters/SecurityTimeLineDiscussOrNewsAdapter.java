@@ -108,144 +108,157 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 
     @Override public View getView(final int position, View convertView, ViewGroup viewGroup)
     {
-        final AbstractDiscussionCompactDTO item = (AbstractDiscussionCompactDTO) getItem(position);
-        if(item!=null && item instanceof EmptyDiscussionCompactDTO)
-        {
-            convertView = inflater.inflate(R.layout.separate_line_transpant, viewGroup, false);
-            return convertView;
-        }
-        else if (item != null)
-        {
-            ViewHolder holder = null;
-            if (convertView == null)
-            {
-                convertView = inflater.inflate(R.layout.security_time_line_item, viewGroup, false);
-                holder = new ViewHolder();
-                holder.llItemAll = (LinearLayout) convertView.findViewById(R.id.llItemAll);
-                holder.tvUserTLTimeStamp = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp);
 
-                //不是股票交易
-                holder.llUserTLNoTrade = (LinearLayout) convertView.findViewById(R.id.llUserTLNoTrade);
-                holder.tvUserTLContent = (TextView) convertView.findViewById(R.id.tvUserTLContent);
+            final AbstractDiscussionCompactDTO item = (AbstractDiscussionCompactDTO) getItem(position);
+            //if(item!=null && item instanceof EmptyDiscussionCompactDTO)
+            //{
+            //    convertView = inflater.inflate(R.layout.separate_line_transpant, viewGroup, false);
+            //    return convertView;
+            //}
+            //else if (item != null)
+            //{
+                ViewHolder holder = null;
+                if (convertView == null)
+                {
+                    convertView = inflater.inflate(R.layout.security_time_line_item, viewGroup, false);
+                    holder = new ViewHolder();
+                    holder.llAllTimeLine = (LinearLayout) convertView.findViewById(R.id.llAllTimeLine);
+                    holder.llItemAll = (LinearLayout) convertView.findViewById(R.id.llItemAll);
+                    holder.tvUserTLTimeStamp = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp);
 
-                holder.imgSecurityTLUserHeader = (ImageView) convertView.findViewById(R.id.imgSecurityTLUserHeader);
-                holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
-                ////是股票交易
-                //holder.rlUserTLTrade = (RelativeLayout) convertView.findViewById(R.id.rlUserTLTrade);
-                //holder.tvTradeName = (TextView) convertView.findViewById(R.id.tvTradeName);
-                //holder.tvTradePrice = (TextView) convertView.findViewById(R.id.tvTradePrice);
-                //holder.tvTradeCount = (TextView) convertView.findViewById(R.id.tvTradeCount);
-                //holder.tvTradeMoney = (TextView) convertView.findViewById(R.id.tvTradeMoney);
-                //holder.tvTradeCost = (TextView) convertView.findViewById(R.id.tvTradeCost);
-                //holder.title0 = (TextView) convertView.findViewById(R.id.title0);
-                //holder.title1 = (TextView) convertView.findViewById(R.id.title1);
-                //holder.title2 = (TextView) convertView.findViewById(R.id.title2);
+                    //不是股票交易
+                    holder.llUserTLNoTrade = (LinearLayout) convertView.findViewById(R.id.llUserTLNoTrade);
+                    holder.tvUserTLContent = (TextView) convertView.findViewById(R.id.tvUserTLContent);
 
-                //赞，评论，分享
-                holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
-                holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);
-                holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
-                holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLPraise);
-                holder.tvTLPraise = (TextView) convertView.findViewById(R.id.tvTLPraise);
-                holder.btnTLComment = (TextView) convertView.findViewById(R.id.btnTLComment);
-                holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);
-                holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
-                holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
+                    holder.imgSecurityTLUserHeader = (ImageView) convertView.findViewById(R.id.imgSecurityTLUserHeader);
+                    holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
+                    ////是股票交易
+                    //holder.rlUserTLTrade = (RelativeLayout) convertView.findViewById(R.id.rlUserTLTrade);
+                    //holder.tvTradeName = (TextView) convertView.findViewById(R.id.tvTradeName);
+                    //holder.tvTradePrice = (TextView) convertView.findViewById(R.id.tvTradePrice);
+                    //holder.tvTradeCount = (TextView) convertView.findViewById(R.id.tvTradeCount);
+                    //holder.tvTradeMoney = (TextView) convertView.findViewById(R.id.tvTradeMoney);
+                    //holder.tvTradeCost = (TextView) convertView.findViewById(R.id.tvTradeCost);
+                    //holder.title0 = (TextView) convertView.findViewById(R.id.title0);
+                    //holder.title1 = (TextView) convertView.findViewById(R.id.title1);
+                    //holder.title2 = (TextView) convertView.findViewById(R.id.title2);
 
-                holder.includeTLOperater = (LinearLayout) convertView.findViewById(R.id.includeTLOperater);
+                    //赞，评论，分享
+                    holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
+                    holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);
+                    holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
+                    holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLPraise);
+                    holder.tvTLPraise = (TextView) convertView.findViewById(R.id.tvTLPraise);
+                    holder.btnTLComment = (TextView) convertView.findViewById(R.id.btnTLComment);
+                    holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);
+                    holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
+                    holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
 
-                convertView.setTag(holder);
-            }
-            else
-            {
-                holder = (ViewHolder) convertView.getTag();
-            }
+                    holder.includeTLOperater = (LinearLayout) convertView.findViewById(R.id.includeTLOperater);
 
-            holder.includeTLOperater.setVisibility(isSimpleModule ? View.GONE : View.VISIBLE);
+                    convertView.setTag(holder);
+                }
+                else
+                {
+                    holder = (ViewHolder) convertView.getTag();
+                }
 
-            holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
+                //fixed a bug ..
+                if(item instanceof EmptyDiscussionCompactDTO)
+                {
+                    holder.llAllTimeLine.setVisibility(View.GONE);
+                    return convertView;
+                }
+                else{
+                    holder.llAllTimeLine.setVisibility(View.VISIBLE);
+                }
 
-            if (item instanceof NewsItemCompactDTO)
-            {
-                holder.tvUserTLContent.setText(((NewsItemCompactDTO) item).description);
-                holder.imgSecurityTLUserHeader.setVisibility(View.GONE);
-                holder.tvUserTLName.setVisibility(View.GONE);
-            }
-            else if (item instanceof DiscussionDTO)
-            {
-                holder.tvUserTLContent.setText(((DiscussionDTO) item).text);
-                holder.tvUserTLName.setText(((DiscussionDTO) item).user.displayName);
-                holder.imgSecurityTLUserHeader.setVisibility(View.VISIBLE);
-                picasso.get()
-                        .load(((DiscussionDTO) item).user.picture)
-                        .placeholder(R.drawable.superman_facebook)
-                        .error(R.drawable.superman_facebook)
-                        .into(holder.imgSecurityTLUserHeader);
-                holder.imgSecurityTLUserHeader.setOnClickListener(new View.OnClickListener()
+
+                holder.includeTLOperater.setVisibility(isSimpleModule ? View.GONE : View.VISIBLE);
+
+                holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
+
+                if (item instanceof NewsItemCompactDTO)
+                {
+                    holder.tvUserTLContent.setText(((NewsItemCompactDTO) item).description);
+                    holder.imgSecurityTLUserHeader.setVisibility(View.GONE);
+                    holder.tvUserTLName.setVisibility(View.GONE);
+                }
+                else if (item instanceof DiscussionDTO)
+                {
+                    holder.tvUserTLContent.setText(((DiscussionDTO) item).text);
+                    holder.tvUserTLName.setText(((DiscussionDTO) item).user.displayName);
+                    holder.imgSecurityTLUserHeader.setVisibility(View.VISIBLE);
+                    picasso.get()
+                            .load(((DiscussionDTO) item).user.picture)
+                            .placeholder(R.drawable.superman_facebook)
+                            .error(R.drawable.superman_facebook)
+                            .into(holder.imgSecurityTLUserHeader);
+                    holder.imgSecurityTLUserHeader.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override public void onClick(View view)
+                        {
+                            openUserProfile(((DiscussionDTO) item).user.id);
+                        }
+                    });
+                }
+
+                holder.tvTLPraise.setText(Html.fromHtml(item.getVoteString()));
+                holder.tvTLComment.setText("" + item.commentCount);
+
+                holder.llItemAll.setOnClickListener(new View.OnClickListener()
                 {
                     @Override public void onClick(View view)
                     {
-                        openUserProfile(((DiscussionDTO) item).user.id);
+                        if (timeLineOperater != null)
+                        {
+                            timeLineOperater.OnTimeLineItemClicked(position);
+                        }
                     }
                 });
-            }
+                holder.tvUserTLContent.setOnClickListener(new View.OnClickListener(){
+                    @Override public void onClick(View view)
+                    {
+                        if (timeLineOperater != null)
+                        {
+                            timeLineOperater.OnTimeLineItemClicked(position);
+                        }
+                    }
+                });
+                holder.llTLPraise.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override public void onClick(View view)
+                    {
+                        if (timeLineOperater != null)
+                        {
+                            timeLineOperater.OnTimeLinePraiseClicked(position);
+                        }
+                        clickedPraise(position);
+                    }
+                });
 
-            holder.tvTLPraise.setText(Html.fromHtml(item.getVoteString()));
-            holder.tvTLComment.setText("" + item.commentCount);
+                holder.llTLComment.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override public void onClick(View view)
+                    {
+                        if (timeLineOperater != null)
+                        {
+                            timeLineOperater.OnTimeLineCommentsClicked(position);
+                        }
+                    }
+                });
 
-            holder.llItemAll.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
+                holder.llTLShare.setOnClickListener(new View.OnClickListener()
                 {
-                    if (timeLineOperater != null)
+                    @Override public void onClick(View view)
                     {
-                        timeLineOperater.OnTimeLineItemClicked(position);
+                        if (timeLineOperater != null)
+                        {
+                            timeLineOperater.OnTimeLineShareClied(position);
+                        }
                     }
-                }
-            });
-            holder.tvUserTLContent.setOnClickListener(new View.OnClickListener(){
-                @Override public void onClick(View view)
-                {
-                    if (timeLineOperater != null)
-                    {
-                        timeLineOperater.OnTimeLineItemClicked(position);
-                    }
-                }
-            });
-            holder.llTLPraise.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    if (timeLineOperater != null)
-                    {
-                        timeLineOperater.OnTimeLinePraiseClicked(position);
-                    }
-                    clickedPraise(position);
-                }
-            });
-
-            holder.llTLComment.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    if (timeLineOperater != null)
-                    {
-                        timeLineOperater.OnTimeLineCommentsClicked(position);
-                    }
-                }
-            });
-
-            holder.llTLShare.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    if (timeLineOperater != null)
-                    {
-                        timeLineOperater.OnTimeLineShareClied(position);
-                    }
-                }
-            });
-        }
+                });
+            //}
         return convertView;
     }
 
@@ -269,6 +282,8 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 
     static class ViewHolder
     {
+        public LinearLayout llAllTimeLine = null;
+
         public LinearLayout llItemAll = null;
 
         public ImageView imgSecurityTLUserHeader = null;

@@ -149,7 +149,7 @@ public class TradeOfMineFragment extends DashboardFragment
         }
 
         initView();
-        //fetchPortfolio();
+        fetchPortfolio();
         llPositionHeadItem.setVisibility(View.GONE);//用来显示浮动的标签
         return view;
     }
@@ -167,6 +167,7 @@ public class TradeOfMineFragment extends DashboardFragment
             {
                 Timber.d("下拉刷新");
                 refreshData(true);
+                fetchPortfolio(true);
             }
 
             @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
@@ -322,10 +323,17 @@ public class TradeOfMineFragment extends DashboardFragment
 
     protected void fetchPortfolio()
     {
+        fetchPortfolio(false);
+
+    }
+
+    protected void fetchPortfolio(boolean force)
+    {
         if (shownPortfolioId == null ||portfolioFetchListener == null) return;
         detachPortfolioFetchTask();
         portfolioCache.register(shownPortfolioId, portfolioFetchListener);
-        portfolioCache.getOrFetchAsync(shownPortfolioId);
+        portfolioCache.getOrFetchAsync(shownPortfolioId,force);
+
     }
 
     protected void fetchWatchPositionList(boolean force)
@@ -581,7 +589,7 @@ public class TradeOfMineFragment extends DashboardFragment
 
     private void initPositionSecurity(GetPositionsDTO psList)
     {
-        if (psList != null && psList.openPositionsCount > 0)
+        if (psList != null && psList.openPositionsCount >= 0)
         {
             ArrayList<SecurityPositionItem> list = new ArrayList<SecurityPositionItem>();
             List<PositionDTO> listData = psList.getOpenPositions();
