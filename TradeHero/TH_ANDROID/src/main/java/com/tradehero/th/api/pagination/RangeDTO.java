@@ -40,14 +40,14 @@ public class RangeDTO implements Comparable<RangeDTO>
         {
             return 1;
         }
-        if (another.maxId != null)
+        if (maxId != null && another.maxId != null)
         {
-            return (maxId != null ? maxId : 0)  - another.maxId;
+            return maxId - another.maxId;
         }
 
-        if (another.minId != null)
+        if (minId != null && another.minId != null)
         {
-            return (minId != null ? minId : 0)  - another.minId;
+            return minId - another.minId;
         }
         
         return 0;
