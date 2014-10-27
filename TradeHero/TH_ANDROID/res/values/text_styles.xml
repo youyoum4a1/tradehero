@@ -64,6 +64,7 @@
   <style name="TH.Button" parent="TH.Body">
     <item name="android:textAllCaps">true</item>
     <item name="android:gravity">center</item>
+    <item name="android:textStyle">bold</item>
   </style>
 
   <style name="TH.Button.Small" parent="TH.Button">
