@@ -35,14 +35,13 @@ import com.tradehero.th.persistence.prefs.ShareDialogAfterScoreKey;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-
-import javax.inject.Inject;
-
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class SettingFragment extends DashboardFragment implements View.OnClickListener {
     @InjectView(R.id.settings_score) RelativeLayout mScoreLayout;
@@ -91,8 +90,10 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         }
         mAboutLayout.setOnClickListener(this);
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO.isVisitor) {
-            mLogoutLayout.setVisibility(View.GONE);
+        if(userProfileDTO!=null){
+            if (userProfileDTO.isVisitor) {
+                mLogoutLayout.setVisibility(View.GONE);
+            }
         }
         mLogoutLayout.setOnClickListener(this);
         mVersionLayout.setOnClickListener(this);
