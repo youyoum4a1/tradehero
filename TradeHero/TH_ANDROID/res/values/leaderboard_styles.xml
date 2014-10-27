@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <style name="Leaderboard_ActionButton">
-    <item name="android:background">@drawable/leaderboard_user_item_action_button</item>
+  <style name="Leaderboard_Action" parent="TH.Button.Small">
+    <item name="android:layout_marginRight">@dimen/leaderboard_user_item_action_button_margin</item>
+    <item name="android:layout_marginLeft">@dimen/leaderboard_user_item_action_button_margin</item>
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:layout_height">@dimen/leaderboard_user_item_action_button_min_height</item>
+    <item name="android:minHeight">@dimen/leaderboard_user_item_action_button_min_height</item>
+    <item name="android:minWidth">80dp</item>
+  </style>
+
+  <style name="Leaderboard_ActionWidget" parent="Leaderboard_Action">
     <item name="android:paddingTop">@dimen/leaderboard_user_item_action_button_vertical_padding</item>
     <item name="android:paddingBottom">@dimen/leaderboard_user_item_action_button_vertical_padding</item>
     <item name="android:paddingLeft">@dimen/leaderboard_user_item_action_button_horizontal_padding</item>
     <item name="android:paddingRight">@dimen/leaderboard_user_item_action_button_horizontal_padding</item>
-    <item name="android:layout_marginRight">@dimen/leaderboard_user_item_action_button_margin</item>
-    <item name="android:layout_marginLeft">@dimen/leaderboard_user_item_action_button_margin</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
 
-    <item name="android:textSize">@dimen/text_body</item>
-    <item name="android:textStyle">bold</item>
+  <style name="Leaderboard_ActionButton" parent="Leaderboard_ActionWidget">
+    <item name="android:background">@drawable/leaderboard_user_item_action_button</item>
     <item name="android:textColor">@color/leaderboard_user_item_text_color</item>
   </style>
 
   <style name="Leaderboard_ActionButton_Blue" parent="Leaderboard_ActionButton">
     <item name="android:background">@drawable/leaderboard_user_item_follow_action_button</item>
-    <item name="android:paddingLeft">@dimen/leaderboard_user_item_action_follow_button_horizontal_padding</item>
-    <item name="android:paddingRight">@dimen/leaderboard_user_item_action_follow_button_horizontal_padding</item>
-
     <item name="android:textColor">@color/white</item>
   </style>
 
-  <dimen name="leaderboard_user_item_action_button_horizontal_padding">10dp</dimen>
+  <dimen name="leaderboard_user_item_action_button_horizontal_padding">5dp</dimen>
   <dimen name="leaderboard_user_item_action_follow_button_horizontal_padding">20dp</dimen>
   <dimen name="leaderboard_user_item_action_button_corner_radius">1dp</dimen>
   <dimen name="leaderboard_user_item_action_button_border_width">1dp</dimen>
+  <dimen name="leaderboard_user_item_action_button_min_height">36dp</dimen>
 
 </resources>

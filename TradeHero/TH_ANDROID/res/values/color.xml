@@ -19,7 +19,7 @@
   <color name="black">@android:color/black</color>
   <color name="light_grey">#D0D0D0</color>
   <color name="lighter_grey">#E6E6E6</color>
-  <color name="light_grey_transparent">#99BFBFBF</color>
+  <color name="light_grey_transparent">#88BFBFBF</color>
   <color name="white">@android:color/white</color>
   <color name="textbox_light_background_color">#fafafa</color>
   <color name="signinfnt_color">#47454A</color>

@@ -60,8 +60,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_social_name) TextView socialName;
     @InjectView(R.id.leaderboard_user_item_invite_btn) TextView inviteBtn;
 
-    @InjectView(R.id.leaderboard_user_item_follow) @Optional RelativeLayout lbmuFollowUser;
-    @InjectView(R.id.leaderboard_user_item_following) @Optional RelativeLayout lbmuFollowingUser;
+    @InjectView(R.id.leaderboard_user_item_follow) @Optional View lbmuFollowUser;
+    @InjectView(R.id.leaderboard_user_item_following) @Optional View lbmuFollowingUser;
 
     @Nullable private UserFriendsDTO userFriendsDTO;
     private MiddleCallback<BaseResponseDTO> middleCallbackInvite;
