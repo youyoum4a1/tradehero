@@ -12,6 +12,7 @@ import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.fragment.ActivityResultDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -28,6 +29,7 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
@@ -56,6 +58,7 @@ public class EmailSignUpFragment extends Fragment
     private Observable<Pair<AuthData, UserProfileDTO>> signUpObservable;
     private Subscription subscription;
     private ProgressDialog progressDialog;
+    @Nullable private ActivityResultDTO receivedActivityResult;
 
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
@@ -134,12 +137,28 @@ public class EmailSignUpFragment extends Fragment
                 })
                 .retry()
         ;
+
+        ActivityResultDTO copy = receivedActivityResult;
+        if (copy != null)
+        {
+            profileView.onActivityResult(copy.requestCode,
+                    copy.resultCode,
+                    copy.data);
+            receivedActivityResult = null;
+        }
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        profileView.onActivityResult(requestCode, resultCode, data);
+        if (profileView != null)
+        {
+            profileView.onActivityResult(requestCode, resultCode, data);
+        }
+        else
+        {
+            receivedActivityResult = new ActivityResultDTO(requestCode, resultCode, data);
+        }
     }
 
     @Override public void onDestroyView()
