@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    style="@style/TH.ListItem.Clickable"
     >
 
   <LinearLayout
@@ -13,18 +14,14 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
-      android:minHeight="70dp"
       android:gravity="center_vertical"
-      android:paddingLeft="10dp"
-      android:paddingRight="10dp"
-      android:background="@drawable/basic_white_selector"
       tools:background="#a88"
       >
 
     <ImageView
         android:id="@+id/social_item_logo"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:contentDescription="@null"
         tools:src="@drawable/superman_facebook"
         />
@@ -35,9 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginLeft="10dp"
-        android:textSize="@dimen/text_subhead"
-        android:lines="2"
-        android:maxLines="2"
+        style="@style/TH.UserNameTitle"
         android:singleLine="false"
         android:ellipsize="end"
         tools:text="Invite from Facebook"
@@ -54,9 +49,8 @@
 
     <CheckBox
         android:id="@+id/social_item_action_cb"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginRight="10dp"
+        android:layout_width="@dimen/clickable_element_min_dimen"
+        android:layout_height="@dimen/clickable_element_min_dimen"
         android:visibility="gone"
         >
 
