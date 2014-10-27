@@ -66,6 +66,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         userProfileCacheListener = createUserProfileCacheListener();
         alertCompactListListener = createAlertCompactDTOListListener();
+        alertListItemAdapter = new AlertListItemAdapter(getActivity(), R.layout.alert_list_item);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -85,58 +86,43 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        if (alertListItemAdapter == null)
-        {
-            alertListItemAdapter = new AlertListItemAdapter(getActivity(), R.layout.alert_list_item);
-        }
-
-        if (alertListView != null)
-        {
-            alertListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        alertListView.setOnItemClickListener((parent, view1, position, id) -> {
+            AlertCompactDTO alertCompactDTO = (AlertCompactDTO) parent.getItemAtPosition(position);
+            if (alertCompactDTO != null)
             {
-                @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    AlertCompactDTO alertCompactDTO = (AlertCompactDTO) parent.getItemAtPosition(position);
-                    if (alertCompactDTO != null)
-                    {
-                        handleAlertItemClicked(alertCompactDTO);
-                    }
-                }
-            });
-            alertListView.setAdapter(alertListItemAdapter);
-            alertListView.addFooterView(footerView);
-            alertListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        }
+                handleAlertItemClicked(alertCompactDTO);
+            }
+        });
+        alertListView.setAdapter(alertListItemAdapter);
+        alertListView.addFooterView(footerView);
+        alertListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
 
         displayAlertCount();
         displayAlertCountIcon();
 
-        btnPlanUpgrade.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                detachRequestCode();
-                //noinspection unchecked
-                requestCode = userInteractor.run((THUIBillingRequest) uiBillingRequestBuilderProvider.get()
-                        .domainToPresent(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
-                        .build());
-            }
+        btnPlanUpgrade.setOnClickListener(v -> {
+            detachRequestCode();
+            //noinspection unchecked
+            requestCode = userInteractor.run(uiBillingRequestBuilderProvider.get()
+                    .domainToPresent(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
+                    .build());
         });
 
-        footerView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                handleManageSubscriptionClicked();
-            }
-        });
+        footerView.setOnClickListener(view1 -> handleManageSubscriptionClicked());
     }
 
     @Override public void onResume()
     {
         super.onResume();
 
-        progressAnimator.setDisplayedChildByLayoutId(0);
+        if (alertListItemAdapter.getCount() == 0)
+        {
+            progressAnimator.setDisplayedChildByLayoutId(0);
+        }
+        else
+        {
+            progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
+        }
         fetchUserProfile();
         fetchAlertCompactList();
     }
@@ -152,8 +138,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
             alertListView.setOnScrollListener(null);
         }
         alertListView = null;
-
-        alertListItemAdapter = null;
 
         if (btnPlanUpgrade != null)
         {
@@ -171,6 +155,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
+        alertListItemAdapter = null;
         userProfileCacheListener = null;
         alertCompactListListener = null;
         super.onDestroy();
