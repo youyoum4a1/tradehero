@@ -76,7 +76,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     private Observable<List<TimelineItemDTOKey>> timelineTask(final RangeDTO rangeDTO)
     {
         return userTimelineServiceWrapper
-                .getTimelineBySectionRx(TimelineSection.Timeline, currentUserId.toUserBaseKey(), rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId)
+                .getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<TimelineDTO, List<TimelineItemDTO>>()

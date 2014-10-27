@@ -11,6 +11,12 @@ import rx.functions.Func2;
  */
 public class PaginationObservable
 {
+    /**
+     * Create pagination observable from an observable of a sorted list of comparable items
+     * @param listObservable input observable of a sorted list of comparable items
+     * @param <T> comparable type of item
+     * @return pagination observable
+     */
     public static <T extends Comparable<T>> Observable<List<T>> create(Observable<List<T>> listObservable)
     {
         return listObservable
@@ -27,16 +33,15 @@ public class PaginationObservable
                             }
                             else
                             {
+                                // merge two sorted list the hard way, complex but supposed to be fast
                                 T first = collector.getFirst();
                                 T last = collector.getLast();
 
                                 T newFirst = newList.get(0);
                                 T newLast = newList.get(newList.size() - 1);
 
-                                boolean isFirstNewItemOutsideBound =
-                                        ((int) Math.signum(first.compareTo(newFirst))) * ((int) Math.signum(last.compareTo(newFirst))) > 0;
-                                boolean isLastNewItemOutsideBound =
-                                        ((int) Math.signum(first.compareTo(newLast))) * ((int) Math.signum(last.compareTo(newLast))) > 0;
+                                boolean isFirstNewItemOutsideBound = checkOutsideSegment(first, last, newFirst);
+                                boolean isLastNewItemOutsideBound = checkOutsideSegment(first, last, newLast);
 
                                 if (isFirstNewItemOutsideBound && isLastNewItemOutsideBound)
                                 {
@@ -86,7 +91,7 @@ public class PaginationObservable
                                         }
                                         else
                                         {
-                                            isOut = ((int) Math.signum(first.compareTo(item))) * ((int) Math.signum(last.compareTo(item))) < 0;
+                                            isOut = checkOutsideSegment(first, last, item);
                                         }
                                     }
                                 }
@@ -103,5 +108,10 @@ public class PaginationObservable
                         return ts;
                     }
                 });
+    }
+
+    private static <T extends Comparable<T>> boolean checkOutsideSegment(T left, T right, T obj)
+    {
+        return ((int) Math.signum(left.compareTo(obj))) * ((int) Math.signum(right.compareTo(obj))) > 0;
     }
 }
