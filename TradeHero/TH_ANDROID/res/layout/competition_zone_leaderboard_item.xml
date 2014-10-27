@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:background="@drawable/basic_white_selector">
+    style="@style/TH.ListItem.Clickable"
+    android:gravity="center_vertical"
+    >
 
   <ImageView
       android:id="@+id/hint_open_competition_zone"
@@ -14,7 +15,7 @@
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
       android:src="@drawable/settings_forward_light"
-      android:scaleType="fitXY"
+      android:scaleType="fitCenter"
       android:contentDescription="@null"
       />
 
@@ -24,35 +25,41 @@
       android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
       android:layout_centerVertical="true"
+      android:scaleType="fitCenter"
       tools:src="@drawable/icn_portfolio_pressed"
       android:contentDescription="@null"
       />
 
-  <TextView
-      android:id="@+id/competition_zone_title"
+  <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
+      android:layout_centerVertical="true"
+      android:orientation="vertical"
       android:layout_toRightOf="@id/icn_competition_zone"
       android:layout_toLeftOf="@+id/competition_roi"
-      android:layout_marginBottom="8dp"
-      android:maxLines="1"
-      android:textStyle="bold"
-      tools:text="February 2014"
-      />
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginStart="@dimen/margin_small"
+      >
 
-  <TextView
-      android:id="@+id/competition_zone_description"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:maxLines="1"
-      android:layout_below="@id/competition_zone_title"
-      android:layout_toRightOf="@id/icn_competition_zone"
-      android:layout_toLeftOf="@+id/competition_roi"
-      android:textSize="@dimen/text_caption"
-      android:textColor="@color/text_gray_normal"
-      tools:text="1st to 28th February"
-      />
+    <TextView
+        android:id="@+id/competition_zone_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        style="@style/TH.Subhead"
+        tools:text="February 2014"
+        />
+
+    <TextView
+        android:id="@+id/competition_zone_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        style="@style/TH.Caption"
+        tools:text="1st to 28th February"
+        />
+  </LinearLayout>
+
 
   <TextView
       android:id="@+id/competition_roi"
@@ -60,9 +67,9 @@
       android:layout_height="wrap_content"
       android:layout_toLeftOf="@+id/hint_open_competition_zone"
       android:layout_centerVertical="true"
-      android:paddingRight="5dp"
-      android:textStyle="bold"
-      tools:text="S$ 3750"
+      android:layout_margin="@dimen/margin_xsmall"
+      style="@style/TH.UserROI"
+      tools:text="0.5%"
       />
 
 

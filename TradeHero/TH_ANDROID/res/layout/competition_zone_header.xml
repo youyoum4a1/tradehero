@@ -11,11 +11,10 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
-      android:textStyle="bold"
-      android:textSize="@dimen/text_caption"
+      style="@style/TH.Subhead"
       android:text="@string/na"
-      android:paddingTop="@dimen/common_margin_4"
-      android:paddingBottom="@dimen/common_margin_4"
+      android:paddingTop="@dimen/margin_xsmall"
+      android:paddingBottom="@dimen/margin_xsmall"
     />
 
 </com.tradehero.th.fragments.competition.zone.CompetitionZoneHeaderView>
