@@ -176,7 +176,6 @@ public class DiscoveryDiscussionFragment extends Fragment
 
         timelineSubscription = rxLoaderManager.create(currentUserId.toUserBaseKey(), PaginationObservable.create(timelineRefreshRangeObservable))
                 .subscribe(timelineSubject);
-
     }
 
     @Override public void onDestroyView()

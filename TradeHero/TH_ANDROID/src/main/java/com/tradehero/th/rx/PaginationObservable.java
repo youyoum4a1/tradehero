@@ -45,8 +45,7 @@ public class PaginationObservable
 
                                 if (isFirstNewItemOutsideBound && isLastNewItemOutsideBound)
                                 {
-                                    boolean isSmallerNewList =
-                                            ((int) Math.signum(first.compareTo(newFirst))) * ((int) Math.signum(first.compareTo(last))) < 0;
+                                    boolean isSmallerNewList = checkInsideSegment(newFirst, last, first);
                                     if (isSmallerNewList)
                                     {
                                         collector.addAll(0, newList);
@@ -67,7 +66,7 @@ public class PaginationObservable
                                     int outBound = -1;
                                     for (T item : newList)
                                     {
-                                        boolean isOut = ((int) Math.signum(first.compareTo(item))) * ((int) Math.signum(last.compareTo(item))) < 0;
+                                        boolean isOut = checkOutsideSegment(first, last, item);
                                         if (isOut)
                                         {
                                             ++outBound;
@@ -110,8 +109,18 @@ public class PaginationObservable
                 });
     }
 
+    private static <T extends Comparable<T>> boolean checkInsideSegment(T left, T right, T obj)
+    {
+        return getSegmentSign(left, right, obj) < 0;
+    }
+
     private static <T extends Comparable<T>> boolean checkOutsideSegment(T left, T right, T obj)
     {
-        return ((int) Math.signum(left.compareTo(obj))) * ((int) Math.signum(right.compareTo(obj))) > 0;
+        return getSegmentSign(left, right, obj) > 0;
+    }
+
+    private static <T extends Comparable<T>> int getSegmentSign(T left, T right, T obj)
+    {
+        return ((int) Math.signum(left.compareTo(obj))) * ((int) Math.signum(right.compareTo(obj)));
     }
 }
