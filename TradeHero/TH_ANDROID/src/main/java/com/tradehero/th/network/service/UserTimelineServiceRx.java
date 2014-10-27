@@ -4,6 +4,7 @@ import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.api.timeline.TimelineSection;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -24,21 +25,4 @@ public interface UserTimelineServiceRx
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId);
     //</editor-fold>
-
-    public enum TimelineSection
-    {
-        Timeline("timeline"),
-        Hot("whatshot");
-        private final String name;
-
-        TimelineSection(String name)
-        {
-            this.name = name;
-        }
-
-        @Override public String toString()
-        {
-            return name;
-        }
-    }
 }

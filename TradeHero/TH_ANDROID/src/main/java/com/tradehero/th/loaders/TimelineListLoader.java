@@ -3,6 +3,7 @@ package com.tradehero.th.loaders;
 import android.content.Context;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.CollectionUtils;
+import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -18,14 +19,14 @@ import timber.log.Timber;
 public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
 {
     private final UserBaseKey userBaseKey;
-    private final UserTimelineService.TimelineSection section;
+    private final TimelineSection section;
 
     private Integer upperItemId;
     private Integer lowerItemId;
 
     @Inject protected TimelineManager timelineManager;
 
-    public TimelineListLoader(Context context, UserBaseKey userBaseKey, UserTimelineService.TimelineSection section)
+    public TimelineListLoader(Context context, UserBaseKey userBaseKey, TimelineSection section)
     {
         super(context);
         this.userBaseKey = userBaseKey;

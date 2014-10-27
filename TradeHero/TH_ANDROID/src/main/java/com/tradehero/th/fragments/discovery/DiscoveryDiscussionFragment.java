@@ -18,14 +18,13 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
+import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.network.service.UserTimelineServiceRx;
+import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
@@ -38,9 +37,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
-import static com.tradehero.th.network.service.UserTimelineServiceRx.TimelineSection.Hot;
 import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 
 public class DiscoveryDiscussionFragment extends Fragment
@@ -49,7 +46,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject RxLoaderManager rxLoaderManager;
     @Inject CurrentUserId currentUserId;
-    @Inject UserTimelineServiceRx userTimelineServiceRx;
+    @Inject UserTimelineServiceWrapper userTimelineServiceWrapper;
     @Inject DiscussionCache discussionCache;
 
     private ProgressBar mBottomLoadingView;
@@ -84,7 +81,7 @@ public class DiscoveryDiscussionFragment extends Fragment
 
     private Observable<List<TimelineItemDTOKey>> timelineTask(final RangeDTO rangeDTO)
     {
-        return userTimelineServiceRx.getTimelineRx(Hot, currentUserId.get(), rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId)
+        return userTimelineServiceWrapper.getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<TimelineDTO, List<TimelineItemDTO>>()
@@ -105,9 +102,7 @@ public class DiscoveryDiscussionFragment extends Fragment
                 {
                     @Override public TimelineItemDTOKey call(TimelineItemDTO timelineItemDTO)
                     {
-                        TimelineItemDTOKey key = timelineItemDTO.getDiscussionKey();
-                        discussionCache.put(key, timelineItemDTO);
-                        return key;
+                        return timelineItemDTO.getDiscussionKey();
                     }
                 })
                 .toList();
