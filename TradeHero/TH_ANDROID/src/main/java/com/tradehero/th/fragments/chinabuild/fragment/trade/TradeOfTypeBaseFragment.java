@@ -5,11 +5,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -69,6 +65,8 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     @Inject Analytics analytics;
 
+    private int tradehero_blue;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -99,6 +97,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
         }
 
+        tradehero_blue = getActivity().getResources().getColor(R.color.tradehero_blue);
         return view;
     }
 
@@ -178,21 +177,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         securityCompactListCache.get().register(key, securityListTypeCacheListener);
         securityCompactListCache.get().getOrFetchAsync(key, true);
     }
-
-    //private void fetchSecurityList(int position,boolean force)
-    //{
-    //    currentPosition = position;
-    //    strExchangeName = "";
-    //    currentPage = 0;
-    //    if (position > 0)
-    //    {
-    //        strExchangeName = exchangeCompactDTOs.get(position - 1).name;
-    //    }
-    //    detachSecurityListCache();
-    //    SecurityListType key = new TrendingAllSecurityListType(getTradeType(), getStrExchangeName(), currentPage + 1, ITEMS_PER_PAGE);
-    //    securityCompactListCache.get().register(key, securityListTypeCacheListener);
-    //    securityCompactListCache.get().getOrFetchAsync(key, true);
-    //}
 
     private void showLoadingProgress()
     {
@@ -303,6 +287,8 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l)
             {
+                TextView selectedTV = (TextView)view.findViewById(R.id.tvSpinnerItemName);
+                selectedTV.setTextColor(tradehero_blue);
                 getExchangSecurity(position);
             }
 
