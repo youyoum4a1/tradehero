@@ -410,6 +410,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             displayBuySellSwitch();
             displayBuySellPrice();
             displayBuySellContainer();
+            conditionalDisplayPortfolioChanged();
         }
     }
 
@@ -476,6 +477,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             // TODO max purchasable shares
             displayBuySellPrice();
+            conditionalDisplayPortfolioChanged();
         }
     }
 
@@ -647,6 +649,20 @@ public class BuySellFragment extends AbstractBuySellFragment
     public boolean isBuySellReady()
     {
         return quoteDTO != null && securityPositionDetailDTO != null;
+    }
+
+    public void conditionalDisplayPortfolioChanged()
+    {
+        if (securityPositionDetailDTO != null
+                && portfolioCompactDTO != null
+                && mSelectedPortfolioContainer != null
+                && mSelectedPortfolioContainer.defaultMenuIsNotDefaultPortfolio())
+        {
+            alertDialogUtil.popWithNegativeButton(getActivity(),
+                    R.string.buy_sell_portfolio_changed_title,
+                    R.string.buy_sell_portfolio_changed_message,
+                    R.string.ok);
+        }
     }
 
     public void displayBuySellSwitch()
@@ -1090,7 +1106,8 @@ public class BuySellFragment extends AbstractBuySellFragment
                 abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
                 abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
                 {
-                    @Override public void onTransactionSuccessful(boolean isBuy, @NotNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
+                    @Override public void onTransactionSuccessful(boolean isBuy,
+                            @NotNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
                     {
                         showPrettyReviewAndInvite(isBuy);
                         pushPortfolioFragment(securityPositionTransactionDTO);
