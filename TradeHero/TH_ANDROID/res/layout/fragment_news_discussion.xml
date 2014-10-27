@@ -20,5 +20,4 @@
       android:paddingBottom="@dimen/discussion_comment_box_height"
       />
 
-  <!--<include layout="@layout/post_comment_widget"/>-->
 </com.tradehero.th.fragments.discussion.NewsDiscussionView>
