@@ -288,7 +288,7 @@ public class CompetitionCreateFragment extends DashboardFragment
                 if (cbCompetitionInvite.isChecked())
                 {
                     mShareSheetTitleCache.set(getString(R.string.share_create_contest,
-                            edtCompetitionName.getText().toString(), currentUserId.get().toString(),
+                            /*edtCompetitionName.getText().toString()*/, currentUserId.get().toString(),
                             userCompetitionDTO.id));
                     ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                             .inflate(R.layout.share_sheet_local_dialog_layout, null);
