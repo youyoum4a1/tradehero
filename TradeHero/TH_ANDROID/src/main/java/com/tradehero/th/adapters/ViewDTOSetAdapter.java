@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.api.DTOView;
 import java.util.Collection;
+import java.util.Comparator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,9 +20,19 @@ abstract public class ViewDTOSetAdapter<T, ViewType extends View & DTOView<T>>
         super(context);
     }
 
+    public ViewDTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator)
+    {
+        super(context, comparator);
+    }
+
     public ViewDTOSetAdapter(@NotNull Context context, @Nullable Collection<T> objects)
     {
         super(context, objects);
+    }
+
+    public ViewDTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator, @Nullable Collection<T> objects)
+    {
+        super(context, comparator, objects);
     }
     //</editor-fold>
 

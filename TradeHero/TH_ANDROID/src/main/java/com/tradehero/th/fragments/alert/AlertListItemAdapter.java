@@ -10,17 +10,12 @@ import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, AlertItemView>
-    implements StickyListHeadersAdapter
+        implements StickyListHeadersAdapter
 {
     private static final long HEADER_ID_INACTIVE = 0;
     private static final long HEADER_ID_ACTIVE = 1;
@@ -32,55 +27,42 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
     //<editor-fold desc="Constructors">
     public AlertListItemAdapter(@NotNull Context context, int alertResId)
     {
-        super(context);
+        super(context,
+                (lhs, rhs) -> {
+                    if (lhs == rhs)
+                    {
+                        return 0;
+                    }
+
+                    if (lhs.active && !rhs.active)
+                    {
+                        return -1;
+                    }
+                    if (!lhs.active && rhs.active)
+                    {
+                        return 1;
+                    }
+
+                    if (lhs.security == rhs.security)
+                    {
+                        return 0;
+                    }
+                    if (lhs.security != null && rhs.security != null)
+                    {
+                        return lhs.security.symbol.compareTo(rhs.security.symbol);
+                    }
+
+                    if (lhs.security == null)
+                    {
+                        return -1;
+                    }
+                    return 1;
+                });
         this.alertResId = alertResId;
 
         HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
-
-    @Override @NotNull protected Set<AlertCompactDTO> createSet(@Nullable Collection<AlertCompactDTO> objects)
-    {
-        Set<AlertCompactDTO> set = new TreeSet<>(new Comparator<AlertCompactDTO>()
-        {
-            @Override public int compare(AlertCompactDTO lhs, AlertCompactDTO rhs)
-            {
-                if (lhs == rhs)
-                {
-                    return 0;
-                }
-
-                if (lhs.active && !rhs.active)
-                {
-                    return -1;
-                }
-                if (!lhs.active && rhs.active)
-                {
-                    return 1;
-                }
-
-                if (lhs.security == rhs.security)
-                {
-                    return 0;
-                }
-                if (lhs.security != null && rhs.security != null)
-                {
-                    return lhs.security.symbol.compareTo(rhs.security.symbol);
-                }
-
-                if (lhs.security == null)
-                {
-                    return -1;
-                }
-                return 1;
-            }
-        });
-        if (objects != null)
-        {
-            set.addAll(objects);
-        }
-        return set;
-    }
 
     @Override @LayoutRes protected int getViewResId(int position)
     {
@@ -107,7 +89,7 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
         }
 
         holder.text.setText(getHeaderId(position) == 1 ?
-                context.getString(R.string.stock_alert_active) :
+                        context.getString(R.string.stock_alert_active) :
                         context.getString(R.string.stock_alert_inactive_title)
         );
         return convertView;
