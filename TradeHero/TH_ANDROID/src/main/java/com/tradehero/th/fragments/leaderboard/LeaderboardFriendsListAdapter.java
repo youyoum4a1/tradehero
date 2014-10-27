@@ -13,7 +13,9 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
 public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboardUserDTO>
@@ -27,11 +29,14 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
     protected UserProfileDTO currentUserProfileDTO;
     protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
+    @NotNull private Map<Object, Boolean> expandedStatuses;
+
     public LeaderboardFriendsListAdapter(Context context, int markedLayoutResId, int socialLayoutResId)
     {
         super(context, 0);
         this.markedLayoutResId = markedLayoutResId;
         this.socialLayoutResId = socialLayoutResId;
+        this.expandedStatuses = new HashMap<>();
     }
 
     @Override public int getViewTypeCount()
@@ -75,9 +80,20 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
     public void addAll(@NotNull Collection<? extends LeaderboardUserDTO> collection, LeaderboardUserDTO typeQualifier)
     {
         List<FriendLeaderboardUserDTO> created = new ArrayList<>();
+        Boolean previousExpanded;
         for (LeaderboardUserDTO leaderboardUserDTO : collection)
         {
-            created.add(new FriendLeaderboardMarkedUserDTO(leaderboardUserDTO));
+            previousExpanded = expandedStatuses.get(leaderboardUserDTO.getLeaderboardMarkUserId());
+            created.add(new FriendLeaderboardMarkedUserDTO(
+                    previousExpanded != null ? previousExpanded : false,
+                    leaderboardUserDTO)
+            {
+                @Override public void setExpanded(boolean expanded)
+                {
+                    super.setExpanded(expanded);
+                    LeaderboardFriendsListAdapter.this.expandedStatuses.put(leaderboardUserDTO.getLeaderboardMarkUserId(), expanded);
+                }
+            });
         }
         super.addAll(created);
     }
@@ -107,15 +123,20 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
             ((LeaderboardMarkUserItemView) convertView).display(((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO);
             ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
             ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(createChildFollowRequestedListener());
-            final View expandingLayout = convertView.findViewById(R.id.expanding_layout);
-            if (expandingLayout != null)
-            {
-                expandingLayout.setVisibility(((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.isExpanded() ? View.VISIBLE : View.GONE);
-            }
         }
         else if (convertView instanceof LeaderboardFriendsItemView)
         {
             ((LeaderboardFriendsItemView) convertView).display(((FriendLeaderboardSocialUserDTO) item).userFriendsDTO);
+        }
+
+        final View expandingLayout = convertView.findViewById(R.id.expanding_layout);
+        if (expandingLayout != null)
+        {
+            expandingLayout.setVisibility(item.isExpanded() ? View.VISIBLE : View.GONE);
+            if (item.isExpanded() && convertView instanceof ExpandingLayout.OnExpandListener)
+            {
+                ((ExpandingLayout.OnExpandListener) convertView).onExpand(true);
+            }
         }
 
         return convertView;
@@ -129,13 +150,7 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
 
     protected LeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
     {
-        return new LeaderboardMarkUserItemView.OnFollowRequestedListener()
-        {
-            @Override public void onFollowRequested(UserBaseDTO userBaseDTO)
-            {
-                notifyFollowRequested(userBaseDTO);
-            }
-        };
+        return userBaseDTO -> notifyFollowRequested(userBaseDTO);
     }
 
     protected void notifyFollowRequested(UserBaseDTO userBaseDTO)

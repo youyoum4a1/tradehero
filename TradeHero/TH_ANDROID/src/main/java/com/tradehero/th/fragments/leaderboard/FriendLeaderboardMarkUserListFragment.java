@@ -177,6 +177,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     @Override public void onDestroy()
     {
+        leaderboardFriendsUserListAdapter.clear();
         leaderboardFriendsUserListAdapter = null;
         leaderboardFriendsKeyDTOListener = null;
         super.onDestroy();
