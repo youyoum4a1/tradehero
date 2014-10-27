@@ -3,6 +3,7 @@ package com.tradehero.th.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -56,12 +57,12 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        //setMovementMethod(LinkMovementMethod.getInstance());
+        setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        //setMovementMethod(null);
+        setMovementMethod(null);
         super.onDetachedFromWindow();
     }
 
@@ -79,6 +80,8 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         super.setText(text, BufferType.SPANNABLE);
     }
 
+    public boolean isClicked = false;
+
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
     {
         switch (key)
@@ -87,11 +90,13 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
                 Timber.d("");
                 int competitionId = Integer.parseInt(matchStrings[2]);
                 openCompetition(competitionId);
+                isClicked = true;
                 break;
 
             case "user":
                 int userId = Integer.parseInt(matchStrings[2]);
                 openUserProfile(userId);
+                isClicked = true;
                 break;
 
             case "security":
@@ -99,9 +104,11 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
                 String exchange = matchStrings[1];
                 String symbol = matchStrings[2];
                 openSecurityProfile(exchange, symbol);
+                isClicked = true;
                 break;
 
             case "link":
+                isClicked = true;
                 String USER = "tradehero://user/";
                 if (matchStrings.length < 3) break;
                 String link = matchStrings[1];

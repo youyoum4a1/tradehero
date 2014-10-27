@@ -36,6 +36,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -354,7 +355,14 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             {
                 @Override public void onClick(View view)
                 {
-                    timeLineOperater.OnTimeLineItemClicked(position);
+                    if(view instanceof MarkdownTextView)
+                    {
+                        if(!((MarkdownTextView)view).isClicked)
+                        {
+                            timeLineOperater.OnTimeLineItemClicked(position);
+                        }
+                        ((MarkdownTextView)view).isClicked = false;
+                    }
                 }
             });
             holder.llTLPraise.setOnClickListener(new View.OnClickListener()

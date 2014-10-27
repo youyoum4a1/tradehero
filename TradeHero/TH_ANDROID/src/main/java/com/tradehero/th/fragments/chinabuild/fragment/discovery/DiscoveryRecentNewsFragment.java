@@ -42,13 +42,10 @@ import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.wxapi.WXEntryActivity;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -250,6 +247,14 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         }
     }
 
+    @Override public void onPause()
+    {
+        super.onPause();
+        if(listTimeLine!=null)
+        {
+            listTimeLine.onRefreshComplete();
+        }
+    }
 
     @Override public void onStop()
     {
@@ -280,6 +285,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
             timeLineMiddleCallback.setPrimaryCallback(null);
         }
         timeLineMiddleCallback = null;
+
     }
 
     public void fetchTimeLine()

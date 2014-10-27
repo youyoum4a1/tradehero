@@ -196,6 +196,15 @@ public class StockGodListBaseFragment extends DashboardFragment
         pushFragment(PortfolioFragment.class, bundle);
     }
 
+    @Override public void onPause()
+    {
+        super.onPause();
+        if(listBang!=null)
+        {
+            listBang.onRefreshComplete();
+        }
+    }
+
     @Override public void onDestroy()
     {
         super.onDestroy();
