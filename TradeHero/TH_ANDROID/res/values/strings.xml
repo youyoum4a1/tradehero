@@ -366,7 +366,7 @@
   <string name="share_buy_dialog_summary">摊上大事了，我买了 %1$s 股票，你看行吗？ \nhttp://cn.tradehero.mobi/shr/stock.html?userId=%2$s&amp;securityId=%3$s</string>
   <string name="share_score_title">分享炒股神器，让大家涨涨姿势</string>
   <string name="share_score_summary">强力围观，这里股神出没！ \nhttp://cn.tradehero.mobi</string>
-  <string name="share_dialog_summary">好东西要分享哦，现在分享还有资金奖励！</string>
+  <string name="share_dialog_summary">现在分享还有资金奖励哦！</string>
 
   <string name="wechat_timeline">朋友圈</string>
   <string name="share_create_contest">我创建了一个炒股比赛＃%1$s＃，一起来切磋下吧～ \nhttp://cn.tradehero.mobi/shr/match.html?userId=%2$s&amp;competitionId=%3$s</string>
