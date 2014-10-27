@@ -201,7 +201,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                             final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
                             Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.get().updateProfileRx(currentUserId
                                 .toUserBaseKey(), userFormDTO);
-                            return Observable.zip(Observable.just(authData), userProfileDTOObservable, new MakePairFunc2<AuthData, UserProfileDTO>());
+                            return Observable.zip(Observable.just(authData), userProfileDTOObservable, new MakePairFunc2<>());
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
@@ -214,7 +214,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                             navigator.get().popFragment();
                         }
                     })
-                    .subscribe(authDataActionProvider.get());
+                    .subscribe(authDataActionProvider.get()); // FIXME use Observer to avoid crash
         }
     }
 
