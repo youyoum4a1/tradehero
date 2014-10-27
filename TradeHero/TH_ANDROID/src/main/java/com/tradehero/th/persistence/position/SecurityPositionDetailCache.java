@@ -6,7 +6,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -24,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
     @NotNull protected final Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @NotNull protected final Lazy<SecurityCompactCache> securityCompactCache;
     @NotNull protected final Lazy<PositionCompactCache> positionCompactCache;
-    @NotNull protected final Lazy<PortfolioCache> portfolioCache;
     @NotNull protected final Lazy<ProviderCache> providerCompactCache;
 
     //<editor-fold desc="Constructors">
@@ -33,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
             @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
             @NotNull Lazy<SecurityCompactCache> securityCompactCache,
             @NotNull Lazy<PositionCompactCache> positionCompactCache,
-            @NotNull Lazy<PortfolioCache> portfolioCache,
             @NotNull Lazy<ProviderCache> providerCompactCache)
     {
         super(DEFAULT_MAX_SIZE);
@@ -41,7 +38,6 @@ import org.jetbrains.annotations.Nullable;
         this.securityServiceWrapper = securityServiceWrapper;
         this.securityCompactCache = securityCompactCache;
         this.positionCompactCache = positionCompactCache;
-        this.portfolioCache = portfolioCache;
         this.providerCompactCache = providerCompactCache;
     }
     //</editor-fold>
@@ -56,10 +52,8 @@ import org.jetbrains.annotations.Nullable;
         return new SecurityPositionDetailCutDTO(
                 value,
                 securityCompactCache.get(),
-                portfolioCache.get(),
                 positionCompactCache.get(),
-                providerCompactCache.get(),
-                currentUserId.toUserBaseKey());
+                providerCompactCache.get());
     }
 
     @Contract("_, null -> null; _, !null -> !null")
@@ -71,9 +65,7 @@ import org.jetbrains.annotations.Nullable;
         }
         return cutValue.create(
                 securityCompactCache.get(),
-                portfolioCache.get(),
                 positionCompactCache.get(),
-                providerCompactCache.get(),
-                currentUserId.toUserBaseKey());
+                providerCompactCache.get());
     }
 }

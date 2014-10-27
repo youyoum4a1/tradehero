@@ -55,6 +55,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
                 getActivity(),
                 R.layout.leaderboard_definition_item_view);
         contentListView.setAdapter(leaderboardDefListAdapter);
+        contentListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onResume()
@@ -67,6 +68,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @Override public void onDestroyView()
     {
         detachLeaderboardDefListCacheFetchTask();
+        contentListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }

@@ -336,10 +336,14 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                 detachMiddleCallbackShareAchievement();
                 middleCallbackShareAchievement = achievementServiceWrapper.shareAchievement(
                         achievementShareFormDTOFactory.createFrom(
-                                getEnabledSharePreferences(),
+                                shareTos,
                                 userAchievementDTO),
                         createShareAchievementCallback());
                 showSharing();
+            }
+            else
+            {
+                showShareSuccess();
             }
         }
     }

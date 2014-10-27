@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.TransactionFormDTO;
@@ -77,7 +78,7 @@ public interface SecurityService
 
     //<editor-fold desc="Buy Security">
     @POST("/securities/{exchange}/{securitySymbol}/newbuy")
-    SecurityPositionDetailDTO buy(
+    SecurityPositionTransactionDTO buy(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
@@ -85,7 +86,7 @@ public interface SecurityService
 
     //<editor-fold desc="Sell Security">
     @POST("/securities/{exchange}/{securitySymbol}/newsell")
-    SecurityPositionDetailDTO sell(
+    SecurityPositionTransactionDTO sell(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);

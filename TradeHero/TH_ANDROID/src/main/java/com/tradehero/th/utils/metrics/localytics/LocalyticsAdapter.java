@@ -2,6 +2,7 @@ package com.tradehero.th.utils.metrics.localytics;
 
 import android.content.Context;
 import com.localytics.android.LocalyticsSession;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsAdapter;
 import com.tradehero.th.utils.metrics.events.AnalyticsEvent;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class LocalyticsAdapter
             @NotNull @ForLocalytics String appKey)
     {
         localytics = new LocalyticsSession(context, appKey);
+        LocalyticsSession.setLoggingEnabled(Constants.RELEASE);
     }
 
     @Override public void open(Set<String> customDimensions)

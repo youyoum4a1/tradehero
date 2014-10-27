@@ -448,7 +448,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     {
         if (!isDetached() && mWarrantType != null)
         {
-            if (warrantDTO == null || warrantDTO.warrantType == null)
+            if (warrantDTO == null || warrantDTO.getWarrantType() == null)
             {
                 mWarrantType.setText(R.string.na);
             }

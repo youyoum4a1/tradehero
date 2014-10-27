@@ -20,7 +20,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
 
     public Integer getShareCountIn(@Nullable PortfolioId portfolioId)
     {
-        if (portfolioId == null || portfolioId.key == null)
+        if (portfolioId == null)
         {
             return null;
         }

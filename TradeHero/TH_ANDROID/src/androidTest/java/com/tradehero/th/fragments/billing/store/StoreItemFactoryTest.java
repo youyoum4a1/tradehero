@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.billing.store;
 import com.android.internal.util.Predicate;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.system.SystemStatusDTO;
+import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -41,14 +42,14 @@ public class StoreItemFactoryTest
     //<editor-fold desc="Have alerts depending on SystemStatus">
     @Test public void testIgnoreSystemStatusShouldHaveAlerts()
     {
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS);
+        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
 
     @Test public void testFollowSystemStatusButNoStatusShouldHaveAlerts()
     {
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS);
+        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
@@ -57,9 +58,9 @@ public class StoreItemFactoryTest
     {
         SystemStatusDTO systemStatusDTO = new SystemStatusDTO();
         systemStatusDTO.alertsAreFree = false;
-        systemStatusCache.put(currentUserId.toUserBaseKey(), systemStatusDTO);
+        systemStatusCache.onNext(new SystemStatusKey(), systemStatusDTO);
 
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS);
+        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
@@ -68,9 +69,9 @@ public class StoreItemFactoryTest
     {
         SystemStatusDTO systemStatusDTO = new SystemStatusDTO();
         systemStatusDTO.alertsAreFree = false;
-        systemStatusCache.put(currentUserId.toUserBaseKey(), systemStatusDTO);
+        systemStatusCache.onNext(new SystemStatusKey(), systemStatusDTO);
 
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS);
+        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
@@ -79,9 +80,9 @@ public class StoreItemFactoryTest
     {
         SystemStatusDTO systemStatusDTO = new SystemStatusDTO();
         systemStatusDTO.alertsAreFree = true;
-        systemStatusCache.put(currentUserId.toUserBaseKey(), systemStatusDTO);
+        systemStatusCache.onNext(new SystemStatusKey(), systemStatusDTO);
 
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS);
+        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
@@ -90,9 +91,9 @@ public class StoreItemFactoryTest
     {
         SystemStatusDTO systemStatusDTO = new SystemStatusDTO();
         systemStatusDTO.alertsAreFree = true;
-        systemStatusCache.put(currentUserId.toUserBaseKey(), systemStatusDTO);
+        systemStatusCache.onNext(new SystemStatusKey(), systemStatusDTO);
 
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS);
+        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNull();
     }

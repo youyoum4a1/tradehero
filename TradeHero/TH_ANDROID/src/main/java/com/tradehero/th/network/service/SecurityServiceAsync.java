@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.TransactionFormDTO;
@@ -90,7 +91,7 @@ interface SecurityServiceAsync
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO,
-            Callback<SecurityPositionDetailDTO> callback);
+            Callback<SecurityPositionTransactionDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
@@ -99,6 +100,6 @@ interface SecurityServiceAsync
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO,
-            Callback<SecurityPositionDetailDTO> callback);
+            Callback<SecurityPositionTransactionDTO> callback);
     //</editor-fold>
 }

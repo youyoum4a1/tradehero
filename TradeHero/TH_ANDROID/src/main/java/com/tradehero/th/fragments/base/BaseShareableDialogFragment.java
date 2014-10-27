@@ -42,6 +42,7 @@ import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observers.EmptyObserver;
@@ -298,6 +299,13 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                                         return Pair.create(socialLinkToggleButton, userProfileDTO);
                                     }
                                 });
+                    }
+                })
+                .doOnCompleted(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        alertDialogUtil.dismissProgressDialog();
                     }
                 });
     }

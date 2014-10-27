@@ -83,7 +83,7 @@
   <string name="store_buy_virtual_dollar_window_title">Extra TradeHero Dollars</string>
   <string name="store_buy_virtual_dollar_window_message">Use dollars to buy and sell stocks</string>
   <string name="store_buy_follow_credits_window_title">TradeHero Credits</string>
-  <string name="store_buy_follow_credits_window_message">Use credits to follow other users!</string>
+  <string name="store_buy_follow_credits_window_message">Use credits to premium-follow other users!</string>
   <string name="store_buy_stock_alerts_window_title">Stock Alerts Subscription</string>
   <string name="store_buy_stock_alerts_window_message">Get notified when a stock price changes.
     Charged monthly, cancel anytime.

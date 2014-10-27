@@ -78,7 +78,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
                 }
             });
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             // TODO Exception come from loading timelines from database
             return null;
