@@ -24,8 +24,8 @@
   <dimen name="temp_leaderboard_user_item_action_buttons_height">30dp</dimen>
   <dimen name="leaderboard_user_item_action_button_vertical_padding">5dp</dimen>
   <dimen name="leaderboard_user_item_action_button_margin">5dp</dimen>
-  <dimen name="leaderboard_def_item_icon_container">50dp</dimen>
-  <dimen name="leaderboard_def_item_icon">36dp</dimen>
+  <dimen name="leaderboard_def_item_icon_container">62dp</dimen>
+  <dimen name="leaderboard_def_item_icon">@dimen/medium_logo_w_h</dimen>
   <dimen name="lbmu_roi_mode_vertical_padding">5dp</dimen>
   <dimen name="leaderboard_current_user_rank_vertical_margin">10dp</dimen>
   <dimen name="leaderboard_current_user_rank_vertical_padding">5dp</dimen>

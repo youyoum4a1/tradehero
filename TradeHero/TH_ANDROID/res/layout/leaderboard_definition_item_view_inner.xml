@@ -60,8 +60,7 @@
     <TextView android:id="@+id/leaderboard_def_item_name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:textSize="@dimen/leaderboard_title_text_size"
-        android:textStyle="bold"
+        style="@style/TH.Subhead"
         tools:text="Vietnam"
         />
 
@@ -69,6 +68,7 @@
         android:id="@+id/leaderboard_def_item_desc"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        style="@style/TH.Caption"
         tools:text="Exchanges: VND"
         />
 

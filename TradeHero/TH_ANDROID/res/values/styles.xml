@@ -68,14 +68,6 @@
     <item name="android:textSize">@dimen/text_caption</item>
   </style>
 
-  <style name="TH.TabStyle"
-      parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
-    <item name="android:background">@drawable/tab_indicator_ab_th</item>
-    <item name="android:layout_width">0dip</item>
-    <item name="android:layout_weight">1</item>
-    <item name="android:minWidth">80dip</item>
-  </style>
-
   <style name="TH.Btn_Price_Bar_Separator">
     <item name="android:layout_width">1dp</item>
     <item name="android:layout_height">match_parent</item>
