@@ -27,6 +27,7 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class AdView extends RelativeLayout
         implements DTOView<CompetitionZoneDTO>
@@ -103,7 +104,14 @@ public class AdView extends RelativeLayout
             {
                 // Ok, this is the only way I found to workaround this problem, converting url to a filename, and manually put 9-patch image
                 // with that name to android resource folder.
-                String bannerResourceFileName = getResourceFileName(adDTO.bannerImageUrl);
+                String bannerResourceFileName = null;
+                try
+                {
+                    bannerResourceFileName = getResourceFileName(adDTO.bannerImageUrl);
+                } catch (StringIndexOutOfBoundsException e)
+                {
+                    Timber.e(e, "When getting %s", adDTO.bannerImageUrl);
+                }
                 int bannerResourceId = 0;
                 if (bannerResourceFileName != null &&
                         (bannerResourceId = getResources().getIdentifier(bannerResourceFileName, "drawable", getContext().getPackageName())) != 0)
