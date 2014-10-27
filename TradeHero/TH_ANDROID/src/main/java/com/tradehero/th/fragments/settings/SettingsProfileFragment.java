@@ -87,10 +87,8 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Override public void onStop()
     {
         detachUserProfileCache();
-        if (updateProfileSubscription != null && !updateProfileSubscription.isUnsubscribed())
-        {
-            updateProfileSubscription.unsubscribe();
-        }
+        unsubscribe(updateProfileSubscription);
+        updateProfileSubscription = null;
         super.onStop();
     }
 
@@ -111,6 +109,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         super.onSaveInstanceState(outState);
         detachUserProfileCache();
+        unsubscribe(updateProfileSubscription);
     }
 
     private void detachUserProfileCache()
@@ -193,6 +192,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     R.string.authentication_connecting_tradehero_only);
             profileView.progressDialog.setCancelable(true);
 
+            unsubscribe(updateProfileSubscription);
             updateProfileSubscription = profileView.obtainUserFormDTO()
                     .flatMap(new Func1<UserFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
                     {
