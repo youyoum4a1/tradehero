@@ -160,8 +160,8 @@
   <string name="guest_user_dialog_summary">您的当前身份为游客，不会保存您 的账户信息，请升级为正式用户</string>
   <string name="bind">绑定</string>
   <string name="share_to_social">我要炫耀</string>
-  <string name="share_sell_title">恭喜你，财运来了挡都挡不住啊！</string>
-  <string name="share_sell_title2">快去亮瞎那些小伙伴！</string>
+  <string name="share_sell_title">恭喜你，盈利</string>
+  <string name="share_sell_title2">财运来了挡都挡不住啊</string>
   <string name="share_sell_title11">亏损了</string>
   <string name="share_sell_title12">坑爹了，怎么破</string>
   <string name="share_tips">小贴士：如果不想弹出分享界面</string>
