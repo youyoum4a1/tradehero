@@ -22,9 +22,10 @@ public class StockChartActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
         THApp app = THApp.get(this);
         newInjector = app.plus(new StockChartActivityModule());
+
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_stock_chart);
         FragmentManager fragmentManager = getSupportFragmentManager();

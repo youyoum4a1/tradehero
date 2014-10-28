@@ -224,13 +224,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         {
             colorValueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), mCurrentColor, color);
             colorValueAnimator.setDuration(500l);
-            colorValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-            {
-                @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
-                {
-                    int color = (Integer) valueAnimator.getAnimatedValue();
-                    setColor(color);
-                }
+            colorValueAnimator.addUpdateListener(valueAnimator -> {
+                int color1 = (Integer) valueAnimator.getAnimatedValue();
+                setColor(color1);
             });
             colorValueAnimator.addListener(new AnimatorListenerAdapter()
             {
@@ -477,16 +473,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
         btnColorAnimation = ObjectAnimator.ofPropertyValuesHolder(btnShare, propertyValuesHolders.toArray(array));
         btnColorAnimation.setDuration(getResources().getInteger(R.integer.achievement_share_button_animation_duration));
-        btnColorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-        {
-            @Override public void onAnimationUpdate(@NotNull ValueAnimator valueAnimator)
-            {
-                int color = (Integer) valueAnimator.getAnimatedValue(PROPERTY_BTN_COLOR);
-                StateListDrawable drawable = graphicUtil.createStateListDrawable(getActivity(), color);
-                int textColor = graphicUtil.getContrastingColor(color);
-                graphicUtil.setBackground(btnShare, drawable);
-                btnShare.setTextColor(textColor);
-            }
+        btnColorAnimation.addUpdateListener(valueAnimator -> {
+            int color = (Integer) valueAnimator.getAnimatedValue(PROPERTY_BTN_COLOR);
+            StateListDrawable drawable = graphicUtil.createStateListDrawable(getActivity(), color);
+            int textColor = graphicUtil.getContrastingColor(color);
+            graphicUtil.setBackground(btnShare, drawable);
+            btnShare.setTextColor(textColor);
         });
         btnColorAnimation.setStartDelay(getResources().getInteger(R.integer.achievement_share_button_animation_delay));
         btnColorAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -570,6 +562,20 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         socialSharerLazy.get().setSharedListener(null);
         detachMiddleCallbackShareAchievement();
         super.onDestroyView();
+    }
+
+    @Override public void onSaveInstanceState(@NotNull Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        if (badge != null)
+        {
+            picasso.cancelRequest(badge);
+        }
+        levelDefListCache.unregister(levelDefListCacheListener);
+        if (userLevelProgressBar != null)
+        {
+            userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
+        }
     }
 
     @Override public void onDestroy()

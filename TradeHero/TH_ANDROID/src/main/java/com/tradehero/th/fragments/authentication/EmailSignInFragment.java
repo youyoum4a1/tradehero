@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.authentication;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
@@ -15,7 +14,6 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
-import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
@@ -46,10 +44,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 
@@ -91,37 +85,26 @@ public class EmailSignInFragment extends Fragment
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setMessage(message)
                 .setView(forgotDialogView)
-                .setNegativeButton(R.string.authentication_cancel, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int which)
+                .setNegativeButton(R.string.authentication_cancel, (dialogInterface, which) -> dialogInterface.cancel())
+                .setPositiveButton(R.string.ok, (dialogInterface, which) -> {
+
+                    ServerValidatedEmailText serverValidatedEmailText =
+                            (ServerValidatedEmailText) forgotDialogView.findViewById(R.id.authentication_forgot_password_validated_email);
+                    if (serverValidatedEmailText == null)
                     {
-                        dialogInterface.cancel();
+                        return;
                     }
-                })
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(final DialogInterface dialogInterface, int which)
+                    serverValidatedEmailText.forceValidate();
+
+                    if (!serverValidatedEmailText.isValid())
                     {
-
-                        ServerValidatedEmailText serverValidatedEmailText =
-                                (ServerValidatedEmailText) forgotDialogView.findViewById(R.id.authentication_forgot_password_validated_email);
-                        if (serverValidatedEmailText == null)
-                        {
-                            return;
-                        }
-                        serverValidatedEmailText.forceValidate();
-
-                        if (!serverValidatedEmailText.isValid())
-                        {
-                            THToast.show(R.string.forgot_email_incorrect_input_email);
-                        }
-                        else
-                        {
-                            String email = serverValidatedEmailText.getText().toString();
-                            doForgotPassword(email);
-                            dialogInterface.dismiss();
-                        }
+                        THToast.show(R.string.forgot_email_incorrect_input_email);
+                    }
+                    else
+                    {
+                        String email1 = serverValidatedEmailText.getText().toString();
+                        doForgotPassword(email1);
+                        dialogInterface.dismiss();
                     }
                 }).create().show();
     }
@@ -161,14 +144,10 @@ public class EmailSignInFragment extends Fragment
         validationSubscription = Observable.combineLatest(
                 ViewObservable.text(email),
                 ViewObservable.text(password),
-                new Func2<ValidatedText, ValidatedText, Pair<Boolean, Boolean>>()
-                {
-                    @Override public Pair<Boolean, Boolean> call(ValidatedText email, ValidatedText password)
-                    {
-                        email.forceValidate();
-                        password.forceValidate();
-                        return Pair.create(email.isValid(), password.isValid());
-                    }
+                (email1, password1) -> {
+                    email1.forceValidate();
+                    password1.forceValidate();
+                    return Pair.create(email1.isValid(), password1.isValid());
                 })
                 .subscribe(new EmptyObserver<Pair<Boolean, Boolean>>()
                 {
@@ -180,73 +159,36 @@ public class EmailSignInFragment extends Fragment
                 });
 
         signInObservable = ViewObservable.clicks(loginButton, false)
-                .map(new Func1<View, AuthData>()
-                {
-                    @Override public AuthData call(View view)
-                    {
-                        DeviceUtil.dismissKeyboard(view);
-                        return new AuthData(email.getText().toString(), password.getText().toString());
-                    }
+                .map(view1 -> {
+                    DeviceUtil.dismissKeyboard(view1);
+                    return new AuthData(email.getText().toString(), password.getText().toString());
                 })
-                .doOnNext(new Action1<AuthData>()
-                {
-                    @Override public void call(AuthData AuthData)
-                    {
-                        progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                                getString(R.string.authentication_connecting_tradehero_only), true);
-                    }
-                })
-                .map(new Func1<AuthData, LoginSignUpFormDTO>()
-                {
-                    @Override public LoginSignUpFormDTO call(AuthData authData)
-                    {
-                        return loginSignUpFormDTOProvider.get()
-                                .authData(authData)
-                                .build();
-                    }
-                })
-                .flatMap(new Func1<LoginSignUpFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
-                {
-                    @Override public Observable<Pair<AuthData, UserProfileDTO>> call(final LoginSignUpFormDTO loginSignUpFormDTO)
-                    {
-                        AuthData authData = loginSignUpFormDTO.authData;
-                        Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
-                                authData.getTHToken(), loginSignUpFormDTO)
-                                .subscribeOn(AndroidSchedulers.mainThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .map(new Func1<UserLoginDTO, UserProfileDTO>()
-                                {
-                                    @Override public UserProfileDTO call(UserLoginDTO userLoginDTO)
-                                    {
-                                        return userLoginDTO.profileDTO;
-                                    }
-                                });
+                .doOnNext(AuthData -> progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+                        getString(R.string.authentication_connecting_tradehero_only), true))
+                .map(authData -> loginSignUpFormDTOProvider.get()
+                        .authData(authData)
+                        .build())
+                .flatMap(loginSignUpFormDTO -> {
+                    AuthData authData = loginSignUpFormDTO.authData;
+                    Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
+                            authData.getTHToken(), loginSignUpFormDTO)
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .map(userLoginDTO -> userLoginDTO.profileDTO);
 
-                        return Observable.zip(Observable.just(authData), userLoginDTOObservable,
-                                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
-                                {
-                                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData authData, UserProfileDTO userLoginDTO)
-                                    {
-                                        return Pair.create(authData, userLoginDTO);
-                                    }
-                                })
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
-                    }
+                    return Observable.zip(Observable.just(authData), userLoginDTOObservable, Pair::create)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread());
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authDataActionProvider.get())
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(toastOnErrorAction)
-                .doOnUnsubscribe(new Action0()
-                {
-                    @Override public void call()
+                .doOnUnsubscribe(() -> {
+                    if (progressDialog != null)
                     {
-                        if (progressDialog != null)
-                        {
-                            progressDialog.dismiss();
-                        }
+                        progressDialog.dismiss();
                     }
                 })
                 .retry();
@@ -257,7 +199,7 @@ public class EmailSignInFragment extends Fragment
         super.onResume();
         if (signInSubscription == null || signInSubscription.isUnsubscribed())
         {
-            signInSubscription = signInObservable.subscribe(new EmptyObserver<Pair<AuthData, UserProfileDTO>>());
+            signInSubscription = signInObservable.subscribe(new EmptyObserver<>());
         }
     }
 

@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
@@ -27,8 +28,8 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     private static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
     @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
-    @InjectView(R.id.post_comment_text) protected EditText postCommentText;
-    @InjectView(R.id.mention_widget) protected MentionActionButtonsView mentionActionButtonsView;
+    @InjectView(R.id.post_comment_text) @Optional protected EditText postCommentText;
+    @InjectView(R.id.mention_widget) @Optional protected MentionActionButtonsView mentionActionButtonsView;
 
     @Inject @NotNull protected DiscussionKeyFactory discussionKeyFactory;
     @Inject @BottomTabs protected Lazy<DashboardTabHost> dashboardTabHost;
@@ -140,8 +141,11 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     private void subscribeHasSelected()
     {
         detachSelectedSubscription();
-        hasSelectedSubscription = mentionActionButtonsView.getSelectedItemObservable()
-                .subscribe(createSelectedItemObserver());
+        if (mentionActionButtonsView != null)
+        {
+            hasSelectedSubscription = mentionActionButtonsView.getSelectedItemObservable()
+                    .subscribe(createSelectedItemObserver());
+        }
     }
 
     private void detachSelectedSubscription()
