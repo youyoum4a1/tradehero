@@ -183,8 +183,8 @@
   <string name="share_dialog_summary">现在分享还有资金奖励哦！</string>
 
   <string name="wechat_timeline">朋友圈</string>
-  <string name="share_create_contest">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！ \nhttp://cn.tradehero.mobi/shr/match.html?userId=%1$s&amp;competitionId=%2$s</string>
-  <string name="share_detial_contest">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！ \nhttp://cn.tradehero.mobi/shr/match.html?userId=%1$s&amp;competitionId=%2$s</string>
+  <string name="share_create_contest">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！ \nhttp://cn.tradehero.mobi/shr/match.html?userId=%1$s&amp;competitionId=%2$s&amp;title=%3$s</string>
+  <string name="share_detial_contest">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！ \nhttp://cn.tradehero.mobi/shr/match.html?userId=%1$s&amp;competitionId=%2$s&amp;title=%3$s</string>
   <string name="local_social">社区</string>
 
   <string name="search_no_result">无结果</string>

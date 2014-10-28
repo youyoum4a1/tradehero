@@ -282,14 +282,16 @@ public class CompetitionCreateFragment extends DashboardFragment
             onFinish();
             if (response.getStatus() == 200)
             {
+                if(userCompetitionDTO==null){
+                    return;
+                }
                 THToast.show("创建成功！");
                 CompetitionCreateFragment.this.userCompetitionDTO = userCompetitionDTO;
                 CompetitionBaseFragment.needRefresh = true;
                 if (cbCompetitionInvite.isChecked())
                 {
-                    mShareSheetTitleCache.set(getString(R.string.share_create_contest,
-                            /*edtCompetitionName.getText().toString(),*/ currentUserId.get().toString(),
-                            userCompetitionDTO.id));
+                    mShareSheetTitleCache.set(getString(R.string.share_create_contest, currentUserId.get().toString(),
+                            userCompetitionDTO.id, userCompetitionDTO.name));
                     ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                             .inflate(R.layout.share_sheet_local_dialog_layout, null);
                     contentView.setLocalSocialClickedListener(
