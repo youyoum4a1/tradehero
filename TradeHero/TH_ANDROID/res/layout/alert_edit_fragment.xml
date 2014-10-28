@@ -22,8 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/stock_alert_trigger_conditions"
-        android:textAllCaps="true"
         android:padding="5dp"
+        style="@style/TH.Subhead"
         android:tag="sticky"
         android:background="@color/divider_gray"
         />
