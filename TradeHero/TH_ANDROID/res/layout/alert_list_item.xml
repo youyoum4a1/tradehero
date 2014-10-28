@@ -3,21 +3,21 @@
 <com.tradehero.th.fragments.alert.AlertItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="5dp"
-    android:background="@drawable/basic_white_selector"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@style/TH.ListItem.Clickable"
+    android:gravity="center"
     >
 
   <ImageView
-      android:layout_width="60dp"
-      android:layout_height="60dp"
+      android:layout_width="@dimen/big_avatar_w_h"
+      android:layout_height="@dimen/big_avatar_w_h"
       android:id="@+id/logo"
       android:contentDescription="@null"
       tools:background="@color/red"
-      tools:layout_width="60dp"
-      tools:layout_height="60dp"
       android:layout_centerVertical="true"
+      android:layout_marginRight="@dimen/margin_small"
+      android:layout_marginEnd="@dimen/margin_small"
       />
 
   <TextView
@@ -25,8 +25,7 @@
       android:layout_height="wrap_content"
       android:id="@+id/stock_symbol"
       android:layout_toRightOf="@id/logo"
-      android:layout_alignParentTop="true"
-      android:paddingLeft="5dp"
+      style="@style/TH.UserNameTitle"
       tools:text="stock name"
       />
 
@@ -36,8 +35,7 @@
       android:id="@+id/alert_description"
       android:layout_toRightOf="@id/logo"
       android:layout_below="@id/stock_symbol"
-      android:paddingLeft="5dp"
-      android:textSize="@dimen/text_caption"
+      style="@style/TH.Body"
       tools:text="alert description"
       />
 
@@ -47,34 +45,30 @@
       android:id="@+id/alert_status"
       android:layout_toRightOf="@id/logo"
       android:layout_below="@id/alert_description"
-      android:paddingLeft="5dp"
-      android:textSize="@dimen/text_caption"
+      style="@style/TH.Caption"
       tools:text="alert status"
       />
 
-  <TextView
+  <Button
       android:id="@+id/trade"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_toRightOf="@id/logo"
-      android:layout_below="@id/alert_status"
-      android:layout_marginLeft="@dimen/common_margin_4"
-      android:paddingTop="@dimen/margin_xsmall"
-      android:paddingBottom="@dimen/margin_xsmall"
-      android:paddingLeft="@dimen/margin_small"
-      android:paddingRight="@dimen/margin_small"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      android:layout_centerVertical="true"
+      android:layout_marginEnd="@dimen/margin_medium"
+      android:layout_marginRight="@dimen/margin_medium"
       android:background="@drawable/authentication_button"
       android:text="@string/timeline_trade"
-      android:textColor="@color/white"
-      android:textSize="@dimen/text_caption"
+      style="@style/TH.Button.Inverse.Small"
       />
 
   <ImageView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
-      android:paddingRight="5dp"
       android:src="@drawable/settings_forward_light"
       android:contentDescription="@null"
       />
