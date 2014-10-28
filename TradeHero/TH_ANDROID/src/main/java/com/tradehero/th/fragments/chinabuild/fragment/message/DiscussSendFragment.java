@@ -87,6 +87,8 @@ public class DiscussSendFragment extends DashboardFragment
 
     private UserCompetitionDTO userCompetitionDTO;
 
+    private boolean isSending = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -102,8 +104,10 @@ public class DiscussSendFragment extends DashboardFragment
         setHeadViewRight0(getResources().getString(R.string.private_message_btn_send));
     }
 
+
     @Override public void onClickHeadRight0()
     {
+        if(isSending)return;
         Timber.d("发送！！！");
         postDiscussion();
     }
@@ -126,6 +130,7 @@ public class DiscussSendFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.discuss_send_layout, container, false);
         ButterKnife.inject(this, view);
         initView();
+        isSending  = false;
         return view;
     }
 
@@ -356,6 +361,7 @@ public class DiscussSendFragment extends DashboardFragment
     {
         if (validate())
         {
+            isSending = true;
             DiscoveryDiscussFormDTO discussionFormDTO = new DiscoveryDiscussFormDTO();
             if (discussionFormDTO == null) return;
             discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
@@ -434,6 +440,8 @@ public class DiscussSendFragment extends DashboardFragment
             {
                 progressDialog.hide();
             }
+
+            isSending = false;
         }
     }
 }
