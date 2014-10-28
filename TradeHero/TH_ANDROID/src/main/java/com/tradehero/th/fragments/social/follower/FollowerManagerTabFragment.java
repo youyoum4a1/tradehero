@@ -43,7 +43,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
-    @InjectView(android.R.id.list) PullToRefreshListView pullToRefreshListView;
+    @InjectView(R.id.follower_list) PullToRefreshListView pullToRefreshListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     private FollowerAndPayoutListItemAdapter followerListAdapter;
     private UserBaseKey heroId;
