@@ -361,6 +361,7 @@
   <style name="TH.Spinner"
       parent="android:Widget.Holo.Light.Spinner">
     <item name="android:background">@drawable/tradehero_spinner_background_holo_light</item>
+    <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
   </style>
 
   <style name="TH.Button.Timeline" parent="TH.Button">

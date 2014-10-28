@@ -5,13 +5,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/common_margin_15"
+    android:layout_margin="@dimen/margin_medium"
     >
 
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/margin_medium"
       android:orientation="vertical"
       >
 
@@ -20,9 +19,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/onboard_invitation_follow_hero_header"
-        android:textSize="@dimen/text_title"
-        android:textStyle="bold"
-        android:textColor="@color/black"/>
+        style="@style/TH.Title"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -30,8 +27,7 @@
         android:layout_marginTop="@dimen/common_margin_10"
         android:gravity="center"
         android:text="@string/onboard_invitation_follow_hero_come_on"
-        android:lineSpacingMultiplier="1.2"
-        android:textColor="@color/black"
+        style="@style/TH.Body"
         />
 
   </LinearLayout>

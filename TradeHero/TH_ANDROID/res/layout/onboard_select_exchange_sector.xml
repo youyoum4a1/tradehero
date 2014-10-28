@@ -20,9 +20,7 @@
         android:layout_marginTop="@dimen/common_margin_15"
         android:gravity="center"
         android:text="@string/onboard_exchange_title"
-        android:textSize="@dimen/text_title"
-        android:textStyle="bold"
-        android:textColor="@color/black"
+        style="@style/TH.Title"
         />
 
     <TextView
@@ -31,7 +29,7 @@
         android:layout_marginTop="@dimen/common_margin_10"
         android:gravity="center"
         android:text="@string/onboard_exchange_summary1"
-        android:textColor="@color/black"
+        style="@style/TH.Body"
         />
 
     <com.tradehero.th.fragments.market.ExchangeSpinner
@@ -48,7 +46,7 @@
         android:layout_marginTop="@dimen/common_margin_10"
         android:gravity="center"
         android:text="@string/onboard_exchange_summary2"
-        android:textColor="@color/black"
+        style="@style/TH.Body"
         />
 
     <Spinner

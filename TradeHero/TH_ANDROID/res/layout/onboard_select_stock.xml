@@ -19,9 +19,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/security_on_board_select_invitation_title"
-        android:textSize="@dimen/text_title"
-        android:textStyle="bold"
-        android:textColor="@color/black"
+        style="@style/TH.Title"
         />
 
     <TextView
@@ -30,8 +28,7 @@
         android:layout_marginTop="@dimen/common_margin_10"
         android:gravity="center"
         android:text="@string/security_on_board_select_invitation_come_on"
-        android:lineSpacingMultiplier="1.2"
-        android:textColor="@color/black"
+        style="@style/TH.Body"
         />
 
   </LinearLayout>
