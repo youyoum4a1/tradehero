@@ -242,6 +242,15 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         super.onStop();
     }
 
+    @Override public void onPause()
+    {
+        super.onPause();
+        if(listSearch!=null)
+        {
+            listSearch.onRefreshComplete();
+        }
+    }
+
     @Override
     public void onDestroyView()
     {

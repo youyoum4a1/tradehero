@@ -608,11 +608,11 @@ public class TradeOfMineFragment extends DashboardFragment
                             mShareDialogKeyPreference.set(false);
                             mShareDialogROIValueKeyPreference.set(false);
                             mShareSheetTitleCache.set(getString(
-                                    R.string.share_amount_roi_value_summary, "10%", currentUserId.get().toString(),
+                                    R.string.share_amount_roi_value_summary,  currentUserId.get().toString(),
                                     String.valueOf(listData.get(i).id)));
                             ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                                     getString(R.string.share_amount_roi_value_title), getString(
-                                    R.string.share_amount_roi_value_summary, "10%", currentUserId.get().toString(),
+                                    R.string.share_amount_roi_value_summary,   currentUserId.get().toString(),
                                     String.valueOf(listData.get(i).id)));
                         }
                     }

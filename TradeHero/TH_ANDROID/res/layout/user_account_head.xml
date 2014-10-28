@@ -18,7 +18,7 @@
         android:id="@+id/tvWatchListItemROI"
         style="@style/trade_of_me_value_text"
         android:textSize="20sp"
-        android:text="$ 0"/>
+        android:text="－－"/>
   </LinearLayout>
 
   <LinearLayout
@@ -35,7 +35,7 @@
         android:id="@+id/tvWatchListItemAllAmount"
         style="@style/trade_of_me_value_text"
         android:textColor="@color/black"
-        android:text=" "/>
+        android:text="－－"/>
   </LinearLayout>
 
   <LinearLayout
@@ -51,7 +51,7 @@
         android:layout_below="@id/tvWatchListItemAllAmount"
         android:id="@+id/tvWatchListItemDynamicAmount"
         style="@style/trade_of_me_value_text"
-        android:text=" "/>
+        android:text="－－"/>
   </LinearLayout>
 
   <LinearLayout
@@ -68,7 +68,7 @@
         android:id="@+id/tvWatchListItemCash"
         style="@style/trade_of_me_value_text"
         android:textColor="@color/black"
-        android:text=" "/>
+        android:text="－－"/>
   </LinearLayout>
 
 </LinearLayout>
