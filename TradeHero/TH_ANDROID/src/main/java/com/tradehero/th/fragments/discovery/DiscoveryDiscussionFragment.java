@@ -40,6 +40,8 @@ import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 
 public class DiscoveryDiscussionFragment extends Fragment
 {
+    private static final String DISCOVERY_LIST_LOADER_ID = DiscoveryDiscussionFragment.class.getName() + ".discoveryList";
+
     @InjectView(R.id.timeline_list_view) PullToRefreshListView mTimelineListView;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject RxLoaderManager rxLoaderManager;
@@ -108,7 +110,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         timelineSubject.subscribe(new RefreshCompleteObserver());
         timelineSubject.subscribe(new UpdateRangeObserver());
 
-        timelineSubscription = rxLoaderManager.create(currentUserId.toUserBaseKey(),
+        timelineSubscription = rxLoaderManager.create(DISCOVERY_LIST_LOADER_ID,
                 PaginationObservable.createFromRange(timelineRefreshRangeObservable, (Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>)
                         rangeDTO -> userTimelineServiceWrapper.getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO)
                                 .subscribeOn(Schedulers.io())
@@ -124,22 +126,14 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         super.onDestroyView();
         mTimelineListView.setOnLastItemVisibleListener(null);
+        timelineSubscription.unsubscribe();
+        rxLoaderManager.remove(DISCOVERY_LIST_LOADER_ID);
     }
 
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
         HierarchyInjector.inject(this);
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-        timelineSubscription.unsubscribe();
-        if (isDetached())
-        {
-            rxLoaderManager.remove(currentUserId.toUserBaseKey());
-        }
     }
 
     private class RefreshCompleteObserver implements Observer<List<TimelineItemDTOKey>>
