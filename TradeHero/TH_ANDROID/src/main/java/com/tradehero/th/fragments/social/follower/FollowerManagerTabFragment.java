@@ -9,7 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -39,7 +43,8 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
-    private FollowerManagerViewContainer viewContainer;
+    @InjectView(android.R.id.list) PullToRefreshListView pullToRefreshListView;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
     private FollowerAndPayoutListItemAdapter followerListAdapter;
     private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
@@ -68,8 +73,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Override protected void initViews(View view)
     {
-        viewContainer = new FollowerManagerViewContainer(view);
-
+        ButterKnife.inject(this, view);
         if (followerListAdapter == null)
         {
             followerListAdapter = new FollowerAndPayoutListItemAdapter(getActivity(),
@@ -81,30 +85,18 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
                     R.layout.follower_none_list_item
             );
         }
-
-        if (viewContainer.pullToRefreshListView != null)
+        pullToRefreshListView.setOnRefreshListener(this);
+        pullToRefreshListView.setAdapter(followerListAdapter);
+        pullToRefreshListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());        pullToRefreshListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
-            viewContainer.pullToRefreshListView.setOnRefreshListener(this);
-            viewContainer.followerList.setAdapter(followerListAdapter);
-        }
-
-        if (viewContainer.followerList != null)
-        {
-            viewContainer.followerList.setOnItemClickListener(
-                    new AdapterView.OnItemClickListener()
-                    {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id)
-                        {
-                            ListView listView = (ListView)parent;
-                            handleFollowerItemClicked(view, position - listView.getHeaderViewsCount(), id);
-                        }
-                    }
-            );
-            viewContainer.followerList.setAdapter(followerListAdapter);
-            viewContainer.followerList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        }
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                    long id)
+            {
+                ListView listView = (ListView)parent;
+                handleFollowerItemClicked(view, position - listView.getHeaderViewsCount(), id);
+            }
+        });
         displayProgress(true);
     }
 
@@ -145,13 +137,8 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Override public void onDestroyView()
     {
-        if (this.viewContainer.followerList != null)
-        {
-            this.viewContainer.followerList.setOnItemClickListener(null);
-            viewContainer.followerList.setOnScrollListener(null);
-        }
-        this.viewContainer = null;
         this.followerListAdapter = null;
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -214,18 +201,12 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         this.followerSummaryDTO = summaryDTO;
         if (andDisplay)
         {
-            this.viewContainer.displayTotalRevenue(summaryDTO);
-            this.viewContainer.displayTotalAmountPaid(summaryDTO);
-            this.viewContainer.displayFollowersCount(summaryDTO);
             displayFollowerList();
         }
     }
 
     public void display()
     {
-        this.viewContainer.displayTotalRevenue(this.followerSummaryDTO);
-        this.viewContainer.displayTotalAmountPaid(this.followerSummaryDTO);
-        this.viewContainer.displayFollowersCount(this.followerSummaryDTO);
         displayFollowerList();
     }
 
@@ -239,22 +220,13 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     private void redisplayProgress()
     {
-        if (this.viewContainer.progressBar != null)
-        {
-            this.viewContainer.progressBar.setVisibility(View.VISIBLE);
-        }
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     public void displayProgress(boolean running)
     {
-        if (this.viewContainer.progressBar != null)
-        {
-            this.viewContainer.progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
-        }
-        if (this.viewContainer.followerList != null)
-        {
-            this.viewContainer.followerList.setVisibility(running ? View.GONE : View.VISIBLE);
-        }
+        progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+        pullToRefreshListView.setVisibility(running ? View.GONE : View.VISIBLE);
     }
 
     @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
@@ -269,15 +241,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
     {
-
     }
 
     private void onRefreshCompleted()
     {
-        if (this.viewContainer != null && this.viewContainer.pullToRefreshListView != null)
-        {
-            viewContainer.pullToRefreshListView.onRefreshComplete();
-        }
+        pullToRefreshListView.onRefreshComplete();
     }
 
     private void refreshContent()
