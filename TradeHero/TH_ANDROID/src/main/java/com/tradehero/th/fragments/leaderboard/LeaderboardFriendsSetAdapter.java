@@ -1,46 +1,48 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOSetAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboardUserDTO>
+public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboardUserDTO>
 {
     public static final int VIEW_TYPE_MARK = 0;
     public static final int VIEW_TYPE_SOCIAL = 1;
 
-    private final int markedLayoutResId;
-    private final int socialLayoutResId;
+    @LayoutRes private final int markedLayoutResId;
+    @LayoutRes private final int socialLayoutResId;
 
     protected UserProfileDTO currentUserProfileDTO;
-    protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
+    @Nullable protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
     @NotNull private Map<Object, Boolean> expandedStatuses;
 
-    public LeaderboardFriendsListAdapter(Context context, int markedLayoutResId, int socialLayoutResId)
+    //<editor-fold desc="Constructors">
+    public LeaderboardFriendsSetAdapter(@NotNull Context context,
+            @LayoutRes int markedLayoutResId,
+            @LayoutRes int socialLayoutResId)
     {
-        super(context, 0);
+        super(context, new FriendLeaderboardUserComparator());
         this.markedLayoutResId = markedLayoutResId;
         this.socialLayoutResId = socialLayoutResId;
         this.expandedStatuses = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public int getViewTypeCount()
     {
@@ -61,7 +63,7 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
         throw new IllegalStateException("Unhandled class type " + item.getClass());
     }
 
-    public int getItemLayoutResId(int position)
+    @LayoutRes public int getItemLayoutResId(int position)
     {
         switch (getItemViewType(position))
         {
@@ -76,77 +78,61 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
 
     public void add(@NotNull LeaderboardFriendsDTO leaderboardFriendsDTO)
     {
-        addAndNotify(leaderboardFriendsDTO.leaderboard.users, null);
-        addAndNotify(leaderboardFriendsDTO.socialFriends, null);
-    }
-
-    public void addAndNotify(@NotNull final Collection<? extends LeaderboardUserDTO> collection, final LeaderboardUserDTO typeQualifier)
-    {
-        Observable.just(1)
+        Observable.from(leaderboardFriendsDTO.leaderboard.users)
                 .observeOn(Schedulers.computation())
-                .map(num -> create(collection, typeQualifier))
+                .map(SavingFriendLeaderboardMarkedUserDTO::new)
+                .toList()
+                .doOnCompleted(() -> Observable.from(leaderboardFriendsDTO.socialFriends)
+                        .map(FriendLeaderboardSocialUserDTO::new)
+                        .toList()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(friendLeaderboardUserDTOs -> {
+                            appendTail(friendLeaderboardUserDTOs);
+                            notifyDataSetChanged();
+                        }))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list -> {
-                    addAll(list);
+                .subscribe(friendLeaderboardMarkedUserDTOs -> {
+                    int index = 1;
+                    for (FriendLeaderboardMarkedUserDTO dto : friendLeaderboardMarkedUserDTOs)
+                    {
+                        dto.leaderboardUserDTO.setPosition(index++); // HACK
+                    }
+                    appendTail(friendLeaderboardMarkedUserDTOs);
                     notifyDataSetChanged();
                 });
     }
 
-    public List<FriendLeaderboardMarkedUserDTO> create(@NotNull Collection<? extends LeaderboardUserDTO> leaderboardUserDTOs, LeaderboardUserDTO typeQualifier)
+    private class SavingFriendLeaderboardMarkedUserDTO extends FriendLeaderboardMarkedUserDTO
     {
-        List<FriendLeaderboardMarkedUserDTO> created = new ArrayList<>();
-        Boolean previousExpanded;
-        for (LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
+        public SavingFriendLeaderboardMarkedUserDTO(@NotNull LeaderboardUserDTO leaderboardUserDTO)
         {
-            previousExpanded = expandedStatuses.get(leaderboardUserDTO.getLeaderboardMarkUserId());
-            created.add(new FriendLeaderboardMarkedUserDTO(
-                    previousExpanded != null ? previousExpanded : false,
-                    leaderboardUserDTO)
-            {
-                @Override public void setExpanded(boolean expanded)
-                {
-                    super.setExpanded(expanded);
-                    LeaderboardFriendsListAdapter.this.expandedStatuses.put(leaderboardUserDTO.getLeaderboardMarkUserId(), expanded);
-                }
-            });
+            this(expandedStatuses.get(leaderboardUserDTO.getLeaderboardMarkUserId()), leaderboardUserDTO);
         }
-        return created;
-    }
 
-    public void addAndNotify(@NotNull Collection<? extends UserFriendsDTO> collection, UserFriendsDTO typeQualifier)
-    {
-        Observable.just(1)
-                .observeOn(Schedulers.computation())
-                .map(num -> create(collection, typeQualifier))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list -> {
-                    addAll(list);
-                    notifyDataSetChanged();
-                });
-    }
-
-    public List<FriendLeaderboardSocialUserDTO> create(@NotNull Collection<? extends UserFriendsDTO> userFriendsDTOs, UserFriendsDTO typeQualifier)
-    {
-        List<FriendLeaderboardSocialUserDTO> created = new ArrayList<>();
-        for (UserFriendsDTO userFriendsDTO : userFriendsDTOs)
+        public SavingFriendLeaderboardMarkedUserDTO(@Nullable Boolean expanded, @NotNull LeaderboardUserDTO leaderboardUserDTO)
         {
-            created.add(new FriendLeaderboardSocialUserDTO(userFriendsDTO));
+            super(expanded != null ? expanded : false, leaderboardUserDTO);
         }
-        return created;
+
+        @Override public void setExpanded(boolean expanded)
+        {
+            super.setExpanded(expanded);
+            LeaderboardFriendsSetAdapter.this.expandedStatuses.put(leaderboardUserDTO.getLeaderboardMarkUserId(), expanded);
+        }
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(getContext()).inflate(getItemLayoutResId(position), parent, false);
+            convertView = LayoutInflater.from(context).inflate(getItemLayoutResId(position), parent, false);
         }
 
         FriendLeaderboardUserDTO item = getItem(position);
 
         if (convertView instanceof LeaderboardMarkUserItemView)
         {
-            ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK
+            ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK FIXME
             ((LeaderboardMarkUserItemView) convertView).display(((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO);
             ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
             ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(this::notifyFollowRequested);
@@ -175,7 +161,7 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
         notifyDataSetChanged();
     }
 
-    protected void notifyFollowRequested(UserBaseDTO userBaseDTO)
+    protected void notifyFollowRequested(@NotNull UserBaseDTO userBaseDTO)
     {
         LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
@@ -184,7 +170,7 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
         }
     }
 
-    public void setFollowRequestedListener(LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
+    public void setFollowRequestedListener(@Nullable LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
     }

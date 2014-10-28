@@ -37,7 +37,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         items = new ArrayList<>();
     }
 
-    public DTOSetAdapter(@NotNull Context context, @Nullable Collection<T> objects)
+    public DTOSetAdapter(@NotNull Context context, @Nullable Collection<? extends T> objects)
     {
         super();
         this.context = context;
@@ -46,7 +46,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
 
     }
 
-    public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator, @Nullable Collection<T> objects)
+    public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator, @Nullable Collection<? extends T> objects)
     {
         super();
         this.comparator = comparator;
@@ -63,7 +63,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         items.clear();
     }
 
-    @NotNull protected Set<T> createSet(@Nullable Collection<T> objects)
+    @NotNull protected Set<T> createSet(@Nullable Collection<? extends T> objects)
     {
         Set<T> created;
         if (comparator == null)
@@ -93,7 +93,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
      * @param newOnes
      * @return the count of effectively added elements
      */
-    public int appendTail(@Nullable Collection<T> newOnes)
+    public int appendTail(@Nullable Collection<? extends T> newOnes)
     {
         int beforeCount = set.size();
         int afterCount = beforeCount;
@@ -110,7 +110,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
      * @param newOnes
      * @return the count of effectively added elements
      */
-    public int appendHead(@Nullable List<T> newOnes)
+    public int appendHead(@Nullable List<? extends T> newOnes)
     {
         int beforeCount = set.size();
         int afterCount = beforeCount;

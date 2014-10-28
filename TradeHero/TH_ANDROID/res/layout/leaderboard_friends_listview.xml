@@ -20,6 +20,9 @@
       android:id="@+id/leaderboard_mark_user_listview"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:listSelector="@color/transparent"/>
+      android:listSelector="@color/transparent"
+      android:paddingBottom="@dimen/clickable_element_min_dimen"
+      android:clipToPadding="false"
+      />
 
 </RelativeLayout>

@@ -50,7 +50,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @InjectView(R.id.progress) ProgressBar mProgress;
     @Nullable protected View headerView;
 
-    protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
+    protected LeaderboardFriendsSetAdapter leaderboardFriendsUserListAdapter;
     private TextView leaderboardMarkUserMarkingTime;
     @Nullable private DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> leaderboardFriendsKeyDTOListener;
     @Inject Analytics analytics;
@@ -66,7 +66,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         super.onCreate(savedInstanceState);
         leaderboardFriendsKeyDTOListener = this.createFriendsCacheListener();
-        leaderboardFriendsUserListAdapter = new LeaderboardFriendsListAdapter(
+        leaderboardFriendsUserListAdapter = new LeaderboardFriendsSetAdapter(
                 getActivity(),
                 R.layout.lbmu_item_roi_mode,
                 R.layout.leaderboard_friends_social_item_view);
@@ -213,7 +213,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         return inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false);
     }
 
-    private void pushInvitationFragment(){
+    private void pushInvitationFragment()
+    {
         navigator.get().pushFragment(FriendsInvitationFragment.class);
     }
 
@@ -245,12 +246,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         }
         leaderboardFriendsUserListAdapter.add(dto);
         leaderboardFriendsUserListAdapter.notifyDataSetChanged();
-
     }
 
     protected class LeaderboardMarkUserListFollowRequestedListener
             implements LeaderboardMarkUserItemView.OnFollowRequestedListener
-
     {
         @Override public void onFollowRequested(UserBaseDTO userBaseDTO)
         {
