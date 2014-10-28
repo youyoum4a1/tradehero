@@ -20,11 +20,13 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class AlertServiceWrapper
 {
     @NotNull private final AlertService alertService;
     @NotNull private final AlertServiceAsync alertServiceAsync;
+    @NotNull private final AlertServiceRx alertServiceRx;
     @NotNull private final Lazy<AlertCompactListCache> alertCompactListCache;
     @NotNull private final Lazy<AlertCompactCache> alertCompactCache;
     @NotNull private final Lazy<AlertCache> alertCache;
@@ -32,6 +34,7 @@ import retrofit.Callback;
     @Inject public AlertServiceWrapper(
             @NotNull AlertService alertService,
             @NotNull AlertServiceAsync alertServiceAsync,
+            @NotNull AlertServiceRx alertServiceRx,
             @NotNull Lazy<AlertCompactListCache> alertCompactListCache,
             @NotNull Lazy<AlertCompactCache> alertCompactCache,
             @NotNull Lazy<AlertCache> alertCache)
@@ -39,6 +42,7 @@ import retrofit.Callback;
         super();
         this.alertService = alertService;
         this.alertServiceAsync = alertServiceAsync;
+        this.alertServiceRx = alertServiceRx;
         this.alertCompactListCache = alertCompactListCache;
         this.alertCompactCache = alertCompactCache;
         this.alertCache = alertCache;
@@ -78,15 +82,12 @@ import retrofit.Callback;
         return alertService.getAlerts(userBaseKey.key);
     }
 
-    public MiddleCallback<AlertCompactDTOList> getAlerts(
-            @NotNull UserBaseKey userBaseKey,
-            @Nullable Callback<AlertCompactDTOList> callback)
+    public Observable<AlertCompactDTOList> getAlertsRx(@NotNull UserBaseKey userBaseKey)
     {
         basicCheck(userBaseKey);
-        MiddleCallback<AlertCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        alertServiceAsync.getAlerts(userBaseKey.key, middleCallback);
-        return middleCallback;
+        return alertServiceRx.getAlerts(userBaseKey.key);
     }
+
     //</editor-fold>
 
     private void basicCheck(@NotNull AlertId alertId)
@@ -108,21 +109,15 @@ import retrofit.Callback;
         return this.alertService.getAlert(alertId.userId, alertId.alertId);
     }
 
-    public MiddleCallback<AlertDTO> getAlert(AlertId alertId, Callback<AlertDTO> callback)
+    public Observable<AlertDTO> getAlertRx(@NotNull AlertId alertId)
     {
-        MiddleCallback<AlertDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        this.alertServiceAsync.getAlert(alertId.userId, alertId.alertId, middleCallback);
-        return middleCallback;
+        basicCheck(alertId);
+        return this.alertServiceRx.getAlert(alertId.userId, alertId.alertId);
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Create Alert">
-    public AlertCompactDTO createAlert(@NotNull UserBaseKey userBaseKey, @NotNull AlertFormDTO alertFormDTO)
-    {
-        basicCheck(userBaseKey);
-        return createDTOProcessorCreateAlert(userBaseKey).process(this.alertService.createAlert(userBaseKey.key, alertFormDTO));
-    }
-
     public MiddleCallback<AlertCompactDTO> createAlert(@NotNull UserBaseKey userBaseKey, @NotNull AlertFormDTO alertFormDTO, @Nullable Callback<AlertCompactDTO> callback)
     {
         basicCheck(userBaseKey);
@@ -130,21 +125,27 @@ import retrofit.Callback;
         this.alertServiceAsync.createAlert(userBaseKey.key, alertFormDTO, middleCallback);
         return middleCallback;
     }
+
+    public Observable<AlertCompactDTO> createAlertRx(@NotNull UserBaseKey userBaseKey, @NotNull AlertFormDTO alertFormDTO)
+    {
+        basicCheck(userBaseKey);
+        return this.alertServiceRx.createAlert(userBaseKey.key, alertFormDTO);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Update Alert">
-    public AlertCompactDTO updateAlert(@NotNull AlertId alertId, @NotNull AlertFormDTO alertFormDTO)
-    {
-        basicCheck(alertId);
-        return createDTOProcessorUpdateAlert(alertId).process(this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO));
-    }
-
     public MiddleCallback<AlertCompactDTO> updateAlert(@NotNull AlertId alertId, @NotNull AlertFormDTO alertFormDTO, @Nullable Callback<AlertCompactDTO> callback)
     {
         basicCheck(alertId);
         MiddleCallback<AlertCompactDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUpdateAlert(alertId));
         this.alertServiceAsync.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, middleCallback);
         return middleCallback;
+    }
+
+    public Observable<AlertCompactDTO> updateAlertRx(@NotNull AlertId alertId, @NotNull AlertFormDTO alertFormDTO)
+    {
+        basicCheck(alertId);
+        return this.alertServiceRx.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
     }
     //</editor-fold>
 }

@@ -7,9 +7,9 @@ public class FriendLeaderboardMarkedUserDTO extends FriendLeaderboardUserDTO
     public LeaderboardUserDTO leaderboardUserDTO;
 
     //<editor-fold desc="Constructors">
-    public FriendLeaderboardMarkedUserDTO(LeaderboardUserDTO leaderboardUserDTO)
+    public FriendLeaderboardMarkedUserDTO(boolean expanded, LeaderboardUserDTO leaderboardUserDTO)
     {
-        super(false);
+        super(expanded);
         this.leaderboardUserDTO = leaderboardUserDTO;
     }
     //</editor-fold>

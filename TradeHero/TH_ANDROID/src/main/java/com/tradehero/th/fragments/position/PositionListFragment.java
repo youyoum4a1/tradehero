@@ -754,19 +754,22 @@ public class PositionListFragment
                 return;
             }
         }
-        PortfolioDTO cachedPortfolio = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey);
-        if (cachedPortfolio != null)
+        if (getPositionsDTOKey instanceof OwnedPortfolioId)
         {
-            Double profit = cachedPortfolio.roiSinceInception;
-            if (profit != null && profit > 0)
+            PortfolioDTO cachedPortfolio = portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey);
+            if (cachedPortfolio != null)
             {
-                if (mShowAskForReviewDialogPreference.isItTime())
+                Double profit = cachedPortfolio.roiSinceInception;
+                if (profit != null && profit > 0)
                 {
-                    broadcastUtils.enqueue(new SendLoveBroadcastSignal());
-                }
-                else if (mShowAskForInviteDialogPreference.isItTime())
-                {
-                    AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
+                    if (mShowAskForReviewDialogPreference.isItTime())
+                    {
+                        broadcastUtils.enqueue(new SendLoveBroadcastSignal());
+                    }
+                    else if (mShowAskForInviteDialogPreference.isItTime())
+                    {
+                        AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
+                    }
                 }
             }
         }

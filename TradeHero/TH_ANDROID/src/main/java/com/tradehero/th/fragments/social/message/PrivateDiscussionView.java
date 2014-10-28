@@ -20,6 +20,7 @@ import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
@@ -27,6 +28,7 @@ import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +36,8 @@ import retrofit.RetrofitError;
 
 public class PrivateDiscussionView extends DiscussionView
 {
+    @Inject CurrentUserId currentUserId;
+    @Inject DiscussionCache discussionCache;
     @Inject protected MessageHeaderCache messageHeaderCache;
     @Inject protected MessageHeaderDTOFactory messageHeaderDTOFactory;
     @Inject protected MessageDiscussionListKeyFactory messageDiscussionListKeyFactory;
@@ -302,6 +306,8 @@ public class PrivateDiscussionView extends DiscussionView
         protected PrivateDiscussionViewDiscussionSetAdapter()
         {
             super(getContext(),
+                    discussionCache,
+                    currentUserId,
                     R.layout.private_message_bubble_mine,
                     R.layout.private_message_bubble_other);
         }

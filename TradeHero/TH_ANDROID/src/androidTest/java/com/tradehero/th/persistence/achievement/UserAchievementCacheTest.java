@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.utils.achievement.ForAchievement;
@@ -51,6 +52,7 @@ public class UserAchievementCacheTest
     {
         UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
         userAchievementDTO.id = 1;
+        userAchievementDTO.achievementDef = new AchievementDefDTO();
         BroadcastTaskNew broadcastTask = userAchievementCache.putAndBroadcast(userAchievementDTO);
         assertThat(broadcastTask).isNotNull();
         assertThat(broadcastTask.getCurrentTry()).isEqualTo(1);

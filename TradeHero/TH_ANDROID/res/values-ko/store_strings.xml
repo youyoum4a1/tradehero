@@ -145,6 +145,7 @@
   <string name="manage_followers_follower_none">팔로워 없음.</string>
   <string name="manage_followers_list_header">%d명의 팔로워</string>
   <string name="manage_followers_revenue_follower">수익: %1$s %2$,.2f</string>
+  <string name="manage_followers_revenue_follower_2">수익: %1$s</string>
 
   <!-- Manage follower payments -->
   <string name="manage_follower_payment_transaction_list_header">거래내역</string>

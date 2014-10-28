@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -26,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import rx.Observable;
+import rx.functions.Func1;
+import timber.log.Timber;
 
 @Singleton public class SessionServiceWrapper
 {
@@ -87,6 +90,21 @@ import rx.Observable;
         return new DTOProcessorLogout(
                 dtoCacheUtil,
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get System Status">
+    @NotNull public Observable<SystemStatusDTO> getSystemStatus()
+    {
+        return sessionServiceRx.getSystemStatus()
+                .onErrorReturn(new Func1<Throwable, SystemStatusDTO>()
+                {
+                    @Override public SystemStatusDTO call(Throwable throwable)
+                    {
+                        Timber.e(throwable, "When requesting for systemStatus");
+                        return new SystemStatusDTO();
+                    }
+                });
     }
     //</editor-fold>
 

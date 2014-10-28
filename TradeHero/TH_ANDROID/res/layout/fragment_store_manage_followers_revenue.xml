@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ptr="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <TableLayout
+      android:id="@+id/manage_followers_header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:background="@color/gray_3"
+      >
+
+    <TableRow
+        android:weightSum="3">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:text="@string/manage_followers_total_revenue"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:text="@string/manage_followers_total_amount_paid"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:text="@string/manage_followers_number_followers"
+          />
+
+    </TableRow>
+
+    <TableRow
+        android:weightSum="3">
+
+      <TextView
+          android:id="@+id/manage_followers_total_revenue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:textStyle="bold"
+          tools:text="US$ 0.70"
+          />
+
+      <TextView
+          android:id="@+id/manage_followers_total_amount_paid"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:textStyle="bold"
+          tools:text="US$ 0.00"
+          />
+
+      <TextView
+          android:id="@+id/manage_followers_number_followers"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
+          android:textStyle="bold"
+          tools:text="1"
+          />
+
+    </TableRow>
+
+  </TableLayout>
+
+  <ViewSwitcher
+      android:id="@android:id/content"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/manage_followers_header"
+      >
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/follower_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        ptr:ptrMode="pullFromStart"
+        ptr:ptrScrollingWhileRefreshingEnabled="true"
+        android:fadingEdge="none"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideOverlay"
+        android:background="@null"
+        android:paddingBottom="@dimen/discussion_list_padding"
+        />
+
+  </ViewSwitcher>
+
+</RelativeLayout>

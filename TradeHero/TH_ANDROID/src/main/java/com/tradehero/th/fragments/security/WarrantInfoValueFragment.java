@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.security;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,13 +63,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
         if (mHelpVideoLink != null)
         {
-            mHelpVideoLink.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleVideoLinkClicked();
-                }
-            });
+            mHelpVideoLink.setOnClickListener(this::handleVideoLinkClicked);
         }
     }
 
@@ -114,9 +107,6 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         else
         {
             linkWith((ProviderDTO) null, andDisplay);
-        }
-        if (andDisplay)
-        {
         }
     }
 
@@ -308,9 +298,9 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     }
     //</editor-fold>
 
-    private void handleVideoLinkClicked()
+    @SuppressWarnings("UnusedParameters")
+    private void handleVideoLinkClicked(View view)
     {
-        Activity activity = getActivity();
         if (navigator != null)
         {
             Bundle args = new Bundle();

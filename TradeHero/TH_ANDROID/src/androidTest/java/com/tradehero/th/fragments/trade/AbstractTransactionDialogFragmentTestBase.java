@@ -1,9 +1,13 @@
 package com.tradehero.th.fragments.trade;
 
 import android.text.Editable;
+import android.widget.ToggleButton;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderDTOList;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
@@ -41,6 +45,12 @@ public abstract class AbstractTransactionDialogFragmentTestBase
     protected DashboardActivity activity;
     protected AbstractTransactionDialogFragment abstractTransactionDialogFragment;
 
+    @Optional @InjectView(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
+    @InjectView(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
+    @Optional @InjectView(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
+    @InjectView(R.id.btn_share_wb) protected ToggleButton mBtnShareWb;
+    @InjectView(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
+
     public void setUp() throws InterruptedException
     {
         int sId = 92;
@@ -68,12 +78,6 @@ public abstract class AbstractTransactionDialogFragmentTestBase
         mockSecurityCompactDTO.id = sId;
         mockSecurityCompactDTO.name = "Security Name";
         PositionDTOCompactList mockPositionsDTOCompactList = new PositionDTOCompactList();
-        PortfolioDTO mockPortfolioDTO = new PortfolioDTO();
-        mockPortfolioDTO.id = 94;
-        mockPortfolioDTO.userId = 20;
-        mockPortfolioDTO.cashBalance = CASH_BALANCE;
-        mockPortfolioDTO.currencyDisplay = "US$";
-        mockPortfolioDTO.currencyISO = "USD";
         ProviderDTOList mockProvidersDTOList = new ProviderDTOList();
         int firstTradeAllTime = 0;
 
@@ -81,9 +85,8 @@ public abstract class AbstractTransactionDialogFragmentTestBase
                 new SecurityPositionDetailDTO(
                         mockSecurityCompactDTO,
                         mockPositionsDTOCompactList,
-                        mockPortfolioDTO,
-                        mockProvidersDTOList,
-                        firstTradeAllTime);
+                        firstTradeAllTime,
+                        mockProvidersDTOList);
 
         securityCompactCache.put(securityId, mockSecurityCompactDTO);
         securityPositionDetailCache.put(securityId, mockPositionDetailDTO);
@@ -92,6 +95,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
         abstractTransactionDialogFragment
                 = AbstractTransactionDialogFragment.newInstance(securityId, portfolioId, quoteDTO, isBuy());
         abstractTransactionDialogFragment.show(activity.getFragmentManager(), "Test");
+        ButterKnife.inject(this, abstractTransactionDialogFragment.getView());
 
         runBgUiTasks(3);
     }

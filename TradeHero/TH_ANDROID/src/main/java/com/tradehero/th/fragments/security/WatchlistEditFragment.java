@@ -232,6 +232,14 @@ public class WatchlistEditFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        detachSecurityCompactFetchTask();
+        detachMiddleCallbackUpdate();
+        detachMiddleCallbackDelete();
+        super.onSaveInstanceState(outState);
+    }
+
     protected void detachSecurityCompactFetchTask()
     {
         securityCompactCache.unregister(securityCompactCacheFetchListener);

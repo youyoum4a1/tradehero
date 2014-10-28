@@ -4,9 +4,11 @@ import android.content.Context;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdAsc;
 import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdDesc;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -19,26 +21,26 @@ abstract public class DiscussionSetAdapter
     //<editor-fold desc="Constructors">
     public DiscussionSetAdapter(@NotNull Context context)
     {
-        super(context);
+        super(context, new DiscussionKeyComparatorIdAsc());
+    }
+
+    public DiscussionSetAdapter(@NotNull Context context, @Nullable Comparator<DiscussionKey> comparator)
+    {
+        super(context, comparator);
     }
 
     public DiscussionSetAdapter(
             @NotNull Context context,
             @Nullable Collection<DiscussionKey> objects)
     {
-        super(context, objects);
+        super(context, new DiscussionKeyComparatorIdAsc(), objects);
+    }
+
+    public DiscussionSetAdapter(@NotNull Context context, @Nullable Comparator<DiscussionKey> comparator, @Nullable Collection<DiscussionKey> objects)
+    {
+        super(context, comparator, objects);
     }
     //</editor-fold>
-
-    @Override @NotNull protected Set<DiscussionKey> createSet(@Nullable Collection<DiscussionKey> objects)
-    {
-        Set<DiscussionKey> created = new TreeSet<>(new DiscussionKeyComparatorIdDesc());
-        if (objects != null)
-        {
-            created.addAll(objects);
-        }
-        return created;
-    }
 
     public void appendTail(@Nullable DiscussionDTO newElement)
     {

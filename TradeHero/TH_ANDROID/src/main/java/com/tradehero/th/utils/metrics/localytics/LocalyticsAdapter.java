@@ -22,7 +22,7 @@ public class LocalyticsAdapter
             @NotNull @ForLocalytics String appKey)
     {
         localytics = new LocalyticsSession(context, appKey);
-        LocalyticsSession.setLoggingEnabled(!Constants.RELEASE);
+        LocalyticsSession.setLoggingEnabled(Constants.RELEASE);
     }
 
     @Override public void open(Set<String> customDimensions)

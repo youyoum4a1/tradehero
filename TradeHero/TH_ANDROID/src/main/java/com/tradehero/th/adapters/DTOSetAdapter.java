@@ -2,18 +2,20 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.widget.BaseAdapter;
-import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 abstract public class DTOSetAdapter<T> extends BaseAdapter
 {
     @NotNull protected final Context context;
+    @Nullable protected Comparator<T> comparator;
     @NotNull protected Set<T> set;
     @NotNull private ArrayList<T> items;
 
@@ -21,8 +23,16 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     public DTOSetAdapter(@NotNull Context context)
     {
         super();
-        HierarchyInjector.inject(context, this);
         this.context = context;
+        set = createSet(null);
+        items = new ArrayList<>();
+    }
+
+    public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator)
+    {
+        super();
+        this.context = context;
+        this.comparator = comparator;
         set = createSet(null);
         items = new ArrayList<>();
     }
@@ -30,7 +40,16 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     public DTOSetAdapter(@NotNull Context context, @Nullable Collection<T> objects)
     {
         super();
-        HierarchyInjector.inject(context, this);
+        this.context = context;
+        set = createSet(objects);
+        items = new ArrayList<>(set);
+
+    }
+
+    public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator, @Nullable Collection<T> objects)
+    {
+        super();
+        this.comparator = comparator;
         this.context = context;
         set = createSet(objects);
         items = new ArrayList<>(set);
@@ -46,11 +65,21 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
 
     @NotNull protected Set<T> createSet(@Nullable Collection<T> objects)
     {
-        if (objects == null)
+        Set<T> created;
+        if (comparator == null)
         {
-            return new LinkedHashSet<>();
+            created = new LinkedHashSet<>();
         }
-        return new LinkedHashSet<>(objects);
+        else
+        {
+            created = new TreeSet<>(comparator);
+        }
+
+        if (objects != null)
+        {
+            created.addAll(objects);
+        }
+        return created;
     }
 
     public void remove(@NotNull T element)

@@ -42,10 +42,9 @@ import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 /**
- * Display a ListView of News object for a given SecurityId - It uses
- * the NewsHeadlineCache to get or fetch the news from an abstract provider as needed. In case the
- * news are not in the cache, the download is done in the background using the `fetchSecurityTask`
- * AsyncTask. The task is cancelled when the fragment is paused.
+ * Display a ListView of News object for a given SecurityId - It uses the NewsHeadlineCache to get or fetch the news from an abstract provider as
+ * needed. In case the news are not in the cache, the download is done in the background using the `fetchSecurityTask` AsyncTask. The task is
+ * cancelled when the fragment is paused.
  */
 public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -115,7 +114,8 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
         Bundle bundle = new Bundle();
-        if (abstractDiscussionCompactDTO != null && ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url!=null)
+        if (abstractDiscussionCompactDTO != null
+                && ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url != null)
         {
             WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
             navigator.get().pushFragment(WebViewFragment.class, bundle);
@@ -272,7 +272,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         }
     }
 
-
     protected void handleNewsClicked(int position, @Nullable NewsItemDTOKey news)
     {
         //if (news != null)
@@ -293,7 +292,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         }
     }
 
-    protected void handleNewClicked(int position,  NewsItemDTOKey news)
+    protected void handleNewClicked(int position, NewsItemDTOKey news)
     {
         if (news != null)
         {

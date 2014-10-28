@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -28,14 +31,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 {
-    public static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE =
+    private static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE =
             FollowerPayoutManagerFragment.class.getName() + ".followerId";
 
-    private ImageView followerPicture;
-    private TextView followerName;
-    private TextView totalRevenue;
-    private ListView followerPaymentListView;
-    private View errorView;
+    @InjectView(R.id.follower_profile_picture) ImageView followerPicture;
+    @InjectView(R.id.follower_title) TextView followerName;
+    @InjectView(R.id.follower_revenue) TextView totalRevenue;
+    @InjectView(R.id.follower_payments_list) ListView followerPaymentListView;
+    @InjectView(R.id.error_view) View errorView;
 
     private FollowerPaymentListItemAdapter followerPaymentListAdapter;
     private FollowerHeroRelationId followerHeroRelationId;
@@ -48,10 +51,26 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
 
+    public static void put(@NotNull Bundle args, @NotNull FollowerHeroRelationId followerHeroRelationId)
+    {
+        args.putBundle(
+                BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
+                followerHeroRelationId.getArgs());
+    }
+
+    public static FollowerHeroRelationId getFollowerHeroRelationId(@NotNull Bundle args)
+    {
+        return new FollowerHeroRelationId(args.getBundle(BUNDLE_KEY_FOLLOWER_ID_BUNDLE));
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         userFollowerListener = createFollowerListener();
+        followerPaymentListAdapter = new FollowerPaymentListItemAdapter(
+                getActivity(), getActivity().getLayoutInflater(),
+                R.layout.follower_payment_list_item, R.layout.follower_payment_list_header);
+        followerHeroRelationId = getFollowerHeroRelationId(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,41 +84,13 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        followerPicture = (ImageView) view.findViewById(R.id.follower_profile_picture);
-        if (followerPicture != null)
-        {
-            followerPicture.setOnClickListener(createUserClickHandler());
-        }
-        followerName = (TextView) view.findViewById(R.id.follower_title);
-        if (followerName != null)
-        {
-            followerName.setOnClickListener(createUserClickHandler());
-        }
-
-        totalRevenue = (TextView) view.findViewById(R.id.follower_revenue);
-        followerPaymentListView =
-                (ListView) view.findViewById(R.id.follower_payments_list);
-
-        errorView = view.findViewById(R.id.error_view);
-
-        if (followerPaymentListAdapter == null)
-        {
-            followerPaymentListAdapter = new FollowerPaymentListItemAdapter(
-                    getActivity(), getActivity().getLayoutInflater(),
-                    R.layout.follower_payment_list_item, R.layout.follower_payment_list_header);
-        }
-        if (followerPaymentListView != null)
-        {
-            followerPaymentListView.setAdapter(followerPaymentListAdapter);
-        }
+        ButterKnife.inject(this, view);
+        followerPaymentListView.setAdapter(followerPaymentListAdapter);
     }
 
     @Override public void onResume()
     {
         super.onResume();
-
-        followerHeroRelationId =
-                new FollowerHeroRelationId(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID_BUNDLE));
         fetchFollowerSummary();
     }
 
@@ -111,14 +102,13 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        followerPaymentListAdapter = null;
-        followerPicture.setOnClickListener(null);
-        followerName.setOnClickListener(null);
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
+        followerPaymentListAdapter = null;
         userFollowerListener = null;
         super.onDestroy();
     }
@@ -240,20 +230,15 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private View.OnClickListener createUserClickHandler()
+    @OnClick({R.id.follower_profile_picture, R.id.follower_title})
+    public void onClick(View v)
     {
-        return new View.OnClickListener()
+        if (userFollowerDTO != null)
         {
-            @Override public void onClick(View v)
-            {
-                if (userFollowerDTO != null)
-                {
-                    Bundle bundle = new Bundle();
-                    thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
-                    navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
-                }
-            }
-        };
+            Bundle bundle = new Bundle();
+            thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
+            navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
+        }
     }
 
     protected DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO> createFollowerListener()

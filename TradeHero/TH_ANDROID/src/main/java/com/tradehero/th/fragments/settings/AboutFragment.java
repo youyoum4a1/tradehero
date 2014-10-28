@@ -167,4 +167,19 @@ public class AboutFragment extends DashboardFragment
         }
         super.onDestroyView();
     }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        if(rotateAnimator != null)
+        {
+            rotateAnimator.removeAllListeners();
+            rotateAnimator = null;
+        }
+        if(scrollAnimator != null)
+        {
+            scrollAnimator.removeAllListeners();
+            scrollAnimator = null;
+        }
+    }
 }

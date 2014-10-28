@@ -3,6 +3,7 @@
 <com.tradehero.th.fragments.social.follower.FollowerListItemView
     style="@style/TH.ListItem.Clickable"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
@@ -32,14 +33,16 @@
           android:id="@+id/follower_title"
           android:singleLine="false"
           style="@style/TH.UserNameTitle"
+          tools:text="Tho Nguyen"
         />
 
       <TextView
-          android:id="@+id/follower_revenue"
+          android:id="@+id/follower_roi_info"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
           style="@style/TH.UserROI"
+          tools:text="36.73%"
         />
 
   </LinearLayout>

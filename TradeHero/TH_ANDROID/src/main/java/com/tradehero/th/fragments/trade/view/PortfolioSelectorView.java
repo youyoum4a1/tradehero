@@ -98,4 +98,11 @@ public class PortfolioSelectorView extends RelativeLayout
                     }
                 });
     }
+
+    public boolean defaultMenuIsNotDefaultPortfolio()
+    {
+        return defaultPortfolioId != null
+                && defaultMenuPortfolioId != null
+                && !defaultPortfolioId.equals(new OwnedPortfolioId(defaultMenuPortfolioId));
+    }
 }

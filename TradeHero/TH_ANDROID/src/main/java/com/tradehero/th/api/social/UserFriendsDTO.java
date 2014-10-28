@@ -45,7 +45,7 @@ abstract public class UserFriendsDTO
         {
             return true;
         }
-        if (other == null || other.getClass() != getClass())
+        if (other == null || other.getClass() != ((Object) this).getClass())
         {
             return false;
         }
