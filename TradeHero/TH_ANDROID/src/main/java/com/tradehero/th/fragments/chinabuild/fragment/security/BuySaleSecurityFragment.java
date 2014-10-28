@@ -118,6 +118,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     @InjectView(R.id.vquantity) protected EditText mQuantityEditText;
 
     private boolean isBuy = false;
+    private boolean isSending = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -142,6 +143,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         initView();
         updateHeadView(true);
         mShareToSocialCheckBox.setChecked(true);
+        isSending = false;
         return view;
     }
 
@@ -661,6 +663,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     @OnClick(R.id.llBuySaleLineBottom)
     public void onBuySaleClicked()
     {
+        if(isSending)return;
         Timber.d("onBuySaleClicked!!!");
         launchBuySell();
     }
@@ -762,6 +765,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
                 mTransactionDialog.dismiss();
             }
             mTransactionDialog.dismiss();
+            isSending = false;
         }
 
         @Override public void failure(RetrofitError retrofitError)

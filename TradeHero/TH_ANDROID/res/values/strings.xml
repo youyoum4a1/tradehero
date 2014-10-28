@@ -352,7 +352,7 @@
   <string name="share_sell_to_wechat_title">股神也就是我的小跟班，跟我炒股有钱赚，你懂的 \nhttp://cn.tradehero.mobi/shr/trade.html?userId=%1$s&amp;positionId=%2$s&amp;tradeId=%3$s</string>
   <string name="share_sell_to_wechat_title_losemoney">在股市亏本了，小伙伴们快来帮帮我吧！ \nhttp://cn.tradehero.mobi/shr/trade.html?userId=%1$s&amp;positionId=%2$s&amp;tradeId=%3$s</string>
   <string name="share_amount_roi_value_title">轻松赚到10%，\n我简直就是股神附体！</string>
-  <string name="share_amount_roi_value_summary">我在高端模拟炒股软件\'全民股神\'中的单笔收益到达了%1$s, 想要知道那只股票吗？叫声大神，亲切点的那种~ \nhttp://cn.tradehero.mobi/shr/yield.html?userId=%2$s&amp;positionId=%3$s</string>
+  <string name="share_amount_roi_value_summary">股神也就是我的小跟班，跟我炒股有钱赚，你懂的。 \nhttp://cn.tradehero.mobi/shr/yield.html?userId=%1$s&amp;positionId=%2$s</string>
 
   <string name="share_amount_total_value_title">碉堡了，你的资产已突破15w，\n小伙伴们还不造吗？</string>
   <string name="share_amount_total_value_summary">一不小心就有15W了，分分钟秒杀富二代。 \nhttp://cn.tradehero.mobi/shr/assets.html?userId=%1$s</string>
