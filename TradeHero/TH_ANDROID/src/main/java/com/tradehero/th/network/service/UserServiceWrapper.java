@@ -8,19 +8,7 @@ import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.key.FriendsListKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
-import com.tradehero.th.api.users.SearchAllowableRecipientListType;
-import com.tradehero.th.api.users.SearchUserListType;
-import com.tradehero.th.api.users.UpdateCountryCodeDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
-import com.tradehero.th.api.users.UpdateReferralCodeDTO;
-import com.tradehero.th.api.users.UserAvailabilityDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserListType;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTOList;
-import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
+import com.tradehero.th.api.users.*;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -28,18 +16,12 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
+import com.tradehero.th.fragments.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.th.fragments.chinabuild.data.TrackShareDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
-import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
-import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
-import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
-import com.tradehero.th.models.user.DTOProcessorUnfollowUser;
-import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
-import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
-import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
-import com.tradehero.th.models.user.DTOProcessorUserDeleted;
+import com.tradehero.th.models.user.*;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -55,12 +37,13 @@ import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class UserServiceWrapper
 {
@@ -951,12 +934,19 @@ import retrofit.client.Response;
     }
     //</editor-fold>
 
+    //Check whether the current application is the newest one.
     public void downloadAppVersionInfo(@Nullable Callback<AppInfoDTO> callback){
         userServiceAsync.downloadAppVersion(callback);
     }
 
+    //Track when user share to the wechat
     public void trackShare(String eventName, @Nullable Callback<TrackShareDTO> callback){
         userServiceAsync.trackShare(eventName, callback);
+    }
+
+    //Check whether the current user logs in 3 times continually
+    public void isLoginThreeTimesContinually(int userId, @Nullable Callback<LoginContinuallyTimesDTO> callback){
+        userServiceAsync.getContinuallyLoginTimes(String.valueOf(userId), callback);
     }
 
 }

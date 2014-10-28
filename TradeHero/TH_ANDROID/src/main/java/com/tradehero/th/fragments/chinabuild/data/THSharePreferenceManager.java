@@ -9,26 +9,28 @@ import android.text.TextUtils;
  */
 public class THSharePreferenceManager {
 
+    //SharePreference Name
+    private final static String TH_SP_NAME = "th_sp_name_app_version";
+
+    //The latest version
     public final static String KEY_APP_NEW_VERSION_DOWNLOAD_URL = "key_app_new_version_download_url";
     public final static String KEY_APP_SUGGEST_UPDATE = "key_app_suggest_update";
     public final static String KEY_APP_FORCE_UPDATE = "key_app_force_update";
+
+    //Notifications
     public final static String KEY_APP_NOTIFICATION_ON_OFF = "key_app_notification_on_off";
     public final static String KEY_SIGN_IN_ACCOUNT = "key_sign_in_account";
-
-    private final static String TH_SP_NAME = "th_sp_name_app_version";
-
 
     //Dialog record
     public final static String PROPERTY_MORE_THAN_FIFTEEN = "property_more_than_fifteen";
     public final static String PROPERTY_MORE_THAN_TWENTY_FIVE = "property_more_than_twenty_five";
     public static boolean isMoreThanFifteenShowed = false;
     public static boolean isMoreThanTwentyShowed = false;
-
     public final static String FANS_MORE_THAN_NINE = "fans_more_than_nine";
     public static boolean FansMoreThanNineShowed = false;
-
-    public static void saveValuesByKey() {
-    }
+    public final static String LOGIN_CONTINUALLY = "login_continually";
+    public static boolean isLoginContinuallyShowed = false;
+    public static int Login_Continuous_Time = 0;
 
     public static AppInfoDTO getAppVersionInfo(Context context) {
         if (context == null) {
@@ -176,6 +178,34 @@ public class THSharePreferenceManager {
         return true;
     }
 
+    public static void recordShareDialogLoginContinually(int userId, boolean isConfirm, Context context){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
+        if (isConfirm) {
+            sp.edit().putInt(userId + "true" + LOGIN_CONTINUALLY, 1).commit();
+        } else {
+            int cancelRecord = sp.getInt(userId + "false" + LOGIN_CONTINUALLY, 0);
+            cancelRecord++;
+            sp.edit().putInt(userId + "false" + LOGIN_CONTINUALLY, cancelRecord).commit();
+        }
+    }
+
+    public static boolean isShareDialogLoginContinually(int userId, Context context){
+        if(isLoginContinuallyShowed){
+            return false;
+        }
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
+        int confirmRecord = sp.getInt(userId + "true" + LOGIN_CONTINUALLY, 0);
+        if (confirmRecord > 0) {
+            return false;
+        }
+        int cancelRecord = sp.getInt(userId + "false" + LOGIN_CONTINUALLY, 0);
+        if (cancelRecord >= 3) {
+            return false;
+        }
+        return true;
+    }
+
+
     /**
      * Only for static mark
      */
@@ -184,7 +214,8 @@ public class THSharePreferenceManager {
         THSharePreferenceManager.isMoreThanFifteenShowed = false;
         THSharePreferenceManager.isMoreThanTwentyShowed = false;
         THSharePreferenceManager.FansMoreThanNineShowed = false;
+        THSharePreferenceManager.isLoginContinuallyShowed = false;
+        THSharePreferenceManager.Login_Continuous_Time = 0;
     }
-
 
 }

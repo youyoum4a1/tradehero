@@ -27,31 +27,28 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentCompetition;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentDiscovery;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
+import com.tradehero.th.fragments.chinabuild.*;
+import com.tradehero.th.fragments.chinabuild.data.LoginContinuallyTimesDTO;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.ConstantsChinaBuild;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.*;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
-import java.util.Date;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import javax.inject.Inject;
+import java.util.Date;
 
 public class MainActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity
 {
@@ -69,6 +66,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject @BindGuestUser BooleanPreference mBindGuestUserPreference;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
 
     @InjectView(R.id.llMainTab) LinearLayout llMainTab;
     @InjectView(R.id.llTabTrade) LinearLayout llTabTrade;
@@ -140,6 +138,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         mBindGuestUserPreference.set(false);
 
         analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
+
+        gotoGetTimesContinuallyLogin();
     }
 
     @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabMe})
@@ -149,27 +149,22 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         switch (id)
         {
             case R.id.llTabTrade:
-                Timber.d("------> Analytics MainActivity to Trade");
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_TRADE));
                 setTabCurrent(TAB_TRADE);
                 break;
             case R.id.llTabStockGod:
-                Timber.d("------> Analytics MainActivity to Stock");
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
                 setTabCurrent(TAB_STOCKGOD);
                 break;
             case R.id.llTabDiscovery:
-                Timber.d("------> Analytics MainActivity to Discovery");
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_DISCOVERY));
                 setTabCurrent(TAB_DISCOVERY);
                 break;
             case R.id.llTabCompetition:
-                Timber.d("------> Analytics MainActivity to Competition");
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_COMPETITION));
                 setTabCurrent(TAB_COMPETITION);
                 break;
             case R.id.llTabMe:
-                Timber.d("------> Analytics MainActivity to Me");
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_MINE));
                 setTabCurrent(TAB_ME);
                 break;
@@ -182,7 +177,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         {
             currentTab = index;
             frg_tabHost.setCurrentTab(currentTab);
-            Timber.d("setTabCurrent index = %d", currentTab);
             setTabViewAsChecked();
         }
     }
@@ -240,7 +234,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
     @Override public void onBackPressed()
     {
-        Timber.d("MainActivity onBackPressed!");
     }
 
     @Override protected void onStart()
@@ -319,8 +312,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                 getSupportFragmentManager().findFragmentById(R.id.realtabcontent)
                         .getClass()
                         .getName();
-        Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s",
-                currentFragmentName);
         Crashlytics.setString("LowMemoryAt", new Date().toString());
     }
 
@@ -372,5 +363,23 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                 finish();
             }
         });
+    }
+
+    private void gotoGetTimesContinuallyLogin(){
+        userServiceWrapper.get().isLoginThreeTimesContinually(currentUserId.toUserBaseKey().key, new ContinuousLoginCallback());
+    }
+
+    private class ContinuousLoginCallback implements Callback<LoginContinuallyTimesDTO>{
+
+        @Override
+        public void success(LoginContinuallyTimesDTO dto, Response response) {
+            if(dto!=null){
+                THSharePreferenceManager.Login_Continuous_Time = dto.continuousCount;
+            }
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+        }
     }
 }

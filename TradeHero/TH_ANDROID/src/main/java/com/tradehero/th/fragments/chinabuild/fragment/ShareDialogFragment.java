@@ -37,24 +37,15 @@ import javax.inject.Provider;
 
 public class ShareDialogFragment extends BaseDialogFragment implements View.OnClickListener {
 
-    @Inject
-    Lazy<UserServiceWrapper> userServiceWrapper;
-    @InjectView(R.id.title)
-    TextView mTitleText;
-    @InjectView(R.id.btn_cancel)
-    TextView mCancelBtn;
-    @InjectView(R.id.btn_ok)
-    TextView mOKBtn;
-    @Inject
-    Lazy<SocialSharer> socialSharerLazy;
-    @Inject
-    Provider<SocialFriendHandlerWeibo> weiboSocialFriendHandlerProvider;
-    @Inject
-    CurrentUserId currentUserId;
-    @Inject
-    UserProfileCache userProfileCache;
-    @Inject
-    Provider<WeiboSocialLinkHelper> weiboSocialLinkHelperProvider;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    @InjectView(R.id.title) TextView mTitleText;
+    @InjectView(R.id.btn_cancel) TextView mCancelBtn;
+    @InjectView(R.id.btn_ok) TextView mOKBtn;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
+    @Inject Provider<SocialFriendHandlerWeibo> weiboSocialFriendHandlerProvider;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
+    @Inject Provider<WeiboSocialLinkHelper> weiboSocialLinkHelperProvider;
 
     private static String mTitle;
     private static String mShareContent;
@@ -193,6 +184,9 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         if (mType.equals(THSharePreferenceManager.FANS_MORE_THAN_NINE)){
             THSharePreferenceManager.recordShareDialogFANSMoreThanNine(mUserId, false, getActivity());
         }
+        if (mType.equals(THSharePreferenceManager.LOGIN_CONTINUALLY)){
+            THSharePreferenceManager.recordShareDialogLoginContinually(mUserId, false, getActivity());
+        }
     }
 
     private void recordConfirm() {
@@ -213,6 +207,9 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         }
         if (mType.equals(THSharePreferenceManager.FANS_MORE_THAN_NINE)){
             THSharePreferenceManager.recordShareDialogFANSMoreThanNine(mUserId, true, getActivity());
+        }
+        if (mType.equals(THSharePreferenceManager.LOGIN_CONTINUALLY)){
+            THSharePreferenceManager.recordShareDialogLoginContinually(mUserId, true, getActivity());
         }
     }
 

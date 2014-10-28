@@ -391,6 +391,7 @@
   <string name="html_string_blue"><Data><![CDATA[ <font color="#1789d5">%s</font> ]]></Data></string>
   <string name="html_string_gray"><Data><![CDATA[ <font color="#bfbfbf">%s</font> ]]></Data></string>
   <string name="app_name_cn">全民股神</string>
+  <string name="login_continuous">连续登录很多天了，分享下？</string>
 
   <string name="download_tradehero_android_app_on_wechat">http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th</string>
   <string name="download_tradehero_android_app_on_weibo">http://tradehero.b0.upaiyun.com/th_android.apk</string>

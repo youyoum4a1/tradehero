@@ -23,7 +23,10 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
+import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -32,9 +35,10 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class StockGodListBaseFragment extends DashboardFragment
 {
@@ -51,17 +55,14 @@ public class StockGodListBaseFragment extends DashboardFragment
 
     @Inject Analytics analytics;
 
+    @Inject CurrentUserId currentUserId;
+
     private LeaderboardListAdapter adapter;
 
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 50;
 
     private int leaderboard_key = 0;//所有榜单根据key来判断 30day，60day，6months 。。。
-
-    //public StockGodListBaseFragment(int leaderboard_key)
-    //{
-    //    this.leaderboard_key = leaderboard_key;
-    //}
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -101,7 +102,7 @@ public class StockGodListBaseFragment extends DashboardFragment
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listBang);
         }
-
+        showLoginContinuousDialog();
         return view;
     }
 
@@ -257,8 +258,6 @@ public class StockGodListBaseFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value)
         {
-            //linkWith(value, true);
-            //Timber.d("value:" + value);
             setListData(key, value.users);
             onFinish();
         }
@@ -266,7 +265,6 @@ public class StockGodListBaseFragment extends DashboardFragment
         @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to leaderboard", error);
-            //THToast.show(R.string.error_fetch_leaderboard_info);
             onFinish();
         }
 
@@ -297,10 +295,19 @@ public class StockGodListBaseFragment extends DashboardFragment
         {
             currentPage += 1;
         }
-        else
-        {
-
-        }
         adapter.notifyDataSetChanged();
+    }
+
+    private void showLoginContinuousDialog(){
+        if(THSharePreferenceManager.Login_Continuous_Time >=3){
+            if (leaderboard_key == LeaderboardDefKeyKnowledge.DAYS_ROI) {
+                int userId = currentUserId.toUserBaseKey().getUserId();
+                if (THSharePreferenceManager.isShareDialogLoginContinually(userId, getActivity())) {
+                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                            getString(R.string.login_continuous), getString(R.string.login_continuous), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
+                    THSharePreferenceManager.isLoginContinuallyShowed = true;
+                }
+            }
+        }
     }
 }

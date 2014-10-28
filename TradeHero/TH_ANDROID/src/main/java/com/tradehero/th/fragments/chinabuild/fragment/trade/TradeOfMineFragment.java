@@ -4,14 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -59,12 +52,13 @@ import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     交易－我的交易
@@ -256,7 +250,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        //ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -264,7 +257,6 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         fetchGetPositionsDTOListener = null;
         portfolioFetchListener = null;
-        //userWatchlistPositionRefreshListener = null;
         userWatchlistPositionFetchListener = null;
         portfolioCompactListFetchListener = null;
         super.onDestroy();
@@ -292,18 +284,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
     protected void fetchSimplePage(boolean force)
     {
-        //if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
-        //if (getPositionsDTOKey == null && shownPortfolioId != null)
-        //{
-        //    getPositionsDTOKey = new OwnedPortfolioId(shownPortfolioId.userId, shownPortfolioId.portfolioId);
-        //}
-        //if (getPositionsDTOKey != null)
-        //{
-        //    detachGetPositionsTask();
-        //    fetchGetPositionsDTOListener = createGetPositionsCacheListener();
-        //    getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
-        //    getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
-        //}
 
         if (shownPortfolioId != null)
         {
@@ -427,30 +407,6 @@ public class TradeOfMineFragment extends DashboardFragment
         }
     }
 
-    //protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createRefreshWatchlistListener()
-    //{
-    //    return new RefreshWatchlisListener();
-    //}
-    //
-    //protected class RefreshWatchlisListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
-    //{
-    //    @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
-    //    {
-    //        //watchlistPositionListView.onRefreshComplete();
-    //        //displayWatchlist(value);
-    //        Timber.d("");
-    //    }
-    //
-    //    @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-    //    {
-    //        //watchlistPositionListView.onRefreshComplete();
-    //        //if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
-    //        //{
-    //        //    THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
-    //        //}
-    //    }
-    //}
-
     protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener()
     {
         return new WatchlistPositionFragmentPortfolioCacheListener();
@@ -466,7 +422,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull OwnedPortfolioId key, @NotNull Throwable error)
         {
-            //THToast.show(R.string.error_fetch_portfolio_info);
         }
     }
 
@@ -526,10 +481,6 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             int userId = currentUserId.toUserBaseKey().getUserId();
             if(THSharePreferenceManager.isShareDialogMoreThanFifteenAvailable(userId, getActivity())){
-                    mShareDialogKeyPreference.set(false);
-                    mShareDialogTotalValueKeyPreference.set(false);
-                    mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary,
-                            currentUserId.get().toString()));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_amount_total_value_title), getString(R.string.share_amount_total_value_summary,
                             currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN, userId);
@@ -538,10 +489,6 @@ public class TradeOfMineFragment extends DashboardFragment
             }else{
                 if (cached.totalValue > 250000 && (System.currentTimeMillis()-time_stamp)>duration_showing_dialog){
                     if(THSharePreferenceManager.isShareDialogMoreThanTwentyFiveAvailable(userId, getActivity())){
-                          mShareDialogKeyPreference.set(false);
-                          mShareDialogTotalValueKeyPreference.set(false);
-                          mShareSheetTitleCache.set(getString(R.string.share_amount_total_value_summary25,
-                                 currentUserId.get().toString()));
                           ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                                  getString(R.string.share_amount_total_value_title25), getString(R.string.share_amount_total_value_summary25,
                                  currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);

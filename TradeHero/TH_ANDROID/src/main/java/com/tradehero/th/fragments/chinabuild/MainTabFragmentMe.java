@@ -13,8 +13,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -23,11 +21,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
-import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.*;
 import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest03;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
@@ -36,19 +30,16 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
-import com.tradehero.th.persistence.prefs.ShareDialogFollowerCountKey;
-import com.tradehero.th.persistence.prefs.ShareDialogKey;
-import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class MainTabFragmentMe extends AbsBaseFragment
 {
@@ -56,9 +47,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
-    @Inject @ShareDialogFollowerCountKey BooleanPreference mShareDialogFollowerCountKeyPreference;
-    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject PortfolioCompactCache portfolioCompactCache;
@@ -184,9 +172,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 int userId = currentUserId.toUserBaseKey().getUserId();
                 if (THSharePreferenceManager.isShareDialogFANSMoreThanNineAvailable(userId, getActivity())) {
                     String moreThanNineFans = getActivity().getResources().getString(R.string.share_amount_fans_num_summary);
-                    mShareDialogKeyPreference.set(false);
-                    mShareDialogFollowerCountKeyPreference.set(false);
-                    mShareSheetTitleCache.set(moreThanNineFans);
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_amount_fans_num_title), moreThanNineFans, THSharePreferenceManager.FANS_MORE_THAN_NINE, userId);
                     THSharePreferenceManager.FansMoreThanNineShowed = true;
