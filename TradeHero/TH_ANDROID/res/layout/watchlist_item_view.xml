@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.fragments.watchlist.WatchlistItemView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.watchlist.WatchlistItemView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@color/orange"
+    android:layout_height="wrap_content"
+    android:measureAllChildren="true"
     >
 
   <RelativeLayout
@@ -18,26 +17,24 @@
     <Button
         android:layout_width="@dimen/watchlist_item_button_width"
         android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@color/red"
-        android:textColor="@color/white"
+        style="@style/TH.Button.Inverse"
         android:id="@+id/position_watchlist_delete"
+        android:background="@drawable/basic_red_selector"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:text="@string/watchlist_delete"/>
+        android:text="@string/watchlist_delete"
+        />
 
     <Button
         android:id="@+id/position_watchlist_more"
         android:layout_width="@dimen/watchlist_item_button_width"
         android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@color/gray_normal"
-        android:textColor="@color/white"
+        android:background="@drawable/basic_white_selector"
+        style="@style/TH.Button"
         android:layout_toLeftOf="@id/position_watchlist_delete"
         android:layout_toStartOf="@id/position_watchlist_delete"
-        android:text="@string/watchlist_more"/>
+        android:text="@string/watchlist_more"
+        />
 
   </RelativeLayout>
 
@@ -46,16 +43,15 @@
       android:tag="front"
       android:orientation="horizontal"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/white"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      style="@style/TH.ListItem.Clickable"
       >
 
     <ImageView
         android:id="@+id/stock_logo"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:layout_margin="2dp"
+        android:layout_width="@dimen/big_avatar_w_h"
+        android:layout_height="@dimen/big_avatar_w_h"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
         tools:src="@drawable/google_play_store"
@@ -66,16 +62,32 @@
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_weight="2"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_small"
         >
 
       <TextView
-          android:id="@+id/stock_symbol"
+          android:id="@+id/position_last_amount"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:maxLines="1"
+          android:layout_alignParentTop="true"
+          android:layout_alignParentEnd="true"
+          android:layout_alignParentRight="true"
+          android:minWidth="80dp"
+          style="@style/TH.Body"
+          tools:text="CNY 2.41"
+          />
+
+      <TextView
+          android:id="@+id/stock_symbol"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.UserNameTitle"
+          android:layout_toLeftOf="@id/position_last_amount"
+          android:layout_toStartOf="@id/position_last_amount"
+          android:layout_alignBaseline="@id/position_last_amount"
           android:textStyle="bold"
           android:maxLines="1"
           android:layout_alignParentTop="true"
@@ -83,63 +95,46 @@
           />
 
       <TextView
-          android:id="@+id/number_of_shares"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textSize="@dimen/watchlist_item_shares_font_size"
-          android:maxLines="1"
-          android:layout_below="@id/stock_symbol"
-          tools:text="12"
-          />
-
-      <TextView
           android:id="@+id/company_name"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:maxLines="1"
-          android:layout_below="@id/number_of_shares"
-          android:textSize="@dimen/watchlist_item_shares_font_size"
-          android:textColor="@color/text_gray_normal"
+          android:layout_below="@id/stock_symbol"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          style="@style/TH.Body"
           tools:text="Zijin Mining Group Co., Ltd"
           />
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/quick_position_info"
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp"
-        >
-
       <TextView
-          android:id="@+id/position_last_amount"
-          android:layout_width="match_parent"
+          android:id="@+id/number_of_shares"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_xsmall"
           android:maxLines="1"
-          android:layout_alignParentTop="true"
-          android:layout_alignParentRight="true"
-          android:layout_alignParentEnd="true"
-          tools:text="CNY 2.41"
+          style="@style/TH.Body"
+          android:layout_below="@id/company_name"
+          tools:text="12"
           />
+
+
 
       <TextView
           android:id="@+id/position_percentage"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
-          android:layout_below="@id/position_last_amount"
-          android:layout_alignParentRight="true"
+          android:layout_alignBaseline="@id/number_of_shares"
+          android:layout_alignLeft="@id/position_last_amount"
           android:layout_alignParentEnd="true"
+          android:layout_alignParentRight="true"
+          android:layout_below="@id/position_last_amount"
+          style="@style/TH.UserROI"
           tools:text="+4.149%"
           />
 
+
     </RelativeLayout>
+
 
   </LinearLayout>
 

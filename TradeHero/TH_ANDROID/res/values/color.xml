@@ -5,6 +5,7 @@
   <color name="number_up">@color/number_green</color>
   <color name="number_down">@color/number_red</color>
   <color name="red">#D42621</color>
+  <color name="dark_red">#ff891918</color>
   <color name="actionbar_gradient1">#6B748E</color>
   <color name="actionbar_gradient2">#929CBA</color>
   <color name="textbox_border_color_light">#555555</color>
