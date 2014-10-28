@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOSetAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.HashMap;
@@ -80,26 +81,28 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
     {
         Observable.from(leaderboardFriendsDTO.leaderboard.users)
                 .observeOn(Schedulers.computation())
-                .map(SavingFriendLeaderboardMarkedUserDTO::new)
+                .map(this::createUserDTOFrom)
                 .toList()
-                .doOnCompleted(() -> Observable.from(leaderboardFriendsDTO.socialFriends)
-                        .map(FriendLeaderboardSocialUserDTO::new)
-                        .toList()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(friendLeaderboardUserDTOs -> {
-                            appendTail(friendLeaderboardUserDTOs);
-                            notifyDataSetChanged();
-                        }))
+                .doOnNext(friendLeaderboardMarkedUserDTOs -> {
+                    int index = 1;
+                    for (FriendLeaderboardUserDTO dto : friendLeaderboardMarkedUserDTOs)
+                    {
+                        ((FriendLeaderboardMarkedUserDTO) dto).leaderboardUserDTO.setPosition(index++); // HACK
+                    }
+                })
+                .concatWith(Observable.from(leaderboardFriendsDTO.socialFriends)
+                        .map(this::createUserDTOFrom)
+                        .toList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(friendLeaderboardMarkedUserDTOs -> {
-                    int index = 1;
-                    for (FriendLeaderboardMarkedUserDTO dto : friendLeaderboardMarkedUserDTOs)
-                    {
-                        dto.leaderboardUserDTO.setPosition(index++); // HACK
-                    }
                     appendTail(friendLeaderboardMarkedUserDTOs);
                     notifyDataSetChanged();
                 });
+    }
+
+    private FriendLeaderboardUserDTO createUserDTOFrom(@NotNull LeaderboardUserDTO leaderboardUserDTO)
+    {
+        return new SavingFriendLeaderboardMarkedUserDTO(leaderboardUserDTO);
     }
 
     private class SavingFriendLeaderboardMarkedUserDTO extends FriendLeaderboardMarkedUserDTO
@@ -119,6 +122,11 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
             super.setExpanded(expanded);
             LeaderboardFriendsSetAdapter.this.expandedStatuses.put(leaderboardUserDTO.getLeaderboardMarkUserId(), expanded);
         }
+    }
+
+    private FriendLeaderboardUserDTO createUserDTOFrom(@NotNull UserFriendsDTO userFriendsDTO)
+    {
+        return new FriendLeaderboardSocialUserDTO(userFriendsDTO);
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)

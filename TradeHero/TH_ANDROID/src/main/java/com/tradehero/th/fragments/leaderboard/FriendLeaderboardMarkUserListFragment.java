@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +14,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import com.android.internal.util.Predicate;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
@@ -28,7 +28,7 @@ import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
+import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -43,6 +43,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
@@ -52,11 +54,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     protected LeaderboardFriendsSetAdapter leaderboardFriendsUserListAdapter;
     private TextView leaderboardMarkUserMarkingTime;
-    @Nullable private DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> leaderboardFriendsKeyDTOListener;
     @Inject Analytics analytics;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
-    @Inject LeaderboardFriendsCache leaderboardFriendsCache;
+    @Inject LeaderboardFriendsCacheRx leaderboardFriendsCache;
     @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
 
     protected FollowDialogCombo followDialogCombo;
@@ -65,7 +66,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardFriendsKeyDTOListener = this.createFriendsCacheListener();
         leaderboardFriendsUserListAdapter = new LeaderboardFriendsSetAdapter(
                 getActivity(),
                 R.layout.lbmu_item_roi_mode,
@@ -129,6 +129,13 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                 (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
     }
 
+    @Override public void onStart()
+    {
+        super.onStart();
+        leaderboardFriendsUserListAdapter.clear();
+        leaderboardFriendsUserListAdapter.notifyDataSetChanged();
+    }
+
     @Override public void onResume()
     {
         super.onResume();
@@ -155,7 +162,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     @Override public void onStop()
     {
-        detachLeaderboardFriendsCacheListener();
         detachFollowDialogCombo();
         detachChoiceFollowAssistant();
         super.onStop();
@@ -179,13 +185,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         leaderboardFriendsUserListAdapter.clear();
         leaderboardFriendsUserListAdapter = null;
-        leaderboardFriendsKeyDTOListener = null;
         super.onDestroy();
-    }
-
-    private void detachLeaderboardFriendsCacheListener()
-    {
-        leaderboardFriendsCache.unregister(leaderboardFriendsKeyDTOListener);
     }
 
     protected void detachFollowDialogCombo()
@@ -230,10 +230,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     private void fetchLeaderboardFriends()
     {
-        detachLeaderboardFriendsCacheListener();
         LeaderboardFriendsKey key = new LeaderboardFriendsKey();
-        leaderboardFriendsCache.register(key, this.leaderboardFriendsKeyDTOListener);
-        leaderboardFriendsCache.getOrFetchAsync(key);
+        AndroidObservable.bindFragment(this,
+                leaderboardFriendsCache.get(key))
+                .subscribe(createFriendsObserver());
     }
 
     private void handleFriendsLeaderboardReceived(@NotNull LeaderboardFriendsDTO dto)
@@ -245,7 +245,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                     String.format("(%s)", prettyTime.get().format(markingTime)));
         }
         leaderboardFriendsUserListAdapter.add(dto);
-        leaderboardFriendsUserListAdapter.notifyDataSetChanged();
     }
 
     protected class LeaderboardMarkUserListFollowRequestedListener
@@ -332,32 +331,30 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         setCurrentUserProfileDTO(userProfileDTO);
     }
 
-    @NotNull protected DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> createFriendsCacheListener()
+    @NotNull protected Observer<Pair<LeaderboardFriendsKey, LeaderboardFriendsDTO>> createFriendsObserver()
     {
-        return new FriendLeaderboarMarkUserListFragmentCacheListener();
+        return new FriendLeaderboarMarkUserListFragmentObserver();
     }
 
-    protected class FriendLeaderboarMarkUserListFragmentCacheListener implements DTOCacheNew.HurriedListener<LeaderboardFriendsKey, LeaderboardFriendsDTO>
+    protected class FriendLeaderboarMarkUserListFragmentObserver implements Observer<Pair<LeaderboardFriendsKey, LeaderboardFriendsDTO>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull LeaderboardFriendsKey key, @NotNull LeaderboardFriendsDTO dto)
+        @Override public void onCompleted()
         {
-            handleFriendsLeaderboardReceived(dto);
         }
 
-        @Override public void onDTOReceived(@NotNull LeaderboardFriendsKey key, @NotNull LeaderboardFriendsDTO dto)
+        @Override public void onError(Throwable e)
         {
             mProgress.setVisibility(View.INVISIBLE);
-            leaderboardFriendsUserListAdapter.clear();
-            handleFriendsLeaderboardReceived(dto);
-        }
-
-        @Override public void onErrorThrown(@NotNull LeaderboardFriendsKey key, @NotNull Throwable error)
-        {
-            mProgress.setVisibility(View.INVISIBLE);
-            if (error instanceof RetrofitError)
+            if (e instanceof RetrofitError)
             {
-                THToast.show(new THException(error));
+                THToast.show(new THException(e));
             }
+        }
+
+        @Override public void onNext(Pair<LeaderboardFriendsKey, LeaderboardFriendsDTO> pair)
+        {
+            mProgress.setVisibility(View.INVISIBLE);
+            handleFriendsLeaderboardReceived(pair.second);
         }
     }
 }

@@ -40,7 +40,7 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
+import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionIdCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
@@ -71,7 +71,6 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -98,7 +97,7 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<LeaderboardDefCache> leaderboardDefCache;
     protected final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     protected final Lazy<LeaderboardPositionIdCache> leaderboardPositionIdCache;
-    protected final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
+    protected final Lazy<LeaderboardFriendsCacheRx> leaderboardFriendsCacheRx;
     protected final Lazy<LevelDefListCache> levelDefListCache;
     protected final Lazy<MessageHeaderCache> messageHeaderCache;
     protected final Lazy<MessageHeaderListCache> messageListCache;
@@ -155,7 +154,8 @@ import org.jetbrains.annotations.Nullable;
             Lazy<LeaderboardDefCache> leaderboardDefCache,
             Lazy<LeaderboardDefListCache> leaderboardDefListCache,
             Lazy<LeaderboardPositionIdCache> leaderboardPositionIdCache,
-            Lazy<LeaderboardFriendsCache> leaderboardFriendsCache, Lazy<MessageHeaderCache> messageHeaderCache,
+            Lazy<LeaderboardFriendsCacheRx> leaderboardFriendsCacheRx,
+            Lazy<MessageHeaderCache> messageHeaderCache,
             Lazy<LevelDefListCache> levelDefListCacheLazy,
             Lazy<MessageHeaderListCache> messageListCache,
             Lazy<NotificationCache> notificationCache,
@@ -207,7 +207,7 @@ import org.jetbrains.annotations.Nullable;
         this.leaderboardDefCache = leaderboardDefCache;
         this.leaderboardDefListCache = leaderboardDefListCache;
         this.leaderboardPositionIdCache = leaderboardPositionIdCache;
-        this.leaderboardFriendsCache = leaderboardFriendsCache;
+        this.leaderboardFriendsCacheRx = leaderboardFriendsCacheRx;
         this.levelDefListCache = levelDefListCacheLazy;
         this.messageHeaderCache = messageHeaderCache;
         this.messageListCache = messageListCache;
@@ -262,7 +262,7 @@ import org.jetbrains.annotations.Nullable;
         leaderboardDefCache.get().invalidateAll();
         leaderboardDefListCache.get().invalidateAll();
         leaderboardPositionIdCache.get().invalidateAll();
-        leaderboardFriendsCache.get().invalidateAll();
+        leaderboardFriendsCacheRx.get().invalidateAll();
         messageHeaderCache.get().invalidateAll();
         messageListCache.get().invalidateAll();
         notificationCache.get().invalidateAll();

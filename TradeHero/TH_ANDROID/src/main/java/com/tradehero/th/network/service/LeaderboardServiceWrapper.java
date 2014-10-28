@@ -15,7 +15,6 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList;
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
@@ -26,22 +25,26 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class LeaderboardServiceWrapper
 {
     @NotNull private final LeaderboardService leaderboardService;
     @NotNull private final LeaderboardServiceAsync leaderboardServiceAsync;
+    @NotNull private final LeaderboardServiceRx leaderboardServiceRx;
     @NotNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardServiceWrapper(
             @NotNull LeaderboardService leaderboardService,
             @NotNull LeaderboardServiceAsync leaderboardServiceAsync,
+            @NotNull LeaderboardServiceRx leaderboardServiceRx,
             @NotNull LeaderboardDefDTOFactory leaderboardDefDTOFactory)
     {
         super();
         this.leaderboardService = leaderboardService;
         this.leaderboardServiceAsync = leaderboardServiceAsync;
+        this.leaderboardServiceRx = leaderboardServiceRx;
         this.leaderboardDefDTOFactory = leaderboardDefDTOFactory;
     }
     //</editor-fold>
@@ -209,6 +212,11 @@ import retrofit.Callback;
         MiddleCallback<LeaderboardFriendsDTO> middleCallback = new BaseMiddleCallback<>(callback);
         leaderboardServiceAsync.getNewFriendsLeaderboard(middleCallback);
         return middleCallback;
+    }
+
+    public Observable<LeaderboardFriendsDTO> getNewFriendsLeaderboardRx()
+    {
+        return leaderboardServiceRx.getNewFriendsLeaderboard();
     }
     //</editor-fold>
 

@@ -74,6 +74,11 @@ public class RetrofitProtectedModule
         return adapter.create(LeaderboardServiceAsync.class);
     }
 
+    @Provides @Singleton LeaderboardServiceRx provideLeaderboardServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(LeaderboardServiceRx.class);
+    }
+
     @Provides @Singleton MarketServiceAsync provideMarketServiceAsync(RestAdapter adapter)
     {
         return adapter.create(MarketServiceAsync.class);

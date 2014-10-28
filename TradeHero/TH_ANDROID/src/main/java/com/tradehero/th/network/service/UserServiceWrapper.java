@@ -32,7 +32,6 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUserBatch;
 import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
@@ -51,7 +50,6 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
@@ -80,7 +78,6 @@ import rx.functions.Func1;
     @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     @NotNull private final Lazy<HeroListCache> heroListCache;
     @NotNull private final Lazy<GetPositionsCache> getPositionsCache;
-    @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
     @NotNull private final Lazy<ProviderListCache> providerListCache;
     @NotNull private final Lazy<ProviderCache> providerCache;
     @NotNull private final Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache;
@@ -97,7 +94,6 @@ import rx.functions.Func1;
             @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,
             @NotNull Lazy<GetPositionsCache> getPositionsCache,
-            @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache,
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull Lazy<ProviderCache> providerCache,
             @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache,
@@ -112,7 +108,6 @@ import rx.functions.Func1;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.heroListCache = heroListCache;
         this.getPositionsCache = getPositionsCache;
-        this.leaderboardFriendsCache = leaderboardFriendsCache;
         this.providerListCache = providerListCache;
         this.providerCache = providerCache;
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
@@ -829,16 +824,11 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
-    @NotNull protected DTOProcessor<BaseResponseDTO> createDTOProcessorFriendInvited()
-    {
-        return new DTOProcessorFriendInvited(this.leaderboardFriendsCache.get());
-    }
-
     public BaseResponseDTO inviteFriends(
             @NotNull UserBaseKey userKey,
             @NotNull InviteFormDTO inviteFormDTO)
     {
-        return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
+        return userService.inviteFriends(userKey.key, inviteFormDTO);
     }
 
     @NotNull public MiddleCallback<BaseResponseDTO> inviteFriends(
@@ -846,7 +836,7 @@ import rx.functions.Func1;
             @NotNull InviteFormDTO inviteFormDTO,
             @Nullable Callback<BaseResponseDTO> callback)
     {
-        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorFriendInvited());
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.inviteFriends(userKey.key, inviteFormDTO, middleCallback);
         return middleCallback;
     }
