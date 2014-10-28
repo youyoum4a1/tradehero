@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
@@ -89,6 +90,11 @@ import rx.Observable;
         // Make a key that contains all info.
         return userTimelineServiceRx.getTimelineRx(section, userId.key, maxCount, maxId, minId)
                 .doOnNext(timelineProcessorProvider.get());
+    }
+
+    public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section, @NotNull UserBaseKey userBaseKey, RangeDTO rangeDTO)
+    {
+        return getTimelineBySectionRx(section, userBaseKey, rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId);
     }
 
     @NotNull MiddleCallback<TimelineDTO> getTimeline(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,

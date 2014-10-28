@@ -1,5 +1,6 @@
 package com.tradehero.th.rx;
 
+import com.tradehero.th.api.pagination.RangeDTO;
 import java.util.LinkedList;
 import java.util.List;
 import rx.Observable;
@@ -122,5 +123,11 @@ public class PaginationObservable
     private static <T extends Comparable<T>> int getSegmentSign(T left, T right, T obj)
     {
         return ((int) Math.signum(left.compareTo(obj))) * ((int) Math.signum(right.compareTo(obj)));
+    }
+
+    public static <T extends Comparable<T>> Observable<List<T>> createFromRange(Observable<RangeDTO> rangeObservable,
+            Func1<RangeDTO, Observable<List<T>>> fetchFunc)
+    {
+        return create(rangeObservable.flatMap(fetchFunc));
     }
 }

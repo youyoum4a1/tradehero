@@ -73,36 +73,6 @@ public class DiscoveryDiscussionFragment extends Fragment
         };
     }
 
-    private Observable<List<TimelineItemDTOKey>> timelineTask(final RangeDTO rangeDTO)
-    {
-        return userTimelineServiceWrapper
-                .getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<TimelineDTO, List<TimelineItemDTO>>()
-                {
-                    @Override public List<TimelineItemDTO> call(TimelineDTO timelineDTO)
-                    {
-                        return timelineDTO.getEnhancedItems();
-                    }
-                })
-                .flatMap(new Func1<List<TimelineItemDTO>, Observable<TimelineItemDTO>>()
-                {
-                    @Override public Observable<TimelineItemDTO> call(List<TimelineItemDTO> timelineItemDTOs)
-                    {
-                        return Observable.from(timelineItemDTOs);
-                    }
-                })
-                .map(new Func1<TimelineItemDTO, TimelineItemDTOKey>()
-                {
-                    @Override public TimelineItemDTOKey call(TimelineItemDTO timelineItemDTO)
-                    {
-                        return timelineItemDTO.getDiscussionKey();
-                    }
-                })
-                .toList();
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.discovery_discussion, container, false);
@@ -121,7 +91,7 @@ public class DiscoveryDiscussionFragment extends Fragment
 
         PublishSubject<List<TimelineItemDTOKey>> timelineSubject = PublishSubject.create();
         // emit item on pull up/down
-        Observable<List<TimelineItemDTOKey>> timelineRefreshRangeObservable = Observable
+        Observable<RangeDTO> timelineRefreshRangeObservable = Observable
                 .create(new Observable.OnSubscribe<PullToRefreshBase.Mode>()
                 {
                     @Override public void call(final Subscriber<? super PullToRefreshBase.Mode> subscriber)
@@ -161,20 +131,44 @@ public class DiscoveryDiscussionFragment extends Fragment
                         }
                     }
                 })
-                .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null))
-                .flatMap(new Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>()
-                {
-                    @Override public Observable<List<TimelineItemDTOKey>> call(RangeDTO rangeDTO)
-                    {
-                        return timelineTask(rangeDTO);
-                    }
-                });
+                .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null));
 
         timelineSubject.subscribe(intoAdapter());
         timelineSubject.subscribe(new RefreshCompleteObserver());
         timelineSubject.subscribe(new UpdateRangeObserver());
 
-        timelineSubscription = rxLoaderManager.create(currentUserId.toUserBaseKey(), PaginationObservable.create(timelineRefreshRangeObservable))
+        timelineSubscription = rxLoaderManager.create(currentUserId.toUserBaseKey(),
+                PaginationObservable.createFromRange(timelineRefreshRangeObservable, new Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>()
+                {
+                    @Override public Observable<List<TimelineItemDTOKey>> call(RangeDTO rangeDTO)
+                    {
+                        return userTimelineServiceWrapper.getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .map(new Func1<TimelineDTO, List<TimelineItemDTO>>()
+                                {
+                                    @Override public List<TimelineItemDTO> call(TimelineDTO timelineDTO)
+                                    {
+                                        return timelineDTO.getEnhancedItems();
+                                    }
+                                })
+                                .flatMap(new Func1<List<TimelineItemDTO>, Observable<TimelineItemDTO>>()
+                                {
+                                    @Override public Observable<TimelineItemDTO> call(List<TimelineItemDTO> timelineItemDTOs)
+                                    {
+                                        return Observable.from(timelineItemDTOs);
+                                    }
+                                })
+                                .map(new Func1<TimelineItemDTO, TimelineItemDTOKey>()
+                                {
+                                    @Override public TimelineItemDTOKey call(TimelineItemDTO timelineItemDTO)
+                                    {
+                                        return timelineItemDTO.getDiscussionKey();
+                                    }
+                                })
+                                .toList();
+                    }
+                }))
                 .subscribe(timelineSubject);
     }
 
