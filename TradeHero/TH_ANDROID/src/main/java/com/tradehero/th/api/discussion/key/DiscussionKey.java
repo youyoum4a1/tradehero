@@ -5,7 +5,8 @@ import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.discussion.DiscussionType;
 import org.jetbrains.annotations.NotNull;
 
-abstract public class DiscussionKey implements DTOKey
+abstract public class DiscussionKey<T extends DiscussionKey>
+        implements DTOKey, Comparable<T>
 {
     static final String BUNDLE_KEY_TYPE = DiscussionKey.class.getName() + ".type";
     static final String BUNDLE_KEY_ID = DiscussionKey.class.getName() + ".id";
@@ -72,5 +73,15 @@ abstract public class DiscussionKey implements DTOKey
         return "DiscussionKey{" +
                 "id=" + id +
                 '}';
+    }
+
+
+    @Override public int compareTo(T another)
+    {
+        if (another == null)
+        {
+            return 1;
+        }
+        return id - another.id;
     }
 }

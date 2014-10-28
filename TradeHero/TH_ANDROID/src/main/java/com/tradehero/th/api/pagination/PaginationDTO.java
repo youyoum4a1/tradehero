@@ -2,6 +2,14 @@ package com.tradehero.th.api.pagination;
 
 public class PaginationDTO
 {
-    public int page;
-    public int perPage;
+    public Integer page;
+    public Integer perPage;
+
+    public PaginationDTO() {}
+
+    public PaginationDTO(Integer page, Integer perPage)
+    {
+        this.page = page;
+        this.perPage = perPage;
+    }
 }

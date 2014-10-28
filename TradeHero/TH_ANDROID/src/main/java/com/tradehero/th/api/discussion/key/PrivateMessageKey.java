@@ -4,7 +4,7 @@ import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
 import org.jetbrains.annotations.NotNull;
 
-public class PrivateMessageKey extends DiscussionKey
+public class PrivateMessageKey extends DiscussionKey<PrivateMessageKey>
 {
     private static final DiscussionType TYPE = DiscussionType.PRIVATE_MESSAGE;
 
