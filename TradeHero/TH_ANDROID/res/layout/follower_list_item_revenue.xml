@@ -42,23 +42,14 @@
         />
 
       <TextView
-          android:id="@+id/follower_roi_info"
+          android:id="@+id/follower_revenue"
           android:layout_width="wrap_content"
           android:layout_height="0dp"
           android:layout_weight="2"
           android:maxLines="1"
-          tools:text="36.73%"
+          tools:text="Revenue: US$ 0"
         />
 
-    <!--<TextView-->
-        <!--android:id="@+id/follower_time"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:maxLines="1"-->
-        <!--android:layout_weight="3"-->
-        <!--android:textStyle="bold"-->
-        <!--android:text=""-->
-        <!--/>-->
   </LinearLayout>
 
   <ImageView
@@ -70,7 +61,7 @@
       android:scaleType="centerInside"
       android:contentDescription="@null"
       android:layout_marginRight="10dp"
-      />
+    />
 
   <ImageView
       android:id="@+id/hint_open_follower_info"
@@ -81,6 +72,6 @@
       android:scaleType="centerInside"
       android:contentDescription="@null"
       android:src="@drawable/chevron_forward"
-      />
+    />
 
 </com.tradehero.th.fragments.social.follower.FollowerListItemView>

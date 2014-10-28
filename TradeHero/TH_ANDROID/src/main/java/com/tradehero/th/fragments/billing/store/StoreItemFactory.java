@@ -6,7 +6,7 @@ import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
-import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
@@ -82,7 +82,7 @@ public class StoreItemFactory
         created.add(new StoreItemHasFurtherDTO(
                 R.string.store_manage_followers,
                 R.drawable.icn_view_followers,
-                FollowerManagerFragment.class));
+                FollowerRevenueReportFragment.class));
         created.add(new StoreItemHasFurtherDTO(
                 R.string.store_manage_stock_alerts,
                 R.drawable.icn_stock_alert,

@@ -284,8 +284,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
                     new FollowerHeroRelationId(applicablePortfolioId.userId,
                             followerDTO.id, followerDTO.displayName);
             Bundle args = new Bundle();
-            args.putBundle(FollowerPayoutManagerFragment.BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
-                    followerHeroRelationId.getArgs());
+            FollowerPayoutManagerFragment.put(args, followerHeroRelationId);
             navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
         }
     }

@@ -2,12 +2,11 @@ package com.tradehero.th.fragments.social.follower;
 
 import dagger.Module;
 
-/**
- * Created by tho on 9/9/2014.
- */
 @Module(
         injects = {
                 FollowerManagerFragment.class,
+                FollowerRevenueReportFragment.class,
+                UserFollowerDTOSetAdapter.class,
                 AllFollowerFragment.class,
                 PremiumFollowerFragment.class,
                 FreeFollowerFragment.class,

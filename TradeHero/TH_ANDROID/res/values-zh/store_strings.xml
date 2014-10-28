@@ -122,6 +122,7 @@
   <string name="manage_followers_follower_none">没有粉丝数据</string>
   <string name="manage_followers_list_header">%d 粉丝</string>
   <string name="manage_followers_revenue_follower">收益: %1$s %2$,.2f</string>
+  <string name="manage_followers_revenue_follower_2">收益: %1$s</string>
 
   <!-- Manage follower payments -->
   <string name="manage_follower_payment_transaction_list_header">交易</string>
