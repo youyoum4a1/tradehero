@@ -64,7 +64,7 @@ public class PaginationObservable
 
                                 if (isFirstNewItemOutsideBound)
                                 {
-                                    int outBound = -1;
+                                    int outBound = 0;
                                     for (T item : newList)
                                     {
                                         boolean isOut = checkOutsideSegment(first, last, item);
