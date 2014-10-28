@@ -20,12 +20,11 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
     private static final long HEADER_ID_INACTIVE = 0;
     private static final long HEADER_ID_ACTIVE = 1;
 
-    @Inject protected CurrentUserId currentUserId;
-
+    @NotNull CurrentUserId currentUserId;
     protected final int alertResId;
 
     //<editor-fold desc="Constructors">
-    public AlertListItemAdapter(@NotNull Context context, int alertResId)
+    public AlertListItemAdapter(@NotNull Context context, @NotNull CurrentUserId currentUserId, int alertResId)
     {
         super(context,
                 (lhs, rhs) -> {
@@ -58,6 +57,7 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
                     }
                     return 1;
                 });
+        this.currentUserId = currentUserId;
         this.alertResId = alertResId;
 
         HierarchyInjector.inject(context, this);

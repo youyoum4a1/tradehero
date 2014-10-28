@@ -6,7 +6,6 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,16 +17,20 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
     @LayoutRes public final int mineResId;
     @LayoutRes public final int otherResId;
 
-    @Inject DiscussionCache discussionCache;
-    @Inject CurrentUserId currentUserId;
+    @NotNull DiscussionCache discussionCache;
+    @NotNull CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     public PrivateDiscussionSetAdapter(
             @NotNull Context context,
+            @NotNull DiscussionCache discussionCache,
+            @NotNull CurrentUserId currentUserId,
             @LayoutRes int mineResId,
             @LayoutRes int otherResId)
     {
         super(context);
+        this.discussionCache = discussionCache;
+        this.currentUserId = currentUserId;
         this.mineResId = mineResId;
         this.otherResId = otherResId;
         HierarchyInjector.inject(context, this);

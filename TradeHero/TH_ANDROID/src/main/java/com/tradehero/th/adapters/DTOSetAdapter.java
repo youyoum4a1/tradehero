@@ -2,7 +2,6 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.widget.BaseAdapter;
-import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,7 +23,6 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     public DTOSetAdapter(@NotNull Context context)
     {
         super();
-        HierarchyInjector.inject(context, this);
         this.context = context;
         set = createSet(null);
         items = new ArrayList<>();
@@ -33,7 +31,6 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator)
     {
         super();
-        HierarchyInjector.inject(context, this);
         this.context = context;
         this.comparator = comparator;
         set = createSet(null);
@@ -43,7 +40,6 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     public DTOSetAdapter(@NotNull Context context, @Nullable Collection<T> objects)
     {
         super();
-        HierarchyInjector.inject(context, this);
         this.context = context;
         set = createSet(objects);
         items = new ArrayList<>(set);
@@ -53,7 +49,6 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator, @Nullable Collection<T> objects)
     {
         super();
-        HierarchyInjector.inject(context, this);
         this.comparator = comparator;
         this.context = context;
         set = createSet(objects);

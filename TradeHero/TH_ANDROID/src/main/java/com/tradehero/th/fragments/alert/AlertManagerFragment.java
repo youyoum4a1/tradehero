@@ -66,7 +66,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         userProfileCacheListener = createUserProfileCacheListener();
         alertCompactListListener = createAlertCompactDTOListListener();
-        alertListItemAdapter = new AlertListItemAdapter(getActivity(), R.layout.alert_list_item);
+        alertListItemAdapter = new AlertListItemAdapter(getActivity(), currentUserId, R.layout.alert_list_item);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

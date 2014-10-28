@@ -6,7 +6,6 @@ import dagger.Module;
         injects = {
                 FollowerManagerFragment.class,
                 FollowerRevenueReportFragment.class,
-                UserFollowerDTOSetAdapter.class,
                 AllFollowerFragment.class,
                 PremiumFollowerFragment.class,
                 FreeFollowerFragment.class,
