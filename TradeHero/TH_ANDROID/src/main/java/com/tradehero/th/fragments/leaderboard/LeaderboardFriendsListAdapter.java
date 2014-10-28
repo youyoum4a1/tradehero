@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboardUserDTO>
 {
@@ -73,15 +76,27 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
 
     public void add(@NotNull LeaderboardFriendsDTO leaderboardFriendsDTO)
     {
-        addAll(leaderboardFriendsDTO.leaderboard.users, (LeaderboardUserDTO) null);
-        addAll(leaderboardFriendsDTO.socialFriends, (UserFriendsDTO) null);
+        addAndNotify(leaderboardFriendsDTO.leaderboard.users, null);
+        addAndNotify(leaderboardFriendsDTO.socialFriends, null);
     }
 
-    public void addAll(@NotNull Collection<? extends LeaderboardUserDTO> collection, LeaderboardUserDTO typeQualifier)
+    public void addAndNotify(@NotNull final Collection<? extends LeaderboardUserDTO> collection, final LeaderboardUserDTO typeQualifier)
     {
-        List<FriendLeaderboardUserDTO> created = new ArrayList<>();
+        Observable.just(1)
+                .observeOn(Schedulers.computation())
+                .map(num -> create(collection, typeQualifier))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> {
+                    addAll(list);
+                    notifyDataSetChanged();
+                });
+    }
+
+    public List<FriendLeaderboardMarkedUserDTO> create(@NotNull Collection<? extends LeaderboardUserDTO> leaderboardUserDTOs, LeaderboardUserDTO typeQualifier)
+    {
+        List<FriendLeaderboardMarkedUserDTO> created = new ArrayList<>();
         Boolean previousExpanded;
-        for (LeaderboardUserDTO leaderboardUserDTO : collection)
+        for (LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
         {
             previousExpanded = expandedStatuses.get(leaderboardUserDTO.getLeaderboardMarkUserId());
             created.add(new FriendLeaderboardMarkedUserDTO(
@@ -95,17 +110,29 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
                 }
             });
         }
-        super.addAll(created);
+        return created;
     }
 
-    public void addAll(@NotNull Collection<? extends UserFriendsDTO> collection, UserFriendsDTO typeQualifier)
+    public void addAndNotify(@NotNull Collection<? extends UserFriendsDTO> collection, UserFriendsDTO typeQualifier)
     {
-        List<FriendLeaderboardUserDTO> created = new ArrayList<>();
-        for (UserFriendsDTO userFriendsDTO : collection)
+        Observable.just(1)
+                .observeOn(Schedulers.computation())
+                .map(num -> create(collection, typeQualifier))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> {
+                    addAll(list);
+                    notifyDataSetChanged();
+                });
+    }
+
+    public List<FriendLeaderboardSocialUserDTO> create(@NotNull Collection<? extends UserFriendsDTO> userFriendsDTOs, UserFriendsDTO typeQualifier)
+    {
+        List<FriendLeaderboardSocialUserDTO> created = new ArrayList<>();
+        for (UserFriendsDTO userFriendsDTO : userFriendsDTOs)
         {
             created.add(new FriendLeaderboardSocialUserDTO(userFriendsDTO));
         }
-        super.addAll(created);
+        return created;
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
@@ -122,7 +149,7 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
             ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK
             ((LeaderboardMarkUserItemView) convertView).display(((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO);
             ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
-            ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(createChildFollowRequestedListener());
+            ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(this::notifyFollowRequested);
         }
         else if (convertView instanceof LeaderboardFriendsItemView)
         {
@@ -146,11 +173,6 @@ public class LeaderboardFriendsListAdapter extends ArrayAdapter<FriendLeaderboar
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
         notifyDataSetChanged();
-    }
-
-    protected LeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
-    {
-        return userBaseDTO -> notifyFollowRequested(userBaseDTO);
     }
 
     protected void notifyFollowRequested(UserBaseDTO userBaseDTO)
