@@ -101,6 +101,6 @@ public class FollowerManagerViewContainer
     public Observable<UserFollowerDTO> getClickedUserFollower()
     {
         return getOnItemClickObservable()
-                .map(itemClick -> (UserFollowerDTO) itemClick.parent.getItemAtPosition(itemClick.position));
+                .map(itemClick -> (UserFollowerDTO) itemClick.getItem());
     }
 }

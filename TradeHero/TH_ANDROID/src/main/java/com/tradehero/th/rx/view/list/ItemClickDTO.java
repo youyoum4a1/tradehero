@@ -17,4 +17,9 @@ public class ItemClickDTO
         this.position = position;
         this.id = id;
     }
+
+    public Object getItem()
+    {
+        return parent.getItemAtPosition(position);
+    }
 }

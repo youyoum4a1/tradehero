@@ -95,7 +95,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
                         .toList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(friendLeaderboardMarkedUserDTOs -> {
-                    appendTail(friendLeaderboardMarkedUserDTOs);
+                    appendHead(friendLeaderboardMarkedUserDTOs);
                     notifyDataSetChanged();
                 });
     }

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -148,12 +149,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
-    protected int getCurrentRankLayoutResId()
+    @LayoutRes protected int getCurrentRankLayoutResId()
     {
         return R.layout.lbmu_item_own_ranking_roi_mode;
     }
 
-    protected int getHeaderViewResId()
+    @LayoutRes protected int getHeaderViewResId()
     {
         return R.layout.leaderboard_listview_header;
     }
@@ -228,7 +229,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         prepareLeaderboardMarkUserAdapter();
     }
 
-    protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
+    @NotNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
                 getActivity(), leaderboardDefKey.key, R.layout.lbmu_item_roi_mode);

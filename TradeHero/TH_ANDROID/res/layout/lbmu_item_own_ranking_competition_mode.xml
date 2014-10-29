@@ -11,7 +11,8 @@
     android:background="@null"
     >
 
-  <include layout="@layout/lbmu_item_competition_mode_inner"
+  <include
+      layout="@layout/lbmu_item_competition_mode_inner"
       android:id="@+id/lbmu_inner_view_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>

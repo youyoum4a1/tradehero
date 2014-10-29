@@ -21,7 +21,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:listSelector="@color/transparent"
-      android:paddingBottom="@dimen/clickable_element_min_dimen"
+      android:paddingBottom="@dimen/dashboard_tabhost_height"
       android:clipToPadding="false"
       />
 
