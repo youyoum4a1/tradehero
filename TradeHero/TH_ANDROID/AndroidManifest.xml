@@ -94,6 +94,10 @@
         android:screenOrientation="portrait"
         />
 
+    <activity android:name="com.tradehero.th.activities.RecommendStocksActivity"
+        android:launchMode="singleTask"
+        android:screenOrientation="portrait"/>
+
     <!--android:theme="@style/AppBaseTheme.NoActionBarTrans"-->
     <activity
         android:name="com.tradehero.th.activities.MainActivity"

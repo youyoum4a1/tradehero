@@ -168,7 +168,11 @@ public class AnalyticsConstants
     public static final String WECHAT = "Wechat";
     public static final String Linkedin = "Linkedin";
 
+
     //Analytics Palmer
+
+    //Share to WeChat successfully
+    public static final String SHARE_WECHAT_SUCCESSFULLY = "SHARE_WECHAT_SUCCESSFULLY";
 
     //打开软件看到介绍图片，浏览到第几个页面点击或马上体验和登陆
     public static final String SIGN_IN_ANONYMOUS = "SIGN_IN_ANONYMOUS";

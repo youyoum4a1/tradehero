@@ -13,7 +13,10 @@ import com.squareup.picasso.Transformation;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
-import com.tencent.mm.sdk.modelmsg.*;
+import com.tencent.mm.sdk.modelmsg.SendAuth;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tradehero.common.utils.THToast;
@@ -24,23 +27,22 @@ import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
-import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NetworkUtils;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-
-import java.io.IOException;
-import javax.inject.Inject;
-
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
 {
@@ -63,6 +65,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     @Inject WeChatServiceWrapper weChatServiceWrapper;
     @Inject Lazy<Picasso> picassoLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
+
+    @Inject Analytics analytics;
 
     private static String WECHAT_CODE;
 
@@ -184,33 +188,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         return weChatMsg;
     }
 
-
-
-    private void loadImage() {
-        final WeChatDTO weChatDTOCopy = weChatDTO;
-        if (weChatDTOCopy != null && weChatDTOCopy.imageURL != null && !weChatDTOCopy.imageURL.isEmpty()) {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Bitmap picassoBmp = picassoLazy.get().load(weChatDTOCopy.imageURL).get();
-                        if (picassoBmp != null) {
-                            Bitmap tempBitmap = Bitmap.createBitmap(picassoBmp);
-                            // TODO find a way to force picasso to redownload and not have a recycled image.
-                            if (tempBitmap != null && !tempBitmap.isRecycled()) {
-                                mBitmap = Bitmap.createScaledBitmap(tempBitmap, 250, 250, false);
-                            }
-                        }
-                    } catch (IOException e) {
-                        THToast.show(e.getMessage());
-                        e.printStackTrace();
-                    }
-                }
-            });
-            thread.start();
-        }
-    }
-
     private SendMessageToWX.Req buildRequest(WXMediaMessage weChatMsg) {
         SendMessageToWX.Req weChatReq = new SendMessageToWX.Req();
         weChatReq.transaction = String.valueOf(System.currentTimeMillis());
@@ -254,6 +231,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                     THToast.show(getString(R.string.share_success));
                     reportWeChatSuccessShareToServer();
                     sendTackMessage();
+                    try{
+                        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SHARE_WECHAT_SUCCESSFULLY));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
