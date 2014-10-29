@@ -32,10 +32,9 @@ public class ActivityHelper
 
     public static void launchMainActivity(Activity activity)
     {
-        //Clear static record for >150000, >250000, > 9 fans
         THSharePreferenceManager.clearDialogShowedRecord();
 
-        presentFromActivity(activity, MainActivity.class, /* Intent.FLAG_ACTIVITY_NO_HISTORY*/ Intent.FLAG_ACTIVITY_CLEAR_TOP,new Bundle());
+        presentFromActivity(activity, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP,new Bundle());
     }
 
     public static void presentFromActivity(Activity fromActivity, Class toActivityClass, int flags,Bundle args)

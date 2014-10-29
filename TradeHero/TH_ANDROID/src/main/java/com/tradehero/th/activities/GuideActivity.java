@@ -43,14 +43,15 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
 
 public class GuideActivity extends Activity implements ViewPager.OnPageChangeListener,
         View.OnClickListener
@@ -480,7 +481,6 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
 
     private void launchDashboard(UserLoginDTO userLoginDTO)
     {
-        //Clear static record for >150000, >250000, > 9 fans
         THSharePreferenceManager.clearDialogShowedRecord();
 
         Intent intent = new Intent(this, MainActivity.class);

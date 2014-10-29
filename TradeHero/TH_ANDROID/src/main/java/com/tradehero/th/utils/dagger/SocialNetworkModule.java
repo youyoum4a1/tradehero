@@ -7,33 +7,28 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
-import com.tradehero.th.auth.operator.ConsumerKey;
-import com.tradehero.th.auth.operator.ConsumerSecret;
-import com.tradehero.th.auth.operator.FacebookAppId;
-import com.tradehero.th.auth.operator.FacebookPermissions;
-import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
+import com.tradehero.th.activities.RecommendStocksActivity;
+import com.tradehero.th.auth.operator.*;
 import com.tradehero.th.auth.weibo.WeiboAppAuthData;
-import com.tradehero.th.models.share.ShareDestination;
-import com.tradehero.th.models.share.ShareDestinationFactory;
-import com.tradehero.th.models.share.ShareDestinationFactoryByResources;
-import com.tradehero.th.models.share.ShareDestinationId;
-import com.tradehero.th.models.share.ShareDestinationIndexResComparator;
+import com.tradehero.th.models.share.*;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.network.share.SocialSharerImpl;
 import dagger.Module;
 import dagger.Provides;
+import timber.log.Timber;
+
+import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.inject.Singleton;
-import timber.log.Timber;
 
 @Module(
         injects = {
                 AuthenticationActivity.class,
                 DashboardActivity.class,
-                MainActivity.class
+                MainActivity.class,
+                RecommendStocksActivity.class
         },
         complete = false,
         library = true

@@ -201,4 +201,11 @@
   <string name="share_amount_total_value_title25">恭喜你！总资产达到25w \n你这么土豪你的朋友们知道吗？</string>
   <string name="share_amount_total_value_summary25">一不小心就有25W了，分分钟秒杀富二代。 \nhttp://cn.tradehero.mobi/shr/assets.html?userId=%1$s</string>
   <string name="target_user_millionaire_page">http://cn.tradehero.mobi/shr/assets.html?userId=313529</string>
+
+
+  <!-- Recommend Activity-->
+  <string name="recommend_title">推荐关注</string>
+  <string name="recommend_follow">关注</string>
+  <string name="recommend_next">跳过</string>
+  <!-- Recommend -->
 </resources>

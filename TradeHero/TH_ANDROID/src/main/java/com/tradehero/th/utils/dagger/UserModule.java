@@ -4,12 +4,14 @@ import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.RecommendStocksActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import dagger.Module;
 import dagger.Provides;
+
 import javax.inject.Singleton;
 
 @Module(
@@ -17,7 +19,7 @@ import javax.inject.Singleton;
                 DashboardActivity.class,
                 MainActivity.class,
                 FriendListLoader.class,
-                MainActivity.class,
+                RecommendStocksActivity.class,
                 WXEntryActivity.class
         },
         staticInjections = {

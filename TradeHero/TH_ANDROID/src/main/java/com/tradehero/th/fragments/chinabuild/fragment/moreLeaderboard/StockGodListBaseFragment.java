@@ -299,12 +299,14 @@ public class StockGodListBaseFragment extends DashboardFragment
     }
 
     private void showLoginContinuousDialog(){
-        if(THSharePreferenceManager.Login_Continuous_Time >=3){
+        int loginTimes = THSharePreferenceManager.Login_Continuous_Time;
+        if(loginTimes >=3){
             if (leaderboard_key == LeaderboardDefKeyKnowledge.DAYS_ROI) {
                 int userId = currentUserId.toUserBaseKey().getUserId();
                 if (THSharePreferenceManager.isShareDialogLoginContinually(userId, getActivity())) {
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                            getString(R.string.login_continuous), getString(R.string.login_continuous), THSharePreferenceManager.LOGIN_CONTINUALLY, userId);
+                            getString(R.string.login_continuous, String.valueOf(loginTimes)), getString(R.string.login_continuous_share, String.valueOf(loginTimes)),
+                            THSharePreferenceManager.LOGIN_CONTINUALLY, userId);
                     THSharePreferenceManager.isLoginContinuallyShowed = true;
                 }
             }

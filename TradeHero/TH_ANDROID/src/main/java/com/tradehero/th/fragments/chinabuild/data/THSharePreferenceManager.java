@@ -32,6 +32,9 @@ public class THSharePreferenceManager {
     public static boolean isLoginContinuallyShowed = false;
     public static int Login_Continuous_Time = 0;
 
+    //Novice
+    public final static String RECOMMEND_STOCK_GOD = "recommend_stock_god";
+
     public static AppInfoDTO getAppVersionInfo(Context context) {
         if (context == null) {
             return null;
@@ -205,6 +208,16 @@ public class THSharePreferenceManager {
         return true;
     }
 
+    public static boolean isRecommendedStock(int userId, Context context){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
+        boolean result = sp.getBoolean(userId + RECOMMEND_STOCK_GOD, false);
+        return result;
+    }
+
+    public static void setRecommendedStock(int userId, Context context){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
+        sp.edit().putBoolean(userId + RECOMMEND_STOCK_GOD, true);
+    }
 
     /**
      * Only for static mark

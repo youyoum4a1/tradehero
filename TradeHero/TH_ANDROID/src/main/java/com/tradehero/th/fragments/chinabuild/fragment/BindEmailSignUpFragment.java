@@ -5,13 +5,7 @@ import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
+import android.widget.*;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
@@ -27,12 +21,13 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.inject.Inject;
 import org.json.JSONException;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Register using email.
@@ -225,7 +220,6 @@ public class BindEmailSignUpFragment extends EmailSignUpFragment
 
     private void launchDashboard(UserLoginDTO userLoginDTO)
     {
-        //Clear static record for >150000, >250000, > 9 fans
         THSharePreferenceManager.clearDialogShowedRecord();
 
         Intent intent = new Intent(getActivity(), MainActivity.class);

@@ -262,6 +262,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             return;
         }
 
+        String loginContinuousStr = getResources().getString(R.string.login_continuous_share).substring(0,8);
+        if(shareContent.contains(loginContinuousStr)){
+            userServiceWrapper.get().trackShare("logincontinuous", new TrackCallback());
+            return;
+        }
+
         String[] contents = parseContent(shareContent);
         String content = contents[0];
         String url = contents[1];
