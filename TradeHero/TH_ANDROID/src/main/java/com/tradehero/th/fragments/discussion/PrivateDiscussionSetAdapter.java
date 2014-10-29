@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +32,6 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
         this.currentUserId = currentUserId;
         this.mineResId = mineResId;
         this.otherResId = otherResId;
-        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 

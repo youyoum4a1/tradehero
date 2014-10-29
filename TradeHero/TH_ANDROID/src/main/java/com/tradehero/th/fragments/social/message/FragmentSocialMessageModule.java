@@ -10,7 +10,6 @@ import dagger.Module;
                 PrivateMessageBubbleViewLinear.class,
                 AbstractPrivateMessageFragment.class,
                 PrivatePostCommentView.class,
-                PrivateDiscussionView.PrivateDiscussionViewDiscussionSetAdapter.class,
         },
         library = true,
         complete = false
