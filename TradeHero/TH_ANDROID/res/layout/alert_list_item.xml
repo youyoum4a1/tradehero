@@ -5,9 +5,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    style="@style/TH.ListItem.Clickable"
+    style="@style/TH.ListItem"
+    android:background="@color/white"
     android:gravity="center"
     >
+
+  <Button
+      android:id="@+id/trade"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      android:layout_centerVertical="true"
+      android:background="@drawable/authentication_button"
+      android:text="@string/timeline_trade"
+      style="@style/TH.Button.Inverse.Small"
+      />
 
   <ImageView
       android:layout_width="@dimen/big_avatar_w_h"
@@ -25,6 +38,9 @@
       android:layout_height="wrap_content"
       android:id="@+id/stock_symbol"
       android:layout_toRightOf="@id/logo"
+      android:layout_toEndOf="@id/logo"
+      android:layout_toStartOf="@id/trade"
+      android:layout_toLeftOf="@id/trade"
       style="@style/TH.UserNameTitle"
       tools:text="stock name"
       />
@@ -34,7 +50,11 @@
       android:layout_height="wrap_content"
       android:id="@+id/alert_description"
       android:layout_toRightOf="@id/logo"
+      android:layout_toEndOf="@id/logo"
+      android:layout_toStartOf="@id/trade"
+      android:layout_toLeftOf="@id/trade"
       android:layout_below="@id/stock_symbol"
+      android:singleLine="false"
       style="@style/TH.Body"
       tools:text="alert description"
       />
@@ -44,33 +64,12 @@
       android:layout_height="wrap_content"
       android:id="@+id/alert_status"
       android:layout_toRightOf="@id/logo"
+      android:layout_toEndOf="@id/logo"
+      android:layout_toStartOf="@id/trade"
+      android:layout_toLeftOf="@id/trade"
       android:layout_below="@id/alert_description"
       style="@style/TH.Caption"
       tools:text="alert status"
-      />
-
-  <Button
-      android:id="@+id/trade"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentEnd="true"
-      android:layout_centerVertical="true"
-      android:layout_marginEnd="@dimen/margin_medium"
-      android:layout_marginRight="@dimen/margin_medium"
-      android:background="@drawable/authentication_button"
-      android:text="@string/timeline_trade"
-      style="@style/TH.Button.Inverse.Small"
-      />
-
-  <ImageView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentEnd="true"
-      android:layout_centerVertical="true"
-      android:src="@drawable/settings_forward_light"
-      android:contentDescription="@null"
       />
 
 </com.tradehero.th.fragments.alert.AlertItemView>

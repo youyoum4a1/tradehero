@@ -7,8 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_grey"
-    android:textAllCaps="true"
+    style="@style/TH.Subhead"
     tools:text="Active/Inactive stock alerts"
-
     android:padding="5dp"
     />
