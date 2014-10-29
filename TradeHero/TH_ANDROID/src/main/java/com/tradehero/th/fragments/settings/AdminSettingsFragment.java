@@ -23,6 +23,7 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
+import com.tradehero.th.fragments.ForTypographyFragment;
 import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
@@ -43,6 +44,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private static final CharSequence KEY_DAILY_TEST_SCREEN = "show_daily_quest_test_screen";
     private static final CharSequence KEY_ACHIEVEMENT_TEST_SCREEN = "show_achievement_test_screen";
     private static final CharSequence KEY_XP_TEST_SCREEN = "show_xp_test_screen";
+    private static final CharSequence KEY_TYPOGRAPHY_SCREEN = "show_typography_examples";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
@@ -50,6 +52,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject @ForQuestListTestingFragment Provider<Class> questListTestingFragmentClassProvider;
     @Inject @ForAchievementListTestingFragment Provider<Class> achievementListTestingFragmentClassProvider;
     @Inject @ForXpTestingFragment Provider<Class> xpTestingFragmentClassProvider;
+    @Inject @ForTypographyFragment Provider<Class> typographyFragmentClassProvider;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Provider<Activity> currentActivity;
@@ -191,6 +194,18 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
                 return true;
             }
         });
+
+        Preference showTypography = findPreference(KEY_TYPOGRAPHY_SCREEN);
+        showTypography.setEnabled(typographyFragmentClassProvider.get() != null);
+        showTypography.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.get().pushFragment(typographyFragmentClassProvider.get());
+                return true;
+            }
+        });
+
     }
 
     private boolean askForNotificationId()
