@@ -89,7 +89,10 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setTitle(getString(R.string.admin_setting));
+        if (actionBar != null)
+        {
+            actionBar.setTitle(getString(R.string.admin_setting));
+        }
     }
 
     private void initPreferenceClickHandlers()
@@ -97,13 +100,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         ListPreference serverEndpointListPreference = (ListPreference) findPreference(KEY_SERVER_ENDPOINT);
         if (serverEndpointPreference != null)
         {
-            serverEndpointListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return onServerEndpointChanged((String) newValue);
-                }
-            });
+            serverEndpointListPreference.setOnPreferenceChangeListener((preference, newValue) -> onServerEndpointChanged((String) newValue));
 
             if (serverEndpointPreference != null)
             {
@@ -121,91 +118,56 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         }
 
         Preference sendFakePush = findPreference(KEY_SEND_FAKE_PUSH);
-        sendFakePush.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                return askForNotificationId();
-            }
-        });
+        sendFakePush.setOnPreferenceClickListener(preference -> askForNotificationId());
 
         Preference showReviewDialog = findPreference("show_review_dialog");
-        showReviewDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                FragmentActivity activity = (FragmentActivity) currentActivity.get();
-                AskForReviewDialogFragment.showReviewDialog(activity.getFragmentManager());
-                return true;
-            }
+        showReviewDialog.setOnPreferenceClickListener(preference -> {
+            FragmentActivity activity = (FragmentActivity) currentActivity.get();
+            AskForReviewDialogFragment.showReviewDialog(activity.getFragmentManager());
+            return true;
         });
 
         Preference showInviteDialog = findPreference("show_invite_dialog");
-        showInviteDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                FragmentActivity activity = (FragmentActivity) currentActivity.get();
-                AskForInviteDialogFragment.showInviteDialog(activity.getFragmentManager());
-                return true;
-            }
+        showInviteDialog.setOnPreferenceClickListener(preference -> {
+            FragmentActivity activity = (FragmentActivity) currentActivity.get();
+            AskForInviteDialogFragment.showInviteDialog(activity.getFragmentManager());
+            return true;
         });
 
         Preference showOnBoardDialog = findPreference("show_onBoard_dialog");
-        showOnBoardDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-//                FragmentActivity activityversion.properties = (FragmentActivity) currentActivityHolder.getCurrentActivity();
-                OnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
-                return true;
-            }
+        showOnBoardDialog.setOnPreferenceClickListener(preference -> {
+            // FragmentActivity activityversion.properties = (FragmentActivity) currentActivityHolder.getCurrentActivity();
+            OnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+            return true;
         });
 
         Preference showTestDaily = findPreference(KEY_DAILY_TEST_SCREEN);
         showTestDaily.setEnabled(questListTestingFragmentClassProvider.get() != null);
-        showTestDaily.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                navigator.get().pushFragment(questListTestingFragmentClassProvider.get());
-                return true;
-            }
+        showTestDaily.setOnPreferenceClickListener(preference -> {
+            navigator.get().pushFragment(questListTestingFragmentClassProvider.get());
+            return true;
         });
 
         Preference showTestAchievement = findPreference(KEY_ACHIEVEMENT_TEST_SCREEN);
         showTestAchievement.setEnabled(achievementListTestingFragmentClassProvider.get() != null);
-        showTestAchievement.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                navigator.get().pushFragment(achievementListTestingFragmentClassProvider.get());
-                return true;
-            }
+        showTestAchievement.setOnPreferenceClickListener(preference -> {
+            navigator.get().pushFragment(achievementListTestingFragmentClassProvider.get());
+            return true;
         });
 
         Preference showXPTest = findPreference(KEY_XP_TEST_SCREEN);
         showXPTest.setEnabled(xpTestingFragmentClassProvider.get() != null);
-        showXPTest.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                navigator.get().pushFragment(xpTestingFragmentClassProvider.get());
-                return true;
-            }
+        showXPTest.setOnPreferenceClickListener(preference -> {
+            navigator.get().pushFragment(xpTestingFragmentClassProvider.get());
+            return true;
         });
 
         Preference showTypography = findPreference(KEY_TYPOGRAPHY_SCREEN);
         showTypography.setEnabled(typographyFragmentClassProvider.get() != null);
-        showTypography.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                navigator.get().pushFragment(typographyFragmentClassProvider.get());
-                return true;
-            }
+        showTypography.setOnPreferenceClickListener(preference -> {
+            navigator.get().pushFragment(typographyFragmentClassProvider.get());
+            return true;
         });
-
     }
 
     private boolean askForNotificationId()
@@ -216,22 +178,17 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         View view = layoutInflater.inflate(R.layout.debug_ask_for_notification_id, null);
         final EditText input = (EditText) view.findViewById(R.id.pushNotification);
         alert.setView(view);
-        alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
+        alert.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+            Editable value = input.getText();
+            int notificationId = 0;
+            try
             {
-                Editable value = input.getText();
-                int notificationId = 0;
-                try
-                {
-                    notificationId = Integer.parseInt(value.toString());
-                } catch (NumberFormatException ex)
-                {
-                    THToast.show("Not a number");
-                }
-                sendFakePushNotification(notificationId);
+                notificationId = Integer.parseInt(value.toString());
+            } catch (NumberFormatException ex)
+            {
+                THToast.show("Not a number");
             }
+            sendFakePushNotification(notificationId);
         });
         alert.show();
         return true;
