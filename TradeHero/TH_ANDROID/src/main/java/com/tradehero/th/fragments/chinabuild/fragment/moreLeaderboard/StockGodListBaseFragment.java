@@ -304,7 +304,7 @@ public class StockGodListBaseFragment extends DashboardFragment
                 int userId = currentUserId.toUserBaseKey().getUserId();
                 if (THSharePreferenceManager.isShareDialogLoginContinually(userId, getActivity())) {
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                            getString(R.string.login_continuous), getString(R.string.login_continuous), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
+                            getString(R.string.login_continuous), getString(R.string.login_continuous), THSharePreferenceManager.LOGIN_CONTINUALLY, userId);
                     THSharePreferenceManager.isLoginContinuallyShowed = true;
                 }
             }
