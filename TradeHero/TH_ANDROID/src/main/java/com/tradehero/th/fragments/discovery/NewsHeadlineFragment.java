@@ -54,6 +54,8 @@ public class NewsHeadlineFragment extends Fragment
     private Subscription newsSubscription;
     private PaginationInfoDTO lastPaginationInfoDTO;
     private ProgressBar mBottomLoadingView;
+    private PublishSubject<List<NewsItemDTOKey>> newsSubject;
+    private Observable<NewsItemListKey> newsItemListKeyObservable;
 
     @OnItemClick(android.R.id.list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -147,7 +149,41 @@ public class NewsHeadlineFragment extends Fragment
         mNewsListView.setOnScrollListener(new MultiScrollListener(scrollListener, dashboardBottomTabsScrollListener));
         mNewsListView.setAdapter(mFeaturedNewsAdapter);
 
-        Observable<NewsItemListKey> newsRangeObservable = Observable
+        newsItemListKeyObservable = createNewsItemListKeyObservable()
+                .share(); // convert to hot observable coz activateNewsListView can be call more than once
+
+        newsSubject = PublishSubject.create();
+        newsSubject.subscribe(mFeaturedNewsAdapter::setItems);
+        newsSubject.subscribe(new UpdateUIObserver());
+
+        activateNewsListView(newsItemListKey);
+    }
+
+    protected void activateNewsListView(NewsItemListKey newKey)
+    {
+        if (newsSubscription != null && !newsSubscription.isUnsubscribed())
+        {
+            newsSubscription.unsubscribe();
+        }
+        newsItemListKey = newKey;
+
+        newsSubscription = rxLoaderManager.create(newsItemListKey,
+                PaginationObservable.createFromRange(newsItemListKeyObservable, (Func1<NewsItemListKey, Observable<List<NewsItemDTOKey>>>)
+                        key -> newsServiceWrapper.getNewsRx(key)
+                                .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .map(PaginatedDTO::getData)
+                                .flatMap(Observable::from)
+                                .map(NewsItemCompactDTO::getDiscussionKey)
+                                .toList()))
+                .doOnUnsubscribe(() -> rxLoaderManager.remove(newsItemListKey))
+                .subscribe(newsSubject);
+    }
+
+    protected Observable<NewsItemListKey> createNewsItemListKeyObservable()
+    {
+        return Observable
                 .create((Observable.OnSubscribe<PullToRefreshBase.Mode>) subscriber -> {
                     mNewsListView.setOnRefreshListener(
                             listViewPullToRefreshBase -> subscriber.onNext(listViewPullToRefreshBase.getCurrentMode()));
@@ -171,22 +207,6 @@ public class NewsHeadlineFragment extends Fragment
                     }
                 })
                 .startWith(newsItemListKey);
-
-        PublishSubject<List<NewsItemDTOKey>> newsSubject = PublishSubject.create();
-        newsSubject.subscribe(mFeaturedNewsAdapter::setItems);
-        newsSubject.subscribe(new UpdateUIObserver());
-
-        newsSubscription = rxLoaderManager.create(newsItemListKey,
-                PaginationObservable.createFromRange(newsRangeObservable, (Func1<NewsItemListKey, Observable<List<NewsItemDTOKey>>>)
-                        key -> newsServiceWrapper.getNewsRx(key)
-                                .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .map(PaginatedDTO::getData)
-                                .flatMap(Observable::from)
-                                .map(NewsItemCompactDTO::getDiscussionKey)
-                                .toList()))
-                .subscribe(newsSubject);
     }
 
     public void setScrollListener(AbsListView.OnScrollListener scrollListener)
@@ -212,7 +232,6 @@ public class NewsHeadlineFragment extends Fragment
     @Override public void onDestroyView()
     {
         newsSubscription.unsubscribe();
-        rxLoaderManager.remove(newsItemListKey);
         super.onDestroyView();
     }
 
