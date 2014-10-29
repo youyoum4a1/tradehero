@@ -76,7 +76,7 @@ public class CenterImageTextButton extends Button
         //float scaledPx = textSize * densityMultiplier;
         //paint.setTextSize(scaledPx);
         mPaint.setTextSize(mTextSize);
-
+        CharSequence mTransformed = getTransformationMethod().getTransformation(mText, this);
         float textWidth = mPaint.measureText(mText);
 
         int compoundDrawablePadding = getCompoundDrawablePadding();
@@ -87,13 +87,13 @@ public class CenterImageTextButton extends Button
         if (groupWidth >= width)
         {
             canvas.drawBitmap(image, (width - groupWidth) / 2, (height - imgHeight) / 2, null);
-            canvas.drawText(mText, (width - groupWidth) / 2 + imgWidth + compoundDrawablePadding,
+            canvas.drawText(mTransformed.toString(), (width - groupWidth) / 2 + imgWidth + compoundDrawablePadding,
                     mTextSize - 5 + (height - mTextSize) / 2, mPaint);
         }
         else
         {
             canvas.drawBitmap(image, (width - groupWidth) / 2, (height - imgHeight) / 2, null);
-            canvas.drawText(mText, (width - groupWidth) / 2 + imgWidth + compoundDrawablePadding,
+            canvas.drawText(mTransformed.toString(), (width - groupWidth) / 2 + imgWidth + compoundDrawablePadding,
                     mTextSize - 5 + (height - mTextSize) / 2, mPaint);
         }
     }

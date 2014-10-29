@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.etiennelawlor.quickreturn.library.views.NotifyingScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/typography_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:showDividers="middle"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:background="@color/white"
+        >
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Headline"
+          android:gravity="center"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Normal Styles"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display4"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 4\n-112sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display3"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 3\n-56sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display2"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 2\n-45sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display1"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 1\n-34sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Headline"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Headline\n-24sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Title"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Title\n-20sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Subhead"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Subhead\n-16sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Body"
+          android:textStyle="bold"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Body 2\n-14sp\n-Medium"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Body"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Body 1\n-14sp\n-Light"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Caption"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Caption\n-12sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Menu"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Menu\n-14sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Button"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Button\n-14sp\n-all caps"
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:showDividers="middle"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:background="@color/white"
+        >
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Headline.Accented"
+          android:gravity="center"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Accented Styles"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display4.Accented"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 4\n-112sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display3.Accented"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 3\n-56sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display2.Accented"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 2\n-45sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display1.Accented"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 1\n-34sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Headline.Accented"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Headline\n-24sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Title.Accented"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Title\n-20sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Subhead.Accented"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Subhead\n-16sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Body.Accented"
+          android:textStyle="bold"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Body 2\n-14sp\n-Medium"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Body.Accented"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Body 1\n-14sp\n-Light"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Caption.Accented"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Caption\n-12sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Menu.Accented"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Menu\n-14sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Button.Accented"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Button\n-14sp\n-all caps"
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:showDividers="middle"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:background="@color/tradehero_blue"
+        >
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Headline.Inverse"
+          android:gravity="center"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Inverted Styles"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display4.Inverse"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 4\n-112sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display3.Inverse"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 3\n-56sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display2.Inverse"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 2\n-45sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Display1.Inverse"
+          android:singleLine="true"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Display 1\n-34sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Headline.Inverse"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Headline\n-24sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Title.Inverse"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Title\n-20sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Subhead.Inverse"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Subhead\n-16sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Body.Inverse"
+          android:textStyle="bold"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Body 2\n-14sp\n-Medium"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Body.Inverse"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Body 1\n-14sp\n-Light"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Caption.Inverse"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Caption\n-12sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Menu.Inverse"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Menu\n-14sp"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Button.Inverse"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:text="Button\n-14sp\n-all caps"
+          />
+    </LinearLayout>
+
+  </LinearLayout>
+</com.etiennelawlor.quickreturn.library.views.NotifyingScrollView>

@@ -19,13 +19,14 @@
         android:id="@+id/position_list_in_period_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_xsmall"
         >
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:gravity="right"
-          android:textStyle="bold"
+          style="@style/TH.Subhead"
           android:maxLines="1"
           android:text="@string/positions_in_period"
           />
@@ -58,13 +59,14 @@
         android:id="@+id/position_list_overall_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_xsmall"
         >
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:gravity="right"
-          android:textStyle="bold"
+          style="@style/TH.Subhead"
           android:maxLines="1"
           android:text="@string/positions_overall"
           />

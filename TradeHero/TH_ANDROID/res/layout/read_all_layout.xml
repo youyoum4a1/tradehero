@@ -5,6 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/clickable_element_min_dimen"
-    android:background="@drawable/read_all_layout"
-    android:textColor="@color/white"
+    android:background="@drawable/blue_rounded_button_selector"
+    style="@style/TH.Button.Inverse"
     android:text="@string/mark_all_as_read"/>

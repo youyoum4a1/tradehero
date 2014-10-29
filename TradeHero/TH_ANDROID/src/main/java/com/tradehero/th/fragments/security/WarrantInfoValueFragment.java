@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -28,8 +29,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 {
     public final static String BUNDLE_KEY_PROVIDER_ID_KEY = WarrantInfoValueFragment.class.getName() + ".providerId";
 
-    @InjectView(R.id.warrant_help_video_link) protected View mHelpVideoLink;
-    @InjectView(R.id.warrant_help_video_text) protected TextView mHelpVideoText;
+    @InjectView(R.id.warrant_help_video_link) protected Button mHelpVideoLink;
     @InjectView(R.id.vwarrant_type) protected TextView mWarrantType;
     @InjectView(R.id.vwarrant_code) protected TextView mWarrantCode;
     @InjectView(R.id.vwarrant_expiry) protected TextView mWarrantExpiry;
@@ -164,22 +164,22 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     public void displayLinkHelpVideoText()
     {
-        if (!isDetached() && mHelpVideoText != null)
+        if (!isDetached() && mHelpVideoLink != null)
         {
             if (providerDTO != null)
             {
-                mHelpVideoText.setText(providerDTO.helpVideoText);
+                mHelpVideoLink.setText(providerDTO.helpVideoText);
             }
             if (providerDTO != null
                     && providerDTO.specificResources != null
                     && providerDTO.specificResources.helpVideoLinkTextColourResId > 0)
             {
-                mHelpVideoText.setTextColor(getResources().getColor(
+                mHelpVideoLink.setTextColor(getResources().getColor(
                         providerDTO.specificResources.helpVideoLinkTextColourResId));
            }
             else
             {
-                mHelpVideoText.setTextColor(getResources().getColor(R.color.black));
+                mHelpVideoLink.setTextColor(getResources().getColor(R.color.black));
             }
         }
     }

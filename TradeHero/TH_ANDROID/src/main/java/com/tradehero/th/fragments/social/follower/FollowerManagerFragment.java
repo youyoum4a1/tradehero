@@ -45,10 +45,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     private static final String BUNDLE_KEY_HERO_ID =
             FollowerManagerFragment.class.getName() + ".heroId";
 
-    /** parent layout of broadcastView and whisperView */
-    @InjectView(R.id.send_message_layout) View messageLayout;
     @InjectView(R.id.send_message_broadcast) View broadcastView;
-    @InjectView(R.id.send_message_whisper) View whisperView;
 
     @Inject FollowerSummaryCache followerSummaryCache;
     @Inject CurrentUserId currentUserId;
@@ -173,7 +170,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onDestroyView()
     {
         broadcastView.setOnClickListener(null);
-        whisperView.setOnClickListener(null);
         mTabHost = null;
         Timber.d("onDestroyView");
         super.onDestroyView();
@@ -193,11 +189,11 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         if (isCurrentUser())
         {
-            messageLayout.setVisibility(View.VISIBLE);
+            broadcastView.setVisibility(View.VISIBLE);
         }
         else
         {
-            messageLayout.setVisibility(View.GONE);
+            broadcastView.setVisibility(View.GONE);
         }
     }
 
@@ -206,15 +202,12 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         if (shown)
         {
             broadcastView.setOnClickListener(this);
-            whisperView.setOnClickListener(this);
         }
         else
         {
             broadcastView.setOnClickListener(null);
-            whisperView.setOnClickListener(null);
         }
-        whisperView.setVisibility(View.GONE);
-        messageLayout.setVisibility(shown ? View.VISIBLE : View.GONE);
+        broadcastView.setVisibility(shown ? View.VISIBLE : View.GONE);
     }
 
     private Fragment getCurrentFragment()
@@ -316,9 +309,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         switch (v.getId())
         {
-            case R.id.send_message_whisper:
-                throw new IllegalArgumentException("There is no whisper yet");
-
             case R.id.send_message_broadcast:
                 goToMessagePage(DiscussionType.BROADCAST_MESSAGE);
                 break;

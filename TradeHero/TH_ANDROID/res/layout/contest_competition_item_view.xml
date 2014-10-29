@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:contentDescription="@null"
+    android:minHeight="@dimen/list_item_min_height"
     app:dominantMeasurement="width"
     app:aspectRatioEnabled="false"
     tools:src="@drawable/salesforce"

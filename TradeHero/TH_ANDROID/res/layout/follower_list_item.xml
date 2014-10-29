@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.tradehero.th.fragments.social.follower.FollowerListItemView
-    style="@style/TH.ListItem"
+    style="@style/TH.ListItem.Clickable"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/common_margin_10"
     >
-  <!--android:background="@color/white"-->
 
   <ImageView
       android:id="@+id/follower_profile_picture"
-      android:layout_width="44dp"
-      android:layout_height="44dp"
+      android:layout_width="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
+      android:layout_centerVertical="true"
       android:src="@drawable/superman_facebook"
       android:contentDescription="@null"
     />
@@ -25,62 +24,37 @@
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/follower_profile_picture"
       android:layout_toLeftOf="@+id/hint_open_portfolio"
-      android:paddingTop="2dp"
-      android:paddingBottom="2dp"
-      android:paddingLeft="5dp"
+      android:padding="@dimen/margin_xsmall"
+      android:layout_marginLeft="@dimen/margin_xsmall"
       android:layout_centerVertical="true"
     >
 
       <TextView
           android:id="@+id/follower_title"
-          android:layout_width="wrap_content"
-          android:layout_height="0dp"
-          android:maxLines="1"
-          android:layout_weight="3"
-          android:textStyle="bold"
+          android:singleLine="false"
+          style="@style/TH.UserNameTitle"
           tools:text="Tho Nguyen"
         />
 
       <TextView
           android:id="@+id/follower_roi_info"
           android:layout_width="wrap_content"
-          android:layout_height="0dp"
-          android:layout_weight="2"
+          android:layout_height="wrap_content"
           android:maxLines="1"
+          style="@style/TH.UserROI"
           tools:text="36.73%"
         />
 
-    <!--<TextView-->
-        <!--android:id="@+id/follower_time"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:maxLines="1"-->
-        <!--android:layout_weight="3"-->
-        <!--android:textStyle="bold"-->
-        <!--android:text=""-->
-        <!--/>-->
   </LinearLayout>
 
   <ImageView
       android:id="@+id/country_logo"
-      android:layout_width="25dp"
-      android:layout_height="25dp"
-      android:layout_toLeftOf="@+id/hint_open_follower_info"
-      android:layout_centerVertical="true"
-      android:scaleType="centerInside"
-      android:contentDescription="@null"
-      android:layout_marginRight="10dp"
-      />
-
-  <ImageView
-      android:id="@+id/hint_open_follower_info"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
       android:scaleType="centerInside"
       android:contentDescription="@null"
-      android:src="@drawable/chevron_forward"
-      />
+    />
 
 </com.tradehero.th.fragments.social.follower.FollowerListItemView>

@@ -14,6 +14,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentLeft="true"
+      style="@style/TH.Subhead"
       tools:text="OPEN"
     />
 
@@ -23,6 +24,8 @@
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/header_text"
       android:layout_alignParentRight="true"
+      android:layout_alignBaseline="@id/header_text"
+      style="@style/TH.Caption"
       android:gravity="right"
       tools:text="2 OCT 2013 - 7 NOV 2013"
       />

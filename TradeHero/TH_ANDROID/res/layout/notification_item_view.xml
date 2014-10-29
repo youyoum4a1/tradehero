@@ -7,9 +7,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:descendantFocusability="blocksDescendants"
-    android:padding="@dimen/timeline_item_padding"
     tools:background="@color/number_green"
-    style="@style/TH.ListItem"
+    style="@style/TH.ListItem.Clickable"
     >
 
   <ImageView
@@ -42,12 +41,9 @@
         android:id="@+id/discussion_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dip"
-        android:layout_marginTop="10dip"
+        android:layout_marginLeft="@dimen/margin_small"
         android:textColorLink="@color/timeline_item_link"
-        android:textColor="@color/timeline_item"
-        android:textSize="@dimen/text_xsmall"
-        android:textStyle="normal"
+        style="@style/TH.Body"
         android:layout_toLeftOf="@id/notification_unread_flag"
         android:layout_alignParentLeft="true"
         tools:text="Tho Nguyen has become the best trader of the world!"
@@ -58,8 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:textColor="@color/text_gray_normal"
-        android:textSize="@dimen/timeline_item_date"
+        style="@style/TH.Caption"
         android:layout_below="@id/discussion_content"
         tools:text="A moment ago"
         />

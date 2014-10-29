@@ -29,7 +29,7 @@
           android:id="@+id/translatable_text_own_language"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textSize="@dimen/text_small"
+          android:textSize="@dimen/text_body"
           tools:text="français"
           />
 
@@ -38,7 +38,7 @@
           android:layout_height="wrap_content"
           android:paddingLeft="4dp"
           android:paddingRight="4dp"
-          android:textSize="@dimen/text_small"
+          android:textSize="@dimen/text_body"
           android:text="-"
           />
 
@@ -46,7 +46,7 @@
           android:id="@+id/translatable_text_local"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textSize="@dimen/text_small"
+          android:textSize="@dimen/text_body"
           tools:text="French"
           />
 
@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textSize="@dimen/text_xsmall"
+        android:textSize="@dimen/text_caption"
         tools:text="en"
         />
 

@@ -41,7 +41,7 @@
       android:textColor="@color/gray_normal"
       android:singleLine="false"
       android:maxLines="2"
-      android:gravity="top|left"
+      android:gravity="top|start"
       tools:text="Gain followers to level up lorem ipsum dolor sit amet."/>
 
   <include

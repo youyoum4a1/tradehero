@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     android:padding="5dp"
     android:background="@color/white"
-    tools:layout_height="120dp"
     >
 
   <ImageView
@@ -27,20 +26,19 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="8dp"
-      android:textSize="@dimen/stock_symbol_header"
+      style="@style/TH.UserNameTitle"
       android:layout_toRightOf="@id/stock_logo"
       android:layout_toLeftOf="@+id/alert_toggle"
       android:layout_alignParentTop="true"
       android:paddingLeft="5dp"
       tools:text="NASDAQ:GOOG"
-      android:textStyle="bold"
       />
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/company_name"
-      android:textSize="@dimen/alert_company_name"
+      style="@style/TH.Body"
       android:layout_toRightOf="@id/stock_logo"
       android:layout_below="@id/stock_symbol"
       android:paddingLeft="5dp"
@@ -67,8 +65,7 @@
         android:id="@+id/dummy_current_price"
         android:text="@string/stock_alert_current_price"
         android:gravity="left"
-        android:textSize="@dimen/text_small"
-        android:textColor="@color/text_gray_normal"
+        style="@style/TH.InfoKey"
         tools:background="@color/white"
         />
 
@@ -79,8 +76,7 @@
         android:text="@string/stock_alert_target_price"
         android:layout_below="@id/dummy_current_price"
         android:gravity="left"
-        android:textSize="@dimen/text_small"
-        android:textColor="@color/text_gray_normal"
+        style="@style/TH.InfoKey"
         tools:background="@color/white"
         />
 
@@ -91,8 +87,7 @@
         android:text="@string/stock_alert_active_until"
         android:gravity="left"
         android:layout_below="@id/target_price_label"
-        android:textSize="@dimen/text_small"
-        android:textColor="@color/text_gray_normal"
+        style="@style/TH.InfoKey"
         tools:background="#eeddcc"
         />
 
@@ -104,7 +99,7 @@
         android:layout_alignTop="@+id/dummy_current_price"
         android:gravity="left"
         android:paddingLeft="5dp"
-        android:textSize="@dimen/text_small"
+        style="@style/TH.InfoValue"
         tools:background="#ffeeee"
         tools:text="US$ 16.14"
         android:singleLine="true"
@@ -118,7 +113,8 @@
         android:layout_toRightOf="@id/current_price"
         android:layout_marginLeft="4dp"
         tools:text="as of 2 Feb 2014 16:12"
-        android:textSize="@dimen/text_xsmall"
+        android:layout_alignBaseline="@id/current_price"
+        style="@style/TH.Caption"
         android:maxLines="1"
         />
 
@@ -131,7 +127,7 @@
         android:layout_alignTop="@+id/target_price_label"
         android:gravity="left"
         android:paddingLeft="5dp"
-        android:textSize="@dimen/text_small"
+        style="@style/TH.InfoValue"
         tools:background="#ffeeee"
         tools:text="US$ 12.97"
         />
@@ -145,7 +141,7 @@
         android:layout_below="@id/target_price"
         android:gravity="left"
         android:paddingLeft="5dp"
-        android:textSize="@dimen/text_small"
+        style="@style/TH.InfoValue"
         tools:background="@color/red"
         tools:text="-"
         />

@@ -29,20 +29,6 @@
       android:scrollbars="none"
       />
 
-  <!--<com.fortysevendeg.android.swipelistview.SwipeListView-->
-      <!--android:id="@android:id/list"-->
-      <!--android:layout_width="match_parent"-->
-      <!--android:layout_height="match_parent"-->
-      <!--android:layout_alignParentTop="true"-->
-      <!--android:clipToPadding="false"-->
-      <!--swipe:swipeFrontView="@id/front"-->
-      <!--swipe:swipeBackView="@id/back"-->
-      <!--swipe:swipeDrawableChecked="@drawable/ic_info"-->
-      <!--swipe:swipeDrawableUnchecked="@drawable/ic_info"-->
-      <!--swipe:swipeCloseAllItemsWhenMoveList="true"-->
-      <!--swipe:swipeMode="left"-->
-      <!--android:layout_marginTop="@dimen/watch_list_header_height"-->
-      <!--/>-->
 
   <include
       android:layout_width="match_parent"
@@ -59,6 +45,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/watchlist_empty_view"
+      style="@style/TH.Loading_Empty_Text"
       android:gravity="center_horizontal"
       />
 

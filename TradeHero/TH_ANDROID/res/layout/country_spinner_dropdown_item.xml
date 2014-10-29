@@ -27,7 +27,7 @@
       android:layout_width="match_parent"
       android:layout_centerInParent="true"
       android:layout_toRightOf="@id/spinner_item_icon"
-      android:textSize="@dimen/text_medium"
+      android:textSize="@dimen/text_subhead"
       android:gravity="center"
       android:maxLines="1"
       tools:text="US NYSE - NYSE"

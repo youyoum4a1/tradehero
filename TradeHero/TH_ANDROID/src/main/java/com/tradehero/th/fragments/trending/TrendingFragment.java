@@ -150,30 +150,6 @@ public class TrendingFragment extends SecurityListFragment
 
         // fetch provider list for provider tile
         fetchProviderList();
-
-        //update gridView's top padding if filterSelectorView is higher
-        filterSelectorView.postDelayed(new Runnable()
-        {
-            @Override public void run()
-            {
-                if (filterSelectorView != null)
-                {
-                    AbsListView listView = getSecurityListView();
-                    int height = filterSelectorView.getHeight();
-                    if (listView != null && height > 0)
-                    {
-                        getSecurityListView().setPadding((int) getResources().getDimension(
-                                        R.dimen.trending_list_padding_left_and_right),
-                                height > 103 ? height + 10 : (int) getResources().getDimension(
-                                        R.dimen.trending_list_padding_top),
-                                (int) getResources().getDimension(
-                                        R.dimen.trending_list_padding_left_and_right),
-                                (int) getResources().getDimension(
-                                        R.dimen.trending_list_padding_bottom));
-                    }
-                }
-            }
-        }, 500);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

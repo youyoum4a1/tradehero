@@ -7,7 +7,7 @@ import dagger.Module;
                 AlertManagerFragment.class,
                 AlertEditFragment.class,
                 AlertCreateFragment.class,
-
+                AlertListItemAdapter.class,
                 AlertItemView.class,
                 AlertViewFragment.class,
         },

@@ -12,9 +12,8 @@
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/common_margin_10"
-      android:layout_marginTop="40dp"
-      android:layout_marginBottom="40dp"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_marginBottom="@dimen/margin_small"
       >
 
     <ImageView
@@ -35,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_margin_10"
         android:layout_toRightOf="@id/user_profile_avatar"
+        style="@style/TH.Subhead"
         tools:text="@string/not_follow_title"
         />
 
@@ -44,8 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/user_profile_avatar"
         android:layout_below="@id/title"
-        android:textStyle="bold"
-        android:textSize="@dimen/text_large"
+        style="@style/TH.Title"
         tools:text="Windy912"
         />
 
@@ -63,17 +62,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/free_follow_content1"
-        android:padding="@dimen/common_margin_10"
+        style="@style/TH.Body"
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/margin_small"
+        android:paddingBottom="@dimen/margin_small"
         />
 
     <TextView
         android:id="@+id/content2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/TH.Caption"
         android:text="@string/free_follow_content2"
-        android:paddingLeft="@dimen/common_margin_10"
-        android:paddingRight="@dimen/common_margin_10"
-        android:paddingBottom="@dimen/common_margin_10"
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/margin_small"
+        android:paddingBottom="@dimen/margin_small"
         />
 
     <ImageView
@@ -84,7 +87,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/clickable_element_min_dimen"
         android:orientation="horizontal"
         >
 
@@ -94,8 +98,7 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:text="@string/continue_free_follow"
-          android:textSize="@dimen/text_small"
-          android:textColor="#77a4fd"
+          style="@style/TH.Button.Accented"
           android:background="@drawable/basic_white_selector"
           />
 
@@ -106,9 +109,7 @@
           android:layout_weight="1"
           android:background="@drawable/basic_green_selector"
           android:text="@string/upgrade"
-          android:textSize="@dimen/text_medium"
-          android:textColor="@color/black"
-          android:textStyle="bold"
+          style="@style/TH.Button"
           android:layout_marginLeft="1dp"
           />
 
@@ -137,12 +138,14 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/not_follow_subtitle"
-          android:textStyle="bold"
+          android:paddingBottom="@dimen/margin_xsmall"
+          style="@style/TH.Subhead"
           />
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          style="@style/TH.Body"
           android:text="@string/free_follow_content3"
           />
 
@@ -163,12 +166,14 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/not_follow_premium_subtitle"
-          android:textStyle="bold"
+          style="@style/TH.Subhead"
+          android:paddingBottom="@dimen/margin_xsmall"
           />
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          style="@style/TH.Body"
           android:text="@string/free_follow_content2"
           />
 

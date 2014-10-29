@@ -5,12 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="4dp"
-    android:paddingRight="@dimen/position_padding_right"
-    style="@style/TH.ListItem"
+    style="@style/TH.ListItem.Clickable"
     tools:background="#7f7"
     >
-  <!--android:background="@color/white"-->
 
   <ImageView
       android:id="@+id/follower_profile_picture"
@@ -46,13 +43,13 @@
 
   <ImageView
       android:id="@+id/country_logo"
-      android:layout_width="25dp"
-      android:layout_height="25dp"
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
       android:src="@drawable/settings_forward_light"
       android:scaleType="centerInside"
       android:contentDescription="@null"
       android:layout_toLeftOf="@+id/ic_status_container"
-      android:layout_marginRight="10dp"
+      android:layout_marginRight="@dimen/margin_small"
       android:layout_centerVertical="true"
       />
 
@@ -62,19 +59,15 @@
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/follower_profile_picture"
       android:layout_toLeftOf="@+id/country_logo"
-      android:paddingTop="2dp"
-      android:paddingBottom="2dp"
-      android:paddingLeft="5dp"
+      android:padding="@dimen/margin_xsmall"
+      android:layout_marginLeft="@dimen/margin_xsmall"
       android:layout_centerVertical="true"
       >
 
     <TextView
         android:id="@+id/hero_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:textStyle="bold"
-        android:text=""
+        android:singleLine="false"
+        style="@style/TH.UserNameTitle"
         />
 
     <TextView
@@ -82,16 +75,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:text=""
+        style="@style/TH.UserROI"
         />
 
     <TextView
         android:id="@+id/hero_date_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:text=""
-        android:textSize="@dimen/text_xsmall"
+        style="@style/TH.Caption"
         />
 
   </LinearLayout>
