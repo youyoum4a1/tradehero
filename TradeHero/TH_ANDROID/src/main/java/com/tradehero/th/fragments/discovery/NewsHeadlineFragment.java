@@ -14,7 +14,6 @@ import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -48,7 +47,7 @@ public class NewsHeadlineFragment extends Fragment
 {
     private static final String NEWS_TYPE_KEY = NewsHeadlineFragment.class.getName() + ".newsType";
 
-    @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.discovery_news_list) PullToRefreshListView mNewsListView;
 
     private Subscription newsSubscription;
@@ -76,7 +75,6 @@ public class NewsHeadlineFragment extends Fragment
     @Inject RxLoaderManager rxLoaderManager;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
-    private int mDisplayedViewId;
     private NewsHeadlineAdapter mFeaturedNewsAdapter;
     protected NewsItemListKey newsItemListKey;
     private AbsListView.OnScrollListener scrollListener;
@@ -145,12 +143,14 @@ public class NewsHeadlineFragment extends Fragment
         paddingHeader.setLayoutParams(new AbsListView.LayoutParams(1, getResources().getDimensionPixelOffset(R.dimen.discovery_news_carousel_height)));
         mNewsListView.getRefreshableView().addHeaderView(paddingHeader);
         mBottomLoadingView = new ProgressBar(getActivity());
+        mBottomLoadingView.setVisibility(View.GONE);
         mNewsListView.getRefreshableView().addFooterView(mBottomLoadingView);
         mNewsListView.setOnScrollListener(new MultiScrollListener(scrollListener, dashboardBottomTabsScrollListener));
         mNewsListView.setAdapter(mFeaturedNewsAdapter);
 
         newsItemListKeyObservable = createNewsItemListKeyObservable()
-                .share(); // convert to hot observable coz activateNewsListView can be call more than once
+                .share() // convert to hot observable coz activateNewsListView can be call more than once
+                .distinctUntilChanged();
 
         newsSubject = PublishSubject.create();
         newsSubject.subscribe(mFeaturedNewsAdapter::setItems);
@@ -167,6 +167,7 @@ public class NewsHeadlineFragment extends Fragment
         }
         newsItemListKey = newKey;
 
+        progressBar.setVisibility(View.VISIBLE);
         newsSubscription = rxLoaderManager.create(newsItemListKey,
                 PaginationObservable.createFromRange(newsItemListKeyObservable, (Func1<NewsItemListKey, Observable<List<NewsItemDTOKey>>>)
                         key -> newsServiceWrapper.getNewsRx(key)
@@ -220,32 +221,17 @@ public class NewsHeadlineFragment extends Fragment
         HierarchyInjector.inject(this);
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        if (mDisplayedViewId > 0)
-        {
-            mContentWrapper.setDisplayedChildByLayoutId(mDisplayedViewId);
-        }
-    }
-
     @Override public void onDestroyView()
     {
         newsSubscription.unsubscribe();
         super.onDestroyView();
     }
 
-    @Override public void onPause()
-    {
-        mDisplayedViewId = mContentWrapper.getDisplayedChildLayoutId();
-        super.onPause();
-    }
-
     private class UpdateUIObserver implements rx.Observer<List<NewsItemDTOKey>>
     {
         private void updateUI()
         {
-            mContentWrapper.setDisplayedChildByLayoutId(mNewsListView.getId());
+            progressBar.setVisibility(View.INVISIBLE);
             mBottomLoadingView.setVisibility(View.INVISIBLE);
             mNewsListView.onRefreshComplete();
         }

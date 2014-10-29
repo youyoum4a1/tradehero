@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.common.widget.BetterViewAnimator
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_wrapper"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-  <ProgressBar
-      android:id="@android:id/progress"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      />
 
   <com.handmark.pulltorefresh.library.PullToRefreshListView
       android:id="@+id/discovery_news_list"
@@ -27,6 +21,16 @@
       android:headerDividersEnabled="true"
       android:smoothScrollbar="true"
       android:clipToPadding="false"
+      tools:background="@android:color/holo_red_light"
       />
 
-</com.tradehero.common.widget.BetterViewAnimator>
+  <ProgressBar
+      android:id="@android:id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:visibility="gone"
+      android:background="@drawable/round_square"
+      />
+
+</FrameLayout>

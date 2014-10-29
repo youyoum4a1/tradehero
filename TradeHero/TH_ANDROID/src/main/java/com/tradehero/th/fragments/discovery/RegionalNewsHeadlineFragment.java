@@ -52,12 +52,18 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 
         // observable of whenever userProfileDTO is available
         Observable<NewsItemListRegionalKey> regionalKeyByUserProfileLanguageObservable = userServiceWrapper.getUserRx(currentUserId.toUserBaseKey())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(userProfileDTO -> new NewsItemListRegionalKey(userProfileDTO.countryCode, locale.getLanguage(), null, null));
+                .map(userProfileDTO -> userProfileDTO.countryCode)
+                .map(this::createNewsItemListRegionalKeyFromCountryCode);
 
         return Observable.concat(regionalKeyByUserProfileLanguageObservable, regionalKeyManuallyChangedObservable)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(this::activateNewsListView); // whenever the key is changed by above 2 factors, need to reload the whole list
+    }
+
+    private NewsItemListRegionalKey createNewsItemListRegionalKeyFromCountryCode(String countryCode)
+    {
+        return new NewsItemListRegionalKey(countryCode, locale.getLanguage(), null, null);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
