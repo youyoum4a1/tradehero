@@ -35,9 +35,9 @@ public class FollowerListItemView extends RelativeLayout
 {
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.follower_title) TextView title;
-    @InjectView(R.id.follower_revenue) TextView revenueInfo;
-    @InjectView(R.id.hint_follower_country) ImageView country;
-    @InjectView(R.id.follower_roi_info) @Optional TextView roiInfo;
+    @InjectView(R.id.follower_roi_info) @Optional  TextView roiInfo;
+    @InjectView(R.id.follower_revenue) @Optional TextView revenueInfo;
+    @InjectView(R.id.country_logo) ImageView country;
 
     private UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;

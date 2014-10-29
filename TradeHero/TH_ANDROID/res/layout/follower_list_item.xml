@@ -48,7 +48,7 @@
   </LinearLayout>
 
   <ImageView
-      android:id="@+id/hint_follower_country"
+      android:id="@+id/country_logo"
       android:layout_width="@dimen/small_icon_w_h"
       android:layout_height="@dimen/small_icon_w_h"
       android:layout_alignParentRight="true"
