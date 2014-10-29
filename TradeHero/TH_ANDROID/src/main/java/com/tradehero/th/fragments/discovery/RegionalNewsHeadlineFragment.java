@@ -37,12 +37,16 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
     private Observable<NewsItemListKey> createNewsItemListRegionalKeyObservable()
     {
         // observable of the UI event which user change the region
-        Observable<NewsItemListKey> regionalKeyManuallyChangedObservable = Observable.create((Observable.OnSubscribe<NewsItemListKey>) subscriber -> {
-            if (regionChangeBroadcastReceiver == null)
+        Observable<NewsItemListKey> regionalKeyManuallyChangedObservable = Observable.create(new Observable.OnSubscribe<NewsItemListKey>()
+        {
+            @Override public void call(Subscriber<? super NewsItemListKey> subscriber)
             {
-                regionChangeBroadcastReceiver = new RegionalKeyBroadcastReceiver(subscriber);
-                LocalBroadcastManager.getInstance(getActivity())
-                        .registerReceiver(regionChangeBroadcastReceiver, new IntentFilter(REGION_CHANGED));
+                if (regionChangeBroadcastReceiver == null)
+                {
+                    regionChangeBroadcastReceiver = new RegionalKeyBroadcastReceiver(subscriber);
+                    LocalBroadcastManager.getInstance(getActivity())
+                            .registerReceiver(regionChangeBroadcastReceiver, new IntentFilter(REGION_CHANGED));
+                }
             }
         });
 
