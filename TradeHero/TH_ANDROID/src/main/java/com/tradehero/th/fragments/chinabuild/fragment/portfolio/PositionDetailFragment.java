@@ -90,6 +90,7 @@ public class PositionDetailFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         fetchPositionListener = createPositionCacheListener();
         fetchTradesListener = createTradeListeCacheListener();
+        adapter = new PositionTradeListAdapter(getActivity());
     }
 
     @Override
@@ -131,8 +132,14 @@ public class PositionDetailFragment extends DashboardFragment
 
         initListView();
 
-        betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
-
+        if(adapter!=null && adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
+        }
         return view;
     }
 
@@ -143,7 +150,7 @@ public class PositionDetailFragment extends DashboardFragment
 
     public void initListView()
     {
-        adapter = new PositionTradeListAdapter(getActivity());
+
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.DISABLED);
     }
@@ -240,6 +247,10 @@ public class PositionDetailFragment extends DashboardFragment
             OwnedPositionId key = positionDTO.getOwnedPositionId();
             tradeListCache.get().register(key, fetchTradesListener);
             tradeListCache.get().getOrFetchAsync(key);
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
         }
     }
 

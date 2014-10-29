@@ -172,6 +172,14 @@ public class BuySaleSecurityFragment extends DashboardFragment
         {
             mSeekBar.setMax(maxValue);
             mSeekBar.setEnabled(maxValue > 0);
+
+            if(!isBuy)
+            {//卖出设置为最大
+                int progressMax  = 100;
+                mSeekBar.setProgress(progressMax);
+                mTransactionQuantity = maxValue;
+                updateTransactionDialog();
+            }
         }
     }
 
