@@ -11,6 +11,7 @@ import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
@@ -23,22 +24,26 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class ProviderServiceWrapper
 {
     @NotNull private final ProviderService providerService;
     @NotNull private final ProviderServiceAsync providerServiceAsync;
+    @NotNull private final ProviderServiceRx providerServiceRx;
     @NotNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderServiceWrapper(
             @NotNull ProviderService providerService,
             @NotNull ProviderServiceAsync providerServiceAsync,
+            @NotNull ProviderServiceRx providerServiceRx,
             @NotNull CurrentUserId currentUserId)
     {
         super();
         this.providerService = providerService;
         this.providerServiceAsync = providerServiceAsync;
+        this.providerServiceRx = providerServiceRx;
         this.currentUserId = currentUserId;
     }
     //</editor-fold>
@@ -67,6 +72,24 @@ import retrofit.Callback;
                 createProcessorProviderCompactListReceived());
         this.providerServiceAsync.getProviders(middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<ProviderDTOList> getProvidersRx()
+    {
+        return this.providerServiceRx.getProviders()
+                .doOnNext(providerDTOList -> {
+                    for (ProviderDTO providerDTO : providerDTOList)
+                    {
+                        if (providerDTO != null)
+                        {
+                            PortfolioCompactDTO associatedPortfolio = providerDTO.associatedPortfolio;
+                            if (associatedPortfolio != null)
+                            {
+                                associatedPortfolio.userId = currentUserId.get();
+                            }
+                        }
+                    }
+                });
     }
     //</editor-fold>
 
@@ -156,6 +179,11 @@ import retrofit.Callback;
         return this.getHelpVideos(helpVideoListKey.getProviderId(), callback);
     }
 
+    @NotNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NotNull HelpVideoListKey helpVideoListKey)
+    {
+        return this.getHelpVideosRx(helpVideoListKey.getProviderId());
+    }
+
     public HelpVideoDTOList getHelpVideos(@NotNull ProviderId providerId)
     {
         return this.providerService.getHelpVideos(providerId.key);
@@ -168,6 +196,11 @@ import retrofit.Callback;
         MiddleCallback<HelpVideoDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         this.providerServiceAsync.getHelpVideos(providerId.key, middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NotNull ProviderId providerId)
+    {
+        return this.providerServiceRx.getHelpVideos(providerId.key);
     }
     //</editor-fold>
 
