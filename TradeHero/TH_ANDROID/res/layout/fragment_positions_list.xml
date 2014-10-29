@@ -28,7 +28,7 @@
       ptr:ptrScrollingWhileRefreshingEnabled="true"
       android:fadingEdge="none"
       android:scrollbars="none"
-      android:paddingBottom="@dimen/clickable_element_min_dimen"
+      android:paddingBottom="@dimen/dashboard_tabhost_height"
       android:clipToPadding="false"
       />
 
