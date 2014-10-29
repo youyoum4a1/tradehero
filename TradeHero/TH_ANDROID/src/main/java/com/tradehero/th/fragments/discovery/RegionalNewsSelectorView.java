@@ -13,23 +13,22 @@ import android.widget.Spinner;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemSelected;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import java.util.List;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import javax.inject.Provider;
+import rx.Observable;
+import rx.Subscription;
 
 public class RegionalNewsSelectorView extends LinearLayout
 {
     @InjectView(R.id.discovery_news_carousel_spinner_wrapper) Spinner mCountryDropdown;
+    private Subscription countryLanguagePairsSubscription;
+
     @OnItemSelected(R.id.discovery_news_carousel_spinner_wrapper) void handleItemSelected(
             AdapterView<?> adapterView, View view, int position, long id)
     {
@@ -37,13 +36,13 @@ public class RegionalNewsSelectorView extends LinearLayout
     }
 
     @Inject NewsServiceWrapper mNewsServiceWrapper;
+    @Inject Provider<ToastOnErrorAction> toastOnErrorAction;
 
     private String mLanguageCode;
     private String mCountryCode;
     private String mCountryName;
 
     private CountryAdapter mCountryAdapter;
-    private MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> mCountryLanguageFetchMiddleCallback;
 
     //<editor-fold desc="Constructors">
     public RegionalNewsSelectorView(Context context, AttributeSet attrs)
@@ -77,15 +76,17 @@ public class RegionalNewsSelectorView extends LinearLayout
     {
         super.onAttachedToWindow();
 
-        mCountryLanguageFetchMiddleCallback = mNewsServiceWrapper.getCountryLanguagePairs(new CountryLanguageFetchCallback());
+        countryLanguagePairsSubscription = mNewsServiceWrapper.getCountryLanguagePairsRx()
+                .map(PaginatedDTO::getData)
+                .doOnError(toastOnErrorAction.get())
+                .onErrorResumeNext(Observable.empty())
+                .subscribe(mCountryAdapter::setItems);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        if (mCountryLanguageFetchMiddleCallback != null)
-        {
-            mCountryLanguageFetchMiddleCallback.setPrimaryCallback(null);
-        }
+        countryLanguagePairsSubscription.unsubscribe();
+
         super.onDetachedFromWindow();
     }
 
@@ -156,22 +157,4 @@ public class RegionalNewsSelectorView extends LinearLayout
         };
     }
     //</editor-fold>
-
-    private class CountryLanguageFetchCallback implements Callback<PaginatedDTO<CountryLanguagePairDTO>>
-    {
-        @Override public void success(PaginatedDTO<CountryLanguagePairDTO> countryLanguagePairDTOPaginatedDTO, Response response)
-        {
-            linkWith(countryLanguagePairDTOPaginatedDTO.getData(), true);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            THToast.show(new THException(retrofitError));
-        }
-    }
-
-    private void linkWith(List<CountryLanguagePairDTO> data, boolean andDisplay)
-    {
-        mCountryAdapter.setItems(data);
-    }
 }

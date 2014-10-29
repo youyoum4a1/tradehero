@@ -56,6 +56,11 @@ import rx.Observable;
         return middleCallback;
     }
 
+    public Observable<PaginatedDTO<CountryLanguagePairDTO>> getCountryLanguagePairsRx()
+    {
+        return newsServiceRx.getCountryLanguagePairsRx();
+    }
+
     public PaginatedDTO<NewsItemCategoryDTO> getNewsCategories()
     {
         return newsService.getCategories();
