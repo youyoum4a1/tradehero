@@ -172,8 +172,6 @@ public class RegionalNewsSelectorView extends LinearLayout
 
     private void linkWith(List<CountryLanguagePairDTO> data, boolean andDisplay)
     {
-        mCountryAdapter.clear();
-        mCountryAdapter.addAll(data);
-        mCountryAdapter.notifyDataSetChanged();
+        mCountryAdapter.setItems(data);
     }
 }
