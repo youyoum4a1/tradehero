@@ -4,17 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:background="@drawable/basic_white_selector"
+    style="@style/TH.ListItem.Clickable"
   >
 
   <ImageView
       android:id="@+id/icon"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
+      android:layout_width="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
       android:layout_marginRight="16dp"
       android:layout_centerVertical="true"
@@ -40,7 +36,7 @@
       android:layout_toRightOf="@id/icon"
       android:layout_toLeftOf="@id/ic_hint_further"
       android:layout_centerVertical="true"
-      android:textSize="@dimen/text_subhead"
+      style="@style/TH.Subhead"
     />
 
 </com.tradehero.th.fragments.billing.StoreItemHasFurther>
