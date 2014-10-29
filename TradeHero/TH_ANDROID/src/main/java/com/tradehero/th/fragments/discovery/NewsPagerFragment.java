@@ -52,13 +52,8 @@ public class NewsPagerFragment extends Fragment
     {
         ButterKnife.inject(this, view);
 
-        int totalPage = NewsType.values().length;
         mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
         mNewsCarousel.setAdapter(new DiscoveryNewsCarouselFragmentAdapter(this.getChildFragmentManager()));
-
-        // all pages need to be cached, coz they are both circle pagers
-        mViewPager.setOffscreenPageLimit(totalPage);
-        mNewsCarousel.setOffscreenPageLimit(totalPage);
 
         mNewsCarousel.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
         {
