@@ -6,23 +6,23 @@
 
   <TextView
       android:id="@+id/last_price"
-      style="@style/TH.Value"
+      style="@style/TH.InfoValue"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
       tools:text="US$ 4.60"
-      android:textSize="@dimen/text_large"
+      android:textSize="@dimen/text_title"
       android:textStyle="bold"
       />
 
   <TextView
       android:id="@+id/bid_price_usd"
-      style="@style/TH.Title"
+      style="@style/TH.InfoKey"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/buy_sell_usd_price_unit_left"
       android:gravity="center_horizontal"
-      android:textSize="@dimen/text_small"
+      android:textSize="@dimen/text_body"
       />
 
   <TableLayout
@@ -37,33 +37,31 @@
 
       <TextView
           android:id="@+id/bid_price"
-          style="@style/TH.Title"
+          style="@style/TH.InfoKey"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
           tools:text="4.5"
           android:gravity="right"
-          android:textSize="@dimen/text_small"
           android:singleLine="true"
           />
 
       <TextView
           android:text=" x "
+          style="@style/TH.Body"
           android:gravity="center"
-          android:textSize="@dimen/text_small"
           android:padding="4dp"
           android:singleLine="true"
           />
 
       <TextView
           android:id="@+id/ask_price"
-          style="@style/TH.Value"
+          style="@style/TH.InfoValue"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
           tools:text="4.6"
           android:gravity="left"
-          android:textSize="@dimen/text_small"
           android:singleLine="true"
           />
 
@@ -76,33 +74,31 @@
 
       <TextView
           android:id="@+id/bid_price_hint"
-          style="@style/TH.Title"
+          style="@style/TH.Caption"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:gravity="right"
           android:text="@string/buy_sell_bid_with_bracket"
-          android:textSize="@dimen/text_xsmall"
           android:singleLine="true"
           />
 
       <TextView
           android:text=" "
           android:gravity="center"
-          android:textSize="@dimen/text_xsmall"
+          style="@style/TH.Caption"
           android:padding="4dp"
           android:singleLine="true"
           />
 
       <TextView
           android:id="@+id/ask_price_hint"
-          style="@style/TH.Value"
+          style="@style/TH.Caption"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:gravity="left"
           android:text="@string/buy_sell_ask_with_bracket"
-          android:textSize="@dimen/text_xsmall"
           android:singleLine="true"
           />
 

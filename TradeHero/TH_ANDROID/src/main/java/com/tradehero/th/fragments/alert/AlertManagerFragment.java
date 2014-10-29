@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +27,6 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -66,7 +64,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         userProfileCacheListener = createUserProfileCacheListener();
         alertCompactListListener = createAlertCompactDTOListListener();
-        alertListItemAdapter = new AlertListItemAdapter(getActivity(), R.layout.alert_list_item);
+        alertListItemAdapter = new AlertListItemAdapter(getActivity(), currentUserId, R.layout.alert_list_item);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

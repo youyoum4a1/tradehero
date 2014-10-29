@@ -15,7 +15,8 @@
       android:text="@string/na"
       />
 
-  <TextView android:id="@+id/leaderboard_marking_time"
+  <TextView
+      android:id="@+id/leaderboard_marking_time"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
@@ -31,7 +32,8 @@
       android:layout_gravity="center_horizontal"
       />
 
-  <TextView android:id="@+id/competition_rule_desc"
+  <TextView
+      android:id="@+id/competition_rule_desc"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"

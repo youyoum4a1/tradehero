@@ -77,7 +77,6 @@ public class SendMessageFragment extends DashboardFragment
     @InjectView(R.id.message_input_edittext) EditText inputText;
     @InjectView(R.id.message_spinner_lifetime) Spinner lifeTimeSpinner;
     @InjectView(R.id.message_spinner_target_user) Spinner targetUserSpinner;
-    @InjectView(R.id.message_type_wrapper) View messageTypeWrapperView;
     @InjectView(R.id.message_type) TextView messageTypeView;
 
     @Inject CurrentUserId currentUserId;
@@ -167,7 +166,7 @@ public class SendMessageFragment extends DashboardFragment
     {
         DeviceUtil.showKeyboardDelayed(inputText);
 
-        messageTypeWrapperView.setOnClickListener(this);
+        messageTypeView.setOnClickListener(this);
         changeHeroType(messageType);
     }
 
@@ -420,7 +419,7 @@ public class SendMessageFragment extends DashboardFragment
 
     @Override public void onClick(View v)
     {
-        if (v.getId() == R.id.message_type_wrapper)
+        if (v.getId() == R.id.message_type)
         {
             showHeroTypeDialog();
         }

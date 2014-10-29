@@ -28,6 +28,8 @@
       ptr:ptrScrollingWhileRefreshingEnabled="true"
       android:fadingEdge="none"
       android:scrollbars="none"
+      android:paddingBottom="@dimen/dashboard_tabhost_height"
+      android:clipToPadding="false"
       />
 
   <TextView
@@ -39,7 +41,9 @@
       android:gravity="center"
       android:layout_centerInParent="true"
       android:text="@string/message_fetch_error"
-      android:visibility="gone"/>
+      android:visibility="gone"
+      />
+
 </LinearLayout>
 
   <ProgressBar

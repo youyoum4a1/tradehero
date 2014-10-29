@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:contentDescription="@null"
     app:dominantMeasurement="width"
-    android:background="@drawable/basic_white_selector"
+    style="@style/TH.ListItem.Clickable"
     app:aspectRatioEnabled="false"
     >
 

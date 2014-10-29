@@ -9,29 +9,26 @@
     android:layout_centerHorizontal="true"
     android:layout_alignParentBottom="true"
     android:paddingTop="@dimen/common_margin_10"
-    android:paddingBottom="5dp"
     android:paddingLeft="@dimen/common_margin_10"
     android:paddingRight="@dimen/common_margin_10"
     android:background="@drawable/buy_sell_action_buttons_background"
-    android:layout_marginBottom="@dimen/dashboard_tabhost_height"
+    android:paddingBottom="@dimen/dashboard_tabhost_height"
     android:animateLayoutChanges="true"
     >
 
   <Button
       android:id="@+id/btn_buy"
-      style="@style/TH.Btn_Price_Bar"
+      style="@style/TH.Btn_Buy_Sell"
       android:layout_marginBottom="5dp"
       android:text="@string/buy"
-      android:background="@drawable/blue_rounded_button_selector"
       />
 
   <Button
       android:id="@+id/btn_sell"
-      style="@style/TH.Btn_Price_Bar"
+      style="@style/TH.Btn_Buy_Sell"
       android:layout_marginLeft="@dimen/common_margin_10"
       android:layout_marginBottom="5dp"
       android:text="@string/sell"
-      android:background="@drawable/blue_rounded_button_selector"
       android:visibility="gone"
       />
 

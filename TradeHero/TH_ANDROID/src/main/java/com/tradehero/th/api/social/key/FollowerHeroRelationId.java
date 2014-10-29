@@ -2,6 +2,8 @@ package com.tradehero.th.api.social.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FollowerHeroRelationId implements Comparable, DTOKey
 {
@@ -11,21 +13,21 @@ public class FollowerHeroRelationId implements Comparable, DTOKey
     @Deprecated // TODO To remove with followerName
     public final static String BUNDLE_KEY_FOLLOWER_NAME = FollowerHeroRelationId.class.getName() + ".followerName";
 
-    public final Integer heroId;
-    public final Integer followerId;
+    @NotNull public final Integer heroId;
+    @NotNull public final Integer followerId;
 
     @Deprecated // TODO This is ugly
     public final String followerName;
 
     //<editor-fold desc="Constructors">
-    public FollowerHeroRelationId(final Integer heroId, final Integer followerId)
+    public FollowerHeroRelationId(@NotNull final Integer heroId, @NotNull final Integer followerId)
     {
         this.heroId = heroId;
         this.followerId = followerId;
         this.followerName = null;
     }
 
-    public FollowerHeroRelationId(final Integer heroId, final Integer followerId, String followerName)
+    public FollowerHeroRelationId(@NotNull final Integer heroId, @NotNull final Integer followerId, String followerName)
     {
         this.heroId = heroId;
         this.followerId = followerId;
@@ -34,16 +36,16 @@ public class FollowerHeroRelationId implements Comparable, DTOKey
 
     public FollowerHeroRelationId(Bundle args)
     {
-        this.heroId = args.containsKey(BUNDLE_KEY_HERO_ID) ? args.getInt(BUNDLE_KEY_HERO_ID) : null;
-        this.followerId = args.containsKey(BUNDLE_KEY_FOLLOWER_ID) ? args.getInt(BUNDLE_KEY_FOLLOWER_ID) : null;
+        this.heroId = args.getInt(BUNDLE_KEY_HERO_ID);
+        this.followerId = args.getInt(BUNDLE_KEY_FOLLOWER_ID);
         this.followerName = args.containsKey(BUNDLE_KEY_FOLLOWER_NAME) ? args.getString(BUNDLE_KEY_FOLLOWER_NAME) : null;
     }
     //</editor-fold>
 
     @Override public int hashCode()
     {
-        return (heroId == null ? 0 : heroId.hashCode()) ^
-                (followerId == null ? 0 : followerId.hashCode());
+        return heroId.hashCode() ^
+                followerId.hashCode();
     }
 
     @Override public boolean equals(Object other)
@@ -54,11 +56,11 @@ public class FollowerHeroRelationId implements Comparable, DTOKey
     public boolean equals(FollowerHeroRelationId other)
     {
         return (other != null) &&
-                (heroId == null ? other.heroId == null : heroId.equals(other.heroId)) &&
-                (followerId == null ? other.followerId == null : followerId.equals(other.followerId));
+                heroId.equals(other.heroId) &&
+                followerId.equals(other.followerId);
     }
 
-    @Override public int compareTo(Object o)
+    @Override public int compareTo(@Nullable Object o)
     {
         if (o == null)
         {
@@ -72,7 +74,7 @@ public class FollowerHeroRelationId implements Comparable, DTOKey
         return o.getClass().getName().compareTo(FollowerHeroRelationId.class.getName());
     }
 
-    public int compareTo(FollowerHeroRelationId other)
+    public int compareTo(@Nullable FollowerHeroRelationId other)
     {
         if (this == other)
         {
@@ -92,11 +94,6 @@ public class FollowerHeroRelationId implements Comparable, DTOKey
         }
 
         return followerId.compareTo(other.followerId);
-    }
-
-    public boolean isValid()
-    {
-        return heroId != null && followerId != null;
     }
 
     public static boolean isValid(Bundle args)

@@ -35,24 +35,22 @@
           android:layout_marginBottom="8dp">
 
         <TextView
-            style="@style/TH.Title"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_previous_close"
-            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
         <TextView
             android:id="@+id/vprevious_close"
-            style="@style/TH.Value"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
-            android:text=""
-            android:textSize="@dimen/text_small" />
+            android:text=""/>
       </TableRow>
 
       <TableRow
@@ -61,24 +59,24 @@
           android:layout_marginBottom="8dp">
 
         <TextView
-            style="@style/TH.Title"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_open"
-            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
         <TextView
             android:id="@+id/vopen"
-            style="@style/TH.Value"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="@dimen/text_small" />
+            />
+
       </TableRow>
 
       <TableRow
@@ -87,24 +85,23 @@
           android:layout_marginBottom="8dp">
 
         <TextView
-            style="@style/TH.Title"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_days_high"
-            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
         <TextView
             android:id="@+id/vdays_high"
-            style="@style/TH.Value"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="@dimen/text_small" />
+            />
       </TableRow>
 
       <TableRow
@@ -113,24 +110,23 @@
           android:layout_marginBottom="8dp">
 
         <TextView
-            style="@style/TH.Title"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_days_low"
-            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
         <TextView
             android:id="@+id/vdays_low"
-            style="@style/TH.Value"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="@dimen/text_small" />
+            />
       </TableRow>
 
       <TableRow
@@ -139,24 +135,23 @@
           android:layout_marginBottom="8dp">
 
         <TextView
-            style="@style/TH.Title"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_market_cap"
-            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
         <TextView
             android:id="@+id/vmarket_cap"
-            style="@style/TH.Value"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="@dimen/text_small" />
+            />
       </TableRow>
     </TableLayout>
 
@@ -173,24 +168,23 @@
           android:layout_marginBottom="8dp">
 
         <TextView
-            style="@style/TH.Title"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_pe_ratio"
-            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
         <TextView
             android:id="@+id/vpe_ratio"
-            style="@style/TH.Value"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="@dimen/text_small" />
+            />
       </TableRow>
 
       <TableRow
@@ -199,24 +193,22 @@
           android:layout_marginBottom="8dp">
 
         <TextView
-            style="@style/TH.Title"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_eps"
-            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
         <TextView
             android:id="@+id/veps"
-            style="@style/TH.Value"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="@dimen/text_small"
             />
       </TableRow>
 
@@ -226,24 +218,22 @@
           android:layout_marginBottom="8dp">
 
         <TextView
-            style="@style/TH.Title"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_volume"
-            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
         <TextView
             android:id="@+id/vvolume"
-            style="@style/TH.Value"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
             android:text="@string/na"
-            android:textSize="@dimen/text_small"
             />
       </TableRow>
 
@@ -253,24 +243,22 @@
           android:layout_marginBottom="8dp">
 
         <TextView
-            style="@style/TH.Title"
+            style="@style/TH.InfoKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_avg_volume"
-            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
         <TextView
             android:id="@+id/vavg_volume"
-            style="@style/TH.Value"
+            style="@style/TH.InfoValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
             android:text="@string/na"
-            android:textSize="@dimen/text_small"
             />
       </TableRow>
 

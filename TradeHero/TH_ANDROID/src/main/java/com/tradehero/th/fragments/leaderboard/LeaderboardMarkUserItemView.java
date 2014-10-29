@@ -684,7 +684,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public static interface OnFollowRequestedListener
     {
-        void onFollowRequested(UserBaseDTO userBaseKey);
+        void onFollowRequested(@NotNull UserBaseDTO userBaseKey);
     }
 
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createLeaderboardUserRankingListener()

@@ -24,25 +24,10 @@
     <item name="android:textColor">@color/tradehero_blue</item>
   </style>
 
-  <style name="UserProfile.Contained.Value">
-    <item name="android:textSize">@dimen/text_xlarge</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
-  <style name="UserProfile.Contained.Header">
-    <item name="android:textSize">@dimen/text_xsmall</item>
-    <item name="android:drawablePadding">3dp</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
   <color name="user_profile_blue">@color/button_blue</color>
   <dimen name="user_profile_button_margin">6dp</dimen>
   <drawable name="user_profile_button_active">@drawable/action_button_active_2_0</drawable>
   <drawable name="user_profile_button_default">@drawable/action_button_available_2_0</drawable>
-
-  <style name="UserProfile.Button" parent="TH.BuySell_ViewPager_Button">
-
-  </style>
 
   <integer name="user_profile_photo_max_edge_pixel">480</integer>
   <integer name="user_profile_photo_compress_quality">75</integer>

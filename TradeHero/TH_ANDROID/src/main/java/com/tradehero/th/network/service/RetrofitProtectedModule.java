@@ -49,6 +49,11 @@ public class RetrofitProtectedModule
         return adapter.create(CompetitionServiceAsync.class);
     }
 
+    @Provides @Singleton CompetitionServiceRx provideCompetitionServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(CompetitionServiceRx.class);
+    }
+
     @Provides @Singleton CurrencyServiceAsync provideCurrencyServiceAsync(RestAdapter adapter)
     {
         return adapter.create(CurrencyServiceAsync.class);
@@ -64,9 +69,19 @@ public class RetrofitProtectedModule
         return adapter.create(FollowerServiceAsync.class);
     }
 
+    @Provides @Singleton FollowerServiceRx provideFollowerServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(FollowerServiceRx.class);
+    }
+
     @Provides @Singleton LeaderboardServiceAsync provideLeaderboardServiceAsync(RestAdapter adapter)
     {
         return adapter.create(LeaderboardServiceAsync.class);
+    }
+
+    @Provides @Singleton LeaderboardServiceRx provideLeaderboardServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(LeaderboardServiceRx.class);
     }
 
     @Provides @Singleton MarketServiceAsync provideMarketServiceAsync(RestAdapter adapter)
@@ -106,6 +121,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton ProviderServiceAsync provideProviderServiceAsync(RestAdapter adapter)
     {
         return adapter.create(ProviderServiceAsync.class);
+    }
+
+    @Provides @Singleton ProviderServiceRx provideProviderServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(ProviderServiceRx.class);
     }
 
     @Provides @Singleton QuoteServiceAsync provideQuoteServiceAsync(RestAdapter adapter)

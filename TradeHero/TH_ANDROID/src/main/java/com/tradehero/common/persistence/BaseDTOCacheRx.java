@@ -47,7 +47,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return cachedSubject;
     }
 
-    @Override public void onNext(DTOKeyType key, DTOType value)
+    @Override public void onNext(@NotNull DTOKeyType key, @NotNull DTOType value)
     {
         putValue(key, value);
         BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.get(key);
@@ -57,7 +57,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         }
     }
 
-    @Override public void onError(DTOKeyType key, Throwable error)
+    @Override public void onError(@NotNull DTOKeyType key, @NotNull Throwable error)
     {
         BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.remove(key);
         if (cachedSubject != null)

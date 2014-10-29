@@ -40,4 +40,9 @@
     android:key="show_xp_test_screen"
     android:title="show_xp_test_screen" />
 
+  <Preference
+    android:key="show_typography_examples"
+    android:title="show_typography_examples"
+    />
+
 </PreferenceScreen>

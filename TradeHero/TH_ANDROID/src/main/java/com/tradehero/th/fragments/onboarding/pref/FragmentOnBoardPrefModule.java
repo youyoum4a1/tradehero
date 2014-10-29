@@ -4,7 +4,6 @@ import dagger.Module;
 
 @Module(
         injects = {
-                CountrySpinnerAdapterNew.class
         },
         library = true,
         complete = false

@@ -5,11 +5,10 @@
 
   <ImageView
       android:id="@+id/stock_logo"
-      android:layout_width="0dp"
-      android:layout_weight="1"
-      android:layout_height="match_parent"
-      android:layout_margin="2dp"
+      android:layout_width="@dimen/big_avatar_w_h"
+      android:layout_height="@dimen/big_avatar_w_h"
       android:scaleType="fitCenter"
+      android:layout_centerVertical="true"
       android:contentDescription="@null"
       tools:src="@drawable/superman_facebook"
       />
@@ -20,15 +19,14 @@
       android:layout_width="0dp"
       android:layout_weight="2"
       android:layout_height="match_parent"
-      android:layout_marginLeft="4dp"
-      android:layout_marginTop="2dp"
-      android:layout_marginBottom="2dp"
+      android:layout_marginLeft="@dimen/margin_small"
       >
 
     <TextView
         android:id="@+id/stock_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/TH.UserNameTitle"
         android:textStyle="bold"
         android:maxLines="1"
         android:layout_alignParentTop="true"
@@ -41,7 +39,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:layout_centerInParent="true"
-        android:textSize="@dimen/text_xxsmall"
+        style="@style/TH.Body"
         tools:text="Vodaphone"
         />
 
@@ -56,6 +54,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
+          style="@style/TH.Caption"
           tools:text="@string/arrow_prefix_negative"
           />
 
@@ -64,16 +63,15 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:lines="1"
-          android:textSize="@dimen/text_xxsmall"
+          style="@style/TH.Caption"
           tools:text="US$ 0.08"
           />
 
       <ImageView
           android:id="@+id/ic_market_close"
-          android:layout_width="12dp"
-          android:layout_height="12dp"
+          android:layout_width="@dimen/text_caption"
+          android:layout_height="@dimen/text_caption"
           android:layout_marginLeft="4dp"
-          android:layout_marginTop="2dp"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
           android:src="@drawable/market_sleep_grey"
@@ -89,9 +87,8 @@
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
-      android:layout_marginLeft="4dp"
-      android:layout_marginTop="2dp"
-      android:layout_marginBottom="2dp"
+      android:layout_marginEnd="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
       >
 
     <TextView
@@ -100,6 +97,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:layout_alignParentTop="true"
+        style="@style/TH.UserROI"
         tools:text="5.8%"
         />
 
@@ -115,8 +113,7 @@
           android:layout_height="wrap_content"
           android:layout_marginRight="4dp"
           android:text="@string/leaderboard_p_n_l"
-          android:textSize="@dimen/text_xxsmall"
-          android:textColor="@color/text_gray_normal"
+          style="@style/TH.Caption"
           />
 
       <TextView
@@ -124,24 +121,23 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
-          android:textSize="@dimen/text_xxsmall"
+          style="@style/TH.Caption"
           tools:text="US$ 5.29k"
           />
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/btn_trade_history"
-        android:layout_width="@dimen/medium_logo_w_h"
-        android:layout_height="@dimen/medium_logo_w_h"
-        android:padding="16dp"
-        android:layout_centerInParent="true"
-        android:layout_alignParentRight="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/settings_forward_light"
-        android:contentDescription="@null"
-        />
-
   </RelativeLayout>
+
+  <ImageView
+      android:id="@+id/btn_trade_history"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:layout_alignParentRight="true"
+      android:scaleType="fitCenter"
+      android:src="@drawable/settings_forward_light"
+      android:contentDescription="@null"
+      />
 
 </merge>

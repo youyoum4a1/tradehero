@@ -1,11 +1,13 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOUtil;
@@ -23,31 +25,34 @@ import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPass
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.persistence.competition.CompetitionCache;
-import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCache;
+import com.tradehero.th.persistence.competition.CompetitionCacheRx;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
+import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".providerId";
-    public static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".competitionId";
+    private static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".competitionId";
 
-    @Inject ProviderCache providerCache;
-    @Inject CompetitionCache competitionCache;
+    @Inject ProviderCacheRx providerCache;
+    @Inject CompetitionCacheRx competitionCache;
     @Inject ProviderUtil providerUtil;
-    @Inject CompetitionLeaderboardCache competitionLeaderboardCache;
+    @Inject CompetitionLeaderboardCacheRx competitionLeaderboardCache;
     @Inject CompetitionDTOUtil competitionDTOUtil;
-
-    protected DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardCacheListener;
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
 
+    protected CompetitionId competitionId;
     protected CompetitionDTO competitionDTO;
+
     protected THIntentPassedListener webViewTHIntentPassedListener;
     protected WebViewFragment webViewFragment;
     protected CompetitionLeaderboardMarkUserListAdapter competitionAdapter;
@@ -83,13 +88,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     {
         super.onCreate(savedInstanceState);
         providerId = getProviderId(getArguments());
-        providerDTO = providerCache.get(providerId);
-        Timber.d("providerDTO %s", providerDTO);
-
-        CompetitionId competitionId = getCompetitionId(getArguments());
-        competitionDTO = competitionCache.get(competitionId);
-        Timber.d("competitionDTO %s", competitionDTO);
-        competitionLeaderboardCacheListener = createCompetitionLeaderboardListener();
+        competitionId = getCompetitionId(getArguments());
         this.webViewTHIntentPassedListener = new CompetitionLeaderboardListWebViewTHIntentPassedListener();
     }
 
@@ -120,22 +119,25 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         }
     }
 
-    @Override protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
+    @Override @NotNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
                 getActivity(), leaderboardDefKey.key, R.layout.lbmu_item_competition_mode);
     }
 
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        setupCompetitionAdapter();
-    }
-
     protected void setupCompetitionAdapter()
     {
-        competitionAdapter = createCompetitionLeaderboardMarkUserAdapter();
-        leaderboardMarkUserListView.setAdapter(competitionAdapter);
+        if (providerDTO != null)
+        {
+            competitionAdapter = createCompetitionLeaderboardMarkUserAdapter();
+            leaderboardMarkUserListView.setAdapter(competitionAdapter);
+        }
+
+        if (competitionAdapter != null && competitionLeaderboardDTO != null)
+        {
+            competitionAdapter.setCompetitionLeaderboardDTO(competitionLeaderboardDTO);
+            competitionAdapter.notifyDataSetChanged();
+        }
     }
 
     protected CompetitionLeaderboardMarkUserListAdapter createCompetitionLeaderboardMarkUserAdapter()
@@ -164,51 +166,115 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
             this.webViewFragment.setThIntentPassedListener(null);
         }
         this.webViewFragment = null;
-        fetchCompetitionLeaderboard();
+        fetchProvider();
+        fetchCompetition();
     }
 
     @Override public void onDestroy()
     {
         this.webViewTHIntentPassedListener = null;
-        competitionLeaderboardCacheListener = null;
         super.onDestroy();
     }
 
-    protected void detachCompetitionLeaderboardCache()
+    protected void fetchProvider()
     {
-        competitionLeaderboardCache.unregister(competitionLeaderboardCacheListener);
+        AndroidObservable.bindFragment(
+                this,
+                providerCache.get(providerId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createProviderObserver());
     }
 
-    protected void fetchCompetitionLeaderboard()
+    protected Observer<Pair<ProviderId, ProviderDTO>> createProviderObserver()
     {
-        detachCompetitionLeaderboardCache();
-        CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(providerId, competitionDTO.getCompetitionId());
-        competitionLeaderboardCache.register(key, competitionLeaderboardCacheListener);
-        competitionLeaderboardCache.getOrFetchAsync(key);
+        return new ProviderObserver();
     }
 
-    protected DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO> createCompetitionLeaderboardListener()
+    protected class ProviderObserver implements Observer<Pair<ProviderId, ProviderDTO>>
     {
-        return new CompetitionLeaderboardCacheListener();
-    }
-
-    protected class CompetitionLeaderboardCacheListener implements DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO>
-    {
-        @Override public void onDTOReceived(@NotNull CompetitionLeaderboardId key, @NotNull final CompetitionLeaderboardDTO value)
+        @Override public void onNext(Pair<ProviderId, ProviderDTO> pair)
         {
-            competitionLeaderboardDTO = value;
-            competitionAdapter.setCompetitionLeaderboardDTO(value);
-            competitionAdapter.notifyDataSetChanged();
+            providerDTO = pair.second;
+            setupCompetitionAdapter();
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(R.string.error_fetch_provider_info);
+        }
+    }
+
+    protected void fetchCompetition()
+    {
+        AndroidObservable.bindFragment(
+                this,
+                competitionCache.get(competitionId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(pair -> fetchCompetitionLeaderboard(pair.second))
+                .subscribe(createCompetitionObserver());
+    }
+
+    protected Observer<Pair<CompetitionId, CompetitionDTO>> createCompetitionObserver()
+    {
+        return new CompetitionObserver();
+    }
+
+    protected class CompetitionObserver implements Observer<Pair<CompetitionId, CompetitionDTO>>
+    {
+        @Override public void onNext(Pair<CompetitionId, CompetitionDTO> pair)
+        {
+            competitionDTO = pair.second;
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(R.string.error_fetch_provider_competition);
+        }
+    }
+
+    protected void fetchCompetitionLeaderboard(@NotNull CompetitionDTO competitionDTO)
+    {
+        CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(providerId, competitionDTO.getCompetitionId());
+        AndroidObservable.bindFragment(
+                this,
+                competitionLeaderboardCache.get(key))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createCompetitionLeaderboardObserver());
+    }
+
+    protected Observer<Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>> createCompetitionLeaderboardObserver()
+    {
+        return new CompetitionLeaderboardObserver();
+    }
+
+    protected class CompetitionLeaderboardObserver implements Observer<Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>>
+    {
+        @Override public void onNext(Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> pair)
+        {
+            competitionLeaderboardDTO = pair.second;
+            setupCompetitionAdapter();
             updateCurrentRankHeaderView();
         }
 
-        @Override public void onErrorThrown(@NotNull CompetitionLeaderboardId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             Timber.d("ProviderPrizeAdsCallBack failure!");
         }
     }
 
-    @Override protected int getCurrentRankLayoutResId()
+    @Override @LayoutRes protected int getCurrentRankLayoutResId()
     {
         return R.layout.lbmu_item_own_ranking_competition_mode;
     }

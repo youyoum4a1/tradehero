@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@null">
 
   <TextView
@@ -13,8 +12,9 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
-      android:textStyle="bold"
-      android:textSize="@dimen/text_medium"
+      style="@style/TH.Button.Accented"
+      android:background="@drawable/basic_transparent_selector"
+      android:minHeight="@dimen/clickable_element_min_dimen"
       android:text="@string/stock_alert_manage_subscriptions"
       />
 

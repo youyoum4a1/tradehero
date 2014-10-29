@@ -8,14 +8,12 @@
 
   <ImageView
       android:id="@+id/img_action_icon"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
       android:contentDescription="@null"
       android:src="@drawable/expand"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
-      android:paddingRight="15dp"
-      android:paddingLeft="15dp"
       />
 
   <ImageView
@@ -26,8 +24,6 @@
       tools:src="@drawable/icn_portfolio_pressed"
       android:layout_alignParentLeft="true"
       android:layout_centerVertical="true"
-      android:paddingRight="2dp"
-      android:paddingLeft="2dp"
       />
 
   <LinearLayout
@@ -41,11 +37,11 @@
       android:layout_toLeftOf="@id/img_action_icon">
 
     <TextView
-        android:textStyle="bold"
         android:id="@+id/tv_action_name"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:text="provider name"/>
+        style="@style/TH.Subhead"
+        tools:text="provider name"/>
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -56,15 +52,17 @@
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
           android:layout_alignParentLeft="true"
-          android:text="date"/>
+          style="@style/TH.Caption"
+          tools:text="date"/>
 
       <TextView
           android:id="@+id/tv_action_rank"
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
           android:layout_alignParentRight="true"
+          style="@style/TH.Caption"
           android:visibility="gone"
-          android:text="Rank 44"/>
+          tools:text="Rank 44"/>
 
     </RelativeLayout>
 
@@ -76,16 +74,18 @@
           android:id="@+id/tv_action_money"
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
+          style="@style/TH.Body"
           android:textStyle="bold"
-          android:text="money"/>
+          tools:text="money"/>
 
       <TextView
           android:layout_toRightOf="@id/tv_action_money"
           android:id="@+id/tv_action_duration_type"
           android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
+          android:layout_marginLeft="@dimen/margin_small"
           android:layout_width="wrap_content"
-          android:text="weekly"/>
+          style="@style/TH.Body"
+          tools:text="weekly"/>
 
       <TextView
           android:id="@+id/tv_action_roi"
@@ -93,7 +93,8 @@
           android:layout_width="wrap_content"
           android:layout_alignParentRight="true"
           android:visibility="gone"
-          android:text="ROI+88%"/>
+          style="@style/TH.UserROI"
+          tools:text="ROI+88%"/>
 
     </RelativeLayout>
 

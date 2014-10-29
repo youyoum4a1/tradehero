@@ -1,91 +1,106 @@
 package com.tradehero.th.fragments.social.follower;
 
-import android.view.View;
-import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.content.Context;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
+import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
+import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.rx.view.list.ItemClickDTO;
+import com.tradehero.th.rx.view.list.ListViewObservable;
 import com.tradehero.th.utils.SecurityUtils;
+import org.jetbrains.annotations.NotNull;
+import rx.Observable;
 
 public class FollowerManagerViewContainer
 {
-    public final TextView totalRevenue;
-    public final TextView totalAmountPaid;
-    public final TextView followersCount;
-    public final ListView followerList;
-    public final PullToRefreshListView pullToRefreshListView;
-    public final ProgressBar progressBar;
+    public static final int INDEX_VIEW_PROGRESS = 0;
+    public static final int INDEX_VIEW_LIST = 1;
 
-    public FollowerManagerViewContainer(View view)
+    @InjectView(R.id.manage_followers_total_revenue) TextView totalRevenue;
+    @InjectView(R.id.manage_followers_total_amount_paid) TextView totalAmountPaid;
+    @InjectView(R.id.manage_followers_number_followers) TextView followersCount;
+    @InjectView(android.R.id.content) ViewSwitcher contentSwitcher;
+    @InjectView(R.id.follower_list) PullToRefreshListView pullToRefreshListView;
+
+    private FollowerSummaryDTO followerSummaryDTO;
+    private UserFollowerDTOSetAdapter adapter;
+
+    public FollowerManagerViewContainer(@NotNull Context context)
     {
         super();
-
-        totalRevenue = (TextView) view.findViewById(R.id.manage_followers_total_revenue);
-        totalAmountPaid = (TextView) view.findViewById(R.id.manage_followers_total_amount_paid);
-        followersCount = (TextView) view.findViewById(R.id.manage_followers_number_followers);
-        //followerList = (FollowerListView) view.findViewById(R.id.followers_list);
-        pullToRefreshListView = (PullToRefreshListView) view.findViewById(R.id.followers_list);
-        followerList = pullToRefreshListView.getRefreshableView();
-        progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
+        adapter = new UserFollowerDTOSetAdapter(context);
     }
 
-    public void displayTotalRevenue(FollowerSummaryDTO followerSummaryDTO)
+    public void display(@NotNull FollowerSummaryDTO followerSummaryDTO)
     {
-        if (totalRevenue != null)
-        {
-            if (followerSummaryDTO != null)
-            {
-                totalRevenue.setText(String.format("%s %,.2f",
-                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
-                        followerSummaryDTO.totalRevenue));
-            }
-            else
-            {
-                totalRevenue.setText(R.string.na);
-            }
-        }
+        this.followerSummaryDTO = followerSummaryDTO;
+
+        adapter.clear();
+        adapter.appendTail(followerSummaryDTO.userFollowers);
+        adapter.notifyDataSetChanged();
+        displayChild(INDEX_VIEW_LIST);
+
+        display();
     }
 
-    public void displayTotalAmountPaid(FollowerSummaryDTO followerSummaryDTO)
+    public void display()
     {
-        if (totalAmountPaid != null)
+        if (followerSummaryDTO != null)
         {
-            if (followerSummaryDTO != null && followerSummaryDTO.payoutSummary != null)
+            if (totalRevenue != null)
             {
-                totalAmountPaid.setText(String.format("%s %,.2f",
-                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
-                        followerSummaryDTO.payoutSummary.totalPayout));
+                totalRevenue.setText(
+                        THSignedMoney.builder(followerSummaryDTO.totalRevenue)
+                                .currency(SecurityUtils.getDefaultCurrency())
+                                .build()
+                                .toString());
             }
-            else if (followerSummaryDTO != null)
-            {
-                totalAmountPaid.setText("0");
-            }
-            else
-            {
-                totalAmountPaid.setText(R.string.na);
-            }
-        }
-    }
 
-    public void displayFollowersCount(FollowerSummaryDTO followerSummaryDTO)
-    {
-        if (followersCount != null)
-        {
-            if (followerSummaryDTO != null && followerSummaryDTO.userFollowers != null)
+            if (totalAmountPaid != null)
+            {
+                totalAmountPaid.setText(
+                        THSignedMoney.builder(followerSummaryDTO.payoutSummary.totalPayout)
+                                .currency(SecurityUtils.getDefaultCurrency())
+                                .build()
+                                .toString());
+            }
+
+            if (followersCount != null)
             {
                 followersCount.setText(
-                        String.format("%d", followerSummaryDTO.userFollowers.size()));
+                        THSignedNumber.builder(followerSummaryDTO.getPaidFollowerCount())
+                                .build()
+                                .toString());
             }
-            else if (followerSummaryDTO != null)
+
+            if (pullToRefreshListView != null)
             {
-                followersCount.setText("0");
-            }
-            else
-            {
-                followersCount.setText(R.string.na);
+                pullToRefreshListView.setAdapter(adapter);
             }
         }
+    }
+
+    public void displayChild(int index)
+    {
+        if (contentSwitcher != null)
+        {
+            contentSwitcher.setDisplayedChild(index);
+        }
+    }
+
+    public Observable<ItemClickDTO> getOnItemClickObservable()
+    {
+        return ListViewObservable.itemClicks(pullToRefreshListView);
+    }
+
+    public Observable<UserFollowerDTO> getClickedUserFollower()
+    {
+        return getOnItemClickObservable()
+                .map(itemClick -> (UserFollowerDTO) itemClick.getItem());
     }
 }

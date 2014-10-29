@@ -18,14 +18,14 @@ public class CompetitionDTOUtil
     }
     //</editor-fold>
 
-    public CompetitionLeaderboardId getCompetitionLeaderboardId(
+    @NotNull public CompetitionLeaderboardId getCompetitionLeaderboardId(
             @NotNull ProviderId providerId,
             @NotNull CompetitionId competitionId)
     {
         return new CompetitionLeaderboardId(providerId.key, competitionId.key);
     }
 
-    public CompetitionLeaderboardId getCompetitionLeaderboardId(
+    @NotNull public CompetitionLeaderboardId getCompetitionLeaderboardId(
             @NotNull ProviderId providerId,
             @NotNull CompetitionId competitionId,
             @Nullable Integer page)
@@ -33,7 +33,7 @@ public class CompetitionDTOUtil
         return new CompetitionLeaderboardId(providerId.key, competitionId.key, page);
     }
 
-    public CompetitionLeaderboardId getCompetitionLeaderboardId(
+    @NotNull public CompetitionLeaderboardId getCompetitionLeaderboardId(
             @NotNull ProviderId providerId,
             @NotNull CompetitionId competitionId,
             @Nullable Integer page, @Nullable

@@ -18,6 +18,7 @@ import com.tradehero.th.api.share.SocialShareFormDTOFactory;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationFactory;
+import java.util.Comparator;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,7 @@ public class ShareDialogLayout extends LinearLayout
 
     @Inject ShareDestinationFactory shareDestinationFactory;
     @Inject SocialShareFormDTOFactory socialShareFormDTOFactory;
+    @Inject @NotNull Comparator<ShareDestination> shareDestinationIndexResComparator;
 
     @Nullable protected OnShareMenuClickedListener menuClickedListener;
     @Nullable protected AbstractDiscussionCompactDTO discussionToShare;
@@ -64,7 +66,10 @@ public class ShareDialogLayout extends LinearLayout
 
     protected void fillData()
     {
-        listViewSharingOptions.setAdapter(new ShareDestinationSetAdapter(getContext(), shareDestinationFactory.getAllShareDestinations()));
+        listViewSharingOptions.setAdapter(new ShareDestinationSetAdapter(
+                getContext(),
+                shareDestinationIndexResComparator,
+                shareDestinationFactory.getAllShareDestinations()));
         listViewSharingOptions.setDividerHeight(1);
     }
 

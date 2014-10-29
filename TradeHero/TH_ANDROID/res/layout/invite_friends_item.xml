@@ -1,41 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:background="#a88"
-        android:minHeight="70dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:background="#a88"
+    android:gravity="center_vertical"
+    style="@style/TH.ListItem.Clickable"
+    android:minHeight="@dimen/list_item_min_height"
+    >
 
-        >
+  <ImageView
+      android:id="@+id/social_item_logo"
+      android:layout_width="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_logo_w_h"
+      tools:src="@drawable/superman_facebook"
+      />
 
-    <ImageView
-            android:id="@+id/social_item_logo"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            tools:src="@drawable/superman_facebook"
-            />
+  <TextView
+      android:id="@+id/social_item_title"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"
+      tools:text="Invite from Facebook"
+      android:layout_marginLeft="10dp"
+      style="@style/TH.Subhead.Inverse"
+      android:singleLine="true"
 
-    <TextView
-            android:id="@+id/social_item_title"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            tools:text="Invite from Facebook"
-            android:layout_marginLeft="10dp"
-            android:textColor="@color/white"
-            android:singleLine="true"
+      />
 
-            />
-
-    <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/white_arrow"
-            />
+  <ImageView
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
+      android:src="@drawable/white_arrow"
+      />
 </LinearLayout>

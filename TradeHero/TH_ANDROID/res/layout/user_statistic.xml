@@ -39,7 +39,7 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_positions"
           android:gravity="center"
-          android:textSize="@dimen/leaderboard_numerical_label_text_size"
+          style="@style/TH.Body"
           />
     </LinearLayout>
     <LinearLayout
@@ -66,7 +66,7 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_monthly_trade_count"
           android:gravity="center"
-          android:textSize="@dimen/leaderboard_numerical_label_text_size"
+          style="@style/TH.Body"
           />
     </LinearLayout>
     <LinearLayout
@@ -93,7 +93,7 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_avg_days_held"
           android:gravity="center"
-          android:textSize="@dimen/leaderboard_numerical_label_text_size"
+          style="@style/TH.Body"
           />
     </LinearLayout>
   </com.tradehero.th.fragments.timeline.UserStatisticView>

@@ -10,65 +10,64 @@ import javax.inject.Singleton;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class FollowerServiceWrapper
 {
     @NotNull private final FollowerService followerService;
     @NotNull private final FollowerServiceAsync followerServiceAsync;
+    @NotNull private final FollowerServiceRx followerServiceRx;
 
+    //<editor-fold desc="Constructors">
     @Inject public FollowerServiceWrapper(
             @NotNull FollowerService followerService,
-            @NotNull FollowerServiceAsync followerServiceAsync)
+            @NotNull FollowerServiceAsync followerServiceAsync,
+            @NotNull FollowerServiceRx followerServiceRx)
     {
         super();
         this.followerService = followerService;
         this.followerServiceAsync = followerServiceAsync;
+        this.followerServiceRx = followerServiceRx;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Get All Followers Summary">
-    public FollowerSummaryDTO getAllFollowersSummary(UserBaseKey heroId)
+    @NotNull public FollowerSummaryDTO getAllFollowersSummary(@NotNull UserBaseKey heroId)
     {
         return followerService.getAllFollowersSummary(heroId.key);
     }
 
-    public MiddleCallback<FollowerSummaryDTO> getAllFollowersSummary(UserBaseKey heroId, Callback<FollowerSummaryDTO> callback)
+    @NotNull public MiddleCallback<FollowerSummaryDTO> getAllFollowersSummary(@NotNull UserBaseKey heroId, @Nullable Callback<FollowerSummaryDTO> callback)
     {
         MiddleCallback<FollowerSummaryDTO> middleCallback = new BaseMiddleCallback<>(callback);
         followerServiceAsync.getAllFollowersSummary(heroId.key, middleCallback);
         return middleCallback;
     }
+
+    @NotNull public Observable<FollowerSummaryDTO> getAllFollowersSummaryRx(@NotNull UserBaseKey heroId)
+    {
+        return followerServiceRx.getAllFollowersSummary(heroId.key);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Get Follower Subscription Detail">
-    public UserFollowerDTO getFollowerSubscriptionDetail(FollowerHeroRelationId followerHeroRelationId)
+    @NotNull public UserFollowerDTO getFollowerSubscriptionDetail(@NotNull FollowerHeroRelationId followerHeroRelationId)
     {
-        basicCheck(followerHeroRelationId);
         return this.followerService.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId);
     }
 
-    public MiddleCallback<UserFollowerDTO> getFollowerSubscriptionDetail(FollowerHeroRelationId followerHeroRelationId, Callback<UserFollowerDTO> callback)
+    @NotNull public MiddleCallback<UserFollowerDTO> getFollowerSubscriptionDetail(@NotNull FollowerHeroRelationId followerHeroRelationId, @Nullable Callback<UserFollowerDTO> callback)
     {
-        basicCheck(followerHeroRelationId);
         MiddleCallback<UserFollowerDTO> middleCallback = new BaseMiddleCallback<>(callback);
         this.followerServiceAsync.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId, middleCallback);
         return middleCallback;
     }
-    //</editor-fold>
 
-    private void basicCheck(FollowerHeroRelationId followerHeroRelationId)
+    @NotNull public Observable<UserFollowerDTO> getFollowerSubscriptionDetailRx(@NotNull FollowerHeroRelationId followerHeroRelationId)
     {
-        if (followerHeroRelationId == null)
-        {
-            throw new NullPointerException("followerId cannot be null");
-        }
-        if (followerHeroRelationId.followerId == null)
-        {
-            throw new NullPointerException("followerId.followerId cannot be null");
-        }
-        if (followerHeroRelationId.heroId == null)
-        {
-            throw new NullPointerException("followerId.heroId cannot be null");
-        }
+        return this.followerServiceRx.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId);
     }
+    //</editor-fold>
 }

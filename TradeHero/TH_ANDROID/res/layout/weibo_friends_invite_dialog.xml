@@ -54,7 +54,7 @@
         android:layout_weight="1"
         android:text="@string/authentication_cancel"
         android:background="@drawable/security_dialog_btn_cancel"
-        android:textSize="@dimen/text_xlarge"
+        android:textSize="@dimen/text_title"
         android:textColor="@color/trending_gray_border"
         />
 
@@ -65,7 +65,7 @@
         android:layout_weight="1"
         android:text="@string/authentication_confirm"
         android:background="@drawable/security_dialog_btn_confirm"
-        android:textSize="@dimen/text_xlarge"
+        android:textSize="@dimen/text_title"
         android:textColor="@color/white"
         android:layout_marginLeft="1dp"
         />

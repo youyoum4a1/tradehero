@@ -7,8 +7,9 @@
       android:id="@+id/position_partial_top"
       android:orientation="horizontal"
       android:layout_width="match_parent"
-      android:layout_height="60dp"
-      android:paddingRight="@dimen/position_padding_right"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      style="@style/TH.ListItem"
       >
 
     <include layout="@layout/position_partial_top_view_inner"/>

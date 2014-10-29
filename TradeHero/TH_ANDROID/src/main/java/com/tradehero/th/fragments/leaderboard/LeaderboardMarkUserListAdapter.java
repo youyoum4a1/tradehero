@@ -84,13 +84,7 @@ public class LeaderboardMarkUserListAdapter extends
 
     protected LeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
     {
-        return new LeaderboardMarkUserItemView.OnFollowRequestedListener()
-        {
-            @Override public void onFollowRequested(@NotNull UserBaseDTO userBaseDTO)
-            {
-                notifyFollowRequested(userBaseDTO);
-            }
-        };
+        return this::notifyFollowRequested;
     }
 
     protected void notifyFollowRequested(@NotNull UserBaseDTO userBaseDTO)
