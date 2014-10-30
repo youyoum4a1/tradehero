@@ -105,7 +105,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
         this.heroListAdapter = new HeroListItemAdapter(
                 getActivity(),
-                getActivity().getLayoutInflater(),
                 /**R.layout.hero_list_item_empty_placeholder*/getEmptyViewLayout(),
                 R.layout.hero_list_item,
                 R.layout.hero_list_header,

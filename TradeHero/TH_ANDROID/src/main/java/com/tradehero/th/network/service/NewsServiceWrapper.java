@@ -1,7 +1,10 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.news.CountryLanguagePairDTO;
+import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
 import com.tradehero.th.api.news.key.NewsItemListInterestKey;
@@ -10,28 +13,34 @@ import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
 import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
 import com.tradehero.th.api.news.key.NewsItemListSocialKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.news.CountryLanguagePairDTO;
-import com.tradehero.th.api.news.NewsItemCategoryDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.models.discussion.NewsDTOProcessor;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class NewsServiceWrapper
 {
     @NotNull private final NewsService newsService;
     @NotNull private final NewsServiceAsync newsServiceAsync;
+    @NotNull private final NewsServiceRx newsServiceRx;
+    @NotNull private final Provider<NewsDTOProcessor> newsDTOProcessorProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public NewsServiceWrapper(
             @NotNull NewsService newsService,
-            @NotNull NewsServiceAsync newsServiceAsync)
+            @NotNull NewsServiceAsync newsServiceAsync,
+            @NotNull NewsServiceRx newsServiceRx,
+            @NotNull Provider<NewsDTOProcessor> newsDTOProcessorProvider)
     {
         this.newsService = newsService;
         this.newsServiceAsync = newsServiceAsync;
+        this.newsServiceRx = newsServiceRx;
+        this.newsDTOProcessorProvider = newsDTOProcessorProvider;
     }
     //</editor-fold>
 
@@ -45,6 +54,11 @@ import retrofit.Callback;
         MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         newsServiceAsync.getCountryLanguagePairs(middleCallback);
         return middleCallback;
+    }
+
+    public Observable<PaginatedDTO<CountryLanguagePairDTO>> getCountryLanguagePairsRx()
+    {
+        return newsServiceRx.getCountryLanguagePairsRx();
     }
 
     public PaginatedDTO<NewsItemCategoryDTO> getNewsCategories()
@@ -95,6 +109,72 @@ import retrofit.Callback;
     private PaginatedDTO<NewsItemCompactDTO> getFeaturedNews(NewsItemListFeaturedKey key)
     {
         return newsService.getFeaturedNewsList(key.page, key.perPage);
+    }
+
+    public Observable<PaginatedDTO<NewsItemCompactDTO>> getNewsRx(NewsItemListKey key)
+    {
+        Observable<PaginatedDTO<NewsItemCompactDTO>> paginatedNewsItemCompactDTO;
+        if (key instanceof NewsItemListGlobalKey)
+        {
+            paginatedNewsItemCompactDTO = getGlobalNewsRx((NewsItemListGlobalKey) key);
+        }
+        else if (key instanceof NewsItemListRegionalKey)
+        {
+            paginatedNewsItemCompactDTO = getRegionalNewsRx((NewsItemListRegionalKey) key);
+        }
+        else if (key instanceof NewsItemListSocialKey)
+        {
+            paginatedNewsItemCompactDTO = getSocialNewsRx((NewsItemListSocialKey) key);
+        }
+        else if (key instanceof NewsItemListInterestKey)
+        {
+            paginatedNewsItemCompactDTO = getOfInterestRx((NewsItemListInterestKey) key);
+        }
+        else if (key instanceof NewsItemListSecurityKey)
+        {
+            paginatedNewsItemCompactDTO = getSecurityNewsRx((NewsItemListSecurityKey) key);
+        }
+        else if (key instanceof NewsItemListFeaturedKey)
+        {
+            paginatedNewsItemCompactDTO = getFeaturedNewsRx((NewsItemListFeaturedKey) key);
+        }
+        else
+        {
+            throw new IllegalStateException("Unhandled type " + key.getClass());
+        }
+
+        return paginatedNewsItemCompactDTO
+                .doOnNext(newsDTOProcessorProvider.get());
+    }
+
+    private Observable<PaginatedDTO<NewsItemCompactDTO>> getFeaturedNewsRx(NewsItemListFeaturedKey key)
+    {
+        return newsServiceRx.getFeaturedNewsListRx(key.page, key.perPage);
+    }
+
+    private Observable<PaginatedDTO<NewsItemCompactDTO>> getSecurityNewsRx(NewsItemListSecurityKey key)
+    {
+        return newsServiceRx.getSecuritiesNewsListRx(key.securityIntegerId.key, key.page, key.perPage);
+    }
+
+    private Observable<PaginatedDTO<NewsItemCompactDTO>> getOfInterestRx(NewsItemListInterestKey key)
+    {
+        return newsServiceRx.getOfInterestRx(key.page, key.perPage);
+    }
+
+    private Observable<PaginatedDTO<NewsItemCompactDTO>> getSocialNewsRx(NewsItemListSocialKey key)
+    {
+        return newsServiceRx.getSocialRx(key.categoryId, key.page, key.perPage);
+    }
+
+    private Observable<PaginatedDTO<NewsItemCompactDTO>> getRegionalNewsRx(NewsItemListRegionalKey key)
+    {
+        return newsServiceRx.getRegionalRx(key.countryCode, key.languageCode, key.page, key.perPage);
+    }
+
+    private Observable<PaginatedDTO<NewsItemCompactDTO>> getGlobalNewsRx(NewsItemListGlobalKey key)
+    {
+        return newsServiceRx.getGlobalRx(key.page, key.perPage);
     }
 
     public MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> getNews(

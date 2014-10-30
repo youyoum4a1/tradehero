@@ -9,14 +9,15 @@ import android.widget.TextView;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.DTOAdapterNew;
+import com.tradehero.th.adapters.GenericArrayAdapter;
+import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public class CountryAdapter extends DTOAdapterNew<CountryLanguagePairDTO>
+public class CountryAdapter extends GenericArrayAdapter<CountryLanguagePairDTO>
         implements Filterable
 {
     private final Object lock = new Object();
@@ -38,16 +39,26 @@ public class CountryAdapter extends DTOAdapterNew<CountryLanguagePairDTO>
         return mFilter;
     }
 
-    @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
+    @Override public CountryLanguagePairDTO getItem(int i)
     {
-        return super.getView(position, convertView, parent);
+        return (CountryLanguagePairDTO) super.getItem(i);
+    }
+
+    @Override public View getDropDownView(int position, View convertView, ViewGroup viewGroup)
+    {
+        convertView = conditionalInflate(position, convertView, viewGroup);
+
+        @SuppressWarnings("unchecked")
+        DTOView<CountryLanguagePairDTO> dtoView = (DTOView<CountryLanguagePairDTO>) convertView;
+        dtoView.display(getItem(position));
+        return convertView;
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(R.layout.selected_country_item, parent, false);
+            convertView = getInflater().inflate(R.layout.selected_country_item, parent, false);
         }
         TextView selectedView = (TextView) convertView;
         CountryLanguagePairDTO countryLanguagePairDTO = getItem(position);
@@ -100,11 +111,9 @@ public class CountryAdapter extends DTOAdapterNew<CountryLanguagePairDTO>
             {
                 synchronized (lock)
                 {
-                    clear();
                     //noinspection unchecked
-                    addAll((Collection<CountryLanguagePairDTO>) results.values);
+                    setItems((List<CountryLanguagePairDTO>) results.values);
                 }
-                notifyDataSetChanged();
             }
             else
             {

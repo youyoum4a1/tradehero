@@ -1,124 +1,101 @@
 package com.tradehero.th.fragments.discovery;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-
-import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
+import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.user.UserProfileCache;
-
-import org.jetbrains.annotations.NotNull;
-
+import com.tradehero.th.network.service.UserServiceWrapper;
 import java.util.Locale;
-
 import javax.inject.Inject;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 {
     public static final String REGION_CHANGED = RegionalNewsHeadlineFragment.class + ".regionChanged";
 
     @Inject Locale locale;
+    @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
+
     private BroadcastReceiver regionChangeBroadcastReceiver;
 
-    public RegionalNewsHeadlineFragment()
+    @Override protected Observable<NewsItemListKey> createNewsItemListKeyObservable()
     {
-        super();
+        return super.createNewsItemListKeyObservable()
+                .mergeWith(createNewsItemListRegionalKeyObservable());
     }
 
-    @Override public void onAttach(Activity activity)
+    private Observable<NewsItemListKey> createNewsItemListRegionalKeyObservable()
     {
-        super.onAttach(activity);
+        // observable of the UI event which user change the region
+        Observable<NewsItemListKey> regionalKeyManuallyChangedObservable = Observable.create(new Observable.OnSubscribe<NewsItemListKey>()
+        {
+            @Override public void call(Subscriber<? super NewsItemListKey> subscriber)
+            {
+                if (regionChangeBroadcastReceiver == null)
+                {
+                    regionChangeBroadcastReceiver = new RegionalKeyBroadcastReceiver(subscriber);
+                    LocalBroadcastManager.getInstance(getActivity())
+                            .registerReceiver(regionChangeBroadcastReceiver, new IntentFilter(REGION_CHANGED));
+                }
+            }
+        });
+
+        // observable of whenever userProfileDTO is available
+        Observable<NewsItemListRegionalKey> regionalKeyByUserProfileLanguageObservable = userServiceWrapper.getUserRx(currentUserId.toUserBaseKey())
+                .map(userProfileDTO -> userProfileDTO.countryCode)
+                .map(this::createNewsItemListRegionalKeyFromCountryCode);
+
+        return Observable.concat(regionalKeyByUserProfileLanguageObservable, regionalKeyManuallyChangedObservable)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(this::activateNewsListView); // whenever the key is changed by above 2 factors, need to reload the whole list
+    }
+
+    private NewsItemListRegionalKey createNewsItemListRegionalKeyFromCountryCode(String countryCode)
+    {
+        return new NewsItemListRegionalKey(countryCode, locale.getLanguage(), null, null);
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
 
         newsItemListKey = new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
-        userProfileListener = new FetchUserProfileListener();
-        regionChangeBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                String countryCode = intent.getStringExtra(CountryLanguagePairDTO.BUNDLE_KEY_COUNTRY_CODE);
-                String languageCode = intent.getStringExtra(CountryLanguagePairDTO.BUNDLE_KEY_LANGUAGE_CODE);
-                fetchNewsForRegion(countryCode, languageCode);
-            }
-        };
     }
 
-    private void fetchNewsForRegion(String countryCode, String languageCode)
-    {
-        newsItemListKey = new NewsItemListRegionalKey(countryCode, languageCode, null, null);
-        super.refreshNews();
-    }
-
-    @Override public void onDestroyView()
-    {
-        detachFetchUserProfileTask();
-        super.onDestroyView();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        LocalBroadcastManager.getInstance(getActivity())
-                .registerReceiver(regionChangeBroadcastReceiver, new IntentFilter(REGION_CHANGED));
-    }
-
-    @Override public void onPause()
+    @Override public void onDestroy()
     {
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(regionChangeBroadcastReceiver);
-        super.onPause();
+        super.onDestroy();
     }
 
-    @Override protected void refreshNews()
+    private class RegionalKeyBroadcastReceiver extends BroadcastReceiver
     {
-        detachFetchUserProfileTask();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
-    }
+        private final Subscriber<? super NewsItemListKey> subscriber;
 
-    private void detachFetchUserProfileTask()
-    {
-        if (userProfileListener != null)
+        public RegionalKeyBroadcastReceiver(
+                Subscriber<? super NewsItemListKey> subscriber)
         {
-            userProfileCache.unregister(userProfileListener);
-        }
-    }
-
-    private class FetchUserProfileListener implements DTOCacheNew.HurriedListener<UserBaseKey, UserProfileDTO>
-    {
-        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
-        {
-            onDTOReceived(key, value);
+            this.subscriber = subscriber;
         }
 
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onReceive(Context context, Intent intent)
         {
-            linkWith(value, true);
-        }
+            String countryCode = intent.getStringExtra(CountryLanguagePairDTO.BUNDLE_KEY_COUNTRY_CODE);
+            String languageCode = intent.getStringExtra(CountryLanguagePairDTO.BUNDLE_KEY_LANGUAGE_CODE);
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-            THToast.show(new THException(error));
-        }
-    }
-
-    private void linkWith(UserProfileDTO userProfileDTO, boolean display)
-    {
-        if (display)
-        {
-            fetchNewsForRegion(userProfileDTO.countryCode, locale.getLanguage());
+            subscriber.onNext(new NewsItemListRegionalKey(countryCode, languageCode, null, null));
         }
     }
 }

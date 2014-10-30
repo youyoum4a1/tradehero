@@ -14,14 +14,10 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
-import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 
 public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemDTOKey>
 {
-    @Inject NewsItemCompactCacheNew newsItemCompactCache;
-
     @Nullable private SecurityId securityId;
     private int backgroundResourceId = -1;
 
@@ -40,7 +36,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     @Override public void display(NewsItemDTOKey discussionKey)
     {
         super.display(discussionKey);
-        linkWith(newsItemCompactCache.get(discussionKey), true);
+        linkWith(discussionCache.get(discussionKey), true);
         viewHolder.discussionActionButtonsView.setCommentCountVisible(View.GONE);
     }
 

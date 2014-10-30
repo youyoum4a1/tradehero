@@ -4,7 +4,7 @@ import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
 import org.jetbrains.annotations.NotNull;
 
-public class BroadcastDiscussionKey extends DiscussionKey
+public class BroadcastDiscussionKey extends DiscussionKey<BroadcastDiscussionKey>
 {
     private static final DiscussionType TYPE = DiscussionType.BROADCAST_MESSAGE;
 

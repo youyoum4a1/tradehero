@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.portfolio;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
@@ -22,7 +22,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
 
     public SimpleOwnPortfolioListItemAdapter(Context context, int portfolioLayoutResourceId)
     {
-        super(context, LayoutInflater.from(context), portfolioLayoutResourceId);
+        super(context, portfolioLayoutResourceId);
         this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         orderedItems = new ArrayList<>();
         HierarchyInjector.inject(context, this);
@@ -33,7 +33,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         return true;
     }
 
-    @Override public void setItems(List<DisplayablePortfolioDTO> items)
+    @Override public void setItems(@NotNull List<DisplayablePortfolioDTO> items)
     {
         super.setItems(items);
         // Prepare the data for display
@@ -101,7 +101,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
             switch (itemType)
             {
                 case MainTimelineAdapter.PORTFOLIO_ITEM_TYPE:
-                    view = inflater.inflate(layoutResourceId, parent, false);
+                    view = conditionalInflate(position, convertView, parent);
                     if (item instanceof DisplayablePortfolioDTO)
                     {
                         ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) item);

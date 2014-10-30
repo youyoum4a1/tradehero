@@ -5,7 +5,7 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import org.jetbrains.annotations.NotNull;
 
-public class NewsItemDTOKey extends DiscussionKey
+public class NewsItemDTOKey extends DiscussionKey<NewsItemDTOKey>
 {
     private static final DiscussionType TYPE = DiscussionType.NEWS;
 

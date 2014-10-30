@@ -4,7 +4,7 @@ import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
 import org.jetbrains.annotations.NotNull;
 
-public class CommentKey extends DiscussionKey
+public class CommentKey extends DiscussionKey<CommentKey>
 {
     private static final DiscussionType TYPE = DiscussionType.COMMENT;
 

@@ -82,6 +82,7 @@ import rx.functions.Func1;
     @NotNull private final Lazy<ProviderCache> providerCache;
     @NotNull private final Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache;
     @NotNull private final Lazy<HomeContentCache> homeContentCache;
+    @NotNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
@@ -98,7 +99,8 @@ import rx.functions.Func1;
             @NotNull Lazy<ProviderCache> providerCache,
             @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache,
             @NotNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
-            @NotNull Lazy<HomeContentCache> homeContentCache)
+            @NotNull Lazy<HomeContentCache> homeContentCache,
+            @NotNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
@@ -114,6 +116,7 @@ import rx.functions.Func1;
         this.userServiceRx = userServiceRx;
         this.userFormBuilderProvider = userFormBuilderProvider;
         this.homeContentCache = homeContentCache;
+        this.dtoProcessorUpdateUserProfileProvider = dtoProcessorUpdateUserProfileProvider;
     }
     //</editor-fold>
 
@@ -607,7 +610,8 @@ import rx.functions.Func1;
 
     public Observable<UserProfileDTO> getUserRx(@NotNull UserBaseKey userKey)
     {
-        return userService.getUserRx(userKey.key);
+        return userService.getUserRx(userKey.key)
+                .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> getUser(
@@ -638,9 +642,9 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
+    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey userBaseKey)
     {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), playerId);
+        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey);
     }
 
     public UpdatePayPalEmailDTO updatePayPalEmail(
@@ -843,16 +847,11 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Add Credit">
-    @NotNull protected DTOProcessor<UserProfileDTO> createAddCreditProfileProcessor()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache.get(), homeContentCache.get());
-    }
-
     public UserProfileDTO addCredit(
             @NotNull UserBaseKey userKey,
             @Nullable PurchaseReportDTO purchaseDTO)
     {
-        return createAddCreditProfileProcessor().process(userService.addCredit(userKey.key, purchaseDTO));
+        return dtoProcessorUpdateUserProfileProvider.get().process(userService.addCredit(userKey.key, purchaseDTO));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> addCredit(
@@ -860,7 +859,7 @@ import rx.functions.Func1;
             @Nullable PurchaseReportDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createAddCreditProfileProcessor());
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, dtoProcessorUpdateUserProfileProvider.get());
         userServiceAsync.addCredit(userKey.key, purchaseDTO, middleCallback);
         return middleCallback;
     }

@@ -2,85 +2,30 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.th.api.DTOView;
-import java.util.ArrayList;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapter<T, V>
+public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends GenericArrayAdapter<T>
 {
-    protected List<T> items;
-
-    public ArrayDTOAdapter(
-            @NotNull Context context,
-            @NotNull LayoutInflater inflater,
-            @LayoutRes int layoutResourceId)
+    public ArrayDTOAdapter(@NotNull Context context, @LayoutRes int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
     }
 
-    public void setItems(List<T> items)
+    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        this.items = items;
+        convertView = conditionalInflate(position, convertView, viewGroup);
+
+        @SuppressWarnings("unchecked")
+        V dtoView = (V) convertView;
+        @SuppressWarnings("unchecked")
+        T dto = (T) getItem(position);
+        dtoView.display(dto);
+        fineTune(position, dto, dtoView);
+        return convertView;
     }
 
-    /**
-     * If called in non-UI thread, must be synchronized(see source code of ArrayAdapter) TODO
-     */
-    public void addItem(T item)
-    {
-        List<T> itemsCopy = items;
-        if (itemsCopy == null)
-        {
-            itemsCopy = new ArrayList<>();
-        }
-        itemsCopy.add(item);
-        items = itemsCopy;
-    }
-
-    /**
-     * If called in non-UI thread, must be synchronized TODO
-     */
-    public void addItems(T[] items)
-    {
-        int len = items.length;
-        for (int i = 0; i < len; i++)
-        {
-            addItem(items[i]);
-        }
-    }
-
-    /**
-     * If called in non-UI thread, must be synchronized TODO
-     */
-    public void addItems(List<T> data)
-    {
-        List<T> itemsCopy = items;
-        if (itemsCopy != null)
-        {
-            itemsCopy.addAll(data);
-        }
-    }
-
-    @Override public void clear()
-    {
-        super.clear();
-        if (items != null)
-        {
-            items.clear();
-        }
-    }
-
-    @Override public int getCount()
-    {
-        List<T> itemsCopy = items;
-        return itemsCopy != null ? itemsCopy.size() : 0;
-    }
-
-    @Override public Object getItem(int i)
-    {
-        List<T> itemsCopy = items;
-        return itemsCopy != null ? itemsCopy.get(i) : null;
-    }
+    protected abstract void fineTune(int position, T dto, V dtoView);
 }

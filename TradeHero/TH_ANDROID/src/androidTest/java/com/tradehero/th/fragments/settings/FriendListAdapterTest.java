@@ -37,7 +37,7 @@ public class FriendListAdapterTest
         activity.inject(this);
 
         layoutInflater = activity.getLayoutInflater();
-        adapter = new FriendListAdapter(context, layoutInflater, R.layout.refer_friend_list_item_view);
+        adapter = new FriendListAdapter(context, R.layout.refer_friend_list_item_view);
         list = new ArrayList<>();
 
         UserFriendsFacebookDTO mockUserFriendsFacebookDTO1 = new UserFriendsFacebookDTO();

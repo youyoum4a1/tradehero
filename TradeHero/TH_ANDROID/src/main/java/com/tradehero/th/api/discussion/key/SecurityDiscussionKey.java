@@ -4,7 +4,7 @@ import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
 import org.jetbrains.annotations.NotNull;
 
-public class SecurityDiscussionKey extends DiscussionKey
+public class SecurityDiscussionKey extends DiscussionKey<SecurityDiscussionKey>
 {
     private static final DiscussionType TYPE = DiscussionType.SECURITY;
 

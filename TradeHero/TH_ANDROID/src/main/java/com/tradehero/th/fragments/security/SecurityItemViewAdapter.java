@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
@@ -12,6 +11,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.filter.security.SecurityCompactDTOFilter;
 import com.tradehero.th.inject.HierarchyInjector;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends SecurityCompactDTO>
         extends ArrayDTOAdapter<SecurityCompactDTOType, SecurityItemView<SecurityCompactDTOType>>
@@ -21,14 +21,14 @@ abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends Sec
     protected List<SecurityCompactDTOType> originalItems;
 
     //<editor-fold desc="Constructors">
-    public SecurityItemViewAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public SecurityItemViewAdapter(Context context, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
         HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 
-    @Override public void setItems(List<SecurityCompactDTOType> items)
+    @Override public void setItems(@NotNull List<SecurityCompactDTOType> items)
     {
         originalItems = items;
         setItemsToShow(getPredicateFilter().filter(items));
@@ -69,8 +69,7 @@ abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends Sec
         if (itemHeight == 0 && convertView.getHeight() > 0)
         {
             itemHeight = convertView.getHeight();
-            SharedPreferences pref = context.getSharedPreferences("trade_hero",
-                    Context.MODE_WORLD_WRITEABLE);
+            SharedPreferences pref = getContext().getSharedPreferences("trade_hero", Context.MODE_WORLD_WRITEABLE);
             SharedPreferences.Editor editor = pref.edit();
             editor.putInt("trending_item_height", itemHeight);
             editor.apply();

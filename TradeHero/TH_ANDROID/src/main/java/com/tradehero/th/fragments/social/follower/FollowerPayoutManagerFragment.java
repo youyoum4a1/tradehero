@@ -68,8 +68,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         userFollowerListener = createFollowerListener();
         followerPaymentListAdapter = new FollowerPaymentListItemAdapter(
-                getActivity(), getActivity().getLayoutInflater(),
-                R.layout.follower_payment_list_item, R.layout.follower_payment_list_header);
+                getActivity(), R.layout.follower_payment_list_item, R.layout.follower_payment_list_header);
         followerHeroRelationId = getFollowerHeroRelationId(getArguments());
     }
 

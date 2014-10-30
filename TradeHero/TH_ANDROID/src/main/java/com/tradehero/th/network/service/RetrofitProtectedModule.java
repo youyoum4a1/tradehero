@@ -98,6 +98,10 @@ public class RetrofitProtectedModule
     {
         return adapter.create(NewsServiceAsync.class);
     }
+    @Provides @Singleton NewsServiceRx provideNewsServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(NewsServiceRx.class);
+    }
 
     @Provides @Singleton NotificationServiceAsync provideNotificationServiceAsync(RestAdapter adapter)
     {
@@ -188,6 +192,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)
     {
         return adapter.create(UserTimelineServiceAsync.class);
+    }
+
+    @Provides @Singleton UserTimelineServiceRx provideUserTimelineServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(UserTimelineServiceRx.class);
     }
 
     @Provides @Singleton VideoServiceAsync provideVideoServiceAsync(RestAdapter adapter)
