@@ -2,8 +2,5 @@
 
 # Amazon IAPs
 -dontwarn com.amazon.**
--keep class com.amazon.** {*;}
+-keep class com.amazon.device.iap.model.** { *; }
 -keepattributes *Annotation*
-
-# Retrolambda
--dontwarn java.lang.invoke.**

@@ -286,7 +286,7 @@ import timber.log.Timber;
     //<editor-fold desc="Purchase Actions">
     @Override protected void launchPurchaseSequence(int requestCode, IABSKU productIdentifier)
     {
-        Timber.e(new Exception(), "Purchase %s", productIdentifier);
+        Timber.e(new Exception("Just reporting"), "Purchase %s", productIdentifier);
         billingLogicHolder.run(requestCode, createPurchaseBillingRequest(requestCode, productIdentifier));
     }
 
