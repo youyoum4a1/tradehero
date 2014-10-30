@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.LayoutInflater;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.amazon.AmazonSKU;
@@ -51,10 +50,10 @@ public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
     //</editor-fold>
 
     //<editor-fold desc="SKU related">
-    @Override protected THAmazonSKUDetailAdapter createProductDetailAdapter(Activity activity,
-            LayoutInflater layoutInflater, ProductIdentifierDomain skuDomain)
+    @Override protected THAmazonSKUDetailAdapter createProductDetailAdapter(@NotNull Activity activity,
+            ProductIdentifierDomain skuDomain)
     {
-        return new THAmazonSKUDetailAdapter(activity, layoutInflater, skuDomain);
+        return new THAmazonSKUDetailAdapter(activity, skuDomain);
     }
 
     @Override public HashMap<ProductIdentifier, Boolean> getEnabledItems()

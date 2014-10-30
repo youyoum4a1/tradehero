@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.LayoutInflater;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
@@ -16,8 +15,8 @@ import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCache;
 import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
-import java.util.HashMap;
 import com.tradehero.th.utils.metrics.Analytics;
+import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -48,9 +47,9 @@ public class THSamsungAlertDialogUtil extends BillingAlertDialogUtil<
 
     //<editor-fold desc="SKU related">
     @Override protected THSamsungSKUDetailAdapter createProductDetailAdapter(Activity activity,
-            LayoutInflater layoutInflater, ProductIdentifierDomain skuDomain)
+            ProductIdentifierDomain skuDomain)
     {
-        return new THSamsungSKUDetailAdapter(activity, layoutInflater, skuDomain);
+        return new THSamsungSKUDetailAdapter(activity, skuDomain);
     }
 
     @Override public HashMap<ProductIdentifier, Boolean> getEnabledItems()

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.billing.ProductDetail;
@@ -30,7 +31,7 @@ abstract public class ProductDetailAdapter<
     protected ProductIdentifierDomain skuDomain;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailAdapter(Context context, int layoutResourceId, ProductIdentifierDomain skuDomain)
+    public ProductDetailAdapter(@NotNull Context context, @LayoutRes int layoutResourceId, ProductIdentifierDomain skuDomain)
     {
         super(context, layoutResourceId);
         this.skuDomain = skuDomain;

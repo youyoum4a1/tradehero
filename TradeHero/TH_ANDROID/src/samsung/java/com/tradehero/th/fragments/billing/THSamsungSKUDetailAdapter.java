@@ -1,11 +1,12 @@
 package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.support.annotation.LayoutRes;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
+import org.jetbrains.annotations.NotNull;
 
 public class THSamsungSKUDetailAdapter
         extends ProductDetailAdapter<
@@ -14,16 +15,16 @@ public class THSamsungSKUDetailAdapter
         THSamsungStoreProductDetailView>
 {
     //<editor-fold desc="Constructors">
-    public THSamsungSKUDetailAdapter(Context context, LayoutInflater inflater,
+    public THSamsungSKUDetailAdapter(@NotNull Context context,
             ProductIdentifierDomain skuDomain)
     {
-        super(context, inflater, R.layout.store_sku_detail_samsung, skuDomain);
+        super(context, R.layout.store_sku_detail_samsung, skuDomain);
     }
 
-    public THSamsungSKUDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId,
+    public THSamsungSKUDetailAdapter(@NotNull Context context, @LayoutRes int layoutResourceId,
             ProductIdentifierDomain skuDomain)
     {
-        super(context, inflater, layoutResourceId, skuDomain);
+        super(context, layoutResourceId, skuDomain);
     }
     //</editor-fold>
 

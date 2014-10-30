@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -14,16 +13,16 @@ public class THAmazonSKUDetailAdapter
         THAmazonStoreProductDetailView>
 {
     //<editor-fold desc="Constructors">
-    public THAmazonSKUDetailAdapter(Context context, LayoutInflater inflater,
+    public THAmazonSKUDetailAdapter(Context context,
             ProductIdentifierDomain skuDomain)
     {
-        super(context, inflater, R.layout.store_sku_detail_amazon, skuDomain);
+        super(context, R.layout.store_sku_detail_amazon, skuDomain);
     }
 
-    public THAmazonSKUDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId,
+    public THAmazonSKUDetailAdapter(Context context, int layoutResourceId,
             ProductIdentifierDomain skuDomain)
     {
-        super(context, inflater, layoutResourceId, skuDomain);
+        super(context, layoutResourceId, skuDomain);
     }
     //</editor-fold>
 
