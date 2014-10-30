@@ -7,41 +7,60 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.LoaderDTOAdapter;
+import com.tradehero.th.api.pagination.RangeDTO;
+import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
+import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.timeline.SubTimelineAdapter;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.loaders.ListLoader;
-import com.tradehero.th.loaders.TimelineListLoader;
-import com.tradehero.th.network.service.UserTimelineService;
-import com.tradehero.th.utils.Constants;
+import com.tradehero.th.network.service.UserTimelineServiceWrapper;
+import com.tradehero.th.rx.PaginationObservable;
+import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
+
+import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 
 public class DiscoveryDiscussionFragment extends Fragment
 {
-    private static final int TIMELINE_LOADER_ID = 0;
+    private static final String DISCOVERY_LIST_LOADER_ID = DiscoveryDiscussionFragment.class.getName() + ".discoveryList";
 
-    @InjectView(R.id.content_wrapper) BetterViewAnimator mContentWrapper;
-    @InjectView(android.R.id.progress) ProgressBar mProgressBar;
     @InjectView(R.id.timeline_list_view) PullToRefreshListView mTimelineListView;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
-
-    private int mDisplayedViewId;
-    private SubTimelineAdapter mTimelineAdapter;
-    private ProgressBar mBottomLoadingView;
+    @Inject RxLoaderManager rxLoaderManager;
     @Inject CurrentUserId currentUserId;
+    @Inject UserTimelineServiceWrapper userTimelineServiceWrapper;
+
+    private ProgressBar mBottomLoadingView;
+
+    private DiscoveryDiscussionAdapter discoveryDiscussionAdapter;
+    private Subscription timelineSubscription;
+
+    private RangeDTO currentRangeDTO = new RangeDTO(TIMELINE_ITEM_PER_PAGE, null, null);
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        discoveryDiscussionAdapter = new DiscoveryDiscussionAdapter(getActivity(), R.layout.timeline_item_view);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -54,61 +73,61 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         ButterKnife.inject(this, view);
 
-        mTimelineAdapter = new SubTimelineAdapter(getActivity(), TIMELINE_LOADER_ID, R.layout.timeline_item_view);
-        mTimelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItemDTOKey>()
-        {
-            @Override protected void onLoadFinished(ListLoader<TimelineItemDTOKey> loader, List<TimelineItemDTOKey> data)
-            {
-                mContentWrapper.setDisplayedChildByLayoutId(mTimelineListView.getId());
-                mBottomLoadingView.setVisibility(View.GONE);
-                mTimelineListView.onRefreshComplete();
-            }
-
-            @Override protected ListLoader<TimelineItemDTOKey> onCreateLoader(Bundle args)
-            {
-                TimelineListLoader timelineListLoader =
-                        new TimelineListLoader(getActivity(), currentUserId.toUserBaseKey(), UserTimelineService.TimelineSection.Hot);
-                timelineListLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);
-                return timelineListLoader;
-            }
-        });
-
         mBottomLoadingView = new ProgressBar(getActivity());
-        mTimelineListView.setAdapter(mTimelineAdapter);
+        mTimelineListView.setAdapter(discoveryDiscussionAdapter);
         mTimelineListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener));
         mTimelineListView.getRefreshableView().addFooterView(mBottomLoadingView);
-        mTimelineListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener()
-        {
-            @Override public void onLastItemVisible()
-            {
-                mTimelineAdapter.getLoader().loadPrevious();
-                mBottomLoadingView.setVisibility(View.VISIBLE);
-            }
-        });
-        mTimelineListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
-        {
-            @Override public void onRefresh(PullToRefreshBase<ListView> listViewPullToRefreshBase)
-            {
-                switch (listViewPullToRefreshBase.getCurrentMode())
-                {
-                    case PULL_FROM_START:
-                        mTimelineAdapter.getLoader().loadNext();
-                        break;
-                    case PULL_FROM_END:
-                        mTimelineAdapter.getLoader().loadPrevious();
-                        break;
-                }
-            }
-        });
-        getActivity().getSupportLoaderManager().initLoader(
-                mTimelineAdapter.getLoaderId(), null,
-                mTimelineAdapter.getLoaderCallback());
+
+        PublishSubject<List<TimelineItemDTOKey>> timelineSubject = PublishSubject.create();
+        // emit item on pull up/down
+        Observable<RangeDTO> timelineRefreshRangeObservable = Observable
+                .create((Observable.OnSubscribe<PullToRefreshBase.Mode>) subscriber -> {
+                    mTimelineListView.setOnRefreshListener(
+                            listViewPullToRefreshBase -> subscriber.onNext(listViewPullToRefreshBase.getCurrentMode()));
+
+                    mTimelineListView.setOnLastItemVisibleListener(() -> {
+                        if (!mTimelineListView.isRefreshing() && !discoveryDiscussionAdapter.isEmpty())
+                        {
+                            mBottomLoadingView.setVisibility(View.VISIBLE);
+                            subscriber.onNext(PullToRefreshBase.Mode.PULL_FROM_END);
+                        }
+                    });
+                })
+                .map(mode -> {
+                    switch (mode)
+                    {
+                        case PULL_FROM_END:
+                            return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
+                        case PULL_FROM_START:
+                        default:
+                            return RangeDTO.create(currentRangeDTO.maxCount, null, currentRangeDTO.maxId);
+                    }
+                })
+                .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null));
+
+        timelineSubject.subscribe(timelineItemDTOKeys -> mBottomLoadingView.setVisibility(View.INVISIBLE));
+        timelineSubject.subscribe(discoveryDiscussionAdapter::setItems);
+        timelineSubject.subscribe(new RefreshCompleteObserver());
+        timelineSubject.subscribe(new UpdateRangeObserver());
+
+        timelineSubscription = rxLoaderManager.create(DISCOVERY_LIST_LOADER_ID,
+                PaginationObservable.createFromRange(timelineRefreshRangeObservable, (Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>)
+                        rangeDTO -> userTimelineServiceWrapper.getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .map(TimelineDTO::getEnhancedItems)
+                                .flatMap(Observable::from)
+                                .map(TimelineItemDTO::getDiscussionKey)
+                                .toList()))
+                .subscribe(timelineSubject);
     }
 
     @Override public void onDestroyView()
     {
         super.onDestroyView();
         mTimelineListView.setOnLastItemVisibleListener(null);
+        timelineSubscription.unsubscribe();
+        rxLoaderManager.remove(DISCOVERY_LIST_LOADER_ID);
     }
 
     @Override public void onAttach(Activity activity)
@@ -117,20 +136,43 @@ public class DiscoveryDiscussionFragment extends Fragment
         HierarchyInjector.inject(this);
     }
 
-    @Override public void onResume()
+    private class RefreshCompleteObserver implements Observer<List<TimelineItemDTOKey>>
     {
-        super.onResume();
-
-        if (mDisplayedViewId > 0)
+        private void refreshComplete()
         {
-            mContentWrapper.setDisplayedChildByLayoutId(mDisplayedViewId);
+            mTimelineListView.onRefreshComplete();
         }
-        mTimelineAdapter.getLoader().loadNext();
+
+        @Override public void onCompleted()
+        {
+            refreshComplete();
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            refreshComplete();
+        }
+
+        @Override public void onNext(List<TimelineItemDTOKey> timelineItemDTOKeys)
+        {
+            refreshComplete();
+        }
     }
 
-    @Override public void onPause()
+    private class UpdateRangeObserver implements Action1<List<TimelineItemDTOKey>>
     {
-        mDisplayedViewId = mContentWrapper.getDisplayedChildLayoutId();
-        super.onPause();
+        @Override public void call(List<TimelineItemDTOKey> timelineItemDTOKeys)
+        {
+            if (timelineItemDTOKeys != null && !timelineItemDTOKeys.isEmpty())
+            {
+                Integer max = timelineItemDTOKeys.get(0).id;
+                Integer min = timelineItemDTOKeys.get(timelineItemDTOKeys.size() - 1).id;
+                currentRangeDTO = RangeDTO.create(TIMELINE_ITEM_PER_PAGE, max, min);
+            }
+            else
+            {
+                currentRangeDTO = RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null);
+            }
+        }
     }
 }

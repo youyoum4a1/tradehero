@@ -1,32 +1,43 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.models.timeline.TimelineDTOProcessor;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class UserTimelineServiceWrapper
 {
     @NotNull private final UserTimelineService userTimelineService;
     @NotNull private final UserTimelineServiceAsync userTimelineServiceAsync;
+    @NotNull private final UserTimelineServiceRx userTimelineServiceRx;
+    @NotNull private final Provider<TimelineDTOProcessor> timelineProcessorProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTimelineServiceWrapper(
             @NotNull UserTimelineService userTimelineService,
-            @NotNull UserTimelineServiceAsync userTimelineServiceAsync)
+            @NotNull UserTimelineServiceAsync userTimelineServiceAsync,
+            @NotNull UserTimelineServiceRx userTimelineServiceRx,
+            @NotNull Provider<TimelineDTOProcessor> timelineProcessorProvider)
     {
         super();
         this.userTimelineService = userTimelineService;
         this.userTimelineServiceAsync = userTimelineServiceAsync;
+        this.userTimelineServiceRx = userTimelineServiceRx;
+        this.timelineProcessorProvider = timelineProcessorProvider;
     }
     //</editor-fold>
 
@@ -63,14 +74,27 @@ import retrofit.Callback;
     @NotNull public TimelineDTO getDefaultTimeline(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
-        return userTimelineService.getTimeline(UserTimelineService.TimelineSection.Timeline, userId.key, maxCount, maxId, minId);
+        return userTimelineService.getTimeline(TimelineSection.Timeline, userId.key, maxCount, maxId, minId);
     }
 
-    @NotNull public TimelineDTO getTimelineBySection(UserTimelineService.TimelineSection section,
+    public TimelineDTO getTimelineBySection(TimelineSection section,
             @NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
         return userTimelineService.getTimeline(section, userId.key, maxCount, maxId, minId);
+    }
+
+    public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section,
+            @NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
+    {
+        // Make a key that contains all info.
+        return userTimelineServiceRx.getTimelineRx(section, userId.key, maxCount, maxId, minId)
+                .doOnNext(timelineProcessorProvider.get());
+    }
+
+    public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section, @NotNull UserBaseKey userBaseKey, RangeDTO rangeDTO)
+    {
+        return getTimelineBySectionRx(section, userBaseKey, rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId);
     }
 
     @NotNull MiddleCallback<TimelineDTO> getTimeline(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,

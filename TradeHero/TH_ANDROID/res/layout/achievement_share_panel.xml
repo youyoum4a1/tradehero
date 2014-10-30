@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/achievement_shared"
-        android:textSize="@dimen/text_xlarge"
+        android:textSize="@dimen/text_title"
         android:gravity="center"
         android:layout_gravity="center"
         />
@@ -73,7 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/achievement_share_failed"
-        android:textSize="@dimen/text_xlarge"
+        android:textSize="@dimen/text_title"
         android:gravity="center"
         android:layout_gravity="center"
         />

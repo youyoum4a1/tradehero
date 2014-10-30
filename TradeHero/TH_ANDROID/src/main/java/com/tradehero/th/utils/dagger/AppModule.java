@@ -18,7 +18,6 @@ import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
-import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
 import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
@@ -64,7 +63,6 @@ import javax.inject.Singleton;
                         THApp.class,
                         ChoiceFollowUserAssistantWithDialog.class,
                         SecurityListPagedLoader.class,
-                        MacquarieSecurityListPagedLoader.class,
 
                         DisplayablePortfolioFetchAssistant.class,
 

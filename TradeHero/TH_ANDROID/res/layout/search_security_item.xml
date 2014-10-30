@@ -50,11 +50,10 @@
         android:layout_height="wrap_content"
         android:ellipsize="middle"
         android:gravity="center_horizontal"
-        android:lines="2"
+        android:singleLine="false"
+        android:maxLines="2"
         tools:text="Telus Corp."
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_small"
-        android:textStyle="bold"/>
+        style="@style/TH.Subhead"/>
 
     <ImageView
         android:id="@+id/stock_logo"
@@ -90,9 +89,7 @@
         android:gravity="right"
         android:lines="1"
         tools:text="NYSE:TU"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_medium"
-        android:textStyle="bold"/>
+        style="@style/TH.Subhead"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -105,8 +102,8 @@
 
       <ImageView
           android:id="@+id/ic_market_close"
-          android:layout_width="12dp"
-          android:layout_height="12dp"
+          android:layout_width="@dimen/text_body"
+          android:layout_height="@dimen/text_body"
           android:layout_marginLeft="5dp"
           android:layout_marginRight="5dp"
           android:baselineAlignBottom="true"
@@ -121,8 +118,7 @@
           android:layout_height="wrap_content"
           android:lines="1"
           tools:text="@string/arrow_prefix_positive"
-          android:textColor="@color/black"
-          android:textSize="@dimen/text_xlarge"/>
+          style="@style/TH.Body"/>
 
       <TextView
           android:id="@+id/currency_display"
@@ -133,7 +129,7 @@
           android:lines="1"
           tools:text="US$"
           android:textColor="@color/text_gray_normal"
-          android:textSize="@dimen/text_small"/>
+          style="@style/TH.Body"/>
 
       <TextView
           android:id="@+id/last_price"
@@ -142,7 +138,7 @@
           android:lines="1"
           tools:text="8.80"
           android:textColor="@color/text_gray_normal"
-          android:textSize="@dimen/text_small"/>
+          style="@style/TH.Body"/>
 
     </LinearLayout>
 
@@ -155,8 +151,7 @@
         android:gravity="right"
         android:lines="1"
         tools:text="19 Feb 19:06"
-        android:textColor="@color/text_gray_normal"
-        android:textSize="@dimen/text_xsmall"/>
+        style="@style/TH.Caption"/>
 
     <TextView
         android:id="@+id/sec_type"
@@ -166,7 +161,7 @@
         android:lines="1"
         tools:text="Equity"
         android:textColor="@color/sec_type"
-        android:textSize="@dimen/text_small"/>
+        style="@style/TH.Body"/>
 
   </LinearLayout>
 

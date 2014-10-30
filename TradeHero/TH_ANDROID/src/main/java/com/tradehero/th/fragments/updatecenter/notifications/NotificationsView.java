@@ -141,13 +141,11 @@ public class NotificationsView extends BetterViewAnimator
 
         fetchNextPageIfNecessary();
 
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        if(readAllLayout != null)
         {
-            @Override public void onTranslate(float x, float y)
-            {
-                readAllLayout.setTranslationY(y);
-            }
-        });
+            readAllLayout.setTranslationY(dashboardTabHost.get().getTranslationY());
+        }
+        dashboardTabHost.get().setOnTranslate((x, y) -> readAllLayout.setTranslationY(y));
     }
 
     @OnClick(R.id.readAllLayout)

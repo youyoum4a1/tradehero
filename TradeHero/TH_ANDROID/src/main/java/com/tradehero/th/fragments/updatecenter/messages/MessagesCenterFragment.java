@@ -132,14 +132,14 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onResume();
 
         registerMessageReceiver();
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        if(messagesView != null && messagesView.readAllLayout != null)
         {
-            @Override public void onTranslate(float x, float y)
+            messagesView.readAllLayout.setTranslationY(dashboardTabHost.get().getTranslationY());
+        }
+        dashboardTabHost.get().setOnTranslate((x, y) -> {
+            if(messagesView != null && messagesView.readAllLayout != null)
             {
-                if(messagesView != null && messagesView.readAllLayout != null)
-                {
-                    messagesView.readAllLayout.setTranslationY(y);
-                }
+                messagesView.readAllLayout.setTranslationY(y);
             }
         });
     }

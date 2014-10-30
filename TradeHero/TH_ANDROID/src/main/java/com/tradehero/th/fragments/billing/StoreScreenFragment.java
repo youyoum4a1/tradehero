@@ -30,7 +30,7 @@ import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
-import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -281,7 +281,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         {
             pushHeroFragment();
         }
-        else if (fragmentClass.equals(FollowerManagerFragment.class))
+        else if (fragmentClass.equals(FollowerRevenueReportFragment.class))
         {
             pushFollowerFragment();
         }
@@ -313,13 +313,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected void pushFollowerFragment()
     {
         Bundle bundle = new Bundle();
-        FollowerManagerFragment.putHeroId(bundle, currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
-        pushFragment(FollowerManagerFragment.class, bundle);
+        pushFragment(FollowerRevenueReportFragment.class, bundle);
     }
 
     private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)

@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -20,9 +21,11 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -32,8 +35,9 @@ public class FollowerListItemView extends RelativeLayout
 {
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.follower_title) TextView title;
-    @InjectView(R.id.follower_revenue) TextView revenueInfo;
-    @InjectView(R.id.hint_open_follower_info) ImageView country;
+    @InjectView(R.id.follower_roi_info) @Optional  TextView roiInfo;
+    @InjectView(R.id.follower_revenue) @Optional TextView revenueInfo;
+    @InjectView(R.id.country_logo) ImageView country;
 
     private UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
@@ -67,7 +71,7 @@ public class FollowerListItemView extends RelativeLayout
         super.onFinishInflate();
         ButterKnife.inject(this);
         HierarchyInjector.inject(this);
-        if (userIcon != null)
+        if (userIcon != null && !isInEditMode())
         {
             picasso.get().load(R.drawable.superman_facebook)
                     .transform(peopleIconTransformation)
@@ -141,9 +145,10 @@ public class FollowerListItemView extends RelativeLayout
     public void display()
     {
         displayUserIcon();
-        displayTitle();
-        displayRevenue();
         displayCountryLogo();
+        displayTitle();
+        displayRoiInfo();
+        displayRevenue();
     }
 
     public void displayUserIcon()
@@ -190,28 +195,47 @@ public class FollowerListItemView extends RelativeLayout
         }
     }
 
-    public void displayRevenue()
+    public void displayRoiInfo()
     {
-        if (revenueInfo != null)
+        if (roiInfo != null)
         {
-
             if (userFollowerDTO != null)
             {
                 THSignedNumber thRoiSinceInception = THSignedPercentage
                         .builder(userFollowerDTO.roiSinceInception * 100)
                         .build();
-                revenueInfo.setText(thRoiSinceInception.toString());
-                revenueInfo.setTextColor(
+                roiInfo.setText(thRoiSinceInception.toString());
+                roiInfo.setTextColor(
                         getContext().getResources().getColor(thRoiSinceInception.getColorResId()));
-
-                //revenueInfo.setText(String.format(getResources().getString(R.string.manage_followers_revenue_follower), SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, userFollowerDTO.totalRevenue));
             }
             else
             {
-                revenueInfo.setText(R.string.na);
+                roiInfo.setText(R.string.na);
             }
         }
     }
 
+    public void displayRevenue()
+    {
+        if (revenueInfo != null)
+        {
+            if (userFollowerDTO != null)
+            {
+                THSignedNumber revenue = THSignedMoney.builder(userFollowerDTO.totalRevenue)
+                        .currency(SecurityUtils.getDefaultCurrency())
+                        .build();
+                revenueInfo.setText(getContext().getString(
+                        R.string.manage_followers_revenue_follower_2,
+                        revenue.toString()));
+            }
+            else
+            {
+                revenueInfo.setText(
+                        getContext().getString(
+                                R.string.manage_followers_revenue_follower_2,
+                                getContext().getString(R.string.na)));
+            }
+        }
+    }
     //</editor-fold>
 }

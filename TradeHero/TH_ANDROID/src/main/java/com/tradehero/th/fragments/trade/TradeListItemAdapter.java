@@ -41,7 +41,7 @@ public class TradeListItemAdapter
 
     public TradeListItemAdapter(final Context context, final LayoutInflater inflater)
     {
-        super(context, inflater, LAYOUT_RES_ID_ITEM_TRADE);
+        super(context, LAYOUT_RES_ID_ITEM_TRADE);
         this.itemTypes = new ArrayList<>();
         this.objects = new ArrayList<>();
     }
@@ -160,7 +160,7 @@ public class TradeListItemAdapter
             case ITEM_TYPE_HEADER_POSITION_SUMMARY:
                 if (convertView == null)
                 {
-                    convertView = inflater.inflate(LAYOUT_RES_ID_ITEM_HEADER, viewGroup, false);
+                    convertView = getInflater().inflate(LAYOUT_RES_ID_ITEM_HEADER, viewGroup, false);
                 }
                 ((BaseListHeaderView) convertView).setHeaderTextContent((int) item);
                 break;
@@ -168,7 +168,7 @@ public class TradeListItemAdapter
             case ITEM_TYPE_POSITION_SUMMARY:
                 if (convertView == null)
                 {
-                    convertView = inflater.inflate(getPositionLayoutResId(), viewGroup, false);
+                    convertView = getInflater().inflate(getPositionLayoutResId(), viewGroup, false);
                 }
 
                 ((PositionView) convertView).linkWith(this.shownPositionDTO, false);
@@ -184,16 +184,13 @@ public class TradeListItemAdapter
             case ITEM_TYPE_HEADER_TRADE_HISTORY:
                 if (convertView == null)
                 {
-                    convertView = inflater.inflate(LAYOUT_RES_ID_ITEM_HEADER, viewGroup, false);
+                    convertView = getInflater().inflate(LAYOUT_RES_ID_ITEM_HEADER, viewGroup, false);
                 }
                 ((BaseListHeaderView) convertView).setHeaderTextContent((int) item);
                 break;
 
             case ITEM_TYPE_TRADE:
-                if (convertView == null)
-                {
-                    convertView = inflater.inflate(layoutResourceId, viewGroup, false);
-                }
+                convertView = conditionalInflate(position, convertView, viewGroup);
                 ((TradeListItemView) convertView).display((ExpandableTradeItem) item);
                 toggleExpanded((ExpandableTradeItem) item, convertView);
                 break;

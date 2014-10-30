@@ -44,9 +44,8 @@
           android:id="@+id/search_empty_textview"
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
-          android:textSize="@dimen/text_xxxlarge"
+          style="@style/TH.Loading_Empty_Text"
           android:text="@string/empty_video_list"
-          android:gravity="center"
           />
 
     </RelativeLayout>

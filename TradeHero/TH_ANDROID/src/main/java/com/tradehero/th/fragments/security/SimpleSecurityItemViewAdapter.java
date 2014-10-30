@@ -15,7 +15,7 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter<Secur
     //<editor-fold desc="Constructors">
     public SimpleSecurityItemViewAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
         filterToUse = new SecurityItemFilter(securityCompactPredicateFilter);
     }
     //</editor-fold>

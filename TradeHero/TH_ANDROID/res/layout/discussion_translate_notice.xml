@@ -22,7 +22,7 @@
       android:paddingBottom="8dp"
       android:visibility="visible"
       android:layout_gravity="center_vertical"
-      android:textSize="@dimen/text_xsmall"
+      android:textSize="@dimen/text_caption"
       tools:text="( Translate ) Powered by"
       />
 

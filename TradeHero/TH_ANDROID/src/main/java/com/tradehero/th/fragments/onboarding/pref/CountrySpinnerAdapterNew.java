@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.CountryNameComparator;
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,21 +19,10 @@ public class CountrySpinnerAdapterNew
     //<editor-fold desc="Constructors">
     public CountrySpinnerAdapterNew(@NotNull Context context, @LayoutRes int layoutResourceId)
     {
-        super(context);
+        super(context, new CountryNameComparator(context));
         this.resId = layoutResourceId;
     }
     //</editor-fold>
-
-    @NotNull @Override protected Set<Country> createSet(
-            @Nullable Collection<Country> objects)
-    {
-        Set<Country> created = new TreeSet<>(new CountryNameComparator(context));
-        if (objects != null)
-        {
-            created.addAll(objects);
-        }
-        return created;
-    }
 
     @Override @LayoutRes protected int getViewResId(int position)
     {

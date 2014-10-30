@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.billing.ProductDetail;
@@ -15,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class ProductDetailAdapter<
         ProductIdentifierType extends ProductIdentifier,
@@ -30,9 +30,9 @@ abstract public class ProductDetailAdapter<
     protected ProductIdentifierDomain skuDomain;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId, ProductIdentifierDomain skuDomain)
+    public ProductDetailAdapter(Context context, int layoutResourceId, ProductIdentifierDomain skuDomain)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
         this.skuDomain = skuDomain;
     }
     //</editor-fold>
@@ -52,7 +52,7 @@ abstract public class ProductDetailAdapter<
         this.enabledItems = enabledItems;
     }
 
-    @Override public void setItems(List<THProductDetailType> items)
+    @Override public void setItems(@NotNull List<THProductDetailType> items)
     {
         if (productDetailComparator == null || items == null)
         {
@@ -97,7 +97,7 @@ abstract public class ProductDetailAdapter<
         ProductDetailQuickDescriptionView
                 quickDescription = convertView instanceof ProductDetailQuickDescriptionView ?
                 (ProductDetailQuickDescriptionView) convertView :
-                (ProductDetailQuickDescriptionView) inflater.inflate(R.layout.store_quick_message, viewGroup, false);
+                (ProductDetailQuickDescriptionView) getInflater().inflate(R.layout.store_quick_message, viewGroup, false);
         quickDescription.linkWithProductDomain(skuDomain, true);
         return quickDescription;
     }

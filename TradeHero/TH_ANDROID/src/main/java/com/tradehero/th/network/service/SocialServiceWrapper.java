@@ -1,18 +1,17 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
@@ -24,38 +23,30 @@ import rx.functions.Func1;
 {
     @NotNull private final SocialService socialService;
     @NotNull private final SocialServiceAsync socialServiceAsync;
-    @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final CurrentUserId currentUserId;
-    @NotNull private final HomeContentCache homeContentCache;
+    @NotNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     @Inject public SocialServiceWrapper(
             @NotNull SocialService socialService,
             @NotNull SocialServiceAsync socialServiceAsync,
-            @NotNull UserProfileCache userProfileCache,
             @NotNull CurrentUserId currentUserId,
-            @NotNull HomeContentCache homeContentCache)
+            @NotNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
     {
         this.socialService = socialService;
         this.socialServiceAsync = socialServiceAsync;
-        this.userProfileCache = userProfileCache;
         this.currentUserId = currentUserId;
-        this.homeContentCache = homeContentCache;
-    }
-
-    @NotNull protected DTOProcessorUpdateUserProfile createConnectDTOProcessor()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache);
+        this.dtoProcessorUpdateUserProfileProvider = dtoProcessorUpdateUserProfileProvider;
     }
 
     //<editor-fold desc="Connect">
     @NotNull public UserProfileDTO connect(@NotNull UserBaseKey userBaseKey, UserFormDTO userFormDTO)
     {
-        return createConnectDTOProcessor().process(socialService.connect(userBaseKey.key, userFormDTO));
+        return dtoProcessorUpdateUserProfileProvider.get().process(socialService.connect(userBaseKey.key, userFormDTO));
     }
 
     @NotNull public UserProfileDTO connect(@NotNull UserBaseKey userBaseKey, AccessTokenForm userFormDTO)
     {
-        return createConnectDTOProcessor().process(socialService.connect(userBaseKey.key, userFormDTO));
+        return dtoProcessorUpdateUserProfileProvider.get().process(socialService.connect(userBaseKey.key, userFormDTO));
     }
 
     @NotNull public Func1<AuthData, UserProfileDTO> connectFunc1(@NotNull final UserBaseKey userBaseKey)
@@ -76,7 +67,7 @@ import rx.functions.Func1;
                 {
                     @Override public UserProfileDTO call(UserProfileDTO userProfileDTO)
                     {
-                        return createConnectDTOProcessor().process(userProfileDTO);
+                        return dtoProcessorUpdateUserProfileProvider.get().process(userProfileDTO);
                     }
                 });
     }
@@ -88,7 +79,7 @@ import rx.functions.Func1;
 
     @NotNull public MiddleCallback<UserProfileDTO> connect(@NotNull UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createConnectDTOProcessor());
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, dtoProcessorUpdateUserProfileProvider.get());
         socialServiceAsync.connect(userBaseKey.key, userFormDTO, middleCallback);
         return middleCallback;
     }
@@ -97,18 +88,18 @@ import rx.functions.Func1;
     //<editor-fold desc="Disconnect">
     public UserProfileDTO disconnect(@NotNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
     {
-        return createConnectDTOProcessor().process(socialService.disconnect(userBaseKey.key, socialNetworkFormDTO));
+        return dtoProcessorUpdateUserProfileProvider.get().process(socialService.disconnect(userBaseKey.key, socialNetworkFormDTO));
     }
 
     public Observable<UserProfileDTO> disconnectRx(@NotNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
     {
         return socialService.disconnectRx(userBaseKey.key, socialNetworkFormDTO)
-                .doOnNext(createConnectDTOProcessor());
+                .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
     }
 
     public MiddleCallback<UserProfileDTO> disconnect(@NotNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO, Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createConnectDTOProcessor());
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, dtoProcessorUpdateUserProfileProvider.get());
         socialServiceAsync.disconnect(userBaseKey.key, socialNetworkFormDTO, middleCallback);
         return middleCallback;
     }

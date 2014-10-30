@@ -6,10 +6,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    style="@style/TH.ListItem.Clickable"
     >
 
   <LinearLayout
@@ -29,7 +26,7 @@
           android:id="@+id/translatable_text_own_language"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textSize="@dimen/text_small"
+          style="@style/TH.Subhead"
           tools:text="français"
           />
 
@@ -38,7 +35,7 @@
           android:layout_height="wrap_content"
           android:paddingLeft="4dp"
           android:paddingRight="4dp"
-          android:textSize="@dimen/text_small"
+          style="@style/TH.Subhead"
           android:text="-"
           />
 
@@ -46,7 +43,7 @@
           android:id="@+id/translatable_text_local"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textSize="@dimen/text_small"
+          style="@style/TH.Subhead"
           tools:text="French"
           />
 
@@ -57,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textSize="@dimen/text_xsmall"
+        style="@style/TH.Caption"
         tools:text="en"
         />
 

@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.common.widget.BetterViewAnimator
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_wrapper"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+  <com.handmark.pulltorefresh.library.PullToRefreshListView
+      android:id="@+id/discovery_news_list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:listSelector="@color/transparent"
+      android:cacheColorHint="#00000000"
+      android:divider="@color/transparent"
+      android:dividerHeight="1dp"
+      android:fadingEdge="vertical"
+      android:fastScrollEnabled="false"
+      android:footerDividersEnabled="false"
+      android:headerDividersEnabled="true"
+      android:smoothScrollbar="true"
+      android:clipToPadding="false"
+      tools:background="@android:color/holo_red_light"
+      />
 
   <ProgressBar
       android:id="@android:id/progress"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
+      android:visibility="gone"
+      android:background="@drawable/round_square"
       />
 
-  <ListView
-      android:id="@android:id/list"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:divider="@color/transparent"
-      />
-
-</com.tradehero.common.widget.BetterViewAnimator>
+</FrameLayout>

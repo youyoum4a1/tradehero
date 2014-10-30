@@ -46,7 +46,7 @@
       android:layout_toRightOf="@id/icon"
       android:layout_toLeftOf="@id/btn_buy_now"
       android:layout_centerVertical="true"
-      android:textSize="@dimen/text_medium"
+      android:textSize="@dimen/text_subhead"
     />
 
 </com.tradehero.th.fragments.billing.StoreItemPromptPurchase>

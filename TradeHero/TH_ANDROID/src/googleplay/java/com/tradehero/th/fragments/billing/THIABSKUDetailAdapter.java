@@ -18,13 +18,13 @@ public class THIABSKUDetailAdapter
     public THIABSKUDetailAdapter(Context context, LayoutInflater inflater,
             ProductIdentifierDomain skuDomain)
     {
-        super(context, inflater, R.layout.store_sku_detail_iab, skuDomain);
+        super(context, R.layout.store_sku_detail_iab, skuDomain);
     }
 
     public THIABSKUDetailAdapter(Context context, LayoutInflater inflater, int layoutResourceId,
             ProductIdentifierDomain skuDomain)
     {
-        super(context, inflater, layoutResourceId, skuDomain);
+        super(context, layoutResourceId, skuDomain);
     }
     //</editor-fold>
 

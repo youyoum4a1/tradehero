@@ -8,8 +8,8 @@
   <color name="provider_22_colour_gradient">#2C55A6</color>
 
   <dimen name="provider_legal_vertical_padding">12dp</dimen>
-  <dimen name="provider_legal_horizontal_padding">8dp</dimen>
-  <dimen name="provider_legal_text_size">@dimen/text_xsmall</dimen>
+  <dimen name="provider_legal_horizontal_padding">@dimen/margin_small</dimen>
+  <dimen name="provider_legal_text_size">@dimen/text_caption</dimen>
   <dimen name="provider_legal_mid_spacing">24dp</dimen>
   
 </resources>

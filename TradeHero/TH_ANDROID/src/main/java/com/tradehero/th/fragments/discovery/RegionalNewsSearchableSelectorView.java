@@ -297,8 +297,7 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
 
     private void linkWith(List<CountryLanguagePairDTO> data, boolean andDisplay)
     {
-        mCountryAdapter.clear();
-        mCountryAdapter.addAll(data);
+        mCountryAdapter.setItems(data);
         if (andDisplay)
         {
             Collection<CountryLanguagePairDTO> userCountryLanguagePairs =
@@ -318,7 +317,6 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
                     mRegionSelector.setText(mCountryName);
                 }
             }
-            mCountryAdapter.notifyDataSetChanged();
         }
     }
 }

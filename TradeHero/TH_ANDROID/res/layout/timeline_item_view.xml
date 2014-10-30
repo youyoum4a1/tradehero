@@ -75,8 +75,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
-          android:textColor="@color/text_gray_normal"
-          android:textSize="@dimen/timeline_item_date"
+          style="@style/TH.Caption"
           android:layout_alignParentLeft="true"
           android:layout_below="@id/user_profile_name"
           android:layout_toLeftOf="@id/timeline_vendor_picture"
@@ -95,9 +94,7 @@
         android:layout_toRightOf="@id/discussion_user_picture"
         tools:text="Tho Nguyen has become the best trader of the world!"
         android:textColorLink="@color/timeline_item_link"
-        android:textColor="@color/timeline_item"
-        android:textSize="@dimen/text_xsmall"
-        android:textStyle="normal"
+        style="@style/TH.Body"
         />
 
   </RelativeLayout>

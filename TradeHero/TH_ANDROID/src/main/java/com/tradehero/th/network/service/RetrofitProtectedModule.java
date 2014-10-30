@@ -49,6 +49,11 @@ public class RetrofitProtectedModule
         return adapter.create(CompetitionServiceAsync.class);
     }
 
+    @Provides @Singleton CompetitionServiceRx provideCompetitionServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(CompetitionServiceRx.class);
+    }
+
     @Provides @Singleton CurrencyServiceAsync provideCurrencyServiceAsync(RestAdapter adapter)
     {
         return adapter.create(CurrencyServiceAsync.class);
@@ -64,9 +69,19 @@ public class RetrofitProtectedModule
         return adapter.create(FollowerServiceAsync.class);
     }
 
+    @Provides @Singleton FollowerServiceRx provideFollowerServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(FollowerServiceRx.class);
+    }
+
     @Provides @Singleton LeaderboardServiceAsync provideLeaderboardServiceAsync(RestAdapter adapter)
     {
         return adapter.create(LeaderboardServiceAsync.class);
+    }
+
+    @Provides @Singleton LeaderboardServiceRx provideLeaderboardServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(LeaderboardServiceRx.class);
     }
 
     @Provides @Singleton MarketServiceAsync provideMarketServiceAsync(RestAdapter adapter)
@@ -82,6 +97,10 @@ public class RetrofitProtectedModule
     @Provides @Singleton NewsServiceAsync provideNewsServiceAsync(RestAdapter adapter)
     {
         return adapter.create(NewsServiceAsync.class);
+    }
+    @Provides @Singleton NewsServiceRx provideNewsServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(NewsServiceRx.class);
     }
 
     @Provides @Singleton NotificationServiceAsync provideNotificationServiceAsync(RestAdapter adapter)
@@ -173,6 +192,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)
     {
         return adapter.create(UserTimelineServiceAsync.class);
+    }
+
+    @Provides @Singleton UserTimelineServiceRx provideUserTimelineServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(UserTimelineServiceRx.class);
     }
 
     @Provides @Singleton VideoServiceAsync provideVideoServiceAsync(RestAdapter adapter)

@@ -14,10 +14,9 @@
       android:id="@+id/dialog_stock_name"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textSize="@dimen/text_medium"
-      android:layout_marginLeft="15dp"
-      android:layout_marginTop="15dp"
-      android:textStyle="bold"
+      style="@style/TH.Title"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginTop="@dimen/margin_small"
       tools:text="Padbury Mining Ltd"
       />
 
@@ -25,14 +24,15 @@
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="15dp"
-      android:layout_marginRight="25dp"
-      android:paddingTop="10dp"
-      android:paddingBottom="10dp"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      android:paddingTop="@dimen/margin_small"
+      android:paddingBottom="@dimen/margin_small"
       >
 
     <TextView
         android:id="@+id/dialog_price"
+        style="@style/TH.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -41,6 +41,7 @@
 
     <TextView
         android:id="@+id/dialog_portfolio"
+        style="@style/TH.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_price"
@@ -51,6 +52,7 @@
 
     <TextView
         android:id="@+id/dialog_profit_and_loss"
+        style="@style/TH.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_portfolio"
@@ -80,7 +82,7 @@
 
     <TextView
         android:id="@+id/vtrade_value"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -90,7 +92,7 @@
 
     <com.tradehero.th.fragments.trade.view.TradeQuantityEditText
         android:id="@+id/vquantity"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         android:background="@drawable/security_dialog_comment_bg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -105,7 +107,7 @@
 
     <TextView
         android:id="@+id/vcash_left"
-        style="@style/TH.SmallValue"
+        style="@style/TH.InfoValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -119,11 +121,10 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
-      android:layout_marginTop="-5dp"
       >
 
     <TextView
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -132,7 +133,7 @@
         />
 
     <TextView
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -141,7 +142,7 @@
         />
 
     <TextView
-        style="@style/TH.SmallTitle"
+        style="@style/TH.InfoKey"
         android:id="@+id/dialog_cash_left"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -154,9 +155,10 @@
   <SeekBar
       android:id="@+id/seek_bar"
       android:layout_width="match_parent"
-      android:layout_height="32dp"
-      android:layout_marginLeft="20dp"
-      android:layout_marginRight="20dp"
+      android:layout_height="36dp"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
       style="@style/TH.SeekBar"
       />
 
@@ -164,9 +166,9 @@
       android:id="@+id/quick_price_button_set"
       android:layout_width="match_parent"
       android:layout_height="@dimen/timespan_button_min_height"
-      android:layout_marginTop="15dp"
-      android:layout_marginLeft="20dp"
-      android:layout_marginRight="20dp"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
       android:background="@drawable/trend_price_bar"
       android:orientation="horizontal"
       >
@@ -210,34 +212,36 @@
   <com.tradehero.th.widget.MarkdownTextView
       android:id="@+id/comments"
       android:layout_width="match_parent"
-      android:layout_height="45dp"
-      android:layout_marginLeft="20dp"
-      android:layout_marginRight="20dp"
+      android:layout_height="@dimen/clickable_element_min_dimen"
+      android:layout_marginTop="@dimen/margin_medium"
+      android:layout_marginBottom="@dimen/margin_medium"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
       android:background="@drawable/security_dialog_comment_bg"
-      android:ems="10"
+      style="@style/TH.Body"
       android:gravity="top"
-      android:padding="5dp"
+      android:padding="@dimen/margin_xsmall"
       android:hint="@string/buy_sell_confirm_buy_comment"
-      android:layout_marginTop="15dp"/>
+      />
 
   <LinearLayout
       android:id="@+id/share_panel"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:minHeight="@dimen/clickable_element_min_dimen"
       android:background="@color/stock_info_bg"
       android:gravity="center_vertical"
       android:paddingTop="@dimen/share_container_vertical_padding"
       android:paddingBottom="@dimen/share_container_vertical_padding"
       android:orientation="horizontal"
-      android:layout_marginTop="15dp"
       >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
+        android:layout_marginLeft="@dimen/margin_small"
         android:text="@string/buy_sell_confirm_share_on"
-        android:textSize="@dimen/text_small"
+        style="@style/TH.Body"
         android:textColor="@color/authentication_button_light"
         />
 
@@ -249,28 +253,29 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
+      android:measureWithLargestChild="true"
       >
 
     <Button
         android:id="@+id/dialog_btn_cancel"
-        android:layout_height="40dp"
+        style="@style/TH.Button.Inverse"
+        android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="1"
+        android:minHeight="@dimen/clickable_element_min_dimen"
         android:text="@string/authentication_cancel"
         android:background="@drawable/security_dialog_btn_cancel"
-        android:textSize="@dimen/text_xlarge"
-        android:textColor="@color/light_grey"
         />
 
     <Button
         android:id="@+id/dialog_btn_confirm"
-        android:layout_height="40dp"
+        style="@style/TH.Button.Inverse"
+        android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="1"
+        android:minHeight="@dimen/clickable_element_min_dimen"
         android:text="@string/authentication_confirm"
         android:background="@drawable/security_dialog_btn_confirm"
-        android:textSize="@dimen/text_xlarge"
-        android:textColor="@color/white"
         android:layout_marginLeft="1dp"
         />
 

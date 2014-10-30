@@ -44,7 +44,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_small"
+        android:textSize="@dimen/text_body"
         android:text="@string/stock_alert_price_change_help_text"
         android:id="@+id/alert_edit_price_change_help_text"
         android:layout_below="@id/alert_edit_percentage_change_actual_value"

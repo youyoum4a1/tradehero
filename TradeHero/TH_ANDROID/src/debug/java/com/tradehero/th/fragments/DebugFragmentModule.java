@@ -9,6 +9,9 @@ import dagger.Module;
                 DebugFragmentAchievementModule.class,
                 DebugFragmentLevelModule.class,
         },
+        injects = {
+                TypographyExampleFragment.class
+        },
 
         complete = false,
         library = true

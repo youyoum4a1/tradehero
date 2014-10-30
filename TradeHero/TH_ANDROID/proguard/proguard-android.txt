@@ -117,8 +117,6 @@
 
 -assumenosideeffects class com.tradehero.common.utils.THLog { *; }
 
--keep class !com.tradehero.** { *; }
--dontwarn com.actionbarsherlock.**
 -dontwarn java.nio.files.**
 -dontwarn okio.**
 -dontwarn com.tencent.**
@@ -141,20 +139,16 @@
 # msgpack is used by urbanairship
 -dontwarn org.msgpack.**
 
+#Retrofit Services
+-keep class retrofit.http.** { *; } # Keep the annotations
+-keep class ** { @retrofit.http.** *; } # Keep the annotated services
 
 # Jackson introspect
+-keep class com.fasterxml.jackson.** { *; }
 -keep public class com.tradehero.th.api.** {
   public void set*(***);
   public *** get*();
 }
--keep interface com.tradehero.th.network.service.** { *; }
--keep public class com.tradehero.th.billing.** { *; }
--keep public class com.tradehero.th.fragments.social.friend.** { *; }
--keep public class com.tradehero.common.billing.** { *; }
--keep public class com.tradehero.th.api.discussion.** { *; }
--keep public class com.tradehero.th.api.pagination.** { *; }
--keep public class com.tradehero.th.api.timeline.** { *; }
--keep public class com.tradehero.th.models.graphics.** { *; }
 
 # We actually use public field instead of getter and setter for it.
 -keep public class com.tradehero.th.api.** {
@@ -175,3 +169,6 @@
 
 # Retrolambda
 -dontwarn java.lang.invoke.**
+
+# Facebook
+-keep class com.facebook.model.** { *; }

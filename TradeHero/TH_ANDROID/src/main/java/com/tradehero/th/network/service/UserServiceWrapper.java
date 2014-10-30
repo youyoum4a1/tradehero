@@ -32,7 +32,6 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUserBatch;
 import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
@@ -51,7 +50,6 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
@@ -80,11 +78,11 @@ import rx.functions.Func1;
     @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     @NotNull private final Lazy<HeroListCache> heroListCache;
     @NotNull private final Lazy<GetPositionsCache> getPositionsCache;
-    @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
     @NotNull private final Lazy<ProviderListCache> providerListCache;
     @NotNull private final Lazy<ProviderCache> providerCache;
     @NotNull private final Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache;
     @NotNull private final Lazy<HomeContentCache> homeContentCache;
+    @NotNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
@@ -97,12 +95,12 @@ import rx.functions.Func1;
             @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,
             @NotNull Lazy<GetPositionsCache> getPositionsCache,
-            @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache,
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull Lazy<ProviderCache> providerCache,
             @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache,
             @NotNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
-            @NotNull Lazy<HomeContentCache> homeContentCache)
+            @NotNull Lazy<HomeContentCache> homeContentCache,
+            @NotNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
@@ -112,13 +110,13 @@ import rx.functions.Func1;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.heroListCache = heroListCache;
         this.getPositionsCache = getPositionsCache;
-        this.leaderboardFriendsCache = leaderboardFriendsCache;
         this.providerListCache = providerListCache;
         this.providerCache = providerCache;
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
         this.userServiceRx = userServiceRx;
         this.userFormBuilderProvider = userFormBuilderProvider;
         this.homeContentCache = homeContentCache;
+        this.dtoProcessorUpdateUserProfileProvider = dtoProcessorUpdateUserProfileProvider;
     }
     //</editor-fold>
 
@@ -612,7 +610,8 @@ import rx.functions.Func1;
 
     public Observable<UserProfileDTO> getUserRx(@NotNull UserBaseKey userKey)
     {
-        return userService.getUserRx(userKey.key);
+        return userService.getUserRx(userKey.key)
+                .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> getUser(
@@ -643,9 +642,9 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
+    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey userBaseKey)
     {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), playerId);
+        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey);
     }
 
     public UpdatePayPalEmailDTO updatePayPalEmail(
@@ -829,16 +828,11 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
-    @NotNull protected DTOProcessor<BaseResponseDTO> createDTOProcessorFriendInvited()
-    {
-        return new DTOProcessorFriendInvited(this.leaderboardFriendsCache.get());
-    }
-
     public BaseResponseDTO inviteFriends(
             @NotNull UserBaseKey userKey,
             @NotNull InviteFormDTO inviteFormDTO)
     {
-        return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
+        return userService.inviteFriends(userKey.key, inviteFormDTO);
     }
 
     @NotNull public MiddleCallback<BaseResponseDTO> inviteFriends(
@@ -846,23 +840,18 @@ import rx.functions.Func1;
             @NotNull InviteFormDTO inviteFormDTO,
             @Nullable Callback<BaseResponseDTO> callback)
     {
-        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorFriendInvited());
+        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.inviteFriends(userKey.key, inviteFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Add Credit">
-    @NotNull protected DTOProcessor<UserProfileDTO> createAddCreditProfileProcessor()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache.get(), homeContentCache.get());
-    }
-
     public UserProfileDTO addCredit(
             @NotNull UserBaseKey userKey,
             @Nullable PurchaseReportDTO purchaseDTO)
     {
-        return createAddCreditProfileProcessor().process(userService.addCredit(userKey.key, purchaseDTO));
+        return dtoProcessorUpdateUserProfileProvider.get().process(userService.addCredit(userKey.key, purchaseDTO));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> addCredit(
@@ -870,7 +859,7 @@ import rx.functions.Func1;
             @Nullable PurchaseReportDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createAddCreditProfileProcessor());
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, dtoProcessorUpdateUserProfileProvider.get());
         userServiceAsync.addCredit(userKey.key, purchaseDTO, middleCallback);
         return middleCallback;
     }

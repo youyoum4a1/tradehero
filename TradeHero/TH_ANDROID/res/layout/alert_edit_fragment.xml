@@ -22,8 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/stock_alert_trigger_conditions"
-        android:textAllCaps="true"
         android:padding="5dp"
+        style="@style/TH.Subhead"
         android:tag="sticky"
         android:background="@color/divider_gray"
         />
@@ -40,9 +40,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/stock_alert_edit_note"
-        android:textSize="@dimen/text_small"
+        style="@style/TH.Caption"
         android:gravity="center_horizontal"
-        android:textColor="@color/text_gray_normal"
         android:padding="15dp"
         />
 

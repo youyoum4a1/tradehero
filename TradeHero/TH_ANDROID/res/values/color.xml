@@ -5,6 +5,7 @@
   <color name="number_up">@color/number_green</color>
   <color name="number_down">@color/number_red</color>
   <color name="red">#D42621</color>
+  <color name="dark_red">#ff891918</color>
   <color name="actionbar_gradient1">#6B748E</color>
   <color name="actionbar_gradient2">#929CBA</color>
   <color name="textbox_border_color_light">#555555</color>
@@ -19,7 +20,7 @@
   <color name="black">@android:color/black</color>
   <color name="light_grey">#D0D0D0</color>
   <color name="lighter_grey">#E6E6E6</color>
-  <color name="light_grey_transparent">#99BFBFBF</color>
+  <color name="light_grey_transparent">#88BFBFBF</color>
   <color name="white">@android:color/white</color>
   <color name="textbox_light_background_color">#fafafa</color>
   <color name="signinfnt_color">#47454A</color>
@@ -65,7 +66,7 @@
   <!-- What's Trending -->
   <color name="trending_grid_item_bg">#FFFFFFFF</color>
   <color name="trending_gray_border">#A0787878</color>
-  <color name="title">#ffb0b0b0</color>
+  <color name="info_key">#ffb0b0b0</color>
   <color name="sec_type">#ff5791bd</color>
   <color name="exchange_symbol">#556380</color>
 

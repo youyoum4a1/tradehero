@@ -5,9 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:background="@drawable/basic_white_selector"
-    android:paddingRight="@dimen/position_padding_right"
+    style="@style/TH.ListItem.Clickable"
     >
 
   <ImageView
@@ -17,7 +15,7 @@
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
       android:src="@drawable/settings_forward_light"
-      android:scaleType="fitXY"
+      android:scaleType="fitCenter"
       android:contentDescription="@null"
       />
 
@@ -26,6 +24,7 @@
       android:layout_width="@dimen/medium_logo_w_h"
       android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
+      android:scaleType="fitCenter"
       tools:src="@drawable/superman_facebook"
       android:contentDescription="@null"
       />
@@ -36,9 +35,8 @@
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/icn_competition_zone"
       android:layout_toLeftOf="@+id/hint_open_competition_zone"
-      android:paddingTop="2dp"
-      android:paddingBottom="2dp"
-      android:paddingLeft="5dp"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginStart="@dimen/margin_small"
       android:layout_centerVertical="true"
       >
 
@@ -48,7 +46,7 @@
         android:layout_height="0dp"
         android:maxLines="1"
         android:layout_weight="3"
-        android:textStyle="bold"
+        style="@style/TH.Subhead"
         tools:text="Competition Portfolio"
         />
 
@@ -58,8 +56,7 @@
         android:layout_height="0dp"
         android:layout_weight="2"
         android:maxLines="1"
-        android:textSize="12dp"
-        android:textColor="@color/text_gray_normal"
+        style="@style/TH.Caption"
         tools:text="view your competition positions"
         />
 

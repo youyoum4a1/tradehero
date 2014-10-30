@@ -17,8 +17,8 @@
 
     <ImageView
         android:id="@+id/edit_watchlist_item_security_logo"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/big_avatar_w_h"
+        android:layout_height="@dimen/big_avatar_w_h"
         android:contentDescription="@null"
         tools:src="@drawable/superman_facebook"
         />

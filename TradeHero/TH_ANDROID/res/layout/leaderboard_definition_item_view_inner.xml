@@ -19,6 +19,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:paddingRight="@dimen/leaderboard_title_text_padding"
+        android:paddingTop="@dimen/margin_small"
         android:contentDescription="@null"
         tools:src="@drawable/square_ae"
         />
@@ -39,6 +40,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:paddingLeft="@dimen/leaderboard_title_text_padding"
+        android:paddingBottom="@dimen/margin_small"
         android:contentDescription="@null"
         android:alpha="0.7"
         tools:src="@drawable/square_ag"
@@ -54,14 +56,14 @@
       android:gravity="center_vertical"
       android:layout_gravity="center_vertical"
       android:layout_centerVertical="true"
-      android:paddingLeft="@dimen/leaderboard_title_text_padding"
+      android:layout_marginLeft="@dimen/leaderboard_title_text_padding"
+      android:layout_marginStart="@dimen/leaderboard_title_text_padding"
       >
 
     <TextView android:id="@+id/leaderboard_def_item_name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:textSize="@dimen/leaderboard_title_text_size"
-        android:textStyle="bold"
+        style="@style/TH.Subhead"
         tools:text="Vietnam"
         />
 
@@ -69,6 +71,7 @@
         android:id="@+id/leaderboard_def_item_desc"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        style="@style/TH.Caption"
         tools:text="Exchanges: VND"
         />
 
@@ -82,8 +85,6 @@
       android:src="@drawable/expand"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
-      android:paddingRight="15dp"
-      android:paddingLeft="15dp"
       />
 
 </merge>

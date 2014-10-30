@@ -16,6 +16,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -206,7 +207,7 @@ public class MainTimelineAdapter extends ArrayAdapter
 
     private ListLoader<TimelineItemDTOKey> createTimelineLoader(Context context, UserBaseKey shownUserBaseKey)
     {
-        TimelineListLoader timelineLoader = new TimelineListLoader(context, shownUserBaseKey, UserTimelineService.TimelineSection.Timeline);
+        TimelineListLoader timelineLoader = new TimelineListLoader(context, shownUserBaseKey, TimelineSection.Timeline);
         timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);
         return timelineLoader;
     }

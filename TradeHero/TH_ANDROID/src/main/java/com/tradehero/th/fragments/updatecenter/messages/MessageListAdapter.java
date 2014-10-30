@@ -8,8 +8,6 @@ import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +15,6 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, Mess
 {
     @LayoutRes private final int layoutResourceId;
     private MessageItemViewWrapper.OnElementClickedListener elementClickedListener;
-    @Nullable private Comparator<MessageHeaderDTO> comparator;
 
     //<editor-fold desc="Constructors">
     public MessageListAdapter(
@@ -26,29 +23,10 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, Mess
             @LayoutRes int layoutResourceId,
             @Nullable Comparator<MessageHeaderDTO> comparator)
     {
-        super(context, objects);
+        super(context, comparator, objects);
         this.layoutResourceId = layoutResourceId;
-        this.comparator = comparator;
     }
     //</editor-fold>
-
-    @Override @NotNull protected Set<MessageHeaderDTO> createSet(@Nullable Collection<MessageHeaderDTO> objects)
-    {
-        Set<MessageHeaderDTO> set;
-        if (comparator != null)
-        {
-            set = new TreeSet<>(comparator);
-            if (objects != null)
-            {
-                set.addAll(objects);
-            }
-        }
-        else
-        {
-            set = super.createSet(objects);
-        }
-        return set;
-    }
 
     @Override public MessageItemViewWrapper getView(int position, View convertView, ViewGroup parent)
     {

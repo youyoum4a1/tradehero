@@ -98,6 +98,7 @@ public class PositionListFragment
 
     private PortfolioHeaderView portfolioHeaderView;
     @NotNull protected GetPositionsDTOKey getPositionsDTOKey;
+    @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected GetPositionsDTO getPositionsDTO;
     protected UserBaseKey shownUser;
     @Nullable protected UserProfileDTO userProfileDTO;
@@ -383,6 +384,12 @@ public class PositionListFragment
         super.onPause();
     }
 
+    @Override public void onDestroyOptionsMenu()
+    {
+        setActionBarSubtitle(null);
+        super.onDestroyOptionsMenu();
+    }
+
     @Override public void onSaveInstanceState(@NotNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
@@ -582,16 +589,35 @@ public class PositionListFragment
 
     public void displayActionBarTitle()
     {
+        String title = null;
+        String subtitle = null;
+        if (portfolioCompactDTO != null)
+        {
+            title = portfolioCompactDTO.title;
+        }
+
         if (getPositionsDTO != null && getPositionsDTO.positions != null)
         {
-            String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
+            subtitle = String.format(getResources().getString(R.string.position_list_action_bar_header),
                     getPositionsDTO.positions.size());
-            setActionBarTitle(title);
         }
         else
         {
-            setActionBarTitle(R.string.position_list_action_bar_header_unknown);
+            subtitle = null;
         }
+
+        if (title == null && subtitle != null)
+        {
+            title = subtitle;
+            subtitle = null;
+        }
+        else if (title == null)
+        {
+            title = getString(R.string.position_list_action_bar_header_unknown);
+        }
+
+        setActionBarTitle(title);
+        setActionBarSubtitle(subtitle);
     }
 
     //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
@@ -795,6 +821,8 @@ public class PositionListFragment
 
     protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
+        this.portfolioCompactDTO = portfolioCompactDTO;
         portfolioHeaderView.linkWith(portfolioCompactDTO);
+        displayActionBarTitle();
     }
 }

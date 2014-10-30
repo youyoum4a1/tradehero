@@ -24,9 +24,7 @@
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
       android:text="@string/ask_for_review_title"
-      android:textColor="@color/black"
-      android:textSize="@dimen/text_xlarge"
-      android:textStyle="bold"
+      style="@style/TH.Title"
       android:layout_alignParentTop="true"
       android:layout_centerHorizontal="true"
       android:layout_marginTop="@dimen/margin_small"
@@ -38,9 +36,8 @@
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
       android:text="@string/ask_for_review_summary"
-      android:textColor="@color/price_bar_bg_selected"
       android:layout_margin="@dimen/margin_medium"
-      android:textSize="@dimen/text_small"
+      style="@style/TH.Body"
       android:layout_below="@id/review_dialog_title"
 
       />
@@ -60,6 +57,7 @@
       android:layout_below="@id/review_dialog_horizontal_divider_top"
       android:background="@drawable/basic_transparent_selector"
       android:minHeight="@dimen/clickable_element_min_dimen"
+      android:padding="@dimen/margin_xsmall"
       android:layout_centerHorizontal="true"
       android:orientation="vertical"
       android:gravity="center"
@@ -71,9 +69,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/ask_for_review_rate"
-        android:textColor="@color/button_blue"
-        android:textSize="@dimen/text_large"
-        android:textStyle="bold"
+        android:padding="@dimen/margin_xsmall"
+        style="@style/TH.Button.Accented"
         />
 
     <RatingBar
@@ -101,8 +98,7 @@
       android:layout_height="@dimen/medium_logo_w_h"
       android:background="@drawable/basic_transparent_selector"
       android:text="@string/maybe_later"
-      android:textColor="@color/black"
-      android:textSize="@dimen/text_small"
+      style="@style/TH.Button.Small"
       android:layout_below="@id/review_dialog_horizontal_divider_bot"
       />
 

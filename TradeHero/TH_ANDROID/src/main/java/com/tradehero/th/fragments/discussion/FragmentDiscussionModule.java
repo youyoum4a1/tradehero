@@ -6,9 +6,6 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLin
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
 import dagger.Module;
 
-/**
- * Created by tho on 9/9/2014.
- */
 @Module(
         injects = {
                 AbstractDiscussionCompactItemViewLinear.class,
@@ -17,9 +14,6 @@ import dagger.Module;
                 AbstractDiscussionItemViewHolder.class,
                 DiscussionItemViewHolder.class,
                 TimelineItemViewHolder.class,
-                SingleViewDiscussionSetAdapter.class,
-                DiscussionSetAdapter.class,
-                PrivateDiscussionSetAdapter.class,
                 AbstractDiscussionFragment.class,
 
                 SecurityDiscussionFragment.class,

@@ -4,6 +4,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import rx.functions.Action1;
 
@@ -14,7 +15,7 @@ public class DTOProcessorUpdateUserProfile implements DTOProcessor<UserProfileDT
     @NotNull protected final HomeContentCache homeContentCache;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorUpdateUserProfile(
+    @Inject public DTOProcessorUpdateUserProfile(
             @NotNull UserProfileCache userProfileCache,
             @NotNull HomeContentCache homeContentCache)
     {

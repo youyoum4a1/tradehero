@@ -133,7 +133,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
     private void initViews(View view)
     {
-        adapter = new NewsHeadlineAdapter(getActivity(), getActivity().getLayoutInflater(),
+        adapter = new NewsHeadlineAdapter(getActivity(),
                 R.layout.news_headline_item_view);
 
         showLoadingNews();

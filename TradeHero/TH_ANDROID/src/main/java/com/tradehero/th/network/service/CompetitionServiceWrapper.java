@@ -19,23 +19,27 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class CompetitionServiceWrapper
 {
     @NotNull private final CompetitionService competitionService;
     @NotNull private final CompetitionServiceAsync competitionServiceAsync;
+    @NotNull private final CompetitionServiceRx competitionServiceRx;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final HomeContentCache homeContentCache;
 
     @Inject public CompetitionServiceWrapper(
             @NotNull CompetitionService competitionService,
             @NotNull CompetitionServiceAsync competitionServiceAsync,
+            @NotNull CompetitionServiceRx competitionServiceRx,
             @NotNull UserProfileCache userProfileCache,
             @NotNull HomeContentCache homeContentCache)
     {
         super();
         this.competitionService = competitionService;
         this.competitionServiceAsync = competitionServiceAsync;
+        this.competitionServiceRx = competitionServiceRx;
         this.userProfileCache = userProfileCache;
         this.homeContentCache = homeContentCache;
     }
@@ -59,6 +63,11 @@ import retrofit.Callback;
         this.competitionServiceAsync.getCompetitions(providerId.key, middleCallback);
         return middleCallback;
     }
+
+    @NotNull public Observable<CompetitionDTOList> getCompetitionsRx(@NotNull ProviderId providerId)
+    {
+        return this.competitionServiceRx.getCompetitions(providerId.key);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Get Competition">
@@ -74,6 +83,11 @@ import retrofit.Callback;
         MiddleCallback<CompetitionDTO> middleCallback = new BaseMiddleCallback<>(callback);
         competitionServiceAsync.getCompetition(competitionId.key, middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<CompetitionDTO> getCompetitionRx(@NotNull CompetitionId competitionId)
+    {
+        return competitionServiceRx.getCompetition(competitionId.key);
     }
     //</editor-fold>
 
@@ -99,6 +113,15 @@ import retrofit.Callback;
                 competitionLeaderboardId.perPage,
                 middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<CompetitionLeaderboardDTO> getCompetitionLeaderboardRx(@NotNull CompetitionLeaderboardId competitionLeaderboardId)
+    {
+        return this.competitionServiceRx.getCompetitionLeaderboard(
+                competitionLeaderboardId.providerId,
+                competitionLeaderboardId.competitionId,
+                competitionLeaderboardId.page,
+                competitionLeaderboardId.perPage);
     }
     //</editor-fold>
 

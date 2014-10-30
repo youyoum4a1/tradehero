@@ -37,7 +37,7 @@ public class CollectionUtils
 
     public static <T> void apply(Collection<T> collection, Action1<T> action)
     {
-        for (T element : collection)
+        for (T element: collection)
         {
             action.call(element);
         }
@@ -45,9 +45,21 @@ public class CollectionUtils
 
     public static <T> void apply(T[] collection, Action1<T> action)
     {
-        for (T element : collection)
+        for (T element: collection)
         {
             action.call(element);
         }
+    }
+
+    public static <T> T first(Collection<T> collection, Predicate<T> predicate)
+    {
+        for (T element: collection)
+        {
+            if (predicate.apply(element))
+            {
+                return element;
+            }
+        }
+        return null;
     }
 }

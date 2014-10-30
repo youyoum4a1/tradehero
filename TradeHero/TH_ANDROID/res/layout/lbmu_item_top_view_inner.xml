@@ -6,20 +6,21 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/leaderboard_user_item_basic_info"
+    style="@style/TH.ListItem"
     tools:background="#8f0"
     >
 
   <TextView
       android:id="@+id/leaderboard_user_item_position"
+      style="@style/TH.Title"
       android:layout_width="@dimen/leaderboard_position_width"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
-      android:textSize="@dimen/leaderboard_position_text_size"
-      android:textStyle="bold"
       android:textColor="@color/leaderboard_ranking_position"
       android:shadowColor="@color/light_grey"
       android:shadowDy="1"
       android:shadowRadius="1"
+      android:ellipsize="middle"
       android:layout_centerVertical="true"
       tools:text="1"
       />
@@ -41,8 +42,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:ellipsize="end"
-      android:textStyle="bold"
-      android:textSize="@dimen/leaderboard_title_text_size"
+      style="@style/TH.UserNameTitle"
       android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
       android:shadowColor="@color/light_grey"
       android:shadowDy="1"
@@ -58,7 +58,7 @@
       android:layout_below="@id/leaderboard_user_item_display_name"
       android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
       tools:text="I am supposed to be gone"
-      android:textSize="@dimen/leaderboard_fof_text_size"
+      style="@style/TH.Caption"
       android:visibility="gone"
       />
 
@@ -74,6 +74,7 @@
         android:id="@+id/lbmu_roi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/TH.UserROI"
         tools:text="+87%"
         />
 
@@ -98,17 +99,6 @@
       android:scaleType="centerInside"
       android:contentDescription="@null"
       android:layout_marginRight="@dimen/leaderboard_flag_icon_margin_right"
-      />
-
-  <ImageView
-      android:id="@+id/leaderboard_user_item_info"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:contentDescription="@null"
-      android:layout_centerVertical="true"
-      android:layout_alignParentRight="true"
-      android:src="@drawable/info"
-      android:visibility="gone"
       />
 
 </RelativeLayout>

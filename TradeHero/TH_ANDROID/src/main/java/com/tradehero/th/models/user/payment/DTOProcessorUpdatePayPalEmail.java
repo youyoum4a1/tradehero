@@ -9,19 +9,19 @@ import org.jetbrains.annotations.NotNull;
 public class DTOProcessorUpdatePayPalEmail implements DTOProcessor<UpdatePayPalEmailDTO>
 {
     @NotNull private final UserProfileCache userProfileCache;
-    @NotNull private final UserBaseKey playerId;
+    @NotNull private final UserBaseKey userBaseKey;
 
     public DTOProcessorUpdatePayPalEmail(
             @NotNull UserProfileCache userProfileCache,
-            @NotNull UserBaseKey playerId)
+            @NotNull UserBaseKey userBaseKey)
     {
         this.userProfileCache = userProfileCache;
-        this.playerId = playerId;
+        this.userBaseKey = userBaseKey;
     }
 
     @Override public UpdatePayPalEmailDTO process(UpdatePayPalEmailDTO value)
     {
-        userProfileCache.invalidate(playerId);
+        userProfileCache.invalidate(userBaseKey);
         return value;
     }
 }

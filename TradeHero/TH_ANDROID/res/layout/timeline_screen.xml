@@ -44,7 +44,9 @@
     <LinearLayout
         android:id="@+id/follow_message_container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:measureWithLargestChild="true"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/dashboard_tabhost_height"
@@ -52,32 +54,16 @@
 
       <Button
           android:id="@+id/follow_button"
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:paddingLeft="20dp"
-          android:paddingRight="20dp"
-          android:gravity="center"
           android:background="@drawable/btn_follow_green"
           android:text="@string/follow"
-          android:textSize="@dimen/text_medium"
-          android:textColor="@color/white"
-          android:drawableLeft="@drawable/icn_star_white"
+          style="@style/TH.Button.Timeline.Follow"
           android:visibility="gone"/>
 
       <Button
           android:id="@+id/message_button"
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:paddingLeft="15dp"
-          android:paddingRight="15dp"
-          android:gravity="center"
           android:background="@drawable/btn_message_blue"
           android:text="@string/message"
-          android:textSize="@dimen/text_medium"
-          android:textColor="@color/white"
-          android:drawableLeft="@drawable/icn_message_white"
+          style="@style/TH.Button.Timeline.Message"
           android:visibility="gone"/>
 
     </LinearLayout>

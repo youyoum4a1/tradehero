@@ -6,7 +6,6 @@
   <dimen name="user_level_current_level_w_h">36dp</dimen>
   <dimen name="user_level_indicator_horizontal_margin">10dp</dimen>
   <dimen name="user_level_progressbar_height">14dp</dimen>
-  <dimen name="user_level_progressbar_indicator_text_size">@dimen/text_xsmall</dimen>
   <dimen name="user_level_level_up_badge_w_h">180dp</dimen>
   <dimen name="user_level_level_up_text_vertical_margin">10dp</dimen>
   <dimen name="user_level_next_level_w_h">42dp</dimen>

@@ -11,6 +11,7 @@ import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
@@ -71,6 +72,24 @@ import rx.Observable;
                 createProcessorProviderCompactListReceived());
         this.providerServiceAsync.getProviders(middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<ProviderDTOList> getProvidersRx()
+    {
+        return this.providerServiceRx.getProviders()
+                .doOnNext(providerDTOList -> {
+                    for (ProviderDTO providerDTO : providerDTOList)
+                    {
+                        if (providerDTO != null)
+                        {
+                            PortfolioCompactDTO associatedPortfolio = providerDTO.associatedPortfolio;
+                            if (associatedPortfolio != null)
+                            {
+                                associatedPortfolio.userId = currentUserId.get();
+                            }
+                        }
+                    }
+                });
     }
     //</editor-fold>
 
@@ -193,6 +212,11 @@ import rx.Observable;
         return this.getHelpVideos(helpVideoListKey.getProviderId(), callback);
     }
 
+    @NotNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NotNull HelpVideoListKey helpVideoListKey)
+    {
+        return this.getHelpVideosRx(helpVideoListKey.getProviderId());
+    }
+
     public HelpVideoDTOList getHelpVideos(@NotNull ProviderId providerId)
     {
         return this.providerService.getHelpVideos(providerId.key);
@@ -205,6 +229,11 @@ import rx.Observable;
         MiddleCallback<HelpVideoDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         this.providerServiceAsync.getHelpVideos(providerId.key, middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NotNull ProviderId providerId)
+    {
+        return this.providerServiceRx.getHelpVideos(providerId.key);
     }
     //</editor-fold>
 

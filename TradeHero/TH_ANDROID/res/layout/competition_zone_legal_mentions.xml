@@ -10,11 +10,11 @@
 
   <TextView
       android:id="@+id/competition_legal_rules"
+      style="@style/TH.Subhead"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:maxLines="1"
-      android:textStyle="bold"
       android:background="@drawable/basic_white_selector"
       android:text="@string/provider_competition_rules_title"
       android:paddingBottom="@dimen/provider_legal_vertical_padding"
@@ -26,11 +26,11 @@
 
   <TextView
       android:id="@+id/competition_legal_terms"
+      style="@style/TH.Subhead"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/competition_legal_rules"
       android:text="@string/provider_competition_terms_title"
-      android:textStyle="bold"
       android:background="@drawable/basic_white_selector"
       android:paddingBottom="@dimen/provider_legal_vertical_padding"
       android:paddingTop="@dimen/provider_legal_vertical_padding"

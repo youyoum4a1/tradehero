@@ -5,7 +5,7 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import org.jetbrains.annotations.NotNull;
 
-public class TimelineItemDTOKey extends DiscussionKey
+public class TimelineItemDTOKey extends DiscussionKey<TimelineItemDTOKey>
 {
     private static final DiscussionType TYPE = DiscussionType.TIMELINE_ITEM;
 

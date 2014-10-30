@@ -1,43 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
   <Preference
-    android:key="user_info"
-    android:title="@string/app_name" />
+      android:key="user_info"
+      android:title="@string/app_name"
+      android:icon="@drawable/superman_facebook"
+      />
 
   <ListPreference
-    android:dialogTitle="@string/select_server"
-    android:entries="@array/servers"
-    android:entryValues="@array/server_values"
-    android:key="server_endpoint"
-    android:title="@string/select_server" />
+      android:dialogTitle="@string/select_server"
+      android:entries="@array/servers"
+      android:entryValues="@array/server_values"
+      android:key="server_endpoint"
+      android:title="@string/select_server"
+      android:icon="@drawable/ic_action_location_web_site"
+      />
 
   <Preference
-    android:key="send_fake_push"
-    android:title="@string/send_fake_push" />
+      android:key="send_fake_push"
+      android:title="@string/send_fake_push"
+      android:icon="@drawable/icn_message"
+      />
 
   <Preference
-    android:key="show_review_dialog"
-    android:title="show_review_dialog" />
+      android:key="show_review_dialog"
+      android:title="Show Review Dialog"
+      android:icon="@drawable/rate_star_small_on_th"
+      />
 
   <Preference
-    android:key="show_invite_dialog"
-    android:title="show_invite_dialog" />
+      android:key="show_invite_dialog"
+      android:title="Show Invite Dialog"
+      android:icon="@drawable/ic_icn_popup_refer"
+      />
 
   <Preference
-    android:key="show_onBoard_dialog"
-    android:title="show_onBoard_dialog" />
+      android:key="show_onBoard_dialog"
+      android:title="Show OnBoard Dialog"/>
 
   <Preference
-    android:key="show_daily_quest_test_screen"
-    android:title="show_daily_quest_test_screen" />
+      android:key="show_daily_quest_test_screen"
+      android:title="Show Daily Quest Test Screen"
+      android:icon="@drawable/ic_achievement_star_on"
+      />
 
   <Preference
-    android:key="show_achievement_test_screen"
-    android:title="show_achievement_test_screen" />
+      android:key="show_achievement_test_screen"
+      android:title="Show Achievement Test Screen"
+      android:icon="@drawable/ic_profile_achievements"
+      />
 
   <Preference
-    android:key="show_xp_test_screen"
-    android:title="show_xp_test_screen" />
+      android:key="show_xp_test_screen"
+      android:title="Show XP Test Screen"
+      android:icon="@drawable/ic_bronze_level"
+      />
+
+  <Preference
+      android:key="show_typography_examples"
+      android:title="Show Typography Examples"
+      android:icon="@drawable/icn_lb_6m"
+      />
 
 </PreferenceScreen>

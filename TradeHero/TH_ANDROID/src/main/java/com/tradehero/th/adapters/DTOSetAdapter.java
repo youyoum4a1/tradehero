@@ -2,18 +2,20 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.widget.BaseAdapter;
-import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 abstract public class DTOSetAdapter<T> extends BaseAdapter
 {
     @NotNull protected final Context context;
+    @Nullable protected Comparator<T> comparator;
     @NotNull protected Set<T> set;
     @NotNull private ArrayList<T> items;
 
@@ -21,16 +23,33 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     public DTOSetAdapter(@NotNull Context context)
     {
         super();
-        HierarchyInjector.inject(context, this);
         this.context = context;
         set = createSet(null);
         items = new ArrayList<>();
     }
 
-    public DTOSetAdapter(@NotNull Context context, @Nullable Collection<T> objects)
+    public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator)
     {
         super();
-        HierarchyInjector.inject(context, this);
+        this.context = context;
+        this.comparator = comparator;
+        set = createSet(null);
+        items = new ArrayList<>();
+    }
+
+    public DTOSetAdapter(@NotNull Context context, @Nullable Collection<? extends T> objects)
+    {
+        super();
+        this.context = context;
+        set = createSet(objects);
+        items = new ArrayList<>(set);
+
+    }
+
+    public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator, @Nullable Collection<? extends T> objects)
+    {
+        super();
+        this.comparator = comparator;
         this.context = context;
         set = createSet(objects);
         items = new ArrayList<>(set);
@@ -44,13 +63,23 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         items.clear();
     }
 
-    @NotNull protected Set<T> createSet(@Nullable Collection<T> objects)
+    @NotNull protected Set<T> createSet(@Nullable Collection<? extends T> objects)
     {
-        if (objects == null)
+        Set<T> created;
+        if (comparator == null)
         {
-            return new LinkedHashSet<>();
+            created = new LinkedHashSet<>();
         }
-        return new LinkedHashSet<>(objects);
+        else
+        {
+            created = new TreeSet<>(comparator);
+        }
+
+        if (objects != null)
+        {
+            created.addAll(objects);
+        }
+        return created;
     }
 
     public void remove(@NotNull T element)
@@ -64,7 +93,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
      * @param newOnes
      * @return the count of effectively added elements
      */
-    public int appendTail(@Nullable Collection<T> newOnes)
+    public int appendTail(@Nullable Collection<? extends T> newOnes)
     {
         int beforeCount = set.size();
         int afterCount = beforeCount;
@@ -81,7 +110,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
      * @param newOnes
      * @return the count of effectively added elements
      */
-    public int appendHead(@Nullable List<T> newOnes)
+    public int appendHead(@Nullable List<? extends T> newOnes)
     {
         int beforeCount = set.size();
         int afterCount = beforeCount;

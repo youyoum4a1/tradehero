@@ -267,6 +267,15 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         super.onDestroyView();
     }
 
+    @Override public void onSaveInstanceState(@NotNull Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        detachExchangeSectorCompactListCache();
+        detachLeaderboardUserListCache();
+        detachSecurityListCache();
+        detachUserProfileCache();
+    }
+
     @Override public void onDismiss(DialogInterface dialog)
     {
         super.onDismiss(dialog);

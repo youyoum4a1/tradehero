@@ -1,7 +1,6 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
@@ -17,18 +16,14 @@ public abstract class ExpandableDTOAdapter<
     public static final int RES_ID_EXPANDED_LAYOUT = R.id.expanding_layout;
     private List<DTOType> underlyingItems;
 
-    public ExpandableDTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public ExpandableDTOAdapter(Context context, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
     }
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        //THLog.d(TAG, "getView " + position);
-        if (convertView == null)
-        {
-            convertView = inflater.inflate(layoutResourceId, viewGroup, false);
-        }
+        convertView = conditionalInflate(position, convertView, viewGroup);
 
         DTOViewType dtoView = (DTOViewType) convertView;
         WrappedDTOType expandableWrapper = (WrappedDTOType) getItem(position);

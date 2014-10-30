@@ -3,15 +3,8 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdAsc;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.inject.HierarchyInjector;
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,31 +16,24 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
     @LayoutRes public final int mineResId;
     @LayoutRes public final int otherResId;
 
-    @Inject DiscussionCache discussionCache;
-    @Inject CurrentUserId currentUserId;
+    @NotNull DiscussionCache discussionCache;
+    @NotNull CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     public PrivateDiscussionSetAdapter(
             @NotNull Context context,
+            @NotNull DiscussionCache discussionCache,
+            @NotNull CurrentUserId currentUserId,
             @LayoutRes int mineResId,
             @LayoutRes int otherResId)
     {
         super(context);
+        this.discussionCache = discussionCache;
+        this.currentUserId = currentUserId;
         this.mineResId = mineResId;
         this.otherResId = otherResId;
-        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
-
-    @Override @NotNull protected Set<DiscussionKey> createSet(@Nullable Collection<DiscussionKey> objects)
-    {
-        Set<DiscussionKey> created = new TreeSet<>(new DiscussionKeyComparatorIdAsc());
-        if (objects != null)
-        {
-            created.addAll(objects);
-        }
-        return created;
-    }
 
     @Override public int getViewTypeCount()
     {

@@ -2,14 +2,13 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.view.LayoutInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
@@ -21,9 +20,9 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
 
     @Nullable private SecurityId securityId = null;
 
-    public NewsHeadlineAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public NewsHeadlineAdapter(Context context, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
         setItems(new ArrayList<NewsItemDTOKey>());
         loadBackground();
     }
@@ -34,7 +33,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
         Integer[] backgroundResArray = null;
         try
         {
-            array = context.getResources().obtainTypedArray(R.array.news_item_background_list);
+            array = getContext().getResources().obtainTypedArray(R.array.news_item_background_list);
             int len = array.length();
             backgroundResArray = new Integer[len];
             for (int i = 0; i < len; i++)
@@ -68,56 +67,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
     }
 
     @Override
-    public void addItems(List<NewsItemDTOKey> data)
-    {
-        super.addItems(data);
-        setBackgroundsArray();
-    }
-
-    @Override
-    public void addItems(NewsItemDTOKey[] items)
-    {
-        super.addItems(items);
-        setBackgroundsArray();
-    }
-
-    @Override
-    public void addAll(Object[] items)
-    {
-        super.addAll(items);
-        setBackgroundsArray();
-    }
-
-    @Override
-    public void remove(Object object)
-    {
-        super.remove(object);
-        setBackgroundsArray();
-    }
-
-    @Override
-    public void addAll(Collection collection)
-    {
-        super.addAll(collection);
-        setBackgroundsArray();
-    }
-
-    @Override
-    public void add(Object object)
-    {
-        super.add(object);
-        setBackgroundsArray();
-    }
-
-    @Override
-    public void addItem(NewsItemDTOKey item)
-    {
-        super.addItem(item);
-        setBackgroundsArray();
-    }
-
-    @Override
-    public void setItems(List<NewsItemDTOKey> items)
+    public void setItems(@NotNull List<NewsItemDTOKey> items)
     {
         super.setItems(items);
         setBackgroundsArray();

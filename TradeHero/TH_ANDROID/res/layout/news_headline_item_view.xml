@@ -40,9 +40,8 @@
           android:id="@+id/news_title_title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:textStyle="bold"
-          android:textSize="@dimen/text_large"
-          android:singleLine="true"
+          style="@style/TH.Title"
+          android:singleLine="false"
           tools:text="Company Name to be bought by private equity"
           />
 
@@ -82,9 +81,8 @@
           android:id="@+id/news_title_description"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:textSize="@dimen/text_medium"
           tools:text="A big one"
-          android:textColor="#444"
+          style="@style/TH.Body"
           android:maxLines="4"
           />
 
@@ -93,6 +91,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:visibility="gone"
+          style="@style/TH.Body"
+          tools:text="A discussion"
           />
 
       <include layout="@layout/discussion_translate_notice" />

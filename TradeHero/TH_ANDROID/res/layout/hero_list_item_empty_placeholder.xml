@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp"
+    style="@style/TH.ListItem"
     >
 
   <TextView
@@ -12,7 +12,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
-      android:layout_marginTop="8dp"
+      android:layout_marginTop="@dimen/margin_small"
+      style="@style/TH.Subhead"
       android:text="@string/manage_heroes_empty_title"
       />
 
@@ -21,7 +22,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/empty_follow_title"
-      android:layout_marginTop="16dp"
+      android:layout_marginTop="@dimen/margin_small"
+      style="@style/TH.Body"
       android:text="@string/manage_heroes_empty_description"
       />
 
@@ -30,9 +32,10 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/empty_follow_description"
-      android:layout_marginTop="16dp"
+      style="@style/TH.Button.Accented"
+      android:layout_marginTop="@dimen/margin_medium"
       android:text="@string/manage_heroes_empty_leaderboard_link"
-      android:background="@drawable/authentication_sign_in_button"
+      android:background="@drawable/basic_transparent_selector"
       />
 
 </RelativeLayout>

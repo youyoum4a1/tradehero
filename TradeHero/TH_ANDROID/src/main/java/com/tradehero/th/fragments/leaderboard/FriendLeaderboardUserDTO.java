@@ -5,6 +5,7 @@ import com.tradehero.th.adapters.ExpandableItem;
 abstract public class FriendLeaderboardUserDTO implements ExpandableItem
 {
     private boolean expanded;
+    private int position;
 
     //<editor-fold desc="Constructors">
     protected FriendLeaderboardUserDTO(boolean expanded)
@@ -21,5 +22,15 @@ abstract public class FriendLeaderboardUserDTO implements ExpandableItem
     @Override public void setExpanded(boolean expanded)
     {
         this.expanded = expanded;
+    }
+
+    public int getPosition()
+    {
+        return position;
+    }
+
+    public void setPosition(int position)
+    {
+        this.position = position;
     }
 }

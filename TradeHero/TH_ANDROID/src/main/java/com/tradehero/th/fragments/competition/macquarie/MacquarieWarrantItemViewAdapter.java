@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<WarrantDTO>
 {
@@ -21,12 +22,12 @@ public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<War
     //<editor-fold desc="Constructors">
     public MacquarieWarrantItemViewAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
         filterToUse = new SecurityItemFilter(warrantPredicateFilter);
     }
     //</editor-fold>
 
-    @Override public void setItems(final List<WarrantDTO> items)
+    @Override public void setItems(@NotNull final List<WarrantDTO> items)
     {
         if (items == null)
         {
