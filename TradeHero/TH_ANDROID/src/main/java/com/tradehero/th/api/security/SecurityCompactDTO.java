@@ -1,8 +1,10 @@
 package com.tradehero.th.api.security;
 
+import android.support.annotation.DrawableRes;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.R;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.compact.BondCompactDTO;
 import com.tradehero.th.api.security.compact.CoveredWarrantDTO;
@@ -100,7 +102,7 @@ public class SecurityCompactDTO implements DTO
         super();
     }
 
-    public SecurityCompactDTO(SecurityCompactDTO other)
+    public SecurityCompactDTO(@NotNull SecurityCompactDTO other)
     {
         super();
         this.id = other.id;
@@ -143,17 +145,17 @@ public class SecurityCompactDTO implements DTO
         return null;
     }
 
-    public String getExchangeSymbol()
+    @NotNull public String getExchangeSymbol()
     {
         return String.format(EXCHANGE_SYMBOL_FORMAT, exchange, symbol);
     }
 
-    public int getExchangeLogoId()
+    @DrawableRes public int getExchangeLogoId()
     {
-        return getExchangeLogoId(0);
+        return getExchangeLogoId(R.drawable.default_image);
     }
 
-    public int getExchangeLogoId(int defaultResId)
+    @DrawableRes public int getExchangeLogoId(int defaultResId)
     {
         try
         {
@@ -175,7 +177,7 @@ public class SecurityCompactDTO implements DTO
         return !Double.isNaN(lastPrice) && !(Double.compare(lastPrice, 0.0) == 0);
     }
 
-    public SecurityIntegerId getSecurityIntegerId()
+    @NotNull public SecurityIntegerId getSecurityIntegerId()
     {
         return new SecurityIntegerId(id);
     }
