@@ -3,6 +3,7 @@ package com.tradehero.common.billing.samsung.persistence;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
@@ -14,9 +15,10 @@ abstract public class SamsungGroupItemCache<
     extends StraightDTOCacheNew<SamsungItemGroup, SamsungSKUListType>
 {
     //<editor-fold desc="Constructors">
-    public SamsungGroupItemCache(int maxSize)
+    public SamsungGroupItemCache(int maxSize,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 

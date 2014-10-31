@@ -5,17 +5,19 @@ import com.tradehero.common.billing.samsung.BaseSamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class SamsungSKUListCache extends ProductIdentifierListCache<SamsungSKU, SamsungSKUListKey, SamsungSKUList>
 {
     public static final int MAX_SIZE = 15;
 
     //<editor-fold desc="Constructors">
-    @Inject public SamsungSKUListCache()
+    @Inject public SamsungSKUListCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(MAX_SIZE);
+        super(MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

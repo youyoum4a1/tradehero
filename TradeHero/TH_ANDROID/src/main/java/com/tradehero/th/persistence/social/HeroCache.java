@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.social;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
@@ -12,14 +14,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class HeroCache extends StraightDTOCacheNew<FollowerHeroRelationId, HeroDTO>
+@Singleton @UserCache public class HeroCache extends StraightDTOCacheNew<FollowerHeroRelationId, HeroDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     //<editor-fold desc="Constructors">
-    @Inject public HeroCache()
+    @Inject public HeroCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

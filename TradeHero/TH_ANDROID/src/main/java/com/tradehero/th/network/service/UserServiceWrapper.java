@@ -46,7 +46,7 @@ import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.home.HomeContentCache;
@@ -73,7 +73,7 @@ import rx.functions.Func1;
     @NotNull private final UserServiceRx userServiceRx;
     @NotNull private final Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @NotNull private final CurrentUserId currentUserId;
-    @NotNull private final DTOCacheUtil dtoCacheUtil;
+    @NotNull private final DTOCacheUtilImpl dtoCacheUtil;
     @NotNull private final Lazy<UserProfileCache> userProfileCache;
     @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     @NotNull private final Lazy<HeroListCache> heroListCache;
@@ -90,7 +90,7 @@ import rx.functions.Func1;
             @NotNull UserServiceAsync userServiceAsync,
             @NotNull UserServiceRx userServiceRx,
             @NotNull CurrentUserId currentUserId,
-            @NotNull DTOCacheUtil dtoCacheUtil,
+            @NotNull DTOCacheUtilImpl dtoCacheUtil,
             @NotNull Lazy<UserProfileCache> userProfileCache,
             @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,

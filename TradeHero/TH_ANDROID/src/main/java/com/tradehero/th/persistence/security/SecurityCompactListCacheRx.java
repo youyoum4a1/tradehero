@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.security;
 
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -10,7 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
-@Singleton public class SecurityCompactListCacheRx extends BaseFetchDTOCacheRx<
+@Singleton @UserCache
+public class SecurityCompactListCacheRx extends BaseFetchDTOCacheRx<
         SecurityListType,
         SecurityCompactDTOList>
 {
@@ -22,9 +25,10 @@ import rx.Observable;
 
     //<editor-fold desc="Constructors">
     @Inject protected SecurityCompactListCacheRx(
-            @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper)
+            @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
+            @NotNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_FETCHER_SIZE);
+        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_FETCHER_SIZE, dtoCacheUtil);
         this.securityServiceWrapper = securityServiceWrapper;
     }
     //</editor-fold>

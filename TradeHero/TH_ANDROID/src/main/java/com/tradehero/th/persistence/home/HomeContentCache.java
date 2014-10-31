@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.home;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.th.api.home.HomeContentDTO;
@@ -17,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-@Singleton public class HomeContentCache extends StraightDTOCacheNew<UserBaseKey, HomeContentDTO>
+@Singleton @UserCache
+public class HomeContentCache extends StraightDTOCacheNew<UserBaseKey, HomeContentDTO>
 {
     private static final int DEFAULT_MAX_CACHE = 1;
     @NotNull private final HomeServiceWrapper homeServiceWrapper;
@@ -28,9 +31,10 @@ import retrofit.client.Response;
     @Inject public HomeContentCache(
             @NotNull HomeServiceWrapper homeServiceWrapper,
             @NotNull Lazy<UserProfileCache> userProfileCacheLazy,
-            @NotNull RetrofitHelper retrofitHelper)
+            @NotNull RetrofitHelper retrofitHelper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_CACHE);
+        super(DEFAULT_MAX_CACHE, dtoCacheUtil);
         this.homeServiceWrapper = homeServiceWrapper;
         this.userProfileCacheLazy = userProfileCacheLazy;
         this.retrofitHelper = retrofitHelper;

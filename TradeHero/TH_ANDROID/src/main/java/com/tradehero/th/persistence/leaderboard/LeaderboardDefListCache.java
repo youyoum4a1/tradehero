@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.leaderboard;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
@@ -12,7 +14,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class LeaderboardDefListCache extends StraightCutDTOCacheNew<LeaderboardDefListKey, LeaderboardDefDTOList, LeaderboardDefKeyList>
+@Singleton @UserCache
+public class LeaderboardDefListCache extends StraightCutDTOCacheNew<LeaderboardDefListKey, LeaderboardDefDTOList, LeaderboardDefKeyList>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -24,9 +27,10 @@ import org.jetbrains.annotations.Nullable;
     @Inject public LeaderboardDefListCache(
             @NotNull LeaderboardServiceWrapper leaderboardServiceWrapper,
             @NotNull LeaderboardDefCache leaderboardDefCache,
-            @NotNull LeaderboardDefDTOFactory leaderboardDefDTOFactory)
+            @NotNull LeaderboardDefDTOFactory leaderboardDefDTOFactory,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
         this.leaderboardDefCache = leaderboardDefCache;
         this.leaderboardDefDTOFactory =leaderboardDefDTOFactory;

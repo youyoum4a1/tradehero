@@ -8,7 +8,7 @@ import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ public final class HomeWebView extends NotifyingWebView
 {
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
-    @Inject DTOCacheUtil dtoCacheUtil;
+    @Inject DTOCacheUtilImpl dtoCacheUtil;
 
     @Nullable private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
 

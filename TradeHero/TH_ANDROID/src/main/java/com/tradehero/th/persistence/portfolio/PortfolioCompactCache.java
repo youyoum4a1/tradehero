@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.portfolio;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -14,7 +16,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class PortfolioCompactCache extends StraightDTOCacheNew<PortfolioId, PortfolioCompactDTO>
+@Singleton @UserCache
+public class PortfolioCompactCache extends StraightDTOCacheNew<PortfolioId, PortfolioCompactDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 200;
 
@@ -22,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
     private final Map<PortfolioId, Double> txnCostUsds;
 
     //<editor-fold desc="Constructors">
-    @Inject public PortfolioCompactCache()
+    @Inject public PortfolioCompactCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.txnCostUsds = new HashMap<>();
     }
     //</editor-fold>

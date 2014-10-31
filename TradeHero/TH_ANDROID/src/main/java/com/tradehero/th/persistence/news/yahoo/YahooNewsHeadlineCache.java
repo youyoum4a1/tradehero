@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.news.yahoo;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.news.NewsHeadlineList;
 import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -29,7 +31,8 @@ import timber.log.Timber;
  * Cache for Yahoo News - uses SecurityId as a key and store List<News> as values.
  * This class uses internally the SecurityCompactCache (see the fetch method implementation)
  */
-@Singleton public class YahooNewsHeadlineCache extends StraightDTOCacheNew<SecurityId, NewsHeadlineList>
+@Singleton @UserCache
+public class YahooNewsHeadlineCache extends StraightDTOCacheNew<SecurityId, NewsHeadlineList>
 {
     public static final int DEFAULT_MAX_SIZE = 15;
 
@@ -39,9 +42,10 @@ import timber.log.Timber;
     //<editor-fold desc="Constructors">
     @Inject public YahooNewsHeadlineCache(
             @NotNull Lazy<SecurityCompactCache> securityCache,
-            @NotNull YahooNewsServiceWrapper yahooNewsServiceWrapper)
+            @NotNull YahooNewsServiceWrapper yahooNewsServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.securityCache = securityCache;
         this.yahooServiceWrapper = yahooNewsServiceWrapper;
     }

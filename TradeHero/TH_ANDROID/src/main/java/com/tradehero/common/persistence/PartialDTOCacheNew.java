@@ -8,9 +8,10 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         implements DTOCacheNew<DTOKeyType, DTOType>
 {
     //<editor-fold desc="Constructors">
-    public PartialDTOCacheNew()
+    public PartialDTOCacheNew(@NotNull DTOCacheUtilNew dtoCacheUtilNew)
     {
         super();
+        dtoCacheUtilNew.addCache(this);
     }
     //</editor-fold>
 

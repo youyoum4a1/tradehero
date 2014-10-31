@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.user;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -15,7 +17,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
-@Singleton public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
+@Singleton @UserCache
+public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -33,9 +36,10 @@ import rx.Observable;
             @NotNull Lazy<HeroListCache> heroListCache,
             @NotNull Lazy<LeaderboardCache> leaderboardCache,
             @NotNull Lazy<MessageHeaderListCache> messageHeaderListCache,
-            @NotNull Lazy<NotificationListCache> notificationListCache)
+            @NotNull Lazy<NotificationListCache> notificationListCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.userProfileCompactCache = userProfileCompactCache;
         this.heroListCache = heroListCache;

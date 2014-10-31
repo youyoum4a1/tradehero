@@ -5,6 +5,7 @@ import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import org.jetbrains.annotations.NotNull;
 
 public class IABPurchaseCache<
@@ -17,9 +18,10 @@ public class IABPurchaseCache<
             IABPurchaseType>
 {
     //<editor-fold desc="Constructors">
-    public IABPurchaseCache(int maxSize)
+    public IABPurchaseCache(int maxSize,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 

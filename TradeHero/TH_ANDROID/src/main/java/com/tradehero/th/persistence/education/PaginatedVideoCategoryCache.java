@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.education;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.education.PagedVideoCategories;
 import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.network.service.VideoServiceWrapper;
@@ -11,7 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton public class PaginatedVideoCategoryCache extends StraightCutDTOCacheNew<PagedVideoCategories, PaginatedVideoCategoryDTO, PaginatedVideoCategoryId>
+@Singleton @UserCache
+public class PaginatedVideoCategoryCache extends StraightCutDTOCacheNew<PagedVideoCategories, PaginatedVideoCategoryDTO, PaginatedVideoCategoryId>
 {
     private static final int DEFAULT_MAX_SIZE = 20;
 
@@ -21,9 +24,10 @@ import javax.inject.Singleton;
     //<editor-fold desc="Constructors">
     @Inject public PaginatedVideoCategoryCache(
             @NotNull VideoCategoryCache videoCategoryCache,
-            @NotNull VideoServiceWrapper videoServiceWrapper)
+            @NotNull VideoServiceWrapper videoServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.videoCategoryCache = videoCategoryCache;
         this.videoServiceWrapper = videoServiceWrapper;
     }

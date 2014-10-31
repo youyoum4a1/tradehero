@@ -3,8 +3,10 @@ package com.tradehero.th.billing.samsung.persistence;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.persistence.SamsungGroupItemCache;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class THSamsungGroupItemCache
         extends SamsungGroupItemCache<SamsungSKU, SamsungSKUList>
@@ -12,9 +14,9 @@ import javax.inject.Singleton;
     public static int MAX_SIZE = 5;
 
     //<editor-fold desc="Constructors">
-    @Inject public THSamsungGroupItemCache()
+    @Inject public THSamsungGroupItemCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(MAX_SIZE);
+        super(MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

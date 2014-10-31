@@ -1,6 +1,7 @@
 package com.tradehero.common.billing.amazon;
 
 import com.tradehero.common.billing.ProductPurchaseCache;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import org.jetbrains.annotations.NotNull;
 
 public class AmazonPurchaseCache<
@@ -13,9 +14,10 @@ public class AmazonPurchaseCache<
             AmazonPurchaseType>
 {
     //<editor-fold desc="Constructors">
-    public AmazonPurchaseCache(int maxSize)
+    public AmazonPurchaseCache(int maxSize,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 

@@ -1,5 +1,6 @@
 package com.tradehero.common.billing;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,9 +16,10 @@ abstract public class ProductIdentifierListCache<
         extends StraightDTOCacheNew<ProductIdentifierListKeyType, ProductIdentifierListType>
 {
     //<editor-fold desc="Constructors">
-    public ProductIdentifierListCache(int maxSize)
+    public ProductIdentifierListCache(int maxSize,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 

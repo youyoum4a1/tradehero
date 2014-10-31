@@ -1,7 +1,8 @@
 package com.tradehero.th.persistence.leaderboard;
 
-import com.android.internal.util.Predicate;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
@@ -13,16 +14,19 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class LeaderboardDefCache extends StraightDTOCacheNew<LeaderboardDefKey, LeaderboardDefDTO>
+@Singleton @UserCache
+public class LeaderboardDefCache extends StraightDTOCacheNew<LeaderboardDefKey, LeaderboardDefDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
     @NotNull private final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public LeaderboardDefCache(@NotNull Lazy<LeaderboardDefListCache> leaderboardDefListCache)
+    @Inject public LeaderboardDefCache(
+            @NotNull Lazy<LeaderboardDefListCache> leaderboardDefListCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.leaderboardDefListCache = leaderboardDefListCache;
     }
     //</editor-fold>

@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.social;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -9,7 +11,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class HeroListCache extends StraightCutDTOCacheNew<UserBaseKey, HeroDTOExtWrapper, HeroIdExtWrapper>
+@Singleton @UserCache
+public class HeroListCache extends StraightCutDTOCacheNew<UserBaseKey, HeroDTOExtWrapper, HeroIdExtWrapper>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
@@ -19,9 +22,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public HeroListCache(
             @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull HeroCache heroCache)
+            @NotNull HeroCache heroCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.heroCache = heroCache;
     }

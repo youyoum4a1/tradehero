@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.news;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -13,19 +15,23 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class NewsItemCompactListCacheNew extends StraightDTOCacheNew<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
+@Singleton @UserCache
+public class NewsItemCompactListCacheNew extends StraightDTOCacheNew<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
 {
     @NotNull private final NewsServiceWrapper newsServiceWrapper;
     @NotNull private final Lazy<DiscussionCache> discussionCacheLazy;
 
+    //<editor-fold desc="Constructors">
     @Inject public NewsItemCompactListCacheNew(@ListCacheMaxSize IntPreference maxSize,
             @NotNull NewsServiceWrapper newsServiceWrapper,
-            @NotNull Lazy<DiscussionCache> discussionCacheLazy)
+            @NotNull Lazy<DiscussionCache> discussionCacheLazy,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize.get());
+        super(maxSize.get(), dtoCacheUtil);
         this.newsServiceWrapper = newsServiceWrapper;
         this.discussionCacheLazy = discussionCacheLazy;
     }
+    //</editor-fold>
 
     @Override @NotNull public PaginatedDTO<NewsItemCompactDTO> fetch(@NotNull NewsItemListKey key) throws Throwable
     {

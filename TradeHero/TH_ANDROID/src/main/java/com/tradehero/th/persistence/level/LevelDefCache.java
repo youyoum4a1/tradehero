@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.level;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.LevelDefIdList;
@@ -12,14 +14,15 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class LevelDefCache extends StraightDTOCacheNew<LevelDefId, LevelDefDTO>
+@Singleton @UserCache
+public class LevelDefCache extends StraightDTOCacheNew<LevelDefId, LevelDefDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
     //<editor-fold desc="Constructors">
-    @Inject public LevelDefCache()
+    @Inject public LevelDefCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

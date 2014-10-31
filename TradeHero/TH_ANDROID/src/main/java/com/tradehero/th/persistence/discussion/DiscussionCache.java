@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.discussion;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
@@ -17,7 +19,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton
+@Singleton @UserCache
 public class DiscussionCache extends StraightCutDTOCacheNew<DiscussionKey, AbstractDiscussionCompactDTO, AbstractDiscussionCompactCutDTO>
 {
     @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
@@ -31,9 +33,10 @@ public class DiscussionCache extends StraightCutDTOCacheNew<DiscussionKey, Abstr
             @NotNull NewsServiceWrapper newsServiceWrapper,
             @NotNull UserTimelineServiceWrapper userTimelineServiceWrapper,
             @NotNull DiscussionServiceWrapper discussionServiceWrapper,
-            @NotNull AbstractDiscussionCompactCutDTOFactory cutDTOFactory)
+            @NotNull AbstractDiscussionCompactCutDTOFactory cutDTOFactory,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize.get());
+        super(maxSize.get(), dtoCacheUtil);
 
         this.discussionServiceWrapper = discussionServiceWrapper;
         this.newsServiceWrapper = newsServiceWrapper;

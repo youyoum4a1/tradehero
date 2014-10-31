@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.billing.samsung;
 
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
 import com.tradehero.th.billing.samsung.THSamsungProductDetailTuner;
 import javax.inject.Inject;
@@ -17,9 +18,10 @@ import org.jetbrains.annotations.NotNull;
     //<editor-fold desc="Constructors">
     @Inject public THSamsungProductDetailCache(
             @NotNull THSamsungProductDetailTuner thSamsungProductDetailTuner,
-            @NotNull SamsungSKUListCache samsungSKUListCache)
+            @NotNull SamsungSKUListCache samsungSKUListCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE, thSamsungProductDetailTuner);
+        super(DEFAULT_MAX_SIZE, thSamsungProductDetailTuner, dtoCacheUtil);
         this.samsungSKUListCache = samsungSKUListCache;
     }
     //</editor-fold>

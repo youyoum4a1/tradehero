@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.achievement;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.key.AchievementCategoryId;
@@ -15,16 +17,21 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class AchievementCategoryCache extends StraightDTOCacheNew<AchievementCategoryId, AchievementCategoryDTO>
+@Singleton @UserCache
+public class AchievementCategoryCache extends StraightDTOCacheNew<AchievementCategoryId, AchievementCategoryDTO>
 {
     private static final int DEFAULT_SIZE = 50;
     private final AchievementServiceWrapper achievementServiceWrapper;
 
-    @Inject public AchievementCategoryCache(AchievementServiceWrapper achievementServiceWrapper)
+    //<editor-fold desc="Constructors">
+    @Inject public AchievementCategoryCache(
+            @NotNull AchievementServiceWrapper achievementServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_SIZE);
+        super(DEFAULT_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
     }
+    //</editor-fold>
 
     @NotNull @Override public AchievementCategoryDTO fetch(@NotNull AchievementCategoryId key) throws Throwable
     {

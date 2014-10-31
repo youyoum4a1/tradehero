@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.achievement;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.key.AchievementCategoryIdList;
@@ -13,18 +15,24 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class QuestBonusListCache extends StraightCutDTOCacheNew<QuestBonusListId, QuestBonusDTOList, QuestBonusIdList>
+@Singleton @UserCache
+public class QuestBonusListCache extends StraightCutDTOCacheNew<QuestBonusListId, QuestBonusDTOList, QuestBonusIdList>
 {
     private static final int DEFAULT_SIZE = 1;
     private final AchievementServiceWrapper achievementServiceWrapper;
     private final QuestBonusCache questBonusCache;
 
-    @Inject public QuestBonusListCache(AchievementServiceWrapper achievementServiceWrapper, QuestBonusCache questBonusCache)
+    //<editor-fold desc="Constructors">
+    @Inject public QuestBonusListCache(
+            @NotNull AchievementServiceWrapper achievementServiceWrapper,
+            @NotNull QuestBonusCache questBonusCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_SIZE);
+        super(DEFAULT_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
         this.questBonusCache = questBonusCache;
     }
+    //</editor-fold>
 
     @NotNull @Override public QuestBonusDTOList fetch(@NotNull QuestBonusListId key) throws Throwable
     {

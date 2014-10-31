@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.user;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryIdList;
 import com.tradehero.th.api.users.UserTransactionHistoryListType;
@@ -10,7 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserTransactionHistoryListCache extends StraightCutDTOCacheNew<
+@Singleton @UserCache
+public class UserTransactionHistoryListCache extends StraightCutDTOCacheNew<
         UserTransactionHistoryListType,
         UserTransactionHistoryDTOList,
         UserTransactionHistoryIdList>
@@ -23,9 +26,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public UserTransactionHistoryListCache(
             @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull UserTransactionHistoryCache userTransactionHistoryCache)
+            @NotNull UserTransactionHistoryCache userTransactionHistoryCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.userTransactionHistoryCache = userTransactionHistoryCache;
     }

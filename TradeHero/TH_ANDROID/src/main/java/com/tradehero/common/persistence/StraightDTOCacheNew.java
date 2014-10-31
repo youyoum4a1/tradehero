@@ -10,9 +10,9 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
     @NotNull final private THLruCache<DTOKeyType, CacheValue<DTOKeyType, DTOType>> lruCache;
 
     //<editor-fold desc="Constructors">
-    public StraightDTOCacheNew(int maxSize)
+    public StraightDTOCacheNew(int maxSize, @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super();
+        super(dtoCacheUtil);
         this.lruCache = new THLruCache<>(maxSize);
     }
     //</editor-fold>

@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.translation;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.SystemCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.network.service.TranslationServiceWrapper;
@@ -10,15 +12,17 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class TranslationCache extends StraightDTOCacheNew<TranslationKey, TranslationResult>
+@Singleton @SystemCache
+public class TranslationCache extends StraightDTOCacheNew<TranslationKey, TranslationResult>
 {
-    private final TranslationServiceWrapper translationServiceWrapper;
+    @NotNull private final TranslationServiceWrapper translationServiceWrapper;
 
     @Inject public TranslationCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            TranslationServiceWrapper translationServiceWrapper)
+            @NotNull TranslationServiceWrapper translationServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize.get());
+        super(maxSize.get(), dtoCacheUtil);
         this.translationServiceWrapper = translationServiceWrapper;
     }
 

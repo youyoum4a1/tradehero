@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.user;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.network.service.MessageServiceWrapper;
@@ -9,16 +11,19 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class UserMessagingRelationshipCache extends StraightDTOCacheNew<UserBaseKey, UserMessagingRelationshipDTO>
+@Singleton @UserCache
+public class UserMessagingRelationshipCache extends StraightDTOCacheNew<UserBaseKey, UserMessagingRelationshipDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @NotNull private final MessageServiceWrapper messageServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    @Inject public UserMessagingRelationshipCache(@NotNull MessageServiceWrapper messageServiceWrapper)
+    @Inject public UserMessagingRelationshipCache(
+            @NotNull MessageServiceWrapper messageServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.messageServiceWrapper = messageServiceWrapper;
     }
     //</editor-fold>

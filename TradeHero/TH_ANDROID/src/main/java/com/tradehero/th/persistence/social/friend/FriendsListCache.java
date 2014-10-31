@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.social.friend;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.key.FriendsListKey;
@@ -10,7 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton
+@Singleton @UserCache
 public class FriendsListCache extends StraightDTOCacheNew<FriendsListKey, UserFriendsDTOList>
 {
     @NotNull private final UserServiceWrapper userServiceWrapper;
@@ -18,9 +20,10 @@ public class FriendsListCache extends StraightDTOCacheNew<FriendsListKey, UserFr
     //<editor-fold desc="Constructors">
     @Inject public FriendsListCache(
             @NotNull @ListCacheMaxSize IntPreference maxSize,
-            @NotNull UserServiceWrapper userServiceWrapper)
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize.get());
+        super(maxSize.get(), dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
     }
     //</editor-fold>

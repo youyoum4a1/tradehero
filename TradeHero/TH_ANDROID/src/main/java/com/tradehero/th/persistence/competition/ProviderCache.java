@@ -1,7 +1,9 @@
 package com.tradehero.th.persistence.competition;
 
 import com.android.internal.util.Predicate;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
@@ -17,7 +19,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class ProviderCache extends StraightCutDTOCacheNew<ProviderId, ProviderDTO, ProviderCutDTO>
+@Singleton @UserCache
+public class ProviderCache extends StraightCutDTOCacheNew<ProviderId, ProviderDTO, ProviderCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -29,9 +32,10 @@ import org.jetbrains.annotations.Nullable;
     @Inject public ProviderCache(
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
-            @NotNull WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory)
+            @NotNull WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.providerListCache = providerListCache;
         this.portfolioCompactCache = portfolioCompactCache;
         this.warrantSpecificKnowledgeFactory = warrantSpecificKnowledgeFactory;

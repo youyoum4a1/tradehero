@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.alert;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.network.service.AlertServiceWrapper;
@@ -10,7 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class AlertCache extends StraightDTOCacheNew<AlertId, AlertDTO>
+@Singleton @UserCache
+public class AlertCache extends StraightDTOCacheNew<AlertId, AlertDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
@@ -20,9 +23,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public AlertCache(
             @NotNull Lazy<AlertServiceWrapper> alertServiceWrapper,
-            @NotNull Lazy<AlertCompactCache> alertCompactCache)
+            @NotNull Lazy<AlertCompactCache> alertCompactCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.alertServiceWrapper = alertServiceWrapper;
         this.alertCompactCache = alertCompactCache;
     }

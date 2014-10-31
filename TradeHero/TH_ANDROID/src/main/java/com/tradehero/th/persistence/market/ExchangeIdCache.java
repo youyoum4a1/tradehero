@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.market;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.SystemCache;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeStringId;
@@ -10,14 +12,15 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class ExchangeIdCache extends StraightDTOCacheNew<ExchangeStringId, ExchangeIntegerId>
+@Singleton @SystemCache
+public class ExchangeIdCache extends StraightDTOCacheNew<ExchangeStringId, ExchangeIntegerId>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     //<editor-fold desc="Constructors">
-    @Inject public ExchangeIdCache()
+    @Inject public ExchangeIdCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.position;
 
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -10,7 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
-@Singleton public class SecurityPositionDetailCacheRx extends BaseFetchDTOCacheRx<SecurityId, SecurityPositionDetailDTO>
+@Singleton @UserCache
+public class SecurityPositionDetailCacheRx extends BaseFetchDTOCacheRx<SecurityId, SecurityPositionDetailDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
@@ -20,9 +23,10 @@ import rx.Observable;
 
     //<editor-fold desc="Constructors">
     @Inject protected SecurityPositionDetailCacheRx(
-            @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper)
+            @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
+            @NotNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_FETCHER_SIZE);
+        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_FETCHER_SIZE, dtoCacheUtil);
         this.securityServiceWrapper = securityServiceWrapper;
     }
     //</editor-fold>

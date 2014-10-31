@@ -3,9 +3,12 @@ package com.tradehero.th.persistence;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForUser;
-import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.DTOCacheRx;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
+import com.tradehero.common.persistence.SystemCache;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CollectionUtils;
@@ -27,46 +30,20 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
-import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
 import com.tradehero.th.persistence.achievement.QuestBonusListCache;
-import com.tradehero.th.persistence.achievement.UserAchievementCache;
-import com.tradehero.th.persistence.alert.AlertCache;
-import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
-import com.tradehero.th.persistence.competition.CompetitionCache;
-import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionIdCache;
 import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
-import com.tradehero.th.persistence.message.MessageHeaderCache;
-import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.persistence.position.PositionCache;
-import com.tradehero.th.persistence.position.PositionCompactCache;
-import com.tradehero.th.persistence.position.PositionCompactIdCache;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
-import com.tradehero.th.persistence.social.FollowerSummaryCache;
-import com.tradehero.th.persistence.social.UserFollowerCache;
-import com.tradehero.th.persistence.system.SystemStatusCache;
-import com.tradehero.th.persistence.trade.TradeCache;
-import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
@@ -82,7 +59,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class DTOCacheUtil
+@Singleton public class DTOCacheUtilImpl
+    implements DTOCacheUtilNew, DTOCacheUtilRx
 {
     protected final CurrentUserId currentUserId;
 
@@ -115,53 +93,28 @@ import org.jetbrains.annotations.Nullable;
     @NotNull protected final UserBaseDTOUtil userBaseDTOUtil;
     @NotNull protected final Context context;
 
-    @NotNull List<Lazy<? extends DTOCacheNew>> userCacheNews;
-    @NotNull List<Lazy<? extends DTOCacheRx>> userCacheRxs;
+    @NotNull private List<DTOCacheNew> userCacheNews;
+    @NotNull private List<DTOCacheNew> systemCacheNews;
+    @NotNull private List<DTOCacheRx> userCacheRxs;
+    @NotNull private List<DTOCacheRx> systemCacheRxs;
 
     //<editor-fold desc="Constructors">
-    @Inject public DTOCacheUtil(
+    @Inject public DTOCacheUtilImpl(
             CurrentUserId currentUserId,
-            Lazy<AchievementCategoryCache> achievementCategoryCacheLazy,
-            Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy,
-            Lazy<AlertCache> alertCache,
-            Lazy<AlertCompactCache> alertCompactCache,
             Lazy<AlertCompactListCache> alertCompactListCache,
-            Lazy<CompetitionListCache> competitionListCache,
-            Lazy<CompetitionCache> competitionCache,
-            Lazy<DiscussionCache> discussionCache,
-            Lazy<DiscussionListCacheNew> discussionListCache,
             Lazy<ExchangeCompactListCache> exchangeCompactListCache,
-            Lazy<FollowerSummaryCache> followerSummaryCache,
-            Lazy<GetPositionsCache> getPositionsCache,
             Lazy<HomeContentCache> homeContentCache,
-            Lazy<LeaderboardDefCache> leaderboardDefCache,
             Lazy<LeaderboardDefListCache> leaderboardDefListCache,
-            Lazy<LeaderboardPositionIdCache> leaderboardPositionIdCache,
-            Lazy<LeaderboardFriendsCacheRx> leaderboardFriendsCacheRx,
-            Lazy<MessageHeaderCache> messageHeaderCache,
             Lazy<LevelDefListCache> levelDefListCacheLazy,
-            Lazy<MessageHeaderListCache> messageListCache,
             Lazy<NotificationCache> notificationCache,
-            Lazy<NotificationListCache> notificationListCache,
             Lazy<PortfolioCache> portfolioCache,
             Lazy<PortfolioCompactCache> portfolioCompactCache,
             Lazy<PortfolioCompactListCache> portfolioCompactListCache,
-            Lazy<PositionCache> positionCache,
-            Lazy<PositionCompactCache> positionCompactCache,
-            Lazy<PositionCompactIdCache> positionCompactIdCache,
-            Lazy<ProductPurchaseCache> productPurchaseCache,
             Lazy<ProviderCache> providerCache,
             Lazy<ProviderListCache> providerListCache,
-            Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache,
             Lazy<SecurityCompactListCache> securityCompactListCache,
-            Lazy<SecurityCompactListCacheRx> securityCompactListCacheRx,
-            Lazy<SystemStatusCache> systemStatusCache,
-            Lazy<TradeCache> tradeCache,
-            Lazy<TradeListCache> tradeListCache,
             Lazy<TranslationTokenCache> translationTokenCache,
-            Lazy<UserAchievementCache> userAchievementCache,
             Lazy<UserProfileCache> userProfileCache,
-            Lazy<UserFollowerCache> userFollowerCache,
             Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
             Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
             Lazy<WatchlistPositionCache> watchlistPositionCache,
@@ -174,72 +127,30 @@ import org.jetbrains.annotations.Nullable;
             @NotNull UserBaseDTOUtil userBaseDTOUtil,
             @NotNull Context context)
     {
+        this.userCacheNews = new ArrayList<>();
+        this.systemCacheNews = new ArrayList<>();
+        this.userCacheRxs = new ArrayList<>();
+        this.systemCacheRxs = new ArrayList<>();
+
         this.currentUserId = currentUserId;
 
-        this.userCacheNews = new ArrayList<>();
-        this.userCacheRxs = new ArrayList<>();
-
-        this.userCacheNews.add(achievementCategoryCacheLazy);
-        this.userCacheNews.add(achievementCategoryListCacheLazy);
-        this.userCacheNews.add(alertCache);
-        this.userCacheNews.add(alertCompactCache);
         this.alertCompactListCache = alertCompactListCache;
-        this.userCacheNews.add(alertCompactListCache);
-        this.userCacheNews.add(competitionListCache);
-        this.userCacheNews.add(competitionCache);
-        this.userCacheNews.add(discussionCache);
-        this.userCacheNews.add(discussionListCache);
         this.exchangeCompactListCache = exchangeCompactListCache; // Not added to list
-        this.userCacheNews.add(followerSummaryCache);
-        this.userCacheNews.add(getPositionsCache);
         this.homeContentCache = homeContentCache;
-        this.userCacheNews.add(homeContentCache);
-        this.userCacheNews.add(leaderboardDefCache);
         this.leaderboardDefListCache = leaderboardDefListCache;
-        this.userCacheNews.add(leaderboardDefListCache);
-        this.userCacheNews.add(leaderboardPositionIdCache);
-        this.userCacheRxs.add(leaderboardFriendsCacheRx);
         this.levelDefListCache = levelDefListCacheLazy;
-        this.userCacheNews.add(levelDefListCacheLazy);
-        this.userCacheNews.add(messageHeaderCache);
-        this.userCacheNews.add(messageListCache);
         this.notificationCache = notificationCache;
-        this.userCacheNews.add(notificationCache);
-        this.userCacheNews.add(notificationListCache);
         this.portfolioCache = portfolioCache;
-        this.userCacheNews.add(portfolioCache);
         this.portfolioCompactCache = portfolioCompactCache;
-        this.userCacheNews.add(portfolioCompactCache);
         this.portfolioCompactListCache = portfolioCompactListCache;
-        this.userCacheNews.add(portfolioCompactListCache);
-        this.userCacheNews.add(positionCache);
-        this.userCacheNews.add(positionCompactCache);
-        this.userCacheNews.add(positionCompactIdCache);
-        this.userCacheNews.add(productPurchaseCache);
         this.providerCache = providerCache;
-        this.userCacheNews.add(providerCache);
         this.providerListCache = providerListCache;
-        this.userCacheNews.add(providerListCache);
         this.questBonusListCacheLazy = questBonusListCacheLazy;
-        this.userCacheNews.add(questBonusListCacheLazy);
-        this.userCacheRxs.add(securityPositionDetailCache);
         this.securityCompactListCache = securityCompactListCache;
-        this.userCacheNews.add(securityCompactListCache);
-        this.userCacheRxs.add(securityCompactListCacheRx);
-        this.userCacheRxs.add(systemStatusCache);
-        this.userCacheNews.add(tradeCache);
-        this.userCacheNews.add(tradeListCache);
         this.translationTokenCache = translationTokenCache;
-        this.userCacheNews.add(translationTokenCache);
-        this.userCacheNews.add(userAchievementCache);
         this.userProfileCache = userProfileCache;
-        this.userCacheNews.add(userProfileCache);
-        this.userCacheNews.add(userFollowerCache);
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
-        this.userCacheNews.add(userMessagingRelationshipCache);
         this.userWatchlistPositionCache = userWatchlistPositionCache;
-        this.userCacheNews.add(userWatchlistPositionCache);
-        this.userCacheNews.add(watchlistPositionCache);
         this.watchlistPositionCache = watchlistPositionCache;
 
         this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
@@ -252,10 +163,54 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    public void clearUserRelatedCaches()
+    @Override public void addCache(@NotNull DTOCacheNew dtoCacheNew)
     {
-        CollectionUtils.apply(userCacheNews, dtoCacheNew -> dtoCacheNew.get().invalidateAll());
-        CollectionUtils.apply(userCacheRxs, dtoCacheRx -> dtoCacheRx.get().invalidateAll());
+        if (dtoCacheNew.getClass().isAnnotationPresent(UserCache.class))
+        {
+            userCacheNews.add(dtoCacheNew);
+        }
+        else if (dtoCacheNew.getClass().isAnnotationPresent(SystemCache.class))
+        {
+            systemCacheNews.add(dtoCacheNew);
+        }
+        else
+        {
+            throw new IllegalStateException(dtoCacheNew.getClass() + " needs to be either UserCache or SystemCache");
+        }
+    }
+
+    @Override public void addCache(@NotNull DTOCacheRx dtoCacheRx)
+    {
+        if (dtoCacheRx.getClass().isAnnotationPresent(UserCache.class))
+        {
+            userCacheRxs.add(dtoCacheRx);
+        }
+        else if (dtoCacheRx.getClass().isAnnotationPresent(SystemCache.class))
+        {
+            systemCacheRxs.add(dtoCacheRx);
+        }
+        else
+        {
+            throw new IllegalStateException(dtoCacheRx.getClass() + " needs to be either UserCache or SystemCache");
+        }
+    }
+
+    @Override public void clearAllCaches()
+    {
+        clearSystemCaches();
+        clearUserCaches();
+    }
+
+    @Override public void clearSystemCaches()
+    {
+        CollectionUtils.apply(systemCacheNews, DTOCacheNew::invalidateAll);
+        CollectionUtils.apply(systemCacheRxs, DTOCacheRx::invalidateAll);
+    }
+
+    @Override public void clearUserCaches()
+    {
+        CollectionUtils.apply(userCacheNews, DTOCacheNew::invalidateAll);
+        CollectionUtils.apply(userCacheRxs, DTOCacheRx::invalidateAll);
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();

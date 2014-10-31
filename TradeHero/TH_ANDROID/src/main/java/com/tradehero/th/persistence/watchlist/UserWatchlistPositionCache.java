@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.watchlist;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
@@ -12,7 +14,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserWatchlistPositionCache extends StraightCutDTOCacheNew<UserBaseKey, WatchlistPositionDTOList, SecurityIdList>
+@Singleton @UserCache public class UserWatchlistPositionCache extends StraightCutDTOCacheNew<UserBaseKey, WatchlistPositionDTOList, SecurityIdList>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
     private static final int DEFAULT_WATCHLIST_FETCH_SIZE = 100;
@@ -23,9 +25,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public UserWatchlistPositionCache(
             @NotNull Lazy<WatchlistServiceWrapper> watchlistServiceWrapper,
-            @NotNull Lazy<WatchlistPositionCache> watchlistPositionCache)
+            @NotNull Lazy<WatchlistPositionCache> watchlistPositionCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.watchlistServiceWrapper = watchlistServiceWrapper;
         this.watchlistPositionCache = watchlistPositionCache;
     }

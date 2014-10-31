@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.translation;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.SystemCache;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.network.service.TranslationTokenServiceWrapper;
 import javax.inject.Inject;
@@ -9,16 +11,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-@Singleton
+@Singleton @SystemCache
 public class TranslationTokenCache extends StraightDTOCacheNew<TranslationTokenKey, TranslationToken>
 {
     @NotNull private final TranslationTokenServiceWrapper translationTokenServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public TranslationTokenCache(
-            @NotNull TranslationTokenServiceWrapper translationTokenServiceWrapper)
+            @NotNull TranslationTokenServiceWrapper translationTokenServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(1);
+        super(1, dtoCacheUtil);
         this.translationTokenServiceWrapper = translationTokenServiceWrapper;
     }
     //</editor-fold>

@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.competition;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.key.CompetitionId;
@@ -15,7 +17,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class CompetitionCache extends StraightCutDTOCacheNew<CompetitionId, CompetitionDTO, CompetitionCutDTO>
+@Singleton @UserCache
+public class CompetitionCache extends StraightCutDTOCacheNew<CompetitionId, CompetitionDTO, CompetitionCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -27,18 +30,20 @@ import org.jetbrains.annotations.Nullable;
     @Inject public CompetitionCache(
             @NotNull CompetitionServiceWrapper competitionServiceWrapper,
             @NotNull Lazy<LeaderboardDefCache> leaderboardDefCache,
-            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        this(DEFAULT_MAX_SIZE, competitionServiceWrapper, leaderboardDefCache, leaderboardUserCache);
+        this(DEFAULT_MAX_SIZE, competitionServiceWrapper, leaderboardDefCache, leaderboardUserCache, dtoCacheUtil);
     }
 
     public CompetitionCache(
             int maxSize,
             @NotNull CompetitionServiceWrapper competitionServiceWrapper,
             @NotNull Lazy<LeaderboardDefCache> leaderboardDefCache,
-            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
         this.competitionServiceWrapper = competitionServiceWrapper;
         this.leaderboardDefCache = leaderboardDefCache;
         this.leaderboardUserCache = leaderboardUserCache;

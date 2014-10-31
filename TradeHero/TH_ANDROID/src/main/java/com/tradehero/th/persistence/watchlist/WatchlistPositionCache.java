@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.watchlist;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -13,16 +15,18 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class WatchlistPositionCache extends StraightCutDTOCacheNew<SecurityId, WatchlistPositionDTO, WatchlistPositionCutDTO>
+@Singleton @UserCache public class WatchlistPositionCache extends StraightCutDTOCacheNew<SecurityId, WatchlistPositionDTO, WatchlistPositionCutDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
 
     @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public WatchlistPositionCache(@NotNull Lazy<SecurityCompactCache> securityCompactCache)
+    @Inject public WatchlistPositionCache(
+            @NotNull Lazy<SecurityCompactCache> securityCompactCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>

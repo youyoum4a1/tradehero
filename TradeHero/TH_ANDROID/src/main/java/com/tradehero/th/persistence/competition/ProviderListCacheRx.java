@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
@@ -9,7 +11,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
-@Singleton public class ProviderListCacheRx extends BaseFetchDTOCacheRx<ProviderListKey, ProviderDTOList>
+@Singleton @UserCache
+public class ProviderListCacheRx extends BaseFetchDTOCacheRx<ProviderListKey, ProviderDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
@@ -20,9 +23,10 @@ import rx.Observable;
     //<editor-fold desc="Constructors">
     @Inject public ProviderListCacheRx(
             @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull ProviderCacheRx providerCache)
+            @NotNull ProviderCacheRx providerCache,
+            @NotNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE);
+        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.providerServiceWrapper = providerServiceWrapper;
         this.providerCache = providerCache;
     }

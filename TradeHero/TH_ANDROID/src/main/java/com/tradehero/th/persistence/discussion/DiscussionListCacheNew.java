@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.discussion;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -20,7 +22,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton
+@Singleton @UserCache
 public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKey, DiscussionKeyList>
 {
     @NotNull private final DiscussionCache discussionCache;
@@ -29,10 +31,10 @@ public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKe
     @Inject public DiscussionListCacheNew(
             @ListCacheMaxSize IntPreference maxSize,
             @NotNull DiscussionServiceWrapper discussionServiceWrapper,
-            @NotNull DiscussionCache discussionCache)
+            @NotNull DiscussionCache discussionCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize.get());
-
+        super(maxSize.get(), dtoCacheUtil);
         this.discussionServiceWrapper = discussionServiceWrapper;
         this.discussionCache = discussionCache;
     }

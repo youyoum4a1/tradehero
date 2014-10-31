@@ -10,9 +10,9 @@ abstract public class StraightCutDTOCacheNew<
     extends StraightDTOCacheNew<DTOKeyType, DTOType>
 {
     //<editor-fold desc="Constructors">
-    public StraightCutDTOCacheNew(int maxSize)
+    public StraightCutDTOCacheNew(int maxSize, @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 

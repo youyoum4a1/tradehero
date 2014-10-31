@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.leaderboard;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserIdList;
@@ -12,7 +14,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class LeaderboardUserListCache
+@Singleton @UserCache
+public class LeaderboardUserListCache
         extends StraightCutDTOCacheNew<
         SuggestHeroesListType,
         LeaderboardUserDTOList,
@@ -26,9 +29,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardUserListCache(
             @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
-            @NotNull UserServiceWrapper userServiceWrapper)
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(MAX_SIZE);
+        super(MAX_SIZE, dtoCacheUtil);
         this.leaderboardUserCache = leaderboardUserCache;
         this.userServiceWrapper = userServiceWrapper;
     }

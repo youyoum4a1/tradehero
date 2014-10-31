@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.user;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryId;
@@ -9,14 +11,15 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class UserTransactionHistoryCache extends StraightDTOCacheNew<UserTransactionHistoryId, UserTransactionHistoryDTO>
+@Singleton @UserCache
+public class UserTransactionHistoryCache extends StraightDTOCacheNew<UserTransactionHistoryId, UserTransactionHistoryDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     //<editor-fold desc="Constructors">
-    @Inject public UserTransactionHistoryCache()
+    @Inject public UserTransactionHistoryCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

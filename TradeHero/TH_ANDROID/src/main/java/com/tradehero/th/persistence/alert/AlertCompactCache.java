@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.alert;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertId;
@@ -14,21 +16,26 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class AlertCompactCache extends StraightCutDTOCacheNew<AlertId, AlertCompactDTO, AlertCompactCutDTO>
+@Singleton @UserCache
+public class AlertCompactCache extends StraightCutDTOCacheNew<AlertId, AlertCompactDTO, AlertCompactCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
     @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public AlertCompactCache(@NotNull Lazy<SecurityCompactCache> securityCompactCache)
+    @Inject public AlertCompactCache(
+            @NotNull Lazy<SecurityCompactCache> securityCompactCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtilNew)
     {
-        this(DEFAULT_MAX_SIZE, securityCompactCache);
+        this(DEFAULT_MAX_SIZE, securityCompactCache, dtoCacheUtilNew);
     }
     
-    public AlertCompactCache(int maxSize, @NotNull Lazy<SecurityCompactCache> securityCompactCache)
+    public AlertCompactCache(int maxSize,
+            @NotNull Lazy<SecurityCompactCache> securityCompactCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtilNew)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtilNew);
         this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>

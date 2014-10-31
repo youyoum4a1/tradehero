@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.achievement;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.key.QuestBonusId;
@@ -11,14 +13,16 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class QuestBonusCache extends StraightDTOCacheNew<QuestBonusId, QuestBonusDTO>
+@Singleton @UserCache public class QuestBonusCache extends StraightDTOCacheNew<QuestBonusId, QuestBonusDTO>
 {
     private static final int DEFAULT_SIZE = 50;
 
-    @Inject public QuestBonusCache()
+    //<editor-fold desc="Constructors">
+    @Inject public QuestBonusCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_SIZE);
+        super(DEFAULT_SIZE, dtoCacheUtil);
     }
+    //</editor-fold>
 
     @NotNull @Override public QuestBonusDTO fetch(@NotNull QuestBonusId key) throws Throwable
     {

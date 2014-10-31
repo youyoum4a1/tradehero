@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.security;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIdList;
@@ -12,7 +14,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class SecurityCompactListCache extends StraightCutDTOCacheNew<
+@Singleton @UserCache
+public class SecurityCompactListCache extends StraightCutDTOCacheNew<
         SecurityListType,
         SecurityCompactDTOList,
         SecurityIdList>
@@ -25,9 +28,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public SecurityCompactListCache(
             @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
-            @NotNull Lazy<SecurityCompactCache> securityCompactCache)
+            @NotNull Lazy<SecurityCompactCache> securityCompactCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.securityServiceWrapper = securityServiceWrapper;
         this.securityCompactCache = securityCompactCache;
     }

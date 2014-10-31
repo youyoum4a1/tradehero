@@ -15,9 +15,10 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
     @NotNull final private THLruCache<DTOKeyType, Subscription> cachedFetcherSubscriptions;
 
     //<editor-fold desc="Constructors">
-    protected BaseFetchDTOCacheRx(int valueSize, int subjectSize, int fetcherSize)
+    protected BaseFetchDTOCacheRx(int valueSize, int subjectSize, int fetcherSize,
+            @NotNull DTOCacheUtilRx dtoCacheUtilRx)
     {
-        super(valueSize, subjectSize);
+        super(valueSize, subjectSize, dtoCacheUtilRx);
         this.cachedFetcherSubscriptions = new THLruCache<>(fetcherSize);
     }
     //</editor-fold>

@@ -14,10 +14,12 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
     @NotNull final private THLruCache<DTOKeyType, BehaviorSubject<Pair<DTOKeyType, DTOType>>> cachedSubjects;
 
     //<editor-fold desc="Constructors">
-    protected BaseDTOCacheRx(int valueSize, int subjectSize)
+    protected BaseDTOCacheRx(int valueSize, int subjectSize,
+            @NotNull DTOCacheUtilRx dtoCacheUtilRx)
     {
         this.cachedValues = new THLruCache<>(valueSize);
         this.cachedSubjects = new THLruCache<>(subjectSize);
+        dtoCacheUtilRx.addCache(this);
     }
     //</editor-fold>
 

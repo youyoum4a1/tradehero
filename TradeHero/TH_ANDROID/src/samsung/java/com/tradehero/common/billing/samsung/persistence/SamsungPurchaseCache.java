@@ -4,6 +4,7 @@ import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import org.jetbrains.annotations.NotNull;
 
 public class SamsungPurchaseCache<
@@ -16,9 +17,9 @@ public class SamsungPurchaseCache<
         SamsungPurchaseType>
 {
     //<editor-fold desc="Constructors">
-    public SamsungPurchaseCache(int maxSize)
+    public SamsungPurchaseCache(int maxSize, @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 

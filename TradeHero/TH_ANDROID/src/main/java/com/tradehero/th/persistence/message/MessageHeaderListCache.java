@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.message;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
@@ -17,7 +19,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton
+@Singleton @UserCache
 public class MessageHeaderListCache extends StraightCutDTOCacheNew<
         MessageListKey,
         ReadablePaginatedMessageHeaderDTO,
@@ -30,9 +32,10 @@ public class MessageHeaderListCache extends StraightCutDTOCacheNew<
     @Inject public MessageHeaderListCache(
             @ListCacheMaxSize IntPreference maxSize,
             @NotNull MessageHeaderCache messageHeaderCache,
-            @NotNull MessageServiceWrapper messageServiceWrapper)
+            @NotNull MessageServiceWrapper messageServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize.get());
+        super(maxSize.get(), dtoCacheUtil);
         this.messageHeaderCache = messageHeaderCache;
         this.messageServiceWrapper = messageServiceWrapper;
     }

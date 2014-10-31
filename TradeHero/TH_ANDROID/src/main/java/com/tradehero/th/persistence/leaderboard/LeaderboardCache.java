@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.leaderboard;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
@@ -11,7 +13,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class LeaderboardCache extends StraightCutDTOCacheNew<LeaderboardKey, LeaderboardDTO, LeaderboardCutDTO>
+@Singleton @UserCache
+public class LeaderboardCache extends StraightCutDTOCacheNew<LeaderboardKey, LeaderboardDTO, LeaderboardCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -24,22 +27,25 @@ import org.jetbrains.annotations.Nullable;
     @Inject public LeaderboardCache(
             @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
             @NotNull LeaderboardUserDTOUtil leaderboardUserDTOUtil,
-            @NotNull LeaderboardServiceWrapper leaderboardServiceWrapper)
+            @NotNull LeaderboardServiceWrapper leaderboardServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
         this(
                 DEFAULT_MAX_SIZE,
                 leaderboardUserCache,
                 leaderboardUserDTOUtil,
-                leaderboardServiceWrapper);
+                leaderboardServiceWrapper,
+                dtoCacheUtil);
     }
 
     public LeaderboardCache(
             int maxSize,
             @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
             @NotNull LeaderboardUserDTOUtil leaderboardUserDTOUtil,
-            @NotNull LeaderboardServiceWrapper leaderboardServiceWrapper)
+            @NotNull LeaderboardServiceWrapper leaderboardServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
         this.leaderboardUserCache = leaderboardUserCache;
         this.leaderboardUserDTOUtil = leaderboardUserDTOUtil;
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;

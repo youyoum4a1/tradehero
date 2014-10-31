@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.user;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
@@ -11,7 +13,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserBaseKeyListCache extends StraightCutDTOCacheNew<UserListType, UserSearchResultDTOList, UserBaseKeyList>
+@Singleton @UserCache
+public class UserBaseKeyListCache extends StraightCutDTOCacheNew<UserListType, UserSearchResultDTOList, UserBaseKeyList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -21,9 +24,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public UserBaseKeyListCache(
             @NotNull Lazy<UserServiceWrapper> userServiceWrapper,
-            @NotNull Lazy<UserSearchResultCache> userSearchResultCache)
+            @NotNull Lazy<UserSearchResultCache> userSearchResultCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.userSearchResultCache = userSearchResultCache;
     }

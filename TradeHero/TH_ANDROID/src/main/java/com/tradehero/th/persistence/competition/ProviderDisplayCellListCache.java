@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.competition;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellIdList;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
@@ -10,7 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class ProviderDisplayCellListCache
+@Singleton @UserCache
+public class ProviderDisplayCellListCache
         extends StraightCutDTOCacheNew<ProviderDisplayCellListKey, ProviderDisplayCellDTOList, ProviderDisplayCellIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
@@ -21,9 +24,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public ProviderDisplayCellListCache(
             @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull ProviderDisplayCellCache providerDisplayCellCache)
+            @NotNull ProviderDisplayCellCache providerDisplayCellCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.providerServiceWrapper = providerServiceWrapper;
         this.providerDisplayCellCache = providerDisplayCellCache;
     }

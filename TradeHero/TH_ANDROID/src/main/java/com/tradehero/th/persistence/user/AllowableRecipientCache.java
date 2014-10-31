@@ -1,7 +1,9 @@
 package com.tradehero.th.persistence.user;
 
 import com.tradehero.common.api.BaseArrayList;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import dagger.Lazy;
@@ -11,7 +13,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton
+@Singleton @UserCache
 public class AllowableRecipientCache extends StraightCutDTOCacheNew<UserBaseKey, AllowableRecipientDTO, AllowableRecipientCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 300;
@@ -20,15 +22,17 @@ public class AllowableRecipientCache extends StraightCutDTOCacheNew<UserBaseKey,
 
     //<editor-fold desc="Constructors">
     @Inject public AllowableRecipientCache(
-            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache)
+            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        this(DEFAULT_MAX_SIZE, userMessagingRelationshipCache);
+        this(DEFAULT_MAX_SIZE, userMessagingRelationshipCache, dtoCacheUtil);
     }
 
     public AllowableRecipientCache(int maxSize,
-            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache)
+            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
     }
     //</editor-fold>

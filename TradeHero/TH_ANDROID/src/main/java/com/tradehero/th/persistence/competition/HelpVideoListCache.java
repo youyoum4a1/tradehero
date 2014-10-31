@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.competition;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.HelpVideoIdList;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
@@ -10,7 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class HelpVideoListCache extends StraightCutDTOCacheNew<HelpVideoListKey, HelpVideoDTOList, HelpVideoIdList>
+@Singleton @UserCache
+public class HelpVideoListCache extends StraightCutDTOCacheNew<HelpVideoListKey, HelpVideoDTOList, HelpVideoIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -20,9 +23,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public HelpVideoListCache(
             @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull HelpVideoCache helpVideoCache)
+            @NotNull HelpVideoCache helpVideoCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.providerServiceWrapper = providerServiceWrapper;
         this.helpVideoCache = helpVideoCache;
     }

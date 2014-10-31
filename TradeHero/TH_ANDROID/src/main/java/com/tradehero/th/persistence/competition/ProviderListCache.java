@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.competition;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
@@ -10,7 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class ProviderListCache extends StraightCutDTOCacheNew<ProviderListKey, ProviderDTOList, ProviderIdList>
+@Singleton @UserCache
+public class ProviderListCache extends StraightCutDTOCacheNew<ProviderListKey, ProviderDTOList, ProviderIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -20,9 +23,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public ProviderListCache(
             @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull ProviderCache providerCache)
+            @NotNull ProviderCache providerCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.providerServiceWrapper = providerServiceWrapper;
         this.providerCache = providerCache;
     }

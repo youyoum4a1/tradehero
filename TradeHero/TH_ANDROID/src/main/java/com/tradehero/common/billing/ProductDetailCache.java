@@ -1,5 +1,6 @@
 package com.tradehero.common.billing;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,14 +27,18 @@ abstract public class ProductDetailCache<
     protected int me = latest++;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailCache(@NotNull ProductTunerType detailsTuner)
+    public ProductDetailCache(
+            @NotNull ProductTunerType detailsTuner,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        this(DEFAULT_MAX_SIZE, detailsTuner);
+        this(DEFAULT_MAX_SIZE, detailsTuner, dtoCacheUtil);
     }
 
-    public ProductDetailCache(int defaultMaxSize, @NotNull ProductTunerType detailsTuner)
+    public ProductDetailCache(int defaultMaxSize,
+            @NotNull ProductTunerType detailsTuner,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(defaultMaxSize);
+        super(defaultMaxSize, dtoCacheUtil);
         this.detailsTuner = detailsTuner;
     }
     //</editor-fold>

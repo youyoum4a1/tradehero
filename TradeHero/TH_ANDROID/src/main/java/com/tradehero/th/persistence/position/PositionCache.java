@@ -1,7 +1,9 @@
 package com.tradehero.th.persistence.position;
 
 import com.android.internal.util.Predicate;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -22,7 +24,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class PositionCache extends StraightDTOCacheNew<PositionDTOKey, PositionDTO>
+@Singleton @UserCache public class PositionCache extends StraightDTOCacheNew<PositionDTOKey, PositionDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 5000;
 
@@ -36,9 +38,10 @@ import org.jetbrains.annotations.Nullable;
             @NotNull Lazy<PositionCompactIdCache> positionCompactIdCache,
             @NotNull Lazy<LeaderboardPositionIdCache> positionIdCache,
             @NotNull Lazy<GetPositionsCache> getPositionsCache,
-            @NotNull Lazy<TradeListCache> tradeListCache)
+            @NotNull Lazy<TradeListCache> tradeListCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.positionCompactIdCache = positionCompactIdCache;
         this.positionIdCache = positionIdCache;
         this.getPositionsCache = getPositionsCache;

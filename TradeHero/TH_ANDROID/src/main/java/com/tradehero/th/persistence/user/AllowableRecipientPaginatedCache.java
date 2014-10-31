@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.user;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -10,7 +12,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton
+@Singleton @UserCache
 public class AllowableRecipientPaginatedCache extends StraightCutDTOCacheNew<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO, PaginatedUserBaseKey>
 {
     public static final int DEFAULT_MAX_SIZE = 20;
@@ -21,9 +23,10 @@ public class AllowableRecipientPaginatedCache extends StraightCutDTOCacheNew<Sea
     //<editor-fold desc="Constructors">
     @Inject public AllowableRecipientPaginatedCache(
             @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull Lazy<AllowableRecipientCache> allowableRecipientCache)
+            @NotNull Lazy<AllowableRecipientCache> allowableRecipientCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.allowableRecipientCache = allowableRecipientCache;
     }

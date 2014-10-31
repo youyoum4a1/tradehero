@@ -15,7 +15,7 @@ import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.system.SystemStatusCache;
@@ -37,7 +37,7 @@ import timber.log.Timber;
     @NotNull private final SessionServiceAsync sessionServiceAsync;
     @NotNull private final SessionServiceRx sessionServiceRx;
     @NotNull private final UserProfileCache userProfileCache;
-    @NotNull private final DTOCacheUtil dtoCacheUtil;
+    @NotNull private final DTOCacheUtilImpl dtoCacheUtil;
     @NotNull private final Context context;
     @NotNull private final StringPreference savedPushDeviceIdentifier;
     @NotNull private final Lazy<SystemStatusCache> systemStatusCache;
@@ -50,7 +50,7 @@ import timber.log.Timber;
             @NotNull SessionServiceAsync sessionServiceAsync,
             @NotNull SessionServiceRx sessionServiceRx,
             @NotNull UserProfileCache userProfileCache,
-            @NotNull DTOCacheUtil dtoCacheUtil,
+            @NotNull DTOCacheUtilImpl dtoCacheUtil,
             @NotNull Context context,
             @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
             @NotNull Lazy<SystemStatusCache> systemStatusCache,
@@ -88,7 +88,7 @@ import timber.log.Timber;
     @NotNull protected DTOProcessor<UserProfileDTO> createLogoutProcessor()
     {
         return new DTOProcessorLogout(
-                dtoCacheUtil,
+                dtoCacheUtil, dtoCacheUtil,
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
     }
     //</editor-fold>

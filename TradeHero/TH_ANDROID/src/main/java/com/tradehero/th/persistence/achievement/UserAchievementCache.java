@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.achievement;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
@@ -18,7 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-@Singleton public class UserAchievementCache extends StraightDTOCacheNew<UserAchievementId, UserAchievementDTO>
+@Singleton @UserCache
+public class UserAchievementCache extends StraightDTOCacheNew<UserAchievementId, UserAchievementDTO>
 {
     public static final int DEFAULT_SIZE = 20;
 
@@ -32,9 +35,10 @@ import timber.log.Timber;
             @NotNull AchievementServiceWrapper achievementServiceWrapper,
             @NotNull BroadcastUtils broadcastUtils,
             @NotNull Lazy<CurrentUserId> currentUserId,
-            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache)
+            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_SIZE);
+        super(DEFAULT_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
         this.broadcastUtils = broadcastUtils;
         this.currentUserId = currentUserId;

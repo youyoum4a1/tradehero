@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.notification;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationDTOList;
@@ -13,19 +15,21 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton
+@Singleton @UserCache
 public class NotificationCache extends StraightDTOCacheNew<NotificationKey, NotificationDTO>
 {
     @NotNull private final Lazy<NotificationServiceWrapper> notificationServiceWrapper;
 
+    //<editor-fold desc="Constructors">
     @Inject public NotificationCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            @NotNull Lazy<NotificationServiceWrapper> notificationServiceWrapper)
+            @NotNull Lazy<NotificationServiceWrapper> notificationServiceWrapper,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize.get());
-
+        super(maxSize.get(), dtoCacheUtil);
         this.notificationServiceWrapper = notificationServiceWrapper;
     }
+    //</editor-fold>
 
     @Override @NotNull public NotificationDTO fetch(@NotNull NotificationKey key) throws Throwable
     {

@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.position;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -19,7 +21,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class GetPositionsCache extends StraightCutDTOCacheNew<GetPositionsDTOKey, GetPositionsDTO, GetPositionsCutDTO>
+@Singleton @UserCache public class GetPositionsCache extends StraightCutDTOCacheNew<GetPositionsDTOKey, GetPositionsDTO, GetPositionsCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -37,7 +39,8 @@ import org.jetbrains.annotations.Nullable;
             @NotNull Lazy<SecurityCompactCache> securityCompactCache,
             @NotNull Lazy<PortfolioCache> portfolioCache,
             @NotNull Lazy<PositionCache> filedPositionCache,
-            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
         this(DEFAULT_MAX_SIZE,
                 positionServiceWrapper,
@@ -45,7 +48,7 @@ import org.jetbrains.annotations.Nullable;
                 securityCompactCache,
                 portfolioCache,
                 filedPositionCache,
-                leaderboardUserCache);
+                leaderboardUserCache, dtoCacheUtil);
     }
 
     public GetPositionsCache(final int maxSize,
@@ -54,9 +57,10 @@ import org.jetbrains.annotations.Nullable;
             @NotNull Lazy<SecurityCompactCache> securityCompactCache,
             @NotNull Lazy<PortfolioCache> portfolioCache,
             @NotNull Lazy<PositionCache> filedPositionCache,
-            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
         this.positionServiceWrapper = positionServiceWrapper;
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
         this.securityCompactCache = securityCompactCache;

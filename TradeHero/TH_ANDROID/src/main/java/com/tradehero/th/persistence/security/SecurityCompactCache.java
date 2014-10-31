@@ -1,7 +1,9 @@
 package com.tradehero.th.persistence.security;
 
 import android.util.Pair;
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -15,7 +17,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class SecurityCompactCache extends StraightDTOCacheNew<SecurityId, SecurityCompactDTO>
+@Singleton @UserCache
+public class SecurityCompactCache extends StraightDTOCacheNew<SecurityId, SecurityCompactDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -27,9 +30,10 @@ import org.jetbrains.annotations.Nullable;
     @Inject public SecurityCompactCache(
             @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
             @NotNull Lazy<SecurityCompactCacheRx> securityCompactCacheRx,
-            @NotNull SecurityIdCache securityIdCache)
+            @NotNull SecurityIdCache securityIdCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.securityServiceWrapper = securityServiceWrapper;
         this.securityCompactCacheRx = securityCompactCacheRx;
         this.securityIdCache = securityIdCache;

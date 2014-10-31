@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class BaseDTOListCacheRx<
         DTOKeyType extends DTOKey,
@@ -9,9 +10,12 @@ abstract public class BaseDTOListCacheRx<
         extends BaseDTOCacheRx<DTOKeyType, DTOListType>
 {
     //<editor-fold desc="Constructors">
-    protected BaseDTOListCacheRx(int valueSize, int subjectSize)
+    protected BaseDTOListCacheRx(
+            int valueSize,
+            int subjectSize,
+            @NotNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(valueSize, subjectSize);
+        super(valueSize, subjectSize, dtoCacheUtil);
     }
     //</editor-fold>
 }

@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.position;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.position.PositionCompactId;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -11,14 +13,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class PositionCompactCache extends StraightDTOCacheNew<PositionCompactId, PositionDTOCompact>
+@Singleton @UserCache public class PositionCompactCache extends StraightDTOCacheNew<PositionCompactId, PositionDTOCompact>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     //<editor-fold desc="Constructors">
-    @Inject public PositionCompactCache()
+    @Inject public PositionCompactCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

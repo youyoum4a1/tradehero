@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.trade;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeIdList;
 import com.tradehero.th.api.trade.TradeDTOList;
@@ -10,7 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class TradeListCache extends StraightCutDTOCacheNew<OwnedPositionId, TradeDTOList, OwnedTradeIdList>
+@Singleton @UserCache
+public class TradeListCache extends StraightCutDTOCacheNew<OwnedPositionId, TradeDTOList, OwnedTradeIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
@@ -20,9 +23,10 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public TradeListCache(
             @NotNull TradeServiceWrapper tradeServiceWrapper,
-            @NotNull TradeCache tradeCache)
+            @NotNull TradeCache tradeCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.tradeServiceWrapper = tradeServiceWrapper;
         this.tradeCache = tradeCache;
     }

@@ -25,9 +25,9 @@ import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.network.share.SocialNetworkAppModule;
+import com.tradehero.th.persistence.PersistenceModule;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.prefs.LanguageCode;
-import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.achievement.AchievementModule;
@@ -50,7 +50,7 @@ import javax.inject.Singleton;
                 MetricsModule.class,
                 ModelsModule.class,
                 UserModule.class,
-                PreferenceModule.class,
+                PersistenceModule.class,
                 ChartModule.class,
                 FilterModule.class,
                 BillingModule.class,

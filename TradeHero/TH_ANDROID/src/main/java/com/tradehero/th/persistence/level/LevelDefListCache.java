@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.level;
 
+import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.LevelDefIdList;
 import com.tradehero.th.api.level.key.LevelDefListId;
@@ -10,7 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class LevelDefListCache extends StraightCutDTOCacheNew<LevelDefListId, LevelDefDTOList, LevelDefIdList>
+@Singleton @UserCache
+public class LevelDefListCache extends StraightCutDTOCacheNew<LevelDefListId, LevelDefDTOList, LevelDefIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 1;
 
@@ -18,9 +21,12 @@ import org.jetbrains.annotations.Nullable;
     @NotNull private final LevelDefCache levelDefCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public LevelDefListCache(@NotNull AchievementServiceWrapper userServiceWrapper, @NotNull LevelDefCache levelDefCache)
+    @Inject public LevelDefListCache(
+            @NotNull AchievementServiceWrapper userServiceWrapper,
+            @NotNull LevelDefCache levelDefCache,
+            @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.levelDefCache = levelDefCache;
         getOrFetchAsync(new LevelDefListId());
