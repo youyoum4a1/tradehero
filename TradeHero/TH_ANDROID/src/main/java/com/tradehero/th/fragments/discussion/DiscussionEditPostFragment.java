@@ -29,7 +29,6 @@ import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -37,7 +36,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -159,7 +157,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         setActionBarSubtitle(null);
         unsetDiscussionEditMiddleCallback();
-        detachSelectedSubscription();
+        unsubscribe(hasSelectedSubscription);
+        hasSelectedSubscription = null;
         discussionPostContent.removeTextChangedListener(discussionEditTextWatcher);
         mentionTaggedStockHandler.setDiscussionPostContent(null);
         ButterKnife.reset(this);
@@ -256,19 +255,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     private void subscribeHasSelected()
     {
-        detachSelectedSubscription();
+        unsubscribe(hasSelectedSubscription);
         hasSelectedSubscription = discussionPostActionButtonsView.getSelectedItemObservable()
                 .subscribe(createSelectedItemObserver());
-    }
-
-    private void detachSelectedSubscription()
-    {
-        Subscription hasSelectedSubscriptionCopy = hasSelectedSubscription;
-        if (hasSelectedSubscriptionCopy != null)
-        {
-            hasSelectedSubscriptionCopy.unsubscribe();
-        }
-        hasSelectedSubscription = null;
     }
 
     private Observer<HasSelectedItem> createSelectedItemObserver()

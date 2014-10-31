@@ -11,7 +11,7 @@ public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFr
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    private Editable unSpanedComment;
+    private Editable unSpannedComment;
 
     @Override protected void initView()
     {
@@ -30,12 +30,12 @@ public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFr
 
     public Editable getComment()
     {
-        return unSpanedComment;
+        return unSpannedComment;
     }
 
     @Override protected void postDiscussion()
     {
-        unSpanedComment = editableUtil.unSpanText(discussionPostContent.getText());
+        unSpannedComment = editableUtil.unSpanText(discussionPostContent.getText());
         navigator.get().popFragment();
     }
 }

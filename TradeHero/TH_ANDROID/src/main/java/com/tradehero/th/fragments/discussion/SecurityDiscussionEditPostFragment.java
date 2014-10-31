@@ -4,19 +4,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Pair;
-
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.SecurityReplyDiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
-
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,6 +23,7 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
+    @Nullable private SecurityId securityId;
     @Nullable Subscription securityCompactCacheSubscription;
     @Nullable SecurityCompactDTO securityCompactDTO;
 
@@ -45,7 +42,22 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
         return extracted;
     }
 
-    @Nullable private SecurityId securityId;
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        SecurityId fromArgs = getSecurityId(getArguments());
+        if (fromArgs != null)
+        {
+            linkWith(fromArgs, true);
+        }
+    }
+
+    @Override public void onDestroyView()
+    {
+        unsubscribe(securityCompactCacheSubscription);
+        super.onDestroyView();
+    }
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
     {
@@ -103,22 +115,4 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
     {
         return DiscussionType.SECURITY;
     }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-
-        SecurityId fromArgs = getSecurityId(getArguments());
-        if (fromArgs != null)
-        {
-            linkWith(fromArgs, true);
-        }
-    }
-
-    @Override public void onDestroyView()
-    {
-        unsubscribe(securityCompactCacheSubscription);
-        super.onDestroyView();
-    }
-
 }
