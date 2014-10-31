@@ -39,7 +39,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.models.alert.SecurityAlertAssistant;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -52,9 +52,12 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -66,12 +69,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject Lazy<TradeListCache> tradeListCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject Lazy<AlertCompactListCacheRx> alertCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
     @Inject THRouter thRouter;
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject Analytics analytics;
-    @Inject SecurityAlertAssistant securityAlertAssistant;
     SecurityActionDialogFactory securityActionDialogFactory = new SecurityActionDialogFactory(); // no inject, 65k
 
     @InjectView(android.R.id.empty) protected ProgressBar progressBar;
@@ -85,6 +88,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> fetchPositionListener;
     @Nullable protected PositionDTO positionDTO;
     @Nullable protected TradeDTOList tradeDTOList;
+    @Nullable private Map<SecurityId, AlertId> mappedAlerts;
 
     protected TradeListItemAdapter adapter;
 
@@ -150,7 +154,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         switch (item.getItemId())
         {
             case R.id.btn_security_action:
-                if (securityAlertAssistant.isPopulated())
+                if (mappedAlerts != null)
                 {
                     handleActionButtonClicked();
                 }
@@ -163,8 +167,24 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
         linkWith(getPositionDTOKey(getArguments(), positionDTOKeyFactory), true);
-        securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
-        securityAlertAssistant.populate();
+        AndroidObservable.bindFragment(
+                this,
+                alertCompactListCache.get().getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
+                .subscribe(new Observer<Map<SecurityId, AlertId>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                    }
+
+                    @Override public void onNext(Map<SecurityId, AlertId> securityIdAlertIdMap)
+                    {
+                        mappedAlerts = securityIdAlertIdMap;
+                    }
+                });
     }
 
     @Override public void onDestroyView()
@@ -173,7 +193,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         detachFetchPosition();
         detachFetchTrades();
         detachSecurityActionDialog();
-        securityAlertAssistant.setOnPopulatedListener(null);
         adapter = null;
         tradeListView.setOnScrollListener(null);
         ButterKnife.reset(this);
@@ -184,7 +203,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         fetchPositionListener = null;
         fetchTradesListener = null;
-        securityAlertAssistant = null;
         super.onDestroy();
     }
 
@@ -445,21 +463,24 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             {
                 BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
             }
-            AlertId alertId = securityAlertAssistant.getAlertId(securityId);
-            if (alertId != null)
+            if (mappedAlerts != null)
             {
-                AlertEditFragment.putAlertId(args, alertId);
-                if (navigator != null)
+                AlertId alertId = mappedAlerts.get(securityId);
+                if (alertId != null)
                 {
-                    navigator.get().pushFragment(AlertEditFragment.class, args);
+                    AlertEditFragment.putAlertId(args, alertId);
+                    if (navigator != null)
+                    {
+                        navigator.get().pushFragment(AlertEditFragment.class, args);
+                    }
                 }
-            }
-            else
-            {
-                AlertCreateFragment.putSecurityId(args, securityId);
-                if (navigator != null)
+                else
                 {
-                    navigator.get().pushFragment(AlertCreateFragment.class, args);
+                    AlertCreateFragment.putSecurityId(args, securityId);
+                    if (navigator != null)
+                    {
+                        navigator.get().pushFragment(AlertCreateFragment.class, args);
+                    }
                 }
             }
         }

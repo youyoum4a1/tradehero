@@ -1,18 +1,18 @@
 package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.alert.AlertCache;
+import com.tradehero.th.persistence.alert.AlertCacheRx;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class AlertEditFragment extends BaseAlertEditFragment
@@ -20,9 +20,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
     private static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";
 
     protected AlertId alertId;
-    @Inject protected AlertCache alertCache;
-    protected DTOCacheNew.Listener<AlertId, AlertDTO> alertCacheFetchListener;
-    protected MiddleCallback<AlertCompactDTO> middleCallbackUpdateAlertCompactDTO;
+    @Inject protected AlertCacheRx alertCache;
 
     public static void putAlertId(@NotNull Bundle args, @NotNull AlertId alertId)
     {
@@ -34,60 +32,25 @@ public class AlertEditFragment extends BaseAlertEditFragment
         return new AlertId(args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE));
     }
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        alertCacheFetchListener = createAlertCacheListener();
-    }
-
     @Override public void onResume()
     {
         super.onResume();
         linkWith(getAlertId(getArguments()), true);
     }
 
-    @Override public void onStop()
-    {
-        detachAlertCacheFetchTask();
-        detachMiddleCallbackUpdate();
-        super.onStop();
-    }
-
-    @Override public void onDestroy()
-    {
-        alertCacheFetchListener = null;
-        super.onDestroy();
-    }
-
-    protected void detachAlertCacheFetchTask()
-    {
-        alertCache.unregister(alertCacheFetchListener);
-    }
-
-    protected void detachMiddleCallbackUpdate()
-    {
-        if (middleCallbackUpdateAlertCompactDTO != null)
-        {
-            middleCallbackUpdateAlertCompactDTO.setPrimaryCallback(null);
-        }
-        middleCallbackUpdateAlertCompactDTO = null;
-    }
-
     @Override protected void saveAlertProper(AlertFormDTO alertFormDTO)
     {
-        detachMiddleCallbackUpdate();
-        middleCallbackUpdateAlertCompactDTO = alertServiceWrapper.get().updateAlert(
+        AndroidObservable.bindFragment(this, alertServiceWrapper.get().updateAlertRx(
                 alertId,
-                alertFormDTO,
-                new AlertCreateCallback());
+                alertFormDTO))
+                .subscribe(createAlertUpdateObserver());
     }
 
     protected void linkWith(AlertId alertId, boolean andDisplay)
     {
         this.alertId = alertId;
-        detachAlertCacheFetchTask();
-        alertCache.register(alertId, alertCacheFetchListener);
-        alertCache.getOrFetchAsync(alertId);
+        AndroidObservable.bindFragment(this, alertCache.get(alertId))
+                .subscribe(createAlertCacheObserver());
         if (andDisplay)
         {
         }
@@ -98,22 +61,26 @@ public class AlertEditFragment extends BaseAlertEditFragment
         setActionBarTitle(R.string.stock_alert_edit_alert);
     }
 
-    protected DTOCacheNew.Listener<AlertId, AlertDTO> createAlertCacheListener()
+    protected Observer<Pair<AlertId, AlertDTO>> createAlertCacheObserver()
     {
-        return new AlertEditFragmentAlertCacheListener();
+        return new AlertEditFragmentAlertCacheObserver();
     }
 
-    protected class AlertEditFragmentAlertCacheListener implements DTOCacheNew.Listener<AlertId, AlertDTO>
+    protected class AlertEditFragmentAlertCacheObserver implements Observer<Pair<AlertId, AlertDTO>>
     {
-        @Override public void onDTOReceived(@NotNull AlertId key, @NotNull AlertDTO value)
+        @Override public void onNext(Pair<AlertId, AlertDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull AlertId key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(error));
-            Timber.e("Failed to get alertDTO", error);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
+            Timber.e("Failed to get alertDTO", e);
         }
     }
 }

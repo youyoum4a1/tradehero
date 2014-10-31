@@ -1,14 +1,41 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
+import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
+import com.tradehero.th.api.social.HeroDTOList;
+import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
+import com.tradehero.th.api.users.UpdateReferralCodeDTO;
+import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserSearchResultDTOList;
+import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
+import com.tradehero.th.api.users.password.ForgotPasswordDTO;
+import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
+import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
+import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
+import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.mime.TypedOutput;
 import rx.Observable;
 
@@ -53,9 +80,16 @@ public interface UserServiceRx
             @Part("profilePicture") TypedOutput profilePicture);
     //</editor-fold>
 
+    //<editor-fold desc="Signup">
+    @POST("/users")
+    Observable<UserProfileDTO> signUp(
+            @Header(AUTHORIZATION) String authorization,
+            @Body UserFormDTO user);
+    //</editor-fold>
+
     //<editor-fold desc="Update Profile">
     @FormUrlEncoded @PUT("/users/{userId}/updateUser")
-    Observable<UserProfileDTO> updateProfileRx(
+    Observable<UserProfileDTO> updateProfile(
             @Path("userId") int userId,
             @Field("deviceToken") String deviceToken,
             @Field("displayName") String displayName,
@@ -72,7 +106,7 @@ public interface UserServiceRx
             @Field("website") String website);
 
     @Multipart @PUT("/users/{userId}/updateUser")
-    Observable<UserProfileDTO> updateProfileRx(
+    Observable<UserProfileDTO> updateProfile(
             @Path("userId") int userId,
             @Part("deviceToken") String deviceToken,
             @Part("displayName") String displayName,
@@ -88,5 +122,159 @@ public interface UserServiceRx
             @Part("location") String location,
             @Part("website") String website,
             @Part("profilePicture") TypedOutput profilePicture);
+    //</editor-fold>
+
+    //<editor-fold desc="Check Display Name Available">
+    @GET("/checkDisplayNameAvailable")
+    Observable<UserAvailabilityDTO> checkDisplayNameAvailable(
+            @Query("displayName") String username);
+    //</editor-fold>
+
+    //<editor-fold desc="Forgot Password">
+    @POST("/forgotPassword")
+    Observable<ForgotPasswordDTO> forgotPassword(
+            @Body ForgotPasswordFormDTO forgotPasswordFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Search Users">
+    @GET("/users/search")
+    Observable<UserSearchResultDTOList> searchUsers(
+            @Query("q") String searchString,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+    //</editor-fold>
+
+    //<editor-fold desc="Search Allowable Recipients">
+    @GET("/users/allowableRecipients")
+    Observable<PaginatedAllowableRecipientDTO> searchAllowableRecipients(
+            @Query("searchTerm") String searchString,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+    //</editor-fold>
+
+    //<editor-fold desc="Get User">
+    @GET("/users/{userId}")
+    Observable<UserProfileDTO> getUser(
+            @Path("userId") int userId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get User Transactions History">
+
+    @GET("/users/{userId}/transactionHistory")
+    Observable<UserTransactionHistoryDTOList> getUserTransactions(
+            @Path("userId") int userId);
+    //</editor-fold>
+
+    //<editor-fold desc="Update PayPal Email">
+    @POST("/users/{userId}/updatePayPalEmail")
+    Observable<UpdatePayPalEmailDTO> updatePayPalEmail(
+            @Path("userId") int userId,
+            @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Update Alipay Account">
+    @POST("/users/{userId}/updateAlipayAccount")
+    Observable<UpdateAlipayAccountDTO> updateAlipayAccount(
+            @Path("userId") int userId,
+            @Body UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Delete User">
+    @DELETE("/users/{userId}")
+    Observable<BaseResponseDTO> deleteUser(
+            @Path("userId") int userId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Friends">
+    @GET("/users/{userId}/getFriends")
+    Observable<UserFriendsDTOList> getFriends(
+            @Path("userId") int userId);
+
+    @GET("/users/{userId}/getweibofriends")
+    Observable<UserFriendsDTOList> getSocialWeiboFriends(@Path("userId") int userId);
+
+    @GET("/users/{userId}/GetNewFriends")
+    Observable<UserFriendsDTOList> getSocialFriends(
+            @Path("userId") int userId,
+            @Query("socialNetwork") SocialNetworkEnum socialNetwork);
+
+    @GET("/users/{userId}/SearchFriends")
+    Observable<UserFriendsDTOList> searchSocialFriends(
+            @Path("userId") int userId,
+            @Query("socialNetwork") SocialNetworkEnum socialNetwork,
+            @Query("q") String query);
+    //</editor-fold>
+
+    @POST("/users/batchFollow/free")
+    Observable<UserProfileDTO> followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
+
+    //<editor-fold desc="Invite Friends">
+    @POST("/users/{userId}/inviteFriends")
+    Observable<BaseResponseDTO> inviteFriends(
+            @Path("userId") int userId,
+            @Body InviteFormDTO inviteFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Add Follow Credit">
+    @POST("/users/{userId}/addCredit")
+    Observable<UserProfileDTO> addCredit(
+            @Path("userId") int userId,
+            @Body PurchaseReportDTO purchaseReportDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Follow Hero">
+    @POST("/users/{userId}/follow")
+    Observable<UserProfileDTO> follow(
+            @Path("userId") int userId);
+
+    @POST("/users/{userId}/follow/free")
+    Observable<UserProfileDTO> freeFollow(
+            @Path("userId") int userId);
+
+    @POST("/users/{userId}/follow")
+    Observable<UserProfileDTO> follow(
+            @Path("userId") int userId,
+            @Body PurchaseReportDTO purchaseReportDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Unfollow Hero">
+    @POST("/users/{userId}/unfollow")
+    Observable<UserProfileDTO> unfollow(
+            @Path("userId") int userId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Heroes">
+    @GET("/users/{userId}/heroes")
+    Observable<HeroDTOList> getHeroes(
+            @Path("userId") int userId);
+    //</editor-fold>
+
+    //<editor-fold desc="Suggest Heroes">
+    @GET("/users/heroes/bySectorAndExchange")
+    Observable<LeaderboardUserDTOList> suggestHeroes(
+            @Query("exchange") Integer exchangeId,
+            @Query("sector") Integer sectorId,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+    //</editor-fold>
+
+    //<editor-fold desc="Update Country Code">
+    @POST("/users/{userId}/updateCountryCode")
+    Observable<UpdateCountryCodeDTO> updateCountryCode(
+            @Path("userId") int userId,
+            @Body UpdateCountryCodeFormDTO updateCountryCodeFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Update Referral Code">
+    @POST("/users/{userId}/updateInviteCode")
+    Observable<BaseResponseDTO> updateReferralCode(
+            @Path("userId") int userId,
+            @Body UpdateReferralCodeDTO updateReferralCodeDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Send Analytics">
+    @POST("/analytics")
+    Observable<BaseResponseDTO> sendAnalytics(
+            @Body BatchAnalyticsEventForm batchAnalyticsEventForm);
     //</editor-fold>
 }

@@ -12,7 +12,7 @@ import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.persistence.alert.AlertCache;
+import com.tradehero.th.persistence.alert.AlertCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +33,7 @@ public class AlertViewFragmentTest
     @Inject @ForApp ObjectMapper mapper;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
-    @Inject AlertCache alertCache;
+    @Inject AlertCacheRx alertCache;
     @Inject DashboardNavigator dashboardNavigator;
     private AlertDTO cachedAlertDTO;
     private UserProfileDTO cachedProfileDTO;
@@ -52,7 +52,7 @@ public class AlertViewFragmentTest
         cachedAlertDTO = mapper.readValue(
                 getClass().getResourceAsStream(getPackagePath(AlertDTO.class) + "/AlertDTOBody1.json"),
                 AlertDTO.class);
-        alertCache.put(cachedAlertDTO.getAlertId(currentUserId.toUserBaseKey()), cachedAlertDTO);
+        alertCache.onNext(cachedAlertDTO.getAlertId(currentUserId.toUserBaseKey()), cachedAlertDTO);
 
         InputStream profileStream = getClass().getResourceAsStream(getPackagePath(UserProfileDTO.class) + "/UserProfileDTO1.json");
         cachedProfileDTO = mapper.readValue(

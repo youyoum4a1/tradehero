@@ -1,38 +1,40 @@
 package com.tradehero.th.models.alert;
 
-import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.alert.AlertCompactListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.MakePairFunc2;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observable;
 
 public class SecurityAlertCountingHelper
 {
-    @NotNull private final UserProfileCache userProfileCache;
-    @NotNull private final AlertCompactListCache alertCompactListCache;
+    @NotNull private final UserProfileCacheRx userProfileCache;
+    @NotNull private final AlertCompactListCacheRx alertCompactListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityAlertCountingHelper(
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull AlertCompactListCache alertCompactListCache)
+            @NotNull UserProfileCacheRx userProfileCache,
+            @NotNull AlertCompactListCacheRx alertCompactListCache)
     {
         this.userProfileCache = userProfileCache;
         this.alertCompactListCache = alertCompactListCache;
     }
     //</editor-fold>
 
-    public AlertSlotDTO getAlertSlots(UserBaseKey userBaseKey)
+    public Observable<AlertSlotDTO> getAlertSlots(UserBaseKey userBaseKey)
     {
-        UserProfileDTO userProfile = userProfileCache.get(userBaseKey);
-        AlertCompactDTOList alertCompactDTOs = alertCompactListCache.get(userBaseKey);
-
-        AlertSlotDTO alertSlots = new AlertSlotDTO();
-
-        alertSlots.usedAlertSlots = alertCompactDTOs == null ? 0 : alertCompactDTOs.size();
-        alertSlots.totalAlertSlots = userProfile == null ? 0 : userProfile.getUserAlertPlansAlertCount();
-        alertSlots.freeAlertSlots = alertSlots.totalAlertSlots - alertSlots.usedAlertSlots;
-        return alertSlots;
+        return Observable.zip(
+                userProfileCache.get(userBaseKey),
+                alertCompactListCache.get(userBaseKey),
+                new MakePairFunc2<>())
+            .map(pair -> {
+                AlertSlotDTO alertSlots = new AlertSlotDTO();
+                alertSlots.usedAlertSlots = pair.second.second == null ? 0 : pair.second.second.size();
+                alertSlots.totalAlertSlots = pair.first.second == null ? 0 : pair.first.second.getUserAlertPlansAlertCount();
+                alertSlots.freeAlertSlots = alertSlots.totalAlertSlots - alertSlots.usedAlertSlots;
+                return alertSlots;
+            });
     }
 }

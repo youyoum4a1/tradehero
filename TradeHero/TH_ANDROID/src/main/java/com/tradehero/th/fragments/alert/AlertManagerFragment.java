@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,7 +15,6 @@ import butterknife.InjectView;
 import com.tradehero.common.billing.BillingConstants;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -29,12 +29,13 @@ import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.alert.AlertCompactListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class AlertManagerFragment extends BasePurchaseManagerFragment
@@ -48,22 +49,17 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.alerts_list) StickyListHeadersListView alertListView;
     protected BaseListHeaderView footerView;
 
-    @Inject protected AlertCompactListCache alertCompactListCache;
+    @Inject protected AlertCompactListCacheRx alertCompactListCache;
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected Lazy<UserProfileCacheRx> userProfileCache;
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfile;
-
     private AlertListItemAdapter alertListItemAdapter;
-    private DTOCacheNew.Listener<UserBaseKey, AlertCompactDTOList> alertCompactListListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        userProfileCacheListener = createUserProfileCacheListener();
-        alertCompactListListener = createAlertCompactDTOListListener();
         alertListItemAdapter = new AlertListItemAdapter(getActivity(), currentUserId, R.layout.alert_list_item);
     }
 
@@ -127,9 +123,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        detachUserProfileCache();
-        detachAlertCompactListCacheFetchTask();
-
         if (alertListView != null)
         {
             alertListView.setOnItemClickListener(null);
@@ -154,33 +147,21 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Override public void onDestroy()
     {
         alertListItemAdapter = null;
-        userProfileCacheListener = null;
-        alertCompactListListener = null;
         super.onDestroy();
-    }
-
-    protected void detachUserProfileCache()
-    {
-        userProfileCache.get().unregister(userProfileCacheListener);
-    }
-
-    protected void detachAlertCompactListCacheFetchTask()
-    {
-        alertCompactListCache.unregister(alertCompactListListener);
     }
 
     protected void fetchUserProfile()
     {
-        detachUserProfileCache();
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .subscribe(createUserProfileCacheObserver());
     }
 
     protected void fetchAlertCompactList()
     {
-        detachAlertCompactListCacheFetchTask();
-        alertCompactListCache.register(currentUserId.toUserBaseKey(), alertCompactListListener);
-        alertCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+        AndroidObservable.bindFragment(
+                this,
+                alertCompactListCache.get(currentUserId.toUserBaseKey()))
+                .subscribe(createAlertCompactDTOListObserver());
     }
 
     @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
@@ -249,21 +230,25 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                 .build());
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new AlertManagerFragmentUserProfileCacheListener();
+        return new AlertManagerFragmentUserProfileCacheObserver();
     }
 
-    protected class AlertManagerFragmentUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class AlertManagerFragmentUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(error));
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
         }
     }
 
@@ -277,21 +262,25 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, AlertCompactDTOList> createAlertCompactDTOListListener()
+    protected Observer<Pair<UserBaseKey, AlertCompactDTOList>> createAlertCompactDTOListObserver()
     {
-        return new AlertManagerFragmentAlertCompactListListener();
+        return new AlertManagerFragmentAlertCompactListObserver();
     }
 
-    protected class AlertManagerFragmentAlertCompactListListener implements DTOCacheNew.Listener<UserBaseKey, AlertCompactDTOList>
+    protected class AlertManagerFragmentAlertCompactListObserver implements Observer<Pair<UserBaseKey, AlertCompactDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull AlertCompactDTOList value)
+        @Override public void onNext(Pair<UserBaseKey, AlertCompactDTOList> pair)
         {
             progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
-            alertListItemAdapter.appendTail(value);
+            alertListItemAdapter.appendTail(pair.second);
             alertListItemAdapter.notifyDataSetChanged();
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_alert);
         }

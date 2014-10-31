@@ -45,15 +45,6 @@ public class AlertPlanServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Alert Plans">
-    public MiddleCallback<List<AlertPlanDTO>> getAlertPlans(
-            @NotNull UserBaseKey userBaseKey,
-            @Nullable Callback<List<AlertPlanDTO>> callback)
-    {
-        MiddleCallback<List<AlertPlanDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        alertPlanServiceAsync.getAlertPlans(userBaseKey.key, middleCallback);
-        return middleCallback;
-    }
-
     public Observable<AlertPlanDTOList> getAlertPlansRx(@NotNull UserBaseKey userBaseKey)
     {
         return alertPlanServiceRx.getAlertPlans(userBaseKey.key);

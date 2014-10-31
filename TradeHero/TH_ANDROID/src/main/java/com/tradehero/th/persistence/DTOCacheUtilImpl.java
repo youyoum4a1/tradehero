@@ -31,7 +31,7 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
-import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.home.HomeContentCache;
@@ -65,7 +65,7 @@ import org.jetbrains.annotations.Nullable;
     protected final CurrentUserId currentUserId;
 
     //<editor-fold desc="Caches">
-    protected final Lazy<AlertCompactListCache> alertCompactListCache;
+    protected final Lazy<AlertCompactListCacheRx> alertCompactListCache;
     protected final Lazy<ExchangeCompactListCache> exchangeCompactListCache;
     protected final Lazy<HomeContentCache> homeContentCache;
     protected final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
@@ -101,7 +101,7 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public DTOCacheUtilImpl(
             CurrentUserId currentUserId,
-            Lazy<AlertCompactListCache> alertCompactListCache,
+            Lazy<AlertCompactListCacheRx> alertCompactListCache,
             Lazy<ExchangeCompactListCache> exchangeCompactListCache,
             Lazy<HomeContentCache> homeContentCache,
             Lazy<LeaderboardDefListCache> leaderboardDefListCache,
@@ -331,7 +331,7 @@ import org.jetbrains.annotations.Nullable;
 
     public void preFetchAlerts()
     {
-        alertCompactListCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        alertCompactListCache.get().get(currentUserId.toUserBaseKey());
     }
 
     public void preFetchTranslationToken()

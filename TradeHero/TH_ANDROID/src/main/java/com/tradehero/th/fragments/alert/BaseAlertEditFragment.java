@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.alert;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Pair;
@@ -38,9 +37,8 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.alert.AlertSlotDTO;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -52,9 +50,8 @@ import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import retrofit.Callback;
 import rx.Observer;
-import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -83,7 +80,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.alert_edit_price_changer_percentage_seek_bar) SeekBar percentageSeekBar;
 
     @Inject protected SecurityCompactCacheRx securityCompactCache;
-    @Nullable protected Subscription securityCompactCacheSubscription;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserId currentUserId;
@@ -128,13 +124,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected CompoundButton.OnCheckedChangeListener createPercentageCheckedChangeListener()
     {
-        return new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                handlePercentageCheckedChange(isChecked);
-            }
-        };
+        return (buttonView, isChecked) -> handlePercentageCheckedChange(isChecked);
     }
 
     protected SeekBar.OnSeekBarChangeListener createPercentageSeekBarChangeListener()
@@ -204,26 +194,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         targetPercentageChangeToggle.setOnCheckedChangeListener(null);
         percentageSeekBar.setOnSeekBarChangeListener(null);
         targetPriceSeekBar.setOnSeekBarChangeListener(null);
-        detachSecurityCompactCacheSubscription();
         resideMenu.removeIgnoredView(targetPriceSeekBar);
         resideMenu.removeIgnoredView(percentageSeekBar);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        detachSecurityCompactCacheSubscription();
-        super.onDestroy();
-    }
-
-    protected void detachSecurityCompactCacheSubscription()
-    {
-        Subscription subscriptionCopy = securityCompactCacheSubscription;
-        if (subscriptionCopy != null)
-        {
-            subscriptionCopy.unsubscribe();
-        }
-        securityCompactCacheSubscription = null;
     }
 
     protected void linkWith(@NotNull SecurityId securityId, boolean andDisplay)
@@ -231,8 +204,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         this.securityId = securityId;
 
         progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
-        detachSecurityCompactCacheSubscription();
-        securityCompactCacheSubscription = securityCompactCache.get(securityId)
+        AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
                 {
@@ -285,13 +257,35 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THToast.show(R.string.error_alert_insufficient_info);
         }
-        else if (securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
-        {
-            popPurchase();
-        }
         else
         {
-            saveAlert();
+            AndroidObservable.bindFragment(
+                    this,
+                    securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()))
+                    .take(1)
+                    .subscribe(new Observer<AlertSlotDTO>()
+                    {
+                        @Override public void onCompleted()
+                        {
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            THToast.show(new THException(e));
+                        }
+
+                        @Override public void onNext(AlertSlotDTO alertSlotDTO)
+                        {
+                            if (alertSlotDTO.freeAlertSlots <= 0)
+                            {
+                                popPurchase();
+                            }
+                            else
+                            {
+                                saveAlert();
+                            }
+                        }
+                    });
         }
     }
 
@@ -609,7 +603,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             return 0;
         }
-        return securityCompactDTO.lastPrice * ( 1 + ((double) getSeekingMovementPercentage()) / 100 );
+        return securityCompactDTO.lastPrice * (1 + ((double) getSeekingMovementPercentage()) / 100);
     }
 
     protected int getSeekingMovementPercentage()
@@ -664,26 +658,27 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     }
     //endregion
 
-    protected Callback<AlertCompactDTO> createAlertUpdateCallback()
+    protected Observer<AlertCompactDTO> createAlertUpdateObserver()
     {
-        return new AlertCreateCallback();
+        return new AlertCreateObserver();
     }
 
-    protected class AlertCreateCallback extends THCallback<AlertCompactDTO>
+    protected class AlertCreateObserver implements Observer<AlertCompactDTO>
     {
-        @Override protected void finish()
-        {
-            progressDialog.hide();
-        }
-
-        @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
+        @Override public void onNext(AlertCompactDTO alertCompactDTO)
         {
             navigator.get().popFragment();
         }
 
-        @Override protected void failure(THException ex)
+        @Override public void onCompleted()
         {
-            THToast.show(ex);
+            hideDialog();
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
+            hideDialog();
         }
     }
 

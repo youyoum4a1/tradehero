@@ -14,9 +14,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.persistence.alert.AlertCache;
-import com.tradehero.th.persistence.alert.AlertCompactCache;
-import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.persistence.alert.AlertCacheRx;
+import com.tradehero.th.persistence.alert.AlertCompactCacheRx;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -35,9 +35,9 @@ public class BuySellFragmentTest
 {
     @Inject Context context;
     @Inject CurrentUserId currentUserId;
-    @Inject AlertCompactListCache alertCompactListCache;
-    @Inject AlertCompactCache alertCompactCache;
-    @Inject AlertCache alertCache;
+    @Inject AlertCompactListCacheRx alertCompactListCache;
+    @Inject AlertCompactCacheRx alertCompactCache;
+    @Inject AlertCacheRx alertCache;
     @Inject SecurityCompactCache securityCompactCache;
     @Inject SecurityIdCache securityIdCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
@@ -80,15 +80,15 @@ public class BuySellFragmentTest
         googleAlert.security.exchange = "NYSE";
         googleAlert.security.symbol = "GOOG";
         AlertId alertId = googleAlert.getAlertId(currentUserId.toUserBaseKey());
-        alertCache.put(alertId, googleAlert);
+        alertCache.onNext(alertId, googleAlert);
         AlertCompactDTOList alertCompactDTOs = new AlertCompactDTOList();
         alertCompactDTOs.add(googleAlert);
-        alertCompactListCache.put(currentUserId.toUserBaseKey(), alertCompactDTOs);
+        alertCompactListCache.onNext(currentUserId.toUserBaseKey(), alertCompactDTOs);
     }
 
     @Test public void testWhenHasNoAlertShowsAddAlert()
     {
-        alertCompactListCache.put(currentUserId.toUserBaseKey(), new AlertCompactDTOList());
+        alertCompactListCache.onNext(currentUserId.toUserBaseKey(), new AlertCompactDTOList());
 
         buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
         Robolectric.runBackgroundTasks();
@@ -100,7 +100,7 @@ public class BuySellFragmentTest
     @Test public void testWhenHasAlertShowsEditAlert() throws Throwable
     {
         populateAlertCacheWithGoogleSecurityId();
-        assertThat(alertCompactListCache.getOrFetchSync(currentUserId.toUserBaseKey())).isNotNull();
+        assertThat(alertCompactListCache.get(currentUserId.toUserBaseKey()).toBlocking().first()).isNotNull();
 
         buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
         Robolectric.runBackgroundTasks();

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.alert;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -28,21 +28,20 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertServiceWrapper;
-import com.tradehero.th.persistence.alert.AlertCache;
+import com.tradehero.th.persistence.alert.AlertCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -61,8 +60,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private StickyListHeadersListView priceChangeHistoryList;
 
-    @Inject protected Lazy<AlertCache> alertCache;
-    protected DTOCacheNew.Listener<AlertId, AlertDTO> alertCacheListener;
+    @Inject protected Lazy<AlertCacheRx> alertCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected ProgressDialogUtil progressDialogUtil;
@@ -77,8 +75,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     private ProgressDialog progressDialog;
 
     private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener;
-    private THCallback<AlertCompactDTO> alertUpdateCallback;
-    protected MiddleCallback<AlertCompactDTO> alertUpdateMiddleCallback;
 
     public static void putAlertId(@NotNull Bundle args, @NotNull AlertId alertId)
     {
@@ -93,31 +89,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        alertUpdateCallback = new THCallback<AlertCompactDTO>()
-        {
-            @Override protected void finish()
-            {
-                progressDialog.hide();
-            }
-
-            @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
-            {
-                displayActiveUntil();
-            }
-
-            @Override protected void failure(THException ex)
-            {
-                THToast.show(ex);
-            }
-        };
-        alertToggleCheckedChangeListener = new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                handleAlertToggleChanged(isChecked);
-            }
-        };
-        alertCacheListener = createAlertCacheListener();
+        alertToggleCheckedChangeListener = (buttonView, isChecked) -> handleAlertToggleChanged(isChecked);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -175,8 +147,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        detachAlertFetchTask();
-        detachAlertUpdateMiddleCallback();
         priceChangeHistoryList.removeHeaderView(headerView);
         priceChangeHistoryList.setOnScrollListener(null);
         alertToggle.setOnCheckedChangeListener(null);
@@ -184,25 +154,9 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
-    protected void detachAlertUpdateMiddleCallback()
-    {
-        if (alertUpdateMiddleCallback != null)
-        {
-            alertUpdateMiddleCallback.setPrimaryCallback(null);
-        }
-        alertUpdateMiddleCallback = null;
-    }
-
-    protected void detachAlertFetchTask()
-    {
-        alertCache.get().unregister(alertCacheListener);
-    }
-
     @Override public void onDestroy()
     {
         alertToggleCheckedChangeListener = null;
-        alertUpdateCallback = null;
-        alertCacheListener = null;
         super.onDestroy();
     }
 
@@ -211,11 +165,11 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         this.alertId = alertId;
         if (alertId != null)
         {
-            detachAlertFetchTask();
             progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.setCanceledOnTouchOutside(true);
-            alertCache.get().register(alertId, alertCacheListener);
-            alertCache.get().getOrFetchAsync(alertId);
+            AndroidObservable.bindFragment(this,
+                    alertCache.get().get(alertId))
+                    .subscribe(createAlertCacheObserver());
         }
     }
 
@@ -374,37 +328,66 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             alertFormDTO.upOrDown = alertDTO.upOrDown;
             alertFormDTO.priceMovement = alertDTO.priceMovement;
             alertFormDTO.active = alertActive;
-            detachAlertUpdateMiddleCallback();
-            alertUpdateMiddleCallback = alertServiceWrapper.get().updateAlert(alertId, alertFormDTO, alertUpdateCallback);
+            AndroidObservable.bindFragment(
+                    this,
+                    alertServiceWrapper.get().updateAlertRx(alertId, alertFormDTO))
+                    .subscribe(createAlertUpdateObserver());
         }
     }
 
-    protected DTOCacheNew.Listener<AlertId, AlertDTO> createAlertCacheListener()
+    protected Observer<AlertCompactDTO> createAlertUpdateObserver()
     {
-        return new AlertViewFragmentAlertCacheListener();
-    }
-
-    protected class AlertViewFragmentAlertCacheListener implements DTOCacheNew.Listener<AlertId, AlertDTO>
-    {
-        private void finish()
+        return new Observer<AlertCompactDTO>()
         {
-            if (progressDialog != null)
+            @Override public void onCompleted()
             {
-                progressDialog.dismiss();
+                hideProgressDialog();
             }
-        }
 
-        @Override public void onDTOReceived(@NotNull AlertId key, @NotNull AlertDTO value)
+            @Override public void onError(Throwable e)
+            {
+                hideProgressDialog();
+                THToast.show(new THException(e));
+            }
+
+            @Override public void onNext(AlertCompactDTO alertCompactDTO)
+            {
+                displayActiveUntil();
+            }
+        };
+    }
+
+    protected void hideProgressDialog()
+    {
+        if (progressDialog != null)
         {
-            linkWith(value, true);
-            finish();
+            progressDialog.dismiss();
+        }
+    }
+
+    protected Observer<Pair<AlertId, AlertDTO>> createAlertCacheObserver()
+    {
+        return new AlertViewFragmentAlertCacheObserver();
+    }
+
+    protected class AlertViewFragmentAlertCacheObserver implements Observer<Pair<AlertId, AlertDTO>>
+    {
+        @Override public void onNext(Pair<AlertId, AlertDTO> pair)
+        {
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull AlertId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+            hideProgressDialog();
+
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_alert);
-            Timber.e(error, "Failed fetching alert " + key);
-            finish();
+            Timber.e(e, "Failed fetching alert");
+            hideProgressDialog();
         }
     }
 }

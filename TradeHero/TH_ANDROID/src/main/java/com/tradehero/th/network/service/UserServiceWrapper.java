@@ -41,7 +41,6 @@ import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfileDeep;
-import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -130,53 +129,6 @@ import rx.functions.Func1;
                 dtoCacheUtil);
     }
 
-    public UserProfileDTO signUpWithEmail(
-            String authorization,
-            UserFormDTO userFormDTO)
-    {
-        UserProfileDTO created;
-        if (userFormDTO.profilePicture == null)
-        {
-            created = userService.signUpWithEmail(
-                    authorization,
-                    userFormDTO.biography,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.inviteCode,
-                    userFormDTO.email,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.location,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.username,
-                    userFormDTO.website);
-        }
-        else
-        {
-            created = userService.signUpWithEmail(
-                    authorization,
-                    userFormDTO.biography,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.inviteCode,
-                    userFormDTO.email,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.location,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.username,
-                    userFormDTO.website,
-                    userFormDTO.profilePicture);
-        }
-        return createSignInUpProfileProcessor().process(created);
-    }
-
     public Observable<UserProfileDTO> signUpWithEmailRx(
             String authorization,
             UserFormDTO userFormDTO)
@@ -230,74 +182,14 @@ import rx.functions.Func1;
             }
         });
     }
-
-    public MiddleCallback<UserProfileDTO> signUpWithEmail(
-            String authorization,
-            UserFormDTO userFormDTO,
-            Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createSignInUpProfileProcessor());
-        if (userFormDTO.profilePicture == null)
-        {
-            userServiceAsync.signUpWithEmail(
-                    authorization,
-                    userFormDTO.biography,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.inviteCode,
-                    userFormDTO.email,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.location,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.username,
-                    userFormDTO.website,
-                    middleCallback);
-        }
-        else
-        {
-            userServiceAsync.signUpWithEmail(
-                    authorization,
-                    userFormDTO.biography,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.inviteCode,
-                    userFormDTO.email,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.location,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.username,
-                    userFormDTO.website,
-                    userFormDTO.profilePicture,
-                    middleCallback);
-        }
-        return middleCallback;
-    }
     //</editor-fold>
 
     //<editor-fold desc="Sign-Up">
-    public UserProfileDTO signUp(
+    public Observable<UserProfileDTO> signUpRx(
             String authorization,
             UserFormDTO userFormDTO)
     {
-        return createSignInUpProfileProcessor().process(userService.signUp(authorization, userFormDTO));
-    }
-
-    public MiddleCallback<UserProfileDTO> signUp(
-            String authorization,
-            UserFormDTO userFormDTO,
-            Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createSignInUpProfileProcessor());
-        userServiceAsync.signUp(authorization, userFormDTO, middleCallback);
-        return middleCallback;
+        return userServiceRx.signUp(authorization, userFormDTO);
     }
     //</editor-fold>
 
@@ -305,51 +197,6 @@ import rx.functions.Func1;
     @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
         return new DTOProcessorUpdateUserProfileDeep(userProfileCache.get(), homeContentCache.get());
-    }
-
-    public UserProfileDTO updateProfile(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull UserFormDTO userFormDTO)
-    {
-        UserProfileDTO updated;
-        if (userFormDTO.profilePicture == null)
-        {
-            updated = userService.updateProfile(
-                    userBaseKey.key,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.email,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.username,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.biography,
-                    userFormDTO.location,
-                    userFormDTO.website);
-        }
-        else
-        {
-            updated = userService.updateProfile(
-                    userBaseKey.key,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.email,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.username,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.biography,
-                    userFormDTO.location,
-                    userFormDTO.website,
-                    userFormDTO.profilePicture);
-        }
-        return createUpdateProfileProcessor().process(updated);
     }
 
     public MiddleCallback<UserProfileDTO> updateProfile(
@@ -407,7 +254,7 @@ import rx.functions.Func1;
         Observable<UserProfileDTO> created;
         if (userFormDTO.profilePicture == null)
         {
-            created = userServiceRx.updateProfileRx(
+            created = userServiceRx.updateProfile(
                     userBaseKey.key,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
@@ -425,7 +272,7 @@ import rx.functions.Func1;
         }
         else
         {
-            created = userServiceRx.updateProfileRx(
+            created = userServiceRx.updateProfile(
                     userBaseKey.key,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
@@ -452,16 +299,6 @@ import rx.functions.Func1;
         });
     }
 
-    public UserProfileDTO updateProfilePropertyEmailNotifications(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull Boolean emailNotificationsEnabled)
-    {
-        UserFormDTO userFormDTO = userFormBuilderProvider.get()
-                .emailNotificationsEnabled(emailNotificationsEnabled)
-                .build();
-        return this.updateProfile(userBaseKey, userFormDTO);
-    }
-
     @NotNull public MiddleCallback<UserProfileDTO> updateProfilePropertyEmailNotifications(
             @NotNull UserBaseKey userBaseKey,
             @NotNull Boolean emailNotificationsEnabled,
@@ -473,14 +310,14 @@ import rx.functions.Func1;
         return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
 
-    public UserProfileDTO updateProfilePropertyPushNotifications(
+    public Observable<UserProfileDTO> updateProfilePropertyEmailNotificationsRx(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull Boolean pushNotificationsEnabled)
+            @NotNull Boolean emailNotificationsEnabled)
     {
         UserFormDTO userFormDTO = userFormBuilderProvider.get()
-                .pushNotificationsEnabled(pushNotificationsEnabled)
+                .emailNotificationsEnabled(emailNotificationsEnabled)
                 .build();
-        return this.updateProfile(userBaseKey, userFormDTO);
+        return this.updateProfileRx(userBaseKey, userFormDTO);
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> updateProfilePropertyPushNotifications(
@@ -493,6 +330,16 @@ import rx.functions.Func1;
                 .build();
         return this.updateProfile(userBaseKey, userFormDTO, callback);
     }
+
+    public Observable<UserProfileDTO> updateProfilePropertyPushNotificationsRx(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull Boolean pushNotificationsEnabled)
+    {
+        UserFormDTO userFormDTO = userFormBuilderProvider.get()
+                .pushNotificationsEnabled(pushNotificationsEnabled)
+                .build();
+        return this.updateProfileRx(userBaseKey, userFormDTO);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">
@@ -501,22 +348,13 @@ import rx.functions.Func1;
         return userService.checkDisplayNameAvailable(username);
     }
 
-    @NotNull public MiddleCallback<UserAvailabilityDTO> checkDisplayNameAvailable(
-            @NotNull String username,
-            @Nullable Callback<UserAvailabilityDTO> callback)
+    public Observable<UserAvailabilityDTO> checkDisplayNameAvailableRx(@NotNull String username)
     {
-        MiddleCallback<UserAvailabilityDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.checkDisplayNameAvailable(username, middleCallback);
-        return middleCallback;
+        return userServiceRx.checkDisplayNameAvailable(username);
     }
     //</editor-fold>
 
     //<editor-fold desc="Forgot Password">
-    public ForgotPasswordDTO forgotPassword(@NotNull ForgotPasswordFormDTO forgotPasswordFormDTO)
-    {
-        return userService.forgotPassword(forgotPasswordFormDTO);
-    }
-
     @NotNull public MiddleCallback<ForgotPasswordDTO> forgotPassword(
             @NotNull ForgotPasswordFormDTO forgotPasswordFormDTO,
             @Nullable Callback<ForgotPasswordDTO> callback)
@@ -524,6 +362,11 @@ import rx.functions.Func1;
         MiddleCallback<ForgotPasswordDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.forgotPassword(forgotPasswordFormDTO, middleCallback);
         return middleCallback;
+    }
+
+    public Observable<ForgotPasswordDTO> forgotPasswordRx(@NotNull ForgotPasswordFormDTO forgotPasswordFormDTO)
+    {
+        return userServiceRx.forgotPassword(forgotPasswordFormDTO);
     }
     //</editor-fold>
 
@@ -546,31 +389,22 @@ import rx.functions.Func1;
         return this.userService.searchUsers(key.searchString, key.page, key.perPage);
     }
 
-    @NotNull public MiddleCallback<UserSearchResultDTOList> searchUsers(
-            @NotNull UserListType key,
-            @Nullable Callback<UserSearchResultDTOList> callback)
+    public Observable<UserSearchResultDTOList> searchUsersRx(@NotNull UserListType key)
     {
         if (key instanceof SearchUserListType)
         {
-            return searchUsers((SearchUserListType) key, callback);
+            return searchUsersRx((SearchUserListType) key);
         }
         throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
-    @NotNull protected MiddleCallback<UserSearchResultDTOList> searchUsers(
-            @NotNull SearchUserListType key,
-            @Nullable Callback<UserSearchResultDTOList> callback)
+    protected Observable<UserSearchResultDTOList> searchUsersRx(@NotNull SearchUserListType key)
     {
-        MiddleCallback<UserSearchResultDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         if (key.searchString == null)
         {
-            this.userServiceAsync.searchUsers(null, null, null, middleCallback);
+            return this.userServiceRx.searchUsers(null, null, null);
         }
-        else
-        {
-            this.userServiceAsync.searchUsers(key.searchString, key.page, key.perPage, middleCallback);
-        }
-        return middleCallback;
+        return this.userServiceRx.searchUsers(key.searchString, key.page, key.perPage);
     }
     //</editor-fold>
 
@@ -584,21 +418,13 @@ import rx.functions.Func1;
         return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
     }
 
-    @NotNull public BaseMiddleCallback<PaginatedAllowableRecipientDTO> searchAllowableRecipients(
-            @Nullable SearchAllowableRecipientListType key,
-            @Nullable Callback<PaginatedAllowableRecipientDTO> callback)
+    public Observable<PaginatedAllowableRecipientDTO> searchAllowableRecipientsRx(@Nullable SearchAllowableRecipientListType key)
     {
-        BaseMiddleCallback<PaginatedAllowableRecipientDTO>
-                middleCallback = new BaseMiddleCallback<>(callback);
         if (key == null)
         {
-            userServiceAsync.searchAllowableRecipients(null, null, null, middleCallback);
+            return userServiceRx.searchAllowableRecipients(null, null, null);
         }
-        else
-        {
-            userServiceAsync.searchAllowableRecipients(key.searchString, key.page, key.perPage, middleCallback);
-        }
-        return middleCallback;
+        return userServiceRx.searchAllowableRecipients(key.searchString, key.page, key.perPage);
     }
     //</editor-fold>
 
@@ -613,15 +439,6 @@ import rx.functions.Func1;
         return userService.getUserRx(userKey.key)
                 .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
     }
-
-    @NotNull public MiddleCallback<UserProfileDTO> getUser(
-            @NotNull UserBaseKey userKey,
-            @Nullable Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getUser(userKey.key, middleCallback);
-        return middleCallback;
-    }
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
@@ -631,13 +448,10 @@ import rx.functions.Func1;
         return userService.getUserTransactions(userBaseKey.key);
     }
 
-    @NotNull public MiddleCallback<UserTransactionHistoryDTOList> getUserTransactions(
-            @NotNull UserBaseKey userBaseKey,
-            @Nullable Callback<UserTransactionHistoryDTOList> callback)
+    @NotNull public Observable<UserTransactionHistoryDTOList> getUserTransactionsRx(
+            @NotNull UserBaseKey userBaseKey)
     {
-        MiddleCallback<UserTransactionHistoryDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getUserTransactions(userBaseKey.key, middleCallback);
-        return middleCallback;
+        return userServiceRx.getUserTransactions(userBaseKey.key);
     }
     //</editor-fold>
 
@@ -645,14 +459,6 @@ import rx.functions.Func1;
     @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey userBaseKey)
     {
         return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey);
-    }
-
-    public UpdatePayPalEmailDTO updatePayPalEmail(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
-    {
-        return createUpdatePaypalEmailProcessor(userBaseKey).process(
-                userService.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO));
     }
 
     @NotNull public MiddleCallback<UpdatePayPalEmailDTO> updatePayPalEmail(
@@ -666,20 +472,19 @@ import rx.functions.Func1;
                 middleCallback);
         return middleCallback;
     }
+
+    public Observable<UpdatePayPalEmailDTO> updatePayPalEmailRx(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
+    {
+        return userServiceRx.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay account">
     @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
     {
         return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId);
-    }
-
-    public UpdateAlipayAccountDTO updateAlipayAccount(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
-    {
-        return createUpdateAlipayAccountProcessor(userBaseKey).process(
-                userService.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO));
     }
 
     @NotNull public MiddleCallback<UpdateAlipayAccountDTO> updateAlipayAccount(
@@ -693,26 +498,19 @@ import rx.functions.Func1;
                 middleCallback);
         return middleCallback;
     }
+
+    public Observable<UpdateAlipayAccountDTO> updateAlipayAccountRx(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
+    {
+        return userServiceRx.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Delete User">
-    @NotNull protected DTOProcessor<BaseResponseDTO> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
+    public Observable<BaseResponseDTO> deleteUser(@NotNull UserBaseKey userKey)
     {
-        return new DTOProcessorUserDeleted(userProfileCache.get(), playerId);
-    }
-
-    public BaseResponseDTO deleteUser(@NotNull UserBaseKey userKey)
-    {
-        return createUserDeletedProcessor(userKey).process(userService.deleteUser(userKey.key));
-    }
-
-    @NotNull public MiddleCallback<BaseResponseDTO> deleteUser(
-            @NotNull UserBaseKey userKey,
-            @Nullable Callback<BaseResponseDTO> callback)
-    {
-        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserDeletedProcessor(userKey));
-        userServiceAsync.deleteUser(userKey.key, middleCallback);
-        return middleCallback;
+        return userServiceRx.deleteUser(userKey.key);
     }
     //</editor-fold>
 
@@ -748,33 +546,35 @@ import rx.functions.Func1;
         return received;
     }
 
-    @NotNull public MiddleCallback<UserFriendsDTOList> getFriends(
-            @NotNull FriendsListKey friendsListKey,
-            @Nullable Callback<UserFriendsDTOList> callback)
+    public Observable<UserFriendsDTOList> getFriendsRx(@NotNull FriendsListKey friendsListKey)
     {
-        MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        Observable<UserFriendsDTOList> received;
         if (friendsListKey.searchQuery != null)
         {
-            userServiceAsync.searchSocialFriends(
+            received = userServiceRx.searchSocialFriends(
                     friendsListKey.userBaseKey.key,
                     friendsListKey.socialNetworkEnum,
-                    friendsListKey.searchQuery,
-                    middleCallback);
+                    friendsListKey.searchQuery);
         }
         else if (friendsListKey.socialNetworkEnum != null)
         {
-            userServiceAsync.getSocialFriends(
-                    friendsListKey.userBaseKey.key,
-                    friendsListKey.socialNetworkEnum,
-                    middleCallback);
+            if (friendsListKey.socialNetworkEnum == SocialNetworkEnum.WB)
+            {
+                received = userServiceRx.getSocialWeiboFriends(friendsListKey.userBaseKey.key);
+            }
+            else
+            {
+                received = userServiceRx.getSocialFriends(
+                        friendsListKey.userBaseKey.key,
+                        friendsListKey.socialNetworkEnum);
+            }
         }
         else
         {
-            userServiceAsync.getFriends(
-                    friendsListKey.userBaseKey.key,
-                    middleCallback);
+            received = userServiceRx.getFriends(
+                    friendsListKey.userBaseKey.key);
         }
-        return middleCallback;
+        return received;
     }
     //</editor-fold>
 
@@ -790,9 +590,9 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    public UserFriendsDTOList searchSocialFriends(@NotNull UserBaseKey userKey, @NotNull SocialNetworkEnum socialNetworkEnum, @NotNull String query)
+    public Observable<UserFriendsDTOList> searchSocialFriendsRx(@NotNull UserBaseKey userKey, @NotNull SocialNetworkEnum socialNetworkEnum, @NotNull String query)
     {
-        return userService.searchSocialFriends(userKey.key, socialNetworkEnum, query);
+        return userServiceRx.searchSocialFriends(userKey.key, socialNetworkEnum, query);
     }
     //</editor-fold>
 
@@ -809,12 +609,6 @@ import rx.functions.Func1;
                 batchFollowFormDTO);
     }
 
-    @NotNull public UserProfileDTO followBatchFree(@NotNull BatchFollowFormDTO batchFollowFormDTO)
-    {
-        return createBatchFollowFreeProcessor(batchFollowFormDTO).process(
-                userService.followBatchFree(batchFollowFormDTO));
-    }
-
     @NotNull public MiddleCallback<UserProfileDTO> followBatchFree(
             @NotNull BatchFollowFormDTO batchFollowFormDTO,
             @Nullable Callback<UserProfileDTO> callback)
@@ -824,6 +618,11 @@ import rx.functions.Func1;
                 createBatchFollowFreeProcessor(batchFollowFormDTO));
         userServiceAsync.followBatchFree(batchFollowFormDTO, middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<UserProfileDTO> followBatchFreeRx(@NotNull BatchFollowFormDTO batchFollowFormDTO)
+    {
+        return userServiceRx.followBatchFree(batchFollowFormDTO);
     }
     //</editor-fold>
 
@@ -844,16 +643,16 @@ import rx.functions.Func1;
         userServiceAsync.inviteFriends(userKey.key, inviteFormDTO, middleCallback);
         return middleCallback;
     }
+
+    public Observable<BaseResponseDTO> inviteFriendsRx(
+            @NotNull UserBaseKey userKey,
+            @NotNull InviteFormDTO inviteFormDTO)
+    {
+        return userServiceRx.inviteFriends(userKey.key, inviteFormDTO);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Add Credit">
-    public UserProfileDTO addCredit(
-            @NotNull UserBaseKey userKey,
-            @Nullable PurchaseReportDTO purchaseDTO)
-    {
-        return dtoProcessorUpdateUserProfileProvider.get().process(userService.addCredit(userKey.key, purchaseDTO));
-    }
-
     @NotNull public MiddleCallback<UserProfileDTO> addCredit(
             @NotNull UserBaseKey userKey,
             @Nullable PurchaseReportDTO purchaseDTO,
@@ -862,6 +661,13 @@ import rx.functions.Func1;
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, dtoProcessorUpdateUserProfileProvider.get());
         userServiceAsync.addCredit(userKey.key, purchaseDTO, middleCallback);
         return middleCallback;
+    }
+
+    public Observable<UserProfileDTO> addCreditRx(
+            @NotNull UserBaseKey userKey,
+            @Nullable PurchaseReportDTO purchaseDTO)
+    {
+        return userServiceRx.addCredit(userKey.key, purchaseDTO);
     }
     //</editor-fold>
 
@@ -893,6 +699,11 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
+    public Observable<UserProfileDTO> followRx(@NotNull UserBaseKey heroId)
+    {
+        return userServiceRx.follow(heroId.key);
+    }
+
     public UserProfileDTO follow(
             @NotNull UserBaseKey heroId,
             @NotNull PurchaseReportDTO purchaseDTO)
@@ -908,6 +719,13 @@ import rx.functions.Func1;
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(heroId));
         userServiceAsync.follow(heroId.key, purchaseDTO, middleCallback);
         return middleCallback;
+    }
+
+    public Observable<UserProfileDTO> followRx(
+            @NotNull UserBaseKey heroId,
+            @NotNull PurchaseReportDTO purchaseDTO)
+    {
+        return userServiceRx.follow(heroId.key, purchaseDTO);
     }
 
     @NotNull protected DTOProcessor<UserProfileDTO> createFollowFreeUserProcessor(@NotNull UserBaseKey heroId)
@@ -936,6 +754,11 @@ import rx.functions.Func1;
         userServiceAsync.freeFollow(heroId.key, middleCallback);
         return middleCallback;
     }
+
+    public Observable<UserProfileDTO> freeFollowRx(@NotNull UserBaseKey heroId)
+    {
+        return userServiceRx.freeFollow(heroId.key);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
@@ -952,11 +775,6 @@ import rx.functions.Func1;
                 heroId);
     }
 
-    public UserProfileDTO unfollow(@NotNull UserBaseKey heroId)
-    {
-        return createUnfollowUserProcessor(heroId).process(userService.unfollow(heroId.key));
-    }
-
     @NotNull public MiddleCallback<UserProfileDTO> unfollow(
             @NotNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
@@ -964,6 +782,11 @@ import rx.functions.Func1;
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUnfollowUserProcessor(heroId));
         userServiceAsync.unfollow(heroId.key, middleCallback);
         return middleCallback;
+    }
+
+    public Observable<UserProfileDTO> unfollowRx(@NotNull UserBaseKey heroId)
+    {
+        return userServiceRx.unfollow(heroId.key);
     }
     //</editor-fold>
 
@@ -973,13 +796,9 @@ import rx.functions.Func1;
         return userService.getHeroes(heroKey.key);
     }
 
-    @NotNull public MiddleCallback<HeroDTOList> getHeroes(
-            @NotNull UserBaseKey heroKey,
-            @Nullable Callback<HeroDTOList> callback)
+    public Observable<HeroDTOList> getHeroesRx(@NotNull UserBaseKey heroKey)
     {
-        BaseMiddleCallback<HeroDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getHeroes(heroKey.key, middleCallback);
-        return middleCallback;
+        return userServiceRx.getHeroes(heroKey.key);
     }
     //</editor-fold>
 
@@ -994,18 +813,14 @@ import rx.functions.Func1;
                 suggestHeroesListType.perPage);
     }
 
-    @NotNull public MiddleCallback<LeaderboardUserDTOList> suggestHeroes(
-            @NotNull SuggestHeroesListType suggestHeroesListType,
-            @Nullable Callback<LeaderboardUserDTOList> callback)
+    @NotNull public Observable<LeaderboardUserDTOList> suggestHeroesRx(
+            @NotNull SuggestHeroesListType suggestHeroesListType)
     {
-        MiddleCallback<LeaderboardUserDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.suggestHeroes(
+        return userServiceRx.suggestHeroes(
                 suggestHeroesListType.exchangeId == null ? null : suggestHeroesListType.exchangeId.key,
                 suggestHeroesListType.sectorId == null ? null : suggestHeroesListType.sectorId.key,
                 suggestHeroesListType.page,
-                suggestHeroesListType.perPage,
-                middleCallback);
-        return middleCallback;
+                suggestHeroesListType.perPage);
     }
     //</editor-fold>
 
@@ -1022,14 +837,6 @@ import rx.functions.Func1;
                 updateCountryCodeFormDTO);
     }
 
-    @NotNull public UpdateCountryCodeDTO updateCountryCode(
-            @NotNull UserBaseKey userKey,
-            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
-    {
-        return createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO).process(
-                userService.updateCountryCode(userKey.key, updateCountryCodeFormDTO));
-    }
-
     @NotNull public MiddleCallback<UpdateCountryCodeDTO> updateCountryCode(
             @NotNull UserBaseKey userKey,
             @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO,
@@ -1040,6 +847,13 @@ import rx.functions.Func1;
         userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeFormDTO, middleCallback);
         return middleCallback;
     }
+
+    @NotNull public Observable<UpdateCountryCodeDTO> updateCountryCodeRx(
+            @NotNull UserBaseKey userKey,
+            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
+    {
+        return userServiceRx.updateCountryCode(userKey.key, updateCountryCodeFormDTO);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Update Referral Code">
@@ -1048,14 +862,6 @@ import rx.functions.Func1;
             @NotNull UserBaseKey invitedUserId)
     {
         return new DTOProcessorUpdateReferralCode(userProfileCache.get(), updateReferralCodeDTO, invitedUserId);
-    }
-
-    @NotNull public BaseResponseDTO updateReferralCode(
-            @NotNull UserBaseKey invitedUserId,
-            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO)
-    {
-        return createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId).process(
-                userService.updateReferralCode(invitedUserId.key, updateReferralCodeDTO));
     }
 
     @NotNull public MiddleCallback<BaseResponseDTO> updateReferralCode(
@@ -1069,6 +875,13 @@ import rx.functions.Func1;
         userServiceAsync.updateReferralCode(invitedUserId.key, updateReferralCodeDTO, middleCallback);
         return middleCallback;
     }
+
+    @NotNull public Observable<BaseResponseDTO> updateReferralCodeRx(
+            @NotNull UserBaseKey invitedUserId,
+            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO)
+    {
+        return userServiceRx.updateReferralCode(invitedUserId.key, updateReferralCodeDTO);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Send Analytics">
@@ -1077,13 +890,9 @@ import rx.functions.Func1;
         return userService.sendAnalytics(batchAnalyticsEventForm);
     }
 
-    @NotNull public MiddleCallback<BaseResponseDTO> sendAnalytics(
-            @NotNull BatchAnalyticsEventForm batchAnalyticsEventForm,
-            @Nullable Callback<BaseResponseDTO> callback)
+    @NotNull public Observable<BaseResponseDTO> sendAnalyticsRx(@NotNull BatchAnalyticsEventForm batchAnalyticsEventForm)
     {
-        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.sendAnalytics(batchAnalyticsEventForm, middleCallback);
-        return middleCallback;
+        return userServiceRx.sendAnalytics(batchAnalyticsEventForm);
     }
     //</editor-fold>
 }

@@ -81,7 +81,8 @@ public interface UserService
     //</editor-fold>
 
     //<editor-fold desc="Signup">
-    @POST("/users") UserProfileDTO signUp(
+    @POST("/users")
+    UserProfileDTO signUp(
             @Header(AUTHORIZATION) String authorization,
             @Body UserFormDTO user);
     //</editor-fold>

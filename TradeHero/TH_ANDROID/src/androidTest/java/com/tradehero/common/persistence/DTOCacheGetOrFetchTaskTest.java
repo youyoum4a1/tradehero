@@ -3,7 +3,7 @@ package com.tradehero.common.persistence;
 import android.os.AsyncTask;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.inject.Inject;
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(THRobolectricTestRunner.class)
 public class DTOCacheGetOrFetchTaskTest
 {
-    @Inject AlertCompactListCache alertCompactListCache;
+    @Inject AlertCompactListCacheRx alertCompactListCache;
 
     @Before public void setUp() throws Exception
     {
@@ -44,7 +44,7 @@ public class DTOCacheGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 138; userId++)
         {
-            alertCompactListCache.getOrFetchAsync(new UserBaseKey(userId));
+            alertCompactListCache.get(new UserBaseKey(userId));
         }
     }
 
@@ -53,7 +53,7 @@ public class DTOCacheGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 139; userId++)
         {
-            alertCompactListCache.getOrFetchAsync(new UserBaseKey(userId));
+            alertCompactListCache.get(new UserBaseKey(userId));
         }
         assertTrue(false);
     }
@@ -63,7 +63,7 @@ public class DTOCacheGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 138; userId++)
         {
-            alertCompactListCache.getOrFetchAsync(new UserBaseKey(userId));
+            alertCompactListCache.get(new UserBaseKey(userId));
         }
     }
 
@@ -72,7 +72,7 @@ public class DTOCacheGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 139; userId++)
         {
-            alertCompactListCache.getOrFetchAsync(new UserBaseKey(userId));
+            alertCompactListCache.get(new UserBaseKey(userId));
         }
     }
 }
