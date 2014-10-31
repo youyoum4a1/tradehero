@@ -16,7 +16,8 @@
               android:visibility="visible"
               android:background="#eeeeef"/>
     <RelativeLayout android:layout_width="match_parent" android:layout_height="67dp"
-                    android:id="@+id/relativelayout_recommend_list_hero_item">>
+                    android:id="@+id/relativelayout_recommend_list_hero_item"
+                    android:background="@drawable/recommend_item_bg">
         <ImageView
                 android:id="@+id/imageview_recommend_list_hero_avatar" android:layout_height="40dp"
                 android:layout_width="40dp"

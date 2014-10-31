@@ -100,4 +100,6 @@
   <color name="color_gray_plus">#333333</color>
   <!-- china build end -->
 
+  <drawable name="white">#ffffff</drawable>
+  <drawable name="gray">#eeeeef</drawable>
 </resources>
