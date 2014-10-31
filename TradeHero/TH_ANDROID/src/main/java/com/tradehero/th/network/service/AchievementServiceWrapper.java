@@ -13,20 +13,15 @@ import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import rx.Observable;
 
 public class AchievementServiceWrapper
 {
-    @NotNull private final AchievementService achievementService;
     @NotNull private final AchievementServiceRx achievementServiceRx;
 
     //<editor-fold desc="Constructors">
-    @Inject public AchievementServiceWrapper(
-            @NotNull AchievementService achievementService,
-            @NotNull AchievementServiceRx achievementServiceRx)
+    @Inject public AchievementServiceWrapper(@NotNull AchievementServiceRx achievementServiceRx)
     {
-        this.achievementService = achievementService;
         this.achievementServiceRx = achievementServiceRx;
     }
     //</editor-fold>
@@ -39,11 +34,6 @@ public class AchievementServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get User Achievement Details">
-    @NotNull public UserAchievementDTO getUserAchievementDetails(@NotNull UserAchievementId userAchievementId)
-    {
-        return achievementService.getUserAchievementDetails(userAchievementId.key);
-    }
-
     @NotNull public Observable<UserAchievementDTO> getUserAchievementDetailsRx(@NotNull UserAchievementId userAchievementId)
     {
         return achievementServiceRx.getUserAchievementDetails(userAchievementId.key);

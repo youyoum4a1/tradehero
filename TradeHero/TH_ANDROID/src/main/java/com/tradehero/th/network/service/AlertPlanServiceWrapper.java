@@ -12,14 +12,10 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import retrofit.Callback;
 import rx.Observable;
 
@@ -101,16 +97,6 @@ public class AlertPlanServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Restore Purchases">
-    public MiddleCallback<UserProfileDTO> restorePurchases(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull RestorePurchaseForm restorePurchaseForm,
-            @Nullable Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUserProfile());
-        alertPlanServiceAsync.restorePurchases(userBaseKey.key, restorePurchaseForm, middleCallback);
-        return middleCallback;
-    }
-
     public Observable<UserProfileDTO> restorePurchasesRx(
             @NotNull UserBaseKey userBaseKey,
             @NotNull RestorePurchaseForm restorePurchaseForm)

@@ -12,11 +12,10 @@ public class AchievementMockServiceWrapper extends AchievementServiceWrapper
 
     //<editor-fold desc="Constructors">
     @Inject public AchievementMockServiceWrapper(
-            @NotNull AchievementService achievementService,
             @NotNull AchievementServiceRx achievementServiceRx,
             @NotNull AchievementMockServiceRx achievementMockServiceRx)
     {
-        super(achievementService, achievementServiceRx);
+        super(achievementServiceRx);
         this.achievementMockServiceRx = achievementMockServiceRx;
     }
     //</editor-fold>

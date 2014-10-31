@@ -56,7 +56,7 @@ import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.persistence.achievement.UserAchievementCache;
+import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
@@ -68,6 +68,7 @@ import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -117,7 +118,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             R.id.achievement_starburst})
     ImageView[] imagesToColorFilter;
 
-    @Inject UserAchievementCache userAchievementCache;
+    @Inject UserAchievementCacheRx userAchievementCache;
     @Inject Picasso picasso;
     @Inject GraphicUtil graphicUtil;
     @Inject LevelDefListCacheRx levelDefListCache;
@@ -184,7 +185,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         AndroidObservable.bindFragment(
                 this,
                 levelDefListCache.get(mLevelDefListId))
-            .subscribe(createLevelDefCacheObserver());
+                .subscribe(createLevelDefCacheObserver());
     }
 
     private void displayStarburst()
@@ -650,39 +651,37 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     public static class Creator
     {
-        @NotNull UserAchievementCache userAchievementCacheInner;
+        @NotNull UserAchievementCacheRx userAchievementCacheInner;
 
-        @Inject public Creator(@NotNull UserAchievementCache userAchievementCacheInner)
+        @Inject public Creator(@NotNull UserAchievementCacheRx userAchievementCacheInner)
         {
             super();
             this.userAchievementCacheInner = userAchievementCacheInner;
         }
 
-        @Nullable public AbstractAchievementDialogFragment newInstance(@NotNull UserAchievementId userAchievementId)
+        @NotNull public Observable<AbstractAchievementDialogFragment> newInstance(@NotNull UserAchievementId userAchievementId)
         {
             if (!userAchievementCacheInner.shouldShow(userAchievementId))
             {
-                return null;
+                return Observable.empty();
             }
 
-            Bundle args = new Bundle();
+            final Bundle args = new Bundle();
             args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
-            @Nullable UserAchievementDTO userAchievementDTO = userAchievementCacheInner.get(userAchievementId);
-            AbstractAchievementDialogFragment dialogFragment;
-            if (userAchievementDTO == null)
-            {
-                return null;
-            }
-            else if (userAchievementDTO.achievementDef.isQuest)
-            {
-                dialogFragment = new QuestDialogFragment();
-            }
-            else
-            {
-                dialogFragment = new AchievementDialogFragment();
-            }
-            dialogFragment.setArguments(args);
-            return dialogFragment;
+            return userAchievementCacheInner.get(userAchievementId)
+                    .map(pair -> {
+                        AbstractAchievementDialogFragment dialogFragment;
+                        if (pair.second.achievementDef.isQuest)
+                        {
+                            dialogFragment = new QuestDialogFragment();
+                        }
+                        else
+                        {
+                            dialogFragment = new AchievementDialogFragment();
+                        }
+                        dialogFragment.setArguments(args);
+                        return dialogFragment;
+                    });
         }
     }
 

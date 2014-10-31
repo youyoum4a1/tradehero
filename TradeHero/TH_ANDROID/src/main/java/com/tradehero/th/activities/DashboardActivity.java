@@ -116,6 +116,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
 import timber.log.Timber;
 
 public class DashboardActivity extends BaseActivity
@@ -253,16 +254,30 @@ public class DashboardActivity extends BaseActivity
                 if (intent != null && intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID) != null)
                 {
                     Bundle bundle = intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID);
-                    UserAchievementId userAchievementId = new UserAchievementId(bundle);
-                    AbstractAchievementDialogFragment abstractAchievementDialogFragment = achievementDialogCreator.newInstance(userAchievementId);
-                    if (abstractAchievementDialogFragment != null)
-                    {
-                        abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
-                    }
-                    else
-                    {
-                        broadcastUtilsLazy.get().nextPlease();
-                    }
+                    achievementDialogCreator.newInstance(new UserAchievementId(bundle))
+                            .subscribe(new Observer<AbstractAchievementDialogFragment>()
+                            {
+                                private boolean isEmpty = false;
+
+                                @Override public void onCompleted()
+                                {
+                                    if (isEmpty)
+                                    {
+                                        broadcastUtilsLazy.get().nextPlease();
+                                    }
+                                }
+
+                                @Override public void onError(Throwable e)
+                                {
+                                    Timber.e(e, "Error when creating achievement dialog");
+                                }
+
+                                @Override public void onNext(AbstractAchievementDialogFragment abstractAchievementDialogFragment)
+                                {
+                                    isEmpty = false;
+                                    abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
+                                }
+                            });
                 }
                 else
                 {

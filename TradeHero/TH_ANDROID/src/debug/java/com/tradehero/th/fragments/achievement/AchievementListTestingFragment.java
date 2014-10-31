@@ -21,7 +21,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
-import com.tradehero.th.persistence.achievement.UserAchievementCache;
+import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ public class AchievementListTestingFragment extends DashboardFragment
     @Inject AchievementCategoryListCacheRx achievementCategoryListCache;
     @Inject CurrentUserId currentUserId;
 
-    @Inject UserAchievementCache userAchievementCache;
+    @Inject UserAchievementCacheRx userAchievementCache;
 
     private List<AchievementDefDTO> list = new ArrayList<>();
     private ArrayAdapter<AchievementDefDTO> arrayAdapter;
@@ -69,7 +69,7 @@ public class AchievementListTestingFragment extends DashboardFragment
         userAchievementDTO.xpEarned = 400;
         userAchievementDTO.xpTotal = 1030;
 
-        userAchievementCache.putAndBroadcast(userAchievementDTO);
+        userAchievementCache.onNextAndBroadcast(userAchievementDTO);
     }
 
     private void initAdapter()

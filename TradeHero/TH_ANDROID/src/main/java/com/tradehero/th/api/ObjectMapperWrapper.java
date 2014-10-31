@@ -17,7 +17,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
-import com.tradehero.th.persistence.achievement.UserAchievementCache;
+import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ObjectMapperWrapper extends ObjectMapper
 {
-    @NotNull protected final Lazy<UserAchievementCache> userAchievementCacheLazy;
+    @NotNull protected final Lazy<UserAchievementCacheRx> userAchievementCacheLazy;
     @NotNull protected final Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy;
     @NotNull protected final Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy;
     @NotNull private final Lazy<BroadcastUtils> broadcastUtilsLazy;
@@ -40,7 +40,7 @@ public class ObjectMapperWrapper extends ObjectMapper
 
     //<editor-fold desc="Constructors">
     @Inject public ObjectMapperWrapper(
-            @NotNull Lazy<UserAchievementCache> userAchievementCacheLazy,
+            @NotNull Lazy<UserAchievementCacheRx> userAchievementCacheLazy,
             @NotNull Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy,
             @NotNull Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy,
             @NotNull Lazy<UserProfileCache> userProfileCacheLazy,
@@ -114,7 +114,7 @@ public class ObjectMapperWrapper extends ObjectMapper
                 });
         if (userAchievementDTOs != null)
         {
-            userAchievementCacheLazy.get().putNonDefDuplicates(userAchievementDTOs);
+            userAchievementCacheLazy.get().onNextNonDefDuplicates(userAchievementDTOs);
             UserBaseKey userBaseKey = currentUserIdLazy.get().toUserBaseKey();
             achievementCategoryListCacheLazy.get().invalidate(userBaseKey);
             userProfileCacheLazy.get().updateXPIfNecessary(userBaseKey, userAchievementDTOs.findBiggestXPTotal());

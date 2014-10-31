@@ -22,7 +22,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class UserAchievementCacheTest
 {
-    @Inject UserAchievementCache userAchievementCache;
+    @Inject UserAchievementCacheRx userAchievementCache;
     @Inject LocalBroadcastManager localBroadcastManager;
     @Inject @ForAchievement IntentFilter intentFilter;
 
@@ -37,7 +37,7 @@ public class UserAchievementCacheTest
     {
         UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
         userAchievementDTO.id = 1;
-        BroadcastTaskNew broadcastTask = userAchievementCache.putAndBroadcast(userAchievementDTO);
+        BroadcastTaskNew broadcastTask = userAchievementCache.onNextAndBroadcast(userAchievementDTO);
         assertThat(broadcastTask).isNotNull();
         assertThat(broadcastTask.getCurrentTry()).isEqualTo(1);
 
@@ -53,7 +53,7 @@ public class UserAchievementCacheTest
         UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
         userAchievementDTO.id = 1;
         userAchievementDTO.achievementDef = new AchievementDefDTO();
-        BroadcastTaskNew broadcastTask = userAchievementCache.putAndBroadcast(userAchievementDTO);
+        BroadcastTaskNew broadcastTask = userAchievementCache.onNextAndBroadcast(userAchievementDTO);
         assertThat(broadcastTask).isNotNull();
         assertThat(broadcastTask.getCurrentTry()).isEqualTo(1);
         assertThat(broadcastTask.isRunning).isTrue();
@@ -77,7 +77,7 @@ public class UserAchievementCacheTest
 
         UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
         userAchievementDTO.id = 1;
-        BroadcastTaskNew broadcastTask = userAchievementCache.putAndBroadcast(userAchievementDTO);
+        BroadcastTaskNew broadcastTask = userAchievementCache.onNextAndBroadcast(userAchievementDTO);
         assertThat(broadcastTask).isNotNull();
         assertThat(broadcastTask.getCurrentTry()).isEqualTo(0);
 
@@ -89,7 +89,7 @@ public class UserAchievementCacheTest
     {
         UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
         userAchievementDTO.id = 1;
-        BroadcastTaskNew broadcastTask = userAchievementCache.putAndBroadcast(userAchievementDTO);
+        BroadcastTaskNew broadcastTask = userAchievementCache.onNextAndBroadcast(userAchievementDTO);
         assertThat(broadcastTask).isNotNull();
         assertThat(broadcastTask.getCurrentTry()).isEqualTo(1);
         assertThat(broadcastTask.isRunning).isTrue();
