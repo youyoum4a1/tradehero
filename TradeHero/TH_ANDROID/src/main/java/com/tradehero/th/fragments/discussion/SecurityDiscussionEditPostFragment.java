@@ -4,15 +4,19 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Pair;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.SecurityReplyDiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -55,7 +59,7 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
 
         if (securityId != null)
         {
-            detachSubscription(securityCompactCacheSubscription);
+            unsubscribe(securityCompactCacheSubscription);
             securityCompactCacheSubscription = securityCompactCache.get(securityId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
@@ -113,7 +117,8 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
 
     @Override public void onDestroyView()
     {
-        detachSubscription(securityCompactCacheSubscription);
+        unsubscribe(securityCompactCacheSubscription);
         super.onDestroyView();
     }
+
 }

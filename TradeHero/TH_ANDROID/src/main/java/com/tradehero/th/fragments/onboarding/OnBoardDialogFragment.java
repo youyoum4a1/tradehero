@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ViewSwitcher;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -44,10 +42,16 @@ import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import dagger.Lazy;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -272,7 +276,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         super.onSaveInstanceState(outState);
         detachExchangeSectorCompactListCache();
         detachLeaderboardUserListCache();
-        detachSecurityListCache();
+//        detachSecurityListCache();
         detachUserProfileCache();
     }
 
