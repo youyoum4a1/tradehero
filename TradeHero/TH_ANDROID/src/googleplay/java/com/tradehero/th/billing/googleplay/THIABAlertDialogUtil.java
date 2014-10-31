@@ -5,8 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.LayoutInflater;
-
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -18,14 +16,10 @@ import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCache;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.metrics.Analytics;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.List;
-
 import javax.inject.Inject;
-
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
@@ -116,9 +110,9 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
 
     //<editor-fold desc="SKU related">
     @Override protected THIABSKUDetailAdapter createProductDetailAdapter(Activity activity,
-            LayoutInflater layoutInflater, ProductIdentifierDomain skuDomain)
+            ProductIdentifierDomain skuDomain)
     {
-        return new THIABSKUDetailAdapter(activity, layoutInflater, skuDomain);
+        return new THIABSKUDetailAdapter(activity, skuDomain);
     }
 
     @Override public HashMap<ProductIdentifier, Boolean> getEnabledItems()
