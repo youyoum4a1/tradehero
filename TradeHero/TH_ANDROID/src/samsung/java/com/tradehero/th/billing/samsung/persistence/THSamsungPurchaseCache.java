@@ -5,11 +5,12 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.th.billing.samsung.THSamsungOrderId;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
+import com.tradehero.common.persistence.UserCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class THSamsungPurchaseCache
+@Singleton @UserCache public class THSamsungPurchaseCache
     extends SamsungPurchaseCache<
         SamsungSKU,
         THSamsungOrderId,
