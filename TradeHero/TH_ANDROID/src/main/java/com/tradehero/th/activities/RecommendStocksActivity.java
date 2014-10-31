@@ -4,11 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -20,11 +16,7 @@ import com.tradehero.th.adapters.RecommendListAdapter;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.fragments.chinabuild.data.FollowStockForm;
-import com.tradehero.th.fragments.chinabuild.data.RecommendHero;
-import com.tradehero.th.fragments.chinabuild.data.RecommendItems;
-import com.tradehero.th.fragments.chinabuild.data.RecommendStock;
-import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
+import com.tradehero.th.fragments.chinabuild.data.*;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -32,12 +24,13 @@ import com.tradehero.th.utils.ABCLogger;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -114,13 +107,23 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             }
         });
         followBtn.setOnClickListener(this);
+        checkFollowingItems();
     }
 
 
     @Override
     public void onBackPressed(){
+        disableAllBtns();
         THSharePreferenceManager.setRecommendedStock(userId, this);
         gotoNextActivity();
+    }
+
+    public void checkFollowingItems(){
+        if(listAdapter.getSecuritiesSelected().size()==0 && listAdapter.getHeroesSelected().size()==0){
+            followBtn.setEnabled(false);
+        }else{
+            followBtn.setEnabled(true);
+        }
     }
 
 
@@ -148,7 +151,7 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
 
     private void disableAllBtns(){
         tvHeadRight.setClickable(false);
-        followBtn.setClickable(false);
+        followBtn.setEnabled(false);
     }
 
     public void gotoDownloadRecommendItems(){
@@ -179,6 +182,7 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             isDownloading = false;
             downloadFailedIV.setVisibility(View.VISIBLE);
             recommendPRLV.setEmptyView(downloadFailedIV);
+            checkFollowingItems();
         }
 
         @Override
@@ -188,6 +192,7 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             isDownloading = false;
             downloadFailedIV.setVisibility(View.VISIBLE);
             recommendPRLV.setEmptyView(downloadFailedIV);
+            checkFollowingItems();
         }
     }
 
@@ -240,8 +245,14 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             @Override
             public void success(UserProfileDTO userProfileDTO, Response response) {
                 ABCLogger.d("upload recommended heroes successfully");
-                uploadStocks();
-                userProfileCache.put(new UserBaseKey(userProfileDTO.id) , userProfileDTO);
+                if(listAdapter.getSecuritiesSelected().size()>0){
+                    uploadStocks();
+                }else{
+                    THSharePreferenceManager.setRecommendedStock(userId, RecommendStocksActivity.this);
+                    progressDialogUtil.dismiss(RecommendStocksActivity.this);
+                    gotoNextActivity();
+                }
+                userProfileCache.put(new UserBaseKey(userProfileDTO.id), userProfileDTO);
             }
 
             @Override

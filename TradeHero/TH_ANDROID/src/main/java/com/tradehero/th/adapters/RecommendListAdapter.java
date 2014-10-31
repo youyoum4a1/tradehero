@@ -1,6 +1,5 @@
 package com.tradehero.th.adapters;
 
-import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -14,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.RecommendStocksActivity;
 import com.tradehero.th.fragments.chinabuild.data.RecommendHero;
 import com.tradehero.th.fragments.chinabuild.data.RecommendStock;
 import com.tradehero.th.utils.ColorUtils;
@@ -39,9 +39,9 @@ public class RecommendListAdapter extends BaseAdapter {
 
     private int RateOfReturnColor;
 
-    private Context context;
+    private RecommendStocksActivity activity;
 
-    public RecommendListAdapter(Context context, ArrayList<RecommendStock> securities, ArrayList<RecommendHero> heroes){
+    public RecommendListAdapter(RecommendStocksActivity activity, ArrayList<RecommendStock> securities, ArrayList<RecommendHero> heroes){
         if(securities!=null){
             this.securities.addAll(securities);
             for(RecommendStock stock: securities){
@@ -54,14 +54,14 @@ public class RecommendListAdapter extends BaseAdapter {
                 heroesSelected.add(hero.id);
             }
         }
-        this.context = context;
-        inflater = LayoutInflater.from(context);
+        this.activity = activity;
+        inflater = LayoutInflater.from(activity);
 
-        numberOfHoldStr = context.getResources().getString(R.string.recommend_number_hold);
-        rateOfReturnStr = context.getResources().getString(R.string.recommend_stock_rate_of_return);
-        RMBStr = context.getResources().getString(R.string.RMB);
+        numberOfHoldStr = activity.getResources().getString(R.string.recommend_number_hold);
+        rateOfReturnStr = activity.getResources().getString(R.string.recommend_stock_rate_of_return);
+        RMBStr = activity.getResources().getString(R.string.RMB);
 
-        RateOfReturnColor = context.getResources().getColor(R.color.recomment_rate_of_return);
+        RateOfReturnColor = activity.getResources().getColor(R.color.recomment_rate_of_return);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class RecommendListAdapter extends BaseAdapter {
                 currencyTV.setText(recommendStock.currencyDisplay);
             }
             priceTV.setText(String.valueOf(recommendStock.lastPrice));
-            int color = context.getResources().getColor(ColorUtils.getColorResourceIdForNumber(recommendStock.risePercent));
+            int color = activity.getResources().getColor(ColorUtils.getColorResourceIdForNumber(recommendStock.risePercent));
             String percent = "";
             if(recommendStock.risePercent>0){
                 percent = "+" + keyTwoDecimals(recommendStock.risePercent) + "%";
@@ -148,7 +148,7 @@ public class RecommendListAdapter extends BaseAdapter {
             RelativeLayout heroRL = (RelativeLayout)convertView.findViewById(R.id.relativelayout_recommend_list_hero_item);
             RecommendHero hero = heroes.get(i);
             if(!TextUtils.isEmpty(hero.picUrl)){
-                Picasso.with(context).load(hero.picUrl).
+                Picasso.with(activity).load(hero.picUrl).
                         placeholder(R.drawable.superman_facebook).error(R.drawable.superman_facebook).into(avatarIV);
             }else{
                 avatarIV.setImageResource(R.drawable.superman_facebook);
@@ -170,7 +170,7 @@ public class RecommendListAdapter extends BaseAdapter {
             }else{
                 heroSelectIV.setBackgroundResource(R.drawable.checkbox_active);
             }
-            int color = context.getResources().getColor(ColorUtils.getColorResourceIdForNumber(hero.roi));
+            int color = activity.getResources().getColor(ColorUtils.getColorResourceIdForNumber(hero.roi));
             String percent = "";
             if(hero.roi>0){
                 percent = "+" + keyTwoDecimals(hero.roi) + "%";
@@ -255,6 +255,7 @@ public class RecommendListAdapter extends BaseAdapter {
             }
         }
         notifyDataSetChanged();
+        activity.checkFollowingItems();
     }
 
     private int getSelectedHero(RecommendHero hero){
