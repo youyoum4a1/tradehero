@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
@@ -606,10 +607,10 @@ public class DashboardActivity extends BaseActivity
 
     protected void updateNetworkStatus()
     {
-        if(networkIndicator != null)
+        Boolean connected = OnlineStateReceiver.isOnline(this);
+        if (networkIndicator != null)
         {
-            Boolean connected = OnlineStateReceiver.isOnline(this);
-            if(connected)
+            if (connected)
             {
                 networkIndicator.setVisible(false);
             }
@@ -617,6 +618,11 @@ public class DashboardActivity extends BaseActivity
             {
                 networkIndicator.setVisible(true);
             }
+        }
+        if (getActionBar() != null)
+        {
+            Resources r = getResources();
+            getActionBar().setBackgroundDrawable(r.getDrawable((connected ? R.drawable.ab_background : R.drawable.ab_background_state_disabled)));
         }
     }
 
