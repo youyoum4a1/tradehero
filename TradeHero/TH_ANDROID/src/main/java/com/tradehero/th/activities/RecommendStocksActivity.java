@@ -176,6 +176,13 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
                 heroes.add(hero);
                 ABCLogger.d(hero.toString());
             }
+            //If not recommend heroes and stocks, go to the main activity directly.
+            if(heroes.size()==0 && securities.size()==0){
+                disableAllBtns();
+                THSharePreferenceManager.setRecommendedStock(userId, RecommendStocksActivity.this);
+                gotoNextActivity();
+                return;
+            }
             listAdapter.setRecommendItems(securities, heroes);
             listAdapter.notifyDataSetChanged();
             dismissLoadingProgressBar();
