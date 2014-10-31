@@ -1,6 +1,7 @@
 package com.tradehero.th.api.competition.key;
 
 import com.tradehero.th.api.competition.ProviderId;
+import org.jetbrains.annotations.NotNull;
 
 public class SearchProviderSecurityListType extends ProviderSecurityListType
 {
@@ -32,15 +33,17 @@ public class SearchProviderSecurityListType extends ProviderSecurityListType
                 (searchString == null ? 0 : searchString.hashCode());
     }
 
-    @Override public boolean equals(ProviderSecurityListType other)
+    @Override protected boolean equals(@NotNull ProviderSecurityListType other)
     {
-        return (other instanceof SearchProviderSecurityListType) && equals(
-                (SearchProviderSecurityListType) other);
+        return super.equals(other)
+                && other instanceof SearchProviderSecurityListType
+                && equals((SearchProviderSecurityListType) other);
     }
 
-    public boolean equals(SearchProviderSecurityListType other)
+    protected boolean equals(@NotNull SearchProviderSecurityListType other)
     {
-        return super.equals(other) && searchString.equals(other.searchString);
+        return super.equals(other)
+                && searchString.equals(other.searchString);
     }
 
     @Override public int compareTo(ProviderSecurityListType another)
@@ -51,7 +54,7 @@ public class SearchProviderSecurityListType extends ProviderSecurityListType
         }
         if (!SearchProviderSecurityListType.class.isInstance(another))
         {
-            return SearchProviderSecurityListType.class.getName().compareTo(((Object)another).getClass().getName());
+            return SearchProviderSecurityListType.class.getName().compareTo(((Object) another).getClass().getName());
         }
 
         return compareTo(ProviderSecurityListType.class.cast(another));

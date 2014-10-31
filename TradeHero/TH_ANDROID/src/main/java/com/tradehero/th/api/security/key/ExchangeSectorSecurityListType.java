@@ -4,6 +4,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.api.market.SectorId;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ExchangeSectorSecurityListType extends SecurityListType
@@ -34,4 +35,18 @@ public class ExchangeSectorSecurityListType extends SecurityListType
                 page, perPage);
     }
     //</editor-fold>
+
+    @Override protected boolean equals(@NotNull SecurityListType other)
+    {
+        return super.equals(other)
+                && other instanceof ExchangeSectorSecurityListType
+                && equals((ExchangeSectorSecurityListType) other);
+    }
+
+    protected boolean equals(@NotNull ExchangeSectorSecurityListType other)
+    {
+        return super.equals(other)
+                && (exchangeId == null ? other.exchangeId == null : exchangeId.equals(other.exchangeId))
+                && (sectorId == null ? other.sectorId == null : sectorId.equals(other.sectorId));
+    }
 }

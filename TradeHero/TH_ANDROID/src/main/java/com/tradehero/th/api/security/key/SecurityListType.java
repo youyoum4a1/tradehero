@@ -1,6 +1,7 @@
 package com.tradehero.th.api.security.key;
 
 import com.tradehero.common.api.PagedDTOKey;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 abstract public class SecurityListType implements Comparable<SecurityListType>, PagedDTOKey
@@ -55,31 +56,28 @@ abstract public class SecurityListType implements Comparable<SecurityListType>, 
             throw new IllegalArgumentException("PerPage cannot be zero or negative");
         }
     }
+
     @Override public int hashCode()
     {
         return (page == null ? 0 : page.hashCode()) ^
                 (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
-        return SecurityListType.class.isInstance(other) && equals(SecurityListType.class.cast(other));
+        return other != null
+                && ((Object) this).getClass().equals(other.getClass())
+                && equals(SecurityListType.class.cast(other));
     }
 
-    public boolean equals(SecurityListType other)
+    protected boolean equals(@NotNull SecurityListType other)
     {
-        return (other != null) &&
-                (page == null ? other.page == null : page.equals(other.page)) &&
-                (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
+        return (page == null ? other.page == null : page.equals(other.page))
+                && (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
     }
 
-    @Override public int compareTo(SecurityListType another)
+    @Override public int compareTo(@NotNull SecurityListType another)
     {
-        if (another == null)
-        {
-            return 1;
-        }
-
         int pageCompare = page == null ? (another.page == null ? 0 : -1) : page.compareTo(another.page);
         if (pageCompare != 0)
         {
@@ -89,7 +87,7 @@ abstract public class SecurityListType implements Comparable<SecurityListType>, 
         return perPage == null ? (another.perPage == null ? 0 : -1) : perPage.compareTo(another.perPage);
     }
 
-    @Override public Integer getPage()
+    @Override @Nullable public Integer getPage()
     {
         return page;
     }

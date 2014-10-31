@@ -42,9 +42,10 @@ public class TrendingAllSecurityListType extends TrendingSecurityListType
     }
     //</editor-fold>
 
-    @Override public boolean equals(TrendingSecurityListType other)
+    @Override protected boolean equals(@NotNull TrendingSecurityListType other)
     {
-        return (other instanceof TrendingAllSecurityListType) && super.equals(other);
+        return super.equals(other)
+                && (other instanceof TrendingAllSecurityListType);
     }
 
     @Override public int compareTo(TrendingSecurityListType another)
@@ -57,7 +58,7 @@ public class TrendingAllSecurityListType extends TrendingSecurityListType
         if (!TrendingAllSecurityListType.class.isInstance(another))
         {
             // TODO is it very expensive?
-            return TrendingAllSecurityListType.class.getName().compareTo(another.getClass().getName());
+            return TrendingAllSecurityListType.class.getName().compareTo(((Object) another).getClass().getName());
         }
 
         return compareTo(TrendingAllSecurityListType.class.cast(another));

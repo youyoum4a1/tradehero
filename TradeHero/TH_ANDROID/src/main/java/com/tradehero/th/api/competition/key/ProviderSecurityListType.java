@@ -2,6 +2,7 @@ package com.tradehero.th.api.competition.key;
 
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.key.SecurityListType;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class ProviderSecurityListType extends SecurityListType
 {
@@ -55,24 +56,22 @@ abstract public class ProviderSecurityListType extends SecurityListType
         return super.hashCode() ^ providerId.hashCode();
     }
 
-    @Override public boolean equals(SecurityListType other)
+    @Override protected boolean equals(@NotNull SecurityListType other)
     {
-        return ProviderSecurityListType.class.isInstance(other) && equals(ProviderSecurityListType.class.cast(other));
+        return super.equals(other)
+                && other instanceof ProviderSecurityListType
+                && equals((ProviderSecurityListType) other);
     }
 
-    public boolean equals(ProviderSecurityListType other)
+    protected boolean equals(@NotNull ProviderSecurityListType other)
     {
-        return super.equals(other) && providerId.equals(other.providerId);
+        return super.equals(other)
+                && providerId.equals(other.providerId);
     }
 
     //<editor-fold desc="Comparable">
-    @Override public int compareTo(SecurityListType another)
+    @Override public int compareTo(@NotNull SecurityListType another)
     {
-        if (another == null)
-        {
-            return 1;
-        }
-
         if (!ProviderSecurityListType.class.isInstance(another))
         {
             // TODO is it very expensive?

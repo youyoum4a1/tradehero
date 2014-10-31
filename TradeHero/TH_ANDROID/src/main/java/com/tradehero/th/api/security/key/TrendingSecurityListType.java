@@ -55,25 +55,22 @@ public class TrendingSecurityListType extends SecurityListType
                 (exchange == null ? 0 : exchange.hashCode());
     }
 
-    @Override public boolean equals(SecurityListType other)
+    @Override protected boolean equals(@NotNull SecurityListType other)
     {
-        return TrendingSecurityListType.class.isInstance(other) && equals(TrendingSecurityListType.class.cast(other));
+        return super.equals(other)
+                && other instanceof TrendingSecurityListType
+                && equals((TrendingSecurityListType) other);
     }
 
-    public boolean equals(TrendingSecurityListType other)
+    protected boolean equals(@NotNull TrendingSecurityListType other)
     {
         return super.equals(other) &&
                 (exchange == null ? other.exchange == null : exchange.equals(other.exchange));
     }
 
     //<editor-fold desc="Comparable">
-    @Override public int compareTo(SecurityListType another)
+    @Override public int compareTo(@NotNull SecurityListType another)
     {
-        if (another == null)
-        {
-            return 1;
-        }
-
         if (!TrendingSecurityListType.class.isInstance(another))
         {
             // TODO is it very expensive?

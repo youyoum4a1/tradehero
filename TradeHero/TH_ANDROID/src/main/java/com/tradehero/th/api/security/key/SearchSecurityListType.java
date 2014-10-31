@@ -1,5 +1,7 @@
 package com.tradehero.th.api.security.key;
 
+import org.jetbrains.annotations.NotNull;
+
 public class SearchSecurityListType extends SecurityListType
 {
     public final String searchString;
@@ -30,27 +32,25 @@ public class SearchSecurityListType extends SecurityListType
                 super.hashCode();
     }
 
-    @Override public boolean equals(SecurityListType other)
+    @Override protected boolean equals(@NotNull SecurityListType other)
     {
-        return (other instanceof SearchSecurityListType) && equals((SearchSecurityListType) other);
+        return super.equals(other)
+                && other instanceof SearchSecurityListType
+                && equals((SearchSecurityListType) other);
     }
 
-    public boolean equals(SearchSecurityListType other)
+    protected boolean equals(@NotNull SearchSecurityListType other)
     {
         return super.equals(other) &&
                 (searchString == null ? other.searchString == null : searchString.equals(other.searchString));
     }
 
     //<editor-fold desc="Comparable">
-    @Override public int compareTo(SecurityListType another)
+    @Override public int compareTo(@NotNull SecurityListType another)
     {
-        if (another == null)
-        {
-            return 1;
-        }
         if (!SearchSecurityListType.class.isInstance(another))
         {
-            return SearchSecurityListType.class.getName().compareTo(((Object)another).getClass().getName());
+            return SearchSecurityListType.class.getName().compareTo(((Object) another).getClass().getName());
         }
 
         return compareTo(SearchSecurityListType.class.cast(another));
