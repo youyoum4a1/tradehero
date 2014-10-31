@@ -14,6 +14,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -30,6 +31,7 @@ public class MeTimelineFragment extends TimelineFragment
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject Analytics analytics;
+    @Inject DTOCacheUtil dtoCacheUtil;
 
     @Inject LevelDefListCache levelDefListCache;
 
@@ -48,6 +50,7 @@ public class MeTimelineFragment extends TimelineFragment
     {
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
+        dtoCacheUtil.initialPrefetches();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
