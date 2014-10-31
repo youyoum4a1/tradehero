@@ -483,16 +483,21 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
     {
         THSharePreferenceManager.clearDialogShowedRecord();
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        intent.putExtra(UserLoginDTO.SUGGEST_UPGRADE, userLoginDTO.suggestUpgrade);
-        intent.putExtra(UserLoginDTO.SUGGEST_LI_REAUTH, userLoginDTO.suggestLiReauth);
-        intent.putExtra(UserLoginDTO.SUGGEST_TW_REAUTH, userLoginDTO.suggestTwReauth);
-        intent.putExtra(UserLoginDTO.SUGGEST_FB_REAUTH, userLoginDTO.suggestFbReauth);
-
-        startActivity(intent);
-        overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+        int userId = userLoginDTO.profileDTO.id;
+        if(userId <=0 ||THSharePreferenceManager.isRecommendedStock(userId, this)){
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(UserLoginDTO.SUGGEST_UPGRADE, userLoginDTO.suggestUpgrade);
+            intent.putExtra(UserLoginDTO.SUGGEST_LI_REAUTH, userLoginDTO.suggestLiReauth);
+            intent.putExtra(UserLoginDTO.SUGGEST_TW_REAUTH, userLoginDTO.suggestTwReauth);
+            intent.putExtra(UserLoginDTO.SUGGEST_FB_REAUTH, userLoginDTO.suggestFbReauth);
+            startActivity(intent);
+            overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+        }else{
+            Intent intent = new Intent(this, RecommendStocksActivity.class);
+            intent.putExtra(RecommendStocksActivity.LOGIN_USER_ID, userId);
+            startActivity(intent);
+        }
         finish();
     }
 }

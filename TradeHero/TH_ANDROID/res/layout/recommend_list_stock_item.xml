@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="#ffffff">
+
+    <TextView android:layout_width="match_parent" android:layout_height="30dp"
+              android:id="@+id/textview_recommend_list_stock_toolbar"
+              android:text="@string/recommend_recommend_stock"
+              android:textSize="16sp"
+              android:paddingLeft="15dp"
+              android:visibility="visible"
+              android:textColor="#999999"
+              android:background="#eeeeef"
+              android:gravity="center_vertical"/>
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="60dp" android:id="@+id/relativelayout_recommend_list_stock_item">
+        <ImageView android:id="@+id/imageview_recommend_list_stock_select" android:layout_height="15dp"
+                   android:layout_width="15dp"
+                   android:background="@drawable/checkbox_normal"
+                   android:layout_alignParentRight="true"
+                   android:layout_centerVertical="true"
+                   android:contentDescription="@null"
+                   android:layout_marginRight="20dp"/>
+        <TextView android:id="@+id/textview_recommend_list_stock_rate" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerVertical="true"
+                  android:layout_toLeftOf="@id/imageview_recommend_list_stock_select"
+                  android:layout_marginRight="35dp"
+                  android:text="+666.00%"
+                  android:singleLine="true"
+                  android:textSize="14sp"
+                  android:textColor="#e63636"/>
+        <TextView android:id="@+id/textview_recommend_list_stock_price" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerVertical="true"
+                  android:layout_toLeftOf="@id/textview_recommend_list_stock_rate"
+                  android:layout_marginRight="35dp"
+                  android:text="999.99"
+                  android:singleLine="true"
+                  android:textSize="15sp"
+                  android:textColor="#000000"/>
+        <TextView android:id="@+id/textview_recommend_list_stock_currency" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerVertical="true"
+                  android:layout_toLeftOf="@id/textview_recommend_list_stock_price"
+                  android:layout_marginRight="2dp"
+                  android:singleLine="true"
+                  android:text="$"
+                  android:textSize="14sp"
+                  android:textColor="#979797"/>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+            <TextView android:id="@+id/textview_recommend_list_stock_name" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="#000000"
+                    android:layout_marginBottom="6dp"
+                    android:singleLine="true"
+                    android:maxLength="8"
+                    android:text="阿里巴巴阿里巴巴阿里巴巴"/>
+            <TextView android:id="@+id/textview_recommend_list_stock_number_owner" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textSize="14sp"
+                      android:textColor="#979797"
+                      android:singleLine="true"
+                      android:maxLength="10"
+                      android:text="999999人持有"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+    <View android:layout_width="match_parent" android:layout_height="1px"
+          android:layout_marginLeft="15dp"
+          android:id="@+id/view_recommend_list_stock_down_divider"
+          android:layout_marginRight="15dp"
+          android:background="#d3d2d6"/>
+</LinearLayout>

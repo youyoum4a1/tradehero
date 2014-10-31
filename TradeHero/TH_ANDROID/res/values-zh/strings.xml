@@ -203,9 +203,15 @@
   <string name="target_user_millionaire_page">http://cn.tradehero.mobi/shr/assets.html?userId=313529</string>
 
 
-  <!-- Recommend Activity-->
+  <!-- Recommend Items (Stock & Hero)-->
   <string name="recommend_title">推荐关注</string>
   <string name="recommend_follow">关注</string>
   <string name="recommend_next">跳过</string>
+  <string name="recommend_recommend_stock">推荐股票</string>
+  <string name="recommend_recommend_hero">推荐股神</string>
+  <string name="recommend_stock_rate_of_return">收益率: </string>
+  <string name="recommend_number_hold">人持有</string>
+  <string name="RMB">￥</string>
+  <string name="recommend_select_one_item">至少选择一个股神或股票。</string>
   <!-- Recommend -->
 </resources>

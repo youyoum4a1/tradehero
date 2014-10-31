@@ -90,4 +90,9 @@
 
   <color name="tab_head_bg">#1789d5</color>
   <color name="share_sellsecurity_losemoney">#34bf65</color>
+
+
+  <!-- Recommend Items (Stock & Hero)-->
+  <color name="recomment_rate_of_return">#e63636</color>
+  <!-- Recommend -->
 </resources>

@@ -33,7 +33,6 @@ public class ActivityHelper
     public static void launchMainActivity(Activity activity)
     {
         THSharePreferenceManager.clearDialogShowedRecord();
-
         presentFromActivity(activity, MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP,new Bundle());
     }
 

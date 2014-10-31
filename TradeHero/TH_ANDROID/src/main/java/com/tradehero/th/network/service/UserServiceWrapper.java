@@ -17,6 +17,7 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
 import com.tradehero.th.fragments.chinabuild.data.LoginContinuallyTimesDTO;
+import com.tradehero.th.fragments.chinabuild.data.RecommendItems;
 import com.tradehero.th.fragments.chinabuild.data.TrackShareDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
@@ -947,6 +948,11 @@ import javax.inject.Singleton;
     //Check whether the current user logs in 3 times continually
     public void isLoginThreeTimesContinually(int userId, @Nullable Callback<LoginContinuallyTimesDTO> callback){
         userServiceAsync.getContinuallyLoginTimes(String.valueOf(userId), callback);
+    }
+
+    //Download recommend items
+    public void downloadRecommendItems(@NotNull Callback<RecommendItems> callback){
+        userServiceAsync.downloadRecommendItems(callback);
     }
 
 }

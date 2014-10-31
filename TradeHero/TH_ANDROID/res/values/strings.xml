@@ -398,10 +398,17 @@
   <string name="download_tradehero_android_app_on_weibo">http://tradehero.b0.upaiyun.com/th_android.apk</string>
   <string name="target_user_millionaire_page">http://cn.tradehero.mobi/shr/assets.html?userId=313529</string>
 
-  <!-- Recommend Activity-->
-  <string name="recommend_title">Recommend</string>
+  <!-- Recommend Items (Stock & Hero)-->
+  <string name="recommend_title">RECOMMEND</string>
   <string name="recommend_follow">Follow</string>
   <string name="recommend_next">Next</string>
+  <string name="recommend_recommend_stock">Stock</string>
+  <string name="recommend_recommend_hero">Hero</string>
+  <string name="recommend_stock_rate_of_return">Rate: </string>
+  <string name="recommend_stock_list_title">Hero</string>
+  <string name="recommend_number_hold">s</string>
+  <string name="RMB">￥</string>
+  <string name="recommend_select_one_item">Please follow a item.</string>
   <!-- Recommend -->
 
 </resources>

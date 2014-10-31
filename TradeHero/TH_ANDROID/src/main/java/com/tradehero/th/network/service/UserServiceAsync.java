@@ -15,6 +15,7 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
 import com.tradehero.th.fragments.chinabuild.data.LoginContinuallyTimesDTO;
+import com.tradehero.th.fragments.chinabuild.data.RecommendItems;
 import com.tradehero.th.fragments.chinabuild.data.TrackShareDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import retrofit.Callback;
@@ -329,5 +330,8 @@ interface UserServiceAsync
     void getContinuallyLoginTimes(@Query("userId")String userId, Callback<LoginContinuallyTimesDTO> cb);
     //</editor-fold>
 
-
+    //<editor_fold desc="Retrieve Recommend Items">
+    @GET("/recommend")
+    void downloadRecommendItems(Callback<RecommendItems> cb);
+    //</editor-fold>
 }

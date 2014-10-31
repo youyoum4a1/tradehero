@@ -211,19 +211,16 @@ public class THSharePreferenceManager {
     public static boolean isRecommendedStock(int userId, Context context){
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         boolean result = sp.getBoolean(userId + RECOMMEND_STOCK_GOD, false);
-        return result;
+        //return result;
+        return false;
     }
 
     public static void setRecommendedStock(int userId, Context context){
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
-        sp.edit().putBoolean(userId + RECOMMEND_STOCK_GOD, true);
+        sp.edit().putBoolean(userId + RECOMMEND_STOCK_GOD, true).commit();
     }
 
-    /**
-     * Only for static mark
-     */
     public static void clearDialogShowedRecord(){
-        //Clear static record for >150000, >250000, > 9 fans
         THSharePreferenceManager.isMoreThanFifteenShowed = false;
         THSharePreferenceManager.isMoreThanTwentyShowed = false;
         THSharePreferenceManager.FansMoreThanNineShowed = false;

@@ -3,18 +3,55 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="#ffffff">
     <include layout="@layout/custom_head_layout"/>
     <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:id="@+id/textview_recommend_follow"
-                  android:text="@string/recommend_follow"
-                  android:layout_alignParentBottom="true"
-                  android:layout_marginLeft="80dp"
-                  android:layout_marginRight="80dp"
-                  android:layout_marginBottom="30dp"
-                  android:gravity="center"
-                  android:layout_centerHorizontal="true"
-                  android:textSize="20sp"/>
+
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+                android:id="@+id/pulltorefreshlistview_recommend_stock_hero"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:layout_marginBottom="30dp"
+                />
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
+                android:orientation="horizontal">
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+            <Button android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:id="@+id/button_recommend_follow"
+                    android:text="@string/recommend_follow"
+                    android:textColor="@color/white"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:background="@drawable/basic_red_selector_round_corner"
+                    android:textSize="20sp"/>
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+        </LinearLayout>
+        <ImageView android:id="@+id/imageview_recommend_download_failed"
+                   android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:layout_centerInParent="true"
+                   android:visibility="gone"
+                   android:scaleType="fitCenter"
+                   android:src="@drawable/recommend_download_failed"/>
+        <ProgressBar
+                android:id="@+id/progressbar_recommend_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                />
     </RelativeLayout>
+
 </LinearLayout>

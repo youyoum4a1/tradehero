@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
@@ -29,11 +31,12 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import dagger.Lazy;
-import java.util.Timer;
-import java.util.TimerTask;
+import retrofit.RetrofitError;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import retrofit.RetrofitError;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SplashActivity extends SherlockActivity
 {
@@ -52,6 +55,8 @@ public class SplashActivity extends SherlockActivity
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @InjectView(R.id.tips) TextView mTipsText;
+
+    private int userId = -1;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -138,7 +143,13 @@ public class SplashActivity extends SherlockActivity
             boolean canLoad = canLoadApp();
             if (canLoad)
             {
-                ActivityHelper.launchMainActivity(SplashActivity.this);
+                if(userId<=0 || THSharePreferenceManager.isRecommendedStock(userId, this)){
+                    ActivityHelper.launchMainActivity(SplashActivity.this);
+                }else{
+                    Intent intent = new Intent(SplashActivity.this, RecommendStocksActivity.class);
+                    intent.putExtra(RecommendStocksActivity.LOGIN_USER_ID, userId);
+                    startActivity(intent);
+                }
                 finish();
             }
             else
@@ -169,13 +180,13 @@ public class SplashActivity extends SherlockActivity
                         requestHeaders.createTypedAuthParameters(credentialsDTO),
                         loginFormDTOProvider.get());
                 canLoad = userLoginDTO != null && userLoginDTO.profileDTO != null;
+                userId = userLoginDTO.profileDTO.id;
             }
             catch (RetrofitError retrofitError)
             {
                 canLoad = false;
                 if (retrofitError.isNetworkError())
                 {
-                    //THToast.show(R.string.network_error);
                 }
             }
         }
