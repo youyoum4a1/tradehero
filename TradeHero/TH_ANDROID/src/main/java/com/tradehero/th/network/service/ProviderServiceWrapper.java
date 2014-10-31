@@ -164,6 +164,39 @@ import rx.Observable;
         }
         return middleCallback;
     }
+
+    public Observable<SecurityCompactDTOList> getProviderSecuritiesRx(@NotNull ProviderSecurityListType key)
+    {
+        Observable<SecurityCompactDTOList> received;
+        if (key instanceof SearchProviderSecurityListType)
+        {
+            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
+            received = this.providerServiceRx.searchSecurities(
+                    searchKey.providerId.key,
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage);
+        }
+        else if (key instanceof BasicProviderSecurityListType)
+        {
+            received = this.providerServiceRx.getSecurities(
+                    key.getProviderId().key,
+                    key.getPage(),
+                    key.perPage);
+        }
+        else if (key instanceof WarrantProviderSecurityListType)
+        {
+            received = this.providerServiceRx.getWarrantUnderlyers(
+                    key.getProviderId().key,
+                    key.getPage(),
+                    key.perPage);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
+        }
+        return received;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">

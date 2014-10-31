@@ -1198,11 +1198,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 securityPositionTransactionDTO.portfolio.id));
     }
 
-    private void pushPortfolioFragment()
-    {
-        pushPortfolioFragment(getApplicablePortfolioId());
-    }
-
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)
     {
         shareToWeChat();

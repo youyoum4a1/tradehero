@@ -26,10 +26,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.widget.MultiScrollListener;
-import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,8 +49,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected int perPage = DEFAULT_PER_PAGE;
     protected SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
-
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,9 +24,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.prefs.ShowMarketClosed;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -34,6 +35,9 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
@@ -49,8 +53,10 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    @Inject Lazy<SecurityCompactCacheRx> securityCompactCache;
+    protected Subscription securityCompactSubscription;
+    @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
+    protected Subscription securityPositionDetailSubscription;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject THRouter thRouter;
@@ -62,7 +68,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected PositionDTOCompactList positionDTOCompactList;
     protected PortfolioCompactDTO portfolioCompactDTO;
     protected boolean querying = false;
-    protected DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailListener;
 
     protected ProviderId providerId;
     protected UserProfileDTO userProfileDTO;
@@ -98,7 +103,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
-        securityPositionDetailListener = createSecurityPositionCacheListener();
         userProfileCacheListener = createUserProfileCacheListener();
     }
 
@@ -180,7 +184,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         super.onSaveInstanceState(outState);
 
-        detachSecurityPositionDetailCache();
+        detachSecurityPositionDetailSubscription();
         detachUserProfileCache();
         destroyFreshQuoteHolder();
 
@@ -197,7 +201,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroyView()
     {
-        detachSecurityPositionDetailCache();
+        detachSecurityCompactSubscription();
+        detachSecurityPositionDetailSubscription();
         detachUserProfileCache();
         destroyFreshQuoteHolder();
         querying = false;
@@ -217,13 +222,27 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onDestroy()
     {
         userProfileCacheListener = null;
-        securityPositionDetailListener = null;
         super.onDestroy();
     }
 
-    protected void detachSecurityPositionDetailCache()
+    protected void detachSecurityCompactSubscription()
     {
-        securityPositionDetailCache.get().unregister(securityPositionDetailListener);
+        Subscription subscriptionCopy = securityCompactSubscription;
+        if (subscriptionCopy != null)
+        {
+            subscriptionCopy.unsubscribe();
+        }
+        securityCompactSubscription = null;
+    }
+
+    protected void detachSecurityPositionDetailSubscription()
+    {
+        Subscription subscriptionCopy = securityPositionDetailSubscription;
+        if (subscriptionCopy != null)
+        {
+            subscriptionCopy.unsubscribe();
+        }
+        securityPositionDetailSubscription = null;
     }
 
     protected void detachUserProfileCache()
@@ -260,11 +279,54 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return 0;
     }
 
+    protected void requestCompactDetail()
+    {
+        detachSecurityCompactSubscription();
+        securityCompactSubscription = securityCompactCache.get()
+                .get(this.securityId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+
+                    }
+
+                    @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                    {
+                        linkWith(pair.second, true);
+                    }
+                });
+    }
+
     protected void requestPositionDetail()
     {
-        detachSecurityPositionDetailCache();
-        securityPositionDetailCache.get().register(this.securityId, securityPositionDetailListener);
-        securityPositionDetailCache.get().getOrFetchAsync(this.securityId);
+        detachSecurityPositionDetailSubscription();
+        securityPositionDetailSubscription = securityPositionDetailCache.get()
+                .get(this.securityId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Pair<SecurityId, SecurityPositionDetailDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                        Timber.d("Completed security position detail");
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                        Timber.e(e, "getting %s", securityId);
+                    }
+
+                    @Override public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> pair)
+                    {
+                        linkWith(pair.second, true);
+                    }
+                });
     }
 
     protected void requestUserProfile()
@@ -285,22 +347,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
 
         prepareFreshQuoteHolder();
-
-        SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
-        if (detailDTO != null)
-        {
-            linkWith(detailDTO, andDisplay);
-        }
-        else
-        {
-            SecurityCompactDTO compactDTO = securityCompactCache.get().get(this.securityId);
-            if (compactDTO != null)
-            {
-                linkWith(compactDTO, andDisplay);
-            }
-
-            requestPositionDetail();
-        }
+        requestCompactDetail();
+        requestPositionDetail();
 
         if (andDisplay)
         {
@@ -447,25 +495,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         @Override public void onFreshQuote(QuoteDTO quoteDTO)
         {
             linkWith(quoteDTO, true);
-        }
-    }
-
-    protected DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO> createSecurityPositionCacheListener()
-    {
-        return new AbstractBuySellSecurityPositionCacheListener();
-    }
-
-    protected class AbstractBuySellSecurityPositionCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO>
-    {
-        @Override public void onDTOReceived(@NotNull final SecurityId key, @NotNull final SecurityPositionDetailDTO value)
-        {
-            linkWith(value, true);
-        }
-
-        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
-        {
-            THToast.show(R.string.error_fetch_detailed_security_info);
-            Timber.e("Error fetching the security position detail %s", key, error);
         }
     }
 

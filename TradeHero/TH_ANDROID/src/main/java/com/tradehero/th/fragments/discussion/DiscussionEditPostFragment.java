@@ -38,6 +38,7 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
@@ -57,7 +58,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @InjectView(R.id.discussion_new_post_action_buttons) protected DiscussionPostActionButtonsView discussionPostActionButtonsView;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
-    @Inject SecurityCompactCache securityCompactCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject DiscussionKeyFactory discussionKeyFactory;

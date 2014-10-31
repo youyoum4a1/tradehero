@@ -3,21 +3,32 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Pair;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.SecurityReplyDiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID = SecurityDiscussionEditPostFragment.class.getName() + ".securityId";
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+
+    @Nullable Subscription securityCompactCacheSubscription;
+    @Nullable SecurityCompactDTO securityCompactDTO;
 
     public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
@@ -46,26 +57,40 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
             discussionPostContent.setHint(getString(R.string.discussion_new_post_hint, securityName));
         }
 
-        SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
-        if (andDisplay && securityCompactDTO != null)
+        if (securityId != null)
         {
-            setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, securityCompactDTO.name));
-            FragmentActivity activityCopy = getActivity();
-            if (activityCopy != null)
-            {
-                activityCopy.invalidateOptionsMenu();
-            }
+            unsubscribe(securityCompactCacheSubscription);
+            securityCompactCacheSubscription = securityCompactCache.get(securityId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                    {
+                        @Override public void onCompleted()
+                        {
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                        }
+
+                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                        {
+                            securityCompactDTO = pair.second;
+                            setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, pair.second.name));
+                            FragmentActivity activityCopy = getActivity();
+                            if (activityCopy != null)
+                            {
+                                activityCopy.invalidateOptionsMenu();
+                            }
+                        }
+                    });
+        }
+        if (andDisplay)
+        {
         }
     }
 
     @Override protected DiscussionFormDTO buildDiscussionFormDTO()
     {
-        SecurityCompactDTO securityCompactDTO = null;
-        if (securityId != null)
-        {
-            securityCompactDTO = securityCompactCache.get(securityId);
-        }
-
         SecurityReplyDiscussionFormDTO discussionFormDTO = (SecurityReplyDiscussionFormDTO) super.buildDiscussionFormDTO();
         if (discussionFormDTO != null && securityCompactDTO != null)
         {
@@ -89,4 +114,11 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
             linkWith(fromArgs, true);
         }
     }
+
+    @Override public void onDestroyView()
+    {
+        unsubscribe(securityCompactCacheSubscription);
+        super.onDestroyView();
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.news;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +33,16 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 /**
@@ -48,7 +52,8 @@ import timber.log.Timber;
  */
 public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
-    @Inject SecurityCompactCache securityCompactCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
+    @Nullable Subscription securityCompactCacheSubscription;
     @Inject NewsItemCompactListCacheNew newsTitleCache;
     @Inject protected DiscussionCache discussionCache;
     @Inject Lazy<DashboardNavigator> navigator;
@@ -163,7 +168,8 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
     @Override public void onStop()
     {
-        detachSecurityCache();
+        detachSubscription(securityCompactCacheSubscription);
+        securityCompactCacheSubscription = null;
         detachFetchDiscussionTask();
         super.onStop();
     }
@@ -190,7 +196,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         super.onDestroy();
     }
 
-    @Override protected SecurityCompactCache getInfoCache()
+    @Override protected SecurityCompactCacheRx getInfoCache()
     {
         return securityCompactCache;
     }
@@ -211,22 +217,31 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         }
     }
 
-    protected void detachSecurityCache()
-    {
-        securityCompactCache.unregister(this);
-    }
-
     protected void fetchSecurity(@NotNull SecurityId securityId)
     {
-        detachSecurityCache();
-        securityCompactCache.register(securityId, this);
-        getInfoCache().getOrFetchAsync(securityId);
+        detachSubscription(securityCompactCacheSubscription);
+        securityCompactCache.get(securityId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                    }
+
+                    @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                    {
+                        linkWith(pair.second, !isDetached());
+                    }
+                });
     }
 
     private void fetchSecurityNews()
     {
         Timber.d("%s fetchSecurityNews,consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
-        detachSecurityCache();
 
         NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
         newsTitleCache.register(listKey, newsCacheListener);

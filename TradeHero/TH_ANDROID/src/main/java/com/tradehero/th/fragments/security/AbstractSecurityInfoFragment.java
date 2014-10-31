@@ -1,18 +1,15 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.api.security.SecurityId;
-import org.jetbrains.annotations.NotNull;
+import rx.Subscription;
 
 abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         extends Fragment
-        implements DTOCacheNew.Listener<SecurityId, InfoType>
 {
     private static final String BUNDLE_KEY_SECURITY_ID = AbstractSecurityInfoFragment.class.getName() + ".securityId";
 
@@ -40,7 +37,15 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         linkWith(getSecurityId(getArguments()), true);
     }
 
-    abstract protected DTOCacheNew<SecurityId, InfoType> getInfoCache();
+    abstract protected DTOCacheRx<SecurityId, InfoType> getInfoCache();
+
+    protected void detachSubscription(@Nullable Subscription subscription)
+    {
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
+    }
 
     /**
      * Called in onResume.
@@ -50,19 +55,6 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         this.securityId = securityId;
-    }
-
-    @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull InfoType value)
-    {
-        if (key.equals(securityId))
-        {
-            linkWith(value, !isDetached());
-        }
-    }
-
-    @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
-    {
-        THToast.show(R.string.error_fetch_security_info);
     }
 
     public void linkWith(InfoType value, boolean andDisplay)

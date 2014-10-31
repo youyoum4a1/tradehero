@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.security;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.R;
@@ -31,6 +33,7 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
@@ -38,6 +41,9 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
@@ -83,7 +89,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @InjectView(R.id.vvolume) @Optional protected TextView mVolume;
     @InjectView(R.id.vavg_volume) @Optional protected TextView mAvgVolume;
 
-    @Inject SecurityCompactCache securityCompactCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
+    @Nullable Subscription securityCompactCacheSubscription;
     @Inject Picasso picasso;
     @Inject ChartDTOFactory chartDTOFactory;
     @Inject Analytics analytics;
@@ -209,6 +216,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     @Override public void onDestroyView()
     {
+        detachSubscription(securityCompactCacheSubscription);
+        securityCompactCacheSubscription = null;
         if (chartImage != null)
         {
             chartImage.setOnClickListener(null);
@@ -242,7 +251,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.onDestroyView();
     }
 
-    @Override protected SecurityCompactCache getInfoCache()
+    @Override protected SecurityCompactCacheRx getInfoCache()
     {
         return securityCompactCache;
     }
@@ -258,12 +267,30 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         displayTimeSpanButtonSet();
     }
 
-    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
+    @Override public void linkWith(final SecurityId securityId, final boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
         if (securityId != null)
         {
-            linkWith(securityCompactCache.get(securityId), andDisplay);
+            detachSubscription(securityCompactCacheSubscription);
+            securityCompactCacheSubscription = securityCompactCache.get(securityId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                    {
+                        @Override public void onCompleted()
+                        {
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            THToast.show(R.string.error_fetch_security_info);
+                        }
+
+                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                        {
+                            linkWith(pair.second, andDisplay);
+                        }
+                    });
         }
         if (andDisplay)
         {

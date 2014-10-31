@@ -6,7 +6,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
             @NotNull SecurityServiceRx securityServiceRx,
             @NotNull ProviderServiceWrapper providerServiceWrapper,
             @NotNull SecurityCompactCache securityCompactCache,
-            @NotNull SecurityPositionDetailCache securityPositionDetailCache,
+            @NotNull SecurityPositionDetailCacheRx securityPositionDetailCache,
             @NotNull PortfolioCache portfolioCache,
             @NotNull CurrentUserId currentUserId)
     {

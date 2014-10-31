@@ -17,12 +17,14 @@ import com.tradehero.th.fragments.BaseSearchFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
+import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Subscription;
 import timber.log.Timber;
 
 public class SecuritySearchFragment extends BaseSearchFragment<
@@ -33,7 +35,8 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         SecurityItemView<SecurityCompactDTO>>
         implements HasSelectedItem
 {
-    @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
+    @Inject Lazy<SecurityCompactListCacheRx> securityCompactListCache;
+    private Subscription stockSearchSubscription;
 
     protected void initViews(View view)
     {
@@ -67,17 +70,22 @@ public class SecuritySearchFragment extends BaseSearchFragment<
 
     @Override protected void unregisterCache(DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener)
     {
-        securityCompactListCache.get().unregister(listener);
+        Subscription subscriptionCopy = stockSearchSubscription;
+        if (subscriptionCopy != null)
+        {
+            subscriptionCopy.unsubscribe();
+        }
+        stockSearchSubscription = null;
     }
 
     @Override protected void registerCache(SecurityListType key, DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener)
     {
-        securityCompactListCache.get().register(key, listener);
+        //securityCompactListCache.get().register(key, listener);
     }
 
     @Override protected void requestCache(SecurityListType key)
     {
-        securityCompactListCache.get().getOrFetchAsync(key);
+        //securityCompactListCache.get().getOrFetchAsync(key);
     }
 
     @NotNull @Override public SecurityListType makePagedDtoKey(int page)

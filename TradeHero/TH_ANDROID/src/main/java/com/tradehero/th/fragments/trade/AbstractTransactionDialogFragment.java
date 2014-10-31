@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -59,7 +60,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -73,6 +74,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public abstract class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
@@ -106,7 +110,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
     @Inject SecurityServiceWrapper securityServiceWrapper;
-    @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
+    private Subscription securityPositionDetailSubscription;
     @Inject PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject Analytics analytics;
 
@@ -249,6 +254,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         detachPortfolioCompactListCache();
         destroyTransactionDialog();
         detachBuySellMiddleCallback();
+        detachSecurityPositionDetailSubscription();
         super.onDestroyView();
     }
 
@@ -267,12 +273,29 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         securityCompactDTO = securityCompactCache.get(getSecurityId());
         portfolioCompactDTO = portfolioCompactCache.get(getPortfolioId());
         quoteDTO = getBundledQuoteDTO();
-        SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
-        if (detailDTO != null)
-        {
-            positionDTOCompactList = detailDTO.positions;
-        }
-        clampQuantity(true);
+
+        detachSecurityPositionDetailSubscription();
+        securityPositionDetailSubscription = securityPositionDetailCache.get()
+                .get(this.securityId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Pair<SecurityId, SecurityPositionDetailDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                        Timber.d("on completed");
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                        Timber.e(e, "error");
+                    }
+
+                    @Override public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> securityIdSecurityPositionDetailDTOPair)
+                    {
+                        positionDTOCompactList = securityIdSecurityPositionDetailDTOPair.second.positions;
+                        clampQuantity(true);
+                    }
+                });
     }
 
     private void initViews()
@@ -340,6 +363,16 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
             userInteractor.forgetRequestCode(purchaseRequestCode);
         }
         purchaseRequestCode = null;
+    }
+
+    private void detachSecurityPositionDetailSubscription()
+    {
+        Subscription subscriptionCopy = securityPositionDetailSubscription;
+        if (subscriptionCopy != null)
+        {
+            subscriptionCopy.unsubscribe();
+        }
+        securityPositionDetailSubscription = null;
     }
 
     protected abstract String getLabel();

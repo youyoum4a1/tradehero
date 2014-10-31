@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +19,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -133,7 +135,12 @@ public class PositionPartialTopView extends LinearLayout
         }
         if (positionDTO != null)
         {
-            linkWith(securityIdCache.get().get(positionDTO.getSecurityIntegerId()), andDisplay);
+            linkWith(securityIdCache.get()
+                            .get(positionDTO.getSecurityIntegerId())
+                            .toBlocking()
+                            .firstOrDefault(Pair.create((SecurityIntegerId) null, (SecurityId) null))
+                            .second,
+                    andDisplay);
         }
     }
 
@@ -379,7 +386,6 @@ public class PositionPartialTopView extends LinearLayout
                             .currency(positionDTO.getNiceCurrency())
                             .build();
                 }
-
             }
 
             if (number == null)
@@ -418,5 +424,4 @@ public class PositionPartialTopView extends LinearLayout
     {
         return tradeHistoryButton;
     }
-
 }

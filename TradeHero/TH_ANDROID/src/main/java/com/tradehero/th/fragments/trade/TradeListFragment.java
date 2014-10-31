@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.trade;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -349,7 +350,10 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             return null;
         }
-        return securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId));
+        return securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId))
+                .toBlocking()
+                .firstOrDefault(Pair.create((SecurityIntegerId) null, (SecurityId) null))
+                .second;
     }
 
     public void displayActionBarTitle()

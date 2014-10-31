@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.trade.TradeListItemAdapter;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -118,7 +120,11 @@ public class TradeListItemView extends LinearLayout
             this.trade = tradeItem.getModel().tradeDTO;
             if (position != null)
             {
-                SecurityId securityId = securityIdCache.get().get(position.getSecurityIntegerId());
+                SecurityId securityId = securityIdCache.get()
+                        .get(position.getSecurityIntegerId())
+                        .toBlocking()
+                        .firstOrDefault(Pair.create((SecurityIntegerId) null, (SecurityId) null))
+                        .second;
                 if (securityId != null)
                 {
                     SecurityCompactDTO cachedSecurity = securityCache.get().get(securityId);

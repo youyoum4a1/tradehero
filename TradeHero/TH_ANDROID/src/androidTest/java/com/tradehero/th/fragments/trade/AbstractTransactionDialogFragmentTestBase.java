@@ -17,7 +17,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
@@ -35,7 +35,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
 
     @Inject UserProfileCache userProfileCache;
     @Inject SecurityCompactCache securityCompactCache;
-    @Inject SecurityPositionDetailCache securityPositionDetailCache;
+    @Inject SecurityPositionDetailCacheRx securityPositionDetailCache;
 
     @Inject CurrentUserId currentUserId;
 
@@ -89,7 +89,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
                         mockProvidersDTOList);
 
         securityCompactCache.put(securityId, mockSecurityCompactDTO);
-        securityPositionDetailCache.put(securityId, mockPositionDetailDTO);
+        //securityPositionDetailCache.put(securityId, mockPositionDetailDTO); // TODO find way to enforce values
 
         activity = Robolectric.setupActivity(DashboardActivity.class);
         abstractTransactionDialogFragment
