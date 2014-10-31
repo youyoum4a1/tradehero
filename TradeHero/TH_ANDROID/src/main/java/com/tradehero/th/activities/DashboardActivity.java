@@ -25,6 +25,7 @@ import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.CollectionUtils;
+import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.NotifyingWebView;
 import com.tradehero.common.widget.QuickReturnWebViewOnScrollChangedListener;
@@ -172,7 +173,9 @@ public class DashboardActivity extends BaseActivity
     private BroadcastReceiver onBoardBroadcastReceiver;
     private BroadcastReceiver enrollmentBroadcastReceiver;
     private BroadcastReceiver sendLoveBroadcastReceiver;
+    private BroadcastReceiver onlineStateReceiver;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
+    private MenuItem networkIndicator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -224,6 +227,9 @@ public class DashboardActivity extends BaseActivity
         pushNotificationManager.get().enablePush();
 
         initBroadcastReceivers();
+
+        localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
+
         ButterKnife.inject(this);
     }
 
@@ -312,6 +318,14 @@ public class DashboardActivity extends BaseActivity
                 AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager());
             }
         };
+
+        onlineStateReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                updateNetworkStatus();
+            }
+        };
     }
 
     @Override
@@ -367,6 +381,11 @@ public class DashboardActivity extends BaseActivity
                 userProfileCache.get().get(currentUserId.toUserBaseKey());
         MenuInflater menuInflater = getMenuInflater();
 
+        menuInflater.inflate(R.menu.network_menu, menu);
+
+        networkIndicator = menu.findItem(R.id.menu_network);
+        updateNetworkStatus();
+
         menuInflater.inflate(R.menu.hardware_menu, menu);
 
         if (currentUserProfile != null)
@@ -384,6 +403,9 @@ public class DashboardActivity extends BaseActivity
         // required for fragment onOptionItemSelected to be called
         switch (item.getItemId())
         {
+            case R.id.menu_network:
+                alertDialogUtil.get().popNetworkUnavailable(this);
+                return true;
             case R.id.admin_settings:
                 navigator.pushFragment(AdminSettingsFragment.class);
                 return true;
@@ -492,6 +514,8 @@ public class DashboardActivity extends BaseActivity
         enrollmentBroadcastReceiver = null;
         sendLoveBroadcastReceiver = null;
 
+        networkIndicator = null;
+
         THBillingInteractor billingInteractorCopy = billingInteractor.get();
         if (billingInteractorCopy != null && restoreRequestCode != null)
         {
@@ -503,6 +527,8 @@ public class DashboardActivity extends BaseActivity
             navigator.onDestroy();
         }
         navigator = null;
+
+        localBroadcastManager.unregisterReceiver(onlineStateReceiver);
 
         ButterKnife.reset(this);
         super.onDestroy();
@@ -575,6 +601,22 @@ public class DashboardActivity extends BaseActivity
         if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
         {
             ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
+        }
+    }
+
+    protected void updateNetworkStatus()
+    {
+        if(networkIndicator != null)
+        {
+            Boolean connected = OnlineStateReceiver.isOnline(this);
+            if(connected)
+            {
+                networkIndicator.setVisible(false);
+            }
+            else
+            {
+                networkIndicator.setVisible(true);
+            }
         }
     }
 

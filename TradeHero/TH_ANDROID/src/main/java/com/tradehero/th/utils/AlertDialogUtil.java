@@ -271,6 +271,15 @@ public class AlertDialogUtil
                 R.string.ok);
     }
 
+    @NotNull public AlertDialog popNetworkUnavailable(@NotNull final Context context)
+    {
+        return popWithNegativeButton(
+                context,
+                R.string.not_connected,
+                R.string.not_connected_desc,
+                R.string.ok);
+    }
+
     public void showProgressDialog(@NotNull final Context context, @Nullable String content)
     {
         if (mProgressDialog != null)
