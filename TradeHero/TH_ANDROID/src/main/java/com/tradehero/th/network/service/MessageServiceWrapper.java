@@ -35,12 +35,14 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton
 public class MessageServiceWrapper
 {
     @NotNull private final MessageService messageService;
     @NotNull private final MessageServiceAsync messageServiceAsync;
+    @NotNull private final MessageServiceRx messageServiceRx;
     @NotNull private final DiscussionDTOFactory discussionDTOFactory;
     @NotNull private final CurrentUserId currentUserId;
 
@@ -56,6 +58,7 @@ public class MessageServiceWrapper
     @Inject MessageServiceWrapper(
             @NotNull MessageService messageService,
             @NotNull MessageServiceAsync messageServiceAsync,
+            @NotNull MessageServiceRx messageServiceRx,
             @NotNull DiscussionDTOFactory discussionDTOFactory,
             @NotNull CurrentUserId currentUserId,
             @NotNull Lazy<MessageHeaderListCache> messageHeaderListCache,
@@ -67,6 +70,7 @@ public class MessageServiceWrapper
     {
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;
+        this.messageServiceRx = messageServiceRx;
         this.discussionDTOFactory = discussionDTOFactory;
         this.currentUserId = currentUserId;
         this.messageHeaderListCache = messageHeaderListCache;
@@ -121,56 +125,38 @@ public class MessageServiceWrapper
                         messageListKey.perPage));
     }
 
-    public MiddleCallback<ReadablePaginatedMessageHeaderDTO> getMessageHeaders(MessageListKey messageListKey,
-            Callback<ReadablePaginatedMessageHeaderDTO> callback)
+    public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeadersRx(MessageListKey messageListKey)
     {
         if (messageListKey instanceof TypedMessageListKey)
         {
-            return getMessageHeaders((TypedMessageListKey) messageListKey, callback);
+            return getMessageHeadersRx((TypedMessageListKey) messageListKey);
         }
-        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createReadablePaginatedMessageHeaderReceivedProcessor());
-        messageServiceAsync.getMessageHeaders(
-                messageListKey.page,
-                messageListKey.perPage,
-                middleCallback);
-        return middleCallback;
+        return messageServiceRx.getMessageHeaders(
+                        messageListKey.page,
+                        messageListKey.perPage);
     }
 
-    public MiddleCallback<ReadablePaginatedMessageHeaderDTO> getMessageHeaders(
-            TypedMessageListKey messageListKey, Callback<ReadablePaginatedMessageHeaderDTO> callback)
+    public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeadersRx(TypedMessageListKey messageListKey)
     {
         if (messageListKey instanceof RecipientTypedMessageListKey)
         {
-            return getMessageHeaders((RecipientTypedMessageListKey) messageListKey, callback);
+            return getMessageHeadersRx((RecipientTypedMessageListKey) messageListKey);
         }
-        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createReadablePaginatedMessageHeaderReceivedProcessor());
-        messageServiceAsync.getMessageHeaders(
-                messageListKey.discussionType.description,
-                null,
-                messageListKey.page,
-                messageListKey.perPage,
-                middleCallback);
-        return middleCallback;
+        return messageServiceRx.getMessageHeaders(
+                        messageListKey.discussionType.description,
+                        null,
+                        messageListKey.page,
+                        messageListKey.perPage);
     }
 
-    public MiddleCallback<ReadablePaginatedMessageHeaderDTO> getMessageHeaders(
-            RecipientTypedMessageListKey messageListKey,
-            Callback<ReadablePaginatedMessageHeaderDTO> callback)
+    public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeadersRx(
+            RecipientTypedMessageListKey messageListKey)
     {
-        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createReadablePaginatedMessageHeaderReceivedProcessor());
-        messageServiceAsync.getMessageHeaders(
-                messageListKey.discussionType.description,
-                messageListKey.recipientId.key,
-                messageListKey.page,
-                messageListKey.perPage,
-                middleCallback);
-        return middleCallback;
+        return messageServiceRx.getMessageHeaders(
+                        messageListKey.discussionType.description,
+                        messageListKey.recipientId.key,
+                        messageListKey.page,
+                        messageListKey.perPage);
     }
     //</editor-fold>
 
@@ -186,21 +172,15 @@ public class MessageServiceWrapper
         return messageService.getMessageHeader(messageHeaderId.commentId, null);
     }
 
-    public MiddleCallback<MessageHeaderDTO> getMessageHeader(MessageHeaderId messageHeaderId, Callback<MessageHeaderDTO> callback)
+    public Observable<MessageHeaderDTO> getMessageHeaderRx(MessageHeaderId messageHeaderId)
     {
-        MiddleCallback<MessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        if (messageHeaderId instanceof MessageHeaderUserId)
+        if (messageHeaderId instanceof MessageHeaderUserId && ((MessageHeaderUserId) messageHeaderId).userBaseKey != null)
         {
-            messageServiceAsync.getMessageHeader(
+            return messageServiceRx.getMessageHeader(
                     messageHeaderId.commentId,
-                    ((MessageHeaderUserId) messageHeaderId).userBaseKey.key,
-                    middleCallback);
+                    ((MessageHeaderUserId) messageHeaderId).userBaseKey.key);
         }
-        else
-        {
-            messageServiceAsync.getMessageHeader(messageHeaderId.commentId, null, middleCallback);
-        }
-        return middleCallback;
+        return messageServiceRx.getMessageHeader(messageHeaderId.commentId, null);
     }
 
     public MessageHeaderDTO getMessageThread(UserBaseKey correspondentId)
@@ -214,6 +194,11 @@ public class MessageServiceWrapper
         messageServiceAsync.getMessageThread(correspondentId.key, middleCallback);
         return middleCallback;
     }
+
+    public Observable<MessageHeaderDTO> getMessageThreadRx(UserBaseKey correspondentId)
+    {
+        return messageServiceRx.getMessageThread(correspondentId.key);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Get Messaging Relationship Status">
@@ -222,14 +207,9 @@ public class MessageServiceWrapper
         return messageService.getMessagingRelationgshipStatus(recipient.key);
     }
 
-    public MiddleCallback<UserMessagingRelationshipDTO> getMessagingRelationgshipStatus(
-            UserBaseKey recipient,
-            Callback<UserMessagingRelationshipDTO> callback)
+    public Observable<UserMessagingRelationshipDTO> getMessagingRelationgshipStatusRx(UserBaseKey recipient)
     {
-        MiddleCallback<UserMessagingRelationshipDTO>
-                middleCallback = new BaseMiddleCallback<>(callback);
-        messageServiceAsync.getMessagingRelationshipStatus(recipient.key, middleCallback);
-        return middleCallback;
+        return messageServiceRx.getMessagingRelationgshipStatus(recipient.key);
     }
     //</editor-fold>
 
@@ -244,11 +224,6 @@ public class MessageServiceWrapper
                 stubKey);
     }
 
-    public DiscussionDTO createMessage(MessageCreateFormDTO form)
-    {
-        return createDiscussionCreateProcessor(null).process(messageService.createMessage(form));
-    }
-
     public MiddleCallback<DiscussionDTO> createMessage(MessageCreateFormDTO form, Callback<DiscussionDTO> callback)
     {
         MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
@@ -256,6 +231,11 @@ public class MessageServiceWrapper
                 createDiscussionCreateProcessor(null));
         messageServiceAsync.createMessage(form, middleCallback);
         return middleCallback;
+    }
+
+    public Observable<DiscussionDTO> createMessageRx(MessageCreateFormDTO form)
+    {
+        return messageServiceRx.createMessage(form);
     }
     //</editor-fold>
 
@@ -271,19 +251,6 @@ public class MessageServiceWrapper
                 messageHeaderListCache.get(),
                 messageHeaderId,
                 readerId);
-    }
-
-    public BaseResponseDTO deleteMessage(
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey senderUserId,
-            @NotNull UserBaseKey recipientUserId,
-            @NotNull UserBaseKey readerId)
-    {
-        return createMessageHeaderDeletedProcessor(messageHeaderId, readerId).process(
-                messageService.deleteMessage(
-                        messageHeaderId.commentId,
-                        senderUserId.key,
-                        recipientUserId.key));
     }
 
     public MiddleCallback<BaseResponseDTO> deleteMessage(
@@ -303,6 +270,18 @@ public class MessageServiceWrapper
                 middleCallback);
         return middleCallback;
     }
+
+    public Observable<BaseResponseDTO> deleteMessage(
+            @NotNull MessageHeaderId messageHeaderId,
+            @NotNull UserBaseKey senderUserId,
+            @NotNull UserBaseKey recipientUserId,
+            @NotNull UserBaseKey readerId)
+    {
+        return messageServiceRx.deleteMessage(
+                        messageHeaderId.commentId,
+                        senderUserId.key,
+                        recipientUserId.key);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Read Message">
@@ -316,20 +295,6 @@ public class MessageServiceWrapper
                 homeContentCache.get(),
                 messageHeaderId,
                 readerId);
-    }
-
-    @NotNull public BaseResponseDTO readMessage(
-            @NotNull MessageHeaderId commentId,
-            @NotNull UserBaseKey senderUserId,
-            @NotNull UserBaseKey recipientUserId,
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey readerId)
-    {
-        return createMessageHeaderReadProcessor(messageHeaderId, readerId).process(
-                messageService.readMessage(
-                        commentId.commentId,
-                        senderUserId.key,
-                        recipientUserId.key));
     }
 
     @NotNull public MiddleCallback<BaseResponseDTO> readMessage(
@@ -350,6 +315,19 @@ public class MessageServiceWrapper
                 middleCallback);
         return middleCallback;
     }
+
+    @NotNull public Observable<BaseResponseDTO> readMessageRx(
+            @NotNull MessageHeaderId commentId,
+            @NotNull UserBaseKey senderUserId,
+            @NotNull UserBaseKey recipientUserId,
+            @NotNull MessageHeaderId messageHeaderId,
+            @NotNull UserBaseKey readerId)
+    {
+        return messageServiceRx.readMessage(
+                        commentId.commentId,
+                        senderUserId.key,
+                        recipientUserId.key);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Read All Message">
@@ -363,13 +341,6 @@ public class MessageServiceWrapper
                 readerId);
     }
 
-    @NotNull public BaseResponseDTO readAllMessage(
-            @NotNull UserBaseKey readerId)
-    {
-        return createMessageHeaderReadAllProcessor(readerId).process(
-                messageService.readAllMessage());
-    }
-
     @NotNull public MiddleCallback<BaseResponseDTO> readAllMessage(
             @NotNull UserBaseKey readerId,
             @Nullable Callback<BaseResponseDTO> callback)
@@ -379,6 +350,12 @@ public class MessageServiceWrapper
                 createMessageHeaderReadAllProcessor(readerId));
         messageServiceAsync.readAllMessage(middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<BaseResponseDTO> readAllMessageRx(
+            @NotNull UserBaseKey readerId)
+    {
+        return messageServiceRx.readAllMessage();
     }
     //</editor-fold>
 }

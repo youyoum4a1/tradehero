@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +29,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
@@ -36,6 +37,8 @@ import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
@@ -44,7 +47,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     List<AllowableRecipientDTO> mRelationsList;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
-    @Inject UserMessagingRelationshipCache userMessagingRelationshipCache;
+    @Inject UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
     @Inject Lazy<AdapterViewUtils> adapterViewUtils;
 
     @InjectView(R.id.sending_to_header) View sendingToHeader;
@@ -238,24 +241,39 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected void forceUpdateLook(@NotNull final UserBaseKey userFollowed)
     {
-        final UserMessagingRelationshipDTO newRelationship = userMessagingRelationshipCache.get(userFollowed);
-        if (newRelationship != null)
-        {
-            mRelationsListItemAdapter.updateItem(userFollowed, newRelationship);
-            adapterViewUtils.get().updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class, new Predicate<AllowableRecipientDTO>()
-            {
-                @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)
+        AndroidObservable.bindFragment(
+                this,
+                userMessagingRelationshipCache.get(userFollowed))
+                .subscribe(new Observer<Pair<UserBaseKey, UserMessagingRelationshipDTO>>()
                 {
-                    return allowableRecipientDTO != null
-                            && allowableRecipientDTO.user.getBaseKey().equals(userFollowed);
-                }
-            });
-        }
-        else
-        {
-            allowableRecipientPaginatedCache.invalidateAll();
-            downloadRelations();
-            Timber.e("Strangely, there was no longer the relation in cache");
-        }
+                    private boolean isEmpty = true;
+                    @Override public void onCompleted()
+                    {
+                        if (isEmpty)
+                        {
+                            allowableRecipientPaginatedCache.invalidateAll();
+                            downloadRelations();
+                            Timber.e("Strangely, there was no longer the relation in cache");
+                        }
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                    }
+
+                    @Override public void onNext(Pair<UserBaseKey, UserMessagingRelationshipDTO> pair)
+                    {
+                        isEmpty = false;
+                        mRelationsListItemAdapter.updateItem(userFollowed, pair.second);
+                        adapterViewUtils.get().updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class, new Predicate<AllowableRecipientDTO>()
+                        {
+                            @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)
+                            {
+                                return allowableRecipientDTO != null
+                                        && allowableRecipientDTO.user.getBaseKey().equals(userFollowed);
+                            }
+                        });
+                    }
+                });
     }
 }
