@@ -36,6 +36,7 @@ import com.tradehero.th.fragments.chinabuild.data.CompetitionInterface;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
@@ -506,51 +507,42 @@ public class CompetitionBaseFragment extends DashboardFragment
             if (key instanceof CompetitionListTypeOffical)
             {
                 initOfficalCompetition(value);
-                onFinish();
+                onFinish(false);
             }
             else if (key instanceof CompetitionListTypeUser)
             {
                 initUserCompetition(key, value);
-                onFinish();
+                onFinish(true);
             }
             else if (key instanceof CompetitionListTypeVip)
             {
                 initVipCompetition(value);
-                onFinishVip();
+                onFinish(false);
             }
             else if (key instanceof CompetitionListTypeMine)
             {
                 initMyCompetition(key, value);
-                onFinish();
+                onFinish(true);
             }
         }
 
         @Override public void onErrorThrown(@NotNull CompetitionListType key, @NotNull Throwable error)
         {
-            THToast.show(getString(R.string.fetch_error));
-            onFinish();
-            onFinishVip();
+            THToast.show(getString(R.string.error_network_connection));
+            onFinish(true);
         }
 
-        public void onFinishVip()
+
+
+        public void onFinish(boolean closeLoading)
         {
             try
             {
-                //betterViewAnimator.setDisplayedChildByLayoutId(R.id.listCompetitions);
-                if (listCompetitions != null)
+                if(closeLoading)
                 {
-                    listCompetitions.onRefreshComplete();
+                    betterViewAnimator.setDisplayedChildByLayoutId(R.id.listCompetitions);
                 }
-            } catch (Exception e)
-            {
-            }
-        }
 
-        public void onFinish()
-        {
-            try
-            {
-                betterViewAnimator.setDisplayedChildByLayoutId(R.id.listCompetitions);
                 if (listCompetitions != null)
                 {
                     listCompetitions.onRefreshComplete();

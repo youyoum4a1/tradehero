@@ -145,9 +145,9 @@ public class AnalyticsConstants
     public static final String Email = "Email";
     public static final String Screen = "Screen ";
 
-    public static final String SignUp_Success = "SignUp/Success"; //User tap sign up on the landing
-
-    public static final String SignUp_Email = "SignUp/Email"; //User tap on sign up via email on
+    //public static final String SignUp_Success = "SignUp/Success"; //User tap sign up on the landing
+    //
+    //public static final String SignUp_Email = "SignUp/Email"; //User tap on sign up via email on
 
     //Launch app
     public static final String AppLaunch = "AppLaunch";
@@ -282,6 +282,14 @@ public class AnalyticsConstants
     public static final String BUTTON_PORTFOLIO_POSITION_CLICKED = "BUTTON_PORTFOLIO_POSITION_CLICKED";
     public static final String BUTTON_PORTFOLIO_MAIN_PAGE = "BUTTON_PORTFOLIO_MAIN_PAGE";
     public static final String BUTTON_PORTFOLIO_GOTO_COMPETITION = "BUTTON_PORTFOLIO_GOTO_COMPETITION";
+
+    public static final String BUTTON_LOGIN_WECHAT = "BUTTON_LOGIN_WECHAT";
+    public static final String BUTTON_LOGIN_WEIBO = "BUTTON_LOGIN_WEIBO";
+    public static final String BUTTON_LOGIN_QQ = "BUTTON_LOGIN_QQ";
+    public static final String BUTTON_LOGIN_OFFICAL = "BUTTON_LOGIN_OFFICAL";
+    public static final String BUTTON_LOGIN_REGISTER = "BUTTON_LOGIN_REGISTER";
+    public static final String BUTTON_LOGIN_TELNUMBER = "BUTTON_LOGIN_TELNUMBER";
+    public static final String BUTTON_LOGIN_EMAIL = "BUTTON_LOGIN_EMAIL";
     //Windy
 
 }

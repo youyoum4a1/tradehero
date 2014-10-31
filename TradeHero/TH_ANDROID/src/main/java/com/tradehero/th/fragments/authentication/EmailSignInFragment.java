@@ -27,10 +27,12 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import java.util.Map;
 import javax.inject.Inject;
@@ -43,6 +45,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
     private ImageView backButton;
+    @Inject Analytics analytics;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
@@ -53,8 +56,9 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
-//        analytics.tagScreen(AnalyticsConstants.Login_Form);
-//        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_LOGIN_OFFICAL));
+        //        analytics.tagScreen(AnalyticsConstants.Login_Form);
+        //        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -72,7 +76,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         setLeftButtonOnClickListener(onClickListener);
     }
 
-    @Override public int getDefaultViewId ()
+    @Override public int getDefaultViewId()
     {
         return R.layout.authentication_email_sign_in;
     }
@@ -112,7 +116,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
         forgotPasswordLink = (TextView) view.findViewById(R.id.authentication_sign_in_forgot_password);
         forgotPasswordLink.setOnClickListener(this);
-
     }
 
     @Override public void onDestroyView()
@@ -162,6 +165,16 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                     //Save account
                     THSharePreferenceManager.saveAccount(getActivity(), email.getText().toString());
                     handleSignInOrUpButtonClicked(view);
+
+                    if (isValidPhoneNumber(email.getText()))
+                    {
+                        analytics.addEventAuto(
+                                new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_LOGIN_TELNUMBER));
+                    }
+                    else
+                    {
+                        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_LOGIN_EMAIL));
+                    }
                 }
                 break;
 
@@ -189,19 +202,19 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         return true;
     }
 
-    @Override protected void forceValidateFields ()
+    @Override protected void forceValidateFields()
     {
         //email.forceValidate();
         //password.forceValidate();
     }
 
-    @Override public boolean areFieldsValid ()
+    @Override public boolean areFieldsValid()
     {
         //return email.isValid() && password.isValid();
         return true;
     }
 
-    @Override protected Map<String, Object> getUserFormMap ()
+    @Override protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = super.getUserFormMap();
         map.put(UserFormFactory.KEY_EMAIL, email.getText().toString());

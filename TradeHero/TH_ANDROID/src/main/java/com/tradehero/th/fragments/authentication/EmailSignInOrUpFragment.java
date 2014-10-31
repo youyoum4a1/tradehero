@@ -16,6 +16,8 @@ import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.json.JSONException;
 
 abstract public class EmailSignInOrUpFragment extends AuthenticationFragment implements View.OnClickListener, ValidationListener
@@ -87,5 +89,17 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
     {
         // In fact we let the activity take care of the rest, as it listens for this button
         onClickListener.onClick(signButton);
+    }
+
+    public static boolean isValidPhoneNumber(CharSequence charSequence) {
+        boolean isValid = false;
+        Pattern p = Pattern.compile("[0-9]*");
+        Matcher m = p.matcher(charSequence);
+        if (m.matches()) {
+            isValid = true;
+        } else {
+            isValid = false;
+        }
+        return isValid;
     }
 }

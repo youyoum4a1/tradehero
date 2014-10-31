@@ -61,8 +61,8 @@ public class Constants
     public static final String GCM_STAGING_SENDER = "927417497470";
 
     // TODO remove when automated build.
-    // 0 for international, 1 baidu, 2 tencent. It is here to help with build multiple version
-    private static final int VERSION = 1;
+    // 0 for international, 100 offical, 101 test. It is here to help with build multiple version
+    private static final int VERSION = 101;
 
     public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
 

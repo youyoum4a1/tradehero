@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.chinabuild.fragment.trade;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,7 +108,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
     @Inject Analytics analytics;
 
-
     private static long time_stamp = -1;
     private final long duration_showing_dialog = 120000;
     private boolean availableShowDialog = false;
@@ -141,10 +142,11 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
-
+        startTimerForView();
         initView();
         fetchPortfolio();
         llPositionHeadItem.setVisibility(View.GONE);//用来显示浮动的标签
+
         return view;
     }
 
@@ -237,7 +239,8 @@ public class TradeOfMineFragment extends DashboardFragment
         gotoDashboard(SecurityDetailFragment.class.getName(), bundle);
     }
 
-    @Override public void onStart(){
+    @Override public void onStart()
+    {
         availableShowDialog = true;
         super.onStart();
     }
@@ -284,7 +287,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
     protected void fetchSimplePage(boolean force)
     {
-
         if (shownPortfolioId != null)
         {
             detachGetPositionsTask();
@@ -304,16 +306,45 @@ public class TradeOfMineFragment extends DashboardFragment
     protected void fetchPortfolio()
     {
         fetchPortfolio(false);
+    }
 
+    private Handler handler = new Handler();
+
+    private Runnable runnable;
+
+    public void startTimerForView()
+    {
+        runnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                closeTimerForView();
+                onResume();
+            }
+        };
+        Timber.d("Windy : startTimerForView");
+        handler.postDelayed(runnable, 8000);
+    }
+
+    public void closeTimerForView()
+    {
+        Timber.d("Windy : closeTimerForView");
+        try
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
+            handler.removeCallbacks(runnable);
+        } catch (Exception e)
+        {
+        }
     }
 
     protected void fetchPortfolio(boolean force)
     {
-        if (shownPortfolioId == null ||portfolioFetchListener == null) return;
+        if (shownPortfolioId == null || portfolioFetchListener == null) return;
         detachPortfolioFetchTask();
         portfolioCache.register(shownPortfolioId, portfolioFetchListener);
-        portfolioCache.getOrFetchAsync(shownPortfolioId,force);
-
+        portfolioCache.getOrFetchAsync(shownPortfolioId, force);
     }
 
     protected void fetchWatchPositionList(boolean force)
@@ -376,8 +407,9 @@ public class TradeOfMineFragment extends DashboardFragment
 
         public void finish()
         {
+            Timber.d("Windy : GetPositionsListener");
             listView.onRefreshComplete();
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
+            closeTimerForView();
         }
     }
 
@@ -397,7 +429,6 @@ public class TradeOfMineFragment extends DashboardFragment
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             onFinish();
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
 
         private void onFinish()
@@ -432,11 +463,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
     protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
     {
-        protected BasePurchaseManagementPortfolioCompactListFetchListener()
-        {
-            // no unexpected creation
-        }
-
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
         {
             prepareApplicableOwnedPortolioId(value.getDefaultPortfolio());
@@ -445,7 +471,7 @@ public class TradeOfMineFragment extends DashboardFragment
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             //THToast.show(R.string.error_fetch_portfolio_list_info);
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
+            //betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
     }
 
@@ -455,7 +481,7 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             shownPortfolioId = defaultIfNotInArgs.getOwnedPortfolioId();
         }
-        if(shownPortfolioId != null)
+        if (shownPortfolioId != null)
         {
             fetchPortfolio();
             fetchSimplePage(false);
@@ -477,21 +503,26 @@ public class TradeOfMineFragment extends DashboardFragment
         String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
         tvItemAllAmount.setText(valueString);
         //总资产数达到15w
-        if (cached.totalValue > 150000 && getActivity()!=null && availableShowDialog)
+        if (cached.totalValue > 150000 && getActivity() != null && availableShowDialog)
         {
             int userId = currentUserId.toUserBaseKey().getUserId();
-            if(THSharePreferenceManager.isShareDialogMoreThanFifteenAvailable(userId, getActivity())){
-                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                            getString(R.string.share_amount_total_value_title), getString(R.string.share_amount_total_value_summary,
-                            currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN, userId);
-                    time_stamp = System.currentTimeMillis();
-                    THSharePreferenceManager.isMoreThanFifteenShowed = true;
-            }else{
-                if (cached.totalValue > 250000 && (System.currentTimeMillis()-time_stamp)>duration_showing_dialog){
-                    if(THSharePreferenceManager.isShareDialogMoreThanTwentyFiveAvailable(userId, getActivity())){
-                          ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                                 getString(R.string.share_amount_total_value_title25), getString(R.string.share_amount_total_value_summary25,
-                                 currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
+            if (THSharePreferenceManager.isShareDialogMoreThanFifteenAvailable(userId, getActivity()))
+            {
+                ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                        getString(R.string.share_amount_total_value_title), getString(R.string.share_amount_total_value_summary,
+                        currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN, userId);
+                time_stamp = System.currentTimeMillis();
+                THSharePreferenceManager.isMoreThanFifteenShowed = true;
+            }
+            else
+            {
+                if (cached.totalValue > 250000 && (System.currentTimeMillis() - time_stamp) > duration_showing_dialog)
+                {
+                    if (THSharePreferenceManager.isShareDialogMoreThanTwentyFiveAvailable(userId, getActivity()))
+                    {
+                        ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+                                getString(R.string.share_amount_total_value_title25), getString(R.string.share_amount_total_value_summary25,
+                                currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
                         time_stamp = -1;
                         THSharePreferenceManager.isMoreThanTwentyShowed = true;
                     }
@@ -555,11 +586,11 @@ public class TradeOfMineFragment extends DashboardFragment
                             mShareDialogKeyPreference.set(false);
                             mShareDialogROIValueKeyPreference.set(false);
                             mShareSheetTitleCache.set(getString(
-                                    R.string.share_amount_roi_value_summary,  currentUserId.get().toString(),
+                                    R.string.share_amount_roi_value_summary, currentUserId.get().toString(),
                                     String.valueOf(listData.get(i).id)));
                             ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                                     getString(R.string.share_amount_roi_value_title), getString(
-                                    R.string.share_amount_roi_value_summary,   currentUserId.get().toString(),
+                                    R.string.share_amount_roi_value_summary, currentUserId.get().toString(),
                                     String.valueOf(listData.get(i).id)));
                         }
                     }

@@ -193,6 +193,18 @@
   <string name="tap_stream_type_threeg_install" translatable="false">android-tradehero-threeg-install</string>
   <string name="tap_stream_type_threeg_open" translatable="false">android-tradehero-threeg-open</string>
 
+  <string name="tap_stream_type_suoping_install" translatable="false">android-tradehero-suoping-install</string>
+  <string name="tap_stream_type_suoping_open" translatable="false">android-tradehero-suoping-open</string>
+
+  <string name="tap_stream_type_suoping2_install" translatable="false">android-tradehero-suoping2-install</string>
+  <string name="tap_stream_type_suoping2_open" translatable="false">android-tradehero-suoping2-open</string>
+
+  <string name="tap_stream_type_offical_install" translatable="false">android-tradehero-offical-install</string>
+  <string name="tap_stream_type_offical_open" translatable="false">android-tradehero-offical-open</string>
+
+  <string name="tap_stream_type_test_install" translatable="false">android-tradehero-test-install</string>
+  <string name="tap_stream_type_test_open" translatable="false">android-tradehero-test-open</string>
+
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>
@@ -242,6 +254,8 @@
   <string name="trade_comment">Trade Comment</string>
 
   <string name="mark_as_all_read">Mark as all Read</string>
+
+  <string name="error_network_connection">请检查网络连接</string>
 
   <string name="tab_main_trade">交易</string>
   <string name="tab_main_stock_god">股神</string>
@@ -411,4 +425,6 @@
   <string name="recommend_select_one_item">Please follow a item.</string>
   <!-- Recommend -->
 
+
+  <string name="please_to_reply">评论一下吧...</string>
 </resources>

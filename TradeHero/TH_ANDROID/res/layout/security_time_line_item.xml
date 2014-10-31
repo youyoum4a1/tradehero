@@ -11,7 +11,7 @@
     android:orientation="vertical"
     >
 
-  <include layout="@layout/separate_line_transpant" />
+  <!--<include layout="@layout/separate_line_transpant" />-->
 
   <LinearLayout
       android:id="@+id/llAllTimeLine"
