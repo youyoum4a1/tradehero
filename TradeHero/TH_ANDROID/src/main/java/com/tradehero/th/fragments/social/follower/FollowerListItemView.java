@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -24,22 +25,20 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 public class FollowerListItemView extends RelativeLayout
-        implements DTOView<UserFollowerDTO>, View.OnClickListener
+        implements DTOView<UserFollowerDTO>
 {
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.follower_title) TextView title;
-    @InjectView(R.id.follower_roi_info) @Optional  TextView roiInfo;
     @InjectView(R.id.follower_revenue) @Optional TextView revenueInfo;
     @InjectView(R.id.country_logo) ImageView country;
 
-    private UserFollowerDTO userFollowerDTO;
+    protected UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
@@ -47,19 +46,16 @@ public class FollowerListItemView extends RelativeLayout
     @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
-    @SuppressWarnings("UnusedDeclaration")
     public FollowerListItemView(Context context)
     {
         super(context);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public FollowerListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public FollowerListItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -82,36 +78,22 @@ public class FollowerListItemView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (userIcon != null)
-        {
-            userIcon.setOnClickListener(this);
-        }
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        if (userIcon != null)
-        {
-            userIcon.setImageDrawable(null);
-            userIcon.setOnClickListener(null);
-        }
-        if (country != null)
-        {
-            country.setOnClickListener(this);
-        }
-        //ButterKnife.reset(this);
-
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    @Override public void onClick(View v)
+    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
+    @OnClick({R.id.follower_profile_picture})
+    public void onProfilePictureClicked(View v)
     {
-        if (v.getId() == R.id.follower_profile_picture)
+        if (userFollowerDTO != null)
         {
-            if (userFollowerDTO != null)
-            {
-                pushTimelineFragment();
-            }
+            pushTimelineFragment();
         }
     }
 
@@ -142,7 +124,6 @@ public class FollowerListItemView extends RelativeLayout
         displayUserIcon();
         displayCountryLogo();
         displayTitle();
-        displayRoiInfo();
         displayRevenue();
     }
 
@@ -187,26 +168,6 @@ public class FollowerListItemView extends RelativeLayout
         if (title != null)
         {
             title.setText(userBaseDTOUtil.getShortDisplayName(getContext(), userFollowerDTO));
-        }
-    }
-
-    public void displayRoiInfo()
-    {
-        if (roiInfo != null)
-        {
-            if (userFollowerDTO != null)
-            {
-                THSignedNumber thRoiSinceInception = THSignedPercentage
-                        .builder(userFollowerDTO.roiSinceInception * 100)
-                        .build();
-                roiInfo.setText(thRoiSinceInception.toString());
-                roiInfo.setTextColor(
-                        getContext().getResources().getColor(thRoiSinceInception.getColorResId()));
-            }
-            else
-            {
-                roiInfo.setText(R.string.na);
-            }
         }
     }
 

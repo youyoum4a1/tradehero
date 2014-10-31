@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.follower.FollowerListItemView
+<com.tradehero.th.fragments.social.follower.FollowerRoiListItemView
     style="@style/TH.ListItem.Clickable"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,6 +13,7 @@
       android:layout_width="@dimen/medium_logo_w_h"
       android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
       android:src="@drawable/superman_facebook"
       android:contentDescription="@null"
@@ -23,9 +24,12 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/follower_profile_picture"
+      android:layout_toEndOf="@id/follower_profile_picture"
       android:layout_toLeftOf="@+id/hint_open_portfolio"
+      android:layout_toStartOf="@+id/hint_open_portfolio"
       android:padding="@dimen/margin_xsmall"
       android:layout_marginLeft="@dimen/margin_xsmall"
+      android:layout_marginStart="@dimen/margin_xsmall"
       android:layout_centerVertical="true"
     >
 
@@ -52,9 +56,10 @@
       android:layout_width="@dimen/small_icon_w_h"
       android:layout_height="@dimen/small_icon_w_h"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
       android:scaleType="centerInside"
       android:contentDescription="@null"
     />
 
-</com.tradehero.th.fragments.social.follower.FollowerListItemView>
+</com.tradehero.th.fragments.social.follower.FollowerRoiListItemView>

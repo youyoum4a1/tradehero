@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.follower.FollowerListItemView
+<com.tradehero.th.fragments.social.follower.FollowerRevenueListItemView
     style="@style/TH.ListItem.Clickable"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -40,31 +40,47 @@
         tools:text="Tho Nguyen"
         />
 
-    <LinearLayout
+    <ViewSwitcher
+        android:id="@+id/revenue_switcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:layout_height="wrap_content">
+
+      <LinearLayout
+          android:id="@+id/revenue_info"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_xsmall"
+            android:layout_marginEnd="@dimen/margin_xsmall"
+            style="@style/TH.Caption"
+            android:text="@string/manage_followers_revenue_follower_3"
+            />
+
+        <TextView
+            android:id="@+id/follower_revenue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            style="@style/TH.UserROI"
+            tools:text="US$ 0"
+            />
+
+      </LinearLayout>
 
       <TextView
+          android:id="@+id/free_follow"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginRight="@dimen/margin_xsmall"
-          android:layout_marginEnd="@dimen/margin_xsmall"
           style="@style/TH.Caption"
-          android:text="@string/manage_followers_revenue_follower_3"
+          android:text="@string/follower_type_free_singular"
           />
 
-      <TextView
-          android:id="@+id/follower_revenue"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:maxLines="1"
-          style="@style/TH.UserROI"
-          tools:text="US$ 0"
-          />
-
-    </LinearLayout>
+    </ViewSwitcher>
 
   </LinearLayout>
 
@@ -94,4 +110,4 @@
       android:src="@drawable/chevron_forward"
       />
 
-</com.tradehero.th.fragments.social.follower.FollowerListItemView>
+</com.tradehero.th.fragments.social.follower.FollowerRevenueListItemView>

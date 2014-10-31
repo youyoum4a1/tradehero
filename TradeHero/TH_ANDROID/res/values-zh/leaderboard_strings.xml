@@ -63,6 +63,7 @@
   <string name="follower_type_premium">高级粉丝</string>
   <string name="follower_type_free">普通粉丝</string>
   <string name="follower_type_all">所有粉丝</string>
+  <string name="follower_type_free_singular">普通粉丝</string>
 
   <string name="leaderboard_friends_position_failed">抱歉，当前用户的持仓信息不完整。</string>
   <string name="leaderboard_see_competition_rules">查看比赛规则</string>
