@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -13,22 +17,27 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.RecommendListAdapter;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.fragments.chinabuild.data.*;
+import com.tradehero.th.fragments.chinabuild.data.FollowStockForm;
+import com.tradehero.th.fragments.chinabuild.data.RecommendHero;
+import com.tradehero.th.fragments.chinabuild.data.RecommendItems;
+import com.tradehero.th.fragments.chinabuild.data.RecommendStock;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ABCLogger;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -46,6 +55,8 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
 
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
+
+    @Inject UserProfileCache userProfileCache;
 
     public final static String LOGIN_USER_ID = "login_user_id";
 
@@ -230,6 +241,7 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             public void success(UserProfileDTO userProfileDTO, Response response) {
                 ABCLogger.d("upload recommended heroes successfully");
                 uploadStocks();
+                userProfileCache.put(new UserBaseKey(userProfileDTO.id) , userProfileDTO);
             }
 
             @Override

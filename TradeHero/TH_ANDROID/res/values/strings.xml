@@ -199,6 +199,9 @@
   <string name="tap_stream_type_suoping2_install" translatable="false">android-tradehero-suoping2-install</string>
   <string name="tap_stream_type_suoping2_open" translatable="false">android-tradehero-suoping2-open</string>
 
+  <string name="tap_stream_type_taobao_install" translatable="false">android-tradehero-taobao-install</string>
+  <string name="tap_stream_type_taobao_open" translatable="false">android-tradehero-taobao-open</string>
+
   <string name="tap_stream_type_offical_install" translatable="false">android-tradehero-offical-install</string>
   <string name="tap_stream_type_offical_open" translatable="false">android-tradehero-offical-open</string>
 

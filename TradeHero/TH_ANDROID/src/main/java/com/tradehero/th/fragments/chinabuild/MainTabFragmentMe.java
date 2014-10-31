@@ -21,7 +21,11 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
-import com.tradehero.th.fragments.chinabuild.fragment.*;
+import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.InviteFriendsFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.MyProfileFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.SettingFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest03;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
@@ -36,10 +40,9 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 public class MainTabFragmentMe extends AbsBaseFragment
 {
@@ -350,7 +353,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
     public void onEndPoint()
     {
         viewPointCount++;
-        if (viewPointCount > 5)
+        if (viewPointCount > 99)
         {
             Timber.d("onTestClicked FragmentTest02");
             gotoDashboard(FragmentTest03.class.getName(), new Bundle());
