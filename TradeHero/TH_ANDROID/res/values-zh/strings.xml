@@ -213,5 +213,6 @@
   <string name="recommend_number_hold">人持有</string>
   <string name="RMB">￥</string>
   <string name="recommend_select_one_item">至少选择一个股神或股票。</string>
+  <string name="recommend_uploading">提交中...</string>
   <!-- Recommend -->
 </resources>

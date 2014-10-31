@@ -13,15 +13,15 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
-import com.tradehero.th.fragments.chinabuild.data.LoginContinuallyTimesDTO;
-import com.tradehero.th.fragments.chinabuild.data.RecommendItems;
-import com.tradehero.th.fragments.chinabuild.data.TrackShareDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.fragments.chinabuild.data.*;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.*;
 import retrofit.mime.TypedOutput;
+
+import java.util.List;
 
 interface UserServiceAsync
 {
@@ -242,6 +242,9 @@ interface UserServiceAsync
 
     @POST("/users/BatchFollow/free")
     void followBatchFree(@Body FollowFriendsForm followFriendsForm, Callback<UserProfileDTO> callback);
+
+    @POST("/BatchCreateWatchlistPositions")
+    void followStock(@Body FollowStockForm followStockForm, Callback<List<WatchlistPositionDTO>> callback);
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends")

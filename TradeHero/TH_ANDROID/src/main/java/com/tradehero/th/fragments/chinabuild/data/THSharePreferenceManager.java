@@ -211,8 +211,7 @@ public class THSharePreferenceManager {
     public static boolean isRecommendedStock(int userId, Context context){
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         boolean result = sp.getBoolean(userId + RECOMMEND_STOCK_GOD, false);
-        //return result;
-        return false;
+        return result;
     }
 
     public static void setRecommendedStock(int userId, Context context){

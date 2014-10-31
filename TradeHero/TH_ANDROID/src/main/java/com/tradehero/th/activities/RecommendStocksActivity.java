@@ -1,6 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,18 +7,20 @@ import android.view.View;
 import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.actionbarsherlock.app.SherlockActivity;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.RecommendListAdapter;
-import com.tradehero.th.fragments.chinabuild.data.RecommendHero;
-import com.tradehero.th.fragments.chinabuild.data.RecommendItems;
-import com.tradehero.th.fragments.chinabuild.data.RecommendStock;
-import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.fragments.chinabuild.data.*;
+import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.ABCLogger;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -27,12 +28,13 @@ import retrofit.client.Response;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Created by palmer on 14-10-29.
  */
-public class RecommendStocksActivity extends Activity implements View.OnClickListener{
+public class RecommendStocksActivity extends SherlockActivity implements View.OnClickListener{
 
     @InjectView(R.id.button_recommend_follow)Button followBtn;
     @InjectView(R.id.tvHeadLeft)TextView tvHeadLeft;
@@ -43,6 +45,7 @@ public class RecommendStocksActivity extends Activity implements View.OnClickLis
     @InjectView(R.id.imageview_recommend_download_failed)ImageView downloadFailedIV;
 
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    @Inject ProgressDialogUtil progressDialogUtil;
 
     public final static String LOGIN_USER_ID = "login_user_id";
 
@@ -105,14 +108,12 @@ public class RecommendStocksActivity extends Activity implements View.OnClickLis
 
     @Override
     public void onBackPressed(){
+        THSharePreferenceManager.setRecommendedStock(userId, this);
         gotoNextActivity();
     }
 
 
     private void gotoNextActivity(){
-        if(userId >= 0){
-            THSharePreferenceManager.setRecommendedStock(userId, this);
-        }
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -124,6 +125,7 @@ public class RecommendStocksActivity extends Activity implements View.OnClickLis
         int viewId = view.getId();
         if(viewId == R.id.tvHeadRight0){
             disableAllBtns();
+            THSharePreferenceManager.setRecommendedStock(userId, this);
             gotoNextActivity();
             return;
         }
@@ -203,6 +205,66 @@ public class RecommendStocksActivity extends Activity implements View.OnClickLis
             THToast.show(R.string.recommend_select_one_item);
             return;
         }
+        if(listAdapter.getHeroesSelected().size()>0){
+            progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.recommend_uploading);
+            uploadHeroes();
+            return;
+        }
+        if(listAdapter.getSecuritiesSelected().size()>0){
+            progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.recommend_uploading);
+            uploadStocks();
+            return;
+        }
+    }
+
+    private void uploadHeroes(){
+        ArrayList<Integer> heroIds = listAdapter.getHeroesSelected();
+        FollowFriendsForm followFriendsForm = new FollowFriendsForm();
+        followFriendsForm.userIds = new ArrayList<>();
+        for (Integer heroId : heroIds)
+        {
+            followFriendsForm.userIds.add(heroId);
+        }
+        userServiceWrapper.get().followBatchFree(followFriendsForm, new Callback<UserProfileDTO>() {
+            @Override
+            public void success(UserProfileDTO userProfileDTO, Response response) {
+                ABCLogger.d("upload recommended heroes successfully");
+                uploadStocks();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                ABCLogger.d("upload recommended heroes failed");
+                progressDialogUtil.dismiss(RecommendStocksActivity.this);
+                gotoNextActivity();
+            }
+        });
+    }
+
+    private void uploadStocks(){
+        ArrayList<Integer> stocks = listAdapter.getSecuritiesSelected();
+        FollowStockForm followStockForm = new FollowStockForm();
+        followStockForm.securityIds = new ArrayList<>();
+        for(Integer stockId:stocks){
+            followStockForm.securityIds.add(stockId);
+        }
+            userServiceWrapper.get().followStocks(followStockForm, new Callback<List<WatchlistPositionDTO>>() {
+            @Override
+            public void success(List<WatchlistPositionDTO> o, Response response) {
+                ABCLogger.d("upload recommended stock successfully");
+                THSharePreferenceManager.setRecommendedStock(userId, RecommendStocksActivity.this);
+                progressDialogUtil.dismiss(RecommendStocksActivity.this);
+                gotoNextActivity();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                ABCLogger.d("upload recommended stock failed");
+                ABCLogger.d(retrofitError.toString());
+                progressDialogUtil.dismiss(RecommendStocksActivity.this);
+                gotoNextActivity();
+            }
+        });
     }
 
 }

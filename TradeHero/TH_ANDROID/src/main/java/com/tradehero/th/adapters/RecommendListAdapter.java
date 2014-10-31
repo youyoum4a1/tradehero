@@ -198,6 +198,7 @@ public class RecommendListAdapter extends BaseAdapter {
             securitiesSelected.add(stock.id);
         }
         this.heroes = heroes;
+        heroesSelected.clear();
         for(RecommendHero hero: heroes){
             heroesSelected.add(hero.id);
         }

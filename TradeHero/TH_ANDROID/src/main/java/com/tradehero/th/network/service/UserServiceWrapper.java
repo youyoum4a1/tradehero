@@ -15,10 +15,8 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
-import com.tradehero.th.fragments.chinabuild.data.LoginContinuallyTimesDTO;
-import com.tradehero.th.fragments.chinabuild.data.RecommendItems;
-import com.tradehero.th.fragments.chinabuild.data.TrackShareDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.fragments.chinabuild.data.*;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
@@ -45,6 +43,7 @@ import retrofit.client.Response;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.List;
 
 @Singleton public class UserServiceWrapper
 {
@@ -718,6 +717,11 @@ import javax.inject.Singleton;
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.followBatchFree(followFriendsForm,middleCallback);
         return middleCallback;
+    }
+
+    public void followStocks(FollowStockForm followStockForm,Callback<List<WatchlistPositionDTO>> callback)
+    {
+        userServiceAsync.followStock(followStockForm, callback);
     }
     //</editor-fold>
 
