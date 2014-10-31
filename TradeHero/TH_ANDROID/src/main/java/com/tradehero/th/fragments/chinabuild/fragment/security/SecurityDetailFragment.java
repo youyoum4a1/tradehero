@@ -106,6 +106,7 @@ import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -1408,14 +1409,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
-    protected void detachMiddleCallbackUpdate()
-    {
-        if (middleCallbackUpdate != null)
-        {
-            middleCallbackUpdate.setPrimaryCallback(null);
-        }
-        middleCallbackUpdate = null;
-    }
+    //protected void detachMiddleCallbackUpdate()
+    //{
+    //    if (middleCallbackUpdate != null)
+    //    {
+    //        middleCallbackUpdate.setPrimaryCallback(null);
+    //    }
+    //    middleCallbackUpdate = null;
+    //}
 
     protected void detachMiddleCallbackDelete()
     {
@@ -1541,9 +1542,21 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader, R.id.tvUserTLContent})
     public void onOperaterClicked(View view)
     {
-        if (view.getId() == R.id.llDisscurssOrNews||view.getId()==R.id.tvUserTLContent)
+        if (view.getId() == R.id.llDisscurssOrNews )
         {
             enterTimeLineDetail(getAbstractDiscussionCompactDTO());
+
+        }
+        else if(view.getId() == R.id.tvUserTLContent)
+        {
+            if(tvUserTLContent instanceof MarkdownTextView)
+            {
+                if(!((MarkdownTextView) tvUserTLContent).isClicked)
+                {
+                    enterTimeLineDetail(getAbstractDiscussionCompactDTO());
+                }
+                ((MarkdownTextView)view).isClicked = false;
+            }
         }
         else if (view.getId() == R.id.imgSecurityTLUserHeader)
         {

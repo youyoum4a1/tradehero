@@ -38,7 +38,6 @@ import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSec
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -137,7 +136,7 @@ public class PortfolioFragment extends DashboardFragment
         currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
         initArgment();
         adapter = new MyTradePositionListAdapter(getActivity());
-        startLoadding();
+        //startLoadding();
         isNeedShowMainPage = getIsNeedShowPortfolio();
     }
 
@@ -707,7 +706,8 @@ public class PortfolioFragment extends DashboardFragment
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            THToast.show(new THException(retrofitError));
+            //THToast.show(new THException(retrofitError));
+            THToast.show(R.string.error_network_connection);
             alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }

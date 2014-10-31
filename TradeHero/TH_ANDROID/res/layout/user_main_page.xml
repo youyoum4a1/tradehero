@@ -5,20 +5,28 @@
     android:id="@+id/contest_center_content_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_fragment"
     android:orientation="vertical"
+    android:background="@color/bg_fragment"
     >
-  <include
+
+
+  <LinearLayout
       android:id="@+id/includeUserHeader"
-      layout="@layout/user_main_page_header"
-      android:layout_marginBottom="10dp"/>
+      android:layout_width="wrap_content"
+      android:orientation="vertical"
+      android:layout_height="wrap_content">
+    <include layout="@layout/user_main_page_header"/>
+    <View
+        android:background="@color/gray_1"
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"/>
+  </LinearLayout>
+
 
   <com.tradehero.common.widget.BetterViewAnimator
       android:id="@+id/bvaViewAll"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
-
-
     <ProgressBar
         android:id="@android:id/progress"
         android:layout_width="wrap_content"

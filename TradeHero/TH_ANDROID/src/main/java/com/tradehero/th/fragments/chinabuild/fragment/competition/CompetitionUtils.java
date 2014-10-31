@@ -194,7 +194,7 @@ public class CompetitionUtils
             exchangeCompactDTOs.add(new ExchangeCompactDTO(18,"TSX","CA",0,"加拿大 TSX",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(19,"TSXV","CA",0,"加拿大 TSXV",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(25,"NZX","NZ",0,"新西兰 NZX",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(29,"JKT","ID",0,"印度尼西亚 JKT",false,true,false));
+            exchangeCompactDTOs.add(new ExchangeCompactDTO(29,"JKT","ID",0,"印尼 JKT",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(32,"KDQ","KR",0,"韩国 KDQ",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(34,"KRX","KR",0,"韩国 KRX",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(37,"TPE","TW",0,"台湾 TPE",false,true,false));

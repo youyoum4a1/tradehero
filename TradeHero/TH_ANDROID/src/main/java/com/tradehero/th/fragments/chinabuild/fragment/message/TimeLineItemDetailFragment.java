@@ -30,6 +30,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
+import com.tradehero.th.adapters.TimeLineBaseAdapter;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
@@ -55,7 +56,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -77,8 +77,9 @@ import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
-public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener,View.OnClickListener
+public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener
 {
 
     public static final String BUNDLE_ARGUMENT_DISCUSSTION_ID = "bundle_argment_discusstion_id";
@@ -135,6 +136,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     private LinearLayout mRefreshView;
 
+    private String strReply = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -153,7 +155,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             timelineItemDTOKey = discussionKeyFactory.fromBundle(bundle.getBundle(BUNDLE_ARGUMENT_DISCUSSTION_ID));
             fetchDiscussion(timelineItemDTOKey, false);
             discussionListKey = new PaginatedDiscussionListKey(timelineItemDTOKey.getType(), timelineItemDTOKey.id, 1, 1000);
-            fetchDiscussList(true);
+            fetchDiscussList(false);
         }
     }
 
@@ -169,7 +171,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     {
         View view = inflater.inflate(R.layout.timeline_item_detail, container, false);
         ButterKnife.inject(this, view);
-
+        //setNeedToMonitorBackPressed(true);
         ListView lv = listTimeLine.getRefreshableView();
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item, null);
         lv.addHeaderView(mRefreshView);
@@ -209,9 +211,15 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         llTLPraise.setOnClickListener(this);
         llTLComment.setOnClickListener(this);
         llTLShare.setOnClickListener(this);
+
+        llDisscurssOrNews.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                setHintForSender(-1);
+            }
+        });
     }
-
-
 
     public void initView()
     {
@@ -232,12 +240,95 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 //refreshDataMore(false);
             }
         });
+
+        adapter.setTimeLineOperater(new TimeLineBaseAdapter.TimeLineOperater()
+        {
+            @Override public void OnTimeLineItemClicked(int position)
+            {
+                Timber.d("ListItemLine clicked Position : " + position);
+                setHintForSender(position);
+            }
+
+            @Override public void OnTimeLinePraiseClicked(int position)
+            {
+
+            }
+
+            @Override public void OnTimeLineCommentsClicked(int position)
+            {
+
+            }
+
+            @Override public void OnTimeLineShareClied(int position)
+            {
+
+            }
+        });
     }
 
-    @Override public void onStop()
+
+    public void setHintForSender(int position)
     {
-        super.onStop();
+
     }
+
+    //public void setHintForSender(int position)
+    //{
+    //    if (position == -1)//回复主题
+    //    {
+    //        edtSend.setHint(getResources().getString(R.string.please_to_reply));
+    //        strReply = "";
+    //    }
+    //    else//回复楼层
+    //    {
+    //        AbstractDiscussionCompactDTO dto = adapter.getItem(position);
+    //        if (dto instanceof DiscussionDTO)
+    //        {
+    //            String displayName = ((DiscussionDTO) dto).user.displayName;
+    //            int id = ((DiscussionDTO) dto).userId;
+    //            String strHint = "回复 " + displayName + ":";
+    //            edtSend.setHint(strHint);
+    //            //"<@(.+?),(\\d+)@>"
+    //            strReply = "<@@"+displayName+","+id+"@>";
+    //        }
+    //    }
+    //    openInputMethod();
+    //}
+
+    //@Override public void onBackPressed()
+    //{
+    //    closeInputMethod();
+    //}
+    //
+    //public void closeInputMethod()
+    //{
+    //    boolean isShow = InputTools.KeyBoard(edtSend);
+    //    if (isShow)
+    //    {
+    //        InputTools.HideKeyboard(edtSend);
+    //        strReply = "";
+    //        edtSend.setText("");
+    //    }
+    //    else
+    //    {
+    //
+    //    }
+    //}
+    //public void openInputMethod()
+    //{
+    //    //InputTools.ShowKeyboard(edtSend);
+    //    InputTools.KeyBoard(edtSend,"open");
+    //}
+
+
+
+    //@Override public void onBackPressed()
+    //{
+    //    super.onBackPressed();
+    //    strReply = "";
+    //    edtSend.setText("");
+    //}
+
 
     @Override public void onDestroyView()
     {
@@ -422,7 +513,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             {
                 discussionFormDTO.inReplyToId = timelineItemDTOKey.id;
             }
-            discussionFormDTO.text = edtSend.getText().toString();
+            discussionFormDTO.text = strReply + " " + edtSend.getText().toString();
+
             return discussionFormDTO;
         }
 
@@ -444,14 +536,16 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             onFinish();
             DeviceUtil.dismissKeyboard(getActivity());
-            fetchDiscussList(true);
+            fetchDiscussList(false);
             fetchDiscussion(timelineItemDTOKey, true);
+            strReply = "";
+            edtSend.setText("");
         }
 
         @Override public void failure(RetrofitError error)
         {
             onFinish();
-            THToast.show(new THException(error));
+            THToast.show(R.string.error_network_connection);
         }
 
         private void onFinish()
@@ -514,8 +608,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             {
                 strShare = (((DiscussionDTO) dto).text);
             }
-            if(TextUtils.isEmpty(strShare)){
-                if(tvUserTLContent.getText()==null){
+            if (TextUtils.isEmpty(strShare))
+            {
+                if (tvUserTLContent.getText() == null)
+                {
                     return;
                 }
                 shareToWechatMoment(tvUserTLContent.getText().toString());
@@ -571,7 +667,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     //Share to wechat moment and share to weibo on the background
     private void shareToWechatMoment(final String strShare)
     {
-        if(TextUtils.isEmpty(strShare)){
+        if (TextUtils.isEmpty(strShare))
+        {
             return;
         }
         String show = getUnParsedText(strShare);
@@ -592,22 +689,23 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
         weChatDTO.title = strShare;
-        ((SocialSharerImpl)socialSharerLazy.get()).share(weChatDTO, getActivity());
-
+        ((SocialSharerImpl) socialSharerLazy.get()).share(weChatDTO, getActivity());
     }
 
-    private class RequestCallback implements Callback{
+    private class RequestCallback implements Callback
+    {
 
         @Override
-        public void success(Object o, Response response) {
+        public void success(Object o, Response response)
+        {
 
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
+        public void failure(RetrofitError retrofitError)
+        {
 
         }
-
     }
 
     private void openUserProfile(int userId)

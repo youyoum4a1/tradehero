@@ -43,15 +43,14 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 public class GuideActivity extends Activity implements ViewPager.OnPageChangeListener,
         View.OnClickListener
@@ -302,7 +301,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
                 imageView.setOnClickListener(null);
             }
             container.addView(view);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.SplashScreen, AnalyticsConstants.Screen + String.valueOf(position)));
+            //analytics.addEvent(new MethodEvent(AnalyticsConstants.SplashScreen, AnalyticsConstants.Screen + String.valueOf(position)));
             return view;
         }
 
@@ -449,7 +448,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
             Response response;
             if (user != null)
             {
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, providerName));
+                //analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, providerName));
                 launchDashboard(user);
             }
             else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&

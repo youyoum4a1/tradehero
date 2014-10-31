@@ -21,10 +21,10 @@
 
       <include layout="@layout/user_main_page_header"/>
 
-
       <View
           android:layout_width="fill_parent"
           android:layout_height="20dp"/>
+
       <RelativeLayout
           android:id="@+id/rlMeDynamic"
           android:background="@drawable/listview_item_selector"
@@ -104,8 +104,8 @@
             android:layout_alignParentBottom="true"/>
       </RelativeLayout>
       <!--<View-->
-          <!--android:layout_width="fill_parent"-->
-          <!--android:layout_height="20dp"/>-->
+      <!--android:layout_width="fill_parent"-->
+      <!--android:layout_height="20dp"/>-->
 
       <RelativeLayout
           android:id="@+id/rlMeInviteFriends"

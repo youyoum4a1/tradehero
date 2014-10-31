@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,14 +43,15 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
-
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -86,6 +86,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject Picasso picasso;
     @Inject UserServiceWrapper userServiceWrapper;
+    @Inject Analytics analytics;
 
     //Camera
     private Bitmap photo;
@@ -118,7 +119,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_LOGIN_REGISTER));
         DaggerUtils.inject(this);
     }
 
@@ -560,17 +561,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         sendCodeMiddleCallback = null;
     }
 
-    private boolean isValidPhoneNumber(CharSequence charSequence) {
-        boolean isValid = false;
-        Pattern p = Pattern.compile("[0-9]*");
-        Matcher m = p.matcher(charSequence);
-        if (m.matches()) {
-            isValid = true;
-        } else {
-            isValid = false;
-        }
-        return isValid;
-    }
+
 
     private boolean isValidEmail(CharSequence charSequence) {
         boolean isValid = false;

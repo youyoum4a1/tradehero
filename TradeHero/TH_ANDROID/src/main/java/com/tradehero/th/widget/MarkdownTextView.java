@@ -57,12 +57,12 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        setMovementMethod(LinkMovementMethod.getInstance());
+        setMovementMethod(LinkMovementMethod.getInstance());//是用来增加Text监听
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        setMovementMethod(null);
+        setMovementMethod(null);//删除Text的超链监听
         super.onDetachedFromWindow();
     }
 
