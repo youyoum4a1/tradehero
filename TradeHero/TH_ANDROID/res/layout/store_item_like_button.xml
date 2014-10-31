@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.billing.StoreItemPromptPurchase
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="8dp"
@@ -18,10 +19,13 @@
       android:layout_width="@dimen/medium_logo_w_h"
       android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:layout_marginRight="16dp"
+      android:layout_marginEnd="16dp"
       android:layout_centerVertical="true"
       android:scaleType="fitXY"
       android:contentDescription="@null"
+      tools:src="@drawable/credit_1"
     />
 
   <ImageView
@@ -29,12 +33,14 @@
       android:layout_width="125dp"
       android:layout_height="48dp"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
       android:paddingTop="8dp"
       android:paddingBottom="8dp"
       android:scaleType="fitCenter"
       android:background="@null"
       android:contentDescription="@null"
+      tools:src="@drawable/btn_buy_credits_large"
       />
       <!--android:duplicateParentState="false"-->
       <!--android:clickable="true"-->
@@ -44,9 +50,12 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/icon"
+      android:layout_toEndOf="@id/icon"
       android:layout_toLeftOf="@id/btn_buy_now"
+      android:layout_toStartOf="@id/btn_buy_now"
       android:layout_centerVertical="true"
-      android:textSize="@dimen/text_subhead"
+      style="@style/TH.Subhead"
+      tools:text="Credits"
     />
 
 </com.tradehero.th.fragments.billing.StoreItemPromptPurchase>

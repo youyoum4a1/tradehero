@@ -1,5 +1,6 @@
 package com.tradehero.th.api.market;
 
+import android.support.annotation.DrawableRes;
 import com.tradehero.th.R;
 
 public enum Exchange
@@ -74,10 +75,10 @@ public enum Exchange
     // Japan
     TSE(R.drawable.square_jp, true);
 
-    public final int logoId;
+    @DrawableRes public final int logoId;
     public final boolean isCountryDefault;
 
-    private Exchange(int logoId, boolean isCountryDefault)
+    private Exchange(@DrawableRes int logoId, boolean isCountryDefault)
     {
         this.logoId = logoId;
         this.isCountryDefault = isCountryDefault;
