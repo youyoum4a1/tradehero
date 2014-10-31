@@ -3,7 +3,7 @@ package com.tradehero.th.models.level;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.persistence.level.LevelDefListCache;
+import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import java.util.Random;
 import javax.inject.Inject;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(RobolectricMavenTestRunner.class)
 public class LevelDefDTOListTest
 {
-    @Inject LevelDefListCache levelDefListCache;
+    @Inject LevelDefListCacheRx levelDefListCache;
 
     @Test
     public void testShouldReturnNull()

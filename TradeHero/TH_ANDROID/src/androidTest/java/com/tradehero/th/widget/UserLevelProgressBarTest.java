@@ -11,7 +11,7 @@ import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
-import com.tradehero.th.persistence.level.LevelDefListCache;
+import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
@@ -26,7 +26,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class UserLevelProgressBarTest
 {
     private UserLevelProgressBar userLevelProgressBar;
-    @Inject LevelDefListCache levelDefListCache;
+    @Inject LevelDefListCacheRx levelDefListCache;
 
     @Before
     public void setUp()
@@ -64,7 +64,7 @@ public class UserLevelProgressBarTest
         levelDefDTOList.add(mockLevel3);
         levelDefDTOList.add(mockLevel2);
 
-        levelDefListCache.put(new LevelDefListId(), levelDefDTOList);
+        levelDefListCache.onNext(new LevelDefListId(), levelDefDTOList);
 
         userLevelProgressBar = (UserLevelProgressBar) LayoutInflater.from(activity).inflate(R.layout.user_level_progressbar, null, false);
         userLevelProgressBar.setLevelDefDTOList(levelDefDTOList);

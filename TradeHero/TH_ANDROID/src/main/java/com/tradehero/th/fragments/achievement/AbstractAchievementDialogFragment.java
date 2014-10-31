@@ -12,13 +12,12 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -38,7 +37,6 @@ import com.chrisbanes.colorfinder.ColorUtils;
 import com.chrisbanes.colorfinder.DominantColorCalculator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
@@ -56,11 +54,10 @@ import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
-import com.tradehero.th.persistence.level.LevelDefListCache;
+import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -71,8 +68,8 @@ import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
@@ -123,10 +120,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Inject UserAchievementCache userAchievementCache;
     @Inject Picasso picasso;
     @Inject GraphicUtil graphicUtil;
-    @Inject LevelDefListCache levelDefListCache;
+    @Inject LevelDefListCacheRx levelDefListCache;
 
     @Inject AchievementServiceWrapper achievementServiceWrapper;
-    @Nullable MiddleCallback<BaseResponseDTO> middleCallbackShareAchievement;
     @Inject AchievementShareFormDTOFactory achievementShareFormDTOFactory;
 
     @Inject BroadcastUtils broadcastUtils;
@@ -140,7 +136,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private ObjectAnimator btnColorAnimation;
     private ValueAnimator mAnim;
     @NotNull private LevelDefListId mLevelDefListId = new LevelDefListId();
-    @Nullable private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> levelDefListCacheListener;
     private Callback mBadgeCallback;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -164,7 +159,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         {
             Timber.e(new Exception(), "Popped UserAchievementDTO is null for %s", userAchievementId);
         }
-        levelDefListCacheListener = createLevelDefCacheListener();
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -187,8 +181,10 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
         userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(new LevelUpListener());
-        levelDefListCache.register(mLevelDefListId, levelDefListCacheListener);
-        levelDefListCache.getOrFetchAsync(mLevelDefListId);
+        AndroidObservable.bindFragment(
+                this,
+                levelDefListCache.get(mLevelDefListId))
+            .subscribe(createLevelDefCacheObserver());
     }
 
     private void displayStarburst()
@@ -329,12 +325,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             if (!shareTos.isEmpty())
             {
                 //If only there are other social network to share to other than WeChat.
-                detachMiddleCallbackShareAchievement();
-                middleCallbackShareAchievement = achievementServiceWrapper.shareAchievement(
-                        achievementShareFormDTOFactory.createFrom(
-                                shareTos,
-                                userAchievementDTO),
-                        createShareAchievementCallback());
+                AndroidObservable.bindFragment(
+                        this,
+                        achievementServiceWrapper.shareAchievementRx(
+                                achievementShareFormDTOFactory.createFrom(
+                                        shareTos,
+                                        userAchievementDTO)))
+                        .subscribe(createShareAchievementObserver());
                 showSharing();
             }
             else
@@ -556,11 +553,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
         picasso.cancelRequest(badge);
         mBadgeCallback = null;
-        levelDefListCache.unregister(levelDefListCacheListener);
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
 
         socialSharerLazy.get().setSharedListener(null);
-        detachMiddleCallbackShareAchievement();
         super.onDestroyView();
     }
 
@@ -571,25 +566,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         {
             picasso.cancelRequest(badge);
         }
-        levelDefListCache.unregister(levelDefListCacheListener);
         if (userLevelProgressBar != null)
         {
             userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
-        }
-    }
-
-    @Override public void onDestroy()
-    {
-        levelDefListCacheListener = null;
-        super.onDestroy();
-    }
-
-    protected void detachMiddleCallbackShareAchievement()
-    {
-        if (middleCallbackShareAchievement != null)
-        {
-            middleCallbackShareAchievement.setPrimaryCallback(null);
-            middleCallbackShareAchievement = null;
         }
     }
 
@@ -632,16 +611,16 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
     }
 
-    @NotNull private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> createLevelDefCacheListener()
+    @NotNull private Observer<Pair<LevelDefListId, LevelDefDTOList>> createLevelDefCacheObserver()
     {
-        return new LevelDefListListener();
+        return new LevelDefListObserver();
     }
 
-    protected class LevelDefListListener implements DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList>
+    protected class LevelDefListObserver implements Observer<Pair<LevelDefListId, LevelDefDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        @Override public void onNext(Pair<LevelDefListId, LevelDefDTOList> pair)
         {
-            userLevelProgressBar.setLevelDefDTOList(value);
+            userLevelProgressBar.setLevelDefDTOList(pair.second);
             UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
             if (userAchievementDTOCopy != null)
             {
@@ -650,8 +629,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             }
         }
 
-        @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+
         }
     }
 
@@ -725,19 +709,23 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
     }
 
-    protected retrofit.Callback<BaseResponseDTO> createShareAchievementCallback()
+    protected Observer<BaseResponseDTO> createShareAchievementObserver()
     {
-        return new ShareAchievementCallback();
+        return new ShareAchievementObserver();
     }
 
-    protected class ShareAchievementCallback implements retrofit.Callback<BaseResponseDTO>
+    protected class ShareAchievementObserver implements Observer<BaseResponseDTO>
     {
-        @Override public void success(BaseResponseDTO baseResponseDTO, Response response)
+        @Override public void onNext(BaseResponseDTO baseResponseDTO)
         {
             showShareSuccess();
         }
 
-        @Override public void failure(RetrofitError error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             showShareFailed();
         }

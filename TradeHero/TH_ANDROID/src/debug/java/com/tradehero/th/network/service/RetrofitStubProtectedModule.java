@@ -16,8 +16,8 @@ import retrofit.RestAdapter;
 )
 public class RetrofitStubProtectedModule
 {
-    @Provides @Singleton AchievementMockServiceAsync provideAchievementMockServiceAsync(RestAdapter adapter)
+    @Provides @Singleton AchievementMockServiceRx provideAchievementMockServiceRx(RestAdapter adapter)
     {
-        return adapter.create(AchievementMockServiceAsync.class);
+        return adapter.create(AchievementMockServiceRx.class);
     }
 }

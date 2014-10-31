@@ -3,50 +3,45 @@ package com.tradehero.th.fragments.achievement;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
+import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 
 public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 {
     private static final String PROPERTY_DOLLARS_EARNED = "dollarsEarned";
 
     @InjectView(R.id.achievement_progress_indicator) AchievementProgressIndicator achievementProgressIndicator;
-
     @InjectView(R.id.achievement_virtual_dollar_earned) TextView dollarEarned;
 
     @Inject CurrentUserId currentUserId;
-    @Inject AchievementCategoryCache achievementCategoryCache;
+    @Inject AchievementCategoryCacheRx achievementCategoryCache;
 
-    private DTOCacheNew.Listener<AchievementCategoryId, AchievementCategoryDTO> mCategoryCacheListener;
-
+    //<editor-fold desc="Constructors">
     public AchievementDialogFragment()
     {
         super();
     }
+    //</editor-fold>
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.achievement_dialog_fragment, container, false);
-    }
-
-    @Override protected void init()
-    {
-        super.init();
-        mCategoryCacheListener = new CategoryCacheListener();
     }
 
     @Override protected void initView()
@@ -58,7 +53,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
     @Override public void onStart()
     {
         super.onStart();
-        attachCategoryCacheListener();
+        fetchCategoryCache();
     }
 
     @Override protected void onCreatePropertyValuesHolder(List<PropertyValuesHolder> propertyValuesHolders)
@@ -79,44 +74,24 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         achievementProgressIndicator.delayedColorUpdate(mCurrentColor);
     }
 
-    @Override public void onStop()
-    {
-        detachCategoryCacheListener();
-        super.onStop();
-    }
-
-    @Override public void onDestroy()
-    {
-        mCategoryCacheListener = null;
-        super.onDestroy();
-    }
-
-    @Override public void onDestroyView()
-    {
-        super.onDestroyView();
-    }
-
     @Override @NotNull protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
     {
         return new AchievementValueAnimatorUpdateListener();
     }
 
-    private void attachCategoryCacheListener()
+    private void fetchCategoryCache()
     {
         UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
         if (userAchievementDTOCopy != null)
         {
-            AchievementCategoryId achievementCategoryId =
-                    new AchievementCategoryId(currentUserId.toUserBaseKey(), userAchievementDTO.achievementDef.categoryId);
-            achievementCategoryCache.register(achievementCategoryId,
-                    mCategoryCacheListener);
-            achievementCategoryCache.getOrFetchAsync(achievementCategoryId);
+            AchievementCategoryId achievementCategoryId = new AchievementCategoryId(
+                    currentUserId.toUserBaseKey(),
+                    userAchievementDTO.achievementDef.categoryId);
+            AndroidObservable.bindFragment(
+                    this,
+                    achievementCategoryCache.get(achievementCategoryId))
+                    .subscribe(new CategoryCacheObserver());
         }
-    }
-
-    private void detachCategoryCacheListener()
-    {
-        achievementCategoryCache.unregister(mCategoryCacheListener);
     }
 
     private void displayDollarsEarned(float dollars)
@@ -125,19 +100,23 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
                 THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().relevantDigitCount(1).build().toString());
     }
 
-    private class CategoryCacheListener implements DTOCacheNew.Listener<AchievementCategoryId, AchievementCategoryDTO>
+    private class CategoryCacheObserver implements Observer<Pair<AchievementCategoryId, AchievementCategoryDTO>>
     {
-        @Override public void onDTOReceived(@NotNull AchievementCategoryId key, @NotNull AchievementCategoryDTO value)
+        @Override public void onNext(Pair<AchievementCategoryId, AchievementCategoryDTO> pair)
         {
             UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
             if (userAchievementDTOCopy != null)
             {
-                achievementProgressIndicator.setAchievementDef(value.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
+                achievementProgressIndicator.setAchievementDef(pair.second.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
                 achievementProgressIndicator.animateCurrentLevel();
             }
         }
 
-        @Override public void onErrorThrown(@NotNull AchievementCategoryId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
         }
     }

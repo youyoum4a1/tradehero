@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
@@ -20,12 +20,13 @@ import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
+import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class AchievementListTestingFragment extends DashboardFragment
@@ -33,12 +34,11 @@ public class AchievementListTestingFragment extends DashboardFragment
     @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
     @InjectView(android.R.id.progress) protected ProgressBar progressBar;
 
-    @Inject AchievementCategoryListCache achievementCategoryListCache;
+    @Inject AchievementCategoryListCacheRx achievementCategoryListCache;
     @Inject CurrentUserId currentUserId;
 
     @Inject UserAchievementCache userAchievementCache;
 
-    protected DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList> achievementCategoryListCacheListener;
     private List<AchievementDefDTO> list = new ArrayList<>();
     private ArrayAdapter<AchievementDefDTO> arrayAdapter;
 
@@ -51,7 +51,6 @@ public class AchievementListTestingFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        achievementCategoryListCacheListener = createAchievementCategoryListCacheListener();
 
         initAdapter();
         listView.setOnItemClickListener(this::onListViewItemClicked);
@@ -85,30 +84,14 @@ public class AchievementListTestingFragment extends DashboardFragment
         super.onStart();
     }
 
-    @Override public void onStop()
-    {
-        detachAchievementCategoryListener();
-        super.onStop();
-    }
-
     protected void attachAndFetchAchievementCategoryListener()
     {
         arrayAdapter.clear();
 
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        achievementCategoryListCache.register(userBaseKey, achievementCategoryListCacheListener);
-        achievementCategoryListCache.getOrFetchAsync(userBaseKey);
-    }
-
-    protected void detachAchievementCategoryListener()
-    {
-        achievementCategoryListCache.unregister(achievementCategoryListCacheListener);
-    }
-
-    @Override public void onDestroy()
-    {
-        achievementCategoryListCacheListener = null;
-        super.onDestroy();
+        AndroidObservable.bindFragment(this,
+                achievementCategoryListCache.get(userBaseKey))
+                .subscribe(createAchievementCategoryListCacheObserver());
     }
 
     @Override public void onDestroyView()
@@ -117,17 +100,17 @@ public class AchievementListTestingFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList> createAchievementCategoryListCacheListener()
+    protected Observer<Pair<UserBaseKey, AchievementCategoryDTOList>> createAchievementCategoryListCacheObserver()
     {
-        return new AchievementCategoryListCacheListener();
+        return new AchievementCategoryListCacheObserver();
     }
 
-    protected class AchievementCategoryListCacheListener implements DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList>
+    protected class AchievementCategoryListCacheObserver implements Observer<Pair<UserBaseKey, AchievementCategoryDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull AchievementCategoryDTOList value)
+        @Override public void onNext(Pair<UserBaseKey, AchievementCategoryDTOList> pair)
         {
             list.clear();
-            for (AchievementCategoryDTO achievementCategoryDTO : value)
+            for (AchievementCategoryDTO achievementCategoryDTO : pair.second)
             {
                 for (AchievementDefDTO achievementDefDTO : achievementCategoryDTO.achievementDefs)
                 {
@@ -137,10 +120,14 @@ public class AchievementListTestingFragment extends DashboardFragment
             arrayAdapter.notifyDataSetChanged();
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(getString(R.string.error_fetch_achievements));
-            Timber.e("Error fetching the list of competition info cell %s", key, error);
+            Timber.e(e, "Error fetching the list of competition info cell");
         }
     }
 }

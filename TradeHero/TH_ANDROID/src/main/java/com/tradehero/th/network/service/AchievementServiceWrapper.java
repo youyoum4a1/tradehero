@@ -11,40 +11,30 @@ import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
+import rx.Observable;
 
 public class AchievementServiceWrapper
 {
-    @NotNull private final AchievementServiceAsync achievementServiceAsync;
     @NotNull private final AchievementService achievementService;
+    @NotNull private final AchievementServiceRx achievementServiceRx;
 
     //<editor-fold desc="Constructors">
     @Inject public AchievementServiceWrapper(
             @NotNull AchievementService achievementService,
-            @NotNull AchievementServiceAsync achievementServiceAsync)
+            @NotNull AchievementServiceRx achievementServiceRx)
     {
         this.achievementService = achievementService;
-        this.achievementServiceAsync = achievementServiceAsync;
+        this.achievementServiceRx = achievementServiceRx;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Level Defs">
-    @NotNull public LevelDefDTOList getLevelDefs()
+    @NotNull public Observable<LevelDefDTOList> getLevelDefsRx()
     {
-        return achievementService.getLevelDefs();
-    }
-
-    @NotNull public MiddleCallback<LevelDefDTOList> getLevelDefs(
-            @Nullable Callback<LevelDefDTOList> callback)
-    {
-        MiddleCallback<LevelDefDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        achievementServiceAsync.getLevelDefs(middleCallback);
-        return middleCallback;
+        return achievementServiceRx.getLevelDefs();
     }
     //</editor-fold>
 
@@ -54,82 +44,54 @@ public class AchievementServiceWrapper
         return achievementService.getUserAchievementDetails(userAchievementId.key);
     }
 
-    @NotNull public MiddleCallback<UserAchievementDTO> getUserAchievementDetails(
-            @NotNull UserAchievementId userAchievementId,
-            @Nullable Callback<UserAchievementDTO> callback)
+    @NotNull public Observable<UserAchievementDTO> getUserAchievementDetailsRx(@NotNull UserAchievementId userAchievementId)
     {
-        MiddleCallback<UserAchievementDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        achievementServiceAsync.getUserAchievementDetails(userAchievementId.key, middleCallback);
-        return middleCallback;
+        return achievementServiceRx.getUserAchievementDetails(userAchievementId.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Achievement Categories">
-    @NotNull public AchievementCategoryDTOList getAchievementCategories(
+    @NotNull public Observable<AchievementCategoryDTOList> getAchievementCategoriesRx(
             @NotNull UserBaseKey key)
     {
-        return achievementService.getAchievementCategories(key.getUserId());
-    }
-
-    @NotNull public MiddleCallback<AchievementCategoryDTOList> getAchievementCategories(
-            @NotNull UserBaseKey key,
-            @Nullable Callback<AchievementCategoryDTOList> callback)
-    {
-        MiddleCallback<AchievementCategoryDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        achievementServiceAsync.getAchievementCategories(key.getUserId(), middleCallback);
-        return middleCallback;
+        return achievementServiceRx.getAchievementCategories(key.getUserId());
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Achievement Category">
-    @Nullable public AchievementCategoryDTO getAchievementCategory(
+    @NotNull public Observable<AchievementCategoryDTO> getAchievementCategoryRx(
             @NotNull AchievementCategoryId achievementCategoryId)
     {
-        AchievementCategoryDTOList achievementCategoryDTOs = achievementService.getAchievementCategory(
+        return achievementServiceRx.getAchievementCategory(
                 achievementCategoryId.categoryId,
-                achievementCategoryId.userId);
-        if(achievementCategoryDTOs != null && !achievementCategoryDTOs.isEmpty())
-        {
-            return achievementCategoryDTOs.get(0);
-        }
-        return null;
+                achievementCategoryId.userId)
+                .flatMap(achievementCategoryDTOs -> {
+                    if (achievementCategoryDTOs != null && !achievementCategoryDTOs.isEmpty())
+                    {
+                        return Observable.just(achievementCategoryDTOs.get(0));
+                    }
+                    else
+                    {
+                        return Observable.empty();
+                    }
+                });
     }
-
-    // TODO add Async
     //</editor-fold>
 
     //<editor-fold desc="Get Quest Bonuses">
-    @NotNull public QuestBonusDTOList getQuestBonuses(@SuppressWarnings("UnusedParameters") @NotNull QuestBonusListId questBonusListId)
+    @NotNull public Observable<QuestBonusDTOList> getQuestBonusesRx(@SuppressWarnings("UnusedParameters") @NotNull QuestBonusListId questBonusListId)
     {
-        return achievementService.getQuestBonuses();
-    }
-
-    @NotNull public MiddleCallback<QuestBonusDTOList> getQuestBonuses(
-            @SuppressWarnings("UnusedParameters") @NotNull QuestBonusListId questBonusListId,
-            @Nullable Callback<QuestBonusDTOList> callback)
-    {
-        MiddleCallback<QuestBonusDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        achievementServiceAsync.getQuestBonuses(middleCallback);
-        return middleCallback;
+        return achievementServiceRx.getQuestBonuses();
     }
     //</editor-fold>
 
     //<editor-fold desc="Share Achievement">
-    @NotNull public BaseResponseDTO shareAchievement(
+    @NotNull public Observable<BaseResponseDTO> shareAchievementRx(
             @NotNull AchievementShareFormDTO achievementShareFormDTO)
     {
-        return achievementService.shareUserAchievement(
+        return achievementServiceRx.shareUserAchievement(
                 achievementShareFormDTO.userAchievementId.key,
                 achievementShareFormDTO.achievementShareReqFormDTO);
-    }
-
-    @NotNull public MiddleCallback<BaseResponseDTO> shareAchievement(
-            @NotNull AchievementShareFormDTO achievementShareFormDTO,
-            @Nullable Callback<BaseResponseDTO> callback)
-    {
-        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        achievementServiceAsync.shareUserAchievement(achievementShareFormDTO.userAchievementId.key, achievementShareFormDTO.achievementShareReqFormDTO, middleCallback);
-        return middleCallback;
     }
     //</editor-fold>
 }

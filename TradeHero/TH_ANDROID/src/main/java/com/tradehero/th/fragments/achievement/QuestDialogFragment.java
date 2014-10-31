@@ -1,22 +1,24 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.widget.QuestIndicatorGroupView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
-import com.tradehero.th.persistence.achievement.QuestBonusListCache;
+import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
+import com.tradehero.th.widget.QuestIndicatorGroupView;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 
 public class QuestDialogFragment extends AbstractAchievementDialogFragment
 {
@@ -24,11 +26,9 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
 
     @InjectView(R.id.quest_indicator_group) QuestIndicatorGroupView questIndicatorGroupView;
 
-    @Nullable private DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList> mQuestBonusListCacheListener;
-
     @NotNull private QuestBonusListId questBonusListId = new QuestBonusListId();
 
-    @Inject QuestBonusListCache questBonusListCache;
+    @Inject QuestBonusListCacheRx questBonusListCache;
 
     //<editor-fold desc="Constructors">
     public QuestDialogFragment()
@@ -42,39 +42,18 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
         return inflater.inflate(R.layout.quest_dialog_fragment, container, false);
     }
 
-    @Override protected void init()
-    {
-        super.init();
-        mQuestBonusListCacheListener = new QuestBonusCacheListener();
-    }
-
     @Override protected void initView()
     {
         super.initView();
-        attachQuestBonusCacheListener();
+        fetchQuestBonusList();
     }
 
-    private void attachQuestBonusCacheListener()
+    private void fetchQuestBonusList()
     {
-        questBonusListCache.register(questBonusListId, mQuestBonusListCacheListener);
-        questBonusListCache.getOrFetchAsync(questBonusListId);
-    }
-
-    @Override public void onDestroyView()
-    {
-        detachQuestBonusListener();
-        super.onDestroyView();
-    }
-
-    private void detachQuestBonusListener()
-    {
-        questBonusListCache.unregister(mQuestBonusListCacheListener);
-    }
-
-    @Override public void onDestroy()
-    {
-        mQuestBonusListCacheListener = null;
-        super.onDestroy();
+        AndroidObservable.bindFragment(
+                this,
+                questBonusListCache.get(questBonusListId))
+                .subscribe(new QuestBonusCacheObserver());
     }
 
     @Override protected void handleBadgeSuccess()
@@ -83,22 +62,22 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
         questIndicatorGroupView.delayedColorUpdate(mCurrentColor);
     }
 
-    private class QuestBonusCacheListener implements DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList>
+    private class QuestBonusCacheObserver implements Observer<Pair<QuestBonusListId, QuestBonusDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull QuestBonusListId key, @NotNull QuestBonusDTOList value)
+        @Override public void onNext(Pair<QuestBonusListId, QuestBonusDTOList> pair)
         {
             UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
             if (userAchievementDTOCopy != null)
             {
-                List<QuestBonusDTO> questBonusDTOList = value.getInclusive(
+                List<QuestBonusDTO> questBonusDTOList = pair.second.getInclusive(
                         userAchievementDTOCopy.contiguousCount,
                         questIndicatorGroupView.getNumberOfIndicators());
                 Boolean first = firstIsCurrentLevel(questBonusDTOList);
-                if(first != null && first)
+                if (first != null && first)
                 {
                     //Get previous
-                    List<QuestBonusDTO> questBonusDTO = value.getPrevious(userAchievementDTO.contiguousCount, NO_OF_QUEST_BEFORE_CURRENT);
-                    if(!questBonusDTO.isEmpty())
+                    List<QuestBonusDTO> questBonusDTO = pair.second.getPrevious(userAchievementDTO.contiguousCount, NO_OF_QUEST_BEFORE_CURRENT);
+                    if (!questBonusDTO.isEmpty())
                     {
                         questBonusDTOList.addAll(0, questBonusDTO);
                     }
@@ -106,6 +85,14 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
                 questIndicatorGroupView.setQuestBonusDef(questBonusDTOList, userAchievementDTO.contiguousCount);
                 questIndicatorGroupView.revealNext();
             }
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
         }
 
         @Nullable private Boolean firstIsCurrentLevel(List<QuestBonusDTO> questBonusDTOList)
@@ -116,10 +103,6 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
                 return null;
             }
             return !questBonusDTOList.isEmpty() && questBonusDTOList.get(0).level == userAchievementDTOCopy.contiguousCount;
-        }
-
-        @Override public void onErrorThrown(@NotNull QuestBonusListId key, @NotNull Throwable error)
-        {
         }
     }
 }

@@ -6,14 +6,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -21,14 +20,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.key.LevelDefId;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
-import com.tradehero.th.persistence.level.LevelDefCache;
+import com.tradehero.th.persistence.level.LevelDefCacheRx;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 
 public class LevelUpDialogFragment extends BaseDialogFragment
 {
@@ -43,12 +44,10 @@ public class LevelUpDialogFragment extends BaseDialogFragment
     @InjectView(R.id.user_level_up_main_container) ViewGroup container;
 
     @Inject Picasso picasso;
-    @Inject LevelDefCache levelDefCache;
+    @Inject LevelDefCacheRx levelDefCache;
 
     private LevelDefId mCurrentLevelDefId;
     private LevelDefId mNextLevelDefId;
-
-    private DTOCacheNew.Listener<LevelDefId, LevelDefDTO> levelDefDTOListener;
 
     private LevelDefDTO mCurrentLevelDefDTO;
     private LevelDefDTO mNextLevelDefDTO;
@@ -78,22 +77,17 @@ public class LevelUpDialogFragment extends BaseDialogFragment
         d.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         d.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         d.getWindow().setDimAmount(DIM_AMOUNT);
-        d.setOnKeyListener(new DialogInterface.OnKeyListener()
-        {
-            @Override
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
+        d.setOnKeyListener((dialog, keyCode, event) -> {
+            //Handle backPressed an end the animation if it's running.
+            if (keyCode == KeyEvent.KEYCODE_BACK)
             {
-                //Handle backPressed an end the animation if it's running.
-                if (keyCode == KeyEvent.KEYCODE_BACK)
+                boolean handled = handleDismissingDialog();
+                if (handled)
                 {
-                    boolean handled = handleDismissingDialog();
-                    if(handled)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-                return false;
             }
+            return false;
         });
         return d;
     }
@@ -109,13 +103,12 @@ public class LevelUpDialogFragment extends BaseDialogFragment
         mCurrentLevelDefId = getLevelId(getArguments(), BUNDLE_KEY_CURRENT);
         mNextLevelDefId = getLevelId(getArguments(), BUNDLE_KEY_NEXT);
 
-        levelDefDTOListener = new LevelDefDTOListener();
-
-        levelDefCache.register(mCurrentLevelDefId, levelDefDTOListener);
-        levelDefCache.register(mNextLevelDefId, levelDefDTOListener);
-
-        levelDefCache.getOrFetchAsync(mCurrentLevelDefId);
-        levelDefCache.getOrFetchAsync(mNextLevelDefId);
+        AndroidObservable.bindFragment(
+                this,
+                Observable.merge(
+                        levelDefCache.get(mCurrentLevelDefId),
+                        levelDefCache.get(mNextLevelDefId)))
+                .subscribe(new LevelDefObserver());
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -138,28 +131,18 @@ public class LevelUpDialogFragment extends BaseDialogFragment
             {
                 super.onAnimationEnd(animation);
                 //Dismiss the dialog after some delay.
-                mHandler.postDelayed(new Runnable()
-                {
-                    @Override public void run()
+                mHandler.postDelayed(() -> {
+                    Dialog dialog = getDialog();
+                    if (dialog != null)
                     {
-                        Dialog dialog = getDialog();
-                        if (dialog != null)
-                        {
-                            dialog.dismiss();
-                        }
+                        dialog.dismiss();
                     }
                 }, getResources().getInteger(R.integer.user_level_level_up_end_delay));
             }
         });
         animatorSet.start();
 
-        container.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override public boolean onTouch(View view, MotionEvent motionEvent)
-            {
-                return handleDismissingDialog();
-            }
-        });
+        container.setOnTouchListener((view1, motionEvent) -> handleDismissingDialog());
     }
 
     private boolean handleDismissingDialog()
@@ -183,7 +166,6 @@ public class LevelUpDialogFragment extends BaseDialogFragment
             animatorSet.cancel();
             animatorSet.removeAllListeners();
         }
-        levelDefCache.unregister(levelDefDTOListener);
         super.onDestroyView();
     }
 
@@ -220,22 +202,19 @@ public class LevelUpDialogFragment extends BaseDialogFragment
         picasso.load(url).placeholder(R.drawable.ic_bronze_level).fit().into(img);
     }
 
-    private class LevelDefDTOListener implements DTOCacheNew.HurriedListener<LevelDefId, LevelDefDTO>
+    private class LevelDefObserver implements Observer<Pair<LevelDefId, LevelDefDTO>>
     {
-
-        @Override public void onPreCachedDTOReceived(@NotNull LevelDefId key, @NotNull LevelDefDTO value)
+        @Override public void onNext(Pair<LevelDefId, LevelDefDTO> pair)
         {
-            update(key, value);
+            update(pair.first, pair.second);
         }
 
-        @Override public void onDTOReceived(@NotNull LevelDefId key, @NotNull LevelDefDTO value)
+        @Override public void onCompleted()
         {
-            update(key, value);
         }
 
-        @Override public void onErrorThrown(@NotNull LevelDefId key, @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
-
         }
     }
 }

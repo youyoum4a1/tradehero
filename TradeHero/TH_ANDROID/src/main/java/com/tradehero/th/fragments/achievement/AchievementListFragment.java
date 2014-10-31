@@ -1,26 +1,25 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
+import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class AchievementListFragment extends DashboardFragment
@@ -33,10 +32,8 @@ public class AchievementListFragment extends DashboardFragment
 
     protected AchievementListAdapter achievementListAdapter;
 
-    @Inject AchievementCategoryListCache achievementCategoryListCache;
+    @Inject AchievementCategoryListCacheRx achievementCategoryListCache;
     UserBaseKey shownUserId;
-
-    protected DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList> achievementCategoryListCacheListener;
 
     public static void putUserId(Bundle bundle, UserBaseKey userBaseKey)
     {
@@ -62,7 +59,6 @@ public class AchievementListFragment extends DashboardFragment
         init();
         initAdapter();
         listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        achievementCategoryListCacheListener = createAchievementCategoryListCacheListener();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -81,13 +77,9 @@ public class AchievementListFragment extends DashboardFragment
         achievementListAdapter = new AchievementListAdapter(getActivity(), R.layout.achievement_cell_view);
         listView.setAdapter(achievementListAdapter);
 
-        listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
-        {
-            @Override public void onRefresh(PullToRefreshBase<ListView> listViewPullToRefreshBase)
-            {
-                listView.setRefreshing();
-                attachAndFetchAchievementCategoryListener(true);
-            }
+        listView.setOnRefreshListener(listViewPullToRefreshBase -> {
+            listView.setRefreshing();
+            attachAndFetchAchievementCategoryListener();
         });
     }
 
@@ -97,23 +89,12 @@ public class AchievementListFragment extends DashboardFragment
         super.onStart();
     }
 
-    @Override public void onStop()
-    {
-        detachAchievementCategoryListener();
-        super.onStop();
-    }
-
     protected void attachAndFetchAchievementCategoryListener()
     {
-        attachAndFetchAchievementCategoryListener(false);
-    }
-
-    protected void attachAndFetchAchievementCategoryListener(boolean forceUpdate)
-    {
         hideEmpty();
-        detachAchievementCategoryListener();
-        achievementCategoryListCache.register(shownUserId, achievementCategoryListCacheListener);
-        achievementCategoryListCache.getOrFetchAsync(shownUserId, forceUpdate);
+        AndroidObservable.bindFragment(this,
+                achievementCategoryListCache.get(shownUserId))
+                .subscribe(createAchievementCategoryListCacheObserver());
     }
 
     private void displayProgress()
@@ -136,17 +117,6 @@ public class AchievementListFragment extends DashboardFragment
         emptyView.setVisibility(View.GONE);
     }
 
-    protected void detachAchievementCategoryListener()
-    {
-        achievementCategoryListCache.unregister(achievementCategoryListCacheListener);
-    }
-
-    @Override public void onDestroy()
-    {
-        achievementCategoryListCacheListener = null;
-        super.onDestroy();
-    }
-
     @Override public void onDestroyView()
     {
         listView.setOnScrollListener(null);
@@ -154,31 +124,35 @@ public class AchievementListFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList> createAchievementCategoryListCacheListener()
+    protected Observer<Pair<UserBaseKey, AchievementCategoryDTOList>> createAchievementCategoryListCacheObserver()
     {
-        return new AchievementCategoryListCacheListener();
+        return new AchievementCategoryListCacheObserver();
     }
 
-    protected class AchievementCategoryListCacheListener implements DTOCacheNew.Listener<UserBaseKey, AchievementCategoryDTOList>
+    protected class AchievementCategoryListCacheObserver implements Observer<Pair<UserBaseKey, AchievementCategoryDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull AchievementCategoryDTOList value)
+        @Override public void onNext(Pair<UserBaseKey, AchievementCategoryDTOList> pair)
         {
             listView.onRefreshComplete();
             achievementListAdapter.clear();
-            achievementListAdapter.addAll(value);
+            achievementListAdapter.addAll(pair.second);
             achievementListAdapter.notifyDataSetChanged();
             hideProgress();
-            if(achievementListAdapter.isEmpty())
+            if (achievementListAdapter.isEmpty())
             {
                 displayEmpty();
             }
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             listView.onRefreshComplete();
             THToast.show(getString(R.string.error_fetch_achievements));
-            Timber.e("Error fetching the list of competition info cell %s", key, error);
+            Timber.e(e, "Error fetching the list of competition info cell");
             hideProgress();
             displayEmpty();
         }

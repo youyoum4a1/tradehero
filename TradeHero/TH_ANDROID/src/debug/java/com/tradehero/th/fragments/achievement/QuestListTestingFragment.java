@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -24,16 +24,14 @@ import com.tradehero.th.api.achievement.key.MockQuestBonusId;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.AchievementMockServiceWrapper;
-import com.tradehero.th.persistence.achievement.QuestBonusListCache;
+import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class QuestListTestingFragment extends DashboardFragment
@@ -41,14 +39,10 @@ public class QuestListTestingFragment extends DashboardFragment
     @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
     @InjectView(android.R.id.progress) protected ProgressBar emptyView;
 
-    @Inject QuestBonusListCache questBonusListCache;
-    @Inject AbstractAchievementDialogFragment.Creator creator;
-
+    @Inject QuestBonusListCacheRx questBonusListCache;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-
     @Inject AchievementMockServiceWrapper achievementMockServiceWrapper;
 
-    protected DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList> questBonusListIdQuestBonusDTOListListener;
     private List<QuestBonusDTO> list = new ArrayList<>();
     private ArrayAdapter<QuestBonusDTO> arrayAdapter;
 
@@ -66,35 +60,37 @@ public class QuestListTestingFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        questBonusListIdQuestBonusDTOListListener = createAchievementCategoryListCacheListener();
-
         initAdapter();
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        listView.setOnItemClickListener(this::onItemClick);
+        listView.getRefreshableView().addHeaderView(createHeaderView());
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    public void onItemClick(@SuppressWarnings("UnusedParameters") AdapterView<?> adapterView, View view, int i, long l)
+    {
+        QuestBonusDTO questBonusDTO = list.get(i - listView.getRefreshableView().getHeaderViewsCount());
+
+        MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()),
+                (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));
+        achievementMockServiceWrapper.getMockBonusDTORx(mockQuestBonusId)
+        .subscribe(new Observer<BaseResponseDTO>()
         {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            @Override public void onNext(BaseResponseDTO baseResponseDTO)
             {
-                QuestBonusDTO questBonusDTO = list.get(i - listView.getRefreshableView().getHeaderViewsCount());
+                progressDialogUtilLazy.get().dismiss(getActivity());
+            }
 
-                MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()),
-                        (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));
-                achievementMockServiceWrapper.getMockBonusDTO(mockQuestBonusId, new Callback<BaseResponseDTO>()
-                {
-                    @Override public void success(BaseResponseDTO dto, Response response)
-                    {
-                        progressDialogUtilLazy.get().dismiss(getActivity());
-                    }
+            @Override public void onCompleted()
+            {
+            }
 
-                    @Override public void failure(RetrofitError error)
-                    {
-                        progressDialogUtilLazy.get().dismiss(getActivity());
-                    }
-                });
-
-                progressDialogUtilLazy.get().show(getActivity(), "Fetching Mock Quest", "Loading...");
+            @Override public void onError(Throwable e)
+            {
+                progressDialogUtilLazy.get().dismiss(getActivity());
             }
         });
 
-        listView.getRefreshableView().addHeaderView(createHeaderView());
+        progressDialogUtilLazy.get().show(getActivity(), "Fetching Mock Quest", "Loading...");
     }
 
     private View createHeaderView()
@@ -131,32 +127,16 @@ public class QuestListTestingFragment extends DashboardFragment
 
     @Override public void onStart()
     {
-        attachAndFetchAchievementCategoryListener();
+        attachAndFetchAchievementCategory();
         super.onStart();
     }
 
-    @Override public void onStop()
-    {
-        detachAchievementCategoryListener();
-        super.onStop();
-    }
-
-    protected void attachAndFetchAchievementCategoryListener()
+    protected void attachAndFetchAchievementCategory()
     {
         arrayAdapter.clear();
-        questBonusListCache.register(questBonusListId, questBonusListIdQuestBonusDTOListListener);
-        questBonusListCache.getOrFetchAsync(questBonusListId);
-    }
-
-    protected void detachAchievementCategoryListener()
-    {
-        questBonusListCache.unregister(questBonusListIdQuestBonusDTOListListener);
-    }
-
-    @Override public void onDestroy()
-    {
-        questBonusListIdQuestBonusDTOListListener = null;
-        super.onDestroy();
+        AndroidObservable.bindFragment(this,
+                questBonusListCache.get(questBonusListId))
+                .subscribe(createAchievementCategoryListCacheObserver());
     }
 
     @Override public void onDestroyView()
@@ -165,24 +145,28 @@ public class QuestListTestingFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList> createAchievementCategoryListCacheListener()
+    protected Observer<Pair<QuestBonusListId, QuestBonusDTOList>> createAchievementCategoryListCacheObserver()
     {
-        return new AchievementCategoryListCacheListener();
+        return new AchievementCategoryListCacheObserver();
     }
 
-    protected class AchievementCategoryListCacheListener implements DTOCacheNew.Listener<QuestBonusListId, QuestBonusDTOList>
+    protected class AchievementCategoryListCacheObserver implements Observer<Pair<QuestBonusListId, QuestBonusDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull QuestBonusListId key, @NotNull QuestBonusDTOList value)
+        @Override public void onNext(Pair<QuestBonusListId, QuestBonusDTOList> pair)
         {
             list.clear();
-            list.addAll(value);
+            list.addAll(pair.second);
             arrayAdapter.notifyDataSetChanged();
         }
 
-        @Override public void onErrorThrown(@NotNull QuestBonusListId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(getString(R.string.error_fetch_achievements));
-            Timber.e("Error fetching the list of competition info cell %s", key, error);
+            Timber.e(e, "Error fetching the list of competition info cell");
         }
     }
 }

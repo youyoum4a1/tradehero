@@ -3,6 +3,7 @@ package com.tradehero.common.persistence;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import java.util.Collection;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -112,5 +113,10 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         {
             subject.onCompleted();
         }
+    }
+
+    @NotNull protected Map<DTOKeyType, DTOType> snapshot()
+    {
+        return cachedValues.snapshot();
     }
 }

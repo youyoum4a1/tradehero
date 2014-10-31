@@ -3,6 +3,7 @@ package com.tradehero.th.widget;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.level.LevelDefDTO;
@@ -24,12 +24,14 @@ import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.persistence.level.LevelDefListCache;
+import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import java.util.ArrayDeque;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
 import timber.log.Timber;
 
 public class XpToast extends RelativeLayout
@@ -39,11 +41,11 @@ public class XpToast extends RelativeLayout
     @InjectView(R.id.xp_toast_value) TextView xpValue;
     @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
-    @Inject LevelDefListCache levelDefListCache;
+    @Inject LevelDefListCacheRx levelDefListCache;
     @Inject BroadcastUtils broadcastUtils;
 
     @NotNull private LevelDefListId levelDefListId = new LevelDefListId();
-    @Nullable private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> mLevelDefListCacheListener;
+    private Subscription mLevelDefListCacheSubscription;
 
     @NotNull private ArrayDeque<LevelAnimationDefinition> levelAnimationDefinitions = new ArrayDeque<>();
     private LevelAnimationDefinition currentLevelAnimationDefinition;
@@ -87,18 +89,17 @@ public class XpToast extends RelativeLayout
         super.onAttachedToWindow();
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(this);
         userLevelProgressBar.setUserLevelProgressBarListener(this);
-        mLevelDefListCacheListener = new XPToastLevelDefCacheListener();
         if (!isInEditMode())
         {
-            levelDefListCache.register(levelDefListId, mLevelDefListCacheListener);
-            levelDefListCache.getOrFetchAsync(levelDefListId);
+            mLevelDefListCacheSubscription = levelDefListCache.get(levelDefListId)
+                    .subscribe(new XPToastLevelDefCacheObserver());
         }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        levelDefListCache.unregister(mLevelDefListCacheListener);
-        mLevelDefListCacheListener = null;
+        mLevelDefListCacheSubscription.unsubscribe();
+        mLevelDefListCacheSubscription = null;
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
         userLevelProgressBar.setUserLevelProgressBarListener(null);
         isLevelDefError = false;
@@ -296,25 +297,25 @@ public class XpToast extends RelativeLayout
         }
     }
 
-    private class XPToastLevelDefCacheListener implements DTOCacheNew.HurriedListener<LevelDefListId, LevelDefDTOList>
+    private class XPToastLevelDefCacheObserver implements Observer<Pair<LevelDefListId, LevelDefDTOList>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        @Override public void onNext(Pair<LevelDefListId, LevelDefDTOList> pair)
         {
-            setLevelDefList(value);
+            setLevelDefList(pair.second);
         }
 
-        @Override public void onDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        @Override public void onCompleted()
         {
-            setLevelDefList(value);
         }
 
-        @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
-            Timber.e("Unable to get xp level definition: %s", error);
+            Timber.e("Unable to get xp level definition: %s", e);
             //Release flag from broadcast utils.
             isLevelDefError = true;
             cleanUp();
             hideAndReleaseFlag();
+
         }
     }
 

@@ -30,13 +30,13 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.persistence.achievement.QuestBonusListCache;
+import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-import com.tradehero.th.persistence.level.LevelDefListCache;
+import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -69,14 +69,14 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<ExchangeCompactListCache> exchangeCompactListCache;
     protected final Lazy<HomeContentCache> homeContentCache;
     protected final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
-    protected final Lazy<LevelDefListCache> levelDefListCache;
+    protected final Lazy<LevelDefListCacheRx> levelDefListCache;
     protected final Lazy<NotificationCache> notificationCache;
     protected final Lazy<PortfolioCache> portfolioCache;
     protected final Lazy<PortfolioCompactCache> portfolioCompactCache;
     protected final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     protected final Lazy<ProviderCache> providerCache;
     protected final Lazy<ProviderListCache> providerListCache;
-    protected final Lazy<QuestBonusListCache> questBonusListCacheLazy;
+    protected final Lazy<QuestBonusListCacheRx> questBonusListCacheLazy;
     protected final Lazy<SecurityCompactListCache> securityCompactListCache;
     protected final Lazy<TranslationTokenCache> translationTokenCache;
     protected final Lazy<UserProfileCache> userProfileCache;
@@ -105,7 +105,7 @@ import org.jetbrains.annotations.Nullable;
             Lazy<ExchangeCompactListCache> exchangeCompactListCache,
             Lazy<HomeContentCache> homeContentCache,
             Lazy<LeaderboardDefListCache> leaderboardDefListCache,
-            Lazy<LevelDefListCache> levelDefListCacheLazy,
+            Lazy<LevelDefListCacheRx> levelDefListCacheLazy,
             Lazy<NotificationCache> notificationCache,
             Lazy<PortfolioCache> portfolioCache,
             Lazy<PortfolioCompactCache> portfolioCompactCache,
@@ -119,7 +119,7 @@ import org.jetbrains.annotations.Nullable;
             Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
             Lazy<WatchlistPositionCache> watchlistPositionCache,
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
-            Lazy<QuestBonusListCache> questBonusListCacheLazy,
+            Lazy<QuestBonusListCacheRx> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
             @ForUser SharedPreferences userSharedPreferences,
             @IsOnBoardShown BooleanPreference isOnboardShown,
@@ -273,12 +273,12 @@ import org.jetbrains.annotations.Nullable;
 
     private void preFetchTraderLevels()
     {
-        this.levelDefListCache.get().getOrFetchAsync(new LevelDefListId(), true); //Should it be forceUpdate?
+        this.levelDefListCache.get().get(new LevelDefListId());
     }
 
     private void preFetchQuestBonus()
     {
-        this.questBonusListCacheLazy.get().getOrFetchAsync(new QuestBonusListId(), true);
+        this.questBonusListCacheLazy.get().get(new QuestBonusListId());
     }
 
     public void prefetchesUponLogin(@Nullable UserProfileDTO profile)

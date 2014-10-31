@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.timeline;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -11,7 +12,6 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
@@ -19,11 +19,12 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.persistence.level.LevelDefListCache;
+import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.UserLevelProgressBar;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.Subscription;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
@@ -36,12 +37,12 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     @Inject GraphicUtil graphicUtil;
-    @Inject LevelDefListCache levelDefListCache;
+    @Inject LevelDefListCacheRx levelDefListCache;
 
     private Target topBackgroundTarget;
     private Target topDefaultBackgroundTarget;
     protected Runnable displayTopViewBackgroundRunnable;
-    private DTOCacheNew.Listener<LevelDefListId, LevelDefDTOList> levelDefDTOListListener;
+    private Subscription levelDefDTOListSubscription;
 
     public UserProfileDetailViewHolder(View view)
     {
@@ -53,10 +54,9 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         super.initViews(view);
         topBackgroundTarget = new BackgroundTarget();
         topDefaultBackgroundTarget = new DefaultBackgroundTarget();
-        levelDefDTOListListener = new LevelDefListCacheListener();
         LevelDefListId levelDefListId = new LevelDefListId();
-        levelDefListCache.register(levelDefListId, levelDefDTOListListener);
-        levelDefListCache.getOrFetchAsync(levelDefListId);
+        levelDefDTOListSubscription = levelDefListCache.get(levelDefListId)
+                .subscribe(new LevelDefListCacheObserver());
     }
 
     @Override public void detachViews()
@@ -67,7 +67,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
         }
-        levelDefListCache.unregister(levelDefDTOListListener);
+        levelDefDTOListSubscription.unsubscribe();
+        levelDefDTOListSubscription = null;
         super.detachViews();
     }
 
@@ -196,7 +197,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     protected void setLevelDef(LevelDefDTOList levelDefDTOList)
     {
-        if(userLevelProgressBar != null)
+        if (userLevelProgressBar != null)
         {
             userLevelProgressBar.setLevelDefDTOList(levelDefDTOList);
         }
@@ -205,7 +206,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     protected void displayLevelProgress()
     {
-        if(userProfileDTO != null && userLevelProgressBar != null && userLevelProgressBar.getLevelDefDTOList() != null)
+        if (userProfileDTO != null && userLevelProgressBar != null && userLevelProgressBar.getLevelDefDTOList() != null)
         {
             userLevelProgressBar.startsWith(userProfileDTO.currentXP);
         }
@@ -221,21 +222,20 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         }
     }
 
-    protected class LevelDefListCacheListener implements DTOCacheNew.HurriedListener<LevelDefListId,LevelDefDTOList>
+    protected class LevelDefListCacheObserver implements Observer<Pair<LevelDefListId, LevelDefDTOList>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        @Override public void onNext(Pair<LevelDefListId, LevelDefDTOList> pair)
         {
-            setLevelDef(value);
+            setLevelDef(pair.second);
         }
 
-        @Override public void onDTOReceived(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+        @Override public void onCompleted()
         {
-            setLevelDef(value);
         }
 
-        @Override public void onErrorThrown(@NotNull LevelDefListId key, @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
-            if(userLevelProgressBar != null)
+            if (userLevelProgressBar != null)
             {
                 userLevelProgressBar.setVisibility(View.GONE);
             }

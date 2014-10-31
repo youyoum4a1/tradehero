@@ -1,27 +1,23 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 @Routable({
         "user/me", "profiles/me"
@@ -33,17 +29,12 @@ public class MeTimelineFragment extends TimelineFragment
     @Inject Analytics analytics;
     @Inject DTOCacheUtilImpl dtoCacheUtil;
 
-    @Inject LevelDefListCache levelDefListCache;
-
     private TextView updateCenterCountTextView;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         thRouter.save(getArguments(), currentUserId.toUserBaseKey());
-
-        LevelDefDTOList cached = levelDefListCache.get(new LevelDefListId());
-        Timber.d("cached %s", cached);
     }
 
     @Override public void onResume()

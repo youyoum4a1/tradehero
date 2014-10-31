@@ -10,15 +10,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTOList;
-import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.level.UserXPAchievementDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.achievement.AchievementCategoryCache;
-import com.tradehero.th.persistence.achievement.AchievementCategoryListCache;
+import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
+import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import com.tradehero.th.persistence.achievement.UserAchievementCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.achievement.AchievementModule;
@@ -34,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 public class ObjectMapperWrapper extends ObjectMapper
 {
     @NotNull protected final Lazy<UserAchievementCache> userAchievementCacheLazy;
-    @NotNull protected final Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy;
-    @NotNull protected final Lazy<AchievementCategoryCache> achievementCategoryCacheLazy;
+    @NotNull protected final Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy;
+    @NotNull protected final Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy;
     @NotNull private final Lazy<BroadcastUtils> broadcastUtilsLazy;
     @NotNull private final Lazy<UserProfileCache> userProfileCacheLazy;
     @NotNull private final Lazy<CurrentUserId> currentUserIdLazy;
@@ -43,8 +41,8 @@ public class ObjectMapperWrapper extends ObjectMapper
     //<editor-fold desc="Constructors">
     @Inject public ObjectMapperWrapper(
             @NotNull Lazy<UserAchievementCache> userAchievementCacheLazy,
-            @NotNull Lazy<AchievementCategoryListCache> achievementCategoryListCacheLazy,
-            @NotNull Lazy<AchievementCategoryCache> achievementCategoryCacheLazy,
+            @NotNull Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy,
+            @NotNull Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy,
             @NotNull Lazy<UserProfileCache> userProfileCacheLazy,
             @NotNull Lazy<CurrentUserId> currentUserIdLazy,
             @NotNull Lazy<BroadcastUtils> broadcastUtilsLazy)
