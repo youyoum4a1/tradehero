@@ -161,6 +161,7 @@
   <string name="manage_followers_list_header">%d FOLLOWERS</string>
   <string name="manage_followers_revenue_follower">Revenue: %1$s %2$,.2f</string>
   <string name="manage_followers_revenue_follower_2">Revenue: %1$s</string>
+  <string name="manage_followers_revenue_follower_3">Revenue: </string>
 
   <!-- Manage follower payments -->
   <string name="manage_follower_payment_transaction_list_header">Transactions</string>

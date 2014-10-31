@@ -13,28 +13,47 @@
       android:layout_width="@dimen/medium_logo_w_h"
       android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
       android:src="@drawable/superman_facebook"
       android:contentDescription="@null"
-    />
+      />
 
   <LinearLayout
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/follower_profile_picture"
+      android:layout_toEndOf="@id/follower_profile_picture"
       android:layout_toLeftOf="@+id/hint_open_portfolio"
+      android:layout_toStartOf="@+id/hint_open_portfolio"
       android:padding="@dimen/margin_xsmall"
       android:layout_marginLeft="@dimen/margin_xsmall"
+      android:layout_marginStart="@dimen/margin_xsmall"
       android:layout_centerVertical="true"
-    >
+      >
+
+    <TextView
+        android:id="@+id/follower_title"
+        android:singleLine="false"
+        style="@style/TH.UserNameTitle"
+        tools:text="Tho Nguyen"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
 
       <TextView
-          android:id="@+id/follower_title"
-          android:singleLine="false"
-          style="@style/TH.UserNameTitle"
-          tools:text="Tho Nguyen"
-        />
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="@dimen/margin_xsmall"
+          android:layout_marginEnd="@dimen/margin_xsmall"
+          style="@style/TH.Caption"
+          android:text="@string/manage_followers_revenue_follower_3"
+          />
 
       <TextView
           android:id="@+id/follower_revenue"
@@ -42,8 +61,10 @@
           android:layout_height="wrap_content"
           android:maxLines="1"
           style="@style/TH.UserROI"
-          tools:text="Revenue: US$ 0"
-        />
+          tools:text="US$ 0"
+          />
+
+    </LinearLayout>
 
   </LinearLayout>
 
@@ -51,23 +72,26 @@
       android:id="@+id/country_logo"
       android:layout_width="@dimen/small_icon_w_h"
       android:layout_height="@dimen/small_icon_w_h"
-      android:layout_alignParentRight="true"
+      android:layout_toLeftOf="@+id/hint_open_follower_info"
+      android:layout_toStartOf="@+id/hint_open_follower_info"
       android:layout_centerVertical="true"
       android:scaleType="centerInside"
       android:layout_marginRight="@dimen/margin_small"
       android:layout_marginEnd="@dimen/margin_small"
       android:contentDescription="@null"
-    />
+      tools:src="@drawable/square_th"
+      />
 
   <ImageView
       android:id="@+id/hint_open_follower_info"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
       android:scaleType="centerInside"
       android:contentDescription="@null"
       android:src="@drawable/chevron_forward"
-    />
+      />
 
 </com.tradehero.th.fragments.social.follower.FollowerListItemView>

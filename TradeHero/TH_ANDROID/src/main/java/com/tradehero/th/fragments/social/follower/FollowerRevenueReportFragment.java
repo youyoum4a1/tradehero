@@ -7,7 +7,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import butterknife.ButterKnife;
+import butterknife.InjectView;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
@@ -17,6 +22,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
+import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import rx.Observer;
@@ -28,6 +34,8 @@ public class FollowerRevenueReportFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject FollowerSummaryCacheRx followerSummaryCache;
 
+    @InjectView(R.id.manage_followers_header) View headerView;
+    @InjectView(R.id.follower_list) PullToRefreshListView pullToRefreshListView;
     private FollowerManagerViewContainer followerManagerViewContainer;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -48,8 +56,9 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         if (!view.isInEditMode())
         {
             ButterKnife.inject(this, view);
-            ButterKnife.inject(followerManagerViewContainer, view);
+            followerManagerViewContainer.onCreateView(view);
             followerManagerViewContainer.display();
+            headerView.post(this::adjustListPadding);
         }
     }
 
@@ -72,8 +81,10 @@ public class FollowerRevenueReportFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        headerView.removeCallbacks(null);
+        pullToRefreshListView.setOnScrollChangedListener(null);
         ButterKnife.reset(this);
-        ButterKnife.reset(followerManagerViewContainer);
+        followerManagerViewContainer.onDestroyView();
         super.onDestroyView();
     }
 
@@ -86,6 +97,28 @@ public class FollowerRevenueReportFragment extends DashboardFragment
     {
         followerManagerViewContainer = null;
         super.onDestroy();
+    }
+
+    protected void adjustListPadding()
+    {
+        if (headerView != null && pullToRefreshListView != null)
+        {
+            int headerHeight = headerView.getMeasuredHeight();
+            QuickReturnListViewOnScrollListener headerQuickReturnScrollListener =
+                    new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, headerView,
+                            -headerHeight, null, 0);
+
+            ListView listView = pullToRefreshListView.getRefreshableView();
+            listView.setPadding(
+                    listView.getPaddingLeft(),
+                    headerHeight,
+                    listView.getPaddingRight(),
+                    listView.getPaddingBottom());
+
+            pullToRefreshListView.setOnScrollListener(new MultiScrollListener(
+                    dashboardBottomTabsListViewScrollListener.get(),
+                    headerQuickReturnScrollListener));
+        }
     }
 
     public void onListItemClick(UserFollowerDTO userFollowerDTO)

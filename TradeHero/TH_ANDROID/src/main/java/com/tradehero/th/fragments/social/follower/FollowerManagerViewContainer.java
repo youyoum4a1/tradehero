@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
@@ -34,6 +36,17 @@ public class FollowerManagerViewContainer
     {
         super();
         adapter = new UserFollowerDTOSetAdapter(context);
+    }
+
+    public void onCreateView(@NotNull View view)
+    {
+        ButterKnife.inject(this, view);
+        pullToRefreshListView.setAdapter(adapter);
+    }
+
+    public void onDestroyView()
+    {
+        ButterKnife.reset(this);
     }
 
     public void display(@NotNull FollowerSummaryDTO followerSummaryDTO)
@@ -76,11 +89,6 @@ public class FollowerManagerViewContainer
                         THSignedNumber.builder(followerSummaryDTO.getPaidFollowerCount())
                                 .build()
                                 .toString());
-            }
-
-            if (pullToRefreshListView != null)
-            {
-                pullToRefreshListView.setAdapter(adapter);
             }
         }
     }

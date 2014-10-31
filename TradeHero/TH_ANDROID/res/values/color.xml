@@ -56,6 +56,8 @@
   <color name="gray_4">#F6F6F6</color>
   <color name="font_roi">#00CC00</color>
 
+  <color name="gray_3_bg_trans">#EEF3F3F3</color>
+
   <color name="fbook_color1">#4E6DAE</color>
   <color name="fbook_color2">#2B4170</color>
   <color name="twit_color1">#00CCED</color>

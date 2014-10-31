@@ -21,4 +21,14 @@ public class UserFollowerDTOSetAdapter extends ViewDTOSetAdapter<UserFollowerDTO
     {
         return R.layout.follower_list_item_revenue;
     }
+
+    @Override public boolean hasStableIds()
+    {
+        return true;
+    }
+
+    @Override public long getItemId(int position)
+    {
+        return getItem(position).id;
+    }
 }

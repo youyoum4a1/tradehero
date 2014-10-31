@@ -20,11 +20,11 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
@@ -120,11 +120,6 @@ public class FollowerListItemView extends RelativeLayout
         Bundle bundle = new Bundle();
         thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
-    }
-
-    public UserFollowerDTO getUserFollowerDTO()
-    {
-        return userFollowerDTO;
     }
 
     public void display(UserFollowerDTO followerDTO)
@@ -224,16 +219,11 @@ public class FollowerListItemView extends RelativeLayout
                 THSignedNumber revenue = THSignedMoney.builder(userFollowerDTO.totalRevenue)
                         .currency(SecurityUtils.getDefaultCurrency())
                         .build();
-                revenueInfo.setText(getContext().getString(
-                        R.string.manage_followers_revenue_follower_2,
-                        revenue.toString()));
+                revenueInfo.setText(revenue.toString());
             }
             else
             {
-                revenueInfo.setText(
-                        getContext().getString(
-                                R.string.manage_followers_revenue_follower_2,
-                                getContext().getString(R.string.na)));
+                revenueInfo.setText(R.string.na);
             }
         }
     }
