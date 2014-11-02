@@ -2,11 +2,11 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -14,23 +14,25 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class InviteCodeViewLinear extends LinearLayout
 {
     @Inject InvitedCodeViewHolder viewHolder;
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
 
     @InjectView(R.id.btn_cancel) View cancelButton;
     @InjectView(R.id.btn_send_code) View sendCodeButton;
     @InjectView(R.id.btn_cancel_submit) View cancelSubmitButton;
 
-    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Nullable private Subscription userProfileCacheSubscription;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration") public InviteCodeViewLinear(Context context, AttributeSet attrs)
@@ -57,14 +59,13 @@ public class InviteCodeViewLinear extends LinearLayout
         if (!isInEditMode())
         {
             viewHolder.attachView(this);
-            userProfileCacheListener = createUserProfileListener();
             fetchUserProfile();
         }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        userProfileCacheListener = null;
+        userProfileCacheSubscription = null;
         detachUserProfileCache();
         viewHolder.detachView();
         ButterKnife.reset(this);
@@ -78,30 +79,40 @@ public class InviteCodeViewLinear extends LinearLayout
 
     protected void fetchUserProfile()
     {
-        detachUserProfileCache();
         UserBaseKey key = currentUserId.toUserBaseKey();
-        userProfileCache.register(key, userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(key);
+        detachUserProfileCache();
+        userProfileCacheSubscription = userProfileCache.get(key)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileObserver());
     }
 
     private void detachUserProfileCache()
     {
-        userProfileCache.unregister(userProfileCacheListener);
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
-    {
-        return new InviteCodeViewUserProfileCacheListener();
-    }
-
-    protected class InviteCodeViewUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        Subscription copy = userProfileCacheSubscription;
+        if (copy != null)
         {
-            viewHolder.setUserProfile(value);
+            copy.unsubscribe();
+        }
+        userProfileCacheSubscription = null;
+    }
+
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileObserver()
+    {
+        return new InviteCodeViewUserProfileCacheObserver();
+    }
+
+    protected class InviteCodeViewUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
+    {
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
+        {
+            viewHolder.setUserProfile(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_your_user_profile);
         }

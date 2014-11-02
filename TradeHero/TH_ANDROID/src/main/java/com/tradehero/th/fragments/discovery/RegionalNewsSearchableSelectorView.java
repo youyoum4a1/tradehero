@@ -8,13 +8,16 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import com.android.internal.util.Predicate;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -25,28 +28,22 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnFocusChange;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class RegionalNewsSearchableSelectorView extends LinearLayout
 {
@@ -76,7 +73,8 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
         }
     }
 
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
+    private Subscription userProfileSubscription;
     @Inject CurrentUserId currentUserId;
     @Inject NewsServiceWrapper mNewsServiceWrapper;
 
@@ -86,14 +84,12 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
 
     private CountryAdapter mCountryAdapter;
     private MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> mCountryLanguageFetchMiddleCallback;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
 
     //<editor-fold desc="Constructors">
     public RegionalNewsSearchableSelectorView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
-        userProfileFetchListener = new UserProfileFetchListener();
         mCountryAdapter = new CountryAdapter(getContext(), R.layout.country_item_view);
     }
     //</editor-fold>
@@ -177,16 +173,19 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
     {
         UserBaseKey currentUserBaseKey = currentUserId.toUserBaseKey();
         detachUserProfileFetchTask();
-        userProfileCache.register(currentUserBaseKey, userProfileFetchListener);
-        userProfileCache.getOrFetchAsync(currentUserBaseKey);
+        userProfileSubscription = userProfileCache.get(currentUserBaseKey)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new UserProfileFetchObserver());
     }
 
     private void detachUserProfileFetchTask()
     {
-        if (userProfileFetchListener != null)
+        Subscription copy = userProfileSubscription;
+        if (copy != null)
         {
-            userProfileCache.unregister(userProfileFetchListener);
+            copy.unsubscribe();
         }
+        userProfileSubscription = null;
     }
 
     //<editor-fold desc="Save & Restore view state">
@@ -257,21 +256,20 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
     }
     //</editor-fold>
 
-    private class UserProfileFetchListener implements DTOCacheNew.HurriedListener<UserBaseKey,UserProfileDTO>
+    private class UserProfileFetchObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            onDTOReceived(key, value);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onCompleted()
         {
-            linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
-            THToast.show(new THException(error));
+            THToast.show(new THException(e));
         }
     }
 

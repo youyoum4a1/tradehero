@@ -29,7 +29,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.widget.MultiScrollListener;
@@ -59,7 +59,7 @@ public class NewsHeadlineFragment extends Fragment
     @OnItemClick(android.R.id.list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         NewsItemDTOKey newsItemDTOKey = (NewsItemDTOKey) parent.getItemAtPosition(position);
-        NewsItemCompactDTO newsItemDTO = (NewsItemCompactDTO) discussionCache.get(newsItemDTOKey);
+        NewsItemCompactDTO newsItemDTO = (NewsItemCompactDTO) discussionCache.getValue(newsItemDTOKey);
 
         if (newsItemDTO != null && newsItemDTO.url != null)
         {
@@ -71,7 +71,7 @@ public class NewsHeadlineFragment extends Fragment
 
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
-    @Inject DiscussionCache discussionCache;
+    @Inject DiscussionCacheRx discussionCache;
     @Inject RxLoaderManager rxLoaderManager;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 

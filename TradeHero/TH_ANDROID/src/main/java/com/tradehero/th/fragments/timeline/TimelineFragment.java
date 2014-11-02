@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,11 +26,11 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -43,7 +44,6 @@ import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFra
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
-import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
@@ -58,8 +58,8 @@ import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -67,6 +67,7 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
@@ -74,6 +75,9 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
@@ -102,11 +106,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
-    @Inject Lazy<CurrentUserId> currentUserIdLazy;
-    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Analytics analytics;
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject protected FollowerSummaryCacheRx followerSummaryCache;;
     @Inject MessageThreadHeaderCache messageThreadHeaderCache;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
     @Inject protected THRouter thRouter;
@@ -123,12 +126,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
     protected FollowDialogCombo followDialogCombo;
-    protected FollowerManagerInfoFetcher infoFetcher;
     protected MessageHeaderDTO messageThreadHeaderDTO;
     protected UserProfileDTO shownProfile;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     private MainTimelineAdapter mainTimelineAdapter;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
     private UserProfileView userProfileView;
@@ -155,9 +156,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         // noinspection ConstantConditions
         if (shownUserBaseKey == null || shownUserBaseKey.key == null)
         {
-            shownUserBaseKey = currentUserIdLazy.get().toUserBaseKey();
+            shownUserBaseKey = currentUserId.toUserBaseKey();
         }
-        userProfileCacheListener = createUserProfileCacheListener();
         messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
         mainTimelineAdapter = createTimelineAdapter(shownUserBaseKey);
         mainTimelineAdapter.setCurrentTabType(currentTab);
@@ -281,17 +281,20 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         lastItemVisibleListener = new TimelineLastItemVisibleListener();
     }
 
-    private class FollowerSummaryListener implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
+    private class FollowerSummaryObserver implements Observer<Pair<UserBaseKey, FollowerSummaryDTO>>
     {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
+        @Override public void onNext(Pair<UserBaseKey, FollowerSummaryDTO> pair)
         {
-            updateHeroType(value);
+            updateHeroType(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(error.getMessage());
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(e.getMessage());
         }
     }
 
@@ -314,19 +317,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onStart()
     {
         super.onStart();
-        displayablePortfolioFetchAssistant.setFetchedListener(
-                new DisplayablePortfolioFetchAssistant.OnFetchedListener()
-                {
-                    @Override public void onFetched()
-                    {
-                        onLoadFinished();
-                        displayPortfolios();
-                    }
-                });
 
-        destroyInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), new FollowerSummaryListener());
-        infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
+        AndroidObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new FollowerSummaryObserver());
     }
 
     @Override public void onResume()
@@ -343,7 +337,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
                     @Override public void onBeginRefresh(TabType tabType)
                     {
-                        refreshPortfolioList();
+                        fetchPortfolioList();
                         fetchUserProfile(true);
                     }
                 });
@@ -370,8 +364,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.onRefreshComplete();
             cancelRefreshingOnResume = false;
         }
-        displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
-
+        fetchPortfolioList();
         fetchUserProfile(false);
         fetchMessageThreadHeader();
 
@@ -402,14 +395,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onStop()
     {
-        detachUserProfileCache();
         detachFreeFollowMiddleCallback();
         detachMessageThreadHeaderFetchTask();
         detachFollowDialogCombo();
-        destroyInfoFetcher();
         detachChoiceFollowAssistant();
 
-        displayablePortfolioFetchAssistant.setFetchedListener(null);
         super.onStop();
     }
 
@@ -433,13 +423,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         mainTimelineAdapter = null;
         messageThreadHeaderFetchListener = null;
-        userProfileCacheListener = null;
         super.onDestroy();
-    }
-
-    protected void detachUserProfileCache()
-    {
-        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
     private void detachFreeFollowMiddleCallback()
@@ -466,16 +450,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         followDialogCombo = null;
     }
 
-    protected void destroyInfoFetcher()
-    {
-        FollowerManagerInfoFetcher infoFetcherCopy = infoFetcher;
-        if (infoFetcherCopy != null)
-        {
-            infoFetcherCopy.onDestroyView();
-        }
-        infoFetcher = null;
-    }
-
     protected void detachChoiceFollowAssistant()
     {
         ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
@@ -494,10 +468,27 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     //<editor-fold desc="Display methods">
-    private void refreshPortfolioList()
+    private void fetchPortfolioList()
     {
-        portfolioCompactListCache.get().invalidate(shownUserBaseKey);
-        displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
+        portfolioCompactListCache.invalidate(shownUserBaseKey); // FIXME probably not necessary
+        AndroidObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(getUserBaseKeys()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Map<UserBaseKey, DisplayablePortfolioDTOList>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                    }
+
+                    @Override public void onNext(Map<UserBaseKey, DisplayablePortfolioDTOList> map)
+                    {
+                        onLoadFinished();
+                        displayPortfolios(map);
+                    }
+                });
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -559,9 +550,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void fetchUserProfile(boolean force)
     {
-        detachUserProfileCache();
-        userProfileCache.get().register(shownUserBaseKey, userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(shownUserBaseKey, force);
+        AndroidObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
     }
 
     //<editor-fold desc="Initial methods">
@@ -643,23 +634,27 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         cancelRefreshingOnResume = true;
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new TimelineFragmentUserProfileCacheListener();
+        return new TimelineFragmentUserProfileCacheObserver();
     }
 
-    protected class TimelineFragmentUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class TimelineFragmentUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
             if (currentTab == TabType.STATS)
             {
                 onLoadFinished();
             }
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(getString(R.string.error_fetch_user_profile));
         }
@@ -672,18 +667,19 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return list;
     }
 
-    public void displayPortfolios()
+    public void displayPortfolios(Map<UserBaseKey, DisplayablePortfolioDTOList> map)
     {
-        this.mainTimelineAdapter.setDisplayablePortfolioItems(getAllPortfolios());
+        this.mainTimelineAdapter.setDisplayablePortfolioItems(getAllPortfolios(map));
     }
 
-    private List<DisplayablePortfolioDTO> getAllPortfolios()
+    @NotNull private List<DisplayablePortfolioDTO> getAllPortfolios(@NotNull Map<UserBaseKey, DisplayablePortfolioDTOList> map)
     {
-        if (displayablePortfolioFetchAssistant != null)
+        List<DisplayablePortfolioDTO> list = new ArrayList<>();
+        for (DisplayablePortfolioDTOList value : map.values())
         {
-            return displayablePortfolioFetchAssistant.getDisplayablePortfolios();
+            list.addAll(value);
         }
-        return null;
+        return list;
     }
 
     protected void updateBottomButton()
@@ -769,7 +765,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected int getFollowType()
     {
         UserProfileDTO userProfileDTO =
-                userProfileCache.get().get(currentUserIdLazy.get().toUserBaseKey());
+                userProfileCache.get().getValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
@@ -778,7 +774,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
                 if (purchaserKey != null)
                 {
-                    UserProfileDTO purchaserProfile = userProfileCache.get().get(purchaserKey);
+                    UserProfileDTO purchaserProfile = userProfileCache.get().getValue(purchaserKey);
                     if (purchaserProfile != null)
                     {
                         return purchaserProfile.getFollowType(shownUserBaseKey);

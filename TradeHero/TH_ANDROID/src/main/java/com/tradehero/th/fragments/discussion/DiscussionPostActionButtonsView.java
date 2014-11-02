@@ -18,7 +18,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @InjectView(R.id.switch_share_public) ToggleButton mIsPublic;
     @InjectView(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
 
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
@@ -88,7 +88,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     private boolean isSocialLinked(SocialNetworkEnum socialNetworkEnum)
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.getValue(currentUserId.toUserBaseKey());
 
         if (userProfileDTO != null)
         {

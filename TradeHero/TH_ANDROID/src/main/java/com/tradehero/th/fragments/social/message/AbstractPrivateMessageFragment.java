@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.message;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -24,24 +24,24 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
@@ -52,13 +52,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Inject protected MessageHeaderCache messageHeaderCache;
     @Inject protected MessageHeaderListCache messageHeaderListCache;
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected UserBaseDTOUtil userBaseDTOUtil;
     @Inject protected Picasso picasso;
-    @Inject @ForUserPhoto protected Transformation userPhotoTransformation;
-    @Inject protected UserProfileCache userProfileCache;
+    @Inject protected UserProfileCacheRx userProfileCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
 
-    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
 
@@ -87,9 +84,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         correspondentId = collectCorrespondentId(getArguments());
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new AbstractPrivateMessageFragmentUserProfileListener();
+        return new AbstractPrivateMessageFragmentUserProfileObserver();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -167,18 +164,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onDestroyView()
     {
         detachMessageHeaderFetchTask();
-        detachUserProfileTask();
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    private void detachUserProfileTask()
-    {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.unregister(userProfileCacheListener);
-        }
-        userProfileCacheListener = null;
     }
 
     @Override public void onDestroy()
@@ -227,10 +214,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private void fetchCorrespondentProfile()
     {
         Timber.d("fetchCorrespondentProfile");
-        detachUserProfileTask();
-        userProfileCacheListener = createUserProfileCacheListener();
-        userProfileCache.register(correspondentId, userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(correspondentId);
+        AndroidObservable.bindFragment(this, userProfileCache.get(correspondentId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
     }
 
     public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -251,18 +237,21 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }
 
-    protected class AbstractPrivateMessageFragmentUserProfileListener
-            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class AbstractPrivateMessageFragmentUserProfileObserver
+            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            Timber.e(error, "");
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.e(e, "");
         }
     }
 

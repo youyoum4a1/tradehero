@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,7 +21,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
@@ -38,8 +38,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
-import com.tradehero.th.persistence.social.FollowerSummaryCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -51,10 +51,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class SendMessageFragment extends DashboardFragment
@@ -71,7 +73,6 @@ public class SendMessageFragment extends DashboardFragment
     private Dialog progressDialog;
     /** Dialog to change different type of follower */
     private Dialog chooseDialog;
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected List<WeakReference<MiddleCallback<DiscussionDTO>>> middleCallbackSendMessages;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
@@ -80,11 +81,11 @@ public class SendMessageFragment extends DashboardFragment
     @InjectView(R.id.message_type) TextView messageTypeView;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
+    @Inject Lazy<FollowerSummaryCacheRx> followerSummaryCache;
     @Inject Lazy<MessageHeaderListCache> messageListCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Analytics analytics;
 
@@ -135,12 +136,11 @@ public class SendMessageFragment extends DashboardFragment
         if (!TextUtils.isEmpty(inputText.getText()))
         {
             progressDialogUtilLazy.get().show(getActivity(), null, getString(R.string.loading_loading));
-            detachUserProfileCache();
             userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
 
-            userProfileCacheListener = createUserProfileCacheListener();
-            userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-            userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+            AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createUserProfileCacheObserver());
         }
         else
         {
@@ -173,17 +173,7 @@ public class SendMessageFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachSendMessageCallbacks();
-        detachUserProfileCache();
         super.onDestroyView();
-    }
-
-    private void detachUserProfileCache()
-    {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.get().unregister(userProfileCacheListener);
-        }
-        userProfileCacheListener = null;
     }
 
     private void detachSendMessageCallbacks()
@@ -319,7 +309,7 @@ public class SendMessageFragment extends DashboardFragment
 
     private int getFollowerCountByUserProfile(MessageType messageType)
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.get().getValue(currentUserId.toUserBaseKey());
         int allFollowerCount = userProfileDTO.allFollowerCount;
         int followerCountFree = userProfileDTO.freeFollowerCount;
         int followerCountPaid = userProfileDTO.paidFollowerCount;
@@ -346,7 +336,7 @@ public class SendMessageFragment extends DashboardFragment
     private int getCountFromCache(MessageType messageType)
     {
         FollowerSummaryDTO followerSummaryDTO =
-                followerSummaryCache.get().get(currentUserId.toUserBaseKey());
+                followerSummaryCache.get().getValue(currentUserId.toUserBaseKey());
         if (followerSummaryDTO != null)
         {
             int result;
@@ -373,14 +363,23 @@ public class SendMessageFragment extends DashboardFragment
         return 0;
     }
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
+        return new Observer<Pair<UserBaseKey, UserProfileDTO>>()
         {
-            @Override
-            public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+            @Override public void onCompleted()
             {
-                if (value != null)
+            }
+
+            @Override public void onError(Throwable e)
+            {
+                THToast.show(new THException(e));
+                sendMessage(getCountFromCache(messageType));
+            }
+
+            @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
+            {
+                if (pair.second != null)
                 {
                     sendMessage(getFollowerCountByUserProfile(messageType));
                 }
@@ -388,12 +387,6 @@ public class SendMessageFragment extends DashboardFragment
                 {
                     sendMessage(getCountFromCache(messageType));
                 }
-            }
-
-            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-            {
-                THToast.show(new THException(error));
-                sendMessage(getCountFromCache(messageType));
             }
         };
     }

@@ -61,6 +61,15 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
         return cachedSubject;
     }
 
+    public void onError(@NotNull DTOKeyType key, @NotNull Throwable error)
+    {
+        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = getBehavior(key);
+        if (cachedSubject != null)
+        {
+            cachedSubject.onError(error);
+        }
+    }
+
     @Override public void invalidate(@NotNull DTOKeyType key)
     {
         super.invalidate(key);

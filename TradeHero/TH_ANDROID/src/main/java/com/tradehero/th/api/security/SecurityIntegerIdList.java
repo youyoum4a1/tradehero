@@ -1,11 +1,9 @@
 package com.tradehero.th.api.security;
 
 import com.tradehero.common.persistence.DTOKey;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
 
 public class SecurityIntegerIdList extends ArrayList<SecurityIntegerId>
     implements DTOKey
@@ -14,6 +12,11 @@ public class SecurityIntegerIdList extends ArrayList<SecurityIntegerId>
     public SecurityIntegerIdList()
     {
         super();
+    }
+
+    public SecurityIntegerIdList(@NotNull Collection<? extends SecurityIntegerId> c, SecurityIntegerId type)
+    {
+        super(c);
     }
 
     public SecurityIntegerIdList(@NotNull Collection<? extends Integer> c, Integer type)

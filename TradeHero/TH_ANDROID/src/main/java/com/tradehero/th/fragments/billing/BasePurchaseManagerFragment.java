@@ -1,11 +1,10 @@
 package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
-
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BaseUIBillingRequest;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -13,7 +12,6 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -22,18 +20,15 @@ import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.system.SystemStatusCache;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import retrofit.Callback;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
@@ -42,14 +37,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
-    private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
     protected THPurchaseActionInteractor thPurchaseActionInteractor;
     protected Integer requestCode;
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected THBillingInteractor userInteractor;
     @Inject protected Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
-    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
     public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -73,7 +67,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
         purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
     }
 
@@ -87,15 +80,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onStop()
     {
         detachRequestCode();
-        detachPortfolioCompactListCache();
         detachPurchaseActionInteractor();
         super.onStop();
-    }
-
-    @Override public void onDestroy()
-    {
-        portfolioCompactListFetchListener = null;
-        super.onDestroy();
     }
 
     protected void detachRequestCode()
@@ -105,11 +91,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             userInteractor.forgetRequestCode(requestCode);
         }
         requestCode = null;
-    }
-
-    private void detachPortfolioCompactListCache()
-    {
-        portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
     }
 
     private void detachPurchaseActionInteractor()
@@ -123,9 +104,9 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     private void fetchPortfolioCompactList()
     {
-        detachPortfolioCompactListCache();
-        portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
-        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this, portfolioCompactListCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createPortfolioCompactListObserver());
     }
 
     protected void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs)
@@ -202,24 +183,28 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     }
     //endregion
 
-    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
+    protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
     {
-        return new BasePurchaseManagementPortfolioCompactListFetchListener();
+        return new BasePurchaseManagementPortfolioCompactListObserver();
     }
 
-    protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
+    protected class BasePurchaseManagementPortfolioCompactListObserver implements Observer<Pair<UserBaseKey, PortfolioCompactDTOList>>
     {
-        protected BasePurchaseManagementPortfolioCompactListFetchListener()
+        protected BasePurchaseManagementPortfolioCompactListObserver()
         {
             // no unexpected creation
         }
 
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
         {
-            prepareApplicableOwnedPortolioId(value.getDefaultPortfolio());
+            prepareApplicableOwnedPortolioId(pair.second.getDefaultPortfolio());
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }

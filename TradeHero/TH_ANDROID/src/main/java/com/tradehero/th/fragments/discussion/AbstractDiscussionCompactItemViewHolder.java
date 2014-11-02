@@ -96,7 +96,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         ButterKnife.reset(this);
     }
 
-    public void setBackroundResource(int resId)
+    public void setBackgroundResource(int resId)
     {
         //Do nothing
     }

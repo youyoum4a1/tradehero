@@ -8,22 +8,23 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated
 @Singleton @UserCache public class WatchlistPositionCache extends StraightCutDTOCacheNew<SecurityId, WatchlistPositionDTO, WatchlistPositionCutDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
 
-    @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
+    @NotNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
 
     //<editor-fold desc="Constructors">
     @Inject public WatchlistPositionCache(
-            @NotNull Lazy<SecurityCompactCache> securityCompactCache,
+            @NotNull Lazy<SecurityCompactCacheRx> securityCompactCache,
             @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);

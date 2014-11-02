@@ -8,9 +8,9 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.home.HomeContentCache;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 import rx.functions.Action1;
 
@@ -24,8 +24,8 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
     //<editor-fold desc="Constructors">
     public DTOProcessorUserLogin(
             @NotNull SystemStatusCache systemStatusCache,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull HomeContentCache homeContentCache,
+            @NotNull UserProfileCacheRx userProfileCache,
+            @NotNull HomeContentCacheRx homeContentCache,
             @NotNull CurrentUserId currentUserId,
             @NotNull DTOCacheUtilImpl dtoCacheUtil)
     {

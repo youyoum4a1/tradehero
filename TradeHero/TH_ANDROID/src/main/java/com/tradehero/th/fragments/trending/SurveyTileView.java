@@ -2,30 +2,32 @@ package com.tradehero.th.fragments.trending;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.graphics.ForExtraTileBackground;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.graphics.ForExtraTileBackground;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public final class SurveyTileView extends ImageView
 {
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<Picasso> picasso;
     @Inject @ForExtraTileBackground Transformation backgroundTransformation;
 
     private UserProfileDTO userProfileDTO;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    private Subscription userProfileCacheSubscription;
 
     //<editor-fold desc="Constructors">
     public SurveyTileView(Context context)
@@ -47,7 +49,6 @@ public final class SurveyTileView extends ImageView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         HierarchyInjector.inject(this);
     }
 
@@ -59,9 +60,9 @@ public final class SurveyTileView extends ImageView
         if (userProfileDTO == null )
         {
             detachUserProfileCache();
-            userProfileCacheListener = createUserProfileCacheListener();
-            userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-            userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+            userProfileCacheSubscription = userProfileCache.get().get(currentUserId.toUserBaseKey())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createUserProfileCacheObserver());
         }
         else
         {
@@ -78,11 +79,11 @@ public final class SurveyTileView extends ImageView
 
     protected void detachUserProfileCache()
     {
-        if (userProfileCacheListener != null)
+        if (userProfileCacheSubscription != null)
         {
-            userProfileCache.get().unregister(userProfileCacheListener);
+            userProfileCacheSubscription.unsubscribe();
         }
-        userProfileCacheListener = null;
+        userProfileCacheSubscription = null;
     }
 
     private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -100,18 +101,21 @@ public final class SurveyTileView extends ImageView
         }
     }
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
+        return new Observer<Pair<UserBaseKey,UserProfileDTO>>()
         {
-            @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+            @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
             {
-                linkWith(value, true);
+                linkWith(pair.second, true);
             }
 
-            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+            @Override public void onCompleted()
             {
+            }
 
+            @Override public void onError(Throwable e)
+            {
             }
         };
     }

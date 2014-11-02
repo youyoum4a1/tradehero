@@ -2,7 +2,7 @@ package com.tradehero.common.persistence;
 
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroListCacheRx;
 import java.util.concurrent.RejectedExecutionException;
 import javax.inject.Inject;
 import org.junit.After;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(THRobolectricTestRunner.class)
 public class DTOCacheNewGetOrFetchTaskTest
 {
-    @Inject HeroListCache heroListCache;
+    @Inject HeroListCacheRx heroListCache;
 
     @Before public void setUp() throws Exception
     {
@@ -37,7 +37,7 @@ public class DTOCacheNewGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 138; userId++)
         {
-            heroListCache.getOrFetchAsync(new UserBaseKey(userId));
+            heroListCache.get(new UserBaseKey(userId));
         }
     }
 
@@ -46,7 +46,7 @@ public class DTOCacheNewGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 139; userId++)
         {
-            heroListCache.getOrFetchAsync(new UserBaseKey(userId));
+            heroListCache.get(new UserBaseKey(userId));
         }
         assertTrue(false);
     }

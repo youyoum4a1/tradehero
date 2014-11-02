@@ -23,7 +23,7 @@ import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.rx.dialog.AlertButtonClickedFilterFunc1;
 import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.observables.ViewObservable;
@@ -52,7 +53,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
@@ -72,7 +73,6 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        userProfileCacheListener = createUserProfileCacheListener();
         socialSharePreferenceHelperNew.reload();
     }
 
@@ -89,12 +89,6 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         fetchUserProfile();
     }
 
-    @Override public void onStop()
-    {
-        detachUserProfileCache();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         unsubscribeWeChatButton();
@@ -109,33 +103,32 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     }
 
     //<editor-fold desc="User Profile">
-    protected void detachUserProfileCache()
-    {
-        userProfileCache.unregister(userProfileCacheListener);
-    }
-
     protected void fetchUserProfile()
     {
-        detachUserProfileCache();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new BaseShareableDialogUserProfileCacheListener();
+        return new BaseShareableDialogUserProfileCacheObserver();
     }
 
-    protected class BaseShareableDialogUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class BaseShareableDialogUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            linkWith(value);
+            linkWith(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(error));
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
         }
     }
 

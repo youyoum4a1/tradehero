@@ -13,7 +13,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public class AlertViewFragmentTest
 {
     @Inject @ForApp ObjectMapper mapper;
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject AlertCacheRx alertCache;
     @Inject DashboardNavigator dashboardNavigator;
     private AlertDTO cachedAlertDTO;
@@ -62,7 +62,7 @@ public class AlertViewFragmentTest
         userAlertPlan.alertPlan = new AlertPlanDTO();
         userAlertPlan.alertPlan.numberOfAlerts = 1;
         cachedProfileDTO.userAlertPlans = Collections.singletonList(userAlertPlan);
-        userProfileCache.put(currentUserId.toUserBaseKey(), cachedProfileDTO);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), cachedProfileDTO);
     }
 
     @After public void tearDown()

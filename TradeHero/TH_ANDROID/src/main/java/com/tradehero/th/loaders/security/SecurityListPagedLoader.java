@@ -11,6 +11,7 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
+@Deprecated
 public class SecurityListPagedLoader extends PagedDTOCacheLoaderNew<
         SecurityListType,
         SecurityCompactDTO,

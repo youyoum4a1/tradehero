@@ -1,16 +1,16 @@
 package com.tradehero.th.models.user;
 
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorUpdateUserProfileDeep extends DTOProcessorUpdateUserProfile
 {
     //<editor-fold desc="Constructors">
     public DTOProcessorUpdateUserProfileDeep(
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull HomeContentCache homeContentCache)
+            @NotNull UserProfileCacheRx userProfileCache,
+            @NotNull HomeContentCacheRx homeContentCache)
     {
         super(userProfileCache, homeContentCache);
     }

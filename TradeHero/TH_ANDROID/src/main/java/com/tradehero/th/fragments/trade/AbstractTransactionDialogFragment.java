@@ -24,7 +24,6 @@ import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -58,10 +57,10 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -75,7 +74,7 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;
-import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -104,14 +103,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     @InjectView(R.id.dialog_btn_confirm) protected Button mConfirm;
     @InjectView(R.id.dialog_btn_cancel) protected Button mCancel;
 
-    @Inject SecurityCompactCache securityCompactCache;
-    @Inject PortfolioCompactListCache portfolioCompactListCache;
-    @Inject PortfolioCompactCache portfolioCompactCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
+    @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
+    @Inject PortfolioCompactCacheRx portfolioCompactCache;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
-    private Subscription securityPositionDetailSubscription;
     @Inject PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject Analytics analytics;
 
@@ -124,7 +122,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     private MiddleCallback<SecurityPositionTransactionDTO> buySellMiddleCallback;
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
-    @Nullable protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListCacheListener;
     @Nullable protected PortfolioCompactDTOList portfolioCompactDTOs;
     private PortfolioId portfolioId;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
@@ -206,7 +203,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
-        portfolioCompactListCacheListener = createPortfolioCompactListCacheListener();
     }
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -251,16 +247,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
         mQuantityTextWatcher = null;
         detachPurchaseRequestCode();
-        detachPortfolioCompactListCache();
         destroyTransactionDialog();
         detachBuySellMiddleCallback();
-        detachSecurityPositionDetailSubscription();
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        portfolioCompactListCacheListener = null;
         securityCompactDTO = null;
         portfolioCompactDTO = null;
         quoteDTO = null;
@@ -270,13 +263,44 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void init()
     {
-        securityCompactDTO = securityCompactCache.get(getSecurityId());
-        portfolioCompactDTO = portfolioCompactCache.get(getPortfolioId());
+        AndroidObservable.bindFragment(this, securityCompactCache.get(getSecurityId()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                    }
+
+                    @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                    {
+                        securityCompactDTO = pair.second;
+                    }
+                });
+        AndroidObservable.bindFragment(this, portfolioCompactCache.get(getPortfolioId()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Pair<PortfolioId, PortfolioCompactDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                    }
+
+                    @Override public void onNext(Pair<PortfolioId, PortfolioCompactDTO> pair)
+                    {
+                        portfolioCompactDTO = pair.second;
+                    }
+                });
         quoteDTO = getBundledQuoteDTO();
 
-        detachSecurityPositionDetailSubscription();
-        securityPositionDetailSubscription = securityPositionDetailCache.get()
-                .get(this.securityId)
+        AndroidObservable.bindFragment(this, securityPositionDetailCache.get()
+                .get(this.securityId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Pair<SecurityId, SecurityPositionDetailDTO>>()
                 {
@@ -365,16 +389,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         purchaseRequestCode = null;
     }
 
-    private void detachSecurityPositionDetailSubscription()
-    {
-        Subscription subscriptionCopy = securityPositionDetailSubscription;
-        if (subscriptionCopy != null)
-        {
-            subscriptionCopy.unsubscribe();
-        }
-        securityPositionDetailSubscription = null;
-    }
-
     protected abstract String getLabel();
     protected abstract int getCashLeftLabelResId();
 
@@ -450,37 +464,31 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         getDialog().hide();
     }
 
-    protected void detachPortfolioCompactListCache()
-    {
-        portfolioCompactListCache.unregister(portfolioCompactListCacheListener);
-    }
-
     protected void fetchPortfolioCompactList()
     {
-        detachPortfolioCompactListCache();
-        portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListCacheListener);
-        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this,
+                portfolioCompactListCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createPortfolioCompactListCacheObserver());
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListCacheListener()
+    protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListCacheObserver()
     {
-        return new TransactionDialogPortfolioCompactListCacheListener();
+        return new TransactionDialogPortfolioCompactListCacheObserver();
     }
 
-    protected class TransactionDialogPortfolioCompactListCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, PortfolioCompactDTOList>
+    protected class TransactionDialogPortfolioCompactListCacheObserver implements Observer<Pair<UserBaseKey, PortfolioCompactDTOList>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        @Override public void onCompleted()
         {
-            Timber.d("Received %s", value);
-            linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }

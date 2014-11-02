@@ -12,7 +12,6 @@ import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import com.tradehero.common.persistence.FetchAssistant;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
@@ -22,13 +21,14 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
-import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         NewsItemCompactViewHolder<DiscussionType>
@@ -40,12 +40,9 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     @InjectView(R.id.news_detail_reference) @Optional GridView mNewsDetailReference;
     @InjectView(R.id.news_detail_reference_container) @Optional LinearLayout mNewsDetailReferenceContainer;
 
-    @Inject SecurityCompactCache securityCompactCache;
-    @Inject SecurityServiceWrapper securityServiceWrapper;
-
     protected SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
-    protected SecurityMultiFetchAssistant multiFetchAssistant;
-    protected SecurityMultiFetchAssistant.OnInfoFetchedListener<SecurityIntegerId, SecurityCompactDTO> multiFetchListener;
+    @Inject protected SecurityMultiFetchAssistant multiFetchAssistant;
+    protected Subscription multiFetchSubscription;
 
     //<editor-fold desc="Constructors">
 
@@ -70,18 +67,17 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     @Override public void onDetachedFromWindow()
     {
         detachMultiFetchAssistant();
-        multiFetchListener = null;
         super.onDetachedFromWindow();
     }
 
     protected void detachMultiFetchAssistant()
     {
-        SecurityMultiFetchAssistant multiFetchAssistantCopy = multiFetchAssistant;
-        if (multiFetchAssistantCopy != null)
+        Subscription copy = multiFetchSubscription;
+        if (copy != null)
         {
-            multiFetchAssistantCopy.setListener(null);
+            copy.unsubscribe();
         }
-        multiFetchAssistant = null;
+        multiFetchSubscription = null;
     }
 
     @Override public void linkWith(DiscussionType discussionDTO, boolean andDisplay)
@@ -101,13 +97,9 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
                 !discussionDTO.securityIds.isEmpty())
         {
             detachMultiFetchAssistant();
-            multiFetchAssistant = new SecurityMultiFetchAssistant(
-                    securityCompactCache,
-                    securityServiceWrapper,
-                    new SecurityIntegerIdList(discussionDTO.securityIds, 0));
-            multiFetchListener = createMultiSecurityCallback();
-            multiFetchAssistant.setListener(multiFetchListener);
-            multiFetchAssistant.execute();
+            multiFetchSubscription = multiFetchAssistant.get(new SecurityIntegerIdList(discussionDTO.securityIds, 0))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createMultiSecurityObserver());
         }
     }
 
@@ -169,7 +161,6 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
                     return translatedDiscussionDTO.text;
                 }
                 return null;
-
         }
         throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
@@ -195,7 +186,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         return 0;
     }
 
-    @Override public void setBackroundResource(int resId)
+    @Override public void setBackgroundResource(int resId)
     {
         if (mNewsDetailTitlePlaceholder != null)
         {
@@ -204,12 +195,14 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     }
     //</editor-fold>
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.news_start_new_discussion) @Optional
     protected void handleStartNewDiscussionClicked(View view)
     {
         notifyCommentButtonClicked();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @Optional @OnClick(R.id.news_view_on_web)
     protected void handleOpenOnWebClicked(View view)
     {
@@ -234,25 +227,33 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         }
     }
 
-    protected FetchAssistant.OnInfoFetchedListener<SecurityIntegerId, SecurityCompactDTO> createMultiSecurityCallback()
+    protected Observer<Map<SecurityIntegerId, SecurityCompactDTO>> createMultiSecurityObserver()
     {
-        return new NewsItemViewHolderMultiSecurityCallback();
+        return new NewsItemViewHolderMultiSecurityObserver();
     }
 
-    protected class NewsItemViewHolderMultiSecurityCallback implements FetchAssistant.OnInfoFetchedListener<SecurityIntegerId, SecurityCompactDTO>
+    protected class NewsItemViewHolderMultiSecurityObserver implements Observer<Map<SecurityIntegerId, SecurityCompactDTO>>
     {
-        @Override public void onInfoFetched(Map<SecurityIntegerId, SecurityCompactDTO> securityCompactDTOList, boolean isDataComplete)
+        @Override public void onNext(Map<SecurityIntegerId, SecurityCompactDTO> map)
         {
             if (mNewsDetailReferenceContainer != null)
             {
                 ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
                 //TODO it changes with solution
-                lp.width = (int) context.getResources().getDimension(R.dimen.stock_item_width) * securityCompactDTOList.size();
+                lp.width = (int) context.getResources().getDimension(R.dimen.stock_item_width) * map.size();
                 mNewsDetailReferenceContainer.setLayoutParams(lp);
             }
-            mNewsDetailReference.setNumColumns(securityCompactDTOList.size());
-            simpleSecurityItemViewAdapter.setItems(new ArrayList<>(securityCompactDTOList.values()));
+            mNewsDetailReference.setNumColumns(map.size());
+            simpleSecurityItemViewAdapter.setItems(new ArrayList<>(map.values()));
             simpleSecurityItemViewAdapter.notifyDataSetChanged();
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
         }
     }
 
@@ -272,6 +273,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     public static interface OnMenuClickedListener extends NewsItemCompactViewHolder.OnMenuClickedListener
     {
         void onOpenOnWebClicked();
+
         void onSecurityClicked(SecurityId securityId);
     }
 }

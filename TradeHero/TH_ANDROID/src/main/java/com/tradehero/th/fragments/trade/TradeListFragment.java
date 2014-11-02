@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -39,11 +38,12 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
-import com.tradehero.th.persistence.position.PositionCache;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.position.PositionCacheRx;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.persistence.trade.TradeListCache;
+import com.tradehero.th.persistence.trade.TradeListCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -65,10 +65,10 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = TradeListFragment.class.getName() + ".positionDTOKey";
 
-    @Inject Lazy<PositionCache> positionCache;
-    @Inject Lazy<TradeListCache> tradeListCache;
+    @Inject Lazy<PositionCacheRx> positionCache;
+    @Inject Lazy<TradeListCacheRx> tradeListCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject Lazy<SecurityCompactCacheRx> securityCompactCache;
     @Inject Lazy<AlertCompactListCacheRx> alertCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
@@ -85,14 +85,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @RouteProperty("positionId") Integer routePositionId;
 
     protected PositionDTOKey positionDTOKey;
-    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> fetchPositionListener;
     @Nullable protected PositionDTO positionDTO;
     @Nullable protected TradeDTOList tradeDTOList;
     @Nullable private Map<SecurityId, AlertId> mappedAlerts;
 
     protected TradeListItemAdapter adapter;
 
-    private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
     private Dialog securityActionDialog;
 
     public static void putPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKey positionDTOKey)
@@ -113,9 +111,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             putPositionDTOKey(getArguments(), new OwnedPositionId(routeUserId, routePortfolioId, routePositionId));
         }
-
-        fetchPositionListener = createPositionCacheListener();
-        fetchTradesListener = createTradeListeCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -190,20 +185,11 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Override public void onDestroyView()
     {
         setActionBarSubtitle(null);
-        detachFetchPosition();
-        detachFetchTrades();
         detachSecurityActionDialog();
         adapter = null;
         tradeListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        fetchPositionListener = null;
-        fetchTradesListener = null;
-        super.onDestroy();
     }
 
     protected void createAdapter()
@@ -257,16 +243,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         return created;
     }
 
-    protected void detachFetchPosition()
-    {
-        positionCache.get().unregister(fetchPositionListener);
-    }
-
-    protected void detachFetchTrades()
-    {
-        tradeListCache.get().unregister(fetchTradesListener);
-    }
-
     public void linkWith(@NotNull PositionDTOKey newPositionDTOKey, boolean andDisplay)
     {
         this.positionDTOKey = newPositionDTOKey;
@@ -280,24 +256,27 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     protected void fetchPosition()
     {
-        detachFetchPosition();
-        positionCache.get().register(positionDTOKey, fetchPositionListener);
-        positionCache.get().getOrFetchAsync(positionDTOKey);
+        AndroidObservable.bindFragment(this, positionCache.get().get(positionDTOKey))
+                .subscribe(createPositionCacheObserver());
     }
 
-    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> createPositionCacheListener()
+    protected Observer<Pair<PositionDTOKey, PositionDTO>> createPositionCacheObserver()
     {
-        return new TradeListFragmentPositionCacheListener();
+        return new TradeListFragmentPositionCacheObserver();
     }
 
-    protected class TradeListFragmentPositionCacheListener implements DTOCacheNew.Listener<PositionDTOKey, PositionDTO>
+    protected class TradeListFragmentPositionCacheObserver implements Observer<Pair<PositionDTOKey, PositionDTO>>
     {
-        @Override public void onDTOReceived(@NotNull PositionDTOKey key, @NotNull PositionDTO value)
+        @Override public void onNext(Pair<PositionDTOKey, PositionDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull PositionDTOKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_position_list_info);
         }
@@ -317,32 +296,35 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (positionDTO != null)
         {
-            detachFetchTrades();
-            OwnedPositionId key = positionDTO.getOwnedPositionId();
-            tradeListCache.get().register(key, fetchTradesListener);
-            tradeListCache.get().getOrFetchAsync(key);
             displayProgress(true);
+            OwnedPositionId key = positionDTO.getOwnedPositionId();
+            AndroidObservable.bindFragment(this, tradeListCache.get().get(key))
+                    .subscribe(createTradeListeCacheObserver());
         }
     }
 
-    protected TradeListCache.Listener<OwnedPositionId, TradeDTOList> createTradeListeCacheListener()
+    protected Observer<Pair<OwnedPositionId, TradeDTOList>> createTradeListeCacheObserver()
     {
-        return new GetTradesListener();
+        return new GetTradesObserver();
     }
 
-    private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, TradeDTOList>
+    private class GetTradesObserver implements Observer<Pair<OwnedPositionId, TradeDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
+        @Override public void onNext(Pair<OwnedPositionId, TradeDTOList> pair)
         {
             displayProgress(false);
-            linkWith(tradeDTOs, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull OwnedPositionId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             displayProgress(false);
             THToast.show(R.string.error_fetch_trade_list_info);
-            Timber.e("Error fetching the list of trades %s", key, error);
+            Timber.e("Error fetching the list of trades", e);
         }
     }
 
@@ -383,19 +365,34 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
-            if (securityCompactDTO == null || securityCompactDTO.name == null)
-            {
-                setActionBarTitle(
-                        String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
-                                securityId.getSecuritySymbol()));
-            }
-            else
-            {
-                setActionBarTitle(securityCompactDTO.name);
-                setActionBarSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
-                        securityId.getSecuritySymbol()));
-            }
+            AndroidObservable.bindFragment(this, securityCompactCache.get().get(securityId))
+                    .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                    {
+                        @Override public void onCompleted()
+                        {
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            THToast.show(new THException(e));
+                        }
+
+                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                        {
+                            if (pair.second.name == null)
+                            {
+                                setActionBarTitle(
+                                        String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                                                securityId.getSecuritySymbol()));
+                            }
+                            else
+                            {
+                                setActionBarTitle(pair.second.name);
+                                setActionBarSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                                        securityId.getSecuritySymbol()));
+                            }
+                        }
+                    });
         }
     }
 

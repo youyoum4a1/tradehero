@@ -6,8 +6,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
-
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +28,7 @@ public class OpenFollowUserAssistant extends FollowUserAssistant
         return requestCode;
     }
 
-    public void setUserProfileCache(UserProfileCache userProfileCache)
+    public void setUserProfileCache(UserProfileCacheRx userProfileCache)
     {
         this.userProfileCache = userProfileCache;
     }

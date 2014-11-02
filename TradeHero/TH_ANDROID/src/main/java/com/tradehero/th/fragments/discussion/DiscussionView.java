@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,34 +17,40 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 /**
- * DiscussionView is designed to show a discussion, it consists of a topic on the top for discussing about, a list of comments bellow the topic,
- * and optionally a @{link com.tradehero.th.fragments.discussion.PostCommentView} at the bottom of the view,
- * which is float above the list of comments. This view will be populated with
- * data in the @{link com.tradehero.th.persistence.discussion.DiscussionCache}, specified by a  @{link com.tradehero.th.api.discussion.key
- * .DiscussionKey}.
+ * DiscussionView is designed to show a discussion, it consists of a topic on the top for discussing about, a list of comments bellow the topic, and
+ * optionally a @{link com.tradehero.th.fragments.discussion.PostCommentView} at the bottom of the view, which is float above the list of comments.
+ * This view will be populated with data in the @{link com.tradehero.th.persistence.discussion.DiscussionCache}, specified by a  @{link
+ * com.tradehero.th.api.discussion.key .DiscussionKey}.
  *
- * The topic layout is identified by @{link topicLayout} which is the resource id of layout resource of the topic view,
- * in order for the topic view to bind with the same data from DiscussionView, this layout class has to implement @{link com.tradehero.th.api.DTOView}
-*/
+ * The topic layout is identified by @{link topicLayout} which is the resource id of layout resource of the topic view, in order for the topic view to
+ * bind with the same data from DiscussionView, this layout class has to implement @{link com.tradehero.th.api.DTOView}
+ */
 public class DiscussionView extends FrameLayout
-    implements DTOView<DiscussionKey>, DiscussionListCacheNew.DiscussionKeyListListener
+        implements DTOView<DiscussionKey>
 {
     @InjectView(android.R.id.list) protected ListView discussionList;
     protected FlagNearEdgeScrollListener scrollListener;
@@ -53,10 +60,11 @@ public class DiscussionView extends FrameLayout
     private int topicLayout;
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected DiscussionListCacheNew discussionListCache;
-    @Inject protected DiscussionCache discussionCache;
+    @Inject protected DiscussionListCacheRx discussionListCache;
+    @Inject protected DiscussionCacheRx discussionCache;
     @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
+    @NotNull private List<Subscription> discussionListCacheSubscriptions;
     protected TextView discussionStatus;
     protected DiscussionKey discussionKey;
 
@@ -90,6 +98,7 @@ public class DiscussionView extends FrameLayout
     {
         super.onFinishInflate();
 
+        discussionListCacheSubscriptions = new ArrayList<>();
         ButterKnife.inject(this);
 
         inflateDiscussionTopic();
@@ -184,7 +193,7 @@ public class DiscussionView extends FrameLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        discussionListCache.unregister(this);
+        detachDiscussionListCache();
         if (postCommentView != null)
         {
             postCommentView.setCommentPostedListener(null);
@@ -234,7 +243,6 @@ public class DiscussionView extends FrameLayout
 
     protected void initialFetchDiscussion(boolean force)
     {
-        discussionListCache.unregister(this);
         this.startingDiscussionListKey = createStartingDiscussionListKey();
         if (startingDiscussionListKey != null)
         {
@@ -255,8 +263,18 @@ public class DiscussionView extends FrameLayout
     {
         setLoading();
         Timber.d("DiscussionListKey %s", startingDiscussionListKey);
-        discussionListCache.register(startingDiscussionListKey, this);
-        discussionListCache.getOrFetchAsync(startingDiscussionListKey, force);
+        discussionListCacheSubscriptions.add(discussionListCache.get(startingDiscussionListKey)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createDiscussionListObserver()));
+    }
+
+    protected void detachDiscussionListCache()
+    {
+        for (Subscription subscription : discussionListCacheSubscriptions)
+        {
+            subscription.unsubscribe();
+        }
+        discussionListCacheSubscriptions.clear();
     }
 
     protected DiscussionListKey getNextDiscussionListKey(DiscussionKeyList latestDiscussionKeys)
@@ -295,8 +313,9 @@ public class DiscussionView extends FrameLayout
     {
         if (nextDiscussionListKey != null)
         {
-            discussionListCache.register(nextDiscussionListKey, this);
-            discussionListCache.getOrFetchAsync(nextDiscussionListKey, false);
+            discussionListCacheSubscriptions.add(discussionListCache.get(nextDiscussionListKey)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createDiscussionListObserver()));
         }
     }
 
@@ -337,8 +356,9 @@ public class DiscussionView extends FrameLayout
     {
         if (prevDiscussionListKey != null)
         {
-            discussionListCache.register(prevDiscussionListKey, this);
-            discussionListCache.getOrFetchAsync(prevDiscussionListKey, false);
+            discussionListCacheSubscriptions.add(discussionListCache.get(prevDiscussionListKey)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createDiscussionListObserver()));
         }
     }
 
@@ -355,8 +375,7 @@ public class DiscussionView extends FrameLayout
                 {
                     discussionListAdapter.remove(discussionKey);
                 }
-            }
-            catch (ClassCastException ex)
+            } catch (ClassCastException ex)
             {
                 Timber.e(ex, "topicView should implement DTOView<DiscussionKey>");
             }
@@ -380,7 +399,6 @@ public class DiscussionView extends FrameLayout
 
     /**
      * This method is called when there is a new comment for the current discussion
-     * @param newDiscussion
      */
     protected void addComment(DiscussionDTO newDiscussion)
     {
@@ -440,31 +458,49 @@ public class DiscussionView extends FrameLayout
         return new DiscussionViewCommentPostedListener();
     }
 
-    @Override public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value)
+    protected Observer<Pair<DiscussionListKey, PaginatedDTO<DiscussionDTO>>> createDiscussionListObserver()
     {
-        onFinish();
-
-        linkWith(value, true);
-
-        if (key.equals(startingDiscussionListKey))
+        return new Observer<Pair<DiscussionListKey, PaginatedDTO<DiscussionDTO>>>()
         {
-            handleStartingDTOReceived(key, value);
-        }
-        else if (key.equals(prevDiscussionListKey))
-        {
-            postHandlePrevDTOReceived(key, value);
-        }
-        else if (key.equals(nextDiscussionListKey))
-        {
-            postHandleNextDTOReceived(key, value);
-        }
-    }
+            @Override public void onCompleted()
+            {
+            }
 
-    @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)
-    {
-        onFinish();
+            @Override public void onError(Throwable e)
+            {
+                onFinish();
+                THToast.show(new THException(e));
+            }
 
-        THToast.show(new THException(error));
+            @Override public void onNext(Pair<DiscussionListKey, PaginatedDTO<DiscussionDTO>> pair)
+            {
+                onFinish();
+
+                List<DiscussionDTO> list = pair.second.getData();
+                if (list != null)
+                {
+                    DiscussionKeyList value = new DiscussionKeyList();
+                    for (@NotNull AbstractDiscussionDTO abstractDiscussionDTO : list)
+                    {
+                        value.add(abstractDiscussionDTO.getDiscussionKey());
+                    }
+                    linkWith(value, true);
+
+                    if (pair.first.equals(startingDiscussionListKey))
+                    {
+                        handleStartingDTOReceived(pair.first, value);
+                    }
+                    else if (pair.first.equals(prevDiscussionListKey))
+                    {
+                        postHandlePrevDTOReceived(pair.first, value);
+                    }
+                    else if (pair.first.equals(nextDiscussionListKey))
+                    {
+                        postHandleNextDTOReceived(pair.first, value);
+                    }
+                }
+            }
+        };
     }
 
     private void onFinish()

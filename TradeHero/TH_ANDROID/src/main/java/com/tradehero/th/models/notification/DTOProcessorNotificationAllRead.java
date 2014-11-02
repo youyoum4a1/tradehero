@@ -5,20 +5,20 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorNotificationAllRead implements DTOProcessor<BaseResponseDTO>
 {
     @NotNull private final NotificationCache notificationCache;
     @NotNull private final UserBaseKey readerId;
-    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final UserProfileCacheRx userProfileCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorNotificationAllRead(
             @NotNull NotificationCache notificationCache,
             @NotNull UserBaseKey readerId,
-            @NotNull UserProfileCache userProfileCache)
+            @NotNull UserProfileCacheRx userProfileCache)
     {
         this.notificationCache = notificationCache;
         this.readerId = readerId;
@@ -28,12 +28,12 @@ public class DTOProcessorNotificationAllRead implements DTOProcessor<BaseRespons
 
     @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get(readerId);
+        UserProfileDTO userProfileDTO = userProfileCache.getValue(readerId);
         if (userProfileDTO != null)
         {
             userProfileDTO.unreadNotificationsCount = 0;
         }
-        userProfileCache.getOrFetchAsync(readerId, true);
+        userProfileCache.get(readerId);
         notificationCache.invalidateAll();
         return value;
     }

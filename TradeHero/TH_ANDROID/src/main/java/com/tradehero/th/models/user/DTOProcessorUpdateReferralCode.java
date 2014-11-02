@@ -5,18 +5,18 @@ import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorUpdateReferralCode implements DTOProcessor<BaseResponseDTO>
 {
-    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final UserProfileCacheRx userProfileCache;
     @NotNull private final UpdateReferralCodeDTO updateReferralCodeDTO;
     @NotNull private final UserBaseKey invitedUserId;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorUpdateReferralCode(
-            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserProfileCacheRx userProfileCache,
             @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
             @NotNull UserBaseKey invitedUserId)
     {
@@ -28,12 +28,12 @@ public class DTOProcessorUpdateReferralCode implements DTOProcessor<BaseResponse
 
     @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
-        UserProfileDTO cachedProfile = userProfileCache.get(invitedUserId);
+        UserProfileDTO cachedProfile = userProfileCache.getValue(invitedUserId);
         if (cachedProfile != null)
         {
             cachedProfile.inviteCode = updateReferralCodeDTO.inviteCode;
         }
-        userProfileCache.getOrFetchAsync(invitedUserId, true);
+        userProfileCache.get(invitedUserId);
         return value;
     }
 }

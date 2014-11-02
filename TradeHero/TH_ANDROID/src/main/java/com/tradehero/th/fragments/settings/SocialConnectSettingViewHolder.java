@@ -18,7 +18,7 @@ import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -44,7 +44,7 @@ abstract public class SocialConnectSettingViewHolder
     //<editor-fold desc="Constructors">
     protected SocialConnectSettingViewHolder(
             @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserProfileCacheRx userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull AlertDialogUtil alertDialogUtil,

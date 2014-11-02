@@ -74,7 +74,7 @@ public class PushableTimelineFragment extends TimelineFragment
                 UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
                 if (purchaserKey != null)
                 {
-                    UserProfileDTO purchaserProfile = userProfileCache.get().get(purchaserKey);
+                    UserProfileDTO purchaserProfile = userProfileCache.get().getValue(purchaserKey);
                     if (purchaserProfile != null)
                     {
                         return purchaserProfile.isFollowingUser(shownUserBaseKey);
@@ -99,7 +99,7 @@ public class PushableTimelineFragment extends TimelineFragment
     @Override public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args)
     {
         return !(
-                    getClass().isAssignableFrom(fragmentClass) &&
+                ((Object) this).getClass().isAssignableFrom(fragmentClass) &&
                     shownUserBaseKey != null &&
                     shownUserBaseKey.equals(getUserBaseKey(args)))
                 && super.allowNavigateTo(fragmentClass, args);

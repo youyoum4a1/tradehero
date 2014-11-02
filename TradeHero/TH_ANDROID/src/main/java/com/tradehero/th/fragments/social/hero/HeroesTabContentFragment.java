@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
@@ -33,12 +33,17 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragment
@@ -55,7 +60,8 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     private List<HeroDTO> heroDTOs;
     protected SimpleFollowUserAssistant simpleFollowUserAssistant;
 
-    @Inject protected HeroManagerInfoFetcher infoFetcher;
+    @Inject UserProfileCacheRx userProfileCache;
+    @Inject HeroListCacheRx heroListCache;
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
     /** when no heroes */
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
@@ -132,8 +138,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             );
         }
         setListShown(false);
-        this.infoFetcher.setUserProfileListener(new HeroManagerUserProfileCacheListener());
-        this.infoFetcher.setHeroListListener(new HeroManagerHeroListCacheListener());
         this.viewContainer.heroListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
@@ -175,7 +179,8 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         super.onResume();
         enablePullToRefresh(false);
         displayProgress(true);
-        this.infoFetcher.fetch(this.followerId);
+        fetchProfile();
+        fetchHeroes();
     }
 
     private boolean isCurrentUser()
@@ -214,7 +219,8 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     private void refreshContent()
     {
-        this.infoFetcher.reloadHeroes(this.followerId);
+        fetchProfile();
+        fetchHeroes();
     }
 
     protected HeroTypeResourceDTO getHeroTypeResource()
@@ -232,11 +238,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     @Override public void onDestroyView()
     {
-        if (this.infoFetcher != null)
-        {
-            this.infoFetcher.onDestroyView();
-        }
-
         if (this.heroListAdapter != null)
         {
             this.heroListAdapter.setHeroStatusButtonClickedListener(null);
@@ -255,7 +256,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     @Override public void onDestroy()
     {
-        this.infoFetcher = null;
         super.onDestroy();
     }
 
@@ -271,10 +271,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
                 Timber.d("onUserFollowSuccess");
                 THToast.show(getString(R.string.manage_heroes_unfollow_success));
                 linkWith(currentUserProfileDTO, true);
-                if (infoFetcher != null)
-                {
-                    infoFetcher.fetchHeroes(followerId);
-                }
+                fetchHeroes();
             }
 
             @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
@@ -301,6 +298,20 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             assistantCopy.onDestroy();
         }
         simpleFollowUserAssistant = null;
+    }
+
+    protected void fetchProfile()
+    {
+        AndroidObservable.bindFragment(this, userProfileCache.get(followerId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new HeroManagerUserProfileCacheObserver());
+    }
+
+    protected void fetchHeroes()
+    {
+        AndroidObservable.bindFragment(this, heroListCache.get(followerId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new HeroManagerHeroListCacheObserver());
     }
 
     private void handleBuyMoreClicked()
@@ -490,44 +501,51 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         return new HeroListMostSkilledClickedListener();
     }
 
-    private class HeroManagerUserProfileCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    private class HeroManagerUserProfileCacheObserver
+            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            if (key.equals(HeroesTabContentFragment.this.followerId))
+            if (pair.first.equals(HeroesTabContentFragment.this.followerId))
             {
-                display(value);
+                display(pair.second);
             }
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            Timber.e("Could not fetch user profile", error);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.e("Could not fetch user profile", e);
             THToast.show(R.string.error_fetch_user_profile);
         }
     }
 
-    private class HeroManagerHeroListCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, HeroDTOExtWrapper>
+    private class HeroManagerHeroListCacheObserver
+            implements Observer<Pair<UserBaseKey, HeroDTOExtWrapper>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull HeroDTOExtWrapper value)
+        @Override public void onNext(Pair<UserBaseKey, HeroDTOExtWrapper> pair)
         {
             //displayProgress(false);
             onRefreshCompleted();
             setListShown(true);
-            display(value);
+            display(pair.second);
             enablePullToRefresh(true);
-            notifyHeroesLoaded(value);
+            notifyHeroesLoaded(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             displayProgress(false);
             setListShown(true);
             enablePullToRefresh(true);
-            Timber.e(error, "Could not fetch heroes");
+            Timber.e(e, "Could not fetch heroes");
             THToast.show(R.string.error_fetch_hero);
         }
     }

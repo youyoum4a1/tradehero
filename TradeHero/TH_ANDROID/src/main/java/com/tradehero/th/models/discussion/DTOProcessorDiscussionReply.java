@@ -5,25 +5,25 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DTOProcessorDiscussionReply extends DTOProcessorDiscussionCreate
 {
-    @NotNull protected final DiscussionListCacheNew discussionListCache;
+    @NotNull protected final DiscussionListCacheRx discussionListCache;
     @NotNull protected final DiscussionKey initiatingKey;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorDiscussionReply(
             @NotNull DiscussionDTOFactory discussionDTOFactory,
             @NotNull CurrentUserId currentUserId,
-            @NotNull DiscussionCache discussionCache,
-            @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
+            @NotNull DiscussionCacheRx discussionCache,
+            @NotNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
             @Nullable DiscussionKey stubKey,
-            @NotNull DiscussionListCacheNew discussionListCache,
+            @NotNull DiscussionListCacheRx discussionListCache,
             @NotNull DiscussionKey initiatingKey)
     {
         super(discussionDTOFactory, currentUserId, discussionCache, userMessagingRelationshipCache, stubKey);
@@ -35,7 +35,7 @@ public class DTOProcessorDiscussionReply extends DTOProcessorDiscussionCreate
     @Override public DiscussionDTO process(DiscussionDTO discussionDTO)
     {
         @Nullable DiscussionDTO processed = super.process(discussionDTO);
-        AbstractDiscussionCompactDTO cachedInitiating = discussionCache.get(initiatingKey);
+        AbstractDiscussionCompactDTO cachedInitiating = discussionCache.getValue(initiatingKey);
         if (cachedInitiating != null)
         {
             if (stubKey == null || processed == null || !stubKey.id.equals(processed.id))
@@ -43,11 +43,11 @@ public class DTOProcessorDiscussionReply extends DTOProcessorDiscussionCreate
                 // do not end up with the right number of comments.
             {
                 cachedInitiating.commentCount++;
-                discussionCache.put(initiatingKey, cachedInitiating);
-                discussionCache.getOrFetchAsync(initiatingKey, true);
+                discussionCache.onNext(initiatingKey, cachedInitiating);
+                discussionCache.get(initiatingKey);
             }
         }
-        discussionListCache.getOrFetchAsyncWhereSameField(initiatingKey);
+        discussionListCache.getWhereSameField(initiatingKey);
         return processed;
     }
 }

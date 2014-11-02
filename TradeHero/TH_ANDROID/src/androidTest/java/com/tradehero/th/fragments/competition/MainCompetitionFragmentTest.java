@@ -21,7 +21,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
-import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
 import java.util.ArrayList;
 import javax.inject.Inject;
@@ -43,7 +43,7 @@ public class MainCompetitionFragmentTest
     private static final String TEST_ADS_WEB_URL = "http://www.google.com";
     private static final String TEST_WIZARD_WEB_URL = "http://www.apple.com";
     @Inject DashboardNavigator dashboardNavigator;
-    @Inject ProviderCache providerCache;
+    @Inject ProviderCacheRx providerCache;
     @Inject ProviderDisplayCellListCache providerDisplayCellListCache;
     @Inject CompetitionListCache competitionListCache;
     @Inject ProviderUtil providerUtil;
@@ -68,7 +68,7 @@ public class MainCompetitionFragmentTest
         mockProviderDTO.advertisements = new ArrayList<>();
         mockProviderDTO.advertisements.add(adDTO);
 
-        providerCache.put(providerId, mockProviderDTO);
+        providerCache.onNext(providerId, mockProviderDTO);
 
         CompetitionDTOList competitionDTOList = new CompetitionDTOList();
         competitionListCache.put(providerId, competitionDTOList);
@@ -109,7 +109,7 @@ public class MainCompetitionFragmentTest
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
 
-        ProviderDTO providerDTO = providerCache.get(providerId);
+        ProviderDTO providerDTO = providerCache.getValue(providerId);
         // make sure that we has advertisement before testing Ads Cell
         assertThat(providerDTO.hasAdvertisement()).isTrue();
 
@@ -196,9 +196,9 @@ public class MainCompetitionFragmentTest
 
     @Test public void shouldGoToTradeQuestPageAfterClickOnWizardCellWhenWizardUrlIsSetToTradeQuestUrl() throws InterruptedException
     {
-        ProviderDTO providerDTO = providerCache.get(providerId);
+        ProviderDTO providerDTO = providerCache.getValue(providerId);
         providerDTO.wizardUrl = TEST_WIZARD_WEB_URL;
-        providerCache.put(providerId, providerDTO);
+        providerCache.onNext(providerId, providerDTO);
         shouldGoToCorrectWebPageAfterClickOnWizardCell(TEST_WIZARD_WEB_URL);
     }
 
@@ -206,12 +206,12 @@ public class MainCompetitionFragmentTest
     {
         // we do not hardcoded on client anymore for generating competition url from providerId
         // but I would like to test it anyway
-        ProviderDTO providerDTO = providerCache.get(providerId);
+        ProviderDTO providerDTO = providerCache.getValue(providerId);
         providerDTO.wizardUrl = null;
         // for enabling wizard cell
         providerDTO.specificKnowledge = new ProviderSpecificKnowledgeDTO();
         providerDTO.specificKnowledge.hasWizard = true;
-        providerCache.put(providerId, providerDTO);
+        providerCache.onNext(providerId, providerDTO);
 
         String expectedWizardPage = providerUtil.getWizardPage(providerId);
         shouldGoToCorrectWebPageAfterClickOnWizardCell(expectedWizardPage);
@@ -224,7 +224,7 @@ public class MainCompetitionFragmentTest
         MainCompetitionFragment.putProviderId(args, providerId);
 
         // make sure that we have wizard before proceed testing it
-        ProviderDTO providerDTO = providerCache.get(providerId);
+        ProviderDTO providerDTO = providerCache.getValue(providerId);
         assertThat(providerDTO.hasWizard()).isTrue();
 
         MainCompetitionFragment mainCompetitionFragment = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);

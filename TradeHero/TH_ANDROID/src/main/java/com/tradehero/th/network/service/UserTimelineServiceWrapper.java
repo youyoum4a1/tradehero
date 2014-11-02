@@ -9,33 +9,26 @@ import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.timeline.TimelineDTOProcessor;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
 import rx.Observable;
 
 @Singleton public class UserTimelineServiceWrapper
 {
     @NotNull private final UserTimelineService userTimelineService;
-    @NotNull private final UserTimelineServiceAsync userTimelineServiceAsync;
     @NotNull private final UserTimelineServiceRx userTimelineServiceRx;
     @NotNull private final Provider<TimelineDTOProcessor> timelineProcessorProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTimelineServiceWrapper(
             @NotNull UserTimelineService userTimelineService,
-            @NotNull UserTimelineServiceAsync userTimelineServiceAsync,
             @NotNull UserTimelineServiceRx userTimelineServiceRx,
             @NotNull Provider<TimelineDTOProcessor> timelineProcessorProvider)
     {
         super();
         this.userTimelineService = userTimelineService;
-        this.userTimelineServiceAsync = userTimelineServiceAsync;
         this.userTimelineServiceRx = userTimelineServiceRx;
         this.timelineProcessorProvider = timelineProcessorProvider;
     }
@@ -43,16 +36,9 @@ import rx.Observable;
 
     //<editor-fold desc="Get Global Timeline">
     // TODO create a proper key that contains the values max / min
-    @NotNull protected TimelineDTO getGlobalTimeline(Integer maxCount, Integer maxId, Integer minId)
+    @NotNull protected Observable<TimelineDTO> getGlobalTimelineRx(Integer maxCount, Integer maxId, Integer minId)
     {
-        return userTimelineService.getGlobalTimeline(maxCount, maxId, minId);
-    }
-
-    @NotNull protected MiddleCallback<TimelineDTO> getGlobalTimeline(Integer maxCount, Integer maxId, Integer minId, Callback<TimelineDTO> callback)
-    {
-        MiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.getGlobalTimeline(maxCount, maxId, minId, middleCallback);
-        return middleCallback;
+        return userTimelineServiceRx.getGlobalTimeline(maxCount, maxId, minId);
     }
 
     @NotNull public TimelineItemDTO getTimelineDetail(@NotNull TimelineItemDTOKey key)
@@ -60,21 +46,17 @@ import rx.Observable;
         return userTimelineService.getTimelineDetail(key.id);
     }
 
-    @NotNull public MiddleCallback<TimelineItemDTO> getTimelineDetail(
-            @NotNull TimelineItemDTOKey key,
-            @Nullable Callback<TimelineItemDTO> callback)
+    @NotNull public Observable<TimelineItemDTO> getTimelineDetailRx(@NotNull TimelineItemDTOKey key)
     {
-        MiddleCallback<TimelineItemDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.getTimelineDetail(key.id, middleCallback);
-        return middleCallback;
+        return userTimelineServiceRx.getTimelineDetail(key.id);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
-    @NotNull public TimelineDTO getDefaultTimeline(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
+    @NotNull public Observable<TimelineDTO> getDefaultTimelineRx(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
-        return userTimelineService.getTimeline(TimelineSection.Timeline, userId.key, maxCount, maxId, minId);
+        return userTimelineServiceRx.getTimeline(TimelineSection.Timeline, userId.key, maxCount, maxId, minId);
     }
 
     public TimelineDTO getTimelineBySection(TimelineSection section,
@@ -88,7 +70,7 @@ import rx.Observable;
             @NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
-        return userTimelineServiceRx.getTimelineRx(section, userId.key, maxCount, maxId, minId)
+        return userTimelineServiceRx.getTimeline(section, userId.key, maxCount, maxId, minId)
                 .doOnNext(timelineProcessorProvider.get());
     }
 
@@ -96,53 +78,24 @@ import rx.Observable;
     {
         return getTimelineBySectionRx(section, userBaseKey, rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId);
     }
-
-    @NotNull MiddleCallback<TimelineDTO> getTimeline(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
-            @Nullable Callback<TimelineDTO> callback)
-    {
-        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.getTimeline(userId.key, maxCount, maxId, minId, middleCallback);
-        return middleCallback;
-    }
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">
-    @NotNull public BaseResponseDTO shareTimelineItem(
+    @NotNull public Observable<BaseResponseDTO> shareTimelineItem(
             @NotNull UserBaseKey userId,
             @NotNull TimelineItemDTOKey timelineItemId,
             @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
-        return userTimelineService.shareTimelineItem(userId.key, timelineItemId.id, timelineItemShareRequestDTO);
-    }
-
-    @NotNull public MiddleCallback<BaseResponseDTO> shareTimelineItem(
-            @NotNull UserBaseKey userId,
-            @NotNull TimelineItemDTOKey timelineItemId,
-            @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO,
-            @Nullable Callback<BaseResponseDTO> callback)
-    {
-        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.shareTimelineItem(userId.key, timelineItemId.id, timelineItemShareRequestDTO, middleCallback);
-        return middleCallback;
+        return userTimelineServiceRx.shareTimelineItem(userId.key, timelineItemId.id, timelineItemShareRequestDTO);
     }
     //</editor-fold>
 
     //<editor-fold desc="Delete Timeline Item">
-    @NotNull public BaseResponseDTO deleteTimelineItem(
+    @NotNull public Observable<BaseResponseDTO> deleteTimelineItem(
             @NotNull UserBaseKey userId,
             @NotNull TimelineItemDTOKey timelineItemId)
     {
-        return userTimelineService.deleteTimelineItem(userId.key, timelineItemId.id);
-    }
-
-    @NotNull public MiddleCallback<BaseResponseDTO> deleteTimelineItem(
-            @NotNull UserBaseKey userId,
-            @NotNull TimelineItemDTOKey timelineItemId,
-            @Nullable Callback<BaseResponseDTO> callback)
-    {
-        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineServiceAsync.deleteTimelineItem(userId.key, timelineItemId.id, middleCallback);
-        return middleCallback;
+        return userTimelineServiceRx.deleteTimelineItem(userId.key, timelineItemId.id);
     }
     //</editor-fold>
 }

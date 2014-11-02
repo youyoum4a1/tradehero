@@ -18,7 +18,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.level.XpModule;
@@ -35,7 +35,7 @@ public class ObjectMapperWrapper extends ObjectMapper
     @NotNull protected final Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy;
     @NotNull protected final Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy;
     @NotNull private final Lazy<BroadcastUtils> broadcastUtilsLazy;
-    @NotNull private final Lazy<UserProfileCache> userProfileCacheLazy;
+    @NotNull private final Lazy<UserProfileCacheRx> userProfileCacheLazy;
     @NotNull private final Lazy<CurrentUserId> currentUserIdLazy;
 
     //<editor-fold desc="Constructors">
@@ -43,7 +43,7 @@ public class ObjectMapperWrapper extends ObjectMapper
             @NotNull Lazy<UserAchievementCacheRx> userAchievementCacheLazy,
             @NotNull Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy,
             @NotNull Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy,
-            @NotNull Lazy<UserProfileCache> userProfileCacheLazy,
+            @NotNull Lazy<UserProfileCacheRx> userProfileCacheLazy,
             @NotNull Lazy<CurrentUserId> currentUserIdLazy,
             @NotNull Lazy<BroadcastUtils> broadcastUtilsLazy)
     {

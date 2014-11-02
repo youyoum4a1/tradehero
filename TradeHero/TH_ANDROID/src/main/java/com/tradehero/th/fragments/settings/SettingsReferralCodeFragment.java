@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,17 +10,17 @@ import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class SettingsReferralCodeFragment extends DashboardFragment
@@ -28,18 +29,10 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     private static final int VIEW_ALREADY_CLAIMED = 1;
 
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
 
     @InjectView(R.id.invite_code_claimed_switcher) ViewSwitcher alreadyClaimedSwitcher;
     @InjectView(R.id.settings_referral_code) TextView mReferralCode;
-
-    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        userProfileCacheListener = createProfileCacheListener();
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -54,53 +47,41 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         fetchProfile();
     }
 
-    @Override public void onStop()
-    {
-        detachProfileCache();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
-        userProfileCacheListener = null;
-        super.onDestroy();
-    }
-
     protected void fetchProfile()
     {
-        detachProfileCache();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this,
+                userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createProfileCacheObserver());
     }
 
-    protected void detachProfileCache()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
     {
-        userProfileCache.unregister(userProfileCacheListener);
+        return new SettingsReferralUserProfileObserver();
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
+    protected class SettingsReferralUserProfileObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        return new SettingsReferralUserProfileListener();
-    }
-
-    protected class SettingsReferralUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            mReferralCode.setText(value.referralCode);
-            alreadyClaimedSwitcher.setDisplayedChild(value.alreadyClaimedInvitedDollars() ? VIEW_ALREADY_CLAIMED : VIEW_CLAIM);
+            mReferralCode.setText(pair.second.referralCode);
+            alreadyClaimedSwitcher.setDisplayedChild(pair.second.alreadyClaimedInvitedDollars() ? VIEW_ALREADY_CLAIMED : VIEW_CLAIM);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_your_user_profile);
-            Timber.e("Failed to fetch profile info", error);
+            Timber.e("Failed to fetch profile info", e);
         }
     }
 

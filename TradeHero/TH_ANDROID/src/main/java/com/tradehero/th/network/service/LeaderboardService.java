@@ -8,6 +8,7 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
+@Deprecated
 public interface LeaderboardService
 {
     //<editor-fold desc="Get Leaderboard Definitions">

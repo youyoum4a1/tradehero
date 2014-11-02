@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class ProviderDisplayCellListCache
         extends StraightCutDTOCacheNew<ProviderDisplayCellListKey, ProviderDisplayCellDTOList, ProviderDisplayCellIdList>
 {

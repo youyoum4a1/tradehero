@@ -2,8 +2,8 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.widget.LinearLayout;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -16,15 +16,17 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 abstract public class AbstractDiscussionCompactItemViewLinear<T extends DiscussionKey>
         extends LinearLayout
         implements DTOView<T>
 {
-    @Inject protected DiscussionCache discussionCache;
+    @Inject protected DiscussionCacheRx discussionCache;
     @Inject protected SocialShareTranslationHelper socialShareHelper;
     @Inject DashboardNavigator dashboardNavigator;
 
@@ -32,7 +34,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     protected T discussionKey;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
-    private DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchListener;
+    private Subscription discussionFetchSubscription;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionCompactItemViewLinear(Context context, AttributeSet attrs)
@@ -47,7 +49,6 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         super.onFinishInflate();
         if (!isInEditMode())
         {
-            discussionFetchListener = createDiscussionFetchListener();
             viewHolder = createViewHolder();
             viewHolder.onFinishInflate(this);
             socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
@@ -57,10 +58,6 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (discussionFetchListener == null)
-        {
-            discussionFetchListener = createDiscussionFetchListener();
-        }
         if (!isInEditMode())
         {
             viewHolder.onAttachedToWindow(this);
@@ -76,7 +73,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         socialShareHelper.onDetach();
         viewHolder.setMenuClickedListener(null);
         viewHolder.onDetachedFromWindow();
-        discussionFetchListener = null;
+        discussionFetchSubscription = null;
         super.onDetachedFromWindow();
     }
 
@@ -89,24 +86,30 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     {
         this.discussionKey = discussionKey;
 
-        fetchDiscussionDetail(false);
+        fetchDiscussionDetail();
     }
 
     public void refresh()
     {
-        fetchDiscussionDetail(true);
+        fetchDiscussionDetail();
     }
 
-    private void fetchDiscussionDetail(boolean force)
+    private void fetchDiscussionDetail()
     {
         detachFetchDiscussionTask();
-        discussionCache.register(discussionKey, discussionFetchListener);
-        discussionCache.getOrFetchAsync(discussionKey, force);
+        discussionFetchSubscription = discussionCache.get(discussionKey)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createDiscussionFetchObserver());
     }
 
     private void detachFetchDiscussionTask()
     {
-        discussionCache.unregister(discussionFetchListener);
+        Subscription copy = discussionFetchSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        discussionFetchSubscription = null;
     }
 
     protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
@@ -123,23 +126,26 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         return dashboardNavigator;
     }
 
-    protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
+    protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
     {
-        return new DiscussionFetchListener();
+        return new DiscussionFetchObserver();
     }
 
-    private class DiscussionFetchListener
-            implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
+    private class DiscussionFetchObserver
+            implements Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>>
     {
-        @Override
-        public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value)
+        @Override public void onNext(Pair<DiscussionKey, AbstractDiscussionCompactDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull DiscussionKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(error));
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
         }
     }
 

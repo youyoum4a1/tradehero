@@ -5,7 +5,7 @@ import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,12 +14,12 @@ public class DTOProcessorReadablePaginatedMessageReceived<
         ReadableType extends ReadablePaginatedDTO<MessageHeaderDTOType>>
      implements DTOProcessor<ReadableType>
 {
-    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final UserProfileCacheRx userProfileCache;
     @Nullable private final UserBaseKey readerUserId;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorReadablePaginatedMessageReceived(
-            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserProfileCacheRx userProfileCache,
             @Nullable UserBaseKey readerUserId)
     {
         this.userProfileCache = userProfileCache;
@@ -31,7 +31,7 @@ public class DTOProcessorReadablePaginatedMessageReceived<
     {
         if (readerUserId != null)
         {
-            UserProfileDTO cachedProfile = userProfileCache.get(readerUserId);
+            UserProfileDTO cachedProfile = userProfileCache.getValue(readerUserId);
             if (cachedProfile != null)
             {
                 cachedProfile.unreadMessageThreadsCount = value.unread;

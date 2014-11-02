@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.security;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
@@ -23,13 +23,15 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class StockInfoFragment extends DashboardFragment
@@ -43,8 +45,7 @@ public class StockInfoFragment extends DashboardFragment
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
+    @Inject Lazy<SecurityCompactCacheRx> securityCompactCache;
 
     protected PaginatedDTO<NewsItemDTO> newsHeadlineList;
 
@@ -54,12 +55,6 @@ public class StockInfoFragment extends DashboardFragment
     private InfoTopStockPagerAdapter topViewPagerAdapter;
     private NewsHeadlineAdapter newsHeadlineAdapter;
     private ListView yahooNewsListView;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        compactCacheListener = createSecurityCompactCacheListener();
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -76,13 +71,8 @@ public class StockInfoFragment extends DashboardFragment
         if (yahooNewsListView != null)
         {
             yahooNewsListView.setAdapter(newsHeadlineAdapter);
-            yahooNewsListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-                {
-                    handleNewsClicked(position, (NewsItemDTOKey) adapterView.getItemAtPosition(position));
-                }
-            });
+            yahooNewsListView.setOnItemClickListener(
+                    (adapterView, view1, position, l) -> handleNewsClicked(position, (NewsItemDTOKey) adapterView.getItemAtPosition(position)));
         }
 
         topPager = (ViewPager) view.findViewById(R.id.top_pager);
@@ -133,13 +123,6 @@ public class StockInfoFragment extends DashboardFragment
         displayMarketClose();
     }
 
-    @Override public void onPause()
-    {
-        detachSecurityCompactCache();
-
-        super.onPause();
-    }
-
     @Override public void onDestroyView()
     {
         if (yahooNewsListView != null)
@@ -151,17 +134,6 @@ public class StockInfoFragment extends DashboardFragment
         topViewPagerAdapter = null;
         topPager = null;
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        compactCacheListener = null;
-        super.onDestroy();
-    }
-
-    protected void detachSecurityCompactCache()
-    {
-        securityCompactCache.get().unregister(compactCacheListener);
     }
 
     private void linkWith(final ProviderId providerId, final boolean andDisplay)
@@ -192,17 +164,9 @@ public class StockInfoFragment extends DashboardFragment
 
     private void queryCompactCache(final SecurityId securityId, final boolean andDisplay)
     {
-        SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
-        if (securityCompactDTO != null)
-        {
-            linkWith(securityCompactDTO, andDisplay);
-        }
-        else
-        {
-            detachSecurityCompactCache();
-            securityCompactCache.get().register(securityId, compactCacheListener);
-            securityCompactCache.get().getOrFetchAsync(securityId);
-        }
+        AndroidObservable.bindFragment(this, securityCompactCache.get().get(securityId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createSecurityCompactCacheObserver());
     }
 
     //private void queryNewsCache(final SecurityId securityId, final boolean andDisplay)
@@ -334,22 +298,26 @@ public class StockInfoFragment extends DashboardFragment
         navigator.get().pushFragment(NewsDiscussionFragment.class, bundle);
     }
 
-    protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    protected Observer<Pair<SecurityId, SecurityCompactDTO>> createSecurityCompactCacheObserver()
     {
-        return new StockInfoFragmentSecurityCompactCacheListener();
+        return new StockInfoFragmentSecurityCompactCacheObserver();
     }
 
-    protected class StockInfoFragmentSecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
+    protected class StockInfoFragmentSecurityCompactCacheObserver implements Observer<Pair<SecurityId, SecurityCompactDTO>>
     {
-        @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
+        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_security_info);
-            Timber.e(error, "Failed to fetch SecurityCompact %s", securityId);
+            Timber.e(e, "Failed to fetch SecurityCompact");
         }
     }
 }

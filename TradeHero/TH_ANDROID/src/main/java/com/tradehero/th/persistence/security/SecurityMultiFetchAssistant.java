@@ -1,94 +1,61 @@
 package com.tradehero.th.persistence.security;
 
-import com.tradehero.common.persistence.BasicFetchAssistant;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observable;
 
-public class SecurityMultiFetchAssistant extends BasicFetchAssistant<SecurityIntegerId, SecurityCompactDTO>
+public class SecurityMultiFetchAssistant
 {
-    private final SecurityCompactCache securityCompactCache;
-    private final SecurityServiceWrapper securityServiceWrapper;
+    @NotNull private final SecurityIdCache securityIdCache;
+    @NotNull private final SecurityCompactCacheRx securityCompactCache;
+    @NotNull private final SecurityServiceWrapper securityServiceWrapper;
 
     //<editor-fold desc="Constructors">
     public SecurityMultiFetchAssistant(
-            @NotNull SecurityCompactCache securityCompactCache,
-            @NotNull SecurityServiceWrapper securityServiceWrapper,
-            List<SecurityIntegerId> keysToFetch)
+            @NotNull SecurityIdCache securityIdCache,
+            @NotNull SecurityCompactCacheRx securityCompactCache,
+            @NotNull SecurityServiceWrapper securityServiceWrapper)
     {
-        super(keysToFetch);
+        super();
+        this.securityIdCache = securityIdCache;
         this.securityCompactCache = securityCompactCache;
         this.securityServiceWrapper = securityServiceWrapper;
     }
     //</editor-fold>
 
-    public void execute(boolean force)
+    public Observable<Map<SecurityIntegerId, SecurityCompactDTO>> get(List<SecurityIntegerId> keysToFetch)
     {
-        boolean ready = true;
-        SecurityIntegerIdList integerIds = new SecurityIntegerIdList();
-        SecurityCompactDTO cached;
-        for (SecurityIntegerId key: new ArrayList<>(fetched.keySet())) // Make a new list to avoid changes
-        {
-            cached = securityCompactCache.get(key);
-            if (force || cached == null)
-            {
-                ready = false;
-                integerIds.add(key);
-            }
-            else
-            {
-                fetched.put(key, cached);
-            }
-        }
-        if (!integerIds.isEmpty())
-        {
-            securityServiceWrapper.getMultipleSecurities(integerIds, createMultiFetchCallback());
-        }
-        if (ready)
-        {
-            notifyListener();
-        }
+        SecurityIntegerIdList remainingKeys = new SecurityIntegerIdList(keysToFetch, null);
+        return getCachedSecurities(keysToFetch)
+                .doOnNext(securityCompact -> remainingKeys.remove(securityCompact.getSecurityIntegerId()))
+                .toList()
+                .flatMap(cachedSecurityCompacts -> Observable.merge(
+                        Observable.from(cachedSecurityCompacts),
+                        securityServiceWrapper.getMultipleSecuritiesRx(remainingKeys)
+                                .flatMap(map -> Observable.from(map.values()))))
+                .toList()
+                .map(securityCompacts -> {
+                    Map<SecurityIntegerId, SecurityCompactDTO> map = new HashMap<>();
+                    for (SecurityCompactDTO securityCompact : securityCompacts)
+                    {
+                        map.put(securityCompact.getSecurityIntegerId(), securityCompact);
+                    }
+                    return map;
+                });
     }
 
-    protected void populate(@Nullable Map<Integer, SecurityCompactDTO> values)
+    public Observable<SecurityCompactDTO> getCachedSecurities(List<SecurityIntegerId> keysToFetch)
     {
-        if (values != null)
-        {
-            for (@Nullable SecurityCompactDTO securityCompactDTO: values.values())
-            {
-                if (securityCompactDTO != null)
-                {
-                    fetched.put(securityCompactDTO.getSecurityIntegerId(), securityCompactDTO);
-                }
-            }
-        }
-        notifyListener();
-    }
-
-    protected Callback<Map<Integer, SecurityCompactDTO>> createMultiFetchCallback()
-    {
-        return new SecurityMultiFetchAssistantCallback();
-    }
-
-    protected class SecurityMultiFetchAssistantCallback implements Callback<Map<Integer, SecurityCompactDTO>>
-    {
-        @Override public void success(Map<Integer, SecurityCompactDTO> integerSecurityCompactDTOMap, Response response)
-        {
-            populate(integerSecurityCompactDTOMap);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            notifyListener();
-        }
+        return Observable.from(keysToFetch)
+                .flatMap(securityIntegerId -> securityIdCache.getFirstOrEmpty(securityIntegerId))
+                .map(pair -> pair.second)
+                .flatMap(securityId -> securityCompactCache.getFirstOrEmpty(securityId))
+                .map(pair -> pair.second);
     }
 }

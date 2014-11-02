@@ -15,7 +15,6 @@ import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -28,7 +27,7 @@ import com.tradehero.th.fragments.authentication.AuthDataAction;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.MakePairFunc2;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -37,10 +36,9 @@ import com.tradehero.th.widget.ValidationMessage;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import rx.Observable;
-import rx.Subscription;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -53,13 +51,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @InjectView(R.id.authentication_sign_up_referral_code) protected EditText referralCodeEditText;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Provider<AuthDataAction> authDataActionProvider;
-
-    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    private Subscription updateProfileSubscription;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -84,14 +79,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
     }
 
-    @Override public void onStop()
-    {
-        detachUserProfileCache();
-        unsubscribe(updateProfileSubscription);
-        updateProfileSubscription = null;
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         profileView = null;
@@ -103,22 +90,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         updateButton = null;
         referralCodeEditText = null;
         super.onDestroyView();
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        detachUserProfileCache();
-        unsubscribe(updateProfileSubscription);
-    }
-
-    private void detachUserProfileCache()
-    {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.get().unregister(userProfileCacheListener);
-        }
-        userProfileCacheListener = null;
     }
 
     @Override public void onClick(View view)
@@ -150,24 +121,27 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private void populateCurrentUser()
     {
-        detachUserProfileCache();
-        userProfileCacheListener = createUserProfileCacheListener();
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
     }
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
+        return new Observer<Pair<UserBaseKey,UserProfileDTO>>()
         {
-            @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+            @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
             {
-                profileView.populate(value);
+                profileView.populate(pair.second);
             }
 
-            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+            @Override public void onCompleted()
             {
-                THToast.show(new THException(error));
+            }
+
+            @Override public void onError(Throwable e)
+            {
+                THToast.show(new THException(e));
             }
         };
     }
@@ -192,8 +166,8 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     R.string.authentication_connecting_tradehero_only);
             profileView.progressDialog.setCancelable(true);
 
-            unsubscribe(updateProfileSubscription);
-            updateProfileSubscription = profileView.obtainUserFormDTO()
+            AndroidObservable.bindFragment(this,
+                    profileView.obtainUserFormDTO())
                     .flatMap(new Func1<UserFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
                     {
                         @Override public Observable<Pair<AuthData, UserProfileDTO>> call(UserFormDTO userFormDTO)

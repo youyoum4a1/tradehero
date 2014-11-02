@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,7 +36,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -43,6 +44,8 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
 
 public class WatchlistPositionFragment extends DashboardFragment
 {
@@ -52,13 +55,12 @@ public class WatchlistPositionFragment extends DashboardFragment
     @InjectView(android.R.id.empty) @Optional protected ProgressBar progressBar;
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
-    @Inject PortfolioCache portfolioCache;
+    @Inject PortfolioCacheRx portfolioCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
 
     @Nullable private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
     @Nullable private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionRefreshListener;
-    @Nullable private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
 
     @InjectView(R.id.watchlist_position_list_header) WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
     @InjectView(R.id.pull_to_refresh_watchlist_listview) PullToRefreshSwipeListView watchlistPositionListView;
@@ -91,7 +93,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         setOffsetRunnable = createSetOffsetRunnable();
         userWatchlistPositionFetchListener = createWatchlistListener();
         userWatchlistPositionRefreshListener = createRefreshWatchlistListener();
-        portfolioFetchListener = createPortfolioCacheListener();
     }
 
     protected TwoStateView.OnStateChange createGainLossModeListener()
@@ -238,7 +239,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         detachUserWatchlistFetchTask();
         detachUserWatchlistRefreshTask();
-        detachPortfolioFetchTask();
         if (watchlistPortfolioHeaderView != null)
         {
             watchlistPortfolioHeaderView.setOnStateChangeListener(null);
@@ -282,14 +282,8 @@ public class WatchlistPositionFragment extends DashboardFragment
         userWatchlistPositionCache.unregister(userWatchlistPositionRefreshListener);
     }
 
-    protected void detachPortfolioFetchTask()
-    {
-        portfolioCache.unregister(portfolioFetchListener);
-    }
-
     @Override public void onDestroy()
     {
-        portfolioFetchListener = null;
         userWatchlistPositionRefreshListener = null;
         userWatchlistPositionFetchListener = null;
         broadcastReceiver = null;
@@ -301,9 +295,8 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected void fetchPortfolio()
     {
-        detachPortfolioFetchTask();
-        portfolioCache.register(shownPortfolioId, portfolioFetchListener);
-        portfolioCache.getOrFetchAsync(shownPortfolioId);
+        AndroidObservable.bindFragment(this, portfolioCache.get(shownPortfolioId))
+                .subscribe(createPortfolioCacheObserver());
     }
 
     private void displayHeader()
@@ -403,20 +396,25 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
     }
 
-    protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener()
+    protected Observer<Pair<OwnedPortfolioId, PortfolioDTO>> createPortfolioCacheObserver()
     {
-        return new WatchlistPositionFragmentPortfolioCacheListener();
+        return new WatchlistPositionFragmentPortfolioCacheObserver();
     }
 
-    protected class WatchlistPositionFragmentPortfolioCacheListener implements DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO>
+    protected class WatchlistPositionFragmentPortfolioCacheObserver implements Observer<Pair<OwnedPortfolioId, PortfolioDTO>>
     {
-        @Override public void onDTOReceived(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
+        @Override public void onNext(Pair<OwnedPortfolioId, PortfolioDTO> pair)
         {
-            shownPortfolioDTO = value;
+            shownPortfolioDTO = pair.second;
             displayHeader();
+
         }
 
-        @Override public void onErrorThrown(@NotNull OwnedPortfolioId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_portfolio_info);
         }

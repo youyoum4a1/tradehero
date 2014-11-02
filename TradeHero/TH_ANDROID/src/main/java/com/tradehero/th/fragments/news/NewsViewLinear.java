@@ -33,7 +33,7 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
     {
         if (viewHolder != null)
         {
-            viewHolder.setBackroundResource(resId);
+            viewHolder.setBackgroundResource(resId);
         }
     }
 

@@ -3,16 +3,16 @@ package com.tradehero.th.models.user.payment;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorUpdateAlipayAccount implements DTOProcessor<UpdateAlipayAccountDTO>
 {
-    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final UserProfileCacheRx userProfileCache;
     @NotNull private final UserBaseKey playerId;
 
     public DTOProcessorUpdateAlipayAccount(
-            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserProfileCacheRx userProfileCache,
             @NotNull UserBaseKey playerId)
     {
         this.userProfileCache = userProfileCache;

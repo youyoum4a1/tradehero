@@ -10,7 +10,7 @@ import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
@@ -21,7 +21,7 @@ public class SocialConnectWeiboSettingViewHolder extends SocialConnectSettingVie
     //<editor-fold desc="Constructors">
     @Inject public SocialConnectWeiboSettingViewHolder(
             @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserProfileCacheRx userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull AlertDialogUtil alertDialogUtil,

@@ -2,13 +2,13 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -22,14 +22,16 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class SettingsAlipayFragment extends DashboardFragment
 {
@@ -40,11 +42,10 @@ public class SettingsAlipayFragment extends DashboardFragment
     private ProgressDialog progressDialog;
     private Button submitButton;
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private MiddleCallback<UpdateAlipayAccountDTO> middleCallbackUpdateAlipayAccount;
 
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
@@ -77,7 +78,6 @@ public class SettingsAlipayFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachMiddleCallbackUpdateAlipayAccount();
-        detachUserProfileCache();
         if (alipayAccountText != null)
         {
             alipayAccountText.setOnTouchListener(null);
@@ -108,12 +108,6 @@ public class SettingsAlipayFragment extends DashboardFragment
             middleCallbackUpdateAlipayAccount.setPrimaryCallback(null);
         }
         middleCallbackUpdateAlipayAccount = null;
-    }
-
-    private void detachUserProfileCache()
-    {
-        userProfileCache.unregister(userProfileCacheListener);
-        userProfileCacheListener = null;
     }
 
     private void setupSubmitButton()
@@ -174,33 +168,30 @@ public class SettingsAlipayFragment extends DashboardFragment
         alipayAccountIDText.setOnTouchListener(new FocusableOnTouchListener());
         alipayAccountRealNameText = (ServerValidatedEmailText) view.findViewById(R.id.settings_alipay_realname_text);
         alipayAccountRealNameText.setOnTouchListener(new FocusableOnTouchListener());
-        detachUserProfileCache();
-        userProfileCacheListener = createUserProfileCacheListener();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this,
+                userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
     }
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
+        return new Observer<Pair<UserBaseKey,UserProfileDTO>>()
         {
-            @Override
-            public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+            @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
             {
-                if (!isDetached())
-                {
-                    alipayAccountText.setText(value.alipayAccount);
-                    alipayAccountIDText.setText(value.alipayIdentityNumber);
-                    alipayAccountRealNameText.setText(value.alipayRealName);
-                }
+                alipayAccountText.setText(pair.second.alipayAccount);
+                alipayAccountIDText.setText(pair.second.alipayIdentityNumber);
+                alipayAccountRealNameText.setText(pair.second.alipayRealName);
             }
 
-            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+            @Override public void onCompleted()
             {
-                if (!isDetached())
-                {
-                    THToast.show(getString(R.string.error_fetch_your_user_profile));
-                }
+            }
+
+            @Override public void onError(Throwable e)
+            {
+                THToast.show(getString(R.string.error_fetch_your_user_profile));
             }
         };
     }

@@ -4,8 +4,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import org.jetbrains.annotations.NotNull;
@@ -18,8 +18,8 @@ public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPo
     public DTOProcessorWatchlistCreateList(
             @NotNull WatchlistPositionCache watchlistPositionCache,
             @NotNull UserBaseKey concernedUser,
-            @NotNull PortfolioCompactCache portfolioCompactCache,
-            @NotNull PortfolioCache portfolioCache,
+            @NotNull PortfolioCompactCacheRx portfolioCompactCache,
+            @NotNull PortfolioCacheRx portfolioCache,
             @NotNull UserWatchlistPositionCache userWatchlistPositionCache)
     {
         super();

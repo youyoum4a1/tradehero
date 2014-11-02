@@ -29,7 +29,7 @@ import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.social.friend.FriendsListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @InjectView(R.id.search_social_friends) EditText searchEdit;
     @Inject FriendsListCache friendsListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
@@ -653,7 +653,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             {
                 // TODO
                 handleFollowSuccess(usersToFollow);
-                userProfileCache.put(userProfileDTO.getBaseKey(), userProfileDTO);
+                userProfileCache.onNext(userProfileDTO.getBaseKey(), userProfileDTO);
                 return;
             }
             handleFollowError();

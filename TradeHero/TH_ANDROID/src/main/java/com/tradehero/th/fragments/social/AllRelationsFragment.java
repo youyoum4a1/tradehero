@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.fragment.HasSelectedItem;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
@@ -28,7 +27,7 @@ import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
+import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -39,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
@@ -46,25 +46,16 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 {
     List<AllowableRecipientDTO> mRelationsList;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    @Inject AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
+    @Inject AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
     @Inject UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
     @Inject Lazy<AdapterViewUtils> adapterViewUtils;
 
     @InjectView(R.id.sending_to_header) View sendingToHeader;
 
-    private
-    DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>
-            allowableRecipientCacheListener;
     private AllowableRecipientDTO selectedItem;
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        allowableRecipientCacheListener = createAllowableRecipientListener();
-    }
 
     @Override
     protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -115,7 +106,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        detachAllowableRecipientTask();
         mRelationsListView.setAdapter(null);
         mRelationsListView.setOnItemClickListener(null);
         mRelationsListView.setOnScrollListener(null);
@@ -125,12 +115,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         mRelationsListItemAdapter = null;
         mRelationsList = null;
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        allowableRecipientCacheListener = null;
-        super.onDestroy();
     }
 
     @Nullable @Override public AllowableRecipientDTO getSelectedItem()
@@ -148,14 +132,11 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         alertDialogUtilLazy.get()
                 .showProgressDialog(getActivity(), getString(R.string.downloading_relations));
-        detachAllowableRecipientTask();
-        allowableRecipientPaginatedCache.register(new SearchAllowableRecipientListType(null, null, null), allowableRecipientCacheListener);
-        allowableRecipientPaginatedCache.getOrFetchAsync(new SearchAllowableRecipientListType(null, null, null));
-    }
-
-    private void detachAllowableRecipientTask()
-    {
-        allowableRecipientPaginatedCache.unregister(allowableRecipientCacheListener);
+        AndroidObservable.bindFragment(
+                this,
+                allowableRecipientPaginatedCache.get(new SearchAllowableRecipientListType(null, null, null)))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createAllowableRecipientObserver());
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -182,30 +163,33 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         premiumFollowUser(userBaseKey);
     }
 
-    protected DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>
-        createAllowableRecipientListener()
+    protected Observer<Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>>
+    createAllowableRecipientObserver()
     {
-        return new AllRelationAllowableRecipientCacheListener();
+        return new AllRelationAllowableRecipientCacheObserver();
     }
 
-    protected class AllRelationAllowableRecipientCacheListener
-            implements DTOCacheNew.Listener<
+    protected class AllRelationAllowableRecipientCacheObserver
+            implements Observer<Pair<
             SearchAllowableRecipientListType,
-            PaginatedAllowableRecipientDTO>
+            PaginatedAllowableRecipientDTO>>
     {
-        @Override public void onDTOReceived(@NotNull SearchAllowableRecipientListType key,
-                @NotNull PaginatedAllowableRecipientDTO value)
+        @Override public void onNext(Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
         {
             //mRelationsList = userProfileCompactCache.get(value.getData());
-            mRelationsList = value.getData();
+            mRelationsList = pair.second.getData();
             alertDialogUtilLazy.get().dismissProgressDialog();
             mRelationsListItemAdapter.addAll(mRelationsList);
             mRelationsListItemAdapter.notifyDataSetChanged();
         }
 
-        @Override public void onErrorThrown(@NotNull SearchAllowableRecipientListType key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(error));
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
             alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
@@ -247,6 +231,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
                 .subscribe(new Observer<Pair<UserBaseKey, UserMessagingRelationshipDTO>>()
                 {
                     private boolean isEmpty = true;
+
                     @Override public void onCompleted()
                     {
                         if (isEmpty)
@@ -265,14 +250,15 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
                     {
                         isEmpty = false;
                         mRelationsListItemAdapter.updateItem(userFollowed, pair.second);
-                        adapterViewUtils.get().updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class, new Predicate<AllowableRecipientDTO>()
-                        {
-                            @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)
-                            {
-                                return allowableRecipientDTO != null
-                                        && allowableRecipientDTO.user.getBaseKey().equals(userFollowed);
-                            }
-                        });
+                        adapterViewUtils.get()
+                                .updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class, new Predicate<AllowableRecipientDTO>()
+                                {
+                                    @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)
+                                    {
+                                        return allowableRecipientDTO != null
+                                                && allowableRecipientDTO.user.getBaseKey().equals(userFollowed);
+                                    }
+                                });
                     }
                 });
     }

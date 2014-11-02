@@ -15,65 +15,58 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList;
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
 import rx.Observable;
 
 @Singleton public class LeaderboardServiceWrapper
 {
     @NotNull private final LeaderboardService leaderboardService;
-    @NotNull private final LeaderboardServiceAsync leaderboardServiceAsync;
     @NotNull private final LeaderboardServiceRx leaderboardServiceRx;
     @NotNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardServiceWrapper(
             @NotNull LeaderboardService leaderboardService,
-            @NotNull LeaderboardServiceAsync leaderboardServiceAsync,
             @NotNull LeaderboardServiceRx leaderboardServiceRx,
             @NotNull LeaderboardDefDTOFactory leaderboardDefDTOFactory)
     {
         super();
         this.leaderboardService = leaderboardService;
-        this.leaderboardServiceAsync = leaderboardServiceAsync;
         this.leaderboardServiceRx = leaderboardServiceRx;
         this.leaderboardDefDTOFactory = leaderboardDefDTOFactory;
     }
     //</editor-fold>
 
-    protected DTOProcessor<GetPositionsDTO> createProcessorReceivedGetPositions(LeaderboardMarkUserId leaderboardMarkUserId)
+    protected DTOProcessorGetPositions createProcessorReceivedGetPositions(LeaderboardMarkUserId leaderboardMarkUserId)
     {
         return new DTOProcessorGetPositions(leaderboardMarkUserId);
     }
 
-    protected DTOProcessor<LeaderboardDefDTOList> createProcessorLeaderboardDefDTOList()
+    protected DTOProcessorLeaderboardDefDTOList createProcessorLeaderboardDefDTOList()
     {
         return new DTOProcessorLeaderboardDefDTOList(leaderboardDefDTOFactory);
     }
 
     //<editor-fold desc="Get Leaderboard Definitions">
+    @Deprecated
     @NotNull public LeaderboardDefDTOList getLeaderboardDefinitions()
     {
         return createProcessorLeaderboardDefDTOList().process(leaderboardService.getLeaderboardDefinitions());
     }
 
-    @NotNull public MiddleCallback<LeaderboardDefDTOList> getLeaderboardDefinitions(@Nullable Callback<LeaderboardDefDTOList> callback)
+    @NotNull public Observable<LeaderboardDefDTOList> getLeaderboardDefinitionsRx()
     {
-        MiddleCallback<LeaderboardDefDTOList> middleCallback = new BaseMiddleCallback<>(callback, createProcessorLeaderboardDefDTOList());
-        leaderboardServiceAsync.getLeaderboardDefinitions(middleCallback);
-        return middleCallback;
+        return leaderboardServiceRx.getLeaderboardDefinitions()
+                .map(createProcessorLeaderboardDefDTOList());
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Leaderboard">
+    @Deprecated
     public LeaderboardDTO getLeaderboard(@NotNull LeaderboardKey leaderboardKey)
     {
         if (leaderboardKey instanceof UserOnLeaderboardKey)
@@ -130,88 +123,61 @@ import rx.Observable;
         return leaderboardService.getLeaderboard(leaderboardKey.id, null, null);
     }
 
-    @NotNull public MiddleCallback<LeaderboardDTO> getLeaderboard(
-            @NotNull LeaderboardKey leaderboardKey,
-            @Nullable Callback<LeaderboardDTO> callback)
+    public Observable<LeaderboardDTO> getLeaderboardRx(@NotNull LeaderboardKey leaderboardKey)
     {
-        MiddleCallback<LeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
         if (leaderboardKey instanceof UserOnLeaderboardKey)
         {
-            leaderboardServiceAsync.getUserOnLeaderboard(
+            return leaderboardServiceRx.getUserOnLeaderboard(
                     leaderboardKey.id,
                     ((UserOnLeaderboardKey) leaderboardKey).userBaseKey.key,
-                    null,
-                    middleCallback);
+                    null);
         }
         else if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
         {
             SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey = (SortedPerPagedLeaderboardKey) leaderboardKey;
-            leaderboardServiceAsync.getLeaderboard(
+            return leaderboardServiceRx.getLeaderboard(
                     sortedPerPagedLeaderboardKey.id,
                     sortedPerPagedLeaderboardKey.page,
                     sortedPerPagedLeaderboardKey.perPage,
-                    sortedPerPagedLeaderboardKey.sortType,
-                    middleCallback);
+                    sortedPerPagedLeaderboardKey.sortType);
         }
         else if (leaderboardKey instanceof PerPagedFilteredLeaderboardKey)
         {
             PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey = (PerPagedFilteredLeaderboardKey) leaderboardKey;
-            leaderboardServiceAsync.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.id,
+            return leaderboardServiceRx.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.id,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
 
                     // HACK https://www.pivotaltracker.com/story/show/73042972
                     Math.max(1, perPagedFilteredLeaderboardKey.averageHoldingDays),
+
                     perPagedFilteredLeaderboardKey.minSharpeRatio,
                     perPagedFilteredLeaderboardKey.minConsistency == null ? null : 1 / perPagedFilteredLeaderboardKey.minConsistency,
                     perPagedFilteredLeaderboardKey.page,
-                    perPagedFilteredLeaderboardKey.perPage,
-                    middleCallback);
+                    perPagedFilteredLeaderboardKey.perPage);
         }
         else if (leaderboardKey instanceof FriendsPerPagedLeaderboardKey)
         {
-            FriendsPerPagedLeaderboardKey friendsPerPagedLeaderboardKey = (FriendsPerPagedLeaderboardKey) leaderboardKey;
-            leaderboardServiceAsync.getFriendsLeaderboard(
-                    friendsPerPagedLeaderboardKey.page,
-                    friendsPerPagedLeaderboardKey.perPage,
-                    friendsPerPagedLeaderboardKey.includeFoF,
-                    middleCallback);
+            return leaderboardServiceRx.getNewFriendsLeaderboard()
+                    .map(leaderboardFriendsDTO -> leaderboardFriendsDTO.leaderboard);
         }
         else if (leaderboardKey instanceof PerPagedLeaderboardKey)
         {
             PerPagedLeaderboardKey perPagedLeaderboardKey = (PerPagedLeaderboardKey) leaderboardKey;
-            leaderboardServiceAsync.getLeaderboard(
+            return leaderboardServiceRx.getLeaderboard(
                     perPagedLeaderboardKey.id,
                     perPagedLeaderboardKey.page,
-                    perPagedLeaderboardKey.perPage,
-                    middleCallback);
+                    perPagedLeaderboardKey.perPage);
         }
         else if (leaderboardKey instanceof PagedLeaderboardKey)
         {
             PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
-            leaderboardServiceAsync.getLeaderboard(
+            return leaderboardServiceRx.getLeaderboard(
                     pagedLeaderboardKey.id,
                     pagedLeaderboardKey.page,
-                    null,
-                    middleCallback);
+                    null);
         }
-        else
-        {
-            leaderboardServiceAsync.getLeaderboard(leaderboardKey.id, null, null, middleCallback);
-        }
-        return middleCallback;
-    }
-
-    public LeaderboardFriendsDTO getNewFriendsLeaderboard()
-    {
-        return leaderboardService.getNewFriendsLeaderboard();
-    }
-
-    @NotNull public MiddleCallback<LeaderboardFriendsDTO> getNewFriendsLeaderboard(Callback<LeaderboardFriendsDTO> callback)
-    {
-        MiddleCallback<LeaderboardFriendsDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        leaderboardServiceAsync.getNewFriendsLeaderboard(middleCallback);
-        return middleCallback;
+        return leaderboardServiceRx.getLeaderboard(leaderboardKey.id, null, null);
     }
 
     public Observable<LeaderboardFriendsDTO> getNewFriendsLeaderboardRx()
@@ -255,38 +221,34 @@ import rx.Observable;
         return received;
     }
 
-    @NotNull public MiddleCallback<GetPositionsDTO> getPositionsForLeaderboardMarkUser(
-            @NotNull LeaderboardMarkUserId key,
-            @Nullable Callback<GetPositionsDTO> callback)
+    public Observable<GetPositionsDTO> getPositionsForLeaderboardMarkUserRx(
+            @NotNull LeaderboardMarkUserId key)
     {
-        MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback, createProcessorReceivedGetPositions(key));
+        Observable<GetPositionsDTO> received;
         if (key instanceof PerPagedLeaderboardMarkUserId)
         {
             PerPagedLeaderboardMarkUserId perPagedLeaderboardMarkUserId = (PerPagedLeaderboardMarkUserId) key;
-            leaderboardServiceAsync.getPositionsForLeaderboardMarkUser(
+            received = leaderboardServiceRx.getPositionsForLeaderboardMarkUser(
                     perPagedLeaderboardMarkUserId.key,
                     perPagedLeaderboardMarkUserId.page,
-                    perPagedLeaderboardMarkUserId.perPage,
-                    middleCallback);
+                    perPagedLeaderboardMarkUserId.perPage);
         }
         else if (key instanceof PagedLeaderboardMarkUserId)
         {
             PagedLeaderboardMarkUserId pagedLeaderboardMarkUserId = (PagedLeaderboardMarkUserId) key;
-            leaderboardServiceAsync.getPositionsForLeaderboardMarkUser(
+            received = leaderboardServiceRx.getPositionsForLeaderboardMarkUser(
                     pagedLeaderboardMarkUserId.key,
                     pagedLeaderboardMarkUserId.page,
-                    null,
-                    middleCallback);
+                    null);
         }
         else
         {
-            leaderboardServiceAsync.getPositionsForLeaderboardMarkUser(
+            received = leaderboardServiceRx.getPositionsForLeaderboardMarkUser(
                     key.key,
                     null,
-                    null,
-                    middleCallback);
+                    null);
         }
-        return middleCallback;
+        return received.map(createProcessorReceivedGetPositions(key));
     }
     //</editor-fold>
 }

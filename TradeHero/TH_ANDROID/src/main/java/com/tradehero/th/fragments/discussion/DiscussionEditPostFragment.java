@@ -35,7 +35,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -61,7 +61,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
-    @Inject DiscussionCache discussionCache;
+    @Inject DiscussionCacheRx discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject EditableUtil editableUtil;
@@ -284,7 +284,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private void linkWith(@NotNull DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
-        AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.get(discussionKey);
+        AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.getValue(discussionKey);
         linkWith(abstractDiscussionDTO, andDisplay);
     }
 

@@ -3,13 +3,14 @@ package com.tradehero.th.persistence.billing.samsung;
 import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
 import com.tradehero.th.billing.samsung.THSamsungProductDetailTuner;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class THSamsungProductDetailCache extends ProductDetailCache<SamsungSKU, THSamsungProductDetail, THSamsungProductDetailTuner>
+@Singleton @UserCache public class THSamsungProductDetailCache extends ProductDetailCache<SamsungSKU, THSamsungProductDetail, THSamsungProductDetailTuner>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
 

@@ -9,7 +9,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
     //<editor-fold desc="Constructors">
     @Inject public PushNotificationSettingViewHolder(
             @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserProfileCacheRx userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull PushNotificationManager pushNotificationManager)

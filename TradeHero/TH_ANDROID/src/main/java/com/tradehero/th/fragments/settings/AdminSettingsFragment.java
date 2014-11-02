@@ -9,6 +9,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +21,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.ForTypographyFragment;
@@ -31,9 +33,12 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 
 public class AdminSettingsFragment extends DashboardPreferenceFragment
 {
@@ -52,7 +57,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject @ForAchievementListTestingFragment Provider<Class> achievementListTestingFragmentClassProvider;
     @Inject @ForXpTestingFragment Provider<Class> xpTestingFragmentClassProvider;
     @Inject @ForTypographyFragment Provider<Class> typographyFragmentClassProvider;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Provider<Activity> currentActivity;
 
@@ -76,12 +81,16 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
 
     private void initDefaultValue()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
-        {
-            Preference pref = findPreference(KEY_USER_INFO);
-            pref.setSummary(getString(R.string.admin_setting_user_info, userProfileDTO.displayName, userProfileDTO.id));
-        }
+        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
+                {
+                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
+                    {
+                        Preference pref = findPreference(KEY_USER_INFO);
+                        pref.setSummary(getString(R.string.admin_setting_user_info, pair.second.displayName, pair.first.key));
+                    }
+                });
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

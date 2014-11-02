@@ -18,8 +18,8 @@ import com.tradehero.th.models.watchlist.DTOProcessorWatchlistDelete;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistUpdate;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
@@ -36,8 +36,8 @@ import retrofit.Callback;
     @NotNull private final WatchlistServiceAsync watchlistServiceAsync;
     @NotNull private final Lazy<WatchlistPositionCache> watchlistPositionCache;
     @NotNull private final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @NotNull private final Lazy<PortfolioCompactCache> portfolioCompactCache;
-    @NotNull private final Lazy<PortfolioCache> portfolioCache;
+    @NotNull private final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
+    @NotNull private final Lazy<PortfolioCacheRx> portfolioCache;
 
     //<editor-fold desc="Constructors">
     @Inject public WatchlistServiceWrapper(
@@ -46,8 +46,8 @@ import retrofit.Callback;
             @NotNull WatchlistServiceAsync watchlistServiceAsync,
             @NotNull Lazy<WatchlistPositionCache> watchlistPositionCache,
             @NotNull Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
-            @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
-            @NotNull Lazy<PortfolioCache> portfolioCache)
+            @NotNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
+            @NotNull Lazy<PortfolioCacheRx> portfolioCache)
     {
         super();
         this.currentUserId = currentUserId;

@@ -11,6 +11,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
+@Deprecated
 public interface PortfolioService
 {
     //<editor-fold desc="Get User Portfolio List">

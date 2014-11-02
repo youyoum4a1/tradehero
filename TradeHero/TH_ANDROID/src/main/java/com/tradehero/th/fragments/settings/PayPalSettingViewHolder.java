@@ -1,32 +1,33 @@
 package com.tradehero.th.fragments.settings;
 
-import android.support.v4.preference.PreferenceFragment;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.util.Pair;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class PayPalSettingViewHolder extends OneSettingViewHolder
 {
     @NotNull private final CurrentUserId currentUserId;
-    @NotNull private final UserProfileCache userProfileCache;
-    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @NotNull private final UserProfileCacheRx userProfileCache;
+    @Nullable private Subscription userProfileCacheSubscription;
     @Nullable private UserProfileDTO userProfileDTO;
 
     //<editor-fold desc="Constructors">
     @Inject public PayPalSettingViewHolder(
             @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache)
+            @NotNull UserProfileCacheRx userProfileCache)
     {
         super();
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
-        this.userProfileCacheListener = createUserProfileCacheListener();
     }
     //</editor-fold>
 
@@ -38,15 +39,16 @@ public class PayPalSettingViewHolder extends OneSettingViewHolder
 
     @Override public void destroyViews()
     {
-        userProfileCache.unregister(userProfileCacheListener);
-        userProfileCacheListener = null;
+        detachSubscription(userProfileCacheSubscription);
         super.destroyViews();
     }
 
     protected void fetchUserProfile()
     {
-        this.userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        this.userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        detachSubscription(userProfileCacheSubscription);
+        userProfileCacheSubscription = this.userProfileCache.get(currentUserId.toUserBaseKey())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
     }
 
     @Override protected int getStringKeyResId()
@@ -63,17 +65,20 @@ public class PayPalSettingViewHolder extends OneSettingViewHolder
         }
     }
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
+        return new Observer<Pair<UserBaseKey, UserProfileDTO>>()
         {
-            @Override
-            public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+            @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
             {
-                setUserProfile(value);
+                setUserProfile(pair.second);
             }
 
-            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+            @Override public void onCompleted()
+            {
+            }
+
+            @Override public void onError(Throwable e)
             {
                 setUserProfile(null);
             }

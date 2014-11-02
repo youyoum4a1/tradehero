@@ -32,7 +32,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
 
     @NotNull protected BehaviorSubject<Pair<DTOKeyType, DTOType>> getOrCreateBehavior(@NotNull final DTOKeyType key)
     {
-        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.get(key);
+        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = getBehavior(key);
         if (cachedSubject == null)
         {
             DTOType cachedValue = getValue(key);
@@ -50,6 +50,21 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return cachedSubject;
     }
 
+    @Nullable protected BehaviorSubject<Pair<DTOKeyType, DTOType>> getBehavior(@NotNull final DTOKeyType key)
+    {
+        return cachedSubjects.get(key);
+    }
+
+    @NotNull public Observable<Pair<DTOKeyType, DTOType>> getFirstOrEmpty(@NotNull final  DTOKeyType key)
+    {
+        DTOType value = getValue(key);
+        if (value == null)
+        {
+            return Observable.empty();
+        }
+        return Observable.just(Pair.create(key, value));
+    }
+
     @Override public void onNext(@NotNull DTOKeyType key, @NotNull DTOType value)
     {
         putValue(key, value);
@@ -60,21 +75,14 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         }
     }
 
-    @Override public void onError(@NotNull DTOKeyType key, @NotNull Throwable error)
-    {
-        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.remove(key);
-        if (cachedSubject != null)
-        {
-            cachedSubject.onError(error);
-        }
-    }
-
     protected DTOType putValue(@NotNull DTOKeyType key, @NotNull DTOType value)
     {
         return cachedValues.put(key, value);
     }
 
-    @Nullable protected DTOType getValue(@NotNull DTOKeyType key)
+    // TODO make it protected when all is cleaned up
+    @Deprecated
+    @Nullable public DTOType getValue(@NotNull DTOKeyType key)
     {
         DTOType cachedValue = cachedValues.get(key);
         if (cachedValue != null && !isValid(cachedValue))

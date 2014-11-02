@@ -5,6 +5,7 @@ import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -33,5 +34,13 @@ public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityC
         SecurityCompactDTO previous = super.putValue(key, value);
         securityIdCache.onNext(value.getSecurityIntegerId(), key);
         return previous;
+    }
+
+    public void onNext(@NotNull List<? extends SecurityCompactDTO> securityCompacts)
+    {
+        for (SecurityCompactDTO securityCompact : securityCompacts)
+        {
+            onNext(securityCompact.getSecurityId(), securityCompact);
+        }
     }
 }

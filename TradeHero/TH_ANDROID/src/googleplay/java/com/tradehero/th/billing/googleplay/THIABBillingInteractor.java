@@ -33,9 +33,10 @@ import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ import timber.log.Timber;
 
     @NotNull protected final THIABProductDetailCache thiabProductDetailCache;
     @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
-    @NotNull protected final HeroListCache heroListCache;
+    @NotNull protected final HeroListCacheRx heroListCache;
     @NotNull protected final UserService userService;
 
     //<editor-fold desc="Constructors">
@@ -76,12 +77,13 @@ import timber.log.Timber;
             @NotNull Provider<Activity> activityProvider,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
-            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull UserProfileCacheRx userProfileCacheRx,
+            @NotNull PortfolioCompactListCacheRx portfolioCompactListCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull THIABAlertDialogUtil thIABAlertDialogUtil,
             @NotNull THIABProductDetailCache thiabProductDetailCache,
             @NotNull UserProfileDTOUtil userProfileDTOUtil,
-            @NotNull HeroListCache heroListCache,
+            @NotNull HeroListCacheRx heroListCache,
             @NotNull UserService userService)
     {
         super(
@@ -89,6 +91,7 @@ import timber.log.Timber;
                 activityProvider,
                 currentUserId,
                 userProfileCache,
+                userProfileCacheRx,
                 portfolioCompactListCache,
                 progressDialogUtil,
                 thIABAlertDialogUtil);

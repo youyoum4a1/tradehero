@@ -10,7 +10,6 @@ import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.competition.ProviderCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +19,6 @@ public class ContestCompetitionView extends AspectRatioImageView
         implements DTOView<ContestPageDTO>
 {
     @Inject protected Lazy<Picasso> picasso;
-    @Inject protected Lazy<ProviderCache> providerCache;
     @Nullable private ContestPageDTO contestPageDTO;
     @Nullable private ProviderDTO providerDTO;
 

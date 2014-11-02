@@ -23,12 +23,12 @@ import com.tradehero.th.models.discussion.DTOProcessorMessageRead;
 import com.tradehero.th.models.discussion.DTOProcessorReadablePaginatedMessageReceived;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.home.HomeContentCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -49,10 +49,10 @@ public class MessageServiceWrapper
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
     @NotNull private final Lazy<MessageHeaderListCache> messageHeaderListCache;
     @NotNull private final Lazy<MessageHeaderCache> messageHeaderCache;
-    @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
-    @NotNull private final Lazy<DiscussionCache> discussionCache;
-    @NotNull private final Lazy<UserProfileCache> userProfileCache;
-    @NotNull private final Lazy<HomeContentCache> homeContentCache;
+    @NotNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
+    @NotNull private final Lazy<DiscussionCacheRx> discussionCache;
+    @NotNull private final Lazy<UserProfileCacheRx> userProfileCache;
+    @NotNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject MessageServiceWrapper(
@@ -63,10 +63,10 @@ public class MessageServiceWrapper
             @NotNull CurrentUserId currentUserId,
             @NotNull Lazy<MessageHeaderListCache> messageHeaderListCache,
             @NotNull Lazy<MessageHeaderCache> messageHeaderCache,
-            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
-            @NotNull Lazy<DiscussionCache> discussionCache,
-            @NotNull Lazy<UserProfileCache> userProfileCache,
-            @NotNull Lazy<HomeContentCache> homeContentCache)
+            @NotNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
+            @NotNull Lazy<DiscussionCacheRx> discussionCache,
+            @NotNull Lazy<UserProfileCacheRx> userProfileCache,
+            @NotNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;

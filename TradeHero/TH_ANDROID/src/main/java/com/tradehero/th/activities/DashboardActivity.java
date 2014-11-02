@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
@@ -86,11 +88,11 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenter
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.persistence.competition.ProviderListCache;
+import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
@@ -117,6 +119,9 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class DashboardActivity extends BaseActivity
@@ -134,7 +139,7 @@ public class DashboardActivity extends BaseActivity
     private Integer restoreRequestCode;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtilLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
@@ -157,8 +162,7 @@ public class DashboardActivity extends BaseActivity
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
 
-    @Inject Lazy<ProviderListCache> providerListCache;
-    private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListCallback;
+    @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
@@ -201,7 +205,6 @@ public class DashboardActivity extends BaseActivity
 
         detachNotificationFetchTask();
         notificationFetchListener = createNotificationFetchListener();
-        providerListCallback = new ProviderListFetchListener();
 
         // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
@@ -379,7 +382,7 @@ public class DashboardActivity extends BaseActivity
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         UserProfileDTO currentUserProfile =
-                userProfileCache.get().get(currentUserId.toUserBaseKey());
+                userProfileCache.get().getValue(currentUserId.toUserBaseKey());
         MenuInflater menuInflater = getMenuInflater();
 
         menuInflater.inflate(R.menu.hardware_menu, menu);
@@ -442,14 +445,9 @@ public class DashboardActivity extends BaseActivity
 
     protected void fetchProviderList()
     {
-        detachProviderListTask();
-        providerListCache.get().register(new ProviderListKey(), providerListCallback);
-        providerListCache.get().getOrFetchAsync(new ProviderListKey(), true);
-    }
-
-    private void detachProviderListTask()
-    {
-        providerListCache.get().unregister(providerListCallback);
+        AndroidObservable.bindActivity(this, providerListCache.get().get(new ProviderListKey()))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new ProviderListFetchObserver());
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -525,19 +523,27 @@ public class DashboardActivity extends BaseActivity
 
     private void showStartDialogsPlease()
     {
-        UserProfileDTO cachedUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (cachedUserProfile != null && !isOnboardShown.get())
-        {
-            if (userProfileDTOUtilLazy.get().shouldShowOnBoard(cachedUserProfile))
-            {
-                broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-            }
-        }
+        AndroidObservable.bindActivity(this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
+                {
+                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
+                    {
+                        if (args.second != null && !isOnboardShown.get())
+                        {
+                            if (userProfileDTOUtilLazy.get().shouldShowOnBoard(args.second))
+                            {
+                                broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
+                            }
+                        }
 
-        if (isOnboardShown.get())
-        {
-            broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
-        }
+                        if (isOnboardShown.get())
+                        {
+                            broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
+                        }
+                    }
+                });
     }
 
     @Override protected List<Object> getModules()
@@ -630,14 +636,18 @@ public class DashboardActivity extends BaseActivity
         }
     }
 
-    protected class ProviderListFetchListener implements DTOCacheNew.Listener<ProviderListKey, ProviderDTOList>
+    protected class ProviderListFetchObserver implements Observer<Pair<ProviderListKey, ProviderDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
+        @Override public void onNext(Pair<ProviderListKey, ProviderDTOList> pair)
         {
-            openEnrollmentPageIfNecessary(value);
+            openEnrollmentPageIfNecessary(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_provider_competition_list);
             broadcastUtilsLazy.get().nextPlease();

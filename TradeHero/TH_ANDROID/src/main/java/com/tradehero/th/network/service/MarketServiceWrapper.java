@@ -11,20 +11,23 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import retrofit.http.GET;
+import rx.Observable;
 
 @Singleton public class MarketServiceWrapper
 {
     @NotNull private final MarketService marketService;
     @NotNull private final MarketServiceAsync marketServiceAsync;
+    @NotNull private final MarketServiceRx marketServiceRx;
 
     //<editor-fold desc="Constructors">
     @Inject public MarketServiceWrapper(
             @NotNull MarketService marketService,
-            @NotNull MarketServiceAsync marketServiceAsync)
+            @NotNull MarketServiceAsync marketServiceAsync,
+            @NotNull MarketServiceRx marketServiceRx)
     {
         this.marketService = marketService;
         this.marketServiceAsync = marketServiceAsync;
+        this.marketServiceRx = marketServiceRx;
     }
     //</editor-fold>
 
@@ -34,12 +37,9 @@ import retrofit.http.GET;
         return marketService.getExchanges();
     }
 
-    @NotNull public MiddleCallback<ExchangeCompactDTOList> getExchanges(
-            @Nullable Callback<ExchangeCompactDTOList> callback)
+    @NotNull public Observable<ExchangeCompactDTOList> getExchangesRx()
     {
-        MiddleCallback<ExchangeCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        marketServiceAsync.getExchanges(middleCallback);
-        return middleCallback;
+        return marketServiceRx.getExchanges();
     }
     //</editor-fold>
 
@@ -57,6 +57,11 @@ import retrofit.http.GET;
         marketServiceAsync.getExchange(exchangeId.key, middleCallback);
         return middleCallback;
     }
+
+    @NotNull public Observable<ExchangeDTO> getExchangeRx(@NotNull ExchangeIntegerId exchangeId)
+    {
+        return marketServiceRx.getExchange(exchangeId.key);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Get All Exchange And Sectors Compact">
@@ -65,12 +70,9 @@ import retrofit.http.GET;
         return marketService.getAllExchangeSectorCompact();
     }
 
-    @NotNull MiddleCallback<ExchangeSectorCompactListDTO> getAllExchangeSectorCompact(
-            @Nullable Callback<ExchangeSectorCompactListDTO> callback)
+    @NotNull public Observable<ExchangeSectorCompactListDTO> getAllExchangeSectorCompactRx()
     {
-        MiddleCallback<ExchangeSectorCompactListDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        marketServiceAsync.getAllExchangeSectorCompact(middleCallback);
-        return middleCallback;
+        return marketServiceRx.getAllExchangeSectorCompact();
     }
     //</editor-fold>
 }

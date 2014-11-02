@@ -16,7 +16,7 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.persistence.competition.ProviderListCache;
+import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -24,7 +24,7 @@ import timber.log.Timber;
 public class THWebViewClient extends WebViewClient
 {
     @Inject THIntentFactory thIntentFactory;
-    @Inject Lazy<ProviderListCache> providerListCache;
+    @Inject Lazy<ProviderListCacheRx> providerListCache;
     @Inject DashboardNavigator navigator;
     private final Context context;
     private THIntentPassedListener thIntentPassedListener;

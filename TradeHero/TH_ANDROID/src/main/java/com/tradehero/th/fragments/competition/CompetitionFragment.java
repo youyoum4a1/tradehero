@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
@@ -9,11 +9,13 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class CompetitionFragment extends BasePurchaseManagerFragment
@@ -22,9 +24,8 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
     @InjectRoute protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    @Nullable private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
 
-    @Inject ProviderCache providerCache;
+    @Inject ProviderCacheRx providerCache;
     @Inject THRouter thRouter;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
@@ -47,7 +48,6 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         {
             this.providerId = getProviderId(getArguments());
         }
-        this.providerCacheListener = createProviderCacheListener();
     }
 
     @Override public void onStart()
@@ -56,28 +56,11 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         fetchProviderDTO();
     }
 
-    @Override public void onStop()
-    {
-        this.detachProviderFetchTask();
-        super.onStop();
-    }
-
-    @Override public void onDestroy()
-    {
-        this.providerCacheListener = null;
-        super.onDestroy();
-    }
-
-    protected void detachProviderFetchTask()
-    {
-        providerCache.unregister(providerCacheListener);
-    }
-
     protected void fetchProviderDTO()
     {
-        this.detachProviderFetchTask();
-        providerCache.register(this.providerId, this.providerCacheListener);
-        providerCache.getOrFetchAsync(this.providerId);
+        AndroidObservable.bindFragment(this, providerCache.get(this.providerId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createProviderCacheObserver());
     }
 
     protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
@@ -94,32 +77,26 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @NotNull protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
+    @NotNull protected Observer<Pair<ProviderId, ProviderDTO>> createProviderCacheObserver()
     {
-        return new CompetitionFragmentProviderCacheListener();
+        return new CompetitionFragmentProviderCacheObserver();
     }
 
-    protected class CompetitionFragmentProviderCacheListener implements DTOCacheNew.HurriedListener<ProviderId, ProviderDTO>
+    protected class CompetitionFragmentProviderCacheObserver implements Observer<Pair<ProviderId, ProviderDTO>>
     {
-        @Override public void onPreCachedDTOReceived(
-                @NotNull ProviderId key,
-                @NotNull ProviderDTO value)
+        @Override public void onNext(Pair<ProviderId, ProviderDTO> pair)
         {
-            onDTOReceived(key, value);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onDTOReceived(@NotNull ProviderId key, @NotNull ProviderDTO value)
+        @Override public void onCompleted()
         {
-            if (key.equals(CompetitionFragment.this.providerId))
-            {
-                CompetitionFragment.this.linkWith(value, true);
-            }
         }
 
-        @Override public void onErrorThrown(@NotNull ProviderId key, @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
             THToast.show(getString(R.string.error_fetch_provider_info));
-            Timber.e("Error fetching the provider info " + key, error);
+            Timber.e("Error fetching the provider info", e);
         }
     }
 }

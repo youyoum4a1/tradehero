@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class LeaderboardPositionIdCache extends StraightDTOCacheNew<LeaderboardMarkUserPositionId, OwnedLeaderboardPositionId>
 {
     public static final int DEFAULT_MAX_SIZE = 2000;

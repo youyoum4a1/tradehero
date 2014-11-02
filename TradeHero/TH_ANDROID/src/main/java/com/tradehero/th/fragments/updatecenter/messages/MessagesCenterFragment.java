@@ -44,8 +44,8 @@ import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
@@ -68,8 +68,8 @@ public class MessagesCenterFragment extends DashboardFragment
 {
     @Inject Lazy<MessageHeaderListCache> messageListCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
-    @Inject Lazy<DiscussionListCacheNew> discussionListCache;
-    @Inject Lazy<DiscussionCache> discussionCache;
+    @Inject Lazy<DiscussionListCacheRx> discussionListCache;
+    @Inject Lazy<DiscussionCacheRx> discussionCache;
     @Inject CurrentUserId currentUserId;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;

@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -15,6 +15,7 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHo
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
 
 public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemDTOKey>
 {
@@ -36,7 +37,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     @Override public void display(NewsItemDTOKey discussionKey)
     {
         super.display(discussionKey);
-        linkWith(discussionCache.get(discussionKey), true);
+        linkWith(discussionCache.getValue(discussionKey), true);
         viewHolder.discussionActionButtonsView.setCommentCountVisible(View.GONE);
     }
 
@@ -46,7 +47,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
 
         if (viewHolder != null)
         {
-            viewHolder.setBackroundResource(resId);
+            viewHolder.setBackgroundResource(resId);
         }
     }
 
@@ -77,7 +78,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     }
 
     @Override
-    protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
+    protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
     {
         // We are ok with the NewsItemDTO being saved in cache, but we do not want
         // to get it here...

@@ -6,28 +6,26 @@ import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.trade.DTOProcessorTradeListReceived;
-import com.tradehero.th.models.trade.DTOProcessorTradeReceived;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class TradeServiceWrapper
 {
     @NotNull private final TradeService tradeService;
-    @NotNull private final TradeServiceAsync tradeServiceAsync;
+    @NotNull private final TradeServiceRx tradeServiceRx;
 
+    //<editor-fold desc="Constructors">
     @Inject public TradeServiceWrapper(
             @NotNull TradeService tradeService,
-            @NotNull TradeServiceAsync tradeServiceAsync)
+            @NotNull TradeServiceRx tradeServiceRx)
     {
         super();
         this.tradeService = tradeService;
-        this.tradeServiceAsync = tradeServiceAsync;
+        this.tradeServiceRx = tradeServiceRx;
     }
+    //</editor-fold>
 
     private void basicCheck(OwnedPositionId ownedPositionId)
     {
@@ -75,56 +73,25 @@ import retrofit.Callback;
                         ownedPositionId.positionId));
     }
 
-    @NotNull public MiddleCallback<TradeDTOList> getTrades(
-            @NotNull OwnedPositionId ownedPositionId,
-            @Nullable Callback<TradeDTOList> callback)
+    @NotNull public Observable<TradeDTOList> getTradesRx(@NotNull OwnedPositionId ownedPositionId)
     {
         basicCheck(ownedPositionId);
-        MiddleCallback<TradeDTOList> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createTradeListReceivedProcessor(ownedPositionId));
-        this.tradeServiceAsync.getTrades(
+        return this.tradeServiceRx.getTrades(
                 ownedPositionId.userId,
                 ownedPositionId.portfolioId,
-                ownedPositionId.positionId,
-                middleCallback);
-        return middleCallback;
+                ownedPositionId.positionId);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get One Trade">
-    @NotNull private DTOProcessor<TradeDTO> createTradeReceivedProcessor(
-            @NotNull OwnedPositionId ownedPositionId)
-    {
-        return new DTOProcessorTradeReceived(ownedPositionId);
-    }
-
-    @NotNull public TradeDTO getTrade(@NotNull OwnedTradeId ownedTradeId)
+    @NotNull public Observable<TradeDTO> getTradeRx(@NotNull OwnedTradeId ownedTradeId)
     {
         basicCheck(ownedTradeId);
-        return createTradeReceivedProcessor(ownedTradeId).process(
-                this.tradeService.getTrade(
-                        ownedTradeId.userId,
-                        ownedTradeId.portfolioId,
-                        ownedTradeId.positionId,
-                        ownedTradeId.tradeId));
-    }
-
-    @NotNull public MiddleCallback<TradeDTO> getTrade(
-            @NotNull OwnedTradeId ownedTradeId,
-            @Nullable Callback<TradeDTO> callback)
-    {
-        basicCheck(ownedTradeId);
-        MiddleCallback<TradeDTO> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createTradeReceivedProcessor(ownedTradeId));
-        this.tradeServiceAsync.getTrade(
+        return this.tradeServiceRx.getTrade(
                 ownedTradeId.userId,
                 ownedTradeId.portfolioId,
                 ownedTradeId.positionId,
-                ownedTradeId.tradeId,
-                middleCallback);
-        return middleCallback;
+                ownedTradeId.tradeId);
     }
     //</editor-fold>
 }

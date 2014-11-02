@@ -18,8 +18,8 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.robolectric.Robolectric;
@@ -33,8 +33,8 @@ public abstract class AbstractTransactionDialogFragmentTestBase
 {
     protected static final int CASH_BALANCE = 100000;
 
-    @Inject UserProfileCache userProfileCache;
-    @Inject SecurityCompactCache securityCompactCache;
+    @Inject UserProfileCacheRx userProfileCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject SecurityPositionDetailCacheRx securityPositionDetailCache;
 
     @Inject CurrentUserId currentUserId;
@@ -71,7 +71,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
         mockUserProfileDTO.fbLinked = true;
         mockUserProfileDTO.twLinked = false;
         mockUserProfileDTO.displayName = "mockedName";
-        userProfileCache.put(currentUserId.toUserBaseKey(), mockUserProfileDTO);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), mockUserProfileDTO);
 
         //TODO create MockObjects
         SecurityCompactDTO mockSecurityCompactDTO = new SecurityCompactDTO();
@@ -88,7 +88,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
                         firstTradeAllTime,
                         mockProvidersDTOList);
 
-        securityCompactCache.put(securityId, mockSecurityCompactDTO);
+        securityCompactCache.onNext(securityId, mockSecurityCompactDTO);
         //securityPositionDetailCache.put(securityId, mockPositionDetailDTO); // TODO find way to enforce values
 
         activity = Robolectric.setupActivity(DashboardActivity.class);

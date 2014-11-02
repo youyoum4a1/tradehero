@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.security;
 
 import com.tradehero.common.persistence.BaseDTOCacheRx;
-import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.SystemCache;
 import com.tradehero.th.api.security.SecurityId;

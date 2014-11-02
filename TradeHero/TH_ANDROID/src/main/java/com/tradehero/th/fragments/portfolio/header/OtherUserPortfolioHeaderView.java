@@ -18,13 +18,13 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -46,13 +46,12 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @InjectView(R.id.follow_button) TextView followButton;
 
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userCache;
+    @Inject UserProfileCacheRx userCache;
     @Inject Picasso picasso;
     @Inject Analytics analytics;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private UserProfileDTO userProfileDTO;
@@ -180,7 +179,6 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
             heroAlertDialogUtilLazy.get().dismissProgressDialog();
-            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.PositionList));
@@ -256,7 +254,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     public void configureFollowItemsVisibility()
     {
-        UserProfileDTO currentUser = this.userCache.get(currentUserId.toUserBaseKey());
+        UserProfileDTO currentUser = this.userCache.getValue(currentUserId.toUserBaseKey());
         if (this.userProfileDTO == null || isCurrentUserID(this.userProfileDTO.id))
         {
             this.followingImageView.setVisibility(GONE);
@@ -277,7 +275,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     public boolean isCurrentUserID(int userId)
     {
-        UserProfileDTO currentUser = this.userCache.get(currentUserId.toUserBaseKey());
+        UserProfileDTO currentUser = this.userCache.getValue(currentUserId.toUserBaseKey());
         if(currentUser!=null)
         {
             return currentUser.id == userId;

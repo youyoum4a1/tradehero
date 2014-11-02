@@ -10,16 +10,16 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.models.graphics.ForExtraTileBackground;
-import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.graphics.ForExtraTileBackground;
+import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 public class ProviderTileView extends ImageView
     implements DTOView<ProviderDTO>
 {
-    @Inject Lazy<ProviderListCache> providerListCache;
+    @Inject Lazy<ProviderListCacheRx> providerListCache;
     @Inject Lazy<Picasso> picasso;
     @Inject @ForExtraTileBackground Transformation backgroundTransformation;
     private ProviderDTO providerDTO;
@@ -54,7 +54,7 @@ public class ProviderTileView extends ImageView
     {
         super.onAttachedToWindow();
 
-        ProviderDTOList providerList = providerListCache.get().get(new ProviderListKey());
+        ProviderDTOList providerList = providerListCache.get().getValue(new ProviderListKey());
 
         if (providerList != null && providerList.size() > 0)
         {

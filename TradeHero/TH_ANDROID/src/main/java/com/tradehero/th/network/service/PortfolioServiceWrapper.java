@@ -7,52 +7,51 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioListReceived;
-import com.tradehero.th.models.portfolio.DTOProcessorPortfolioMarked;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import com.tradehero.th.models.user.DTOProcessorAddCash;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class PortfolioServiceWrapper
 {
     @NotNull private final PortfolioService portfolioService;
     @NotNull private final PortfolioServiceAsync portfolioServiceAsync;
-    @NotNull private final UserProfileCache userProfileCache;
-    @NotNull private final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @NotNull private final Lazy<PortfolioCompactCache> portfolioCompactCache;
-    @NotNull private final Lazy<PortfolioCache> portfolioCache;
-    @NotNull private final Lazy<HomeContentCache> homeContentCache;
+    @NotNull private final PortfolioServiceRx portfolioServiceRx;
+    @NotNull private final UserProfileCacheRx userProfileCache;
+    @NotNull private final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
+    @NotNull private final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
+    @NotNull private final Lazy<PortfolioCacheRx> portfolioCache;
+    @NotNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioServiceWrapper(
             @NotNull PortfolioService portfolioService,
             @NotNull PortfolioServiceAsync portfolioServiceAsync,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
-            @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
-            @NotNull Lazy<PortfolioCache> portfolioCache,
-            @NotNull Lazy<HomeContentCache> homeContentCache)
+            @NotNull PortfolioServiceRx portfolioServiceRx,
+            @NotNull UserProfileCacheRx userProfileCache,
+            @NotNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
+            @NotNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
+            @NotNull Lazy<PortfolioCacheRx> portfolioCache,
+            @NotNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         super();
         this.portfolioService = portfolioService;
         this.portfolioServiceAsync = portfolioServiceAsync;
+        this.portfolioServiceRx = portfolioServiceRx;
         this.userProfileCache = userProfileCache;
         this.portfolioCompactListCache = portfolioCompactListCache;
         this.portfolioCompactCache = portfolioCompactCache;
@@ -62,18 +61,19 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
-    protected DTOProcessor<PortfolioCompactDTO> createPortfolioCompactReceivedProcessor(@NotNull UserBaseKey userBaseKey)
+    protected DTOProcessorPortfolioReceived<PortfolioCompactDTO> createPortfolioCompactReceivedProcessor(@NotNull UserBaseKey userBaseKey)
     {
         return new DTOProcessorPortfolioReceived<>(userBaseKey);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get User Portfolio List">
-    protected DTOProcessor<PortfolioCompactDTOList> createPortfolioCompactListReceivedProcessor(@NotNull UserBaseKey userBaseKey)
+    protected DTOProcessorPortfolioListReceived<PortfolioCompactDTOList> createPortfolioCompactListReceivedProcessor(@NotNull UserBaseKey userBaseKey)
     {
         return new DTOProcessorPortfolioListReceived<>(userBaseKey);
     }
 
+    @Deprecated
     @NotNull public PortfolioCompactDTOList getPortfolios(
             @NotNull UserBaseKey userBaseKey,
             @Nullable Boolean includeWatchList)
@@ -82,25 +82,22 @@ import retrofit.Callback;
                 portfolioService.getPortfolios(userBaseKey.key, includeWatchList));
     }
 
-    @NotNull public MiddleCallback<PortfolioCompactDTOList> getPortfolios(
+    @NotNull public Observable<PortfolioCompactDTOList> getPortfoliosRx(
             @NotNull UserBaseKey userBaseKey,
-            @Nullable Boolean includeWatchList,
-            @Nullable Callback<PortfolioCompactDTOList> callback)
+            @Nullable Boolean includeWatchList)
     {
-        MiddleCallback<PortfolioCompactDTOList> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createPortfolioCompactListReceivedProcessor(userBaseKey));
-        portfolioServiceAsync.getPortfolios(userBaseKey.key, includeWatchList, middleCallback);
-        return middleCallback;
+        return portfolioServiceRx.getPortfolios(userBaseKey.key, includeWatchList)
+                .map(createPortfolioCompactListReceivedProcessor(userBaseKey));
     }
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">
-    protected DTOProcessor<PortfolioDTO> createPortfolioReceivedProcessor(@NotNull UserBaseKey userBaseKey)
+    protected DTOProcessorPortfolioReceived<PortfolioDTO> createPortfolioReceivedProcessor(@NotNull UserBaseKey userBaseKey)
     {
         return new DTOProcessorPortfolioReceived<>(userBaseKey);
     }
 
+    @Deprecated
     @NotNull public PortfolioDTO getPortfolio(
             @NotNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -110,31 +107,31 @@ import retrofit.Callback;
                         ownedPortfolioId.portfolioId));
     }
 
-    @NotNull public BaseMiddleCallback<PortfolioDTO> getPortfolio(
-            @NotNull OwnedPortfolioId ownedPortfolioId,
-            @Nullable Callback<PortfolioDTO> callback)
+    @NotNull public Observable<PortfolioDTO> getPortfolioRx(
+            @NotNull OwnedPortfolioId ownedPortfolioId)
     {
-        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createPortfolioReceivedProcessor(ownedPortfolioId.getUserBaseKey()));
-        portfolioServiceAsync.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
-        return middleCallback;
+        return this.portfolioServiceRx.getPortfolio(
+                        ownedPortfolioId.userId,
+                        ownedPortfolioId.portfolioId)
+                .map(createPortfolioReceivedProcessor(ownedPortfolioId.getUserBaseKey()));
     }
     //</editor-fold>
 
     //<editor-fold desc="Reset Cash">
-    protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
+    protected DTOProcessorUpdateUserProfile createUpdateProfileProcessor()
     {
         return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get());
     }
 
-    @NotNull public UserProfileDTO resetPortfolio(
+    @NotNull public Observable<UserProfileDTO> resetPortfolioRx(
             @NotNull OwnedPortfolioId ownedPortfolioId,
             PurchaseReportDTO purchaseReportDTO)
     {
-        return createUpdateProfileProcessor().process(this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO));
+        return this.portfolioServiceRx.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO)
+                .doOnNext(createUpdateProfileProcessor());
     }
 
+    @Deprecated
     @NotNull public MiddleCallback<UserProfileDTO> resetPortfolio(
             @NotNull OwnedPortfolioId ownedPortfolioId,
             PurchaseReportDTO purchaseDTO,
@@ -147,7 +144,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">
-    protected DTOProcessor<UserProfileDTO> createAddCashProcessor(OwnedPortfolioId ownedPortfolioId)
+    protected DTOProcessorAddCash createAddCashProcessor(OwnedPortfolioId ownedPortfolioId)
     {
         return new DTOProcessorAddCash(userProfileCache,
                 homeContentCache.get(),
@@ -157,11 +154,12 @@ import retrofit.Callback;
                 ownedPortfolioId);
     }
 
-    @NotNull public UserProfileDTO addCash(
+    @NotNull public Observable<UserProfileDTO> addCashRx(
             @NotNull OwnedPortfolioId ownedPortfolioId,
             PurchaseReportDTO purchaseReportDTO)
     {
-        return createAddCashProcessor(ownedPortfolioId).process(this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO));
+        return this.portfolioServiceRx.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO)
+                .doOnNext(createAddCashProcessor(ownedPortfolioId));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> addCash(
@@ -176,29 +174,12 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Mark One User Portfolio">
-    protected DTOProcessor<PortfolioDTO> createPortfolioMarkedProcessor(@NotNull UserBaseKey userBaseKey)
-    {
-        return new DTOProcessorPortfolioMarked(userBaseKey, portfolioCache.get());
-    }
-
-    @NotNull public PortfolioDTO markPortfolio(
+    @NotNull public Observable<PortfolioDTO> markPortfolio(
             @NotNull OwnedPortfolioId ownedPortfolioId)
     {
-        return createPortfolioMarkedProcessor(ownedPortfolioId.getUserBaseKey()).process(
-                this.portfolioService.markPortfolio(
+        return this.portfolioServiceRx.markPortfolio(
                         ownedPortfolioId.userId,
-                        ownedPortfolioId.portfolioId));
-    }
-
-    @NotNull public BaseMiddleCallback<PortfolioDTO> markPortfolio(
-            @NotNull OwnedPortfolioId ownedPortfolioId,
-            @Nullable Callback<PortfolioDTO> callback)
-    {
-        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createPortfolioMarkedProcessor(ownedPortfolioId.getUserBaseKey()));
-        this.portfolioServiceAsync.markPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
-        return middleCallback;
+                        ownedPortfolioId.portfolioId);
     }
     //</editor-fold>
 }

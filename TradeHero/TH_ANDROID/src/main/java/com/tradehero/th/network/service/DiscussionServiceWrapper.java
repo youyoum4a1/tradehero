@@ -20,42 +20,46 @@ import com.tradehero.th.models.discussion.DTOProcessorDiscussion;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussionReply;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class DiscussionServiceWrapper
 {
     @NotNull private final DiscussionService discussionService;
     @NotNull private final DiscussionServiceAsync discussionServiceAsync;
+    @NotNull private final DiscussionServiceRx discussionServiceRx;
     @NotNull private final DiscussionKeyFactory discussionKeyFactory;
     @NotNull private final DiscussionDTOFactory discussionDTOFactory;
     @NotNull private final CurrentUserId currentUserId;
 
     // It has to be lazy to avoid infinite dependency
-    @NotNull private final Lazy<DiscussionListCacheNew> discussionListCache;
-    @NotNull private final Lazy<DiscussionCache> discussionCache;
-    @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
+    @NotNull private final Lazy<DiscussionListCacheRx> discussionListCache;
+    @NotNull private final Lazy<DiscussionCacheRx> discussionCache;
+    @NotNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
 
     //<editor-fold desc="Constructors">
     @Inject public DiscussionServiceWrapper(
             @NotNull DiscussionService discussionService,
             @NotNull DiscussionServiceAsync discussionServiceAsync,
+            @NotNull DiscussionServiceRx discussionServiceRx,
             @NotNull DiscussionKeyFactory discussionKeyFactory,
             @NotNull DiscussionDTOFactory discussionDTOFactory,
             @NotNull CurrentUserId currentUserId,
-            @NotNull Lazy<DiscussionListCacheNew> discussionListCache,
-            @NotNull Lazy<DiscussionCache> discussionCache,
-            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache)
+            @NotNull Lazy<DiscussionListCacheRx> discussionListCache,
+            @NotNull Lazy<DiscussionCacheRx> discussionCache,
+            @NotNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache)
     {
         this.discussionService = discussionService;
         this.discussionServiceAsync = discussionServiceAsync;
+        this.discussionServiceRx = discussionServiceRx;
         this.discussionKeyFactory = discussionKeyFactory;
         this.discussionDTOFactory = discussionDTOFactory;
         this.currentUserId = currentUserId;
@@ -66,12 +70,12 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
-    @NotNull protected DTOProcessor<DiscussionDTO> createDiscussionProcessor()
+    @NotNull protected DTOProcessorDiscussion createDiscussionProcessor()
     {
         return new DTOProcessorDiscussion(discussionDTOFactory);
     }
 
-    @NotNull protected DTOProcessor<DiscussionDTO> createDiscussionReplyProcessor(@NotNull DiscussionKey initiatingKey,
+    @NotNull protected DTOProcessorDiscussionReply createDiscussionReplyProcessor(@NotNull DiscussionKey initiatingKey,
             @Nullable DiscussionKey stubKey)
     {
         return new DTOProcessorDiscussionReply(
@@ -94,26 +98,22 @@ import retrofit.Callback;
         return createDiscussionProcessor().process(discussionService.getComment(discussionKey.id));
     }
 
-    @NotNull public MiddleCallback<DiscussionDTO> getComment(
-            @NotNull DiscussionKey discussionKey,
-            @Nullable Callback<DiscussionDTO> callback)
+    @NotNull public Observable<DiscussionDTO> getCommentRx(@NotNull DiscussionKey discussionKey)
     {
-        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
-                callback, createDiscussionProcessor());
-        discussionServiceAsync.getComment(discussionKey.id, middleCallback);
-        return middleCallback;
+        return discussionServiceRx.getComment(discussionKey.id)
+                .doOnNext(createDiscussionProcessor());
     }
     //</editor-fold>
 
     //<editor-fold desc="Create Discussion">
-    @NotNull public DiscussionDTO createDiscussion(@NotNull DiscussionFormDTO discussionFormDTO)
+    @NotNull public Observable<DiscussionDTO> createDiscussionRx(@NotNull DiscussionFormDTO discussionFormDTO)
     {
         if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
         {
-            return createDiscussionReplyProcessor(((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(), discussionFormDTO.stubKey)
-                    .process(discussionService.createDiscussion(discussionFormDTO));
+            return discussionServiceRx.createDiscussion(discussionFormDTO)
+                    .doOnNext(createDiscussionReplyProcessor(((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(), discussionFormDTO.stubKey));
         }
-        return postToTimeline(
+        return postToTimelineRx(
                 currentUserId.toUserBaseKey(),
                 discussionFormDTO);
     }
@@ -152,10 +152,19 @@ import retrofit.Callback;
                 discussionsKey.perPage);
     }
 
-    @Deprecated
-    public PaginatedDTO<DiscussionDTO> getPaginatedDiscussions(@NotNull DiscussionListKey discussionsKey)
+    public Observable<PaginatedDTO<DiscussionDTO>> getDiscussionsRx(@NotNull PaginatedDiscussionListKey discussionsKey)
     {
-        return discussionService.getDiscussions(
+        return discussionServiceRx.getDiscussions(
+                discussionsKey.inReplyToType,
+                discussionsKey.inReplyToId,
+                discussionsKey.page,
+                discussionsKey.perPage);
+    }
+
+    @Deprecated
+    public Observable<PaginatedDTO<DiscussionDTO>> getPaginatedDiscussionsRx(@NotNull DiscussionListKey discussionsKey)
+    {
+        return discussionServiceRx.getDiscussions(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
                 discussionsKey.toMap());
@@ -181,18 +190,26 @@ import retrofit.Callback;
                 middleCallback);
         return middleCallback;
     }
+
+    public Observable<PaginatedDTO<DiscussionDTO>> getMessageThreadRx(@NotNull MessageDiscussionListKey discussionsKey)
+    {
+        return discussionServiceRx.getMessageThread(
+                discussionsKey.inReplyToType,
+                discussionsKey.inReplyToId,
+                discussionsKey.toMap());
+    }
     //</editor-fold>
 
     //<editor-fold desc="Vote">
-    @NotNull public DiscussionDTO vote(@NotNull DiscussionVoteKey discussionVoteKey)
+    @NotNull public Observable<DiscussionDTO> vote(@NotNull DiscussionVoteKey discussionVoteKey)
     {
-        return createDiscussionReplyProcessor(
-                discussionKeyFactory.create(discussionVoteKey.inReplyToType, discussionVoteKey.inReplyToId),
-                null)
-                .process(discussionService.vote(
+        return discussionServiceRx.vote(
                         discussionVoteKey.inReplyToType,
                         discussionVoteKey.inReplyToId,
-                        discussionVoteKey.voteDirection));
+                        discussionVoteKey.voteDirection)
+                .doOnNext(createDiscussionReplyProcessor(
+                        discussionKeyFactory.create(discussionVoteKey.inReplyToType, discussionVoteKey.inReplyToId),
+                        null));
     }
 
     @NotNull public MiddleCallback<DiscussionDTO> vote(
@@ -236,17 +253,27 @@ import retrofit.Callback;
                 middleCallback);
         return middleCallback;
     }
+
+    @NotNull public Observable<BaseResponseDTO> shareRx(
+            @NotNull DiscussionListKey discussionKey,
+            @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO)
+    {
+        return discussionServiceRx.share(
+                discussionKey.inReplyToType,
+                discussionKey.inReplyToId,
+                timelineItemShareRequestDTO);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Post to Timeline">
-    @NotNull public DiscussionDTO postToTimeline(
+    @NotNull public Observable<DiscussionDTO> postToTimelineRx(
             @NotNull UserBaseKey userBaseKey,
             @NotNull DiscussionFormDTO discussionFormDTO)
     {
-        return createDiscussionProcessor().process(
-                discussionService.postToTimeline(
+        return discussionServiceRx.postToTimeline(
                         userBaseKey.key,
-                        discussionFormDTO));
+                        discussionFormDTO)
+                .doOnNext(createDiscussionProcessor());
     }
 
     @NotNull public MiddleCallback<DiscussionDTO> postToTimeline(

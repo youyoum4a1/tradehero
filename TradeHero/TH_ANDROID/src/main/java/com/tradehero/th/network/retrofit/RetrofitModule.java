@@ -60,7 +60,6 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.VideoService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.WeChatService;
-import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.RetrofitConstants;
 import dagger.Lazy;
@@ -222,11 +221,6 @@ public class RetrofitModule
     @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
     {
         return adapter.create(WeChatService.class);
-    }
-
-    @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
 
     @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)

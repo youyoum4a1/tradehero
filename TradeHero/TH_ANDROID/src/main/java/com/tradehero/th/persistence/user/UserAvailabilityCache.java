@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class UserAvailabilityCache extends StraightDTOCacheNew<DisplayNameDTO, UserAvailabilityDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 20;

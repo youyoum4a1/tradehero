@@ -12,22 +12,27 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import com.tradehero.th.widget.MultiScrollListener;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +42,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class SecurityDiscussionView extends BetterViewAnimator
-        implements DTOView<SecurityId>, DiscussionListCacheNew.DiscussionKeyListListener
+        implements DTOView<SecurityId>
 {
     @InjectView(android.R.id.list) AbsListView securityDiscussionList;
     @InjectView(android.R.id.empty) View emptyView;
@@ -45,8 +50,9 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Nullable private Subscription securityCompactCacheSubscription;
-    @Inject DiscussionListCacheNew discussionListCache;
+    @Inject DiscussionListCacheRx discussionListCache;
 
+    @NotNull private List<Subscription> discussionListCacheSubscriptions;
     private DiscussionSetAdapter securityDiscussionAdapter;
     private AbsListView.OnScrollListener securityDiscussionListScrollListener;
     private PaginatedDiscussionListKey paginatedSecurityDiscussionListKey;
@@ -71,6 +77,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     {
         super.onFinishInflate();
 
+        discussionListCacheSubscriptions = new ArrayList<>();
         ButterKnife.inject(this);
         HierarchyInjector.inject(this);
 
@@ -112,19 +119,23 @@ public class SecurityDiscussionView extends BetterViewAnimator
     {
         detachSecurityCompactCacheSubscription();
         securityCompactCacheSubscription = null;
-        discussionListCache.unregister(this);
+        detachDiscussionListCache();
         ButterKnife.reset(this);
 
         super.onDetachedFromWindow();
     }
 
-    private void fetchNextPageIfNecessary(boolean force)
+    protected void detachDiscussionListCache()
     {
-        if (paginatedSecurityDiscussionListKey != null)
+        for (Subscription subscription : discussionListCacheSubscriptions)
         {
-            discussionListCache.unregister(paginatedSecurityDiscussionListKey, this);
+            subscription.unsubscribe();
         }
+        discussionListCacheSubscriptions.clear();
+    }
 
+    private void fetchNextPageIfNecessary()
+    {
         if (paginatedSecurityDiscussionListKey == null)
         {
             paginatedSecurityDiscussionListKey = new PaginatedDiscussionListKey(discussionListKey, 1);
@@ -134,8 +145,9 @@ public class SecurityDiscussionView extends BetterViewAnimator
         {
             paginatedSecurityDiscussionListKey = paginatedSecurityDiscussionListKey.next(nextPageDelta);
 
-            discussionListCache.register(paginatedSecurityDiscussionListKey, this);
-            discussionListCache.getOrFetchAsync(paginatedSecurityDiscussionListKey, force);
+            discussionListCacheSubscriptions.add(discussionListCache.get(paginatedSecurityDiscussionListKey)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createDiscussionListObserver()));
         }
     }
 
@@ -159,7 +171,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
                     {
                         discussionListKey = new DiscussionListKey(DiscussionType.SECURITY, pair.second.id);
                         nextPageDelta = 0;
-                        fetchNextPageIfNecessary(true);
+                        fetchNextPageIfNecessary();
                     }
                 });
     }
@@ -190,44 +202,60 @@ public class SecurityDiscussionView extends BetterViewAnimator
             {
                 loading = true;
 
-                fetchNextPageIfNecessary(true);
+                fetchNextPageIfNecessary();
             }
         }
     }
 
     private boolean shouldAppend = false;
 
-    @Override public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList discussionKeyList)
+    protected Observer<Pair<DiscussionListKey, PaginatedDTO<DiscussionDTO>>> createDiscussionListObserver()
     {
-        onFinish();
-
-        if (discussionKeyList != null)
+        return new Observer<Pair<DiscussionListKey, PaginatedDTO<DiscussionDTO>>>()
         {
-            nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
-
-            Timber.d("nextPageDelta: %d, page: %d, received: %d", nextPageDelta, paginatedSecurityDiscussionListKey.page, discussionKeyList.size());
-
-            if (shouldAppend)
+            @Override public void onCompleted()
             {
-                securityDiscussionAdapter.appendTail(discussionKeyList);
-                securityDiscussionAdapter.notifyDataSetChanged();
             }
-            else
+
+            @Override public void onError(Throwable e)
             {
-                securityDiscussionAdapter = createDiscussionAdapter(discussionKeyList);
-                securityDiscussionList.setAdapter(securityDiscussionAdapter);
-                shouldAppend = true;
+                onFinish();
+                nextPageDelta = 0;
+                THToast.show(new THException(e));
             }
-        }
-    }
 
-    @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)
-    {
-        onFinish();
+            @Override public void onNext(Pair<DiscussionListKey, PaginatedDTO<DiscussionDTO>> pair)
+            {
+                onFinish();
 
-        nextPageDelta = 0;
+                List<DiscussionDTO> list = pair.second.getData();
+                if (list != null)
+                {
+                    DiscussionKeyList discussionKeyList = new DiscussionKeyList();
+                    for (@NotNull AbstractDiscussionDTO abstractDiscussionDTO : list)
+                    {
+                        discussionKeyList.add(abstractDiscussionDTO.getDiscussionKey());
+                    }
 
-        THToast.show(new THException(error));
+                    nextPageDelta = discussionKeyList.isEmpty() ? -1 : 1;
+
+                    Timber.d("nextPageDelta: %d, page: %d, received: %d", nextPageDelta, paginatedSecurityDiscussionListKey.page,
+                            discussionKeyList.size());
+
+                    if (shouldAppend)
+                    {
+                        securityDiscussionAdapter.appendTail(discussionKeyList);
+                        securityDiscussionAdapter.notifyDataSetChanged();
+                    }
+                    else
+                    {
+                        securityDiscussionAdapter = createDiscussionAdapter(discussionKeyList);
+                        securityDiscussionList.setAdapter(securityDiscussionAdapter);
+                        shouldAppend = true;
+                    }
+                }
+            }
+        };
     }
 
     private void onFinish()

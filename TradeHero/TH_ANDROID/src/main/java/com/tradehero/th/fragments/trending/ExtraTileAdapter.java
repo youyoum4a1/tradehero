@@ -10,24 +10,20 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
-
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.competition.ProviderListCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.StringUtils;
-
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
@@ -43,8 +39,8 @@ public class ExtraTileAdapter extends BaseAdapter
     @NotNull private final LayoutInflater inflater;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject Lazy<ProviderListCache> providerListCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
+    @Inject Lazy<ProviderListCacheRx> providerListCache;
 
     private final SharedPreferences mPref;
 
@@ -346,7 +342,7 @@ public class ExtraTileAdapter extends BaseAdapter
 
     private boolean isProviderDataAvailable()
     {
-        ProviderDTOList providerDTOs = providerListCache.get().get(new ProviderListKey());
+        ProviderDTOList providerDTOs = providerListCache.get().getValue(new ProviderListKey());
         if (providerDTOs != null)
         {
             //Timber.d("Provider has %d items", providerDTOs.size());
@@ -423,7 +419,7 @@ public class ExtraTileAdapter extends BaseAdapter
 
     private boolean isSurveyEnabled()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.get().getValue(currentUserId.toUserBaseKey());
         return userProfileDTO != null && !StringUtils.isNullOrEmpty(userProfileDTO.activeSurveyImageURL);
     }
 

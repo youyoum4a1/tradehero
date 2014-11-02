@@ -5,6 +5,7 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
+@Deprecated
 public interface PositionService
 {
     //<editor-fold desc="Get One User Portfolio Positions List">

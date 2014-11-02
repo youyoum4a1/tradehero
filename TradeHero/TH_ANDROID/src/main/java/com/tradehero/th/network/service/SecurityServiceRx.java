@@ -1,10 +1,14 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.TransactionFormDTO;
 import java.util.Map;
+import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -72,6 +76,22 @@ public interface SecurityServiceRx
     Observable<SecurityPositionDetailDTO> getSecurity(
             @Path("exchange") String exchange,
             @Path("pathSafeSecuritySymbol") String pathSafeSecuritySymbol);
+    //</editor-fold>
+
+    //<editor-fold desc="Buy Security">
+    @POST("/securities/{exchange}/{securitySymbol}/newbuy")
+    Observable<SecurityPositionTransactionDTO> buy(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Body() TransactionFormDTO transactionFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Sell Security">
+    @POST("/securities/{exchange}/{securitySymbol}/newsell")
+    Observable<SecurityPositionTransactionDTO> sell(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Body() TransactionFormDTO transactionFormDTO);
     //</editor-fold>
 }
 

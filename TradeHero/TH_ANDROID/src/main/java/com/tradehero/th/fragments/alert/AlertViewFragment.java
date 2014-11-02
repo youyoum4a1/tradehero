@@ -34,7 +34,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
@@ -64,7 +64,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected ProgressDialogUtil progressDialogUtil;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected Lazy<UserProfileCacheRx> userProfileCache;
     @Inject protected CurrentUserId currentUserId;
 
     private View headerView;
@@ -209,7 +209,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+                UserProfileDTO userProfileDTO = userProfileCache.get().getValue(currentUserId.toUserBaseKey());
 
                 if (alertToggle.isChecked()
                         && userProfileDTO != null

@@ -2,17 +2,14 @@ package com.tradehero.th.models.discussion;
 
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import rx.functions.Action1;
 
-/**
- * Created by thonguyen on 28/10/14.
- */
 public class DiscussionDTOProcessor<T extends AbstractDiscussionCompactDTO> implements Action1<PaginatedDTO<T>>
 {
-    private final DiscussionCache discussionCache;
+    private final DiscussionCacheRx discussionCache;
 
-    protected DiscussionDTOProcessor(DiscussionCache discussionCache)
+    protected DiscussionDTOProcessor(DiscussionCacheRx discussionCache)
     {
         this.discussionCache = discussionCache;
     }
@@ -23,7 +20,7 @@ public class DiscussionDTOProcessor<T extends AbstractDiscussionCompactDTO> impl
         {
             for (T item: paginatedDiscussionDTO.getData())
             {
-                discussionCache.put(item.getDiscussionKey(), item);
+                discussionCache.onNext(item.getDiscussionKey(), item);
             }
         }
     }

@@ -113,7 +113,7 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
             }
         });
 
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.getValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             edtMessageInvite.setText(getString(R.string.weibo_friends_invite, userProfileDTO.referralCode) + getStrMessageOfAtList(usersToInvite));

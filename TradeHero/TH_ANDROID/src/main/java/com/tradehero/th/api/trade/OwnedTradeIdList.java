@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public class OwnedTradeIdList extends DTOKeyIdList<OwnedTradeId>
 {
     //<editor-fold desc="Constructors">

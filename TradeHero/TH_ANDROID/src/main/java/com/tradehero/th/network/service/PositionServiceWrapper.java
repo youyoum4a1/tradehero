@@ -4,27 +4,26 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class PositionServiceWrapper
 {
     @NotNull private final PositionService positionService;
-    @NotNull private final PositionServiceAsync positionServiceAsync;
+    @NotNull private final PositionServiceRx positionServiceRx;
 
+    //<editor-fold desc="Constructors">
     @Inject public PositionServiceWrapper(
             @NotNull PositionService positionService,
-            @NotNull PositionServiceAsync positionServiceAsync)
+            @NotNull PositionServiceRx positionServiceRx)
     {
         super();
         this.positionService = positionService;
-        this.positionServiceAsync = positionServiceAsync;
+        this.positionServiceRx = positionServiceRx;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio Positions List">
     @NotNull public GetPositionsDTO getPositions(@NotNull OwnedPortfolioId ownedPortfolioId)
@@ -60,41 +59,37 @@ import retrofit.Callback;
         return returned;
     }
 
-    @NotNull public MiddleCallback<GetPositionsDTO> getPositions(
-            @NotNull OwnedPortfolioId ownedPortfolioId,
-            @Nullable Callback<GetPositionsDTO> callback)
+    @NotNull public Observable<GetPositionsDTO> getPositionsRx(@NotNull OwnedPortfolioId ownedPortfolioId)
     {
-        MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        Observable<GetPositionsDTO> returned;
         if (ownedPortfolioId instanceof PerPagedOwnedPortfolioId)
         {
             PerPagedOwnedPortfolioId perPagedOwnedPortfolioId = (PerPagedOwnedPortfolioId) ownedPortfolioId;
-            this.positionServiceAsync.getPositions(
+            returned = this.positionServiceRx.getPositions(
                     perPagedOwnedPortfolioId.userId,
                     perPagedOwnedPortfolioId.portfolioId,
                     perPagedOwnedPortfolioId.page,
-                    perPagedOwnedPortfolioId.perPage,
-                    middleCallback);
+                    perPagedOwnedPortfolioId.perPage);
         }
         else if (ownedPortfolioId instanceof PagedOwnedPortfolioId)
         {
             PagedOwnedPortfolioId pagedOwnedPortfolioId = (PagedOwnedPortfolioId) ownedPortfolioId;
-            this.positionServiceAsync.getPositions(
+            returned = this.positionServiceRx.getPositions(
                     pagedOwnedPortfolioId.userId,
                     pagedOwnedPortfolioId.portfolioId,
                     pagedOwnedPortfolioId.page,
-                    null,
-                    middleCallback);
+                    null);
+
         }
         else
         {
-            this.positionServiceAsync.getPositions(
+            returned = this.positionServiceRx.getPositions(
                     ownedPortfolioId.userId,
                     ownedPortfolioId.portfolioId,
                     null,
-                    null,
-                    middleCallback);
+                    null);
         }
-        return middleCallback;
+        return returned;
     }
     //</editor-fold>
 }

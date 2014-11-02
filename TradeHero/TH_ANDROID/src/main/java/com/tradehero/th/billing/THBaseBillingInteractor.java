@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Pair;
 import com.tradehero.common.billing.BaseBillingInteractor;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingAvailableTester;
@@ -17,20 +18,25 @@ import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
+import rx.Observable;
+import rx.Subscription;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 abstract public class THBaseBillingInteractor<
@@ -109,12 +115,12 @@ abstract public class THBaseBillingInteractor<
     @NotNull protected final Provider<Activity> activityProvider;
     @NotNull protected final CurrentUserId currentUserId;
     @NotNull protected final UserProfileCache userProfileCache;
-    @NotNull protected final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull protected final UserProfileCacheRx userProfileCacheRx;
+    @NotNull protected final PortfolioCompactListCacheRx portfolioCompactListCache;
     @NotNull protected final ProgressDialogUtil progressDialogUtil;
     @NotNull protected final BillingAlertDialogUtil billingAlertDialogUtil;
 
-    protected THBillingInitialMilestone THBillingInitialMilestone;
-    protected Milestone.OnCompleteListener billingInitialMilestoneListener;
+    protected Subscription billingInitialSubscription;
     protected LinkedList<Integer> requestsToLaunchOnBillingInitialMilestoneComplete;
 
     //<editor-fold desc="Constructors">
@@ -123,7 +129,8 @@ abstract public class THBaseBillingInteractor<
             @NotNull Provider<Activity> activityProvider,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
-            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull UserProfileCacheRx userProfileCacheRx,
+            @NotNull PortfolioCompactListCacheRx portfolioCompactListCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull BillingAlertDialogUtil<
                     ProductIdentifierType,
@@ -136,30 +143,37 @@ abstract public class THBaseBillingInteractor<
         this.activityProvider = activityProvider;
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
+        this.userProfileCacheRx = userProfileCacheRx;
         this.portfolioCompactListCache = portfolioCompactListCache;
         this.progressDialogUtil = progressDialogUtil;
         this.billingAlertDialogUtil = billingAlertDialogUtil;
 
         requestsToLaunchOnBillingInitialMilestoneComplete = new LinkedList<>();
 
-        billingInitialMilestoneListener = new THBaseBillingInteractorShowProductDetailCompleteListener();
-        THBillingInitialMilestone = new THBillingInitialMilestone(currentUserId.toUserBaseKey());
-        THBillingInitialMilestone.setOnCompleteListener(billingInitialMilestoneListener);
-        THBillingInitialMilestone.launch();
+        billingInitialSubscription = createInitialObservable()
+                .subscribe(new EmptyObserver<>());
     }
     //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
     @Override public void onDestroy()
     {
-        billingInitialMilestoneListener = null;
-        if (THBillingInitialMilestone != null)
+        if (billingInitialSubscription != null)
         {
-            THBillingInitialMilestone.setOnCompleteListener(null);
+            billingInitialSubscription.unsubscribe();
         }
+        billingInitialSubscription = null;
         super.onDestroy();
     }
     //</editor-fold>
+
+    protected Observable<Pair<UserProfileDTO, PortfolioCompactDTOList>> createInitialObservable()
+    {
+        return Observable.combineLatest(
+                userProfileCacheRx.get(currentUserId.toUserBaseKey()),
+                portfolioCompactListCache.get(currentUserId.toUserBaseKey()),
+                (pair1, pair2) -> Pair.create(pair1.second, pair2.second));
+    }
 
     //<editor-fold desc="Request Handling">
     @Override public int run(@NotNull THUIBillingRequestType uiBillingRequest)
@@ -170,7 +184,6 @@ abstract public class THBaseBillingInteractor<
             popInitialProgressDialog(uiBillingRequest);
         }
         requestsToLaunchOnBillingInitialMilestoneComplete.addLast(requestCode);
-        THBillingInitialMilestone.launch();
         return requestCode;
     }
 

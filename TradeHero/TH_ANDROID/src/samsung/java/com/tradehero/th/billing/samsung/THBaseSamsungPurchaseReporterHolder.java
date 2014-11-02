@@ -3,8 +3,8 @@ package com.tradehero.th.billing.samsung;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.billing.THBasePurchaseReporterHolder;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -23,8 +23,8 @@ public class THBaseSamsungPurchaseReporterHolder
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungPurchaseReporterHolder(
             @NotNull Lazy<UserProfileCache> userProfileCache,
-            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
-            @NotNull Lazy<PortfolioCache> portfolioCache,
+            @NotNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
+            @NotNull Lazy<PortfolioCacheRx> portfolioCache,
             @NotNull Provider<THSamsungPurchaseReporter> thSamsungPurchaseReporterProvider)
     {
         super(userProfileCache, portfolioCompactListCache, portfolioCache, thSamsungPurchaseReporterProvider);

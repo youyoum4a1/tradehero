@@ -5,24 +5,24 @@ import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
 {
     @NotNull protected final CurrentUserId currentUserId;
-    @NotNull protected final DiscussionCache discussionCache;
-    @NotNull protected final UserMessagingRelationshipCache userMessagingRelationshipCache;
+    @NotNull protected final DiscussionCacheRx discussionCache;
+    @NotNull protected final UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
     @Nullable protected final DiscussionKey stubKey;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorDiscussionCreate(
             @NotNull DiscussionDTOFactory discussionDTOFactory,
             @NotNull CurrentUserId currentUserId,
-            @NotNull DiscussionCache discussionCache,
-            @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
+            @NotNull DiscussionCacheRx discussionCache,
+            @NotNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
             @Nullable DiscussionKey stubKey)
     {
         super(discussionDTOFactory);
@@ -47,7 +47,7 @@ public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
         }
         if (processed != null)
         {
-            discussionCache.put(processed.getDiscussionKey(), processed);
+            discussionCache.onNext(processed.getDiscussionKey(), processed);
         }
         if (processed != null)
         {

@@ -10,6 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import timber.log.Timber;
 
+@Deprecated
 abstract public class PagedDTOCacheLoaderNew<
         DTOKeyType extends PagedDTOKey,
         AnyType,

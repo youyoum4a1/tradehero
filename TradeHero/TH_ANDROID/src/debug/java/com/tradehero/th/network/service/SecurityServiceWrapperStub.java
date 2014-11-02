@@ -5,9 +5,9 @@ import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -20,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
             @NotNull SecurityServiceAsync securityServiceAsync,
             @NotNull SecurityServiceRx securityServiceRx,
             @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull SecurityCompactCache securityCompactCache,
+            @NotNull SecurityCompactCacheRx securityCompactCache,
             @NotNull SecurityPositionDetailCacheRx securityPositionDetailCache,
-            @NotNull PortfolioCache portfolioCache,
+            @NotNull PortfolioCacheRx portfolioCache,
             @NotNull CurrentUserId currentUserId)
     {
         super(securityService, securityServiceAsync, securityServiceRx, providerServiceWrapper,

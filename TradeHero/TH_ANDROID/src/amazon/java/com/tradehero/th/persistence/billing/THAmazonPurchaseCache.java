@@ -3,13 +3,14 @@ package com.tradehero.th.persistence.billing;
 import com.tradehero.common.billing.amazon.AmazonPurchaseCache;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
+import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.billing.amazon.THAmazonOrderId;
 import com.tradehero.th.billing.amazon.THAmazonPurchase;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class THAmazonPurchaseCache
+@Singleton @UserCache public class THAmazonPurchaseCache
         extends AmazonPurchaseCache<
         AmazonSKU,
         THAmazonOrderId,

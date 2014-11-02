@@ -6,7 +6,7 @@ import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -17,13 +17,13 @@ import retrofit.Callback;
 {
     @NotNull protected final AlertPlanCheckService alertPlanCheckService;
     @NotNull protected final AlertPlanCheckServiceAsync alertPlanCheckServiceAsync;
-    @NotNull protected final UserProfileCache userProfileCache;
+    @NotNull protected final UserProfileCacheRx userProfileCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AlertPlanCheckServiceWrapper(
             @NotNull AlertPlanCheckService alertPlanCheckService,
             @NotNull AlertPlanCheckServiceAsync alertPlanCheckServiceAsync,
-            @NotNull UserProfileCache userProfileCache)
+            @NotNull UserProfileCacheRx userProfileCache)
     {
         super();
         this.alertPlanCheckService = alertPlanCheckService;

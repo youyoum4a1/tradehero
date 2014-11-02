@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,14 +44,16 @@ import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -62,7 +65,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -71,14 +74,12 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
     protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListFetchListener;
-    @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfileDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         leaderboardDefListFetchListener = createDefKeyListListener();
-        this.userProfileCacheListener = createUserProfileListener();
     }
 
     @Override
@@ -119,7 +120,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onStop()
     {
         detachLeaderboardDefListCacheFetchTask();
-        detachUserProfileCache();
         currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
         leaderboardDefListView.setOnItemClickListener(null);
         super.onStop();
@@ -162,35 +162,34 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         this.webFragment = null;
     }
 
-    protected void detachUserProfileCache()
-    {
-        userProfileCache.unregister(userProfileCacheListener);
-    }
-
     protected void fetchCurrentUserProfile()
     {
-        detachUserProfileCache();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileObserver());
     }
 
     //<editor-fold desc="Data Fetching">
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileObserver()
     {
-        return new LeaderboardCommunityUserProfileCacheListener();
+        return new LeaderboardCommunityUserProfileCacheObserver();
     }
 
-    protected class LeaderboardCommunityUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class LeaderboardCommunityUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            setCurrentUserProfileDTO(value);
+            setCurrentUserProfileDTO(pair.second);
             loadLeaderboardData();
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            Timber.e("Failed to download current UserProfile", error);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.e("Failed to download current UserProfile", e);
             THToast.show(R.string.error_fetch_your_user_profile);
         }
     }

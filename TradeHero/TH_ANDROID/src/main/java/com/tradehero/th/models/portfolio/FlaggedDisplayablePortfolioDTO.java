@@ -5,6 +5,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 
+@Deprecated
 class FlaggedDisplayablePortfolioDTO extends DisplayablePortfolioDTO
 {
     public boolean fetchingUser = false;

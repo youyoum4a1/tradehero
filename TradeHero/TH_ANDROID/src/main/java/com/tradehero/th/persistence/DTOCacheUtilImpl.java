@@ -2,6 +2,7 @@ package com.tradehero.th.persistence;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Pair;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.DTOCacheRx;
@@ -32,22 +33,22 @@ import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
-import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.home.HomeContentCache;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
+import com.tradehero.th.persistence.competition.ProviderListCacheRx;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
-import com.tradehero.th.persistence.market.ExchangeCompactListCache;
+import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
-import com.tradehero.th.persistence.security.SecurityCompactListCache;
+import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -58,6 +59,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observable;
+import rx.observers.EmptyObserver;
 
 @Singleton public class DTOCacheUtilImpl
     implements DTOCacheUtilNew, DTOCacheUtilRx
@@ -66,21 +69,21 @@ import org.jetbrains.annotations.Nullable;
 
     //<editor-fold desc="Caches">
     protected final Lazy<AlertCompactListCacheRx> alertCompactListCache;
-    protected final Lazy<ExchangeCompactListCache> exchangeCompactListCache;
-    protected final Lazy<HomeContentCache> homeContentCache;
+    protected final Lazy<ExchangeCompactListCacheRx> exchangeCompactListCache;
+    protected final Lazy<HomeContentCacheRx> homeContentCache;
     protected final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     protected final Lazy<LevelDefListCacheRx> levelDefListCache;
     protected final Lazy<NotificationCache> notificationCache;
-    protected final Lazy<PortfolioCache> portfolioCache;
-    protected final Lazy<PortfolioCompactCache> portfolioCompactCache;
-    protected final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    protected final Lazy<ProviderCache> providerCache;
-    protected final Lazy<ProviderListCache> providerListCache;
+    protected final Lazy<PortfolioCacheRx> portfolioCache;
+    protected final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
+    protected final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
+    protected final Lazy<ProviderCacheRx> providerCache;
+    protected final Lazy<ProviderListCacheRx> providerListCache;
     protected final Lazy<QuestBonusListCacheRx> questBonusListCacheLazy;
-    protected final Lazy<SecurityCompactListCache> securityCompactListCache;
+    protected final Lazy<SecurityCompactListCacheRx> securityCompactListCache;
     protected final Lazy<TranslationTokenCache> translationTokenCache;
-    protected final Lazy<UserProfileCache> userProfileCache;
-    protected final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
+    protected final Lazy<UserProfileCacheRx> userProfileCache;
+    protected final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     protected final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     protected final Lazy<WatchlistPositionCache> watchlistPositionCache;
     //</editor-fold>
@@ -102,20 +105,20 @@ import org.jetbrains.annotations.Nullable;
     @Inject public DTOCacheUtilImpl(
             CurrentUserId currentUserId,
             Lazy<AlertCompactListCacheRx> alertCompactListCache,
-            Lazy<ExchangeCompactListCache> exchangeCompactListCache,
-            Lazy<HomeContentCache> homeContentCache,
+            Lazy<ExchangeCompactListCacheRx> exchangeCompactListCache,
+            Lazy<HomeContentCacheRx> homeContentCache,
             Lazy<LeaderboardDefListCache> leaderboardDefListCache,
             Lazy<LevelDefListCacheRx> levelDefListCacheLazy,
             Lazy<NotificationCache> notificationCache,
-            Lazy<PortfolioCache> portfolioCache,
-            Lazy<PortfolioCompactCache> portfolioCompactCache,
-            Lazy<PortfolioCompactListCache> portfolioCompactListCache,
-            Lazy<ProviderCache> providerCache,
-            Lazy<ProviderListCache> providerListCache,
-            Lazy<SecurityCompactListCache> securityCompactListCache,
+            Lazy<PortfolioCacheRx> portfolioCache,
+            Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
+            Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
+            Lazy<ProviderCacheRx> providerCache,
+            Lazy<ProviderListCacheRx> providerListCache,
+            Lazy<SecurityCompactListCacheRx> securityCompactListCache,
             Lazy<TranslationTokenCache> translationTokenCache,
-            Lazy<UserProfileCache> userProfileCache,
-            Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
+            Lazy<UserProfileCacheRx> userProfileCache,
+            Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
             Lazy<WatchlistPositionCache> watchlistPositionCache,
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
@@ -230,16 +233,25 @@ import org.jetbrains.annotations.Nullable;
 
     public void preFetchExchanges()
     {
-        exchangeCompactListCache.get().getOrFetchAsync(new ExchangeListType());
+        exchangeCompactListCache.get().get(new ExchangeListType());
     }
 
     public void preFetchTrending()
     {
-        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        ExchangeCompactDTOList exchangeCompactDTOs = exchangeCompactListCache.get().get(new ExchangeListType());
-        if (currentUserProfile != null && exchangeCompactDTOs != null)
+        Observable.zip(
+                userProfileCache.get().get(currentUserId.toUserBaseKey()),
+                exchangeCompactListCache.get().get(new ExchangeListType()),
+                (obs1, obs2) -> Pair.create(obs1.second, obs2.second))
+                .first()
+                .doOnNext(this::preFetchTrending)
+                .subscribe(new EmptyObserver<>());
+    }
+
+    protected void preFetchTrending(@NotNull Pair<? extends UserBaseDTO, ExchangeCompactDTOList> pair)
+    {
+        if (pair.first != null && pair.second != null)
         {
-            preFetchTrending(currentUserProfile, exchangeCompactDTOs);
+            preFetchTrending(pair.first, pair.second);
         }
     }
 
@@ -267,7 +279,7 @@ import org.jetbrains.annotations.Nullable;
         }
         TrendingFilterTypeBasicDTO filterTypeBasicDTO = new TrendingFilterTypeBasicDTO(initialExchangeSpinner);
 
-        this.securityCompactListCache.get().getOrFetchAsync(
+        this.securityCompactListCache.get().get(
                 filterTypeBasicDTO.getSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
     }
 
@@ -285,20 +297,23 @@ import org.jetbrains.annotations.Nullable;
     {
         if (profile != null)
         {
-            ExchangeCompactDTOList exchangeCompacts = exchangeCompactListCache.get().get(new ExchangeListType());
-            Country country = profile.getCountry();
-            if (exchangeCompacts != null && country != null)
-            {
-                ExchangeCompactDTO initialExchange = exchangeCompacts.findFirstDefaultFor(country);
-                if (initialExchange != null)
-                {
-                    securityCompactListCache.get().getOrFetchAsync(
-                            new TrendingBasicSecurityListType(
-                                    initialExchange.name,
-                                    1,
-                                    TrendingFragment.DEFAULT_PER_PAGE));
-                }
-            }
+            exchangeCompactListCache.get().get(new ExchangeListType())
+                    .doOnNext(pair -> {
+                        Country country = profile.getCountry();
+                        if (pair.second != null && country != null)
+                        {
+                            ExchangeCompactDTO initialExchange = pair.second.findFirstDefaultFor(country);
+                            if (initialExchange != null)
+                            {
+                                securityCompactListCache.get().get(
+                                        new TrendingBasicSecurityListType(
+                                                initialExchange.name,
+                                                1,
+                                                TrendingFragment.DEFAULT_PER_PAGE));
+                            }
+                        }
+                    })
+                    .subscribe(new EmptyObserver<>());
         }
 
         //initialPrefetches();
@@ -318,7 +333,7 @@ import org.jetbrains.annotations.Nullable;
 
     public void preFetchProviders()
     {
-        this.providerListCache.get().getOrFetchAsync(new ProviderListKey());
+        this.providerListCache.get().get(new ProviderListKey());
     }
 
     public void conveniencePrefetches()
@@ -346,6 +361,6 @@ import org.jetbrains.annotations.Nullable;
 
     public void preFetchHomeContent()
     {
-        homeContentCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        homeContentCache.get().get(currentUserId.toUserBaseKey());
     }
 }

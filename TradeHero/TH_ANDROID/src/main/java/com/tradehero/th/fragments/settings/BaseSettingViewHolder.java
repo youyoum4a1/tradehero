@@ -4,6 +4,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.preference.PreferenceFragment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Subscription;
 
 abstract public class BaseSettingViewHolder implements SettingViewHolder
 {
@@ -27,5 +28,13 @@ abstract public class BaseSettingViewHolder implements SettingViewHolder
             return preferenceFragmentCopy.getString(stringResId);
         }
         return null;
+    }
+
+    protected void detachSubscription(@Nullable Subscription subscription)
+    {
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
     }
 }

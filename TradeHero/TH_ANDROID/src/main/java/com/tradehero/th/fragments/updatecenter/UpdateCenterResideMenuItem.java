@@ -2,11 +2,11 @@ package com.tradehero.th.fragments.updatecenter;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -15,21 +15,23 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class UpdateCenterResideMenuItem extends LinearLayout
         implements DTOView<UserProfileDTO>
 {
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
 
     @InjectView(R.id.tab_title_number) TextView unreadMessageCount;
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    private Subscription userProfileCacheSubscription;
 
     //<editor-fold desc="Constructors">
     public UpdateCenterResideMenuItem(Context context, AttributeSet attrs)
@@ -49,9 +51,9 @@ public class UpdateCenterResideMenuItem extends LinearLayout
     private void fetchAndDisplayUserProfile()
     {
         detachUserProfileCache();
-        userProfileCacheListener = createUserProfileFetchListener();
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        userProfileCacheSubscription = userProfileCache.get().get(currentUserId.toUserBaseKey())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileFetchObserver());
     }
 
     @Override protected void onAttachedToWindow()
@@ -69,8 +71,12 @@ public class UpdateCenterResideMenuItem extends LinearLayout
 
     private void detachUserProfileCache()
     {
-        userProfileCache.get().unregister(userProfileCacheListener);
-        userProfileCacheListener = null;
+        Subscription copy = userProfileCacheSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        userProfileCacheSubscription = null;
     }
 
     @Override public void display(UserProfileDTO dto)
@@ -88,22 +94,25 @@ public class UpdateCenterResideMenuItem extends LinearLayout
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileFetchObserver()
     {
-        return new UserProfileFetchListener();
+        return new UserProfileFetchObserver();
     }
 
-    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    private class UserProfileFetchObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            display(value);
+            display(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(error));
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
         }
     }
 }

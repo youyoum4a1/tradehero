@@ -17,7 +17,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import com.tradehero.th.persistence.alert.AlertCompactCacheRx;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import javax.inject.Inject;
@@ -38,7 +38,7 @@ public class BuySellFragmentTest
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject AlertCompactCacheRx alertCompactCache;
     @Inject AlertCacheRx alertCache;
-    @Inject SecurityCompactCache securityCompactCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject SecurityIdCache securityIdCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     private BuySellFragment buySellFragment;

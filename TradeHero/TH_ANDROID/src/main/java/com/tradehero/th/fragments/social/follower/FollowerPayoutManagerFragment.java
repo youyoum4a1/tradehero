@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -22,12 +22,15 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.persistence.social.UserFollowerCache;
+import com.tradehero.th.persistence.social.UserFollowerCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 {
@@ -46,8 +49,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<Picasso> picasso;
-    @Inject protected Lazy<UserFollowerCache> userFollowerCache;
-    private DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO> userFollowerListener;
+    @Inject protected Lazy<UserFollowerCacheRx> userFollowerCache;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
 
@@ -66,7 +68,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        userFollowerListener = createFollowerListener();
         followerPaymentListAdapter = new FollowerPaymentListItemAdapter(
                 getActivity(), R.layout.follower_payment_list_item, R.layout.follower_payment_list_header);
         followerHeroRelationId = getFollowerHeroRelationId(getArguments());
@@ -93,12 +94,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         fetchFollowerSummary();
     }
 
-    @Override public void onStop()
-    {
-        detachUserFollowerCache();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
@@ -108,20 +103,14 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Override public void onDestroy()
     {
         followerPaymentListAdapter = null;
-        userFollowerListener = null;
         super.onDestroy();
-    }
-
-    protected void detachUserFollowerCache()
-    {
-        userFollowerCache.get().unregister(userFollowerListener);
     }
 
     protected void fetchFollowerSummary()
     {
-        detachUserFollowerCache();
-        userFollowerCache.get().register(followerHeroRelationId, userFollowerListener);
-        userFollowerCache.get().getOrFetchAsync(followerHeroRelationId);
+        AndroidObservable.bindFragment(this, userFollowerCache.get().get(followerHeroRelationId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createFollowerObserver());
     }
 
     protected String getDisplayName()
@@ -240,20 +229,23 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO> createFollowerListener()
+    protected Observer<Pair<FollowerHeroRelationId, UserFollowerDTO>> createFollowerObserver()
     {
-        return new FollowerPayoutManagerFollowerListener();
+        return new FollowerPayoutManagerFollowerObserver();
     }
 
-    protected class FollowerPayoutManagerFollowerListener implements DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO>
+    protected class FollowerPayoutManagerFollowerObserver implements Observer<Pair<FollowerHeroRelationId, UserFollowerDTO>>
     {
-        @Override public void onDTOReceived(@NotNull FollowerHeroRelationId key, @NotNull UserFollowerDTO value)
+        @Override public void onNext(Pair<FollowerHeroRelationId, UserFollowerDTO> pair)
         {
-            display(value);
+            display(pair.second);
         }
 
-        @Override
-        public void onErrorThrown(@NotNull FollowerHeroRelationId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(
                     "There was an error fetching your follower information");

@@ -3,6 +3,7 @@ package com.tradehero.th.models.portfolio;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Deprecated
 class FlaggedDisplayablePortfolioDTOList extends ArrayList<FlaggedDisplayablePortfolioDTO>
 {
     public boolean fetchingIds = false;

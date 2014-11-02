@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
 import android.support.v4.content.Loader;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -28,10 +28,13 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
@@ -41,11 +44,9 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     // TODO sort warrants
     @NotNull protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    @Inject ProviderCache providerCache;
+    @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
-
-    private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
@@ -73,7 +74,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             this.providerId = getProviderId(getArguments());
         }
-        this.providerCacheListener = createProviderCacheListener();
         this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
     }
 
@@ -131,12 +131,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.webViewFragment = null;
     }
 
-    @Override public void onStop()
-    {
-        this.detachProviderFetchTask();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         DeviceUtil.dismissKeyboard(getActivity());
@@ -145,22 +139,15 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override public void onDestroy()
     {
-        this.providerCacheListener = null;
         this.webViewTHIntentPassedListener = null;
         super.onDestroy();
     }
 
-    protected void detachProviderFetchTask()
-    {
-        providerCache.unregister(providerCacheListener);
-    }
-
     protected void fetchProviderDTO()
     {
-        this.detachProviderFetchTask();
-        providerCache.register(this.providerId, providerCacheListener);
-        providerCache.getOrFetchAsync(this.providerId);
-        //forceInitialLoad();
+        AndroidObservable.bindFragment(this, providerCache.get(this.providerId))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(createProviderCacheObserver());
     }
 
     protected void prepareSecurityLoader()
@@ -241,22 +228,23 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         navigator.get().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
-    protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
+    protected Observer<Pair<ProviderId, ProviderDTO>> createProviderCacheObserver()
     {
-        return new ProviderSecurityListFragmentProviderCacheListener();
+        return new ProviderSecurityListFragmentProviderCacheObserver();
     }
 
-    protected class ProviderSecurityListFragmentProviderCacheListener implements DTOCacheNew.Listener<ProviderId, ProviderDTO>
+    protected class ProviderSecurityListFragmentProviderCacheObserver implements Observer<Pair<ProviderId, ProviderDTO>>
     {
-        @Override public void onDTOReceived(@NotNull ProviderId key, @NotNull ProviderDTO value)
+        @Override public void onNext(Pair<ProviderId, ProviderDTO> pair)
         {
-            if (key.equals(ProviderSecurityListFragment.this.providerId))
-            {
-                ProviderSecurityListFragment.this.linkWith(value, true);
-            }
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull ProviderId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(getString(R.string.error_fetch_provider_info));
         }

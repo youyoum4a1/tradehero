@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 // The purpose of this class is to save on memory usage by cutting out the elements that already enjoy their own cache.
-class CompetitionCutDTO implements DTO
+@Deprecated class CompetitionCutDTO implements DTO
 {
     public final int id;
     @Nullable public final LeaderboardDefKey leaderboardKey;

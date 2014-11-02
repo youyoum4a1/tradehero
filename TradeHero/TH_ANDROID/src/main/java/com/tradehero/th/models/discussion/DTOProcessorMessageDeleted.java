@@ -3,10 +3,10 @@ package com.tradehero.th.models.discussion;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.home.HomeContentCache;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
@@ -17,8 +17,8 @@ public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
     //<editor-fold desc="Constructors">
     public DTOProcessorMessageDeleted(
             @NotNull MessageHeaderCache messageHeaderCache,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull HomeContentCache homeContentCache,
+            @NotNull UserProfileCacheRx userProfileCache,
+            @NotNull HomeContentCacheRx homeContentCache,
             @NotNull MessageHeaderListCache messageHeaderListCache,
             @NotNull MessageHeaderId messageHeaderId,
             @NotNull UserBaseKey readerId)

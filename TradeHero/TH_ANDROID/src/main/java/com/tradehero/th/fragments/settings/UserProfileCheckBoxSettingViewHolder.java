@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -12,25 +12,28 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckboxSettingViewHolder
 {
     @NotNull protected final CurrentUserId currentUserId;
-    @NotNull protected final UserProfileCache userProfileCache;
+    @NotNull protected final UserProfileCacheRx userProfileCache;
     @NotNull protected final ProgressDialogUtil progressDialogUtil;
     @NotNull protected final UserServiceWrapper userServiceWrapper;
 
     protected ProgressDialog progressDialog;
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    protected Subscription userProfileCacheSubscription;
     protected MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
 
     //<editor-fold desc="Constructors">
     protected UserProfileCheckBoxSettingViewHolder(
             @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserProfileCacheRx userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull UserServiceWrapper userServiceWrapper)
     {
@@ -44,14 +47,13 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
     @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
-        userProfileCacheListener = createUserProfileCacheListener();
         fetchUserProfile();
     }
 
     @Override public void destroyViews()
     {
-        userProfileCacheListener = null;
-        detachUserProfileCache();
+        detachSubscription(userProfileCacheSubscription);
+        userProfileCacheSubscription = null;
         detachMiddleCallback();
         dismissProgress();
         super.destroyViews();
@@ -67,11 +69,6 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
         progressDialog = null;
     }
 
-    protected void detachUserProfileCache()
-    {
-        userProfileCache.unregister(userProfileCacheListener);
-    }
-
     protected void detachMiddleCallback()
     {
         MiddleCallback<UserProfileDTO> middleCallbackCopy = middleCallbackUpdateUserProfile;
@@ -84,25 +81,30 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
 
     protected void fetchUserProfile()
     {
-        detachUserProfileCache();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        detachSubscription(userProfileCacheSubscription);
+        userProfileCacheSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new UserProfileCacheListener();
+        return new UserProfileCacheObserver();
     }
 
-    protected class UserProfileCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class UserProfileCacheObserver
+            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            updateStatus(value);
+            updateStatus(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_your_user_profile);
         }

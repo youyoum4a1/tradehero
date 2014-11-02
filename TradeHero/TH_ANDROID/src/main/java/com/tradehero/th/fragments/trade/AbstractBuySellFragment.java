@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
@@ -28,7 +27,7 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.prefs.ShowMarketClosed;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
@@ -37,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -58,7 +58,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
     protected Subscription securityPositionDetailSubscription;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected Lazy<UserProfileCacheRx> userProfileCache;
     @Inject THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
 
@@ -71,7 +71,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected ProviderId providerId;
     protected UserProfileDTO userProfileDTO;
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     protected FreshQuoteHolder freshQuoteHolder;
     @Nullable protected QuoteDTO quoteDTO;
@@ -103,7 +102,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
-        userProfileCacheListener = createUserProfileCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -185,7 +183,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onSaveInstanceState(outState);
 
         detachSecurityPositionDetailSubscription();
-        detachUserProfileCache();
         destroyFreshQuoteHolder();
 
         outState.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
@@ -203,7 +200,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         detachSecurityCompactSubscription();
         detachSecurityPositionDetailSubscription();
-        detachUserProfileCache();
         destroyFreshQuoteHolder();
         querying = false;
 
@@ -217,12 +213,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             freshQuoteHolder.destroy();
         }
         freshQuoteHolder = null;
-    }
-
-    @Override public void onDestroy()
-    {
-        userProfileCacheListener = null;
-        super.onDestroy();
     }
 
     protected void detachSecurityCompactSubscription()
@@ -243,11 +233,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             subscriptionCopy.unsubscribe();
         }
         securityPositionDetailSubscription = null;
-    }
-
-    protected void detachUserProfileCache()
-    {
-        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
     public void setTransactionTypeBuy(boolean transactionTypeBuy)
@@ -331,9 +316,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void requestUserProfile()
     {
-        detachUserProfileCache();
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
     }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -498,27 +483,26 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new AbstractBuySellUserProfileCacheListener();
+        return new AbstractBuySellUserProfileCacheObserver();
     }
 
-    protected class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, UserProfileDTO>
+    protected class AbstractBuySellUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onDTOReceived(@NotNull final UserBaseKey key, @NotNull final UserProfileDTO value)
+        @Override public void onCompleted()
         {
-            linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_your_user_profile);
-            Timber.e("Error fetching the user profile %s", key, error);
+            Timber.e("Error fetching the user profile", e);
         }
     }
 }

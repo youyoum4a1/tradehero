@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class CompetitionListCache extends StraightCutDTOCacheNew<ProviderId, CompetitionDTOList, CompetitionIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;

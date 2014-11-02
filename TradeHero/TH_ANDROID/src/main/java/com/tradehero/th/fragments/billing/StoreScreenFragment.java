@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,7 +13,6 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
@@ -38,7 +38,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
@@ -188,21 +188,21 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return request.build();
     }
 
-    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
+    @Override protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
     {
-        return new StoreScreenFragmentPortfolioCompactListFetchListener();
+        return new StoreScreenFragmentPortfolioCompactListObserver();
     }
 
-    protected class StoreScreenFragmentPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
+    protected class StoreScreenFragmentPortfolioCompactListObserver extends BasePurchaseManagementPortfolioCompactListObserver
     {
-        protected StoreScreenFragmentPortfolioCompactListFetchListener()
+        protected StoreScreenFragmentPortfolioCompactListObserver()
         {
             super();
         }
 
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
         {
-            super.onDTOReceived(key, value);
+            super.onNext(pair);
             launchRoutedAction();
         }
     }

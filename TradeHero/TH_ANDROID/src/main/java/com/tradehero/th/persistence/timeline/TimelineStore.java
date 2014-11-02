@@ -9,14 +9,13 @@ import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import retrofit.RetrofitError;
 
 public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
 {
@@ -24,9 +23,9 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
     private TimelineQuery query;
 
     private final UserTimelineServiceWrapper timelineServiceWrapper;
-    private final DiscussionCache discussionCache;
+    private final DiscussionCacheRx discussionCache;
 
-    @Inject public TimelineStore(UserTimelineServiceWrapper timelineServiceWrapper, DiscussionCache discussionCache)
+    @Inject public TimelineStore(UserTimelineServiceWrapper timelineServiceWrapper, DiscussionCacheRx discussionCache)
     {
         this.timelineServiceWrapper = timelineServiceWrapper;
         this.discussionCache = discussionCache;
@@ -48,7 +47,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
             {
                 itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
                 TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();
-                discussionCache.put(timelineKey, itemDTO);
+                discussionCache.onNext(timelineKey, itemDTO);
                 timelineItemDTOKeys.add(timelineKey);
             }
         }

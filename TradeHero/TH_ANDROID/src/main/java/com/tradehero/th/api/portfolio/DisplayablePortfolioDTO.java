@@ -2,10 +2,8 @@ package com.tradehero.th.api.portfolio;
 
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.io.IOException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DisplayablePortfolioDTO implements Comparable
@@ -26,6 +24,18 @@ public class DisplayablePortfolioDTO implements Comparable
     }
 
     public DisplayablePortfolioDTO(
+            @Nullable UserBaseDTO userBaseDTO,
+            @Nullable PortfolioDTO portfolioDTO)
+    {
+        if (portfolioDTO != null)
+        {
+            this.ownedPortfolioId = portfolioDTO.getOwnedPortfolioId();
+        }
+        this.userBaseDTO = userBaseDTO;
+        this.portfolioDTO = portfolioDTO;
+    }
+
+    public DisplayablePortfolioDTO(
             @Nullable OwnedPortfolioId ownedPortfolioId,
             @Nullable UserBaseDTO userBaseDTO,
             @Nullable PortfolioDTO portfolioDTO)
@@ -36,20 +46,9 @@ public class DisplayablePortfolioDTO implements Comparable
     }
     //</editor-fold>
 
-    public void populate(UserProfileCache userProfileCache, PortfolioCache portfolioCache)
+    public void populate(UserProfileCacheRx userProfileCache)
     {
-        populate(userProfileCache);
-        populate(portfolioCache);
-    }
-
-    public void populate(UserProfileCache userProfileCache)
-    {
-        this.userBaseDTO = userProfileCache.get(this.ownedPortfolioId.getUserBaseKey());
-    }
-
-    public void populate(PortfolioCache portfolioCache)
-    {
-        this.portfolioDTO = portfolioCache.get(this.ownedPortfolioId);
+        this.userBaseDTO = userProfileCache.getValue(this.ownedPortfolioId.getUserBaseKey());
     }
 
     public boolean isPopulated()

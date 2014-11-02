@@ -9,7 +9,6 @@ import dagger.Module;
                 AllFollowerFragment.class,
                 PremiumFollowerFragment.class,
                 FreeFollowerFragment.class,
-                FollowerManagerInfoFetcher.class,
                 FollowerPayoutManagerFragment.class,
                 FollowerListItemView.class,
                 FollowerRevenueListItemView.class,

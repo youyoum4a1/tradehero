@@ -46,14 +46,14 @@ import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
+import com.tradehero.th.persistence.competition.ProviderListCacheRx;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
+import com.tradehero.th.persistence.position.GetPositionsCacheRx;
+import com.tradehero.th.persistence.social.HeroListCacheRx;
+import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -73,14 +73,14 @@ import rx.functions.Func1;
     @NotNull private final Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final DTOCacheUtilImpl dtoCacheUtil;
-    @NotNull private final Lazy<UserProfileCache> userProfileCache;
-    @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
-    @NotNull private final Lazy<HeroListCache> heroListCache;
-    @NotNull private final Lazy<GetPositionsCache> getPositionsCache;
-    @NotNull private final Lazy<ProviderListCache> providerListCache;
-    @NotNull private final Lazy<ProviderCache> providerCache;
-    @NotNull private final Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache;
-    @NotNull private final Lazy<HomeContentCache> homeContentCache;
+    @NotNull private final Lazy<UserProfileCacheRx> userProfileCache;
+    @NotNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
+    @NotNull private final Lazy<HeroListCacheRx> heroListCache;
+    @NotNull private final Lazy<GetPositionsCacheRx> getPositionsCache;
+    @NotNull private final Lazy<ProviderListCacheRx> providerListCache;
+    @NotNull private final Lazy<ProviderCacheRx> providerCache;
+    @NotNull private final Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache;
+    @NotNull private final Lazy<HomeContentCacheRx> homeContentCache;
     @NotNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     //<editor-fold desc="Constructors">
@@ -90,15 +90,15 @@ import rx.functions.Func1;
             @NotNull UserServiceRx userServiceRx,
             @NotNull CurrentUserId currentUserId,
             @NotNull DTOCacheUtilImpl dtoCacheUtil,
-            @NotNull Lazy<UserProfileCache> userProfileCache,
-            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
-            @NotNull Lazy<HeroListCache> heroListCache,
-            @NotNull Lazy<GetPositionsCache> getPositionsCache,
-            @NotNull Lazy<ProviderListCache> providerListCache,
-            @NotNull Lazy<ProviderCache> providerCache,
-            @NotNull Lazy<AllowableRecipientPaginatedCache> allowableRecipientPaginatedCache,
+            @NotNull Lazy<UserProfileCacheRx> userProfileCache,
+            @NotNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
+            @NotNull Lazy<HeroListCacheRx> heroListCache,
+            @NotNull Lazy<GetPositionsCacheRx> getPositionsCache,
+            @NotNull Lazy<ProviderListCacheRx> providerListCache,
+            @NotNull Lazy<ProviderCacheRx> providerCache,
+            @NotNull Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache,
             @NotNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
-            @NotNull Lazy<HomeContentCache> homeContentCache,
+            @NotNull Lazy<HomeContentCacheRx> homeContentCache,
             @NotNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
     {
         this.userService = userService;

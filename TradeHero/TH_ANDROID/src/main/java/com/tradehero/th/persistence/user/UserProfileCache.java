@@ -9,7 +9,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.notification.NotificationListCache;
-import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -17,14 +17,14 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @NotNull private final Lazy<UserServiceWrapper> userServiceWrapper;
-    @NotNull private final Lazy<UserProfileCompactCache> userProfileCompactCache;
-    @NotNull private final Lazy<HeroListCache> heroListCache;
+    @NotNull private final Lazy<UserProfileCompactCacheRx> userProfileCompactCache;
+    @NotNull private final Lazy<HeroListCacheRx> heroListCache;
     @NotNull private final Lazy<LeaderboardCache> leaderboardCache;
     @NotNull private final Lazy<MessageHeaderListCache> messageHeaderListCache;
     @NotNull private final Lazy<NotificationListCache> notificationListCache;
@@ -32,8 +32,8 @@ public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfi
     //<editor-fold desc="Constructors">
     @Inject public UserProfileCache(
             @NotNull Lazy<UserServiceWrapper> userServiceWrapper,
-            @NotNull Lazy<UserProfileCompactCache> userProfileCompactCache,
-            @NotNull Lazy<HeroListCache> heroListCache,
+            @NotNull Lazy<UserProfileCompactCacheRx> userProfileCompactCache,
+            @NotNull Lazy<HeroListCacheRx> heroListCache,
             @NotNull Lazy<LeaderboardCache> leaderboardCache,
             @NotNull Lazy<MessageHeaderListCache> messageHeaderListCache,
             @NotNull Lazy<NotificationListCache> notificationListCache,
@@ -62,7 +62,7 @@ public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfi
         {
             leaderboardCache.get().put(userProfileDTO.getMostSkilledUserOnLbmuKey(), userProfileDTO.mostSkilledLbmu);
         }
-        userProfileCompactCache.get().put(userBaseKey, userProfileDTO);
+        userProfileCompactCache.get().onNext(userBaseKey, userProfileDTO);
         UserProfileDTO previous = super.put(userBaseKey, userProfileDTO);
         if (previous != null)
         {

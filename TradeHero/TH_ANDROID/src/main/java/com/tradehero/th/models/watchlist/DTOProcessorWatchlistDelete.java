@@ -5,8 +5,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import org.jetbrains.annotations.NotNull;
@@ -16,16 +16,16 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
 {
     @NotNull private final UserBaseKey concernedUser;
     @NotNull private final WatchlistPositionCache watchlistPositionCache;
-    @NotNull private final PortfolioCompactCache portfolioCompactCache;
-    @NotNull private final PortfolioCache portfolioCache;
+    @NotNull private final PortfolioCompactCacheRx portfolioCompactCache;
+    @NotNull private final PortfolioCacheRx portfolioCache;
     @NotNull private final UserWatchlistPositionCache userWatchlistPositionCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistDelete(
             @NotNull WatchlistPositionCache watchlistPositionCache,
             @NotNull UserBaseKey concernedUser,
-            @NotNull PortfolioCompactCache portfolioCompactCache,
-            @NotNull PortfolioCache portfolioCache,
+            @NotNull PortfolioCompactCacheRx portfolioCompactCache,
+            @NotNull PortfolioCacheRx portfolioCache,
             @NotNull UserWatchlistPositionCache userWatchlistPositionCache)
     {
         super();

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import com.special.residemenu.ResideMenu;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -35,7 +35,7 @@ import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.discussion.RunnableInvalidateMessageList;
 import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -46,6 +46,9 @@ import com.tradehero.th.widget.THTabView;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 @PreRoutable(preOpenRunnables = {
@@ -60,7 +63,7 @@ public class UpdateCenterFragment extends DashboardFragment
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
 
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject GraphicUtil graphicUtil;
@@ -69,7 +72,6 @@ public class UpdateCenterFragment extends DashboardFragment
 
     @RouteProperty("pageIndex") int selectedPageIndex = -1;
     private FragmentTabHost mTabHost;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private BroadcastReceiver broadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -77,7 +79,6 @@ public class UpdateCenterFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
 
         thRouter.inject(this);
-        userProfileCacheListener = createUserProfileCacheListener();
         broadcastReceiver = createBroadcastReceiver();
         Timber.d("onCreate");
     }
@@ -119,16 +120,12 @@ public class UpdateCenterFragment extends DashboardFragment
     {
         fetchUserProfile(false);
     }
+
     private void fetchUserProfile(boolean forceUpdate)
     {
-        detachUserProfileCache();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(),forceUpdate);
-    }
-
-    private void detachUserProfileCache()
-    {
-        userProfileCache.unregister(userProfileCacheListener);
+        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -224,7 +221,6 @@ public class UpdateCenterFragment extends DashboardFragment
         Timber.d("onDestroyView");
         //don't have to clear sub fragment to refresh data
         //clearTabs();
-        detachUserProfileCache();
 
         super.onDestroyView();
     }
@@ -232,7 +228,6 @@ public class UpdateCenterFragment extends DashboardFragment
     @Override public void onDestroy()
     {
         Timber.d("onDestroy");
-        userProfileCacheListener = null;
         broadcastReceiver = null;
         super.onDestroy();
     }
@@ -317,22 +312,25 @@ public class UpdateCenterFragment extends DashboardFragment
         changeTabTitleNumber(tabType, number);
     }
 
-    @NotNull protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    @NotNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new FetchUserProfileListener();
+        return new FetchUserProfileObserver();
     }
 
-    private class FetchUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    private class FetchUserProfileObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(error));
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
         }
     }
 

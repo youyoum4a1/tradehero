@@ -2,11 +2,10 @@ package com.tradehero.th.models.position;
 
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.models.DTOProcessor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import rx.functions.Func1;
 
-public class DTOProcessorGetPositions implements DTOProcessor<GetPositionsDTO>
+public class DTOProcessorGetPositions implements Func1<GetPositionsDTO, GetPositionsDTO>
 {
     @NotNull private final LeaderboardMarkUserId leaderboardMarkUserId;
 
@@ -15,12 +14,9 @@ public class DTOProcessorGetPositions implements DTOProcessor<GetPositionsDTO>
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }
 
-    @Override @Nullable public GetPositionsDTO process(@Nullable GetPositionsDTO value)
+    @Override public GetPositionsDTO call(@NotNull GetPositionsDTO value)
     {
-        if (value != null)
-        {
-            value.setOnInPeriod(leaderboardMarkUserId);
-        }
+        value.setOnInPeriod(leaderboardMarkUserId);
         return value;
     }
 }

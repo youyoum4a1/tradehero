@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.security;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -23,7 +23,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -36,6 +36,9 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class WatchlistEditFragment extends DashboardFragment
@@ -53,12 +56,10 @@ public class WatchlistEditFragment extends DashboardFragment
     private TextView deleteButton;
     @Nullable private ProgressDialog progressBar;
 
-    @Nullable private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
-
     @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
     @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
 
-    @Inject SecurityCompactCache securityCompactCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
@@ -73,12 +74,6 @@ public class WatchlistEditFragment extends DashboardFragment
     @NotNull public static SecurityId getSecurityId(@NotNull Bundle args)
     {
         return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE));
-    }
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        securityCompactCacheFetchListener = createSecurityCompactCacheListener();
     }
 
     @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -225,7 +220,6 @@ public class WatchlistEditFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        detachSecurityCompactFetchTask();
         detachMiddleCallbackUpdate();
         detachMiddleCallbackDelete();
         dismissProgress();
@@ -234,15 +228,9 @@ public class WatchlistEditFragment extends DashboardFragment
 
     @Override public void onSaveInstanceState(Bundle outState)
     {
-        detachSecurityCompactFetchTask();
         detachMiddleCallbackUpdate();
         detachMiddleCallbackDelete();
         super.onSaveInstanceState(outState);
-    }
-
-    protected void detachSecurityCompactFetchTask()
-    {
-        securityCompactCache.unregister(securityCompactCacheFetchListener);
     }
 
     protected void detachMiddleCallbackUpdate()
@@ -261,12 +249,6 @@ public class WatchlistEditFragment extends DashboardFragment
             middleCallbackDelete.setPrimaryCallback(null);
         }
         middleCallbackDelete = null;
-    }
-
-    @Override public void onDestroy()
-    {
-        securityCompactCacheFetchListener = null;
-        super.onDestroy();
     }
 
     private void linkWith(@NotNull SecurityId securityId, boolean andDisplay)
@@ -322,9 +304,9 @@ public class WatchlistEditFragment extends DashboardFragment
             progressBar = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait), getString(R.string.loading_loading), true);
         }
 
-        detachSecurityCompactFetchTask();
-        securityCompactCache.register(securityId, securityCompactCacheFetchListener);
-        securityCompactCache.getOrFetchAsync(securityId);
+        AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createSecurityCompactCacheObserver());
     }
 
     private void linkWith(@NotNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -429,29 +411,28 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    @NotNull protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    @NotNull protected Observer<Pair<SecurityId, SecurityCompactDTO>> createSecurityCompactCacheObserver()
     {
-        return new WatchlistEditSecurityCompactCacheListener();
+        return new WatchlistEditSecurityCompactCacheObserver();
     }
 
-    protected class WatchlistEditSecurityCompactCacheListener implements DTOCacheNew.HurriedListener<SecurityId, SecurityCompactDTO>
+    protected class WatchlistEditSecurityCompactCacheObserver implements Observer<Pair<SecurityId, SecurityCompactDTO>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
-        {
-            onDTOReceived(key, value);
-        }
-
-        @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
+        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
         {
             dismissProgress();
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             dismissProgress();
             THToast.show(R.string.error_fetch_security_info);
-            Timber.e("Failed to fetch SecurityCompact for %s", key, error);
+            Timber.e("Failed to fetch SecurityCompact for", e);
         }
     }
 }

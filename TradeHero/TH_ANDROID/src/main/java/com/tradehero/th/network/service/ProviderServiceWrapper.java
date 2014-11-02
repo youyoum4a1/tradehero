@@ -17,13 +17,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderCompactReceived;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
 import rx.Observable;
 
 @Singleton public class ProviderServiceWrapper
@@ -63,15 +59,6 @@ import rx.Observable;
     {
         return createProcessorProviderCompactListReceived().process(
                 this.providerService.getProviders());
-    }
-
-    @NotNull public MiddleCallback<ProviderDTOList> getProviders(@Nullable Callback<ProviderDTOList> callback)
-    {
-        MiddleCallback<ProviderDTOList> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createProcessorProviderCompactListReceived());
-        this.providerServiceAsync.getProviders(middleCallback);
-        return middleCallback;
     }
 
     @NotNull public Observable<ProviderDTOList> getProvidersRx()
@@ -127,44 +114,6 @@ import rx.Observable;
         return received;
     }
 
-    @NotNull public MiddleCallback<SecurityCompactDTOList> getProviderSecurities(
-            @NotNull ProviderSecurityListType key,
-            @Nullable Callback<SecurityCompactDTOList> callback)
-    {
-        MiddleCallback<SecurityCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        if (key instanceof SearchProviderSecurityListType)
-        {
-            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
-            this.providerServiceAsync.searchSecurities(
-                    searchKey.providerId.key,
-                    searchKey.searchString,
-                    searchKey.getPage(),
-                    searchKey.perPage,
-                    middleCallback);
-        }
-        else if (key instanceof BasicProviderSecurityListType)
-        {
-            this.providerServiceAsync.getSecurities(
-                    key.getProviderId().key,
-                    key.getPage(),
-                    key.perPage,
-                    middleCallback);
-        }
-        else if (key instanceof WarrantProviderSecurityListType)
-        {
-            this.providerServiceAsync.getWarrantUnderlyers(
-                    key.getProviderId().key,
-                    key.getPage(),
-                    key.perPage,
-                    middleCallback);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
-        }
-        return middleCallback;
-    }
-
     public Observable<SecurityCompactDTOList> getProviderSecuritiesRx(@NotNull ProviderSecurityListType key)
     {
         Observable<SecurityCompactDTOList> received;
@@ -200,35 +149,9 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">
-    public HelpVideoDTOList getHelpVideos(@NotNull HelpVideoListKey helpVideoListKey)
-    {
-        return this.getHelpVideos(helpVideoListKey.getProviderId());
-    }
-
-    @NotNull public MiddleCallback<HelpVideoDTOList> getHelpVideos(
-            @NotNull HelpVideoListKey helpVideoListKey,
-            @Nullable Callback<HelpVideoDTOList> callback)
-    {
-        return this.getHelpVideos(helpVideoListKey.getProviderId(), callback);
-    }
-
     @NotNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NotNull HelpVideoListKey helpVideoListKey)
     {
         return this.getHelpVideosRx(helpVideoListKey.getProviderId());
-    }
-
-    public HelpVideoDTOList getHelpVideos(@NotNull ProviderId providerId)
-    {
-        return this.providerService.getHelpVideos(providerId.key);
-    }
-
-    @NotNull public MiddleCallback<HelpVideoDTOList> getHelpVideos(
-            @NotNull ProviderId providerId,
-            @Nullable Callback<HelpVideoDTOList> callback)
-    {
-        MiddleCallback<HelpVideoDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        this.providerServiceAsync.getHelpVideos(providerId.key, middleCallback);
-        return middleCallback;
     }
 
     @NotNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NotNull ProviderId providerId)
@@ -243,11 +166,9 @@ import rx.Observable;
         return this.getDisplayCells(providerDisplayCellListKey.getProviderId());
     }
 
-    @NotNull public MiddleCallback<ProviderDisplayCellDTOList> getDisplayCells(
-            @NotNull ProviderDisplayCellListKey providerDisplayCellListKey,
-            @Nullable Callback<ProviderDisplayCellDTOList> callback)
+    public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NotNull ProviderDisplayCellListKey providerDisplayCellListKey)
     {
-        return this.getDisplayCells(providerDisplayCellListKey.getProviderId(), callback);
+        return this.getDisplayCellsRx(providerDisplayCellListKey.getProviderId());
     }
 
     public ProviderDisplayCellDTOList getDisplayCells(@NotNull ProviderId providerId)
@@ -255,13 +176,9 @@ import rx.Observable;
         return this.providerService.getDisplayCells(providerId.key);
     }
 
-    @NotNull public MiddleCallback<ProviderDisplayCellDTOList> getDisplayCells(
-            @NotNull ProviderId providerId,
-            @Nullable Callback<ProviderDisplayCellDTOList> callback)
+    public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NotNull ProviderId providerId)
     {
-        MiddleCallback<ProviderDisplayCellDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        this.providerServiceAsync.getDisplayCells(providerId.key, middleCallback);
-        return middleCallback;
+        return this.providerServiceRx.getDisplayCells(providerId.key);
     }
     //</editor-fold>
 }

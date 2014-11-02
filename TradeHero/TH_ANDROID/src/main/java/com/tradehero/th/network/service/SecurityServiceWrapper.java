@@ -24,9 +24,9 @@ import com.tradehero.th.models.security.DTOProcessorSecurityPositionDetailReceiv
 import com.tradehero.th.models.security.DTOProcessorSecurityPositionTransactionUpdated;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,9 +42,9 @@ import rx.functions.Func1;
     @NotNull private final SecurityServiceAsync securityServiceAsync;
     @NotNull private final SecurityServiceRx securityServiceRx;
     @NotNull private final ProviderServiceWrapper providerServiceWrapper;
-    @NotNull private final SecurityCompactCache securityCompactCache;
+    @NotNull private final SecurityCompactCacheRx securityCompactCache;
     @NotNull private final SecurityPositionDetailCacheRx securityPositionDetailCache;
-    @NotNull private final PortfolioCache portfolioCache;
+    @NotNull private final PortfolioCacheRx portfolioCache;
     @NotNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
@@ -53,9 +53,9 @@ import rx.functions.Func1;
             @NotNull SecurityServiceAsync securityServiceAsync,
             @NotNull SecurityServiceRx securityServiceRx,
             @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull SecurityCompactCache securityCompactCache,
+            @NotNull SecurityCompactCacheRx securityCompactCache,
             @NotNull SecurityPositionDetailCacheRx securityPositionDetailCache,
-            @NotNull PortfolioCache portfolioCache,
+            @NotNull PortfolioCacheRx portfolioCache,
             @NotNull CurrentUserId currentUserId)
     {
         super();
@@ -71,17 +71,18 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Get Multiple Securities">
-    @NotNull private DTOProcessor<Map<Integer, SecurityCompactDTO>> createMultipleSecurityProcessor()
+    @NotNull private DTOProcessorMultiSecurities createMultipleSecurityProcessor()
     {
         return new DTOProcessorMultiSecurities(securityCompactCache);
     }
 
-    public Map<Integer, SecurityCompactDTO> getMultipleSecurities(@NotNull SecurityIntegerIdList ids)
+    public Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecuritiesRx(@NotNull SecurityIntegerIdList ids)
     {
-        return createMultipleSecurityProcessor().process(
-                securityService.getMultipleSecurities(ids.getCommaSeparated()));
+        return securityServiceRx.getMultipleSecurities(ids.getCommaSeparated())
+                .doOnNext(createMultipleSecurityProcessor());
     }
 
+    @Deprecated
     @NotNull public MiddleCallback<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(
             @NotNull SecurityIntegerIdList ids,
             @Nullable Callback<Map<Integer, SecurityCompactDTO>> callback)
@@ -95,6 +96,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Get Securities">
+    @Deprecated
     public SecurityCompactDTOList getSecurities(@NotNull SecurityListType key)
     {
         SecurityCompactDTOList received;
@@ -160,81 +162,6 @@ import rx.functions.Func1;
             throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
         }
         return received;
-    }
-
-    @NotNull public MiddleCallback<SecurityCompactDTOList> getSecurities(
-            @NotNull SecurityListType key,
-            @Nullable Callback<SecurityCompactDTOList> callback)
-    {
-        MiddleCallback<SecurityCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        if (key instanceof TrendingSecurityListType)
-        {
-            TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
-            if (trendingKey instanceof TrendingBasicSecurityListType)
-            {
-                this.securityServiceAsync.getTrendingSecurities(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage,
-                        middleCallback);
-            }
-            else if (trendingKey instanceof TrendingPriceSecurityListType)
-            {
-                this.securityServiceAsync.getTrendingSecuritiesByPrice(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage,
-                        middleCallback);
-            }
-            else if (trendingKey instanceof TrendingVolumeSecurityListType)
-            {
-                this.securityServiceAsync.getTrendingSecuritiesByVolume(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage,
-                        middleCallback);
-            }
-            else if (trendingKey instanceof TrendingAllSecurityListType)
-            {
-                this.securityServiceAsync.getTrendingSecuritiesAllInExchange(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage,
-                        middleCallback);
-            }
-            else
-            {
-                throw new IllegalArgumentException("Unhandled type " + ((Object) trendingKey).getClass().getName());
-            }
-        }
-        else if (key instanceof SearchSecurityListType)
-        {
-            SearchSecurityListType searchKey = (SearchSecurityListType) key;
-            this.securityServiceAsync.searchSecurities(
-                    searchKey.searchString,
-                    searchKey.getPage(),
-                    searchKey.perPage,
-                    middleCallback);
-        }
-        else if (key instanceof ProviderSecurityListType)
-        {
-            return providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key, callback);
-        }
-        else if (key instanceof ExchangeSectorSecurityListType)
-        {
-            ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
-            this.securityServiceAsync.getBySectorAndExchange(
-                    exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
-                    exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
-                    key.page,
-                    key.perPage,
-                    middleCallback);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
-        }
-        return middleCallback;
     }
 
     public Observable<SecurityCompactDTOList> getSecuritiesRx(@NotNull SecurityListType key)
@@ -311,21 +238,11 @@ import rx.functions.Func1;
         return new DTOProcessorSecurityPositionDetailReceived(securityId, currentUserId.toUserBaseKey());
     }
 
+    @Deprecated
     public SecurityPositionDetailDTO getSecurity(@NotNull SecurityId securityId)
     {
         return createSecurityPositionDetailDTOProcessor(securityId).process(
                 this.securityService.getSecurity(securityId.getExchange(), securityId.getPathSafeSymbol()));
-    }
-
-    @NotNull public MiddleCallback<SecurityPositionDetailDTO> getSecurity(
-            @NotNull SecurityId securityId,
-            @Nullable Callback<SecurityPositionDetailDTO> callback)
-    {
-        MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createSecurityPositionDetailDTOProcessor(securityId));
-        this.securityServiceAsync.getSecurity(securityId.getExchange(), securityId.getPathSafeSymbol(), middleCallback);
-        return middleCallback;
     }
 
     @NotNull public Observable<SecurityPositionDetailDTO> getSecurityRx(
@@ -356,7 +273,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
-    @NotNull private DTOProcessor<SecurityPositionTransactionDTO> createSecurityPositionTransactionUpdatedProcessor(@NotNull SecurityId securityId)
+    @NotNull private DTOProcessorSecurityPositionTransactionUpdated createSecurityPositionTransactionUpdatedProcessor(@NotNull SecurityId securityId)
     {
         return new DTOProcessorSecurityPositionTransactionUpdated(
                 securityId,
@@ -365,6 +282,7 @@ import rx.functions.Func1;
                 portfolioCache);
     }
 
+    @Deprecated
     public SecurityPositionTransactionDTO buy(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO)
@@ -373,6 +291,7 @@ import rx.functions.Func1;
                 this.securityService.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
     }
 
+    @Deprecated
     @NotNull public MiddleCallback<SecurityPositionTransactionDTO> buy(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO,
@@ -383,9 +302,18 @@ import rx.functions.Func1;
         this.securityServiceAsync.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO, middleCallback);
         return middleCallback;
     }
+
+    public Observable<SecurityPositionTransactionDTO> buyRx(
+            @NotNull SecurityId securityId,
+            @NotNull TransactionFormDTO transactionFormDTO)
+    {
+        return this.securityServiceRx.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
+            .doOnNext(createSecurityPositionTransactionUpdatedProcessor(securityId));
+    }
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
+    @Deprecated
     public SecurityPositionTransactionDTO sell(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO)
@@ -394,6 +322,7 @@ import rx.functions.Func1;
                 this.securityService.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
     }
 
+    @Deprecated
     @NotNull public MiddleCallback<SecurityPositionTransactionDTO> sell(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO,
@@ -404,21 +333,30 @@ import rx.functions.Func1;
         this.securityServiceAsync.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO, middleCallback);
         return middleCallback;
     }
+
+    @NotNull public Observable<SecurityPositionTransactionDTO> sellRx(
+            @NotNull SecurityId securityId,
+            @NotNull TransactionFormDTO transactionFormDTO)
+    {
+        return this.securityServiceRx.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
+                .doOnNext(createSecurityPositionTransactionUpdatedProcessor(securityId));
+    }
     //</editor-fold>
 
     //<editor-fold desc="Buy or Sell Security">
-    public SecurityPositionTransactionDTO doTransaction(
+    public Observable<SecurityPositionTransactionDTO> doTransactionRx(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO,
             boolean isBuy)
     {
         if (isBuy)
         {
-            return buy(securityId, transactionFormDTO);
+            return buyRx(securityId, transactionFormDTO);
         }
-        return sell(securityId, transactionFormDTO);
+        return sellRx(securityId, transactionFormDTO);
     }
 
+    @Deprecated
     @NotNull public MiddleCallback<SecurityPositionTransactionDTO> doTransaction(
             @NotNull SecurityId securityId,
             @NotNull TransactionFormDTO transactionFormDTO,

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,13 +16,13 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
     @LayoutRes public final int mineResId;
     @LayoutRes public final int otherResId;
 
-    @NotNull DiscussionCache discussionCache;
+    @NotNull DiscussionCacheRx discussionCache;
     @NotNull CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     public PrivateDiscussionSetAdapter(
             @NotNull Context context,
-            @NotNull DiscussionCache discussionCache,
+            @NotNull DiscussionCacheRx discussionCache,
             @NotNull CurrentUserId currentUserId,
             @LayoutRes int mineResId,
             @LayoutRes int otherResId)
@@ -59,7 +59,7 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
 
     protected boolean isMine(int position)
     {
-        return isMine((AbstractDiscussionDTO) discussionCache.get(getItem(position)));
+        return isMine((AbstractDiscussionDTO) discussionCache.getValue(getItem(position)));
     }
 
     protected boolean isMine(@Nullable AbstractDiscussionDTO discussionDTO)

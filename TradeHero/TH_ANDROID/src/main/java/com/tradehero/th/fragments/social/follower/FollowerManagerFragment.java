@@ -28,9 +28,8 @@ import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
-import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.HeroType;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.widget.THTabView;
 import dagger.Lazy;
 import java.text.MessageFormat;
@@ -47,10 +46,9 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @InjectView(R.id.send_message_broadcast) View broadcastView;
 
-    @Inject FollowerSummaryCache followerSummaryCache;
     @Inject CurrentUserId currentUserId;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
 
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
@@ -221,20 +219,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         return fm.findFragmentByTag(tag);
     }
 
-    private int[] getFollowerCount()
-    {
-        int[] result = new int[3];
-        FollowerSummaryDTO followerSummaryDTO =
-                followerSummaryCache.get(currentUserId.toUserBaseKey());
-        if (followerSummaryDTO != null)
-        {
-            result[0] = followerSummaryDTO.getPaidFollowerCount();
-            result[1] = followerSummaryDTO.getFreeFollowerCount();
-            result[2] = result[0] + result[1];
-        }
-        return result;
-    }
-
     private View addTabs()
     {
         //TODO NestedFragments needs ChildFragmentManager
@@ -295,13 +279,13 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         // TODO synchronization problem
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.get().getValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             userProfileDTO.paidFollowerCount = value.getPaidFollowerCount();
             userProfileDTO.freeFollowerCount = value.getFreeFollowerCount();
             userProfileDTO.allFollowerCount = userProfileDTO.paidFollowerCount + userProfileDTO.freeFollowerCount;
-            userProfileCache.get().put(userBaseKey, userProfileDTO);
+            userProfileCache.get().onNext(userBaseKey, userProfileDTO);
         }
     }
 

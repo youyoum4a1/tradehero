@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,10 +29,14 @@ import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
+import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
@@ -43,12 +48,12 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
+    @Inject protected FollowerSummaryCacheRx followerSummaryCache;
     @InjectView(R.id.follower_list) PullToRefreshListView pullToRefreshListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     private FollowerAndPayoutListItemAdapter followerListAdapter;
     private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
-    private FollowerManagerInfoFetcher infoFetcher;
     @Inject THRouter thRouter;
 
     public static void putHeroId(Bundle args, UserBaseKey followerId)
@@ -125,14 +130,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
         Timber.d("FollowerManagerTabFragment onResume");
         heroId = getHeroId(getArguments());
-
         fetchFollowers();
-    }
-
-    @Override public void onStop()
-    {
-        detachInfoFetcher();
-        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -142,20 +140,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         super.onDestroyView();
     }
 
-    protected void detachInfoFetcher()
-    {
-        if (this.infoFetcher != null)
-        {
-            this.infoFetcher.onDestroyView();
-        }
-        this.infoFetcher = null;
-    }
-
     protected void fetchFollowers()
     {
-        detachInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), createFollowerSummaryCacheListener());
-        infoFetcher.fetch(this.heroId);
+        AndroidObservable.bindFragment(this, followerSummaryCache.get(heroId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createFollowerSummaryCacheObserver());
     }
 
     private boolean isCurrentUser()
@@ -263,9 +252,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         {
             heroId = getHeroId(getArguments());
         }
-        detachInfoFetcher();
-        infoFetcher = new FollowerManagerInfoFetcher(getActivity(), createFollowerSummaryCacheRefreshListener());
-        infoFetcher.fetch(this.heroId,true);
+        fetchFollowers();
     }
 
     private void pushTimelineFragment(int followerId)
@@ -322,34 +309,30 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheListener()
+    protected Observer<Pair<UserBaseKey, FollowerSummaryDTO>> createFollowerSummaryCacheObserver()
     {
-        return new FollowerManagerFollowerSummaryListener();
+        return new FollowerManagerFollowerSummaryObserver();
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheRefreshListener()
+    protected class FollowerManagerFollowerSummaryObserver
+            implements Observer<Pair<UserBaseKey, FollowerSummaryDTO>>
     {
-        return new RefreshFollowerManagerFollowerSummaryListener();
-    }
-
-    protected class FollowerManagerFollowerSummaryListener
-            implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
-    {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
+        @Override public void onNext(Pair<UserBaseKey, FollowerSummaryDTO> pair)
         {
-            Timber.d("onDTOReceived");
-
             displayProgress(false);
-            handleFollowerSummaryDTOReceived(value);
-            notifyFollowerLoaded(value);
+            handleFollowerSummaryDTOReceived(pair.second);
+            notifyFollowerLoaded(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             displayProgress(false);
             THToast.show(R.string.error_fetch_follower);
-            Timber.e("Failed to fetch FollowerSummary", error);
+            Timber.e("Failed to fetch FollowerSummary", e);
         }
     }
 

@@ -16,6 +16,7 @@ import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.UserProfileCache;
 
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 {
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     protected THBillingInteractor billingInteractor;
     private OwnedPortfolioId applicablePortfolioId = new OwnedPortfolioId(98, 456);
     private FollowUserAssistant assistant;
@@ -84,7 +85,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
                 assistant.onErrorThrown(heroId, expected);
                 return null;
             }
-        }).when(userProfileCache).getOrFetchAsync(currentUserId.toUserBaseKey());
+        }).when(userProfileCache).get(currentUserId.toUserBaseKey());
     }
 
     protected void makeBillingInteractorPurchaseSuccess(final UserProfileDTO myProfileAfterPurchase)
@@ -157,7 +158,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
     {
         assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
         // Prepare cache
-        userProfileCache = mock(UserProfileCache.class);
+        userProfileCache = mock(UserProfileCacheRx.class);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
 
         assistant.launchPremiumFollow();

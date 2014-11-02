@@ -4,13 +4,12 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
-
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Date;
-
+@Deprecated
 class WatchlistPositionCutDTO implements DTO
 {
     // PositionDTOCompact
@@ -44,7 +43,7 @@ class WatchlistPositionCutDTO implements DTO
     @Nullable public SecurityId securityIdKey;
 
     WatchlistPositionCutDTO(@NotNull WatchlistPositionDTO inflated,
-            @NotNull SecurityCompactCache securityCompactCache)
+            @NotNull SecurityCompactCacheRx securityCompactCache)
     {
         this.id = inflated.id;
         this.shares = inflated.shares;
@@ -70,18 +69,18 @@ class WatchlistPositionCutDTO implements DTO
         else
         {
             SecurityId key = inflated.securityDTO.getSecurityId();
-            securityCompactCache.put(key, inflated.securityDTO);
+            securityCompactCache.onNext(key, inflated.securityDTO);
             this.securityIdKey = key;
         }
     }
 
-    @Nullable WatchlistPositionDTO inflate(@NotNull SecurityCompactCache securityCompactCache)
+    @Nullable WatchlistPositionDTO inflate(@NotNull SecurityCompactCacheRx securityCompactCache)
     {
         WatchlistPositionDTO inflated = new WatchlistPositionDTO();
 
         if (securityIdKey != null)
         {
-            SecurityCompactDTO cached = securityCompactCache.get(securityIdKey);
+            SecurityCompactDTO cached = securityCompactCache.getValue(securityIdKey);
             if (cached == null)
             {
                 return null;

@@ -5,9 +5,10 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.DTOProcessor;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Func1;
 
 public class DTOProcessorPortfolioListReceived<PortfolioCompactListType extends PortfolioCompactDTOList>
-    implements DTOProcessor<PortfolioCompactListType>
+    implements DTOProcessor<PortfolioCompactListType>, Func1<PortfolioCompactListType, PortfolioCompactListType>
 {
     @NotNull private final DTOProcessor<PortfolioCompactDTO> individualProcessor;
 
@@ -26,5 +27,10 @@ public class DTOProcessorPortfolioListReceived<PortfolioCompactListType extends 
             }
         }
         return value;
+    }
+
+    @Override public PortfolioCompactListType call(PortfolioCompactListType value)
+    {
+        return process(value);
     }
 }

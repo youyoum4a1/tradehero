@@ -12,9 +12,10 @@ import org.jetbrains.annotations.NotNull;
     //<editor-fold desc="Constructors">
     @Inject public MarketServiceWrapperStub(
             @NotNull MarketService marketService,
-            @NotNull MarketServiceAsync marketServiceAsync)
+            @NotNull MarketServiceAsync marketServiceAsync,
+            @NotNull MarketServiceRx marketServiceRx)
     {
-        super(marketService, marketServiceAsync);
+        super(marketService, marketServiceAsync, marketServiceRx);
     }
     //</editor-fold>
 

@@ -15,7 +15,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.trade.TradeListItemAdapter;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -23,8 +22,8 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.trade.TradeDTOUtils;
-import com.tradehero.th.persistence.position.PositionCache;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.position.PositionCacheRx;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -33,6 +32,9 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class TradeListItemView extends LinearLayout
         implements DTOView<TradeListItemAdapter.ExpandableTradeItem>
@@ -40,6 +42,7 @@ public class TradeListItemView extends LinearLayout
     private TradeListItemAdapter.ExpandableTradeItem tradeItem;
     @Nullable private TradeDTO trade;
     @Nullable private PositionDTO position;
+    @Nullable private Subscription positionSubscription;
     private boolean prettyDate = true;
     @Nullable private String strDisplay;
 
@@ -51,9 +54,9 @@ public class TradeListItemView extends LinearLayout
     // 1) use the position cache to get the the PositionDTO containing the securityId (type SecurityIntegerId)
     // 2) in securityIdCache lookup the SecurityId (exchange + symbol) corresponding to the SecurityIntegerId
     // 3) in securityCache get the SecurityCompactDTO
-    @Inject Lazy<PositionCache> positionCache;
+    @Inject Lazy<PositionCacheRx> positionCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
-    @Inject Lazy<SecurityCompactCache> securityCache;
+    @Inject Lazy<SecurityCompactCacheRx> securityCache;
 
     @InjectView(R.id.ic_position_profit_indicator_left) protected ColorIndicator profitIndicatorView;
     @InjectView(R.id.trade_date_label) protected TextView dateTextView;
@@ -102,8 +105,19 @@ public class TradeListItemView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
+        detachPositionSubscription();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    protected void detachPositionSubscription()
+    {
+        Subscription copy = positionSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        positionSubscription = null;
     }
 
     @Override public void display(TradeListItemAdapter.ExpandableTradeItem expandableItem)
@@ -116,24 +130,38 @@ public class TradeListItemView extends LinearLayout
         this.tradeItem = item;
         if (this.tradeItem != null)
         {
-            this.position = positionCache.get().get(tradeItem.getModel().positionDTOKey);
             this.trade = tradeItem.getModel().tradeDTO;
-            if (position != null)
-            {
-                SecurityId securityId = securityIdCache.get()
-                        .get(position.getSecurityIntegerId())
-                        .toBlocking()
-                        .firstOrDefault(Pair.create((SecurityIntegerId) null, (SecurityId) null))
-                        .second;
-                if (securityId != null)
-                {
-                    SecurityCompactDTO cachedSecurity = securityCache.get().get(securityId);
-                    if (cachedSecurity != null)
+            detachPositionSubscription();
+            positionSubscription = positionCache.get().get(tradeItem.getModel().positionDTOKey)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(pair1 -> {
+                        position = pair1.second;
+                        if (andDisplay)
+                        {
+                            display();
+                        }
+                    })
+                    .flatMap(pair1 -> securityIdCache.get().get(pair1.second.getSecurityIntegerId()))
+                    .flatMap(pair2 -> securityCache.get().get(pair2.second))
+                    .doOnNext(pair3 -> strDisplay = pair3.second.currencyDisplay)
+                    .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
                     {
-                        this.strDisplay = cachedSecurity.currencyDisplay;
-                    }
-                }
-            }
+                        @Override public void onCompleted()
+                        {
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                        }
+
+                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> securityIdSecurityCompactDTOPair)
+                        {
+                            if (andDisplay)
+                            {
+                                display();
+                            }
+                        }
+                    });
         }
         else
         {
@@ -257,6 +285,7 @@ public class TradeListItemView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.trade_date_label)
     protected void toggleTradeDateLook(View view)
     {

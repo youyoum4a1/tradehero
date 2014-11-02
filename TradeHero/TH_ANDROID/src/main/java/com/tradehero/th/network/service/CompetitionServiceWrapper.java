@@ -12,8 +12,8 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -26,15 +26,15 @@ import rx.Observable;
     @NotNull private final CompetitionService competitionService;
     @NotNull private final CompetitionServiceAsync competitionServiceAsync;
     @NotNull private final CompetitionServiceRx competitionServiceRx;
-    @NotNull private final UserProfileCache userProfileCache;
-    @NotNull private final HomeContentCache homeContentCache;
+    @NotNull private final UserProfileCacheRx userProfileCache;
+    @NotNull private final HomeContentCacheRx homeContentCache;
 
     @Inject public CompetitionServiceWrapper(
             @NotNull CompetitionService competitionService,
             @NotNull CompetitionServiceAsync competitionServiceAsync,
             @NotNull CompetitionServiceRx competitionServiceRx,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull HomeContentCache homeContentCache)
+            @NotNull UserProfileCacheRx userProfileCache,
+            @NotNull HomeContentCacheRx homeContentCache)
     {
         super();
         this.competitionService = competitionService;

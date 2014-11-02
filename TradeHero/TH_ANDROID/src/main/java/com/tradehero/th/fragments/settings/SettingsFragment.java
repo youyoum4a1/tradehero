@@ -18,19 +18,14 @@ import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.auth.AuthenticationProvider;
-import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
-import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +35,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
 
-    @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
     @Inject Analytics analytics;
@@ -64,7 +58,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected ResetHelpScreensViewHolder resetHelpScreensViewHolder;
     @Inject protected ClearCacheViewHolder clearCacheViewHolder;
     @Inject protected AboutPrefViewHolder aboutPrefViewHolder;
-    @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
 
     @NotNull private SettingViewHolderList allSettingViewHolders;
     private SocialNetworkEnum socialNetworkToConnectTo;

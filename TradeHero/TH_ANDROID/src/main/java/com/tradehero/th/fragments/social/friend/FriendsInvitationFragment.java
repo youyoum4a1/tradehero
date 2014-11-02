@@ -42,7 +42,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import java.util.Arrays;
 import java.util.List;
@@ -76,7 +76,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     SocialFriendHandler socialFriendHandler;
     SocialFriendHandlerFacebook socialFriendHandlerFacebook;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtil;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
@@ -270,7 +270,7 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void inviteWeChatFriends()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.get().getValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             WeChatDTO weChatDTO = new WeChatDTO();
@@ -405,7 +405,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork)
     {
         UserProfileDTO updatedUserProfileDTO =
-                userProfileCache.get().get(currentUserId.toUserBaseKey());
+                userProfileCache.get().getValue(currentUserId.toUserBaseKey());
         return updatedUserProfileDTO != null &&
             userProfileDTOUtil.get().checkLinkedStatus(updatedUserProfileDTO, socialNetwork);
     }

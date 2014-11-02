@@ -3,31 +3,30 @@ package com.tradehero.th.models.user;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
-import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
-
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
+import com.tradehero.th.persistence.position.GetPositionsCacheRx;
+import com.tradehero.th.persistence.social.HeroListCacheRx;
+import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorFollowFreeUserBatch extends DTOProcessorUpdateUserProfile
 {
-    @NotNull protected final HeroListCache heroListCache;
-    @NotNull protected final GetPositionsCache getPositionsCache;
-    @NotNull protected final UserMessagingRelationshipCache userMessagingRelationshipCache;
-    @NotNull protected final AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
+    @NotNull protected final HeroListCacheRx heroListCache;
+    @NotNull protected final GetPositionsCacheRx getPositionsCache;
+    @NotNull protected final UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
+    @NotNull protected final AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
     @NotNull protected final BatchFollowFormDTO followFormDTO;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorFollowFreeUserBatch(
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull HomeContentCache homeContentCache,
-            @NotNull HeroListCache heroListCache,
-            @NotNull GetPositionsCache getPositionsCache,
-            @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
-            @NotNull AllowableRecipientPaginatedCache allowableRecipientPaginatedCache,
+            @NotNull UserProfileCacheRx userProfileCache,
+            @NotNull HomeContentCacheRx homeContentCache,
+            @NotNull HeroListCacheRx heroListCache,
+            @NotNull GetPositionsCacheRx getPositionsCache,
+            @NotNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
+            @NotNull AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache,
             @NotNull BatchFollowFormDTO followFormDTO)
     {
         super(userProfileCache, homeContentCache);

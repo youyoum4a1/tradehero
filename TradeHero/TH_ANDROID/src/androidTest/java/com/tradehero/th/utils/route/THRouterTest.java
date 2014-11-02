@@ -32,8 +32,8 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
-import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
@@ -58,10 +58,10 @@ public class THRouterTest
 {
     @Inject DashboardNavigator dashboardNavigator;
     @Inject THRouter thRouter;
-    @Inject ProviderCache providerCache;
+    @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
     @Inject CurrentUserId currentUserId;
-    @Inject PortfolioCompactListCache portfolioCompactListCache;
+    @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
 
     @Before public void setUp()
     {
@@ -146,7 +146,7 @@ public class THRouterTest
 
     @Test public void shouldOpenStoreAndResetPortfolioDialog() throws Throwable
     {
-        portfolioCompactListCache.put(currentUserId.toUserBaseKey(), createCurrentUserPortfolios());
+        portfolioCompactListCache.onNext(currentUserId.toUserBaseKey(), createCurrentUserPortfolios());
         thRouter.open("reset-portfolio");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
@@ -163,7 +163,7 @@ public class THRouterTest
 
     @Test public void shouldOpenStoreAndResetPortfolioDialogFullUrl()
     {
-        portfolioCompactListCache.put(currentUserId.toUserBaseKey(), createCurrentUserPortfolios());
+        portfolioCompactListCache.onNext(currentUserId.toUserBaseKey(), createCurrentUserPortfolios());
         thRouter.open("store/reset-portfolio");
         ShadowToast.reset();
 
@@ -225,7 +225,7 @@ public class THRouterTest
         ProviderDTO providerDTO = new ProviderDTO();
         providerDTO.id = 23;
         ProviderId providerId = providerDTO.getProviderId();
-        providerCache.put(providerId, providerDTO);
+        providerCache.onNext(providerId, providerDTO);
 
         currentUserId.set(108805);
 

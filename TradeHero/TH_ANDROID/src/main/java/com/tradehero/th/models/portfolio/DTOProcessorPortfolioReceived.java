@@ -4,9 +4,10 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.DTOProcessor;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Func1;
 
 public class DTOProcessorPortfolioReceived<PortfolioCompactType extends PortfolioCompactDTO>
-        implements DTOProcessor<PortfolioCompactType>
+        implements DTOProcessor<PortfolioCompactType>, Func1<PortfolioCompactType, PortfolioCompactType>
 {
     @NotNull private final UserBaseKey userBaseKey;
 
@@ -17,9 +18,14 @@ public class DTOProcessorPortfolioReceived<PortfolioCompactType extends Portfoli
     }
     //</editor-fold>
 
-    @Override public PortfolioCompactType process(PortfolioCompactType value)
+    @Override public PortfolioCompactType process(@NotNull PortfolioCompactType value)
     {
         value.userId = userBaseKey.key;
         return value;
+    }
+
+    @Override public PortfolioCompactType call(@NotNull PortfolioCompactType portfolioCompactType)
+    {
+        return process(portfolioCompactType);
     }
 }

@@ -8,7 +8,7 @@ import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.utils.broadcast.BroadcastTaskNew;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
@@ -30,14 +30,14 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
     @NotNull private final AchievementServiceWrapper achievementServiceWrapper;
     @NotNull private final BroadcastUtils broadcastUtils;
     @NotNull private final Lazy<CurrentUserId> currentUserId;
-    @NotNull private final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @NotNull private final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserAchievementCacheRx(
             @NotNull AchievementServiceWrapper achievementServiceWrapper,
             @NotNull BroadcastUtils broadcastUtils,
             @NotNull Lazy<CurrentUserId> currentUserId,
-            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
+            @NotNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NotNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
@@ -109,7 +109,7 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
     {
         if (achievementDefDTO.virtualDollars != 0)
         {
-            portfolioCompactListCache.get().getOrFetchAsync(currentUserId.get().toUserBaseKey(), true);
+            portfolioCompactListCache.get().get(currentUserId.get().toUserBaseKey());
         }
     }
 }

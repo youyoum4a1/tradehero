@@ -142,7 +142,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
 
-    @Override public void setBackroundResource(int resId)
+    @Override public void setBackgroundResource(int resId)
     {
         if (this.newsItemPlaceholder != null)
         {

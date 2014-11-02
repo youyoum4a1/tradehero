@@ -11,7 +11,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
@@ -31,8 +30,8 @@ import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.tradehero.th.persistence.news.NewsItemCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rx.Observer;
-import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -53,9 +52,8 @@ import timber.log.Timber;
 public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
     @Inject SecurityCompactCacheRx securityCompactCache;
-    @Nullable Subscription securityCompactCacheSubscription;
-    @Inject NewsItemCompactListCacheNew newsTitleCache;
-    @Inject protected DiscussionCache discussionCache;
+    @Inject NewsItemCompactListCacheRx newsTitleCache;
+    @Inject protected DiscussionCacheRx discussionCache;
     @Inject Lazy<DashboardNavigator> navigator;
     @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
@@ -63,11 +61,9 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardTabListViewScrollListener;
 
-    @Nullable private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
     private NewsHeadlineAdapter adapter;
     private PaginatedDTO<NewsItemCompactDTO> paginatedNews;
 
-    private DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchListener;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
     public static final String TEST_KEY = "News-Test";
@@ -80,8 +76,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     {
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
-        newsCacheListener = createNewsCacheListener();
-        discussionFetchListener = createDiscussionFetchListener();
         start = System.currentTimeMillis();
     }
 
@@ -95,23 +89,26 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         return view;
     }
 
-    protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
+    protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
     {
-        return new DiscussionFetchListener();
+        return new DiscussionFetchObserver();
     }
 
-    private class DiscussionFetchListener
-            implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
+    private class DiscussionFetchObserver
+            implements Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>>
     {
-        @Override
-        public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value)
+        @Override public void onNext(Pair<DiscussionKey, AbstractDiscussionCompactDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull DiscussionKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(error));
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
         }
     }
 
@@ -166,18 +163,8 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         listViewWrapper.setDisplayedChildByLayoutId(progressBar.getId());
     }
 
-    @Override public void onStop()
-    {
-        detachSubscription(securityCompactCacheSubscription);
-        securityCompactCacheSubscription = null;
-        detachFetchDiscussionTask();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
-        newsTitleCache.unregister(newsCacheListener);
-
         if (listView != null)
         {
             listView.setOnItemClickListener(null);
@@ -187,13 +174,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         adapter = null;
 
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        discussionFetchListener = null;
-        newsCacheListener = null;
-        super.onDestroy();
     }
 
     @Override protected SecurityCompactCacheRx getInfoCache()
@@ -219,8 +199,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
     protected void fetchSecurity(@NotNull SecurityId securityId)
     {
-        detachSubscription(securityCompactCacheSubscription);
-        securityCompactCache.get(securityId)
+        AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
                 {
@@ -244,8 +223,9 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         Timber.d("%s fetchSecurityNews,consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
 
         NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
-        newsTitleCache.register(listKey, newsCacheListener);
-        newsTitleCache.getOrFetchAsync(listKey, false);
+        AndroidObservable.bindFragment(this, newsTitleCache.get(listKey))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createNewsCacheObserver());
     }
 
     @Override public void display()
@@ -322,41 +302,28 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
     private void fetchDiscussionDetail(boolean force, NewsItemDTOKey discussionKey)
     {
-        detachFetchDiscussionTask();
-
-        discussionCache.register(discussionKey, discussionFetchListener);
-        discussionCache.getOrFetchAsync(discussionKey, force);
+        AndroidObservable.bindFragment(this, discussionCache.get(discussionKey))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(createDiscussionFetchObserver());
     }
 
-    private void detachFetchDiscussionTask()
+    @NotNull protected Observer<Pair<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>> createNewsCacheObserver()
     {
-        discussionCache.unregister(discussionFetchListener);
+        return new NewsHeadlineNewsListObserver();
     }
 
-    @NotNull protected DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> createNewsCacheListener()
+    protected class NewsHeadlineNewsListObserver implements Observer<Pair<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>>
     {
-        return new NewsHeadlineNewsListListener();
-    }
-
-    protected class NewsHeadlineNewsListListener implements DTOCacheNew.HurriedListener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
-    {
-        @Override public void onPreCachedDTOReceived(
-                @NotNull NewsItemListKey key,
-                @NotNull PaginatedDTO<NewsItemCompactDTO> value)
+        @Override public void onNext(Pair<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onDTOReceived(
-                @NotNull NewsItemListKey key,
-                @NotNull PaginatedDTO<NewsItemCompactDTO> value)
+        @Override public void onCompleted()
         {
-            linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(
-                @NotNull NewsItemListKey key,
-                @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_security_info);
         }

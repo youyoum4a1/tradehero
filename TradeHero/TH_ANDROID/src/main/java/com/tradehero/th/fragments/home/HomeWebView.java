@@ -2,27 +2,30 @@ package com.tradehero.th.fragments.home;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.util.Pair;
 import com.tradehero.common.widget.NotifyingWebView;
 import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.home.HomeContentCache;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public final class HomeWebView extends NotifyingWebView
 {
     @Inject CurrentUserId currentUserId;
-    @Inject HomeContentCache homeContentCache;
+    @Inject HomeContentCacheRx homeContentCache;
     @Inject DTOCacheUtilImpl dtoCacheUtil;
 
-    @Nullable private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
+    @Nullable private Subscription homeContentCacheSubscription;
 
     //region Constructors
     public HomeWebView(Context context, AttributeSet attrs)
@@ -52,21 +55,26 @@ public final class HomeWebView extends NotifyingWebView
     private void forceReloadWebView()
     {
         detachHomeCacheListener();
-        homeContentCacheListener = createHomeContentCacheListener();
-        homeContentCache.register(currentUserId.toUserBaseKey(), homeContentCacheListener);
-        homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+        homeContentCacheSubscription = homeContentCache.get(currentUserId.toUserBaseKey())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createHomeContentCacheObserver());
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachHomeCacheListener();
-        homeContentCacheListener = null;
+        homeContentCacheSubscription = null;
         super.onDetachedFromWindow();
     }
 
     private void detachHomeCacheListener()
     {
-        homeContentCache.unregister(currentUserId.toUserBaseKey(), homeContentCacheListener);
+        Subscription copy = homeContentCacheSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        homeContentCacheSubscription = null;
     }
 
     private void reloadWebView(@NotNull HomeContentDTO homeContentDTO)
@@ -77,28 +85,27 @@ public final class HomeWebView extends NotifyingWebView
     }
 
     //<editor-fold desc="Listeners">
-    @NotNull private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> createHomeContentCacheListener()
+    @NotNull private Observer<Pair<UserBaseKey, HomeContentDTO>> createHomeContentCacheObserver()
     {
-        return new HomeContentCacheListener();
+        return new HomeContentCacheObserver();
     }
 
-    private class HomeContentCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, HomeContentDTO>
+    private class HomeContentCacheObserver implements Observer<Pair<UserBaseKey, HomeContentDTO>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull HomeContentDTO value)
+        @Override public void onNext(Pair<UserBaseKey, HomeContentDTO> pair)
         {
-            reloadWebView(value);
-        }
-
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull HomeContentDTO value)
-        {
-            reloadWebView(value);
+            reloadWebView(pair.second);
             dtoCacheUtil.anonymousPrefetches();
             dtoCacheUtil.initialPrefetches();
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            Timber.e(error, "Failed fetching home page for key %s", key);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.e(e, "Failed fetching home page for key");
         }
     }
     //</editor-fold>

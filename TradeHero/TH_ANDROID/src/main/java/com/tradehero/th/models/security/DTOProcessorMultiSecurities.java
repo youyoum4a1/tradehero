@@ -2,16 +2,18 @@ package com.tradehero.th.models.security;
 
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import java.util.Map;
 import org.jetbrains.annotations.Nullable;
+import rx.functions.Action1;
 
-public class DTOProcessorMultiSecurities implements DTOProcessor<Map<Integer, SecurityCompactDTO>>
+public class DTOProcessorMultiSecurities implements DTOProcessor<Map<Integer, SecurityCompactDTO>>,
+        Action1<Map<Integer, SecurityCompactDTO>>
 {
-    private final SecurityCompactCache securityCompactCache;
+    private final SecurityCompactCacheRx securityCompactCache;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorMultiSecurities(SecurityCompactCache securityCompactCache)
+    public DTOProcessorMultiSecurities(SecurityCompactCacheRx securityCompactCache)
     {
         this.securityCompactCache = securityCompactCache;
     }
@@ -25,10 +27,15 @@ public class DTOProcessorMultiSecurities implements DTOProcessor<Map<Integer, Se
             {
                 if (securityCompactDTO != null)
                 {
-                    securityCompactCache.put(securityCompactDTO.getSecurityId(), securityCompactDTO);
+                    securityCompactCache.onNext(securityCompactDTO.getSecurityId(), securityCompactDTO);
                 }
             }
         }
         return value;
+    }
+
+    @Override public void call(Map<Integer, SecurityCompactDTO> map)
+    {
+        process(map);
     }
 }

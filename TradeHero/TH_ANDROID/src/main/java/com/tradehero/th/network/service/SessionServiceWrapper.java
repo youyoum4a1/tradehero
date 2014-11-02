@@ -16,10 +16,10 @@ import com.tradehero.th.models.user.DTOProcessorUserLogin;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.home.HomeContentCache;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.system.SystemStatusCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,12 +36,12 @@ import timber.log.Timber;
     @NotNull private final SessionService sessionService;
     @NotNull private final SessionServiceAsync sessionServiceAsync;
     @NotNull private final SessionServiceRx sessionServiceRx;
-    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final UserProfileCacheRx userProfileCache;
     @NotNull private final DTOCacheUtilImpl dtoCacheUtil;
     @NotNull private final Context context;
     @NotNull private final StringPreference savedPushDeviceIdentifier;
     @NotNull private final Lazy<SystemStatusCache> systemStatusCache;
-    @NotNull private final Lazy<HomeContentCache> homeContentCache;
+    @NotNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public SessionServiceWrapper(
@@ -49,12 +49,12 @@ import timber.log.Timber;
             @NotNull SessionService sessionService,
             @NotNull SessionServiceAsync sessionServiceAsync,
             @NotNull SessionServiceRx sessionServiceRx,
-            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserProfileCacheRx userProfileCache,
             @NotNull DTOCacheUtilImpl dtoCacheUtil,
             @NotNull Context context,
             @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
             @NotNull Lazy<SystemStatusCache> systemStatusCache,
-            @NotNull Lazy<HomeContentCache> homeContentCache)
+            @NotNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         this.currentUserId = currentUserId;
         this.sessionService = sessionService;

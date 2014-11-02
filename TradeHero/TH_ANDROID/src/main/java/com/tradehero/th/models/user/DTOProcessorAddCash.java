@@ -2,26 +2,26 @@ package com.tradehero.th.models.user;
 
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorAddCash extends DTOProcessorUpdateUserProfile
 {
-    @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
-    @NotNull private final PortfolioCompactCache portfolioCompactCache;
-    @NotNull private final PortfolioCache portfolioCache;
+    @NotNull private final PortfolioCompactListCacheRx portfolioCompactListCache;
+    @NotNull private final PortfolioCompactCacheRx portfolioCompactCache;
+    @NotNull private final PortfolioCacheRx portfolioCache;
     @NotNull private final OwnedPortfolioId ownedPortfolioId;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorAddCash(@NotNull UserProfileCache userProfileCache,
-            @NotNull HomeContentCache homeContentCache,
-            @NotNull PortfolioCompactListCache portfolioCompactListCache,
-            @NotNull PortfolioCompactCache portfolioCompactCache,
-            @NotNull PortfolioCache portfolioCache,
+    public DTOProcessorAddCash(@NotNull UserProfileCacheRx userProfileCache,
+            @NotNull HomeContentCacheRx homeContentCache,
+            @NotNull PortfolioCompactListCacheRx portfolioCompactListCache,
+            @NotNull PortfolioCompactCacheRx portfolioCompactCache,
+            @NotNull PortfolioCacheRx portfolioCache,
             @NotNull OwnedPortfolioId ownedPortfolioId)
     {
         super(userProfileCache, homeContentCache);
@@ -37,7 +37,7 @@ public class DTOProcessorAddCash extends DTOProcessorUpdateUserProfile
         UserProfileDTO processed = super.process(userProfileDTO);
         portfolioCache.invalidate(ownedPortfolioId);
         portfolioCompactCache.invalidate(ownedPortfolioId.getPortfolioIdKey());
-        portfolioCompactListCache.getOrFetchAsync(ownedPortfolioId.getUserBaseKey(), true);
+        portfolioCompactListCache.get(ownedPortfolioId.getUserBaseKey());
         return processed;
     }
 }

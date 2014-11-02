@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +41,7 @@ import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
@@ -73,7 +75,7 @@ import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
@@ -93,6 +95,7 @@ import org.jetbrains.annotations.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
@@ -135,7 +138,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.btn_add_trigger) protected Button mBtnAddTrigger;
     @InjectView(R.id.btn_add_watch_list) protected Button mBtnAddWatchlist;
 
-    @Inject PortfolioCompactCache portfolioCompactCache;
+    @Inject PortfolioCacheRx portfolioCache;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
@@ -172,9 +175,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
     }
 
-    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
+    @Override protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
     {
-        return new BuySellPortfolioCompactListFetchListener();
+        return new BuySellPortfolioCompactListObserver();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -468,9 +471,26 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
         if (purchaseApplicablePortfolioId != null)
         {
-            linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioIdKey()),
-                    andDisplay);
             purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
+            AndroidObservable.bindFragment(
+                    this,
+                    portfolioCache.get(purchaseApplicablePortfolioId))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Pair<OwnedPortfolioId, PortfolioDTO>>()
+                    {
+                        @Override public void onCompleted()
+                        {
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                        }
+
+                        @Override public void onNext(Pair<OwnedPortfolioId, PortfolioDTO> pair)
+                        {
+                            linkWith(pair.second, andDisplay);
+                        }
+                    });
         }
         else
         {
@@ -1310,12 +1330,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected class BuySellPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
+    protected class BuySellPortfolioCompactListObserver extends BasePurchaseManagementPortfolioCompactListObserver
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
         {
-            super.onDTOReceived(key, value);
-            PortfolioCompactDTO defaultPortfolio = value.getDefaultPortfolio();
+            super.onNext(pair);
+            PortfolioCompactDTO defaultPortfolio = pair.second.getDefaultPortfolio();
             if (defaultPortfolio != null)
             {
                 mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));

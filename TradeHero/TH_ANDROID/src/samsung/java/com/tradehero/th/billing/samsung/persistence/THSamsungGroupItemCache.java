@@ -4,11 +4,12 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.persistence.SamsungGroupItemCache;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
+import com.tradehero.common.persistence.UserCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class THSamsungGroupItemCache
+@Singleton @UserCache public class THSamsungGroupItemCache
         extends SamsungGroupItemCache<SamsungSKU, SamsungSKUList>
 {
     public static int MAX_SIZE = 5;

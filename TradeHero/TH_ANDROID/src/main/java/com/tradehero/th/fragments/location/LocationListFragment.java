@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.location;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,7 +14,6 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
@@ -26,13 +26,16 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class LocationListFragment extends DashboardFragment
@@ -40,7 +43,6 @@ public class LocationListFragment extends DashboardFragment
     private LocationAdapter mListAdapter;
     private MiddleCallback<UpdateCountryCodeDTO> middleCallback;
     private ProgressDialog progressDialog;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfile;
 
     @Inject Context context;
@@ -48,14 +50,13 @@ public class LocationListFragment extends DashboardFragment
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject ListedLocationDTOFactory listedLocationDTOFactory;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
 
     @InjectView(android.R.id.list) ListView listView;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        userProfileCacheListener = createUserProfileListener();
         mListAdapter = new LocationAdapter(
                 context,
                 R.layout.settings_location_list_item);
@@ -91,7 +92,6 @@ public class LocationListFragment extends DashboardFragment
 
     @Override public void onStop()
     {
-        detachUserProfileCache();
         detachMiddleCallback();
         super.onStop();
     }
@@ -117,13 +117,7 @@ public class LocationListFragment extends DashboardFragment
         {
             mListAdapter = null;
         }
-        userProfileCacheListener = null;
         super.onDestroy();
-    }
-
-    private void detachUserProfileCache()
-    {
-        userProfileCache.unregister(userProfileCacheListener);
     }
 
     private void detachMiddleCallback()
@@ -137,24 +131,28 @@ public class LocationListFragment extends DashboardFragment
 
     protected void fetchUserProfile()
     {
-        detachUserProfileCache();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileObserver());
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileObserver()
     {
-        return new LocationListUserProfileListener();
+        return new LocationListUserProfileObserver();
     }
 
-    protected class LocationListUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class LocationListUserProfileObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_your_user_profile);
         }

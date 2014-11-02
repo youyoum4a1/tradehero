@@ -57,6 +57,11 @@ public class RetrofitProtectedModule
         return adapter.create(DiscussionServiceAsync.class);
     }
 
+    @Provides @Singleton DiscussionServiceRx provideDiscussionServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(DiscussionServiceRx.class);
+    }
+
     @Provides @Singleton FollowerServiceAsync provideFollowerServiceAsync(RestAdapter adapter)
     {
         return adapter.create(FollowerServiceAsync.class);
@@ -67,11 +72,6 @@ public class RetrofitProtectedModule
         return adapter.create(FollowerServiceRx.class);
     }
 
-    @Provides @Singleton LeaderboardServiceAsync provideLeaderboardServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(LeaderboardServiceAsync.class);
-    }
-
     @Provides @Singleton LeaderboardServiceRx provideLeaderboardServiceRx(RestAdapter adapter)
     {
         return adapter.create(LeaderboardServiceRx.class);
@@ -80,6 +80,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton MarketServiceAsync provideMarketServiceAsync(RestAdapter adapter)
     {
         return adapter.create(MarketServiceAsync.class);
+    }
+
+    @Provides @Singleton MarketServiceRx provideMarketServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(MarketServiceRx.class);
     }
 
     @Provides @Singleton MessageServiceAsync provideMessageServiceAsync(RestAdapter adapter)
@@ -111,9 +116,14 @@ public class RetrofitProtectedModule
         return adapter.create(PortfolioServiceAsync.class);
     }
 
-    @Provides @Singleton PositionServiceAsync providePositionServiceAsync(RestAdapter adapter)
+    @Provides @Singleton PortfolioServiceRx providePortfolioServiceRx(RestAdapter adapter)
     {
-        return adapter.create(PositionServiceAsync.class);
+        return adapter.create(PortfolioServiceRx.class);
+    }
+
+    @Provides @Singleton PositionServiceRx providePositionServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(PositionServiceRx.class);
     }
 
     @Provides @Singleton ProviderServiceAsync provideProviderServiceAsync(RestAdapter adapter)
@@ -156,9 +166,9 @@ public class RetrofitProtectedModule
         return adapter.create(SocialServiceAsync.class);
     }
 
-    @Provides @Singleton TradeServiceAsync provideTradeServiceAsync(RestAdapter adapter)
+    @Provides @Singleton TradeServiceRx provideTradeServiceRx(RestAdapter adapter)
     {
-        return adapter.create(TradeServiceAsync.class);
+        return adapter.create(TradeServiceRx.class);
     }
 
     @Provides @Singleton TranslationServiceBingAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
@@ -187,11 +197,6 @@ public class RetrofitProtectedModule
         return adapter.create(UserTimelineMarkerServiceAsync.class);
     }
 
-    @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(UserTimelineServiceAsync.class);
-    }
-
     @Provides @Singleton UserTimelineServiceRx provideUserTimelineServiceRx(RestAdapter adapter)
     {
         return adapter.create(UserTimelineServiceRx.class);
@@ -212,17 +217,17 @@ public class RetrofitProtectedModule
         return adapter.create(WeChatServiceAsync.class);
     }
 
-    @Provides @Singleton YahooNewsServiceAsync provideYahooServiceAsync(RestAdapter.Builder builder)
+    @Provides @Singleton YahooNewsServiceRx provideYahooServiceRx(RestAdapter.Builder builder)
     {
-        return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsServiceAsync.class);
+        return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsServiceRx.class);
     }
 
-    @Provides @Singleton HomeServiceAsync provideHomeServiceAsync(RestAdapter.Builder builder, RequestHeaders requestHeaders)
+    @Provides @Singleton HomeServiceRx provideHomeServiceRx(RestAdapter.Builder builder, RequestHeaders requestHeaders)
     {
         return builder.setEndpoint(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
                 .setRequestInterceptor(requestHeaders)
                 .build()
-                .create(HomeServiceAsync.class);
+                .create(HomeServiceRx.class);
     }
     //</editor-fold>
 }

@@ -17,7 +17,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -45,7 +45,7 @@ public class WatchlistEditFragmentTest
 
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
-    @Inject protected SecurityCompactCache securityCompactCache;
+    @Inject protected SecurityCompactCacheRx securityCompactCache;
 
     private WatchlistEditFragment watchlistFragment;
     @Inject DashboardNavigator dashboardNavigator;
@@ -61,7 +61,7 @@ public class WatchlistEditFragmentTest
         googleSecurityCompactDTO.name = GOOGLE_NAME;
         googleSecurityCompactDTO.lastPrice = GOOGLE_STOCK_WATCHING_PRICE;
 
-        securityCompactCache.put(GOOGLE_SECURITY_ID, googleSecurityCompactDTO);
+        securityCompactCache.onNext(GOOGLE_SECURITY_ID, googleSecurityCompactDTO);
 
         Bundle args = new Bundle();
         WatchlistEditFragment.putSecurityId(args, GOOGLE_SECURITY_ID);

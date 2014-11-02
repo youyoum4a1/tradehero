@@ -33,8 +33,8 @@ import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.home.HomeContentCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.home.HomeContentCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
@@ -59,12 +59,12 @@ public final class HomeFragment extends BaseWebViewFragment
 
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Provider<Activity> activityProvider;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
+    @Inject Lazy<UserProfileCacheRx> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<SocialFriendHandlerFacebook> socialFriendHandlerFacebookProvider;
     @Inject CurrentUserId currentUserId;
-    @Inject HomeContentCache homeContentCache;
+    @Inject HomeContentCacheRx homeContentCache;
     @Inject THRouter thRouter;
     @Inject Lazy<UserFriendsDTOFactory> userFriendsDTOFactory;
 
@@ -135,7 +135,7 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             case R.id.btn_fresh:
                 webView.reload();
-                userProfileCacheLazy.get().getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+                userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -144,7 +144,7 @@ public final class HomeFragment extends BaseWebViewFragment
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
-        homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+        homeContentCache.get(currentUserId.toUserBaseKey());
         super.onDestroyView();
     }
 
@@ -333,7 +333,7 @@ public final class HomeFragment extends BaseWebViewFragment
             {
                 // TODO
                 handleFollowSuccess();
-                userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+                userProfileCacheLazy.get().onNext(userProfileDTO.getBaseKey(), userProfileDTO);
 
                 return;
             }

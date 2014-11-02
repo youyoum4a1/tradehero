@@ -4,19 +4,15 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.portfolio.PortfolioCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCache;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.inject.Provider;
-
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class THBasePurchaseReporterHolder<
@@ -36,8 +32,8 @@ abstract public class THBasePurchaseReporterHolder<
             BillingExceptionType>
 {
     @NotNull protected final Lazy<UserProfileCache> userProfileCache;
-    @NotNull protected final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @NotNull protected final Lazy<PortfolioCache> portfolioCache;
+    @NotNull protected final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
+    @NotNull protected final Lazy<PortfolioCacheRx> portfolioCache;
     @NotNull protected final Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider;
 
     @NotNull protected final Map<Integer /*requestCode*/, THPurchaseReporterType> purchaseReporters;
@@ -50,8 +46,8 @@ abstract public class THBasePurchaseReporterHolder<
     //<editor-fold desc="Constructors">
     public THBasePurchaseReporterHolder(
             @NotNull Lazy<UserProfileCache> userProfileCache,
-            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
-            @NotNull Lazy<PortfolioCache> portfolioCache,
+            @NotNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
+            @NotNull Lazy<PortfolioCacheRx> portfolioCache,
             @NotNull Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider)
     {
         super();

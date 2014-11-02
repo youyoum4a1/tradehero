@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -19,10 +20,13 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
@@ -30,14 +34,13 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     private static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
 
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject LeaderboardDefCache leaderboardDefCache;
     @Inject LeaderboardCache leaderboardCache;
 
     @NotNull protected LeaderboardDefKey leaderboardDefKey;
     @Nullable protected DTOCacheNew.Listener<LeaderboardDefKey, LeaderboardDefDTO> leaderboardDefCacheListener;
     protected LeaderboardDefDTO leaderboardDefDTO;
-    @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfileDTO;
 
     public static void putLeaderboardDefKey(@NotNull Bundle args, @NotNull LeaderboardDefKey leaderboardDefKey)
@@ -55,7 +58,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         leaderboardDefKey = getLeadboardDefKey(getArguments());
         this.leaderboardDefCacheListener = createLeaderboardDefCacheListener();
-        this.userProfileCacheListener = createUserProfileListener();
     }
 
     //<editor-fold desc="ActionBar">
@@ -76,7 +78,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Override public void onStop()
     {
         detachLeaderboardDefCacheListener();
-        detachUserProfileCache();
         super.onStop();
     }
 
@@ -84,18 +85,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Override public void onDestroy()
     {
         this.leaderboardDefCacheListener = null;
-        this.userProfileCacheListener = null;
         super.onDestroy();
     }
 
     protected void detachLeaderboardDefCacheListener()
     {
         leaderboardDefCache.unregister(leaderboardDefCacheListener);
-    }
-
-    protected void detachUserProfileCache()
-    {
-        userProfileCache.unregister(userProfileCacheListener);
     }
 
     protected void fetchLeaderboardDef()
@@ -107,9 +102,9 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected void fetchCurrentUserProfile()
     {
-        detachUserProfileCache();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileObserver());
     }
 
     protected int getMenuResource()
@@ -214,21 +209,25 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileObserver()
     {
-        return new BaseLeaderboardFragmentProfileCacheListener();
+        return new BaseLeaderboardFragmentProfileCacheObserver();
     }
 
-    protected class BaseLeaderboardFragmentProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class BaseLeaderboardFragmentProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            setCurrentUserProfileDTO(value);
+            setCurrentUserProfileDTO(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            Timber.e("Failed to download current UserProfile", error);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.e("Failed to download current UserProfile", e);
             THToast.show(R.string.error_fetch_your_user_profile);
         }
     }

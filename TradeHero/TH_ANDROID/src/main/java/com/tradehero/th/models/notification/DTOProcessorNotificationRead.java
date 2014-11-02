@@ -7,7 +7,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorNotificationRead implements DTOProcessor<BaseResponseDTO>
@@ -15,14 +15,14 @@ public class DTOProcessorNotificationRead implements DTOProcessor<BaseResponseDT
     @NotNull private final NotificationKey key;
     @NotNull private final NotificationCache notificationCache;
     @NotNull private final UserBaseKey readerId;
-    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final UserProfileCacheRx userProfileCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorNotificationRead(
             @NotNull NotificationKey key,
             @NotNull NotificationCache notificationCache,
             @NotNull UserBaseKey readerId,
-            @NotNull UserProfileCache userProfileCache)
+            @NotNull UserProfileCacheRx userProfileCache)
     {
         this.key = key;
         this.notificationCache = notificationCache;
@@ -40,12 +40,12 @@ public class DTOProcessorNotificationRead implements DTOProcessor<BaseResponseDT
             previousUnread = notificationDTO.unread;
             notificationDTO.unread = false;
         }
-        UserProfileDTO userProfileDTO = userProfileCache.get(readerId);
+        UserProfileDTO userProfileDTO = userProfileCache.getValue(readerId);
         if (previousUnread && userProfileDTO != null && userProfileDTO.unreadNotificationsCount > 0)
         {
             userProfileDTO.unreadNotificationsCount--;
         }
-        userProfileCache.getOrFetchAsync(readerId, true);
+        userProfileCache.get(readerId);
         return value;
     }
 }

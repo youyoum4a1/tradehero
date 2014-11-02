@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +17,6 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
@@ -26,10 +26,13 @@ import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.persistence.competition.HelpVideoListCache;
+import com.tradehero.th.persistence.competition.HelpVideoListCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 @Routable(
@@ -37,7 +40,7 @@ import timber.log.Timber;
 )
 public class ProviderVideoListFragment extends CompetitionFragment
 {
-    @Inject HelpVideoListCache helpVideoListCache;
+    @Inject HelpVideoListCacheRx helpVideoListCache;
 
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) View emptyView;
@@ -45,15 +48,8 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @InjectView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
 
     private HelpVideoDTOList helpVideoDTOs;
-    private DTOCacheNew.Listener<HelpVideoListKey, HelpVideoDTOList> helpVideoListCacheListener;
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        helpVideoListCacheListener = createVideoListCacheListener();
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -65,7 +61,6 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @Override protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
-        helpVideoListCacheListener = new ProviderVideoListFragmentVideoListCacheListener();
         providerVideoAdapter = new ProviderVideoAdapter(getActivity(), R.layout.help_video_item_view);
         videoListView.setAdapter(providerVideoAdapter);
         videoListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
@@ -88,22 +83,16 @@ public class ProviderVideoListFragment extends CompetitionFragment
             helpVideoListScreen.setDisplayedChildByLayoutId(currentDisplayedChild);
         }
 
-        detachListVideoFetchTask();
         HelpVideoListKey key = new HelpVideoListKey(providerId);
-        helpVideoListCache.register(key, helpVideoListCacheListener);
-        helpVideoListCache.getOrFetchAsync(key, false);
+        AndroidObservable.bindFragment(this, helpVideoListCache.get(key))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createVideoListCacheObserver());
     }
 
     @Override public void onPause()
     {
         currentDisplayedChild = helpVideoListScreen.getDisplayedChildLayoutId();
         super.onPause();
-    }
-
-    @Override public void onStop()
-    {
-        detachListVideoFetchTask();
-        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -113,17 +102,6 @@ public class ProviderVideoListFragment extends CompetitionFragment
         videoListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        helpVideoListCacheListener = null;
-        super.onDestroy();
-    }
-
-    private void detachListVideoFetchTask()
-    {
-        helpVideoListCache.unregister(helpVideoListCacheListener);
     }
 
     @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
@@ -195,14 +173,14 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
     }
 
-    protected DTOCacheNew.Listener<HelpVideoListKey, HelpVideoDTOList> createVideoListCacheListener()
+    protected Observer<Pair<HelpVideoListKey, HelpVideoDTOList>> createVideoListCacheObserver()
     {
-        return new ProviderVideoListFragmentVideoListCacheListener();
+        return new ProviderVideoListFragmentVideoListCacheObserver();
     }
 
-    protected class ProviderVideoListFragmentVideoListCacheListener implements DTOCacheNew.Listener<HelpVideoListKey, HelpVideoDTOList>
+    protected class ProviderVideoListFragmentVideoListCacheObserver implements Observer<Pair<HelpVideoListKey, HelpVideoDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull HelpVideoListKey key, @NotNull HelpVideoDTOList value)
+        @Override public void onNext(Pair<HelpVideoListKey, HelpVideoDTOList> pair)
         {
             onFinished();
             if (videoListView != null)
@@ -210,14 +188,18 @@ public class ProviderVideoListFragment extends CompetitionFragment
                 videoListView.setEmptyView(emptyView);
             }
 
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull HelpVideoListKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             onFinished();
             THToast.show(getString(R.string.error_fetch_help_video_list_info));
-            Timber.d("Error fetching the list of help videos %s", key, error);
+            Timber.d("Error fetching the list of help videos", e);
         }
 
         private void onFinished()

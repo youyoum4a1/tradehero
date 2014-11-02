@@ -1,25 +1,24 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
 import retrofit.client.Response;
+import rx.Observable;
 
 public class HomeServiceWrapper
 {
     @NotNull private final HomeService homeService;
-    @NotNull private final HomeServiceAsync homeServiceAsync;
+    @NotNull private final HomeServiceRx homeServiceRx;
 
     //<editor-fold desc="Constructors">
-    @Inject public HomeServiceWrapper(@NotNull HomeService homeService, @NotNull HomeServiceAsync homeServiceAsync)
+    @Inject public HomeServiceWrapper(
+            @NotNull HomeService homeService,
+            @NotNull HomeServiceRx homeServiceRx)
     {
         this.homeService = homeService;
-        this.homeServiceAsync = homeServiceAsync;
+        this.homeServiceRx = homeServiceRx;
     }
     //</editor-fold>
 
@@ -31,14 +30,11 @@ public class HomeServiceWrapper
                 Constants.USE_BETA_HOME_PAGE ? true : null);
     }
 
-    public MiddleCallback<Response> getHomePageContent(@NotNull UserBaseKey userBaseKey, @Nullable Callback<Response> callback)
+    @NotNull public Observable<Response> getHomePageContentRx(@NotNull UserBaseKey userBaseKey)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
-        homeServiceAsync.getHomePageContent(
+        return homeServiceRx.getHomePageContent(
                 userBaseKey.key,
-                Constants.USE_BETA_HOME_PAGE ? true : null,
-                middleCallback);
-        return middleCallback;
+                Constants.USE_BETA_HOME_PAGE ? true : null);
     }
     //</editor-fold>
 }

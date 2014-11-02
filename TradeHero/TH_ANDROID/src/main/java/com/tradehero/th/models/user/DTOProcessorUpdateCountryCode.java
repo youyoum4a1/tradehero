@@ -6,23 +6,23 @@ import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.persistence.competition.ProviderCache;
-import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
+import com.tradehero.th.persistence.competition.ProviderListCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorUpdateCountryCode implements DTOProcessor<UpdateCountryCodeDTO>
 {
-    @NotNull private final UserProfileCache userProfileCache;
-    @NotNull private final ProviderListCache providerListCache;
-    @NotNull private final ProviderCache providerCache;
+    @NotNull private final UserProfileCacheRx userProfileCache;
+    @NotNull private final ProviderListCacheRx providerListCache;
+    @NotNull private final ProviderCacheRx providerCache;
     @NotNull private final UserBaseKey playerId;
     @NotNull private final UpdateCountryCodeFormDTO updateCountryCodeFormDTO;
 
     public DTOProcessorUpdateCountryCode(
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull ProviderListCache providerListCache,
-            @NotNull ProviderCache providerCache,
+            @NotNull UserProfileCacheRx userProfileCache,
+            @NotNull ProviderListCacheRx providerListCache,
+            @NotNull ProviderCacheRx providerCache,
             @NotNull UserBaseKey playerId,
             @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
@@ -37,18 +37,18 @@ public class DTOProcessorUpdateCountryCode implements DTOProcessor<UpdateCountry
     {
         if (value.updated)
         {
-            UserProfileDTO cachedUserProfile = userProfileCache.get(playerId);
+            UserProfileDTO cachedUserProfile = userProfileCache.getValue(playerId);
             if (cachedUserProfile != null
                     && updateCountryCodeFormDTO.countryCode != null)
             {
                 cachedUserProfile.countryCode = updateCountryCodeFormDTO.countryCode;
             }
-            userProfileCache.getOrFetchAsync(playerId, true);
+            userProfileCache.get(playerId);
 
             providerCache.invalidateAll();
             providerCache.invalidateAll();
             providerListCache.invalidateAll();
-            providerListCache.getOrFetchAsync(new ProviderListKey(), true);
+            providerListCache.get(new ProviderListKey());
         }
 
         return value;

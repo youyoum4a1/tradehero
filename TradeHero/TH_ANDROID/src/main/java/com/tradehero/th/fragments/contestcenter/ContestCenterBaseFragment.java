@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.contestcenter;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,6 @@ import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -27,20 +27,23 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.competition.ProviderListCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import dagger.Lazy;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
 public abstract class ContestCenterBaseFragment extends DashboardFragment
 {
-    @Inject Lazy<ProviderListCache> providerListCache;
-    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    @Inject Lazy<ProviderListCacheRx> providerListCache;
+    @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
 
@@ -50,7 +53,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     public ContestItemAdapter contestListAdapter;
     @IdRes private int currentDisplayedChildLayoutId;
     public ProviderDTOList providerDTOs;
-    private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListFetchListener;
     private BaseWebViewFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
     protected UserProfileDTO currentUserProfileDTO;
@@ -60,7 +62,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
-        providerListFetchListener = createProviderIdListListener();
     }
 
     @Override
@@ -71,25 +72,29 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         return view;
     }
 
-    protected DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> createProviderIdListListener()
+    protected Observer<Pair<ProviderListKey, ProviderDTOList>> createProviderIdListObserver()
     {
-        return new LeaderboardCommunityProviderListListener();
+        return new LeaderboardCommunityProviderListObserver();
     }
 
-    protected class LeaderboardCommunityProviderListListener implements DTOCacheNew.Listener<ProviderListKey, ProviderDTOList>
+    protected class LeaderboardCommunityProviderListObserver implements Observer<Pair<ProviderListKey, ProviderDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
+        @Override public void onNext(Pair<ProviderListKey, ProviderDTOList> pair)
         {
-            providerDTOs = value;
+            providerDTOs = pair.second;
             sortProviderByVip();
             recreateAdapter();
         }
 
-        @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             handleFailToReceiveLeaderboardDefKeyList();
             THToast.show(getString(R.string.error_fetch_provider_info_list));
-            Timber.e("Failed retrieving the list of competition providers", error);
+            Timber.e("Failed retrieving the list of competition providers", e);
         }
     }
 
@@ -113,7 +118,10 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
                 {
                     return 1;
                 }
-                else return lhs.vip ? 1 : -1;
+                else
+                {
+                    return lhs.vip ? 1 : -1;
+                }
             }
         });
     }
@@ -158,14 +166,9 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     private void fetchProviderIdList()
     {
-        detachProviderListFetchTask();
-        providerListCache.get().register(new ProviderListKey(), providerListFetchListener);
-        providerListCache.get().getOrFetchAsync(new ProviderListKey());
-    }
-
-    private void detachProviderListFetchTask()
-    {
-        providerListCache.get().unregister(providerListFetchListener);
+        AndroidObservable.bindFragment(this, providerListCache.get().get(new ProviderListKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createProviderIdListObserver());
     }
 
     @Override public void onStart()
@@ -181,7 +184,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     @Override public void onStop()
     {
-        detachProviderListFetchTask();
         currentDisplayedChildLayoutId = contest_center_content_screen.getDisplayedChildLayoutId();
         contestListView.setOnItemClickListener(null);
         contestListView.setOnScrollListener(null);
@@ -196,7 +198,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        providerListFetchListener = null;
         this.thIntentPassedListener = null;
         detachWebFragment();
         super.onDestroy();

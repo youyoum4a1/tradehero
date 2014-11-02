@@ -10,16 +10,6 @@ public class HeroDTOExtWrapper implements DTO
     @NotNull public final HeroDTOList activePremiumHeroes;
 
     //<editor-fold desc="Constructors">
-    public HeroDTOExtWrapper(
-            @NotNull HeroDTOList allActiveHeroes,
-            @NotNull HeroDTOList activeFreeHeroes,
-            @NotNull HeroDTOList activePremiumHeroes)
-    {
-        this.allActiveHeroes = allActiveHeroes;
-        this.activeFreeHeroes = activeFreeHeroes;
-        this.activePremiumHeroes = activePremiumHeroes;
-    }
-
     public HeroDTOExtWrapper(@NotNull HeroDTOList heroDTOs)
     {
         activeFreeHeroes = heroDTOs.getFreeActiveHeroIds();

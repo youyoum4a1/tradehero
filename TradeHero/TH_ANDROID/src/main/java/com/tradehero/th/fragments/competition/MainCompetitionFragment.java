@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -58,11 +59,14 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 @Routable({
@@ -82,7 +86,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private BaseWebViewFragment webViewFragment;
 
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject CompetitionListCache competitionListCache;
     @Inject ProviderDisplayCellListCache providerDisplayListCellCache;
     @Inject ProviderUtil providerUtil;
@@ -93,7 +97,6 @@ public class MainCompetitionFragment extends CompetitionFragment
     @RouteProperty("providerId") Integer routedProviderId;
 
     protected UserProfileCompactDTO portfolioUserCompactDTO;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected CompetitionDTOList competitionDTOs;
     private DTOCacheNew.Listener<ProviderId, CompetitionDTOList> competitionListCacheFetchListener;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
@@ -147,10 +150,9 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Override public void onStart()
     {
         super.onStart();
-        detachUserProfileCache();
-        userProfileCacheListener = createProfileCacheListener();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createProfileCacheObserver());
 
         simpleCounterUtils.reset();
 
@@ -190,7 +192,6 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onStop()
     {
-        detachUserProfileCache();
         detachCompetitionListCacheTask();
         detachDisplayCellListCacheTask();
         super.onStop();
@@ -222,15 +223,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         simpleCounterUtils.setListener(null);
         simpleCounterUtils = null;
         super.onDestroy();
-    }
-
-    private void detachUserProfileCache()
-    {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.unregister(userProfileCacheListener);
-        }
-        userProfileCacheListener = null;
     }
 
     private void detachCompetitionListCacheTask()
@@ -552,9 +544,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         return new MainCompetitionFragmentItemClickListener();
     }
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
+    private Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
     {
-        return new MainCompetitionUserProfileCacheListener();
+        return new MainCompetitionUserProfileCacheObserver();
     }
 
     private class MainCompetitionFragmentItemClickListener
@@ -624,18 +616,22 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private class MainCompetitionUserProfileCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    private class MainCompetitionUserProfileCacheObserver
+            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey providerId, @NotNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(getString(R.string.error_fetch_your_user_profile));
-            Timber.e("Error fetching the profile info %s", key, error);
+            Timber.e("Error fetching the profile info", e);
         }
     }
 

@@ -5,6 +5,7 @@ import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -14,7 +15,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class SecurityCompactListCache extends StraightCutDTOCacheNew<
         SecurityListType,
         SecurityCompactDTOList,
@@ -23,12 +24,12 @@ public class SecurityCompactListCache extends StraightCutDTOCacheNew<
     public static final int DEFAULT_MAX_SIZE = 50;
 
     @NotNull private final Lazy<SecurityServiceWrapper> securityServiceWrapper;
-    @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
+    @NotNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityCompactListCache(
             @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
-            @NotNull Lazy<SecurityCompactCache> securityCompactCache,
+            @NotNull Lazy<SecurityCompactCacheRx> securityCompactCache,
             @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
@@ -44,7 +45,7 @@ public class SecurityCompactListCache extends StraightCutDTOCacheNew<
 
     @NotNull @Override protected SecurityIdList cutValue(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
     {
-        securityCompactCache.get().put(value);
+        securityCompactCache.get().onNext(value);
         return new SecurityIdList(value, (SecurityCompactDTO) null);
     }
 
@@ -54,7 +55,11 @@ public class SecurityCompactListCache extends StraightCutDTOCacheNew<
         {
             return null;
         }
-        SecurityCompactDTOList value = securityCompactCache.get().get(cutValue);
+        SecurityCompactDTOList value = new SecurityCompactDTOList();
+        for (SecurityId securityId: cutValue)
+        {
+            value.add(securityCompactCache.get().getValue(securityId));
+        }
         if (value.hasNullItem())
         {
             return null;

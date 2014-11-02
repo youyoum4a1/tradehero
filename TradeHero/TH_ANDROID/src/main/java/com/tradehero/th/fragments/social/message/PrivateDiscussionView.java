@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -13,7 +14,6 @@ import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTOFactory;
 import com.tradehero.th.api.discussion.MessageType;
-import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
@@ -28,22 +28,25 @@ import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class PrivateDiscussionView extends DiscussionView
 {
     @Inject CurrentUserId currentUserId;
-    @Inject DiscussionCache discussionCache;
+    @Inject DiscussionCacheRx discussionCache;
     @Inject protected MessageHeaderCache messageHeaderCache;
     @Inject protected MessageHeaderDTOFactory messageHeaderDTOFactory;
     @Inject protected MessageDiscussionListKeyFactory messageDiscussionListKeyFactory;
     private MessageHeaderDTO messageHeaderDTO;
 
-    private DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchListener;
+    private Subscription discussionFetchSubscription;
     protected DiscussionDTO initiatingDiscussion;
 
     protected MessageType messageType;
@@ -80,7 +83,6 @@ public class PrivateDiscussionView extends DiscussionView
     {
         super.onFinishInflate();
         messageHeaderFetchListener = createMessageHeaderListener();
-        discussionFetchListener = createDiscussionCacheListener();
         setLoaded();
     }
 
@@ -91,10 +93,6 @@ public class PrivateDiscussionView extends DiscussionView
         {
             messageHeaderFetchListener = createMessageHeaderListener();
         }
-        if (discussionFetchListener == null)
-        {
-            discussionFetchListener = createDiscussionCacheListener();
-        }
         setRecipientOnPostCommentView();
     }
 
@@ -103,13 +101,18 @@ public class PrivateDiscussionView extends DiscussionView
         detachDiscussionFetchTask();
         detachMessageHeaderFetchTask();
         messageHeaderFetchListener = null;
-        discussionFetchListener = null;
+        discussionFetchSubscription = null;
         super.onDetachedFromWindow();
     }
 
     private void detachDiscussionFetchTask()
     {
-        discussionCache.unregister(discussionFetchListener);
+        Subscription copy = discussionFetchSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        discussionFetchSubscription = null;
     }
 
     @Override protected void setLoading()
@@ -166,8 +169,9 @@ public class PrivateDiscussionView extends DiscussionView
     private void fetchDiscussion(DiscussionKey discussionKey)
     {
         detachDiscussionFetchTask();
-        discussionCache.register(discussionKey, discussionFetchListener);
-        discussionCache.getOrFetchAsync(discussionKey);
+        discussionFetchSubscription = discussionCache.get(discussionKey)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createDiscussionCacheObserver());
     }
 
     @Override protected DiscussionListKey createStartingDiscussionListKey()
@@ -175,9 +179,9 @@ public class PrivateDiscussionView extends DiscussionView
         return discussionListKeyFactory.create(messageHeaderDTO);
     }
 
-    protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionCacheListener()
+    protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionCacheObserver()
     {
-        return new PrivateDiscussionViewDiscussionCacheListener();
+        return new PrivateDiscussionViewDiscussionCacheObserver();
     }
 
     protected void linkWithInitiating(DiscussionDTO discussionDTO, boolean andDisplay)
@@ -275,18 +279,22 @@ public class PrivateDiscussionView extends DiscussionView
         return new PrivateDiscussionViewCommentPostedListener();
     }
 
-    protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
+    protected class PrivateDiscussionViewDiscussionCacheObserver implements Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>>
     {
-        @Override public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value)
+        @Override public void onNext(Pair<DiscussionKey, AbstractDiscussionCompactDTO> pair)
         {
             // Check with instanceof to avoid ClassCastException.
-            if(value instanceof DiscussionDTO)
+            if (pair.second instanceof DiscussionDTO)
             {
-                linkWithInitiating((DiscussionDTO) value, true);
+                linkWithInitiating((DiscussionDTO) pair.second, true);
             }
         }
 
-        @Override public void onErrorThrown(@NotNull DiscussionKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_private_message_initiating_discussion);
         }

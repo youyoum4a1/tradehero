@@ -11,12 +11,10 @@ import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -38,7 +36,7 @@ abstract public class THBasePurchaseReporter<
     @NotNull protected final Lazy<? extends UserServiceWrapper> userServiceWrapper;
     @NotNull protected final Lazy<? extends AlertPlanServiceWrapper> alertPlanServiceWrapper;
     @NotNull protected final Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper;
-    @NotNull protected final Lazy<? extends PortfolioCompactListCache> portfolioCompactListCache;
+    @NotNull protected final Lazy<? extends PortfolioCompactListCacheRx> portfolioCompactListCache;
     @NotNull protected final Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper;
     @NotNull protected final Lazy<? extends ProductDetailCache<
             ProductIdentifierType,
@@ -56,7 +54,7 @@ abstract public class THBasePurchaseReporter<
             @NotNull Lazy<? extends AlertPlanServiceWrapper> alertPlanServiceWrapper,
             @NotNull Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
             @NotNull Lazy<? extends UserServiceWrapper> userServiceWrapper,
-            @NotNull Lazy<? extends PortfolioCompactListCache> portfolioCompactListCache,
+            @NotNull Lazy<? extends PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NotNull Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper,
             @NotNull Lazy<? extends ProductDetailCache<
                     ProductIdentifierType,

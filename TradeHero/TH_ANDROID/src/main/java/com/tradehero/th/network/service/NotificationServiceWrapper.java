@@ -12,7 +12,7 @@ import com.tradehero.th.models.notification.DTOProcessorNotificationRead;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,14 +26,14 @@ public class NotificationServiceWrapper
     @NotNull private final NotificationService notificationService;
     @NotNull private final NotificationServiceAsync notificationServiceAsync;
     @NotNull private final Lazy<NotificationCache> notificationCache;
-    @NotNull private final Lazy<UserProfileCache> userProfileCache;
+    @NotNull private final Lazy<UserProfileCacheRx> userProfileCache;
 
     //<editor-fold desc="Constructors">
     @Inject public NotificationServiceWrapper(
             @NotNull NotificationService notificationService,
             @NotNull NotificationServiceAsync notificationServiceAsync,
             @NotNull Lazy<NotificationCache> notificationCache,
-            @NotNull Lazy<UserProfileCache> userProfileCache)
+            @NotNull Lazy<UserProfileCacheRx> userProfileCache)
     {
         this.notificationService = notificationService;
         this.notificationServiceAsync = notificationServiceAsync;

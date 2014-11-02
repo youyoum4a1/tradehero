@@ -12,7 +12,6 @@ import butterknife.InjectView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
@@ -20,23 +19,25 @@ import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.THColorUtils;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class PositionPartialTopView extends LinearLayout
 {
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<SecurityIdCache> securityIdCache;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected Lazy<SecurityCompactCacheRx> securityCompactCache;
     @Inject protected PositionDTOUtils positionDTOUtils;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
@@ -54,7 +55,8 @@ public class PositionPartialTopView extends LinearLayout
     protected SecurityCompactDTO securityCompactDTO;
     protected PositionDTO positionDTO;
 
-    private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
+    private Subscription securityIdFetchSubscription;
+    private Subscription securityCompactCacheFetchSubscription;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -82,7 +84,6 @@ public class PositionPartialTopView extends LinearLayout
         HierarchyInjector.inject(this);
         ButterKnife.inject(this);
         initViews();
-        securityCompactCacheFetchListener = createSecurityCompactCacheListener();
     }
 
     protected void initViews()
@@ -90,15 +91,6 @@ public class PositionPartialTopView extends LinearLayout
         if (stockLogo != null)
         {
             stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
-        }
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        if (securityCompactCacheFetchListener == null)
-        {
-            securityCompactCacheFetchListener = createSecurityCompactCacheListener();
         }
     }
 
@@ -110,8 +102,8 @@ public class PositionPartialTopView extends LinearLayout
         }
         tradeHistoryButton = null;
 
+        detachSecurityIdFetch();
         detachSecurityCompactCache();
-        securityCompactCacheFetchListener = null;
         if (stockLogo != null)
         {
             stockLogo.setImageDrawable(null);
@@ -119,9 +111,24 @@ public class PositionPartialTopView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
+    protected void detachSecurityIdFetch()
+    {
+        Subscription copy = securityIdFetchSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        securityIdFetchSubscription = null;
+    }
+
     protected void detachSecurityCompactCache()
     {
-        securityCompactCache.get().unregister(securityCompactCacheFetchListener);
+        Subscription copy = securityCompactCacheFetchSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        securityCompactCacheFetchSubscription = null;
     }
 
     public void linkWith(PositionDTO positionDTO, boolean andDisplay)
@@ -135,12 +142,24 @@ public class PositionPartialTopView extends LinearLayout
         }
         if (positionDTO != null)
         {
-            linkWith(securityIdCache.get()
-                            .get(positionDTO.getSecurityIntegerId())
-                            .toBlocking()
-                            .firstOrDefault(Pair.create((SecurityIntegerId) null, (SecurityId) null))
-                            .second,
-                    andDisplay);
+            detachSecurityIdFetch();
+            securityIdFetchSubscription = securityIdCache.get().get(positionDTO.getSecurityIntegerId())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Pair<SecurityIntegerId, SecurityId>>()
+                    {
+                        @Override public void onCompleted()
+                        {
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                        }
+
+                        @Override public void onNext(Pair<SecurityIntegerId, SecurityId> pair)
+                        {
+                            linkWith(pair.second, andDisplay);
+                        }
+                    });
         }
     }
 
@@ -148,17 +167,10 @@ public class PositionPartialTopView extends LinearLayout
     {
         this.securityId = securityId;
 
-        SecurityCompactDTO cachedSecurityCompactDTO = securityCompactCache.get().get(securityId);
-        if (cachedSecurityCompactDTO == null)
-        {
-            detachSecurityCompactCache();
-            securityCompactCache.get().register(securityId, securityCompactCacheFetchListener);
-            securityCompactCache.get().getOrFetchAsync(securityId);
-        }
-        else
-        {
-            linkWith(cachedSecurityCompactDTO, andDisplay);
-        }
+        detachSecurityCompactCache();
+        securityCompactCacheFetchSubscription = securityCompactCache.get().get(securityId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createSecurityCompactCacheObserver());
 
         if (andDisplay)
         {
@@ -400,22 +412,23 @@ public class PositionPartialTopView extends LinearLayout
     }
     //</editor-fold>
 
-    private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    private Observer<Pair<SecurityId, SecurityCompactDTO>> createSecurityCompactCacheObserver()
     {
-        return new SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO>()
+        return new Observer<Pair<SecurityId,SecurityCompactDTO>>()
         {
-            @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
+            @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
             {
-                if (key.equals(securityId))
-                {
-                    linkWith(value, true);
-                }
+                linkWith(pair.second, true);
             }
 
-            @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
+            @Override public void onCompleted()
+            {
+            }
+
+            @Override public void onError(Throwable e)
             {
                 THToast.show("There was an error when fetching the security information");
-                Timber.e("Error fetching the security %s", key, error);
+                Timber.e(e, "Error fetching the security");
             }
         };
     }
