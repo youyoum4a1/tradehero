@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class XpToast extends RelativeLayout
@@ -85,6 +86,7 @@ public class XpToast extends RelativeLayout
         if (!isInEditMode())
         {
             mLevelDefListCacheSubscription = levelDefListCache.get(levelDefListId)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new XPToastLevelDefCacheObserver());
         }
     }
@@ -272,7 +274,7 @@ public class XpToast extends RelativeLayout
             Animation fade = AnimationUtils.loadAnimation(getContext(), R.anim.emphasize);
             xpValue.startAnimation(fade);
 
-            postDelayed(() -> hide(), getResources().getInteger(R.integer.xp_level_toast_dismiss_delay));
+            postDelayed(this::hide, getResources().getInteger(R.integer.xp_level_toast_dismiss_delay));
         }
         else
         {

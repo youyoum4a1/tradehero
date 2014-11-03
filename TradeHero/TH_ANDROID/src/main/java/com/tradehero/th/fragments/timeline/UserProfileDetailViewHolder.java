@@ -25,6 +25,7 @@ import com.tradehero.th.widget.UserLevelProgressBar;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
@@ -56,6 +57,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         topDefaultBackgroundTarget = new DefaultBackgroundTarget();
         LevelDefListId levelDefListId = new LevelDefListId();
         levelDefDTOListSubscription = levelDefListCache.get(levelDefListId)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LevelDefListCacheObserver());
     }
 
