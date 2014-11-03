@@ -56,9 +56,12 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         topBackgroundTarget = new BackgroundTarget();
         topDefaultBackgroundTarget = new DefaultBackgroundTarget();
         LevelDefListId levelDefListId = new LevelDefListId();
-        levelDefDTOListSubscription = levelDefListCache.get(levelDefListId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new LevelDefListCacheObserver());
+        if(!view.isInEditMode())
+        {
+            levelDefDTOListSubscription = levelDefListCache.get(levelDefListId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new LevelDefListCacheObserver());
+        }
     }
 
     @Override public void detachViews()
@@ -239,7 +242,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userLevelProgressBar != null)
             {
-                userLevelProgressBar.setVisibility(View.GONE);
+                userLevelProgressBar.setVisibility(View.INVISIBLE);
             }
         }
     }
