@@ -40,6 +40,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
@@ -153,7 +154,14 @@ public class NewsHeadlineFragment extends Fragment
                 .distinctUntilChanged();
 
         newsSubject = PublishSubject.create();
-        newsSubject.subscribe(mFeaturedNewsAdapter::setItems);
+        newsSubject.subscribe(new EmptyObserver<List<NewsItemDTOKey>>()
+        {
+            @Override public void onNext(List<NewsItemDTOKey> args)
+            {
+                mFeaturedNewsAdapter.setItems(args);
+            }
+        });
+
         newsSubject.subscribe(new UpdateUIObserver());
 
         activateNewsListView(newsItemListKey);

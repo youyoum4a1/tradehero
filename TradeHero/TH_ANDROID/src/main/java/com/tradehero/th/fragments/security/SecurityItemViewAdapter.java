@@ -30,6 +30,10 @@ abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends Sec
 
     @Override public void setItems(@NotNull List<SecurityCompactDTOType> items)
     {
+        if (items == null)
+        {
+            throw new NullPointerException("Cannot be null");
+        }
         originalItems = items;
         setItemsToShow(getPredicateFilter().filter(items));
     }

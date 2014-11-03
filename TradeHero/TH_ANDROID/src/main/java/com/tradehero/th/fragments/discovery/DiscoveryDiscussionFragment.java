@@ -31,8 +31,8 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
@@ -105,8 +105,20 @@ public class DiscoveryDiscussionFragment extends Fragment
                 })
                 .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null));
 
-        timelineSubject.subscribe(timelineItemDTOKeys -> mBottomLoadingView.setVisibility(View.INVISIBLE));
-        timelineSubject.subscribe(discoveryDiscussionAdapter::setItems);
+        timelineSubject.subscribe(new EmptyObserver<List<TimelineItemDTOKey>>()
+        {
+            @Override public void onNext(List<TimelineItemDTOKey> timelineItemDTOKeys)
+            {
+                mBottomLoadingView.setVisibility(View.INVISIBLE);
+            }
+        });
+        timelineSubject.subscribe(new EmptyObserver<List<TimelineItemDTOKey>>()
+        {
+            @Override public void onNext(List<TimelineItemDTOKey> args)
+            {
+                discoveryDiscussionAdapter.setItems(args);
+            }
+        });
         timelineSubject.subscribe(new RefreshCompleteObserver());
         timelineSubject.subscribe(new UpdateRangeObserver());
 
@@ -159,9 +171,9 @@ public class DiscoveryDiscussionFragment extends Fragment
         }
     }
 
-    private class UpdateRangeObserver implements Action1<List<TimelineItemDTOKey>>
+    private class UpdateRangeObserver extends EmptyObserver<List<TimelineItemDTOKey>>
     {
-        @Override public void call(List<TimelineItemDTOKey> timelineItemDTOKeys)
+        @Override public void onNext(List<TimelineItemDTOKey> timelineItemDTOKeys)
         {
             if (timelineItemDTOKeys != null && !timelineItemDTOKeys.isEmpty())
             {
