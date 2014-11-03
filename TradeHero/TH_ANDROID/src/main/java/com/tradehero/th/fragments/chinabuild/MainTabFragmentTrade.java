@@ -23,8 +23,9 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-import javax.inject.Inject;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.OnPageChangeListener
 {
@@ -160,5 +161,12 @@ public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.O
         {
             return CONTENT.length;
         }
+    }
+
+    public int getCurrentFragmentItem(){
+        if(pager == null){
+            return -1;
+        }
+        return pager.getCurrentItem();
     }
 }

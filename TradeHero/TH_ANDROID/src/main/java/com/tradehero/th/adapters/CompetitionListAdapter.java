@@ -4,11 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.chinabuild.data.CompetitionDataItem;
@@ -20,8 +16,9 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.util.ArrayList;
+
 import javax.inject.Inject;
+import java.util.ArrayList;
 
 //比赛列表Adapter 包括 所有比赛，我的比赛
 public class CompetitionListAdapter extends BaseAdapter
@@ -139,6 +136,21 @@ public class CompetitionListAdapter extends BaseAdapter
         SearchCompetitionDtoList = listItem;
         doRefreshData();
     }
+
+    public int getOfficialCompetitions(){
+        if(OfficalCompetitionDtoList==null){
+            return 0;
+        }
+        return OfficalCompetitionDtoList.size();
+    }
+
+    public int getUserCompetitions(){
+        if(UserCompetitionDtoList==null){
+            return 0;
+        }
+        return UserCompetitionDtoList.size();
+    }
+
 
     private void doRefreshData()
     {

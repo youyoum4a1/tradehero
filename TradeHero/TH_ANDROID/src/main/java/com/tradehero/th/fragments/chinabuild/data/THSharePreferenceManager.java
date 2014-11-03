@@ -11,6 +11,7 @@ public class THSharePreferenceManager {
 
     //SharePreference Name
     private final static String TH_SP_NAME = "th_sp_name_app_version";
+    private final static String TH_SP_GUIDE_NAME = "th_sp_guide_name";
 
     //The latest version
     public final static String KEY_APP_NEW_VERSION_DOWNLOAD_URL = "key_app_new_version_download_url";
@@ -227,4 +228,18 @@ public class THSharePreferenceManager {
         THSharePreferenceManager.Login_Continuous_Time = 0;
     }
 
+    //Guide View
+    public final static String GUIDE_STOCK_DETAIL = "guide_stock_detail";
+    public final static String GUIDE_COMPETITION = "guide_competition";
+
+    public static boolean isGuideAvailable(Context context, String key){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);
+        boolean result = sp.getBoolean(key, true);
+        return result;
+    }
+
+    public static void setGuideShowed(Context context, String key){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);
+        sp.edit().putBoolean(key, false).commit();
+    }
 }

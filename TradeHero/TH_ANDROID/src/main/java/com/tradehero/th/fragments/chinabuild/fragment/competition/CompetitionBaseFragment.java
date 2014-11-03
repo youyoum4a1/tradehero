@@ -7,11 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -23,30 +19,23 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListType;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeMine;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeOffical;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeUser;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeVip;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionNewCache;
-import com.tradehero.th.fragments.chinabuild.data.CompetitionDataItem;
-import com.tradehero.th.fragments.chinabuild.data.CompetitionInterface;
-import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
-import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
+import com.tradehero.th.fragments.chinabuild.cache.*;
+import com.tradehero.th.fragments.chinabuild.data.*;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by huhaiping on 14-9-9. 显示所有比赛和我参加的比赛
@@ -508,11 +497,13 @@ public class CompetitionBaseFragment extends DashboardFragment
             {
                 initOfficalCompetition(value);
                 onFinish(false);
+                showGuideView();
             }
             else if (key instanceof CompetitionListTypeUser)
             {
                 initUserCompetition(key, value);
                 onFinish(true);
+                showGuideView();
             }
             else if (key instanceof CompetitionListTypeVip)
             {
@@ -549,6 +540,19 @@ public class CompetitionBaseFragment extends DashboardFragment
                 }
             } catch (Exception e)
             {
+            }
+        }
+    }
+
+    protected void showGuideView(){
+        if(!THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION)){
+            return;
+        }
+        if(getCompetitionPageType()==CompetitionUtils.COMPETITION_PAGE_ALL){
+            if (adapterList != null) {
+                if (adapterList.getOfficialCompetitions() > 0 || adapterList.getUserCompetitions() > 0) {
+                    ((MainActivity) getActivity()).showGuideView(MainActivity.GUIDE_TYPE_COMPETITION);
+                }
             }
         }
     }

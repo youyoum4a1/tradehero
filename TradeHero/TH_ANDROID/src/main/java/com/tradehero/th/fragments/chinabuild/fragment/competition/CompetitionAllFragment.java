@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import timber.log.Timber;
 
 /**
  * Created by huhaiping on 14-9-9.
@@ -28,7 +27,9 @@ public class CompetitionAllFragment extends CompetitionBaseFragment
     @Override public void onResume()
     {
         super.onResume();
-        Timber.d("OnRusme: CompetitionAllFragment  ");
+
+        //Guide View
+        showGuideView();
     }
 
     public int getCompetitionPageType()

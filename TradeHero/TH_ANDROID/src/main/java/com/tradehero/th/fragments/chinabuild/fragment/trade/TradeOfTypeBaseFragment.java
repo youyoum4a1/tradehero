@@ -5,12 +5,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -18,6 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SpinnerExchangeIconAdapter;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
@@ -28,6 +24,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionUtils;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -37,9 +34,10 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class TradeOfTypeBaseFragment extends DashboardFragment
 {
@@ -270,6 +268,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         {
             initAdapterSecurity(value, key);
             onFinished();
+            showGuideView();
         }
 
         @Override
@@ -409,21 +408,21 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     @Override
     public void onDestroyView()
     {
-        //ButterKnife.reset(this);
-        //exchangeListTypeCacheListener = null;
         securityListTypeCacheListener = null;
         super.onDestroyView();
     }
 
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
+    protected void showGuideView(){
+        if(!THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_DETAIL)){
+            return;
+        }
+        if(getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD){
+            if (adapterSecurity == null) {
+                return;
+            }
+            if (adapterSecurity.getCount() > 0) {
+                ((MainActivity)getActivity()).showGuideView(MainActivity.GUIDE_TYPE_STOCK_DETAIL);
+            }
+        }
     }
 }

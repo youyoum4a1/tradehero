@@ -23,8 +23,9 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-import javax.inject.Inject;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class MainTabFragmentCompetition extends AbsBaseFragment
 {
@@ -88,6 +89,13 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(3);
         indicator.setViewPager(pager);
+    }
+
+    public int getCurrentFragmentItem(){
+        if(pager == null){
+            return -1;
+        }
+        return pager.getCurrentItem();
     }
 
     private static final String[] CONTENT = new String[] {"所有比赛", "我的比赛"};

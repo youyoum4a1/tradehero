@@ -145,7 +145,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             content = contents[0];
             url = contents[1];
         }
-
         if (weChatMessageType == WeChatMessageType.ShareSell || weChatMessageType == WeChatMessageType.ShareSellToTimeline) {
             if (TextUtils.isEmpty(url) || !NetworkUtils.isCNTradeHeroURL(url)) {
 //                WXTextObject textObject = new WXTextObject();

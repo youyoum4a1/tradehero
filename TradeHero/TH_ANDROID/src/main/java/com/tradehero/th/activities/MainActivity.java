@@ -4,14 +4,15 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TabHost;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -74,6 +75,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @InjectView(R.id.llTabDiscovery) LinearLayout llTabDiscovery;
     @InjectView(R.id.llTabCompetition) LinearLayout llTabCompetition;
     @InjectView(R.id.llTabMe) LinearLayout llTabMe;
+    @InjectView(R.id.linearlayout_guide)LinearLayout guideView;
 
     @InjectView(R.id.imgTabMenu0) ImageView imgTabMenu0;
     @InjectView(R.id.imgTabMenu1) ImageView imgTabMenu1;
@@ -119,6 +121,12 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             R.string.tab_main_me
     };
 
+    //Guide View
+    public final static int GUIDE_TYPE_COMPETITION = 1;
+    public final static int GUIDE_TYPE_STOCK_DETAIL = 2;
+
+    public static int guide_current = -1;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         AppTiming.dashboardCreate = System.currentTimeMillis();
@@ -136,6 +144,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         //enable baidu push
         pushNotificationManager.get().enablePush();
         mBindGuestUserPreference.set(false);
+
+        initGuideView();
 
         analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
 
@@ -319,7 +329,11 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         if(keyCode ==KeyEvent.KEYCODE_BACK)
         {
-            exitApp();
+            if(guideView.getVisibility()==View.VISIBLE){
+                dismissGuideView();
+            }else{
+                exitApp();
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -381,5 +395,77 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         @Override
         public void failure(RetrofitError retrofitError) {
         }
+    }
+
+    //Init Guide View
+    public void initGuideView(){
+        guideView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissGuideView();
+            }
+        });
+    }
+
+    private void dismissGuideView(){
+        guideView.setVisibility(View.GONE);
+        if(guide_current == GUIDE_TYPE_COMPETITION){
+            THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_COMPETITION);
+            return;
+        }
+        if(guide_current == GUIDE_TYPE_STOCK_DETAIL){
+            THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_STOCK_DETAIL);
+            return;
+        }
+    }
+
+    public void showGuideView(int type){
+        if(type == GUIDE_TYPE_COMPETITION){
+            if(frg_tabHost.getCurrentTabTag().equals(getString(R.string.tab_main_competition))){
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment currFragment = fragmentManager.findFragmentByTag(frg_tabHost.getCurrentTabTag());
+                if(currFragment instanceof MainTabFragmentCompetition){
+                    int index = ((MainTabFragmentCompetition) currFragment).getCurrentFragmentItem();
+                    if(index==0){
+                        guide_current  = GUIDE_TYPE_COMPETITION;
+                        View view = View.inflate(this, R.layout.guide_layout_competition, null);
+                        guideView.removeAllViews();
+                        guideView.addView(view);
+                        showGuideViewDelayed();
+                    }
+                }
+            }
+            return;
+        }
+        if(type==GUIDE_TYPE_STOCK_DETAIL){
+            if(frg_tabHost.getCurrentTabTag().equals(getString(R.string.tab_main_trade))){
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment currFragment = fragmentManager.findFragmentByTag(frg_tabHost.getCurrentTabTag());
+                if(currFragment instanceof MainTabFragmentTrade){
+                    int index = ((MainTabFragmentTrade)currFragment).getCurrentFragmentItem();
+                    if(index == 1){
+                        guide_current = GUIDE_TYPE_STOCK_DETAIL;
+                        View view = View.inflate(this, R.layout.guide_layout_stock, null);
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        view.setLayoutParams(params);
+                        guideView.removeAllViews();
+                        guideView.addView(view);
+                        showGuideViewDelayed();
+                    }
+                }
+            }
+        }
+    }
+
+    private void showGuideViewDelayed(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(guideView.getVisibility() ==View.GONE){
+                    guideView.setVisibility(View.VISIBLE);
+                }
+            }
+        }, 100);
     }
 }

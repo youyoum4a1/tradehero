@@ -7,6 +7,11 @@ import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
  */
 public class TradeOfHotHoldFragment extends TradeOfTypeBaseFragment
 {
+    @Override
+    public void onResume(){
+        super.onResume();
+        showGuideView();
+    }
 
     public int getTradeType()
     {

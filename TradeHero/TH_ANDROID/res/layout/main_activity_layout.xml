@@ -122,6 +122,10 @@
     </android.support.v4.app.FragmentTabHost>
   </LinearLayout>
 
+  <LinearLayout android:id="@+id/linearlayout_guide" android:layout_width="match_parent" android:layout_height="match_parent"
+          android:visibility="gone"
+          android:background="#4c000000"
+          android:orientation="horizontal"/>
 </RelativeLayout>
 
 
