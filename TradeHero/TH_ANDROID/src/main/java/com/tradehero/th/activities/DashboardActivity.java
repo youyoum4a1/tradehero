@@ -118,7 +118,9 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
@@ -167,6 +169,7 @@ public class DashboardActivity extends BaseActivity
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
+    @Nullable private Subscription providerListSubscription;
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
 
     private ProgressDialog progressDialog;
@@ -445,9 +448,9 @@ public class DashboardActivity extends BaseActivity
 
     protected void fetchProviderList()
     {
-        AndroidObservable.bindActivity(this, providerListCache.get().get(new ProviderListKey()))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new ProviderListFetchObserver());
+        detachSubscription(providerListSubscription);
+        providerListSubscription = AndroidObservable.bindActivity(this, providerListCache.get().get(new ProviderListKey()))
+                .subscribe(new ProviderListFetchObserver());
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -496,6 +499,8 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onDestroy()
     {
+        detachSubscription(providerListSubscription);
+        providerListSubscription = null;
         purchaseRestorerFinishedListener = null;
         notificationFetchListener = null;
 
@@ -519,6 +524,14 @@ public class DashboardActivity extends BaseActivity
 
         ButterKnife.reset(this);
         super.onDestroy();
+    }
+
+    protected void detachSubscription(@Nullable Subscription subscription)
+    {
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
     }
 
     private void showStartDialogsPlease()

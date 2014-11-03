@@ -436,8 +436,7 @@ import rx.functions.Func1;
 
     public Observable<UserProfileDTO> getUserRx(@NotNull UserBaseKey userKey)
     {
-        return userService.getUserRx(userKey.key)
-                .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
+        return userService.getUserRx(userKey.key);
     }
     //</editor-fold>
 

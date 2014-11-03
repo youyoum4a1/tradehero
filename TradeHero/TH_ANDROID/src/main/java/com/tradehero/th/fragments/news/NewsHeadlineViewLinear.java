@@ -14,8 +14,10 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rx.Observer;
+import rx.observers.EmptyObserver;
 
 public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemDTOKey>
 {
@@ -77,12 +79,12 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
         }
     }
 
-    @Override
+    @Override @NotNull
     protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
     {
         // We are ok with the NewsItemDTO being saved in cache, but we do not want
         // to get it here...
-        return null;
+        return new EmptyObserver<>();
     }
 
     @Override

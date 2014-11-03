@@ -76,8 +76,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
@@ -124,6 +124,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @InjectRoute UserBaseKey shownUserBaseKey;
 
+    @Nullable private Subscription followerSummaryCacheSubscription;
+    @Nullable private Subscription userProfileCacheSubscription;
+    @Nullable private Subscription portfolioSubscription;
     protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
     protected FollowDialogCombo followDialogCombo;
     protected MessageHeaderDTO messageThreadHeaderDTO;
@@ -318,8 +321,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         super.onStart();
 
-        AndroidObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribe(followerSummaryCacheSubscription);
+        followerSummaryCacheSubscription = AndroidObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(new FollowerSummaryObserver());
     }
 
@@ -405,6 +408,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
+        unsubscribe(followerSummaryCacheSubscription);
+        followerSummaryCacheSubscription = null;
+        unsubscribe(userProfileCacheSubscription);
+        userProfileCacheSubscription = null;
+        unsubscribe(portfolioSubscription);
+        portfolioSubscription = null;
         displayablePortfolioFetchAssistant = null;
 
         if (userProfileView != null)
@@ -471,8 +480,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void fetchPortfolioList()
     {
         portfolioCompactListCache.invalidate(shownUserBaseKey); // FIXME probably not necessary
-        AndroidObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(getUserBaseKeys()))
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribe(portfolioSubscription);
+        portfolioSubscription = AndroidObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(getUserBaseKeys()))
                 .subscribe(new Observer<Map<UserBaseKey, DisplayablePortfolioDTOList>>()
                 {
                     @Override public void onCompleted()
@@ -550,8 +559,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void fetchUserProfile(boolean force)
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribe(userProfileCacheSubscription);
+        userProfileCacheSubscription = AndroidObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
                 .subscribe(createUserProfileCacheObserver());
     }
 

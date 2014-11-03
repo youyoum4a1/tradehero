@@ -9,9 +9,7 @@ import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.HomeServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.Constants;
-import dagger.Lazy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
@@ -26,19 +24,16 @@ public class HomeContentCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HomeCon
 {
     private static final int DEFAULT_MAX_CACHE = 1;
     @NotNull private final HomeServiceWrapper homeServiceWrapper;
-    @NotNull private final Lazy<UserProfileCacheRx> userProfileCacheLazy;
     @NotNull private final RetrofitHelper retrofitHelper;
 
     //<editor-fold desc="Constructors">
     @Inject public HomeContentCacheRx(
             @NotNull HomeServiceWrapper homeServiceWrapper,
-            @NotNull Lazy<UserProfileCacheRx> userProfileCacheLazy,
             @NotNull RetrofitHelper retrofitHelper,
             @NotNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_CACHE, DEFAULT_MAX_CACHE, DEFAULT_MAX_CACHE, dtoCacheUtil);
         this.homeServiceWrapper = homeServiceWrapper;
-        this.userProfileCacheLazy = userProfileCacheLazy;
         this.retrofitHelper = retrofitHelper;
     }
     //</editor-fold>
@@ -66,7 +61,6 @@ public class HomeContentCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HomeCon
 
     @NotNull @Override public Observable<Pair<UserBaseKey, HomeContentDTO>> get(@NotNull UserBaseKey key)
     {
-        userProfileCacheLazy.get().get(key);
         return super.get(key);
     }
 }
