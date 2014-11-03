@@ -115,7 +115,11 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
     {
         if (newsDescription != null)
         {
-            newsDescription.setText(Html.fromHtml(getDescriptionText()).toString());
+            String descriptionText = getDescriptionText();
+            if (descriptionText != null)
+            {
+                newsDescription.setText(Html.fromHtml(descriptionText).toString());
+            }
         }
     }
 
