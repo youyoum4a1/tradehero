@@ -11,7 +11,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
@@ -75,13 +74,7 @@ public class XpToast extends RelativeLayout
     private void initViews()
     {
         userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
-        xpTextSwitcher.setFactory(new ViewSwitcher.ViewFactory()
-        {
-            @Override public View makeView()
-            {
-                return LayoutInflater.from(getContext()).inflate(R.layout.layout_xp_toast_text, xpTextSwitcher, false);
-            }
-        });
+        xpTextSwitcher.setFactory(() -> LayoutInflater.from(getContext()).inflate(R.layout.layout_xp_toast_text, xpTextSwitcher, false));
     }
 
     @Override protected void onAttachedToWindow()
@@ -264,13 +257,9 @@ public class XpToast extends RelativeLayout
         ValueAnimator valueAnimator = ValueAnimator.ofInt(currentLevelAnimationDefinition.from, currentLevelAnimationDefinition.to());
         valueAnimator.setDuration(userLevelProgressBar.getRoughDuration());
         valueAnimator.setStartDelay(userLevelProgressBar.getStartDelay());
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-        {
-            @Override public void onAnimationUpdate(@NotNull ValueAnimator animation)
-            {
-                int value = (Integer) animation.getAnimatedValue();
-                displayXPEarned(value);
-            }
+        valueAnimator.addUpdateListener(animation -> {
+            int value = (Integer) animation.getAnimatedValue();
+            displayXPEarned(value);
         });
         valueAnimator.start();
     }
@@ -283,13 +272,7 @@ public class XpToast extends RelativeLayout
             Animation fade = AnimationUtils.loadAnimation(getContext(), R.anim.emphasize);
             xpValue.startAnimation(fade);
 
-            postDelayed(new Runnable()
-            {
-                @Override public void run()
-                {
-                    hide();
-                }
-            }, getResources().getInteger(R.integer.xp_level_toast_dismiss_delay));
+            postDelayed(() -> hide(), getResources().getInteger(R.integer.xp_level_toast_dismiss_delay));
         }
         else
         {
