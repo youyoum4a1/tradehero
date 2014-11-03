@@ -155,8 +155,8 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             ButterKnife.inject(this, view);
 
+            watchlistPositionListView.post(setOffsetRunnable);
             final SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
-            watchlistListView.post(setOffsetRunnable);
             watchlistListView.setEmptyView(
                     view.findViewById(R.id.watchlist_position_list_empty_view));
             watchlistListView.setSwipeListViewListener(createSwipeListViewListener());
@@ -170,12 +170,12 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             @Override public void onRefresh(PullToRefreshBase<SwipeListView> refreshView)
             {
-                refretchSecurityIdList();
+                refreshSecurityIdList();
             }
         });
     }
 
-    protected void refretchSecurityIdList()
+    protected void refreshSecurityIdList()
     {
         detachUserWatchlistRefreshTask();
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionRefreshListener);
@@ -247,11 +247,11 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         if (watchlistPositionListView != null)
         {
+            watchlistPositionListView.removeCallbacks(setOffsetRunnable);
             SwipeListView swipeListView = watchlistPositionListView.getRefreshableView();
             if (swipeListView != null)
             {
                 swipeListView.setSwipeListViewListener(null);
-                swipeListView.removeCallbacks(setOffsetRunnable);
             }
         }
 
@@ -450,7 +450,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 SwipeListView watchlistListViewCopy = watchlistPositionListView.getRefreshableView();
                 if (watchlistListViewCopy != null)
                 {
-                    watchlistListViewCopy.setOffsetLeft(watchlistListViewCopy.getWidth() -
+                    watchlistListViewCopy.setOffsetLeft(watchlistPositionListView.getWidth() -
                             getResources().getDimension(R.dimen.watchlist_item_button_width)
                                     * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
                 }
