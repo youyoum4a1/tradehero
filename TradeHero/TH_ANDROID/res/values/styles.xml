@@ -57,14 +57,14 @@
 
   <style name="TH.Btn_Time_Span"
       parent="TH.Btn_Bar_Base">
-    <item name="android:textColor">@color/text_secondary_inverse</item>
+    <item name="android:textColor">@color/text_secondary</item>
     <item name="android:textSize">@dimen/text_caption</item>
     <item name="android:minHeight">@dimen/timespan_button_min_height</item>
   </style>
 
   <style name="TH.BtnQuickPriceSet"
       parent="TH.Btn_Bar_Base">
-    <item name="android:textColor">@color/text_secondary_inverse</item>
+    <item name="android:textColor">@color/text_secondary</item>
     <item name="android:textSize">@dimen/text_caption</item>
   </style>
 

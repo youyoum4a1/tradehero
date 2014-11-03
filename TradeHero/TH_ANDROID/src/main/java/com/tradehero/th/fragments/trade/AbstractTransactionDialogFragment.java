@@ -278,6 +278,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
                     @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
                     {
                         securityCompactDTO = pair.second;
+                        initSecurityRelatedInfo();
                     }
                 });
         AndroidObservable.bindFragment(this, portfolioCompactCache.get(getPortfolioId()))
@@ -295,6 +296,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
                     @Override public void onNext(Pair<PortfolioId, PortfolioCompactDTO> pair)
                     {
                         portfolioCompactDTO = pair.second;
+                        initPortfolioRelatedInfo();
                     }
                 });
         quoteDTO = getBundledQuoteDTO();
@@ -324,29 +326,37 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void initViews()
     {
-        mStockNameTextView.setText(securityCompactDTO == null ? "-" : securityCompactDTO.name);
-
-        mStockPriceTextView.setText(String.valueOf(getLabel()));
-
-        mPortfolioTextView.setText(
-                getString(R.string.buy_sell_portfolio_selected_title) + " " + (portfolioCompactDTO == null ? "-" : portfolioCompactDTO.title));
-
-        updateProfitLoss();
-
         mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
         mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
         mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
-        mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()
-        {
-            @Override public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent)
-            {
-                return false;
-            }
-        });
+        mQuantityEditText.setOnEditorActionListener((textView, i, keyEvent) -> false);
 
         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
         mSeekBar.setOnSeekBarChangeListener(createSeekBarListener());
+
+        mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
+
+        mBtnAddCash.setOnClickListener(view -> {
+            DeviceUtil.dismissKeyboard(mCommentsEditText);
+            handleBtnAddCashPressed();
+        });
+
+        displayAddCashButton();
+    }
+
+    private void initSecurityRelatedInfo()
+    {
+        mStockNameTextView.setText(securityCompactDTO == null ? "-" : securityCompactDTO.name);
+        mStockPriceTextView.setText(String.valueOf(getLabel()));
+    }
+
+    private void initPortfolioRelatedInfo()
+    {
+        mPortfolioTextView.setText(
+                getString(R.string.buy_sell_portfolio_selected_title) + " " + (portfolioCompactDTO == null ? "-" : portfolioCompactDTO.title));
+
+        updateProfitLoss();
 
         Integer maxValue = getMaxValue();
         if (maxValue != null)
@@ -354,21 +364,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
             mSeekBar.setMax(maxValue);
             mSeekBar.setEnabled(maxValue > 0);
         }
-
-        mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
         displayQuickPriceButtonSet();
-
-        mBtnAddCash.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                DeviceUtil.dismissKeyboard(mCommentsEditText);
-                handleBtnAddCashPressed();
-            }
-        });
-
         updateTransactionDialog();
-        displayAddCashButton();
     }
 
     protected void dismissTransactionProgress()
@@ -390,6 +387,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     }
 
     protected abstract String getLabel();
+
     protected abstract int getCashLeftLabelResId();
 
     public String getTitle()
@@ -532,8 +530,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         {
             mBtnAddCash.setVisibility(
                     (portfolioCompactDTO != null && portfolioCompactDTO.isAllowedAddCash())
-                    ? View.VISIBLE
-                    : View.GONE);
+                            ? View.VISIBLE
+                            : View.GONE);
         }
     }
 
