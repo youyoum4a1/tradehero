@@ -403,6 +403,15 @@ public class PortfolioFragment extends DashboardFragment
         {
             getPositionDirectly(showUserBaseKey);
         }
+        else
+        {
+            if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
+            {
+                detachGetPositionsTask();
+                getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
+                getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey,true);
+            }
+        }
     }
 
     private void getPositionsFromPortfolio(PortfolioCompactDTO portfolioCompactDTO)

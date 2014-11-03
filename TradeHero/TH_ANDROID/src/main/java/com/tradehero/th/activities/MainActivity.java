@@ -12,7 +12,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TabHost;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -28,7 +32,11 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.chinabuild.*;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentCompetition;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentDiscovery;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
+import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
 import com.tradehero.th.fragments.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.models.push.DeviceTokenHelper;
@@ -38,18 +46,21 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.*;
+import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.ConstantsChinaBuild;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
+import java.util.Date;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import java.util.Date;
 
 public class MainActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity
 {
@@ -353,7 +364,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
     private void killApp()
     {
-        System.exit(0);
+        //System.exit(0);
+        ////sendAppToBackground();
+        finish();
     }
 
     private void sendAppToBackground()

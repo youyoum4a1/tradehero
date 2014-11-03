@@ -75,6 +75,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
             //    text = text.subSequence(1,text.length()-1);
             //}
             text = text.toString().replace("*", "");
+            //text = text.toString().replace("\n", "");
             text = parser.load(text.toString().trim()).create();
         }
         super.setText(text, BufferType.SPANNABLE);

@@ -187,7 +187,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         if (userCompetitionDTO != null)
         {
-            initView();
+            //initView();
             fetchCompetitionDetail(false);
         }
         else
@@ -367,7 +367,8 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        refreshStatus();
+        //refreshStatus();
+        setLeaderboardHeadLine();
     }
 
 
@@ -385,7 +386,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         }
 
         fetchUserProfile();
-        setLeaderboardHeadLine();
+
     }
 
     private void detachUserProfileCache()
