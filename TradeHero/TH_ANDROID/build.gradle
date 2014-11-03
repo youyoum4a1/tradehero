@@ -45,14 +45,12 @@ project.ext.preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
 project.ext.isIntelliJ = true
 
 project.ext.java8home = System.getenv("JAVA8_HOME")
-if (project.ext.java8home == null)
-{
+if (project.ext.java8home == null) {
   // MacOS
   project.ext.java8home = '/usr/libexec/java_home -v 1.8'.execute([], project.rootDir).text.trim()
 }
 project.ext.javahome = System.getenv("JAVA_HOME")
-if (project.ext.javahome == null)
-{
+if (project.ext.javahome == null) {
   // MacOS
   project.ext.javahome = '/usr/libexec/java_home -v 1.7'.execute([], project.rootDir).text.trim()
 }
@@ -105,8 +103,8 @@ android {
       proguardFile 'proguard/proguard-android-fast.txt'
       //zipAlign true
       // versionNameSuffix interferes with the version the server receives
-      // applicationIdSuffix '.dev'
-      // versionNameSuffix '-dev'
+      applicationIdSuffix '.dev'
+      versionNameSuffix '-dev'
     }
     release {
       runProguard true
@@ -438,8 +436,7 @@ project.afterEvaluate {
   println("afterEvaluate")
   tasks.each { theTask ->
     if (project.ext.isIntelliJ
-      && theTask.name.matches("assemble.+Release"))
-    {
+            && theTask.name.matches("assemble.+Release")) {
       println("Adding a version build bump to task " + theTask.name)
       theTask.doLast {
         // Bump version Build
@@ -458,8 +455,7 @@ project.afterEvaluate {
   }
 }
 
-Integer versionPropIndex(String key)
-{
+Integer versionPropIndex(String key) {
   if (key.equals("VERSION_MAJOR")) return 0
   if (key.equals("VERSION_MINOR")) return 1
   if (key.equals("VERSION_PATCH")) return 2
@@ -470,7 +466,7 @@ Integer versionPropIndex(String key)
 task showMeCache << {
   configurations.compile.each { println it }
 
-  int mb = 1024*1024;
+  int mb = 1024 * 1024;
 
   //Getting the runtime reference from system
   Runtime runtime = Runtime.getRuntime();

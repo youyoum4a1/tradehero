@@ -2,7 +2,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
   <!--android:background="@drawable/trending_grid_item_bg2"-->
   <!--android:layout_height="@dimen/security_item_height"-->

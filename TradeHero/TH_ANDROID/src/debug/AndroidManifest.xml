@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <application>
+    <provider
+        android:name="com.urbanairship.UrbanAirshipProvider"
+        android:authorities="com.tradehero.th.dev.urbanairship.provider"
+        android:exported="false"
+        android:multiprocess="true"
+        tools:replace="android:authorities"
+        />
+  </application>
+</manifest>
