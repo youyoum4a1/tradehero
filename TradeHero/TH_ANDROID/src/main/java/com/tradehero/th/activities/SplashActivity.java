@@ -2,7 +2,6 @@ package com.tradehero.th.activities;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
@@ -37,12 +36,7 @@ public class SplashActivity extends BaseActivity
         AppTiming.splashCreate = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
 
-        if (Constants.RELEASE)
-        {
-            Crashlytics.start(this);
-        }
         setContentView(R.layout.splash_screen);
-
         TextView appVersion = (TextView) findViewById(R.id.app_version);
         if (appVersion != null)
         {

@@ -3,6 +3,7 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
@@ -11,7 +12,6 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
@@ -31,11 +31,8 @@ public class THApp extends PApplication
     {
         super.init();
 
-        if (!timberPlanted)
-        {
-            Timber.plant(createTimberTree());
-            timberPlanted = true;
-        }
+        Timber.plant(createTimberTree());
+        Timber.plant(createCrashlyticsTree());
 
         // Supposedly get the count of cores
         KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());
@@ -50,6 +47,12 @@ public class THApp extends PApplication
         THLog.showDeveloperKeyHash(this);
     }
 
+    private Timber.Tree createCrashlyticsTree()
+    {
+        Crashlytics.start(this);
+        return new CrashReportingTree();
+    }
+
     private void buildObjectGraphAndInject()
     {
         objectGraph = ObjectGraph.create(getModules());
@@ -59,10 +62,6 @@ public class THApp extends PApplication
 
     @NotNull protected Timber.Tree createTimberTree()
     {
-        if (Constants.RELEASE)
-        {
-            return new CrashReportingTree();
-        }
         return new EasyDebugTree()
         {
             @Override public String createTag()
