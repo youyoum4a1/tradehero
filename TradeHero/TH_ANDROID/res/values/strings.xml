@@ -360,6 +360,9 @@
   <string name="bind">绑定</string>
   <string name="share_to_social">我要炫耀</string>
   <string name="share_sell_title">恭喜你，盈利</string>
+  <string name="ten_thousands">万</string>
+  <string name="million">百万</string>
+  <string name="hundred_million">亿</string>
   <string name="share_sell_title2">财运来了挡都挡不住啊</string>
   <string name="share_sell_title11">亏损了</string>
   <string name="share_sell_title12">坑爹了，怎么破</string>

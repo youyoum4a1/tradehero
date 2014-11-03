@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.sun.corba.se.spi.activation._LocatorStub;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -23,12 +22,15 @@ import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerWeibo;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.utils.touch.MoneyUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class ShareSellDialogFragment extends BaseDialogFragment
 {
@@ -52,10 +54,11 @@ public class ShareSellDialogFragment extends BaseDialogFragment
     private String loseMoneyContentB;
     private int loseMoneyColor;
     private static String mTradeId;
+    private static Double mProfit;
 
     public static ShareSellDialogFragment showSellDialog(FragmentManager fragmentManager,
             String stockName, String stockCode, String stockUp, String stockNum, String getMoney,
-            String userId, String positionId, String tradeId)
+            String userId, String positionId, String tradeId, Double profit)
     {
         ShareSellDialogFragment dialogFragment = new ShareSellDialogFragment();
         try{
@@ -72,6 +75,7 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         mUserId = userId;
         mPositionId = positionId;
         mTradeId = tradeId;
+        mProfit = profit;
         return dialogFragment;
     }
 
@@ -98,6 +102,10 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         loseMoneyContentA = getActivity().getResources().getString(R.string.share_sell_title11);
         loseMoneyContentB = getActivity().getResources().getString(R.string.share_sell_title12);
         loseMoneyColor = getActivity().getResources().getColor(R.color.share_sellsecurity_losemoney);
+        if(mProfit != null){
+            String currency = SecurityUtils.getDefaultCurrency();
+            mGetMoney = MoneyUtils.convertMoneyStr(mProfit, getActivity(), currency);
+        }
         if(mGetMoney.startsWith("-")){
             shareContentA.setText(loseMoneyContentA);
             shareContentB.setText(loseMoneyContentB);
