@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.LocalBroadcastManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class OnlineStateReceiver extends BroadcastReceiver
 {
+    public static final String ONLINE_STATE_CHANGED = "com.tradehero.th.network.ALERT";
+
     @Nullable private static Boolean online = null;
 
     public static boolean isOnline(@NotNull Context context)
@@ -25,6 +28,9 @@ public class OnlineStateReceiver extends BroadcastReceiver
     @Override public void onReceive(@NotNull Context context, @NotNull Intent intent)
     {
         online = isConnected(context);
+
+        Intent online = new Intent(ONLINE_STATE_CHANGED);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(online);
     }
 
     private static boolean isConnected(@NotNull Context context)
@@ -36,8 +42,7 @@ public class OnlineStateReceiver extends BroadcastReceiver
             connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             connected = networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected();
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             Timber.d(e.getMessage());
         }
@@ -53,7 +58,7 @@ public class OnlineStateReceiver extends BroadcastReceiver
         for (NetworkInfo ni : netInfo)
         {
             if (ni.getType() == ConnectivityManager.TYPE_WIFI
-                && ni.isConnected())
+                    && ni.isConnected())
             {
                 haveConnectedWifi = true;
             }
@@ -70,7 +75,7 @@ public class OnlineStateReceiver extends BroadcastReceiver
         for (NetworkInfo ni : netInfo)
         {
             if (ni.getType() == ConnectivityManager.TYPE_MOBILE
-                && ni.isConnected())
+                    && ni.isConnected())
             {
                 haveConnectedMobile = true;
             }

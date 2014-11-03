@@ -20,6 +20,9 @@
   <string name="link_select_one_social">Select a Social Network</string>
   <string name="link_select_one_social_description">Please select at least one social network to share to</string>
 
+  <string name="not_connected">You are offline</string>
+  <string name="not_connected_desc">Not connected to the Internet. Please check your connection.</string>
+
   <string name="later">Later</string>
   <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
   <string name="upgrade_needed">Upgrade needed</string>
