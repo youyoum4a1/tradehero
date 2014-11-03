@@ -6,17 +6,17 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    style="@style/TH.ListItem.Clickable"
     >
 
   <TextView
       android:id="@+id/popup_text"
-      android:textColor="@android:color/holo_blue_dark"
       android:layout_width="fill_parent"
-      android:layout_height="40dp"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/clickable_element_min_dimen"
+      style="@style/TH.Body.Accented"
       android:gravity="center"
       tools:text="Premium"
       />
 
-  <!--android:textSize="@dimen/TitleTextSize"-->
-  <!--android:background="@drawable/btn_style_alert_dialog_button"-->
 </LinearLayout>
