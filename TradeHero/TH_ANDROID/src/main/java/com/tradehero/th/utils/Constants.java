@@ -57,7 +57,7 @@ public class Constants
     public static class Auth
     {
         public static final String PARAM_AUTHTOKEN_TYPE = "authTokenType";
-        public static final String PARAM_ACCOUNT_TYPE = "tradehero.mobi";
+        public static final String PARAM_ACCOUNT_TYPE = (RELEASE ? "" : "dev.") + "tradehero.mobi";
     }
 
     private Constants() {}
