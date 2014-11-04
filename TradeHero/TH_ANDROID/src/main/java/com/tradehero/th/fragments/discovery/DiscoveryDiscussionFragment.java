@@ -114,8 +114,6 @@ public class DiscoveryDiscussionFragment extends Fragment
         timelineSubscription = rxLoaderManager.create(DISCOVERY_LIST_LOADER_ID,
                 PaginationObservable.createFromRange(timelineRefreshRangeObservable, (Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>)
                         rangeDTO -> userTimelineServiceWrapper.getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
                                 .map(TimelineDTO::getEnhancedItems)
                                 .flatMap(Observable::from)
                                 .map(TimelineItemDTO::getDiscussionKey)
@@ -123,6 +121,8 @@ public class DiscoveryDiscussionFragment extends Fragment
                 // gotta do error handling here when applicable
                 .doOnError(toastOnErrorAction)
                 .onErrorResumeNext(Observable.empty())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnCompleted(mTimelineListView::onRefreshComplete)
                 .subscribe(timelineSubject);
     }
