@@ -1,17 +1,13 @@
 package com.tradehero.th.models.portfolio;
 
 import android.util.Pair;
-import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.portfolio.PortfolioDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
@@ -35,37 +31,33 @@ public class DisplayablePortfolioFetchAssistant
     }
     //</editor-fold>
 
-    @NotNull public Observable<Map<UserBaseKey, DisplayablePortfolioDTOList>> get(@NotNull List<UserBaseKey> userBaseKeys)
+    @NotNull public Observable<DisplayablePortfolioDTOList> get(@NotNull UserBaseKey userBaseKey)
     {
-        return Observable.from(userBaseKeys)
-                .flatMap(userBaseKey -> portfolioListCache.get(userBaseKey).first())
-                .flatMap(attributedPortfolios -> Observable.zip(
-                        Observable.just(attributedPortfolios.first),
-                        getDisplayablePortfolios(attributedPortfolios.first, attributedPortfolios.second).toList(),
-                        Pair::create))
-                .toList()
-                .map(list -> {
-                    Map<UserBaseKey, DisplayablePortfolioDTOList> map = new HashMap<>();
-                    CollectionUtils.apply(
-                            list,
-                            element -> map.put(
-                                    element.first,
-                                    new DisplayablePortfolioDTOList(element.second)));
-                    return map;
-                });
+        return portfolioListCache.get(userBaseKey)
+                .flatMap(this::getDisplayablePortfolios);
     }
 
-    @NotNull protected Observable<DisplayablePortfolioDTO> getDisplayablePortfolios(@NotNull UserBaseKey userBaseKey,
+    @NotNull protected Observable<DisplayablePortfolioDTOList> getDisplayablePortfolios(@NotNull Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+    {
+        return getDisplayablePortfolios(pair.first, pair.second);
+    }
+
+    @NotNull protected Observable<DisplayablePortfolioDTOList> getDisplayablePortfolios(@NotNull UserBaseKey userBaseKey,
             @NotNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
-        return Observable.combineLatest(
-                userProfileCache.get(userBaseKey).first(),
-                Observable.from(portfolioCompactDTOs)
-                        .flatMap(portfolioCompact -> portfolioCache.get(portfolioCompact.getOwnedPortfolioId())
-                                .first()),
-                (userPair, portfolioPair) -> new DisplayablePortfolioDTO(
-                        portfolioPair.first,
-                        userPair.second,
-                        portfolioPair.second));
+        return Observable.zip(
+                userProfileCache.get(userBaseKey).map(pair -> pair.second).take(1),
+                getPortfolios(portfolioCompactDTOs),
+                DisplayablePortfolioDTOList::new);
+    }
+
+    @NotNull Observable<PortfolioDTOList> getPortfolios(@NotNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        return Observable.from(portfolioCompactDTOs)
+                .flatMap(portfolioCompact -> portfolioCache.get(portfolioCompact.getOwnedPortfolioId()).take(1))
+                .map(pair -> pair.second)
+                .toList()
+                .map(PortfolioDTOList::new)
+                .take(1);
     }
 }

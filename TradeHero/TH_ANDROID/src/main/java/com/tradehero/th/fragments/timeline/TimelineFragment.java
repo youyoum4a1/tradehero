@@ -109,7 +109,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Analytics analytics;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject protected FollowerSummaryCacheRx followerSummaryCache;;
+    @Inject protected FollowerSummaryCacheRx followerSummaryCache;
     @Inject MessageThreadHeaderCache messageThreadHeaderCache;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
     @Inject protected THRouter thRouter;
@@ -253,7 +253,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void pushAchievementFragment()
     {
         Bundle bundle = new Bundle();
-        AchievementListFragment.putUserId(bundle, mIsOtherProfile? shownUserBaseKey : currentUserId.toUserBaseKey());
+        AchievementListFragment.putUserId(bundle, mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
         navigator.get().pushFragment(AchievementListFragment.class, bundle);
     }
 
@@ -282,6 +282,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
 
         lastItemVisibleListener = new TimelineLastItemVisibleListener();
+
+        fetchPortfolioList();
     }
 
     private class FollowerSummaryObserver implements Observer<Pair<UserBaseKey, FollowerSummaryDTO>>
@@ -367,7 +369,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.onRefreshComplete();
             cancelRefreshingOnResume = false;
         }
-        fetchPortfolioList();
         fetchUserProfile(false);
         fetchMessageThreadHeader();
 
@@ -479,25 +480,28 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     //<editor-fold desc="Display methods">
     private void fetchPortfolioList()
     {
-        portfolioCompactListCache.invalidate(shownUserBaseKey); // FIXME probably not necessary
-        unsubscribe(portfolioSubscription);
-        portfolioSubscription = AndroidObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(getUserBaseKeys()))
-                .subscribe(new Observer<Map<UserBaseKey, DisplayablePortfolioDTOList>>()
-                {
-                    @Override public void onCompleted()
+        if (portfolioSubscription == null)
+        {
+            portfolioSubscription = AndroidObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(shownUserBaseKey))
+                    .subscribe(new Observer<DisplayablePortfolioDTOList>()
                     {
-                    }
+                        @Override public void onCompleted()
+                        {
+                            Timber.d("completed");
+                        }
 
-                    @Override public void onError(Throwable e)
-                    {
-                    }
+                        @Override public void onError(Throwable e)
+                        {
+                            Timber.e(e, "error");
+                        }
 
-                    @Override public void onNext(Map<UserBaseKey, DisplayablePortfolioDTOList> map)
-                    {
-                        onLoadFinished();
-                        displayPortfolios(map);
-                    }
-                });
+                        @Override public void onNext(DisplayablePortfolioDTOList displayablePortfolioDTOs)
+                        {
+                            onLoadFinished();
+                            displayPortfolios(displayablePortfolioDTOs);
+                        }
+                    });
+        }
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -576,7 +580,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
-    /**item of Portfolio tab is clicked*/
+    /** item of Portfolio tab is clicked */
     private void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
         Object item = adapterView.getItemAtPosition(i);
@@ -627,7 +631,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     /**
      * Go to watchlist
-     * @param ownedPortfolioId
      */
     private void pushWatchlistPositionFragment(OwnedPortfolioId ownedPortfolioId)
     {
@@ -669,26 +672,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected List<UserBaseKey> getUserBaseKeys()
+    public void displayPortfolios(DisplayablePortfolioDTOList displayablePortfolioDTOs)
     {
-        List<UserBaseKey> list = new ArrayList<>();
-        list.add(shownUserBaseKey);
-        return list;
-    }
-
-    public void displayPortfolios(Map<UserBaseKey, DisplayablePortfolioDTOList> map)
-    {
-        this.mainTimelineAdapter.setDisplayablePortfolioItems(getAllPortfolios(map));
-    }
-
-    @NotNull private List<DisplayablePortfolioDTO> getAllPortfolios(@NotNull Map<UserBaseKey, DisplayablePortfolioDTOList> map)
-    {
-        List<DisplayablePortfolioDTO> list = new ArrayList<>();
-        for (DisplayablePortfolioDTOList value : map.values())
-        {
-            list.addAll(value);
-        }
-        return list;
+        this.mainTimelineAdapter.setDisplayablePortfolioItems(displayablePortfolioDTOs);
     }
 
     protected void updateBottomButton()
@@ -885,7 +871,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             }
             updateBottomButton();
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
-
         }
 
         @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
@@ -910,7 +895,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             if (!(error instanceof RetrofitError) ||
                     (((RetrofitError) error).getResponse() != null &&
-                        ((RetrofitError) error).getResponse().getStatus() != 404))
+                            ((RetrofitError) error).getResponse().getStatus() != 404))
             {
                 THToast.show(R.string.error_fetch_message_thread_header);
                 Timber.e(error, "Error while getting message thread");
