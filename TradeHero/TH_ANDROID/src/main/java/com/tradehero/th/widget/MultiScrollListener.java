@@ -19,7 +19,10 @@ public class MultiScrollListener implements AbsListView.OnScrollListener
     @Override public void onScrollStateChanged(AbsListView view, int scrollState)
     {
         CollectionUtils.apply(onScrollListeners, onScrollListener -> {
-            onScrollListener.onScrollStateChanged(view, scrollState);
+            if (onScrollListener != null)
+            {
+                onScrollListener.onScrollStateChanged(view, scrollState);
+            }
         });
     }
 
