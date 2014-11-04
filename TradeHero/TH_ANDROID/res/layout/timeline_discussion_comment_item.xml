@@ -4,22 +4,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/timeline_side_spacing"
+    android:layout_height="wrap_content"
+    style="@style/TH.ListItem"
+    android:paddingBottom="0dp"
     android:descendantFocusability="blocksDescendants"
     >
 
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:paddingTop="@dimen/timeline_side_spacing"
-      android:paddingLeft="@dimen/timeline_side_spacing"
-      android:paddingRight="@dimen/timeline_side_spacing"
-      android:paddingBottom="@dimen/timeline_side_spacing"
-      android:layout_marginLeft="@dimen/timeline_side_spacing"
-      android:layout_marginRight="@dimen/timeline_side_spacing"
-      android:background="@drawable/discussion_status_background"
       android:descendantFocusability="blocksDescendants"
+      style="@style/TH.ListItem"
+      android:background="@drawable/discussion_status_background"
       >
 
     <ImageView
@@ -29,7 +25,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/layout_oval_gray"
-        android:padding="1dp"
         android:src="@drawable/avatar"
         android:contentDescription="@null"/>
 
@@ -45,10 +40,8 @@
           android:id="@+id/user_profile_name"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:textColor="@color/black"
-          android:textSize="@dimen/text_subhead"
-          android:textStyle="bold"
+          android:layout_marginLeft="@dimen/margin_small"
+          style="@style/TH.UserNameTitle"
           android:ellipsize="middle"
           android:singleLine="true"
           android:layout_alignParentLeft="true"
@@ -59,9 +52,8 @@
           android:id="@+id/discussion_time"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          android:textColor="@color/text_gray_normal"
-          android:textSize="@dimen/timeline_item_date"
+          android:layout_marginLeft="@dimen/margin_small"
+          style="@style/TH.Caption"
           android:layout_alignParentLeft="true"
           android:layout_below="@id/user_profile_name"
           tools:text="A moment ago"
@@ -79,9 +71,7 @@
         android:layout_toRightOf="@id/discussion_user_picture"
         tools:text="Tho Nguyen is the world best trader!"
         android:textColorLink="@color/timeline_item_link"
-        android:textColor="@color/timeline_item"
-        android:textSize="@dimen/text_caption"
-        android:textStyle="normal"
+        style="@style/TH.Body"
         />
 
   </RelativeLayout>
