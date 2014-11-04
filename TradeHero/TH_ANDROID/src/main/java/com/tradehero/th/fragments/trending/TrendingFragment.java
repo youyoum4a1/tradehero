@@ -457,7 +457,7 @@ public class TrendingFragment extends SecurityListFragment
             AppTiming.trendingFilled = System.currentTimeMillis();
         }
         //Timber.d("handleSecurityItemReceived "+securityCompactDTOs.toString());
-        if (securityItemViewAdapter != null)
+        if (securityItemViewAdapter != null && securityCompactDTOs != null)
         {
             // It may have been nullified if coming out
             securityItemViewAdapter.setItems(securityCompactDTOs);
