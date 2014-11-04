@@ -205,6 +205,7 @@ public class NewsHeadlineFragment extends Fragment
                         }
                     });
                 })
+                .startWith(PullToRefreshBase.Mode.PULL_FROM_START)
                 .map(mode -> {
                     switch (mode)
                     {
