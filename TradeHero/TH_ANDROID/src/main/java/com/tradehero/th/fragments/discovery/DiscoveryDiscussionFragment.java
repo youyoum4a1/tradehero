@@ -119,10 +119,10 @@ public class DiscoveryDiscussionFragment extends Fragment
                                 .map(TimelineItemDTO::getDiscussionKey)
                                 .toList()))
                 // gotta do error handling here when applicable
-                .doOnError(toastOnErrorAction)
-                .onErrorResumeNext(Observable.empty())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(toastOnErrorAction)
+                .onErrorResumeNext(Observable.empty())
                 .doOnCompleted(mTimelineListView::onRefreshComplete)
                 .subscribe(timelineSubject);
     }
