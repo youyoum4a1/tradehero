@@ -6,8 +6,10 @@ import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Action1;
 
-public class DTOProcessorLogout implements DTOProcessor<UserProfileDTO>
+public class DTOProcessorLogout implements DTOProcessor<UserProfileDTO>,
+        Action1<UserProfileDTO>
 {
     @NotNull private final DTOCacheUtilNew dtoCacheUtilNew;
     @NotNull private final DTOCacheUtilRx dtoCacheUtilRx;
@@ -32,5 +34,10 @@ public class DTOProcessorLogout implements DTOProcessor<UserProfileDTO>
         dtoCacheUtilRx.clearUserCaches();
         notificationManager.cancelAll();
         return userProfileDTO;
+    }
+
+    @Override public void call(UserProfileDTO userProfileDTO)
+    {
+        process(userProfileDTO);
     }
 }

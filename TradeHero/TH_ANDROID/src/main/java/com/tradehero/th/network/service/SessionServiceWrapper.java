@@ -85,7 +85,7 @@ import timber.log.Timber;
         return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get());
     }
 
-    @NotNull protected DTOProcessor<UserProfileDTO> createLogoutProcessor()
+    @NotNull protected DTOProcessorLogout createLogoutProcessor()
     {
         return new DTOProcessorLogout(
                 dtoCacheUtil, dtoCacheUtil,
@@ -142,16 +142,6 @@ import timber.log.Timber;
         return createUserLoginProcessor().process(sessionService.signupAndLogin(authorization, loginSignUpFormDTO));
     }
 
-    @NotNull public MiddleCallback<UserLoginDTO> signupAndLogin(
-            @NotNull String authorization,
-            @NotNull LoginSignUpFormDTO loginSignUpFormDTO,
-            @Nullable Callback<UserLoginDTO> callback)
-    {
-        MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());
-        sessionServiceAsync.signupAndLogin(authorization, loginSignUpFormDTO, middleCallback);
-        return middleCallback;
-    }
-
     @NotNull public Observable<UserLoginDTO> signupAndLoginRx(@NotNull String authorizationHeader, @NotNull LoginSignUpFormDTO loginSignUpFormDTO)
     {
         Observable<UserLoginDTO> userLoginDTOObservable;
@@ -180,19 +170,25 @@ import timber.log.Timber;
         sessionServiceAsync.logout(middleCallback);
         return middleCallback;
     }
+
+    @NotNull public Observable<UserProfileDTO> logoutRx()
+    {
+        return sessionServiceRx.logout()
+                .doOnNext(createLogoutProcessor());
+    }
     //</editor-fold>
 
     //<editor-fold desc="Update Device">
-    @NotNull public UserProfileDTO updateDevice()
-    {
-        return sessionService.updateDevice(savedPushDeviceIdentifier.get());
-    }
-
     @NotNull public MiddleCallback<UserProfileDTO> updateDevice(@Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateDeviceProcessor());
         sessionServiceAsync.updateDevice(savedPushDeviceIdentifier.get(), middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<UserProfileDTO> updateDeviceRx()
+    {
+        return sessionServiceRx.updateDevice(savedPushDeviceIdentifier.get());
     }
     //</editor-fold>
 
@@ -202,13 +198,9 @@ import timber.log.Timber;
         return sessionService.updateAuthorizationTokens(userFormDTO.authData.getTHToken(), userFormDTO);
     }
 
-    @NotNull public MiddleCallback<BaseResponseDTO> updateAuthorizationTokens(
-            @NotNull LoginSignUpFormDTO userFormDTO,
-            @Nullable Callback<BaseResponseDTO> callback)
+    @NotNull public Observable<BaseResponseDTO> updateAuthorizationTokensRx(@NotNull LoginSignUpFormDTO userFormDTO)
     {
-        MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        sessionServiceAsync.updateAuthorizationTokens(userFormDTO.authData.getTHToken(), userFormDTO, middleCallback);
-        return middleCallback;
+        return sessionServiceRx.updateAuthorizationTokens(userFormDTO.authData.getTHToken(), userFormDTO);
     }
     //</editor-fold>
 }
