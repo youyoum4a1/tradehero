@@ -20,7 +20,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
-import com.tradehero.th.persistence.competition.CompetitionListCache;
+import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class MainCompetitionFragmentTest
     @Inject DashboardNavigator dashboardNavigator;
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderDisplayCellListCache providerDisplayCellListCache;
-    @Inject CompetitionListCache competitionListCache;
+    @Inject CompetitionListCacheRx competitionListCache;
     @Inject ProviderUtil providerUtil;
     @Inject CurrentUserId currentUserId;
     private ProviderId providerId;
@@ -71,7 +71,7 @@ public class MainCompetitionFragmentTest
         providerCache.onNext(providerId, mockProviderDTO);
 
         CompetitionDTOList competitionDTOList = new CompetitionDTOList();
-        competitionListCache.put(providerId, competitionDTOList);
+        competitionListCache.onNext(providerId, competitionDTOList);
 
         ProviderDisplayCellDTOList providerDisplayCellDTOList = new ProviderDisplayCellDTOList();
         providerDisplayCellListCache.put(new ProviderDisplayCellListKey(providerId), providerDisplayCellDTOList);

@@ -57,7 +57,7 @@ import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.persistence.competition.CompetitionListCache;
+import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
@@ -65,6 +65,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -87,7 +88,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject CompetitionListCache competitionListCache;
+    @Inject CompetitionListCacheRx competitionListCache;
     @Inject ProviderDisplayCellListCache providerDisplayListCellCache;
     @Inject ProviderUtil providerUtil;
     @Inject GraphicUtil graphicUtil;
@@ -98,7 +99,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     protected UserProfileCompactDTO portfolioUserCompactDTO;
     protected CompetitionDTOList competitionDTOs;
-    private DTOCacheNew.Listener<ProviderId, CompetitionDTOList> competitionListCacheFetchListener;
+    private Subscription competitionListCacheSubscription;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
     private DTOCacheNew.Listener<ProviderDisplayCellListKey, ProviderDisplayCellDTOList> displayCellListCacheFetchListener;
     private SimpleCounterUtils simpleCounterUtils;
@@ -112,7 +113,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         super.onCreate(savedInstanceState);
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
-        this.competitionListCacheFetchListener = createCompetitionListCacheListener();
         this.displayCellListCacheFetchListener = createDisplayCellListCacheListener();
         simpleCounterUtils = createSimpleCounterUtils();
     }
@@ -157,8 +157,10 @@ public class MainCompetitionFragment extends CompetitionFragment
         simpleCounterUtils.reset();
 
         detachCompetitionListCacheTask();
-        competitionListCache.register(providerId, competitionListCacheFetchListener);
-        competitionListCache.getOrFetchAsync(providerId);
+        competitionListCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                competitionListCache.get(providerId))
+                .subscribe(createCompetitionListCacheObserver());
 
         detachDisplayCellListCacheTask();
         ProviderDisplayCellListKey providerDisplayCellListKey = new ProviderDisplayCellListKey(providerId);
@@ -218,7 +220,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onDestroy()
     {
-        this.competitionListCacheFetchListener = null;
+        this.competitionListCacheSubscription = null;
         this.webViewTHIntentPassedListener = null;
         simpleCounterUtils.setListener(null);
         simpleCounterUtils = null;
@@ -227,7 +229,8 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void detachCompetitionListCacheTask()
     {
-        competitionListCache.unregister(competitionListCacheFetchListener);
+        unsubscribe(competitionListCacheSubscription);
+        competitionListCacheSubscription = null;
     }
 
     private void detachDisplayCellListCacheTask()
@@ -635,24 +638,28 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private DTOCacheNew.Listener<ProviderId, CompetitionDTOList> createCompetitionListCacheListener()
+    private Observer<Pair<ProviderId, CompetitionDTOList>> createCompetitionListCacheObserver()
     {
-        return new MainCompetitionCompetitionListCacheListener();
+        return new MainCompetitionCompetitionListCacheObserver();
     }
 
-    private class MainCompetitionCompetitionListCacheListener
-            implements DTOCacheNew.Listener<ProviderId, CompetitionDTOList>
+    private class MainCompetitionCompetitionListCacheObserver
+            implements Observer<Pair<ProviderId, CompetitionDTOList>>
     {
-        @Override public void onDTOReceived(@NotNull ProviderId providerId, @NotNull CompetitionDTOList value)
+        @Override public void onNext(Pair<ProviderId, CompetitionDTOList> pair)
         {
-            linkWith(value, true);
+            linkWith(pair.second, true);
             simpleCounterUtils.increment();
         }
 
-        @Override public void onErrorThrown(@NotNull ProviderId key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(getString(R.string.error_fetch_provider_competition_list));
-            Timber.e("Error fetching the list of competition info %s", key, error);
+            Timber.e("Error fetching the list of competition info", e);
             simpleCounterUtils.increment();
         }
     }
