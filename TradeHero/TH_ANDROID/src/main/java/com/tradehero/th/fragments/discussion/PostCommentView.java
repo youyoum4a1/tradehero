@@ -99,8 +99,7 @@ public class PostCommentView extends RelativeLayout
         ButterKnife.inject(this);
         HierarchyInjector.inject(this);
         postCommentMiddleCallbacks = new MiddleCallbackWeakList<>();
-        DeviceUtil.showKeyboardDelayed(commentText);
-        keypadIsShowing = true;
+        keypadIsShowing = false;
     }
 
     @Override protected void onAttachedToWindow()

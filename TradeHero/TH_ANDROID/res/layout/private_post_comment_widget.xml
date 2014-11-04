@@ -13,6 +13,8 @@
       android:padding="6dp"
       android:layout_marginBottom="@dimen/dashboard_tabhost_height"
       android:background="@drawable/timeline_discussion_edit_widget_background"
+      android:focusable="true"
+      android:focusableInTouchMode="true"
       >
 
     <include layout="@layout/post_comment_widget_inner" />
