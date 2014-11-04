@@ -54,6 +54,7 @@ public class NewsPagerFragment extends Fragment
 
         mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
         mNewsCarousel.setAdapter(new DiscoveryNewsCarouselFragmentAdapter(this.getChildFragmentManager()));
+        mViewPager.setOffscreenPageLimit(1);
 
         mNewsCarousel.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
         {

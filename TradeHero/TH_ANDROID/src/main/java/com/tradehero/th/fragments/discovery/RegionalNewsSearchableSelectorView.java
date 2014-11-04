@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
-import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -77,6 +76,7 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
     private Subscription userProfileSubscription;
     @Inject CurrentUserId currentUserId;
     @Inject NewsServiceWrapper mNewsServiceWrapper;
+    @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
 
     private String mLanguageCode;
     private String mCountryCode;
@@ -134,9 +134,8 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
 
     private void sendRegionalNewsChangedEvent(CountryLanguagePairDTO countryLanguagePair)
     {
+        countryLanguagePreference.set(countryLanguagePair);
         Intent regionalNewsChangedIntent = new Intent(RegionalNewsHeadlineFragment.REGION_CHANGED);
-        regionalNewsChangedIntent.putExtra(CountryLanguagePairDTO.BUNDLE_KEY_COUNTRY_CODE, countryLanguagePair.countryCode);
-        regionalNewsChangedIntent.putExtra(CountryLanguagePairDTO.BUNDLE_KEY_LANGUAGE_CODE, countryLanguagePair.languageCode);
 
         LocalBroadcastManager.getInstance(getContext())
                 .sendBroadcast(regionalNewsChangedIntent);
@@ -299,13 +298,8 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
         if (andDisplay)
         {
             Collection<CountryLanguagePairDTO> userCountryLanguagePairs =
-                    CollectionUtils.filter(new ArrayList<>(data), new Predicate<CountryLanguagePairDTO>()
-                    {
-                        @Override public boolean apply(CountryLanguagePairDTO countryLanguagePairDTO)
-                        {
-                            return countryLanguagePairDTO.countryCode.equalsIgnoreCase(userProfileDTO.countryCode);
-                        }
-                    });
+                    CollectionUtils.filter(new ArrayList<>(data),
+                            countryLanguagePairDTO -> countryLanguagePairDTO.countryCode.equalsIgnoreCase(userProfileDTO.countryCode));
             if (!userCountryLanguagePairs.isEmpty())
             {
                 CountryLanguagePairDTO singleCountryLanguagePair = userCountryLanguagePairs.iterator().next();

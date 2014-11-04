@@ -9,8 +9,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.Observable;
@@ -23,8 +21,7 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
     public static final String REGION_CHANGED = RegionalNewsHeadlineFragment.class + ".regionChanged";
 
     @Inject Locale locale;
-    @Inject UserServiceWrapper userServiceWrapper;
-    @Inject CurrentUserId currentUserId;
+    @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
 
     private BroadcastReceiver regionChangeBroadcastReceiver;
 
@@ -37,33 +34,18 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
     private Observable<NewsItemListKey> createNewsItemListRegionalKeyObservable()
     {
         // observable of the UI event which user change the region
-        Observable<NewsItemListKey> regionalKeyManuallyChangedObservable = Observable.create(new Observable.OnSubscribe<NewsItemListKey>()
-        {
-            @Override public void call(Subscriber<? super NewsItemListKey> subscriber)
-            {
-                if (regionChangeBroadcastReceiver == null)
-                {
-                    regionChangeBroadcastReceiver = new RegionalKeyBroadcastReceiver(subscriber);
-                    LocalBroadcastManager.getInstance(getActivity())
-                            .registerReceiver(regionChangeBroadcastReceiver, new IntentFilter(REGION_CHANGED));
-                }
-            }
-        });
-
-        // observable of whenever userProfileDTO is available
-        Observable<NewsItemListRegionalKey> regionalKeyByUserProfileLanguageObservable = userServiceWrapper.getUserRx(currentUserId.toUserBaseKey())
-                .map(userProfileDTO -> userProfileDTO.countryCode)
-                .map(this::createNewsItemListRegionalKeyFromCountryCode);
-
-        return Observable.concat(regionalKeyByUserProfileLanguageObservable, regionalKeyManuallyChangedObservable)
+        return Observable
+                .create((Observable.OnSubscribe<NewsItemListKey>) subscriber -> {
+                    if (regionChangeBroadcastReceiver == null)
+                    {
+                        regionChangeBroadcastReceiver = new RegionalKeyBroadcastReceiver(subscriber);
+                        LocalBroadcastManager.getInstance(getActivity())
+                                .registerReceiver(regionChangeBroadcastReceiver, new IntentFilter(REGION_CHANGED));
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(this::activateNewsListView); // whenever the key is changed by above 2 factors, need to reload the whole list
-    }
-
-    private NewsItemListRegionalKey createNewsItemListRegionalKeyFromCountryCode(String countryCode)
-    {
-        return new NewsItemListRegionalKey(countryCode, locale.getLanguage(), null, null);
+                .doOnNext(this::activateNewsListView);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -92,10 +74,9 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 
         @Override public void onReceive(Context context, Intent intent)
         {
-            String countryCode = intent.getStringExtra(CountryLanguagePairDTO.BUNDLE_KEY_COUNTRY_CODE);
-            String languageCode = intent.getStringExtra(CountryLanguagePairDTO.BUNDLE_KEY_LANGUAGE_CODE);
+            CountryLanguagePairDTO countryLanguagePairDTO = countryLanguagePreference.get();
 
-            subscriber.onNext(new NewsItemListRegionalKey(countryCode, languageCode, null, null));
+            subscriber.onNext(new NewsItemListRegionalKey(countryLanguagePairDTO.countryCode, countryLanguagePairDTO.languageCode, null, null));
         }
     }
 }
