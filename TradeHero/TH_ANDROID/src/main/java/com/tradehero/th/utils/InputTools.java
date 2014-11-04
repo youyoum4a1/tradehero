@@ -42,15 +42,21 @@ public class InputTools
             @Override
             public void run()
             {
-                InputMethodManager m = (InputMethodManager)
-                        txtSearchKey.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (status.equals("open"))
+                try
                 {
-                    m.showSoftInput(txtSearchKey, InputMethodManager.SHOW_FORCED);
-                }
-                else
+                    InputMethodManager m = (InputMethodManager)
+                            txtSearchKey.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (status.equals("open"))
+                    {
+                        m.showSoftInput(txtSearchKey, InputMethodManager.SHOW_FORCED);
+                    }
+                    else
+                    {
+                        m.hideSoftInputFromWindow(txtSearchKey.getWindowToken(), 0);
+                    }
+                } catch (Exception e)
                 {
-                    m.hideSoftInputFromWindow(txtSearchKey.getWindowToken(), 0);
+
                 }
             }
         }, 300);

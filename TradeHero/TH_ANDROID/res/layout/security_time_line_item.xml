@@ -22,6 +22,7 @@
         android:id="@+id/imgSecurityTLUserHeader"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:scaleType="fitXY"
         android:background="@drawable/default_image"/>
 
     <LinearLayout

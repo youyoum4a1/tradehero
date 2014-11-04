@@ -66,6 +66,7 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.InputTools;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
@@ -171,7 +172,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     {
         View view = inflater.inflate(R.layout.timeline_item_detail, container, false);
         ButterKnife.inject(this, view);
-        //setNeedToMonitorBackPressed(true);
+        setNeedToMonitorBackPressed(true);
         ListView lv = listTimeLine.getRefreshableView();
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item, null);
         lv.addHeaderView(mRefreshView);
@@ -266,40 +267,40 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         });
     }
 
-
-    public void setHintForSender(int position)
+    public void setDefaultReply()
     {
-
+        edtSend.setHint(getResources().getString(R.string.please_to_reply));
+        strReply = "";
+        isReplayFollower = false;
     }
 
-    //public void setHintForSender(int position)
-    //{
-    //    if (position == -1)//回复主题
-    //    {
-    //        edtSend.setHint(getResources().getString(R.string.please_to_reply));
-    //        strReply = "";
-    //    }
-    //    else//回复楼层
-    //    {
-    //        AbstractDiscussionCompactDTO dto = adapter.getItem(position);
-    //        if (dto instanceof DiscussionDTO)
-    //        {
-    //            String displayName = ((DiscussionDTO) dto).user.displayName;
-    //            int id = ((DiscussionDTO) dto).userId;
-    //            String strHint = "回复 " + displayName + ":";
-    //            edtSend.setHint(strHint);
-    //            //"<@(.+?),(\\d+)@>"
-    //            strReply = "<@@"+displayName+","+id+"@>";
-    //        }
-    //    }
-    //    openInputMethod();
-    //}
+    boolean isReplayFollower = false;
+    public void setHintForSender(int position)
+    {
+        if (position == -1)//回复主题
+        {
+            setDefaultReply();
+        }
+        else//回复楼层
+        {
+            AbstractDiscussionCompactDTO dto = adapter.getItem(position);
+            if (dto instanceof DiscussionDTO)
+            {
+                String displayName = ((DiscussionDTO) dto).user.displayName;
+                int id = ((DiscussionDTO) dto).userId;
+                String strHint = "回复 " + displayName + ":";
+                if(edtSend!=null)
+                {
+                    edtSend.setHint(strHint);
+                    //"<@(.+?),(\\d+)@>"
+                    strReply = "<@@"+displayName+","+id+"@>";
+                    isReplayFollower = true;
+                }
+            }
+        }
+        openInputMethod();
+    }
 
-    //@Override public void onBackPressed()
-    //{
-    //    closeInputMethod();
-    //}
-    //
     //public void closeInputMethod()
     //{
     //    boolean isShow = InputTools.KeyBoard(edtSend);
@@ -314,20 +315,28 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     //
     //    }
     //}
-    //public void openInputMethod()
-    //{
-    //    //InputTools.ShowKeyboard(edtSend);
-    //    InputTools.KeyBoard(edtSend,"open");
-    //}
+
+    public void openInputMethod()
+    {
+        InputTools.KeyBoard(edtSend, "open");
+    }
 
 
-
-    //@Override public void onBackPressed()
-    //{
-    //    super.onBackPressed();
-    //    strReply = "";
-    //    edtSend.setText("");
-    //}
+    @Override public void onBackPressed()
+    {
+        super.onBackPressed();
+        if(isReplayFollower)
+        {
+            strReply = "";
+            edtSend.setText("");
+            edtSend.setHint(getResources().getString(R.string.please_to_reply));
+            isReplayFollower = false;
+        }
+        else
+        {
+            popCurrentFragment();
+        }
+    }
 
 
     @Override public void onDestroyView()

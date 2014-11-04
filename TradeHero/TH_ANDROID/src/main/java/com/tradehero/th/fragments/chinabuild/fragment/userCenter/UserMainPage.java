@@ -245,6 +245,7 @@ public class UserMainPage extends DashboardFragment
             {
                 Timber.d("下拉刷新");
                 fetchTimeLine();
+                fetchUserProfile();
             }
 
             @Override
