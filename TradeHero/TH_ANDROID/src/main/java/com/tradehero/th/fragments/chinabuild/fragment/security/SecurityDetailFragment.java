@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -66,6 +68,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.chinabuild.cache.PositionCompactNewCache;
 import com.tradehero.th.fragments.chinabuild.cache.PositionDTOKey;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.dialog.DialogFactory;
 import com.tradehero.th.fragments.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
@@ -106,6 +109,7 @@ import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -239,6 +243,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @InjectView(R.id.tvTLPraise) TextView tvTLPraise;
     @InjectView(R.id.tvTLComment) TextView tvTLComment;
     @InjectView(R.id.tvTLShare) TextView tvTLShare;
+    @InjectView(R.id.ic_info_buy_sale_btns)LinearLayout bottomBarLL;
 
     @Inject public Lazy<PrettyTime> prettyTime;
     AbstractDiscussionCompactDTO dtoDiscuss;
@@ -473,6 +478,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         requestUserProfile();
         fetchWatchlist();
         super.onResume();
+
+        if(THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_BUY)){
+            showGuideView();
+        }
     }
 
     public void initArgment()
@@ -1793,5 +1802,20 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
 
         }
+    }
+
+    private void showGuideView(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int width = llSecurityBuy.getWidth();
+                int height = llSecurityBuy.getHeight();
+                int radius = llSecurityBuy.getHeight()/2;
+                int position_y = (int)bottomBarLL.getY() + height/2;
+                int position_x = (int)bottomBarLL.getX() + width/2;
+                ((DashboardActivity)getActivity()).showGuideView(position_x, position_y, radius, GuideView.TYPE_GUIDE_STOCK_BUG);
+            }
+        }, 500);
     }
 }

@@ -203,4 +203,7 @@
 
   <dimen name="photo_medium">50dp</dimen>
 
+  <dimen name="guide_competition_height">101dp</dimen>
+  <dimen name="guide_competition_right_margin">20dp</dimen>
+
 </resources>

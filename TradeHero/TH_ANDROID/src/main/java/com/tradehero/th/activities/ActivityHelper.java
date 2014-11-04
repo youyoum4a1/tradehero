@@ -26,7 +26,7 @@ public class ActivityHelper
 
     public static void launchDashboard(Activity activity,Bundle args)
     {
-        presentFromActivity(activity, DashboardActivity.class, /* Intent.FLAG_ACTIVITY_NO_HISTORY*/ Intent.FLAG_ACTIVITY_CLEAR_TOP,args);
+        presentFromActivity(activity, DashboardActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP,args);
     }
 
 

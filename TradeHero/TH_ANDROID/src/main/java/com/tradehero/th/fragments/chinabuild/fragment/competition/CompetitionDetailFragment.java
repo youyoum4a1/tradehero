@@ -73,6 +73,10 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+import com.tradehero.th.activities.DashboardActivity;
+import android.os.Handler;
+import com.tradehero.th.widget.GuideView;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 
 /**
  * Created by huhaiping on 14-9-9. 比赛详情页
@@ -368,8 +372,30 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         super.onResume();
         refreshStatus();
+
+        if(THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_JOIN)){
+            showGuideView();
+        }
     }
 
+
+    private void showGuideView(){
+       Handler handler = new Handler();
+       handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Show Guide View
+                int width = tvGotoCompetition.getWidth();
+                int height = tvGotoCompetition.getHeight();
+                int position_x = ((DashboardActivity)getActivity()).SCREEN_W -
+                        (int)getActivity().getResources().getDimension(R.dimen.guide_competition_right_margin)-width/2;
+                int position_y = (int)getActivity().getResources().getDimension(R.dimen.guide_competition_height) + height/2;
+                int radius = (int)Math.sqrt(width * width/4 + height * height/4) + 10;
+                ((DashboardActivity)getActivity()).showGuideView(position_x,
+                        position_y, radius, GuideView.TYPE_GUIDE_COMPETITION_JOIN);
+            }
+        },500);
+    }
 
     public void refreshStatus()
     {

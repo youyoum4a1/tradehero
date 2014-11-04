@@ -16,6 +16,7 @@ import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.chinabuild.fragment.LoginSuggestDialogFragment;
@@ -78,6 +79,13 @@ abstract public class DashboardFragment extends BaseFragment
 
     public void onClickHeadLeft()
     {
+        if(getActivity() instanceof DashboardActivity){
+            DashboardActivity activity = ((DashboardActivity)getActivity());
+            if(activity.isGuideViewShow()){
+                activity.dismissGuideView();
+                return;
+            }
+        }
         popCurrentFragment();
     }
 
