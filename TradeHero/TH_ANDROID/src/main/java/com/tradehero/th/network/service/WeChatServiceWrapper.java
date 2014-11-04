@@ -9,29 +9,30 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class WeChatServiceWrapper
 {
-    @NotNull private final WeChatService weChatService;
+    @NotNull private final WeChatServiceRx weChatServiceRx;
     @NotNull private final WeChatServiceAsync weChatServiceAsync;
 
     //<editor-fold desc="Constructors">
     @Inject public WeChatServiceWrapper(
-            @NotNull WeChatService weChatService,
-            @NotNull WeChatServiceAsync weChatServiceAsync)
+            @NotNull WeChatServiceAsync weChatServiceAsync,
+            @NotNull WeChatServiceRx weChatServiceRx)
     {
         super();
-        this.weChatService = weChatService;
         this.weChatServiceAsync = weChatServiceAsync;
+        this.weChatServiceRx = weChatServiceRx;
     }
     //</editor-fold>
 
     //<editor-fold desc="Track Share">
-    public TrackShareDTO trackShare(
+    public Observable<TrackShareDTO> trackShareRx(
             @NotNull UserBaseKey userId,
             @NotNull WeChatTrackShareFormDTO weChatTrackShareFormDTO)
     {
-        return weChatService.trackShare(userId.key, weChatTrackShareFormDTO);
+        return weChatServiceRx.trackShare(userId.key, weChatTrackShareFormDTO);
     }
 
     public BaseMiddleCallback<TrackShareDTO> trackShare(

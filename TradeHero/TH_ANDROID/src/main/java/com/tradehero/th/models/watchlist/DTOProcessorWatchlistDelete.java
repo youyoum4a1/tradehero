@@ -10,9 +10,11 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Action1;
 import timber.log.Timber;
 
-public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositionDTO>
+public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositionDTO>,
+        Action1<WatchlistPositionDTO>
 {
     @NotNull private final UserBaseKey concernedUser;
     @NotNull private final WatchlistPositionCache watchlistPositionCache;
@@ -66,5 +68,10 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
             watchlistPositionCache.invalidate(concernedUser);
         }
         return watchlistPositionDTO;
+    }
+
+    @Override public void call(WatchlistPositionDTO watchlistPositionDTO)
+    {
+        process(watchlistPositionDTO);
     }
 }

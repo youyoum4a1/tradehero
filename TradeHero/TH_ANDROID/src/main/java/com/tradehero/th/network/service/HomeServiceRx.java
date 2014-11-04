@@ -6,7 +6,7 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
-public interface HomeServiceRx
+interface HomeServiceRx
 {
     @GET("/AppHome/{userId}")
     Observable<Response> getHomePageContent(@Path("userId") int userId, @Query("isBeta") Boolean isBeta);

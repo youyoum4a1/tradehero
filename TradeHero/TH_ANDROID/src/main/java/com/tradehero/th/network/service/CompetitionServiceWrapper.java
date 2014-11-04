@@ -29,6 +29,7 @@ import rx.Observable;
     @NotNull private final UserProfileCacheRx userProfileCache;
     @NotNull private final HomeContentCacheRx homeContentCache;
 
+    //<editor-fold desc="Constructors">
     @Inject public CompetitionServiceWrapper(
             @NotNull CompetitionService competitionService,
             @NotNull CompetitionServiceAsync competitionServiceAsync,
@@ -43,8 +44,9 @@ import rx.Observable;
         this.userProfileCache = userProfileCache;
         this.homeContentCache = homeContentCache;
     }
+    //</editor-fold>
 
-    protected DTOProcessor<UserProfileDTO> createDTOProcessorUserProfile()
+    protected DTOProcessorUpdateUserProfile createDTOProcessorUserProfile()
     {
         return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache);
     }
@@ -53,15 +55,6 @@ import rx.Observable;
     public CompetitionDTOList getCompetitions(@NotNull ProviderId providerId)
     {
         return this.competitionService.getCompetitions(providerId.key);
-    }
-
-    @NotNull public MiddleCallback<CompetitionDTOList> getCompetitions(
-            @NotNull ProviderId providerId,
-            @Nullable Callback<CompetitionDTOList> callback)
-    {
-        MiddleCallback<CompetitionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        this.competitionServiceAsync.getCompetitions(providerId.key, middleCallback);
-        return middleCallback;
     }
 
     @NotNull public Observable<CompetitionDTOList> getCompetitionsRx(@NotNull ProviderId providerId)
@@ -74,15 +67,6 @@ import rx.Observable;
     public CompetitionDTO getCompetition(@NotNull CompetitionId competitionId)
     {
         return competitionService.getCompetition(competitionId.key);
-    }
-
-    public MiddleCallback<CompetitionDTO> getCompetition(
-            @NotNull CompetitionId competitionId,
-            @Nullable Callback<CompetitionDTO> callback)
-    {
-        MiddleCallback<CompetitionDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        competitionServiceAsync.getCompetition(competitionId.key, middleCallback);
-        return middleCallback;
     }
 
     @NotNull public Observable<CompetitionDTO> getCompetitionRx(@NotNull CompetitionId competitionId)
@@ -99,20 +83,6 @@ import rx.Observable;
                 competitionLeaderboardId.competitionId,
                 competitionLeaderboardId.page,
                 competitionLeaderboardId.perPage);
-    }
-
-    @NotNull public MiddleCallback<CompetitionLeaderboardDTO> getCompetitionLeaderboard(
-            @NotNull CompetitionLeaderboardId competitionLeaderboardId,
-            @Nullable Callback<CompetitionLeaderboardDTO> callback)
-    {
-        MiddleCallback<CompetitionLeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        this.competitionServiceAsync.getCompetitionLeaderboard(
-                competitionLeaderboardId.providerId,
-                competitionLeaderboardId.competitionId,
-                competitionLeaderboardId.page,
-                competitionLeaderboardId.perPage,
-                middleCallback);
-        return middleCallback;
     }
 
     @NotNull public Observable<CompetitionLeaderboardDTO> getCompetitionLeaderboardRx(@NotNull CompetitionLeaderboardId competitionLeaderboardId)
@@ -139,21 +109,19 @@ import rx.Observable;
         this.competitionServiceAsync.enroll(form, middleCallback);
         return middleCallback;
     }
+
+    public Observable<UserProfileDTO> enrollRx(@NotNull CompetitionFormDTO form)
+    {
+        return this.competitionServiceRx.enroll(form)
+                .doOnNext(createDTOProcessorUserProfile());
+    }
     //</editor-fold>
 
     //<editor-fold desc="Outbound">
-    public UserProfileDTO outbound(@NotNull CompetitionFormDTO form)
+    public Observable<UserProfileDTO> outboundRx(@NotNull CompetitionFormDTO form)
     {
-       return createDTOProcessorUserProfile().process(this.competitionService.outbound(form));
-    }
-
-    @NotNull public MiddleCallback<UserProfileDTO> outbound(
-            @NotNull CompetitionFormDTO form,
-            @Nullable Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUserProfile());
-        this.competitionServiceAsync.outbound(form, middleCallback);
-        return middleCallback;
+        return this.competitionServiceRx.outbound(form)
+                .doOnNext(createDTOProcessorUserProfile());
     }
     //</editor-fold>
 }

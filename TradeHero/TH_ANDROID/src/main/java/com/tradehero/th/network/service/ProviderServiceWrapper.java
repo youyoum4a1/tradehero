@@ -25,20 +25,17 @@ import rx.Observable;
 @Singleton public class ProviderServiceWrapper
 {
     @NotNull private final ProviderService providerService;
-    @NotNull private final ProviderServiceAsync providerServiceAsync;
     @NotNull private final ProviderServiceRx providerServiceRx;
     @NotNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderServiceWrapper(
             @NotNull ProviderService providerService,
-            @NotNull ProviderServiceAsync providerServiceAsync,
             @NotNull ProviderServiceRx providerServiceRx,
             @NotNull CurrentUserId currentUserId)
     {
         super();
         this.providerService = providerService;
-        this.providerServiceAsync = providerServiceAsync;
         this.providerServiceRx = providerServiceRx;
         this.currentUserId = currentUserId;
     }

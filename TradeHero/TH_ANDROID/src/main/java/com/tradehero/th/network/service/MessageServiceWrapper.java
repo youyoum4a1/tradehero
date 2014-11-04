@@ -202,12 +202,7 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Messaging Relationship Status">
-    public UserMessagingRelationshipDTO getMessagingRelationgshipStatus(UserBaseKey recipient)
-    {
-        return messageService.getMessagingRelationgshipStatus(recipient.key);
-    }
-
-    public Observable<UserMessagingRelationshipDTO> getMessagingRelationgshipStatusRx(UserBaseKey recipient)
+    public Observable<UserMessagingRelationshipDTO> getMessagingRelationshipStatusRx(UserBaseKey recipient)
     {
         return messageServiceRx.getMessagingRelationgshipStatus(recipient.key);
     }

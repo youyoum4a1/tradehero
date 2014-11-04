@@ -47,9 +47,9 @@ public class RetrofitProtectedModule
         return adapter.create(CompetitionServiceRx.class);
     }
 
-    @Provides @Singleton CurrencyServiceAsync provideCurrencyServiceAsync(RestAdapter adapter)
+    @Provides @Singleton CurrencyServiceRx provideCurrencyServiceRx(RestAdapter adapter)
     {
-        return adapter.create(CurrencyServiceAsync.class);
+        return adapter.create(CurrencyServiceRx.class);
     }
 
     @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
@@ -62,11 +62,6 @@ public class RetrofitProtectedModule
         return adapter.create(DiscussionServiceRx.class);
     }
 
-    @Provides @Singleton FollowerServiceAsync provideFollowerServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(FollowerServiceAsync.class);
-    }
-
     @Provides @Singleton FollowerServiceRx provideFollowerServiceRx(RestAdapter adapter)
     {
         return adapter.create(FollowerServiceRx.class);
@@ -75,11 +70,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton LeaderboardServiceRx provideLeaderboardServiceRx(RestAdapter adapter)
     {
         return adapter.create(LeaderboardServiceRx.class);
-    }
-
-    @Provides @Singleton MarketServiceAsync provideMarketServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(MarketServiceAsync.class);
     }
 
     @Provides @Singleton MarketServiceRx provideMarketServiceRx(RestAdapter adapter)
@@ -111,6 +101,11 @@ public class RetrofitProtectedModule
         return adapter.create(NotificationServiceAsync.class);
     }
 
+    @Provides @Singleton NotificationServiceRx provideNotificationServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(NotificationServiceRx.class);
+    }
+
     @Provides @Singleton PortfolioServiceAsync providePortfolioServiceAsync(RestAdapter adapter)
     {
         return adapter.create(PortfolioServiceAsync.class);
@@ -126,11 +121,6 @@ public class RetrofitProtectedModule
         return adapter.create(PositionServiceRx.class);
     }
 
-    @Provides @Singleton ProviderServiceAsync provideProviderServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(ProviderServiceAsync.class);
-    }
-
     @Provides @Singleton ProviderServiceRx provideProviderServiceRx(RestAdapter adapter)
     {
         return adapter.create(ProviderServiceRx.class);
@@ -139,6 +129,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton QuoteServiceAsync provideQuoteServiceAsync(RestAdapter adapter)
     {
         return adapter.create(QuoteServiceAsync.class);
+    }
+
+    @Provides @Singleton QuoteServiceRx provideQuoteServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(QuoteServiceRx.class);
     }
 
     @Provides @Singleton SecurityServiceAsync provideSecurityServiceAsync(RestAdapter adapter)
@@ -161,9 +156,9 @@ public class RetrofitProtectedModule
         return adapter.create(SessionServiceRx.class);
     }
 
-    @Provides @Singleton SocialServiceAsync provideSocialServiceAsync(RestAdapter adapter)
+    @Provides @Singleton SocialServiceRx provideSocialServiceRx(RestAdapter adapter)
     {
-        return adapter.create(SocialServiceAsync.class);
+        return adapter.create(SocialServiceRx.class);
     }
 
     @Provides @Singleton TradeServiceRx provideTradeServiceRx(RestAdapter adapter)
@@ -178,9 +173,21 @@ public class RetrofitProtectedModule
                 .build().create(TranslationServiceBingAsync.class);
     }
 
+    @Provides @Singleton TranslationServiceBingRx provideBingTranslationServiceRx(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
+                .setConverter(new CustomXmlConverter())
+                .build().create(TranslationServiceBingRx.class);
+    }
+
     @Provides @Singleton TranslationTokenServiceAsync provideTranslationTokenServiceAsync(RestAdapter adapter)
     {
         return adapter.create(TranslationTokenServiceAsync.class);
+    }
+
+    @Provides @Singleton TranslationTokenServiceRx provideTranslationTokenServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(TranslationTokenServiceRx.class);
     }
 
     @Provides @Singleton UserServiceRx provideUserServiceRx(RestAdapter adapter)
@@ -192,9 +199,9 @@ public class RetrofitProtectedModule
         return adapter.create(UserServiceAsync.class);
     }
 
-    @Provides @Singleton UserTimelineMarkerServiceAsync provideUserTimelineMarkerServiceAsync(RestAdapter adapter)
+    @Provides @Singleton UserTimelineMarkerServiceRx provideUserTimelineMarkerServiceRx(RestAdapter adapter)
     {
-        return adapter.create(UserTimelineMarkerServiceAsync.class);
+        return adapter.create(UserTimelineMarkerServiceRx.class);
     }
 
     @Provides @Singleton UserTimelineServiceRx provideUserTimelineServiceRx(RestAdapter adapter)
@@ -202,9 +209,9 @@ public class RetrofitProtectedModule
         return adapter.create(UserTimelineServiceRx.class);
     }
 
-    @Provides @Singleton VideoServiceAsync provideVideoServiceAsync(RestAdapter adapter)
+    @Provides @Singleton VideoServiceRx provideVideoServiceRx(RestAdapter adapter)
     {
-        return adapter.create(VideoServiceAsync.class);
+        return adapter.create(VideoServiceRx.class);
     }
 
     @Provides @Singleton WatchlistServiceAsync provideWatchlistServiceAsync(RestAdapter adapter)
@@ -212,9 +219,19 @@ public class RetrofitProtectedModule
         return adapter.create(WatchlistServiceAsync.class);
     }
 
+    @Provides @Singleton WatchlistServiceRx provideWatchlistServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(WatchlistServiceRx.class);
+    }
+
     @Provides @Singleton WeChatServiceAsync provideWeChatServiceAsync(RestAdapter adapter)
     {
         return adapter.create(WeChatServiceAsync.class);
+    }
+
+    @Provides @Singleton WeChatServiceRx provideWeChatServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(WeChatServiceRx.class);
     }
 
     @Provides @Singleton YahooNewsServiceRx provideYahooServiceRx(RestAdapter.Builder builder)

@@ -81,18 +81,6 @@ import rx.functions.Func1;
         return securityServiceRx.getMultipleSecurities(ids.getCommaSeparated())
                 .doOnNext(createMultipleSecurityProcessor());
     }
-
-    @Deprecated
-    @NotNull public MiddleCallback<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(
-            @NotNull SecurityIntegerIdList ids,
-            @Nullable Callback<Map<Integer, SecurityCompactDTO>> callback)
-    {
-        MiddleCallback<Map<Integer, SecurityCompactDTO>> middleCallback = new
-                BaseMiddleCallback<>(callback, createMultipleSecurityProcessor());
-        securityServiceAsync.getMultipleSecurities(ids.getCommaSeparated(), middleCallback);
-
-        return middleCallback;
-    }
     //</editor-fold>
 
     //<editor-fold desc="Get Securities">
@@ -236,13 +224,6 @@ import rx.functions.Func1;
     @NotNull protected DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionDetailDTOProcessor(@NotNull SecurityId securityId)
     {
         return new DTOProcessorSecurityPositionDetailReceived(securityId, currentUserId.toUserBaseKey());
-    }
-
-    @Deprecated
-    public SecurityPositionDetailDTO getSecurity(@NotNull SecurityId securityId)
-    {
-        return createSecurityPositionDetailDTOProcessor(securityId).process(
-                this.securityService.getSecurity(securityId.getExchange(), securityId.getPathSafeSymbol()));
     }
 
     @NotNull public Observable<SecurityPositionDetailDTO> getSecurityRx(

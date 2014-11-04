@@ -5,8 +5,10 @@ import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Action1;
 
-public class DTOProcessorTradeListReceived implements DTOProcessor<TradeDTOList>
+public class DTOProcessorTradeListReceived implements DTOProcessor<TradeDTOList>,
+        Action1<TradeDTOList>
 {
     @NotNull private final DTOProcessor<TradeDTO> tradeReceivedProcessor;
 
@@ -27,5 +29,10 @@ public class DTOProcessorTradeListReceived implements DTOProcessor<TradeDTOList>
             }
         }
         return value;
+    }
+
+    @Override public void call(TradeDTOList tradeDTOs)
+    {
+        process(tradeDTOs);
     }
 }

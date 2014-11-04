@@ -41,11 +41,6 @@ import rx.Observable;
         return userTimelineServiceRx.getGlobalTimeline(maxCount, maxId, minId);
     }
 
-    @NotNull public TimelineItemDTO getTimelineDetail(@NotNull TimelineItemDTOKey key)
-    {
-        return userTimelineService.getTimelineDetail(key.id);
-    }
-
     @NotNull public Observable<TimelineItemDTO> getTimelineDetailRx(@NotNull TimelineItemDTOKey key)
     {
         return userTimelineServiceRx.getTimelineDetail(key.id);
@@ -81,7 +76,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">
-    @NotNull public Observable<BaseResponseDTO> shareTimelineItem(
+    @NotNull public Observable<BaseResponseDTO> shareTimelineItemRx(
             @NotNull UserBaseKey userId,
             @NotNull TimelineItemDTOKey timelineItemId,
             @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO)
@@ -91,7 +86,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Delete Timeline Item">
-    @NotNull public Observable<BaseResponseDTO> deleteTimelineItem(
+    @NotNull public Observable<BaseResponseDTO> deleteTimelineItemRx(
             @NotNull UserBaseKey userId,
             @NotNull TimelineItemDTOKey timelineItemId)
     {

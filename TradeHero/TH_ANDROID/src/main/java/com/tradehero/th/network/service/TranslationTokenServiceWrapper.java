@@ -8,19 +8,23 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class TranslationTokenServiceWrapper
 {
     @NotNull private final TranslationTokenService translationTokenService;
     @NotNull private final TranslationTokenServiceAsync translationTokenServiceAsync;
+    @NotNull private final TranslationTokenServiceRx translationTokenServiceRx;
 
     //<editor-fold desc="Constructors">
     @Inject public TranslationTokenServiceWrapper(
             @NotNull TranslationTokenService translationTokenService,
-            @NotNull TranslationTokenServiceAsync translationTokenServiceAsync)
+            @NotNull TranslationTokenServiceAsync translationTokenServiceAsync,
+            @NotNull TranslationTokenServiceRx translationTokenServiceRx)
     {
         this.translationTokenService = translationTokenService;
         this.translationTokenServiceAsync = translationTokenServiceAsync;
+        this.translationTokenServiceRx = translationTokenServiceRx;
     }
     //</editor-fold>
 
@@ -35,6 +39,11 @@ import retrofit.Callback;
         MiddleCallback<TranslationToken> middleCallback = new BaseMiddleCallback<>(callback);
         translationTokenServiceAsync.requestToken(middleCallback);
         return middleCallback;
+    }
+
+    @NotNull public Observable<TranslationToken> getTokenRx()
+    {
+        return translationTokenServiceRx.requestToken();
     }
     //</editor-fold>
 }

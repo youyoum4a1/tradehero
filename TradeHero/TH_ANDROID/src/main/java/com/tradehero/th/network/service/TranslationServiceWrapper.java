@@ -8,24 +8,29 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.CallbackWrapper;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import rx.Observable;
 import timber.log.Timber;
 
 @Singleton public class TranslationServiceWrapper
 {
     @NotNull private final TranslationTokenCache translationTokenCache;
+    @NotNull private final TranslationTokenCacheRx translationTokenCacheRx;
     @NotNull private final TranslationServiceBingWrapper translationServiceBingWrapper;
 
     @Inject public TranslationServiceWrapper(
             @NotNull TranslationTokenCache translationTokenCache,
+            @NotNull TranslationTokenCacheRx translationTokenCacheRx,
             @NotNull TranslationServiceBingWrapper translationServiceBingWrapper)
     {
         this.translationTokenCache = translationTokenCache;
+        this.translationTokenCacheRx = translationTokenCacheRx;
         this.translationServiceBingWrapper = translationServiceBingWrapper;
     }
 
@@ -94,4 +99,19 @@ import timber.log.Timber;
             }
         }
     }
+
+    public Observable<TranslationResult> translateRx(String from, String to, String text)
+    {
+        return translationTokenCacheRx.get(new TranslationTokenKey())
+                .map(pair -> pair.second)
+                .flatMap(token -> {
+                    if (token instanceof BingTranslationToken)
+                    {
+                        return translationServiceBingWrapper.translateRx((BingTranslationToken) token,
+                                from, to, text);
+                    }
+                    throw new IllegalArgumentException("Unhandled TranslationToken " + token);
+                });
+    }
+
 }

@@ -2,23 +2,20 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.api.education.PaginatedVideoDTO;
-
-import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Query;
+import rx.Observable;
 
-interface VideoServiceAsync
+interface VideoServiceRx
 {
     @GET("/videoCategories")
-    void getVideoCategories(
+    Observable<PaginatedVideoCategoryDTO> getVideoCategories(
             @Query("page") Integer page,
-            @Query("perPage") Integer perPage,
-            Callback<PaginatedVideoCategoryDTO> callback);
+            @Query("perPage") Integer perPage);
 
     @GET("/videos")
-    void getVideos(
+    Observable<PaginatedVideoDTO> getVideos(
             @Query("videoCategoryId") int videoCategoryId,
             @Query("page") Integer page,
-            @Query("perPage") Integer perPage,
-            Callback<PaginatedVideoDTO> callback);
+            @Query("perPage") Integer perPage);
 }

@@ -4,12 +4,13 @@ import com.tradehero.th.api.market.CurrencyDTO;
 import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.http.GET;
+import rx.Observable;
 
-public interface CurrencyService
+interface CurrencyServiceRx
 {
     //<editor-fold desc="Get Currencies">
     @GET("/currencies")
-    List<CurrencyDTO> getCurrencies()
+    Observable<List<CurrencyDTO>> getCurrencies()
         throws RetrofitError;
     //</editor-fold>
 }

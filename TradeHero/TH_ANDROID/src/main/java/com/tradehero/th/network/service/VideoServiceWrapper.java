@@ -5,29 +5,24 @@ import com.tradehero.th.api.education.PagedVideoCategoryId;
 import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import retrofit.Callback;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import rx.Observable;
 
 @Singleton public class VideoServiceWrapper
 {
     @NotNull private final VideoService videoService;
-    @NotNull private final VideoServiceAsync videoServiceAsync;
+    @NotNull private final VideoServiceRx videoServiceRx;
 
     //<editor-fold desc="Constructors">
     @Inject public VideoServiceWrapper(
             @NotNull VideoService videoService,
-            @NotNull VideoServiceAsync videoServiceAsync)
+            @NotNull VideoServiceRx videoServiceRx)
     {
         this.videoService = videoService;
-        this.videoServiceAsync = videoServiceAsync;
+        this.videoServiceRx = videoServiceRx;
     }
     //</editor-fold>
 
@@ -43,23 +38,15 @@ import retrofit.Callback;
                 pagedVideoCategories.perPage);
     }
 
-    @NotNull public MiddleCallback<PaginatedVideoCategoryDTO> getVideoCategories(
-            @Nullable PagedVideoCategories pagedVideoCategories,
-            @Nullable Callback<PaginatedVideoCategoryDTO> callback)
+    @NotNull public Observable<PaginatedVideoCategoryDTO> getVideoCategoriesRx(@Nullable PagedVideoCategories pagedVideoCategories)
     {
-        MiddleCallback<PaginatedVideoCategoryDTO> middleCallback = new BaseMiddleCallback<>(callback);
         if (pagedVideoCategories == null)
         {
-            videoServiceAsync.getVideoCategories(null, null, middleCallback);
+            return videoServiceRx.getVideoCategories(null, null);
         }
-        else
-        {
-            videoServiceAsync.getVideoCategories(
-                    pagedVideoCategories.page,
-                    pagedVideoCategories.perPage,
-                    middleCallback);
-        }
-        return middleCallback;
+        return videoServiceRx.getVideoCategories(
+                pagedVideoCategories.page,
+                pagedVideoCategories.perPage);
     }
     //</editor-fold>
 
@@ -76,28 +63,16 @@ import retrofit.Callback;
         return videoService.getVideos(videoCategoryId.id, null, null);
     }
 
-    @NotNull public MiddleCallback<PaginatedVideoDTO> getVideos(
-            @NotNull VideoCategoryId videoCategoryId,
-            @Nullable Callback<PaginatedVideoDTO> callback)
+    @NotNull public Observable<PaginatedVideoDTO> getVideosRx(@NotNull VideoCategoryId videoCategoryId)
     {
-        MiddleCallback<PaginatedVideoDTO> middleCallback = new BaseMiddleCallback<>(callback);
         if (videoCategoryId instanceof PagedVideoCategoryId)
         {
-            videoServiceAsync.getVideos(
+            return videoServiceRx.getVideos(
                     videoCategoryId.id,
                     ((PagedVideoCategoryId) videoCategoryId).page,
-                    ((PagedVideoCategoryId) videoCategoryId).perPage,
-                    middleCallback);
+                    ((PagedVideoCategoryId) videoCategoryId).perPage);
         }
-        else
-        {
-            videoServiceAsync.getVideos(
-                    videoCategoryId.id,
-                    null,
-                    null,
-                    middleCallback);
-        }
-        return middleCallback;
+        return videoServiceRx.getVideos(videoCategoryId.id, null, null);
     }
     //</editor-fold>
 }

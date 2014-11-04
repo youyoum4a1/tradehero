@@ -6,7 +6,6 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.notification.DTOProcessorNotificationAllRead;
 import com.tradehero.th.models.notification.DTOProcessorNotificationRead;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -19,12 +18,14 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton
 public class NotificationServiceWrapper
 {
     @NotNull private final NotificationService notificationService;
     @NotNull private final NotificationServiceAsync notificationServiceAsync;
+    @NotNull private final NotificationServiceRx notificationServiceRx;
     @NotNull private final Lazy<NotificationCache> notificationCache;
     @NotNull private final Lazy<UserProfileCacheRx> userProfileCache;
 
@@ -32,11 +33,13 @@ public class NotificationServiceWrapper
     @Inject public NotificationServiceWrapper(
             @NotNull NotificationService notificationService,
             @NotNull NotificationServiceAsync notificationServiceAsync,
+            @NotNull NotificationServiceRx notificationServiceRx,
             @NotNull Lazy<NotificationCache> notificationCache,
             @NotNull Lazy<UserProfileCacheRx> userProfileCache)
     {
         this.notificationService = notificationService;
         this.notificationServiceAsync = notificationServiceAsync;
+        this.notificationServiceRx = notificationServiceRx;
         this.notificationCache = notificationCache;
         this.userProfileCache = userProfileCache;
     }
@@ -48,13 +51,9 @@ public class NotificationServiceWrapper
         return notificationService.getNotifications(notificationListKey.toMap());
     }
 
-    @NotNull public MiddleCallback<PaginatedNotificationDTO> getNotifications(
-            @NotNull NotificationListKey notificationListKey,
-            @Nullable Callback<PaginatedNotificationDTO> callback)
+    public Observable<PaginatedNotificationDTO> getNotificationsRx(@NotNull NotificationListKey notificationListKey)
     {
-        MiddleCallback<PaginatedNotificationDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        notificationServiceAsync.getNotifications(notificationListKey.toMap(), middleCallback);
-        return middleCallback;
+        return notificationServiceRx.getNotifications(notificationListKey.toMap());
     }
     //</editor-fold>
 
@@ -64,18 +63,14 @@ public class NotificationServiceWrapper
         return notificationService.getNotificationDetail(pushKey.key);
     }
 
-    @NotNull public MiddleCallback<NotificationDTO> getNotificationDetail(
-            @NotNull NotificationKey pushKey,
-            @Nullable Callback<NotificationDTO> callback)
+    public Observable<NotificationDTO> getNotificationDetailRx(@NotNull NotificationKey pushKey)
     {
-        MiddleCallback<NotificationDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        notificationServiceAsync.getNotificationDetail(pushKey.key, middleCallback);
-        return middleCallback;
+        return notificationServiceRx.getNotificationDetail(pushKey.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Mark As Read">
-    @NotNull private DTOProcessor<BaseResponseDTO> createNotificationReadDTOProcessor(
+    @NotNull private DTOProcessorNotificationRead createNotificationReadDTOProcessor(
             @NotNull final UserBaseKey readerId,
             @NotNull NotificationKey pushKey)
     {
@@ -84,14 +79,6 @@ public class NotificationServiceWrapper
                 notificationCache.get(),
                 readerId,
                 userProfileCache.get());
-    }
-
-    public BaseResponseDTO markAsRead(
-            @NotNull final UserBaseKey readerId,
-            @NotNull NotificationKey pushKey)
-    {
-        return createNotificationReadDTOProcessor(readerId, pushKey).process(
-                notificationService.markAsRead(pushKey.key));
     }
 
     @NotNull public MiddleCallback<BaseResponseDTO> markAsRead(
@@ -103,21 +90,23 @@ public class NotificationServiceWrapper
         notificationServiceAsync.markAsRead(pushKey.key, readMiddleCallback);
         return readMiddleCallback;
     }
+
+    public Observable<BaseResponseDTO> markAsReadRx(
+            @NotNull final UserBaseKey readerId,
+            @NotNull NotificationKey pushKey)
+    {
+        return notificationServiceRx.markAsRead(pushKey.key)
+                .doOnNext(createNotificationReadDTOProcessor(readerId, pushKey));
+    }
     //</editor-fold>
 
     //<editor-fold desc="Mark As Read All">
-    @NotNull private DTOProcessor<BaseResponseDTO> createNotificationAllReadDTOProcessor(@NotNull UserBaseKey readerId)
+    @NotNull private DTOProcessorNotificationAllRead createNotificationAllReadDTOProcessor(@NotNull UserBaseKey readerId)
     {
         return new DTOProcessorNotificationAllRead(
                 notificationCache.get(),
                 readerId,
                 userProfileCache.get());
-    }
-
-    public BaseResponseDTO markAsReadAll(@NotNull final UserBaseKey readerId)
-    {
-        return createNotificationAllReadDTOProcessor(readerId).process(
-                notificationService.markAsReadAll());
     }
 
     @NotNull public MiddleCallback<BaseResponseDTO> markAsReadAll(
@@ -127,6 +116,12 @@ public class NotificationServiceWrapper
         BaseMiddleCallback<BaseResponseDTO> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationAllReadDTOProcessor(readerId));
         notificationServiceAsync.markAsReadAll(readMiddleCallback);
         return readMiddleCallback;
+    }
+
+    public Observable<BaseResponseDTO> markAsReadAllRx(@NotNull final UserBaseKey readerId)
+    {
+        return notificationServiceRx.markAsReadAll()
+                .doOnNext(createNotificationAllReadDTOProcessor(readerId));
     }
     //</editor-fold>
 }

@@ -7,25 +7,24 @@ import com.tradehero.th.network.UrlEncoderHelper;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.client.Response;
+import rx.Observable;
 
 @Singleton public class QuoteServiceWrapper
 {
-    @NotNull private final QuoteService quoteService;
+    @NotNull private final QuoteServiceRx quoteServiceRx;
     @NotNull private final QuoteServiceAsync quoteServiceAsync;
 
     //<editor-fold desc="Constructors">
     @Inject public QuoteServiceWrapper(
-            @NotNull QuoteService quoteService,
-            @NotNull QuoteServiceAsync quoteServiceAsync)
+            @NotNull QuoteServiceAsync quoteServiceAsync,
+            @NotNull QuoteServiceRx quoteServiceRx)
     {
         super();
-        this.quoteService = quoteService;
         this.quoteServiceAsync = quoteServiceAsync;
+        this.quoteServiceRx = quoteServiceRx;
     }
     //</editor-fold>
 
@@ -46,28 +45,19 @@ import retrofit.client.Response;
     }
 
     //<editor-fold desc="Get Quote">
-    public SignatureContainer<QuoteDTO> getQuote(SecurityId securityId)
+    public Observable<SignatureContainer<QuoteDTO>> getQuoteRx(SecurityId securityId)
     {
         basicCheck(securityId);
-        return this.quoteService.getQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
+        return this.quoteServiceRx.getQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
                 securityId.getSecuritySymbol()));
-    }
-
-    public MiddleCallback<SignatureContainer<QuoteDTO>> getQuote(SecurityId securityId, Callback<SignatureContainer<QuoteDTO>> callback)
-    {
-        MiddleCallback<SignatureContainer<QuoteDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        basicCheck(securityId);
-        this.quoteServiceAsync.getQuote(UrlEncoderHelper.transform(
-                securityId.getExchange()), UrlEncoderHelper.transform(securityId.getSecuritySymbol()), middleCallback);
-        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Raw Quote">
-    public Response getRawQuote(SecurityId securityId)
+    public Observable<Response> getRawQuoteRx(SecurityId securityId)
     {
         basicCheck(securityId);
-        return this.quoteService.getRawQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
+        return this.quoteServiceRx.getRawQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
                 securityId.getSecuritySymbol()));
     }
 

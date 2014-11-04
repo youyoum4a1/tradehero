@@ -32,34 +32,26 @@ import com.tradehero.th.network.NullHostNameVerifier;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.CompetitionService;
-import com.tradehero.th.network.service.CurrencyService;
 import com.tradehero.th.network.service.DiscussionService;
-import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.network.service.HomeService;
 import com.tradehero.th.network.service.LeaderboardService;
-import com.tradehero.th.network.service.MarketService;
 import com.tradehero.th.network.service.MessageService;
 import com.tradehero.th.network.service.NewsService;
 import com.tradehero.th.network.service.NotificationService;
 import com.tradehero.th.network.service.PortfolioService;
-import com.tradehero.th.network.service.PositionService;
 import com.tradehero.th.network.service.ProviderService;
-import com.tradehero.th.network.service.QuoteService;
 import com.tradehero.th.network.service.RetrofitProtectedModule;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
-import com.tradehero.th.network.service.TradeService;
 import com.tradehero.th.network.service.TranslationServiceBing;
 import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.network.service.UserTimelineMarkerService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.VideoService;
 import com.tradehero.th.network.service.WatchlistService;
-import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.RetrofitConstants;
 import dagger.Lazy;
@@ -101,29 +93,14 @@ public class RetrofitModule
         return adapter.create(CompetitionService.class);
     }
 
-    @Provides @Singleton CurrencyService provideCurrencyService(RestAdapter adapter)
-    {
-        return adapter.create(CurrencyService.class);
-    }
-
     @Provides @Singleton DiscussionService provideDiscussionServiceSync(RestAdapter adapter)
     {
         return adapter.create(DiscussionService.class);
     }
 
-    @Provides @Singleton FollowerService provideFollowerService(RestAdapter adapter)
-    {
-        return adapter.create(FollowerService.class);
-    }
-
     @Provides @Singleton LeaderboardService provideLeaderboardService(RestAdapter adapter)
     {
         return adapter.create(LeaderboardService.class);
-    }
-
-    @Provides @Singleton MarketService provideMarketService(RestAdapter adapter)
-    {
-        return adapter.create(MarketService.class);
     }
 
     @Provides @Singleton MessageService provideMessageService(RestAdapter adapter)
@@ -146,19 +123,9 @@ public class RetrofitModule
         return adapter.create(PortfolioService.class);
     }
 
-    @Provides @Singleton PositionService providePositionService(RestAdapter adapter)
-    {
-        return adapter.create(PositionService.class);
-    }
-
     @Provides @Singleton ProviderService provideProviderService(RestAdapter adapter)
     {
         return adapter.create(ProviderService.class);
-    }
-
-    @Provides @Singleton QuoteService provideQuoteService(RestAdapter adapter)
-    {
-        return adapter.create(QuoteService.class);
     }
 
     @Provides @Singleton SecurityService provideSecurityService(RestAdapter adapter)
@@ -174,11 +141,6 @@ public class RetrofitModule
     @Provides @Singleton SocialService provideSocialService(RestAdapter adapter)
     {
         return adapter.create(SocialService.class);
-    }
-
-    @Provides @Singleton TradeService provideTradeService(RestAdapter adapter)
-    {
-        return adapter.create(TradeService.class);
     }
 
     @Provides @Singleton TranslationServiceBing provideBingTranslationService(RestAdapter.Builder builder)
@@ -198,11 +160,6 @@ public class RetrofitModule
         return adapter.create(UserService.class);
     }
 
-    @Provides @Singleton UserTimelineMarkerService provideUserTimelineMarkerService(RestAdapter adapter)
-    {
-        return adapter.create(UserTimelineMarkerService.class);
-    }
-
     @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
     {
         return adapter.create(UserTimelineService.class);
@@ -216,11 +173,6 @@ public class RetrofitModule
     @Provides @Singleton WatchlistService provideWatchlistService(RestAdapter adapter)
     {
         return adapter.create(WatchlistService.class);
-    }
-
-    @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
-    {
-        return adapter.create(WeChatService.class);
     }
 
     @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)

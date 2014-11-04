@@ -9,8 +9,10 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Action1;
 
-public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPositionDTOList>
+public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPositionDTOList>,
+        Action1<WatchlistPositionDTOList>
 {
     @NotNull DTOProcessorWatchlistCreate individualProcessor;
 
@@ -40,5 +42,10 @@ public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPo
             processed.add(individualProcessor.process(position));
         }
         return processed;
+    }
+
+    @Override public void call(WatchlistPositionDTOList watchlistPositionDTOs)
+    {
+        process(watchlistPositionDTOs);
     }
 }

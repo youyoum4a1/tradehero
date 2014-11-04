@@ -8,9 +8,11 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
-public class DTOProcessorWatchlistUpdate implements DTOProcessor<WatchlistPositionDTO>
+public class DTOProcessorWatchlistUpdate implements DTOProcessor<WatchlistPositionDTO>,
+        Action1<WatchlistPositionDTO>
 {
     @NotNull protected final UserBaseKey concernedUser;
     @NotNull protected final WatchlistPositionCache watchlistPositionCache;
@@ -46,5 +48,10 @@ public class DTOProcessorWatchlistUpdate implements DTOProcessor<WatchlistPositi
             Timber.e(new NullPointerException("watchlist or security null " + watchlistPositionDTO), "");
         }
         return watchlistPositionDTO;
+    }
+
+    @Override public void call(WatchlistPositionDTO watchlistPositionDTO)
+    {
+        process(watchlistPositionDTO);
     }
 }

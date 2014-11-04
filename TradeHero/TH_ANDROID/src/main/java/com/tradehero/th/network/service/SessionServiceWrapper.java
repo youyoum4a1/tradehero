@@ -94,7 +94,7 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Get System Status">
-    @NotNull public Observable<SystemStatusDTO> getSystemStatus()
+    @NotNull public Observable<SystemStatusDTO> getSystemStatusRx()
     {
         return sessionServiceRx.getSystemStatus()
                 .onErrorReturn(new Func1<Throwable, SystemStatusDTO>()
@@ -135,13 +135,6 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Login and social register">
-    @NotNull public UserLoginDTO signupAndLogin(
-            @NotNull String authorization,
-            @NotNull LoginSignUpFormDTO loginSignUpFormDTO)
-    {
-        return createUserLoginProcessor().process(sessionService.signupAndLogin(authorization, loginSignUpFormDTO));
-    }
-
     @NotNull public Observable<UserLoginDTO> signupAndLoginRx(@NotNull String authorizationHeader, @NotNull LoginSignUpFormDTO loginSignUpFormDTO)
     {
         Observable<UserLoginDTO> userLoginDTOObservable;

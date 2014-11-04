@@ -21,21 +21,11 @@ public interface SocialService
     UserProfileDTO connect(
             @Path("userId") int userId,
             @Body AccessTokenForm accessTokenForm);
-
-    @POST("/users/{userId}/connect")
-    Observable<UserProfileDTO> connectRx(
-            @Path("userId") int userId,
-            @Body AccessTokenForm accessTokenForm);
     //</editor-fold>
 
     //<editor-fold desc="Disconnect User">
     @POST("/users/{userId}/disconnect")
     UserProfileDTO disconnect(
-            @Path("userId") int userId,
-            @Body SocialNetworkFormDTO socialNetworkFormDTO);
-
-    @POST("/users/{userId}/disconnect")
-    Observable<UserProfileDTO> disconnectRx(
             @Path("userId") int userId,
             @Body SocialNetworkFormDTO socialNetworkFormDTO);
     //</editor-fold>

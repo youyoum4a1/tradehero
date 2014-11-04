@@ -29,6 +29,6 @@ public class SystemStatusCache extends BaseFetchDTOCacheRx<SystemStatusKey, Syst
 
     @Override @NotNull protected Observable<SystemStatusDTO> fetch(@NotNull SystemStatusKey key)
     {
-        return sessionService.get().getSystemStatus();
+        return sessionService.get().getSystemStatusRx();
     }
 }

@@ -32,7 +32,7 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
 
     @Override @NotNull protected Observable<UserMessagingRelationshipDTO> fetch(@NotNull UserBaseKey key)
     {
-        return messageServiceWrapper.getMessagingRelationgshipStatusRx(key);
+        return messageServiceWrapper.getMessagingRelationshipStatusRx(key);
     }
 
     private void markIsHero(@NotNull UserBaseKey heroId)

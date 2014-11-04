@@ -10,7 +10,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import rx.Observable;
 
-public interface AlertPlanServiceRx
+interface AlertPlanServiceRx
 {
     //<editor-fold desc="Get Alert Plans">
     @GET("/users/{userId}/alertPlans")

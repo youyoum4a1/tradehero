@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class TranslationServiceBingWrapper
 {
@@ -16,13 +17,16 @@ import retrofit.Callback;
 
     @NotNull private final TranslationServiceBing translationServiceBing;
     @NotNull private final TranslationServiceBingAsync translationServiceBingAsync;
+    @NotNull private final TranslationServiceBingRx translationServiceBingRx;
 
     @Inject public TranslationServiceBingWrapper(
             @NotNull TranslationServiceBing translationServiceBing,
-            @NotNull TranslationServiceBingAsync translationServiceBingAsync)
+            @NotNull TranslationServiceBingAsync translationServiceBingAsync,
+            @NotNull TranslationServiceBingRx translationServiceBingRx)
     {
         this.translationServiceBing = translationServiceBing;
         this.translationServiceBingAsync = translationServiceBingAsync;
+        this.translationServiceBingRx = translationServiceBingRx;
     }
 
     public BingTranslationResult translate(BingTranslationToken token, String from, String to, String text)
@@ -41,5 +45,12 @@ import retrofit.Callback;
                 from, to, PREFERRED_CONTENT_TYPE, text,
                 middleCallback);
         return middleCallback;
+    }
+
+    public Observable<BingTranslationResult> translateRx(@NotNull BingTranslationToken token, String from, String to, String text)
+    {
+        return translationServiceBingRx.requestForTranslation(
+                token.getPrefixedAccessToken(),
+                from, to, PREFERRED_CONTENT_TYPE, text);
     }
 }

@@ -4,8 +4,10 @@ import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.models.DTOProcessor;
 import org.jetbrains.annotations.NotNull;
+import rx.functions.Action1;
 
-public class DTOProcessorTradeReceived implements DTOProcessor<TradeDTO>
+public class DTOProcessorTradeReceived implements DTOProcessor<TradeDTO>,
+        Action1<TradeDTO>
 {
     @NotNull private final OwnedPositionId ownedPositionId;
 
@@ -28,5 +30,10 @@ public class DTOProcessorTradeReceived implements DTOProcessor<TradeDTO>
             value.positionId = ownedPositionId.positionId;
         }
         return value;
+    }
+
+    @Override public void call(TradeDTO tradeDTO)
+    {
+        process(tradeDTO);
     }
 }

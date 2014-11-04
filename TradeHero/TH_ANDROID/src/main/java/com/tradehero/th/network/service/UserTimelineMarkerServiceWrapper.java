@@ -2,45 +2,29 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.timeline.TimelineReadDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class UserTimelineMarkerServiceWrapper
 {
-    @NotNull private final UserTimelineMarkerService userTimelineMarkerService;
-    @NotNull private final UserTimelineMarkerServiceAsync userTimelineMarkerServiceAsync;
+    @NotNull private final UserTimelineMarkerServiceRx userTimelineMarkerServiceRx;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTimelineMarkerServiceWrapper(
-            @NotNull UserTimelineMarkerService userTimelineMarkerService,
-            @NotNull UserTimelineMarkerServiceAsync userTimelineMarkerServiceAsync)
+            @NotNull UserTimelineMarkerServiceRx userTimelineMarkerServiceRx)
     {
-        this.userTimelineMarkerService = userTimelineMarkerService;
-        this.userTimelineMarkerServiceAsync = userTimelineMarkerServiceAsync;
+        this.userTimelineMarkerServiceRx = userTimelineMarkerServiceRx;
     }
     //</editor-fold>
 
     //<editor-fold desc="Post Timeline Marker">
-    public TimelineReadDTO postTimelineMarker(
+    public Observable<TimelineReadDTO> postTimelineMarkerRx(
             @NotNull UserBaseKey userId,
             @NotNull TimelineReadDTO lastReadDTO)
     {
-        return userTimelineMarkerService.postTimelineMarker(userId.key, lastReadDTO);
-    }
-
-    public MiddleCallback<TimelineReadDTO> postTimelineMarker(
-            @NotNull UserBaseKey userId,
-            @NotNull TimelineReadDTO lastReadDTO,
-            @Nullable Callback<TimelineReadDTO> callback)
-    {
-        MiddleCallback<TimelineReadDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userTimelineMarkerServiceAsync.postTimelineMarker(userId.key, lastReadDTO, middleCallback);
-        return middleCallback;
+        return userTimelineMarkerServiceRx.postTimelineMarker(userId.key, lastReadDTO);
     }
     //</editor-fold>
 }

@@ -93,11 +93,6 @@ import rx.Observable;
     // TODO add methods based on DiscussionServiceAsync and MiddleCallback implementations
 
     //<editor-fold desc="Get Comment">
-    @NotNull public DiscussionDTO getComment(@NotNull DiscussionKey discussionKey)
-    {
-        return createDiscussionProcessor().process(discussionService.getComment(discussionKey.id));
-    }
-
     @NotNull public Observable<DiscussionDTO> getCommentRx(@NotNull DiscussionKey discussionKey)
     {
         return discussionServiceRx.getComment(discussionKey.id)
@@ -142,16 +137,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Discussions">
-    @Deprecated
-    public PaginatedDTO<DiscussionDTO> getDiscussions(@NotNull PaginatedDiscussionListKey discussionsKey)
-    {
-        return discussionService.getDiscussions(
-                discussionsKey.inReplyToType,
-                discussionsKey.inReplyToId,
-                discussionsKey.page,
-                discussionsKey.perPage);
-    }
-
     public Observable<PaginatedDTO<DiscussionDTO>> getDiscussionsRx(@NotNull PaginatedDiscussionListKey discussionsKey)
     {
         return discussionServiceRx.getDiscussions(
@@ -201,7 +186,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Vote">
-    @NotNull public Observable<DiscussionDTO> vote(@NotNull DiscussionVoteKey discussionVoteKey)
+    @NotNull public Observable<DiscussionDTO> voteRx(@NotNull DiscussionVoteKey discussionVoteKey)
     {
         return discussionServiceRx.vote(
                         discussionVoteKey.inReplyToType,

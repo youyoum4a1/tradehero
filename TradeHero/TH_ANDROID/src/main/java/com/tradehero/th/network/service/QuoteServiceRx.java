@@ -5,19 +5,20 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
+import rx.Observable;
 
-public interface QuoteService
+interface QuoteServiceRx
 {
     //<editor-fold desc="Get Quote">
     @GET("/securities/{exchange}/{securitySymbol}/quote")
-    SignatureContainer<QuoteDTO> getQuote(
+    Observable<SignatureContainer<QuoteDTO>> getQuote(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol);
     //</editor-fold>
 
     //<editor-fold desc="Get Raw Quote">
     @GET("/securities/{exchange}/{securitySymbol}/quote")
-    Response getRawQuote(
+    Observable<Response> getRawQuote(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol);
     //</editor-fold>

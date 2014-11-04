@@ -507,7 +507,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Delete User">
-    public Observable<BaseResponseDTO> deleteUser(@NotNull UserBaseKey userKey)
+    public Observable<BaseResponseDTO> deleteUserRx(@NotNull UserBaseKey userKey)
     {
         return userServiceRx.deleteUser(userKey.key);
     }

@@ -16,7 +16,7 @@ import retrofit.http.Query;
 import retrofit.http.QueryMap;
 import rx.Observable;
 
-public interface DiscussionServiceRx
+interface DiscussionServiceRx
 {
     //<editor-fold desc="Get Comment">
     @GET("/discussions/{commentId}")

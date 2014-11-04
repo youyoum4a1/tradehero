@@ -73,15 +73,6 @@ import rx.Observable;
         return new DTOProcessorPortfolioListReceived<>(userBaseKey);
     }
 
-    @Deprecated
-    @NotNull public PortfolioCompactDTOList getPortfolios(
-            @NotNull UserBaseKey userBaseKey,
-            @Nullable Boolean includeWatchList)
-    {
-        return createPortfolioCompactListReceivedProcessor(userBaseKey).process(
-                portfolioService.getPortfolios(userBaseKey.key, includeWatchList));
-    }
-
     @NotNull public Observable<PortfolioCompactDTOList> getPortfoliosRx(
             @NotNull UserBaseKey userBaseKey,
             @Nullable Boolean includeWatchList)
@@ -95,16 +86,6 @@ import rx.Observable;
     protected DTOProcessorPortfolioReceived<PortfolioDTO> createPortfolioReceivedProcessor(@NotNull UserBaseKey userBaseKey)
     {
         return new DTOProcessorPortfolioReceived<>(userBaseKey);
-    }
-
-    @Deprecated
-    @NotNull public PortfolioDTO getPortfolio(
-            @NotNull OwnedPortfolioId ownedPortfolioId)
-    {
-        return createPortfolioReceivedProcessor(ownedPortfolioId.getUserBaseKey()).process(
-                this.portfolioService.getPortfolio(
-                        ownedPortfolioId.userId,
-                        ownedPortfolioId.portfolioId));
     }
 
     @NotNull public Observable<PortfolioDTO> getPortfolioRx(
@@ -174,7 +155,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Mark One User Portfolio">
-    @NotNull public Observable<PortfolioDTO> markPortfolio(
+    @NotNull public Observable<PortfolioDTO> markPortfolioRx(
             @NotNull OwnedPortfolioId ownedPortfolioId)
     {
         return this.portfolioServiceRx.markPortfolio(
