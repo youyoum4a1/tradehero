@@ -180,12 +180,12 @@ public class NewsHeadlineFragment extends Fragment
                 PaginationObservable.createFromRange(newsItemListKeyObservable, (Func1<NewsItemListKey, Observable<List<NewsItemDTOKey>>>)
                         key -> newsServiceWrapper.getNewsRx(key)
                                 .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
                                 .map(PaginatedDTO::getData)
                                 .flatMap(Observable::from)
                                 .map(NewsItemCompactDTO::getDiscussionKey)
                                 .toList()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(() -> rxLoaderManager.remove(newsItemListKey))
                 .subscribe(newsSubject);
     }

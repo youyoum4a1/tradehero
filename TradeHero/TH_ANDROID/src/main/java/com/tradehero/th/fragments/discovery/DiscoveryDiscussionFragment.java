@@ -81,7 +81,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         mTimelineListView.getRefreshableView().addFooterView(mBottomLoadingView);
 
         PublishSubject<List<TimelineItemDTOKey>> timelineSubject = PublishSubject.create();
-        // emit item on pull up/down
+        // emit item on pull up/down or when reaching the bottom of the listview
         Observable<RangeDTO> timelineRefreshRangeObservable = Observable
                 .create((Observable.OnSubscribe<PullToRefreshBase.Mode>) subscriber -> {
                     mTimelineListView.setOnRefreshListener(
