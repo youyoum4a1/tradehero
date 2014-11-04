@@ -12,4 +12,9 @@ public class PaginationDTO
         this.page = page;
         this.perPage = perPage;
     }
+
+    @Override public String toString()
+    {
+        return String.format("[page=%d, perPage=%d]", page, perPage);
+    }
 }
