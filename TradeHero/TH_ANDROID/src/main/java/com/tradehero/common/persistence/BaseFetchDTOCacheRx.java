@@ -2,43 +2,38 @@ package com.tradehero.common.persistence;
 
 import android.util.Pair;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 
 abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends BaseDTOCacheRx<DTOKeyType, DTOType>
 {
-    @NotNull final private THLruCache<DTOKeyType, Subscription> cachedFetcherSubscriptions;
+    @NotNull final private Map<DTOKeyType, Subscription> cachedFetcherSubscriptions;
 
     //<editor-fold desc="Constructors">
     protected BaseFetchDTOCacheRx(int valueSize, int subjectSize, int fetcherSize,
             @NotNull DTOCacheUtilRx dtoCacheUtilRx)
     {
         super(valueSize, subjectSize, dtoCacheUtilRx);
-        this.cachedFetcherSubscriptions = new THLruCache<>(fetcherSize);
+        this.cachedFetcherSubscriptions = new HashMap<>();
     }
     //</editor-fold>
 
     @NotNull abstract protected Observable<DTOType> fetch(@NotNull DTOKeyType key);
 
     @NotNull @Override
-    protected BehaviorSubject<Pair<DTOKeyType, DTOType>> getOrCreateBehavior(@NotNull final DTOKeyType key)
+    protected Observable<Pair<DTOKeyType, DTOType>> getOrCreateObservable(@NotNull final DTOKeyType key)
     {
-        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = super.getOrCreateBehavior(key);
+        Observable<Pair<DTOKeyType, DTOType>> cachedObservable = super.getOrCreateObservable(key);
         if (cachedFetcherSubscriptions.get(key) == null)
         {
             fetch(key)
-                    .map(new Func1<DTOType, Pair<DTOKeyType, DTOType>>()
-                    {
-                        @Override public Pair<DTOKeyType, DTOType> call(DTOType dtoType)
-                        {
-                            return Pair.create(key, dtoType);
-                        }
-                    })
+                    .map(dtoType -> Pair.create(key, dtoType))
                     .subscribe(new Observer<Pair<DTOKeyType,DTOType>>()
                     {
                         @Override public void onNext(Pair<DTOKeyType, DTOType> pair)
@@ -58,7 +53,7 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
                         }
                     });
         }
-        return cachedSubject;
+        return cachedObservable;
     }
 
     public void onError(@NotNull DTOKeyType key, @NotNull Throwable error)
@@ -83,8 +78,8 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
     @Override public void invalidateAll()
     {
         super.invalidateAll();
-        Collection<Subscription> fetcherSubscriptions = cachedFetcherSubscriptions.snapshot().values();
-        cachedFetcherSubscriptions.evictAll();
+        Collection<Subscription> fetcherSubscriptions = cachedFetcherSubscriptions.values();
+        cachedFetcherSubscriptions.clear();
         for (Subscription subscription : fetcherSubscriptions)
         {
             subscription.unsubscribe();
