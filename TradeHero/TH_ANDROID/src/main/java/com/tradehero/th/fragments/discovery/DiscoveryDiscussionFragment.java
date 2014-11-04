@@ -24,6 +24,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
@@ -47,6 +48,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     @Inject RxLoaderManager rxLoaderManager;
     @Inject CurrentUserId currentUserId;
     @Inject UserTimelineServiceWrapper userTimelineServiceWrapper;
+    @Inject ToastOnErrorAction toastOnErrorAction;
 
     private ProgressBar mBottomLoadingView;
 
@@ -105,21 +107,8 @@ public class DiscoveryDiscussionFragment extends Fragment
                 })
                 .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null));
 
-        timelineSubject.subscribe(new EmptyObserver<List<TimelineItemDTOKey>>()
-        {
-            @Override public void onNext(List<TimelineItemDTOKey> timelineItemDTOKeys)
-            {
-                mBottomLoadingView.setVisibility(View.INVISIBLE);
-            }
-        });
-        timelineSubject.subscribe(new EmptyObserver<List<TimelineItemDTOKey>>()
-        {
-            @Override public void onNext(List<TimelineItemDTOKey> args)
-            {
-                discoveryDiscussionAdapter.setItems(args);
-            }
-        });
         timelineSubject.subscribe(new RefreshCompleteObserver());
+        timelineSubject.subscribe(discoveryDiscussionAdapter::setItems);
         timelineSubject.subscribe(new UpdateRangeObserver());
 
         timelineSubscription = rxLoaderManager.create(DISCOVERY_LIST_LOADER_ID,
@@ -131,6 +120,10 @@ public class DiscoveryDiscussionFragment extends Fragment
                                 .flatMap(Observable::from)
                                 .map(TimelineItemDTO::getDiscussionKey)
                                 .toList()))
+                // gotta do error handling here when applicable
+                .doOnError(toastOnErrorAction)
+                .onErrorResumeNext(Observable.empty())
+                .doOnCompleted(mTimelineListView::onRefreshComplete)
                 .subscribe(timelineSubject);
     }
 
