@@ -31,6 +31,7 @@ public class SecurityListAdapter extends BaseAdapter
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+
     public SecurityListAdapter(Context context, int securityType)
     {
         DaggerUtils.inject(this);

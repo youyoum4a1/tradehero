@@ -85,7 +85,6 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-
         super.onCreate(savedInstanceState);
         securityListTypeCacheListener = createSecurityListFetchListener();
         securityListTypeHotCacheListener = createSecurityListFetchListener();
@@ -173,7 +172,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 Timber.d("下拉刷新");
-                if (isUserSearch)
+                if (isUserSearch&&(!StringUtils.isNullOrEmpty(getSearchString())))
                 {
                     fetchSecuritySearchList(true);
                 }

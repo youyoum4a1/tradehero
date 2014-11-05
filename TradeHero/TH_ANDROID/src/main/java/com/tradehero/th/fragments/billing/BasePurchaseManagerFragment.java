@@ -5,8 +5,6 @@ import android.view.View;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -243,7 +241,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            THToast.show(R.string.error_fetch_portfolio_list_info);
+            //THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
 
@@ -266,7 +264,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull PortfolioId key, @NotNull Throwable error)
         {
-            THToast.show(R.string.error_fetch_portfolio_list_info);
+            //THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
 
