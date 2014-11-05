@@ -8,7 +8,7 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.notification.NotificationType;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
-import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -24,7 +24,7 @@ public class DashboardActivityTest
 {
     private DashboardActivityExtended activity;
 
-    @Inject NotificationCache notificationCache;
+    @Inject NotificationCacheRx notificationCache;
     @Inject DashboardNavigator navigator;
 
     @Before public void setUp()
@@ -53,7 +53,7 @@ public class DashboardActivityTest
         mockNotificationDTO.pushTypeId = NotificationType.PrivateMessage.getTypeId();
         mockNotificationDTO.replyableTypeId = DiscussionType.PRIVATE_MESSAGE.value;
         mockNotificationDTO.referencedUserId = 108805;
-        notificationCache.put(mockNotificationKey, mockNotificationDTO);
+        notificationCache.onNext(mockNotificationKey, mockNotificationDTO);
 
         Intent intent = new Intent();
         intent.putExtras(mockNotificationKey.getArgs());

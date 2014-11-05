@@ -24,7 +24,6 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnSc
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
@@ -91,7 +90,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -147,7 +146,7 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtilLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
-    @Inject Lazy<NotificationCache> notificationCache;
+    @Inject Lazy<NotificationCacheRx> notificationCache;
     @Inject SystemStatusCache systemStatusCache;
     @Inject Lazy<MarketUtil> marketUtilLazy;
 
@@ -172,7 +171,7 @@ public class DashboardActivity extends BaseActivity
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
     @Nullable private Subscription providerListSubscription;
-    private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
+    private Subscription notificationFetchSubscription;
 
     private ProgressDialog progressDialog;
     private DashboardTabHost dashboardTabHost;
@@ -209,9 +208,6 @@ public class DashboardActivity extends BaseActivity
             }
         };
         launchBilling();
-
-        detachNotificationFetchTask();
-        notificationFetchListener = createNotificationFetchListener();
 
         // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
@@ -492,14 +488,17 @@ public class DashboardActivity extends BaseActivity
 
             detachNotificationFetchTask();
             NotificationKey key = new NotificationKey(extras);
-            notificationCache.get().register(key, notificationFetchListener);
-            notificationCache.get().getOrFetchAsync(key, false);
+            notificationFetchSubscription = AndroidObservable.bindActivity(
+                    this,
+                    notificationCache.get().get(key))
+                    .subscribe(createNotificationFetchObserver());
         }
     }
 
     private void detachNotificationFetchTask()
     {
-        notificationCache.get().unregister(notificationFetchListener);
+        detachSubscription(notificationFetchSubscription);
+        notificationFetchSubscription = null;
     }
 
     @Override protected void onPause()
@@ -525,7 +524,7 @@ public class DashboardActivity extends BaseActivity
         detachSubscription(providerListSubscription);
         providerListSubscription = null;
         purchaseRestorerFinishedListener = null;
-        notificationFetchListener = null;
+        notificationFetchSubscription = null;
 
         mAchievementBroadcastReceiver = null;
         mXPBroadcastReceiver = null;
@@ -660,32 +659,31 @@ public class DashboardActivity extends BaseActivity
         }
     }
 
-    protected DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> createNotificationFetchListener()
+    protected Observer<Pair<NotificationKey, NotificationDTO>> createNotificationFetchObserver()
     {
-        return new NotificationFetchListener();
+        return new NotificationFetchObserver();
     }
 
-    protected class NotificationFetchListener
-            implements DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO>
+    protected class NotificationFetchObserver
+            implements Observer<Pair<NotificationKey, NotificationDTO>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
-        {
-            onDTOReceived(key, value);
-        }
-
-        @Override
-        public void onDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
+        @Override public void onNext(Pair<NotificationKey, NotificationDTO> pair)
         {
             onFinish();
 
-            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this, value);
+            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this,
+                    pair.second);
             notificationClickHandler.handleNotificationItemClicked();
         }
 
-        @Override public void onErrorThrown(@NotNull NotificationKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             onFinish();
-            THToast.show(new THException(error));
+            THToast.show(new THException(e));
         }
 
         private void onFinish()

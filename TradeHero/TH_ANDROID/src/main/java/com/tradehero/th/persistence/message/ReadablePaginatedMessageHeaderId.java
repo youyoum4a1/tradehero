@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 class ReadablePaginatedMessageHeaderId extends ReadablePaginatedDTO<MessageHeaderId>
     implements HasExpiration
 {

@@ -9,22 +9,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
-
+import android.util.Pair;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.persistence.notification.NotificationCache;
-
-import org.jetbrains.annotations.NotNull;
-
+import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 /**
@@ -34,12 +31,12 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 {
     private final Context context;
     private final IntPreference maxGroupNotifications;
-    private final NotificationCache notificationCache;
+    private final NotificationCacheRx notificationCache;
     private final NotificationGroupHolder notificationGroupHolder;
 
     @Inject public CommonNotificationBuilder(
             Context context,
-            NotificationCache notificationCache,
+            NotificationCacheRx notificationCache,
             NotificationGroupHolder notificationGroupHolder,
             @MaxGroupNotifications IntPreference maxGroupNotifications)
     {
@@ -58,12 +55,13 @@ public class CommonNotificationBuilder implements THNotificationBuilder
      */
     @Override public Notification buildNotification(int notificationId)
     {
-        NotificationDTO notificationDTO = notificationCache.get(new NotificationKey(notificationId));
+        NotificationDTO notificationDTO = notificationCache.getValue(new NotificationKey(notificationId));
         if (notificationDTO == null)
         {
             NotificationKey key = new NotificationKey(notificationId);
-            notificationCache.register(key, new NotificationFetchTaskListener());
-            notificationCache.getOrFetchAsync(key, false);
+            notificationCache.get(key)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NotificationFetchTaskObserver());
 
             return null;
         }
@@ -74,8 +72,9 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     }
 
     /**
-     * Build notificationUI of the notificationDTO. If this incoming notification belongs to any group, it will be added to that group,
-     * and that group UI will be updated to reflect the changes that notificationDTO has made.
+     * Build notificationUI of the notificationDTO. If this incoming notification belongs to any group, it will be added to that group, and that group
+     * UI will be updated to reflect the changes that notificationDTO has made.
+     *
      * @param notificationDTO NotificationDTO, which assumed to be available in the cache
      * @return Notification that will be shown on notificationCenter
      */
@@ -120,7 +119,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 
             // Add any extra messages to the notification style
             int extraMessages = Math.min(maxGroupNotifications.get(), totalUnreadCount);
-            for (int i = totalUnreadCount -1; i >= totalUnreadCount - extraMessages; --i)
+            for (int i = totalUnreadCount - 1; i >= totalUnreadCount - extraMessages; --i)
             {
                 style.addLine(notificationDTOs.get(i).text);
             }
@@ -151,7 +150,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 
     @Override public int getNotifyId(int notificationId)
     {
-        NotificationDTO notificationDTO = notificationCache.get(new NotificationKey(notificationId));
+        NotificationDTO notificationDTO = notificationCache.getValue(new NotificationKey(notificationId));
 
         if (notificationDTO != null)
         {
@@ -191,8 +190,8 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     }
 
     /**
-     * Since there are more than one type of notifications, the type is likely to be corresponding to the table on the server. Therefore,
-     * we cannot use notificationId to be a unique key for notification, indeed, the unique key should be generated from the
+     * Since there are more than one type of notifications, the type is likely to be corresponding to the table on the server. Therefore, we cannot
+     * use notificationId to be a unique key for notification, indeed, the unique key should be generated from the
      *
      * @param notificationDTO NotificationDTO that already in the cache
      * @return unique id across all notificationDTO
@@ -245,29 +244,28 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     {
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.launcher);
         return new NotificationCompat.Builder(context)
-                        .setLargeIcon(largeIcon)
-                        .setSmallIcon(R.drawable.th_logo)
-                        .setAutoCancel(true);
+                .setLargeIcon(largeIcon)
+                .setSmallIcon(R.drawable.th_logo)
+                .setAutoCancel(true);
     }
 
-    private class NotificationFetchTaskListener implements DTOCacheNew.HurriedListener<NotificationKey,NotificationDTO>
+    private class NotificationFetchTaskObserver implements Observer<Pair<NotificationKey, NotificationDTO>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
+        @Override public void onNext(Pair<NotificationKey, NotificationDTO> pair)
         {
-            onDTOReceived(key, value);
-        }
-
-        @Override public void onDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
-        {
-            Notification notification = buildNotification(value);
+            Notification notification = buildNotification(pair.second);
 
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.notify(getNotifyId(value.pushId), notification);
+            manager.notify(getNotifyId(pair.second.pushId), notification);
         }
 
-        @Override public void onErrorThrown(@NotNull NotificationKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            Timber.d("There is a problem fetching notification: id=%d", key.key);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.d("There is a problem fetching notification");
         }
     }
 }

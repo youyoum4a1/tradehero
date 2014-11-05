@@ -2,14 +2,14 @@ package com.tradehero.th.models.push.handlers;
 
 import android.content.Intent;
 import com.tradehero.th.models.push.PushConstants;
-import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class PushReceivedHandler extends PrecacheNotificationHandler
 {
     //<editor-fold desc="Constructors">
-    @Inject public PushReceivedHandler(@NotNull NotificationCache notificationCache)
+    @Inject public PushReceivedHandler(@NotNull NotificationCacheRx notificationCache)
     {
         super(notificationCache);
     }

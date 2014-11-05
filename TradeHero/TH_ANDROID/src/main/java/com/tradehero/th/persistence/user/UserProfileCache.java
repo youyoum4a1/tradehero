@@ -8,7 +8,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
-import com.tradehero.th.persistence.notification.NotificationListCache;
+import com.tradehero.th.persistence.notification.NotificationListCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
@@ -27,7 +27,7 @@ public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfi
     @NotNull private final Lazy<HeroListCacheRx> heroListCache;
     @NotNull private final Lazy<LeaderboardCache> leaderboardCache;
     @NotNull private final Lazy<MessageHeaderListCache> messageHeaderListCache;
-    @NotNull private final Lazy<NotificationListCache> notificationListCache;
+    @NotNull private final Lazy<NotificationListCacheRx> notificationListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileCache(
@@ -36,7 +36,7 @@ public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfi
             @NotNull Lazy<HeroListCacheRx> heroListCache,
             @NotNull Lazy<LeaderboardCache> leaderboardCache,
             @NotNull Lazy<MessageHeaderListCache> messageHeaderListCache,
-            @NotNull Lazy<NotificationListCache> notificationListCache,
+            @NotNull Lazy<NotificationListCacheRx> notificationListCache,
             @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);

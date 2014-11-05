@@ -9,7 +9,7 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.push.NotificationGroupHolder;
 import com.tradehero.th.models.push.PushConstants;
-import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
             @NotNull Context context,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull NotificationCache notificationCache,
+            @NotNull NotificationCacheRx notificationCache,
             NotificationGroupHolder notificationGroupHolder)
     {
         super(notificationCache);

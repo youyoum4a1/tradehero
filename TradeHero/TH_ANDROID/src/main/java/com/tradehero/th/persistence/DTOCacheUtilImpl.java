@@ -39,7 +39,7 @@ import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
-import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -73,7 +73,7 @@ import rx.observers.EmptyObserver;
     protected final Lazy<HomeContentCacheRx> homeContentCache;
     protected final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     protected final Lazy<LevelDefListCacheRx> levelDefListCache;
-    protected final Lazy<NotificationCache> notificationCache;
+    protected final Lazy<NotificationCacheRx> notificationCache;
     protected final Lazy<PortfolioCacheRx> portfolioCache;
     protected final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
     protected final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
@@ -109,7 +109,7 @@ import rx.observers.EmptyObserver;
             Lazy<HomeContentCacheRx> homeContentCache,
             Lazy<LeaderboardDefListCache> leaderboardDefListCache,
             Lazy<LevelDefListCacheRx> levelDefListCacheLazy,
-            Lazy<NotificationCache> notificationCache,
+            Lazy<NotificationCacheRx> notificationCache,
             Lazy<PortfolioCacheRx> portfolioCache,
             Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
             Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,

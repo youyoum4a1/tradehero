@@ -3,13 +3,13 @@ package com.tradehero.th.models.push.handlers;
 import android.content.Intent;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.models.push.PushConstants;
-import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public abstract class PrecacheNotificationHandler implements PushNotificationHandler
 {
-    @NotNull protected final NotificationCache notificationCache;
+    @NotNull protected final NotificationCacheRx notificationCache;
 
     protected NotificationKey getNotificationKey()
     {
@@ -17,7 +17,7 @@ public abstract class PrecacheNotificationHandler implements PushNotificationHan
     }
     private NotificationKey notificationKey;
 
-    public PrecacheNotificationHandler(@NotNull NotificationCache notificationCache)
+    public PrecacheNotificationHandler(@NotNull NotificationCacheRx notificationCache)
     {
         this.notificationCache = notificationCache;
     }
@@ -38,7 +38,7 @@ public abstract class PrecacheNotificationHandler implements PushNotificationHan
                 int notificationId = Integer.parseInt(notificationIdValue);
 
                 notificationKey = new NotificationKey(notificationId);
-                notificationCache.getOrFetchAsync(notificationKey);
+                notificationCache.get(notificationKey);
             }
             catch (Exception ex)
             {

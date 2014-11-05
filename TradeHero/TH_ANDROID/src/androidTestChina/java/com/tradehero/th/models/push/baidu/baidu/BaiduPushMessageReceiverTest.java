@@ -13,7 +13,7 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.baidu.BaiduPushMessageDTO;
 import com.tradehero.th.models.push.baidu.BaiduPushMessageReceiver;
-import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import java.io.IOException;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -46,7 +46,7 @@ public class BaiduPushMessageReceiverTest
     private ShadowNotificationManager shadowNotificationManager;
 
     @Inject BaiduPushMessageReceiver baiduPushMessageReceiver;
-    @Inject NotificationCache notificationCache;
+    @Inject NotificationCacheRx notificationCache;
     @Inject Converter converter;
 
     @Before public void setUp()
