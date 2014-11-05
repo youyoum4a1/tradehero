@@ -183,7 +183,7 @@ public class CompetitionUtils
             exchangeCompactDTOs.add(new ExchangeCompactDTO(20,"AMEX","US",0,"美国 AMEX",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(4,"NASDAQ","US",0,"美国 NASDAQ",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(2,"LSE","GB",0,"英国 LSE",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(43,"INDEX","GB",0,"英国 INDEX",false,true,false));
+            //exchangeCompactDTOs.add(new ExchangeCompactDTO(43,"INDEX","GB",0,"英国 INDEX",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(3,"SGX","SG",0,"新加坡 SGX",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(5,"ASX","AU",0,"澳大利亚 ASX",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(10,"PAR","FR",0,"法国 PAR",false,true,false));

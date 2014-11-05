@@ -147,6 +147,11 @@ public class SecurityCompactDTO extends ExtendedDTO
         this.exchangeClosingTimeLocal = other.exchangeClosingTimeLocal;
         this.secTypeDesc = other.secTypeDesc;
 
+        this.marketCapRefUSD = other.marketCapRefUSD;
+        this.watchCount = other.watchCount;
+        this.holdCount = other.holdCount;
+        this.searchCount = other.searchCount;
+
         this.putAll(other.getAll(), SecurityCompactDTO.class);
     }
     //</editor-fold>

@@ -156,6 +156,8 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         }
     }
 
+    boolean isEmptyHeroAndFollower = false;
+
     public void fetchUserFriendList()
     {
         if (typeFriends == TYPE_FRIENDS_HERO)
@@ -168,10 +170,17 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         }
         else if (typeFriends == TYPE_FRIENDS_ALL)
         {
+            clearHeroAndFollower();
             fetchHeros(false);
             fetchFollowers(false);
         }
     }
+
+    public void clearHeroAndFollower()
+    {
+        isEmptyHeroAndFollower = true;
+    }
+
 
     public void fetchUserFriendList(boolean force)
     {
@@ -185,6 +194,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         }
         else if (typeFriends == TYPE_FRIENDS_ALL)
         {
+            clearHeroAndFollower();
             fetchHeros(force);
             fetchFollowers(force);
         }
@@ -229,7 +239,13 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             }
             if (typeFriends == TYPE_FRIENDS_ALL)
             {
-                adapter.addListData(list);
+                if(isEmptyHeroAndFollower){
+                    adapter.setListData(list);
+                    isEmptyHeroAndFollower = false;
+                }else
+                {
+                    adapter.addListData(list);
+                }
             }
             else
             {
@@ -255,7 +271,13 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
 
             if (typeFriends == TYPE_FRIENDS_ALL)
             {
-                adapter.addListData(list);
+                if(isEmptyHeroAndFollower){
+                    adapter.setListData(list);
+                    isEmptyHeroAndFollower = false;
+                }else
+                {
+                    adapter.addListData(list);
+                }
             }
             else
             {

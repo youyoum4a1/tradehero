@@ -25,6 +25,7 @@
       android:layout_margin="5dp"
       android:layout_width="48dp"
       android:layout_height="48dp"
+      android:scaleType="fitXY"
       android:layout_centerVertical="true"
       />
 

@@ -5,7 +5,12 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -34,10 +39,9 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 public class TradeOfTypeBaseFragment extends DashboardFragment
 {
@@ -133,7 +137,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             {
                 Timber.d("下拉刷新");
                 //fetchSecurityList(currentPosition);
-                fetchSecurityList(currentPosition);
+                fetchSecurityList(currentPosition,true);
             }
 
             @Override
@@ -167,7 +171,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         securityCompactListCache.get().getOrFetchAsync(key, true);
     }
 
-    private void fetchSecurityList(int position)
+    private void fetchSecurityList(int position,boolean force)
     {
         currentPosition = position;
         strExchangeName = "";
@@ -179,7 +183,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         detachSecurityListCache();
         SecurityListType key = new TrendingAllSecurityListType(getTradeType(), getStrExchangeName(), currentPage + 1, ITEMS_PER_PAGE);
         securityCompactListCache.get().register(key, securityListTypeCacheListener);
-        securityCompactListCache.get().getOrFetchAsync(key, true);
+        securityCompactListCache.get().getOrFetchAsync(key, force);
     }
 
     private void showLoadingProgress()
@@ -394,7 +398,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
         }
         showLoadingProgress();
-        fetchSecurityList(position);
+        fetchSecurityList(position,false);
     }
 
     @Override

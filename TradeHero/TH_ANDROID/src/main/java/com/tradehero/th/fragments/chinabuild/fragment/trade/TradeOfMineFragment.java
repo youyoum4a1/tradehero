@@ -2,11 +2,17 @@ package com.tradehero.th.fragments.chinabuild.fragment.trade;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -54,13 +60,12 @@ import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
     交易－我的交易
@@ -323,13 +328,13 @@ public class TradeOfMineFragment extends DashboardFragment
                 onResume();
             }
         };
-        Timber.d("Windy : startTimerForView");
+        //Timber.d("Windy : startTimerForView");
         handler.postDelayed(runnable, 8000);
     }
 
     public void closeTimerForView()
     {
-        Timber.d("Windy : closeTimerForView");
+        //Timber.d("Windy : closeTimerForView");
         try
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
@@ -407,7 +412,7 @@ public class TradeOfMineFragment extends DashboardFragment
 
         public void finish()
         {
-            Timber.d("Windy : GetPositionsListener");
+            //Timber.d("Windy : GetPositionsListener");
             listView.onRefreshComplete();
             closeTimerForView();
         }
