@@ -1,5 +1,7 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.position.PositionCompactId;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -11,7 +13,6 @@ import com.tradehero.th.api.watchlist.key.PagedWatchlistKey;
 import com.tradehero.th.api.watchlist.key.PerPagedWatchlistKey;
 import com.tradehero.th.api.watchlist.key.SecurityPerPagedWatchlistKey;
 import com.tradehero.th.api.watchlist.key.SkipCacheSecurityPerPagedWatchlistKey;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistCreate;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistCreateList;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistDelete;
@@ -20,13 +21,11 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observable;
 
@@ -36,8 +35,8 @@ import rx.Observable;
     @NonNull private final WatchlistService watchlistService;
     @NonNull private final WatchlistServiceAsync watchlistServiceAsync;
     @NonNull private final WatchlistServiceRx watchlistServiceRx;
-    @NonNull private final Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @NonNull private final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
+    @NonNull private final Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
+    @NonNull private final Lazy<UserWatchlistPositionCacheRx> userWatchlistPositionCache;
     @NonNull private final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
     @NonNull private final Lazy<PortfolioCacheRx> portfolioCache;
 
@@ -47,8 +46,8 @@ import rx.Observable;
             @NonNull WatchlistService watchlistService,
             @NonNull WatchlistServiceAsync watchlistServiceAsync,
             @NonNull WatchlistServiceRx watchlistServiceRx,
-            @NonNull Lazy<WatchlistPositionCache> watchlistPositionCache,
-            @NonNull Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
+            @NonNull Lazy<WatchlistPositionCacheRx> watchlistPositionCache,
+            @NonNull Lazy<UserWatchlistPositionCacheRx> userWatchlistPositionCache,
             @NonNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
             @NonNull Lazy<PortfolioCacheRx> portfolioCache)
     {

@@ -28,7 +28,6 @@ import com.tradehero.th.network.share.SocialNetworkAppModule;
 import com.tradehero.th.persistence.PersistenceModule;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.level.XpModule;
 import com.tradehero.th.utils.metrics.MetricsModule;
@@ -68,8 +67,6 @@ import javax.inject.Singleton;
                         TimelineListLoader.class,
 
                         UserProfileRetrievedMilestone.class,
-
-                        UserWatchlistPositionCache.class,
 
                         FriendListLoader.class,
                         MessageHeaderDTO.class,

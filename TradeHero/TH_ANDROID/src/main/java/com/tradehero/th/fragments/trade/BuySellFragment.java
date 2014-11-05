@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -29,7 +31,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.BottomTabs;
@@ -79,7 +80,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -90,8 +91,6 @@ import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -141,7 +140,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject PortfolioCacheRx portfolioCache;
     @Inject ProgressDialogUtil progressDialogUtil;
 
-    @Inject UserWatchlistPositionCache userWatchlistPositionCache;
+    @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject Picasso picasso;
     @Inject Lazy<SocialSharer> socialSharerLazy;
@@ -151,7 +150,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
 
-    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
+    @Nullable protected Subscription userWatchlistPositionCacheSubscription;
 
     private Bundle desiredArguments;
 
@@ -172,7 +171,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onCreate(savedInstanceState);
         chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
-        userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
     }
 
     @Override protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
@@ -314,7 +312,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyView()
     {
-        detachWatchlistFetchTask();
+        unsubscribe(userWatchlistPositionCacheSubscription);
+        userWatchlistPositionCacheSubscription = null;
         detachBuySellMiddleCallback();
         detachPortfolioMenuSubscription();
         detachBuySellDialog();
@@ -331,7 +330,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onSaveInstanceState(outState);
         progressDialogUtil.dismiss(getActivity());
-        detachWatchlistFetchTask();
+        unsubscribe(userWatchlistPositionCacheSubscription);
+        userWatchlistPositionCacheSubscription = null;
         detachBuySellMiddleCallback();
         detachPortfolioMenuSubscription();
         detachBuySellDialog();
@@ -341,14 +341,9 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroy()
     {
-        userWatchlistPositionCacheFetchListener = null;
+        userWatchlistPositionCacheSubscription = null;
         chartImageButtonClickReceiver = null;
         super.onDestroy();
-    }
-
-    protected void detachWatchlistFetchTask()
-    {
-        userWatchlistPositionCache.unregister(userWatchlistPositionCacheFetchListener);
     }
 
     private void detachPortfolioMenuSubscription()
@@ -381,9 +376,11 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void fetchWatchlist()
     {
-        detachWatchlistFetchTask();
-        userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionCacheFetchListener);
-        userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        unsubscribe(userWatchlistPositionCacheSubscription);
+        userWatchlistPositionCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
+                .subscribe(createUserWatchlistCacheObserver());
     }
 
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -1344,23 +1341,26 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createUserWatchlistCacheListener()
+    protected Observer<Pair<UserBaseKey, WatchlistPositionDTOList>> createUserWatchlistCacheObserver()
     {
-        return new BuySellUserWatchlistCacheListener();
+        return new BuySellUserWatchlistCacheObserver();
     }
 
-    protected class BuySellUserWatchlistCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
+    protected class BuySellUserWatchlistCacheObserver
+            implements Observer<Pair<UserBaseKey, WatchlistPositionDTOList>>
     {
-        @Override
-        public void onDTOReceived(@NonNull UserBaseKey key, @NonNull WatchlistPositionDTOList value)
+        @Override public void onNext(Pair<UserBaseKey, WatchlistPositionDTOList> pair)
         {
-            linkWithWatchlist(value, true);
+            linkWithWatchlist(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
+        @Override public void onCompleted()
         {
-            Timber.e("Failed to fetch list of watch list items", error);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.e("Failed to fetch list of watch list items", e);
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }

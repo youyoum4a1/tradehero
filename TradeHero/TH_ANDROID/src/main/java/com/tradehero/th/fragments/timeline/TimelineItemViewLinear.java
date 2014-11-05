@@ -22,7 +22,7 @@ import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -32,7 +32,7 @@ import javax.inject.Inject;
 public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear<TimelineItemDTOKey>
 {
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @Inject Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
     @Inject Analytics analytics;
 
     public TimelineItemViewLinear(Context context, AttributeSet attrs)
@@ -177,7 +177,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         if (securityId != null)
         {
             WatchlistEditFragment.putSecurityId(args, securityId);
-            if (watchlistPositionCache.get().get(securityId) != null)
+            if (watchlistPositionCache.get().getValue(securityId) != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));

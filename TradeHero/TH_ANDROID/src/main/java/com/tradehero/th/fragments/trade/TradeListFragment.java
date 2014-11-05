@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.trade;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,7 +46,7 @@ import com.tradehero.th.persistence.position.PositionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCacheRx;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -54,8 +56,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -73,7 +73,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject CurrentUserId currentUserId;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
     @Inject THRouter thRouter;
-    @Inject WatchlistPositionCache watchlistPositionCache;
+    @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject Analytics analytics;
     SecurityActionDialogFactory securityActionDialogFactory = new SecurityActionDialogFactory(); // no inject, 65k
 
@@ -435,7 +435,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             dismissShareDialog();
             Bundle args = new Bundle();
             WatchlistEditFragment.putSecurityId(args, securityId);
-            if (watchlistPositionCache.get(securityId) != null)
+            if (watchlistPositionCache.getValue(securityId) != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));

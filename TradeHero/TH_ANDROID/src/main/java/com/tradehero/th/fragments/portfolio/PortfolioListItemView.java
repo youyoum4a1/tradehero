@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.portfolio;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.widget.ImageView;
@@ -13,7 +14,6 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -34,11 +34,9 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -61,14 +59,14 @@ public class PortfolioListItemView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject GetPositionsCacheRx getPositionsCache;
-    @Inject UserWatchlistPositionCache userWatchlistPositionCache;
+    @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject DisplayablePortfolioUtil displayablePortfolioUtil;
     @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
 
     @Nullable private Subscription currentUserProfileCacheSubscription;
     @Nullable private Subscription getPositionsSubscription;
-    @Nullable private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistListener;
+    @Nullable private Subscription userWatchlistSubscription;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -87,29 +85,13 @@ public class PortfolioListItemView extends RelativeLayout
         {
             displayDefaultUserIcon();
         }
-        userWatchlistListener = new PortfolioListItemViewWatchedSecurityIdListListener();
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-
-        if (userWatchlistListener == null)
-        {
-            this.userWatchlistListener = new PortfolioListItemViewWatchedSecurityIdListListener();
-        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachUserProfileCache();
-        this.currentUserProfileCacheSubscription = null;
-
         detachGetPositionsCache();
-        this.getPositionsSubscription = null;
-
         detachUserWatchlistTask();
-        this.userWatchlistListener = null;
 
         if (this.userIcon != null)
         {
@@ -160,7 +142,12 @@ public class PortfolioListItemView extends RelativeLayout
 
     protected void detachUserWatchlistTask()
     {
-        userWatchlistPositionCache.unregister(userWatchlistListener);
+        Subscription copy = userWatchlistSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        userWatchlistSubscription = null;
     }
 
     public void display(DisplayablePortfolioDTO displayablePortfolioDTO)
@@ -217,7 +204,6 @@ public class PortfolioListItemView extends RelativeLayout
 
     protected void fetchWatchedSecurities()
     {
-        detachUserWatchlistTask();
         DisplayablePortfolioDTO displayablePortfolioDTOCopy = this.displayablePortfolioDTO;
         if (displayablePortfolioDTOCopy != null &&
                 displayablePortfolioDTOCopy.ownedPortfolioId != null &&
@@ -229,8 +215,10 @@ public class PortfolioListItemView extends RelativeLayout
         {
             Timber.d("fetchWatchedSecurities launching");
             UserBaseKey key = displayablePortfolioDTOCopy.userBaseDTO.getBaseKey();
-            userWatchlistPositionCache.register(key, userWatchlistListener);
-            userWatchlistPositionCache.getOrFetchAsync(key);
+            detachUserWatchlistTask();
+            userWatchlistSubscription = userWatchlistPositionCache.get(key)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new PortfolioListItemViewWatchedSecurityIdListObserver());
         }
         else
         {
@@ -387,19 +375,19 @@ public class PortfolioListItemView extends RelativeLayout
         }
     }
 
-    protected class PortfolioListItemViewWatchedSecurityIdListListener
-            implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
+    protected class PortfolioListItemViewWatchedSecurityIdListObserver
+            implements Observer<Pair<UserBaseKey, WatchlistPositionDTOList>>
     {
-        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull WatchlistPositionDTOList value)
+        @Override public void onNext(Pair<UserBaseKey, WatchlistPositionDTOList> pair)
         {
-            watchedSecurityPositions = value;
+            watchedSecurityPositions = pair.second;
             DisplayablePortfolioDTO displayablePortfolioDTOCopy =
                     PortfolioListItemView.this.displayablePortfolioDTO;
             if (displayablePortfolioDTOCopy != null &&
                     displayablePortfolioDTOCopy.userBaseDTO != null &&
-                    key.equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
+                    pair.first.equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
             {
-                PortfolioListItemView.this.linkWith(value, true);
+                PortfolioListItemView.this.linkWith(pair.second, true);
             }
             else
             {
@@ -407,7 +395,11 @@ public class PortfolioListItemView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             // We do not inform the user as this is not critical
         }

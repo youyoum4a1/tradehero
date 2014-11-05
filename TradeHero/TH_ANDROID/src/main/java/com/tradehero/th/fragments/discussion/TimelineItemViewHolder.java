@@ -14,7 +14,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import javax.inject.Inject;
 
 public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
@@ -23,7 +23,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
     @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
-    @Inject WatchlistPositionCache watchlistPositionCache;
+    @Inject WatchlistPositionCacheRx watchlistPositionCache;
 
     //<editor-fold desc="Constructors">
 
@@ -141,7 +141,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
             if (discussionDTO != null)
             {
                 SecurityId securityIdForDisplay = discussionDTO.createFlavorSecurityIdForDisplay();
-                if (securityIdForDisplay != null && watchlistPositionCache.get(securityIdForDisplay) != null)
+                if (securityIdForDisplay != null && watchlistPositionCache.getValue(securityIdForDisplay) != null)
                 {
                     watchlistIndicator.setVisibility(View.VISIBLE);
                 }

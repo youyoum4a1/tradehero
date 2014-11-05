@@ -2,6 +2,8 @@ package com.tradehero.th.persistence;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -49,16 +51,14 @@ import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.observers.EmptyObserver;
 
@@ -84,8 +84,8 @@ import rx.observers.EmptyObserver;
     protected final Lazy<TranslationTokenCacheRx> translationTokenCache;
     protected final Lazy<UserProfileCacheRx> userProfileCache;
     protected final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
-    protected final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    protected final Lazy<WatchlistPositionCache> watchlistPositionCache;
+    protected final Lazy<UserWatchlistPositionCacheRx> userWatchlistPositionCache;
+    protected final Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
     //</editor-fold>
 
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
@@ -119,8 +119,8 @@ import rx.observers.EmptyObserver;
             Lazy<TranslationTokenCacheRx> translationTokenCache,
             Lazy<UserProfileCacheRx> userProfileCache,
             Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
-            Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
-            Lazy<WatchlistPositionCache> watchlistPositionCache,
+            Lazy<UserWatchlistPositionCacheRx> userWatchlistPositionCache,
+            Lazy<WatchlistPositionCacheRx> watchlistPositionCache,
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
             Lazy<QuestBonusListCacheRx> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
@@ -328,7 +328,7 @@ import rx.observers.EmptyObserver;
 
     public void preFetchWatchlist()
     {
-        userWatchlistPositionCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
     }
 
     public void preFetchProviders()

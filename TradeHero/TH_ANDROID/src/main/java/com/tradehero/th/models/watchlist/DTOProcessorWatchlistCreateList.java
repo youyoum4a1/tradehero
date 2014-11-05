@@ -1,14 +1,14 @@
 package com.tradehero.th.models.watchlist;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import android.support.annotation.NonNull;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import rx.functions.Action1;
 
 public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPositionDTOList>,
@@ -18,11 +18,11 @@ public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPo
 
     //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistCreateList(
-            @NonNull WatchlistPositionCache watchlistPositionCache,
+            @NonNull WatchlistPositionCacheRx watchlistPositionCache,
             @NonNull UserBaseKey concernedUser,
             @NonNull PortfolioCompactCacheRx portfolioCompactCache,
             @NonNull PortfolioCacheRx portfolioCache,
-            @NonNull UserWatchlistPositionCache userWatchlistPositionCache)
+            @NonNull UserWatchlistPositionCacheRx userWatchlistPositionCache)
     {
         super();
         individualProcessor = new DTOProcessorWatchlistCreate(

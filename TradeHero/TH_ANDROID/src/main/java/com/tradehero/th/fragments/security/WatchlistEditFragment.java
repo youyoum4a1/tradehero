@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.security;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +26,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SecurityUtils;
@@ -33,8 +35,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -60,7 +60,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
-    @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @Inject Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
@@ -111,7 +111,7 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         if (securityKeyId != null)
         {
-            WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityKeyId);
+            WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getValue(securityKeyId);
             deleteButton.setEnabled(watchlistPositionDTO != null);
         }
     }
@@ -142,7 +142,7 @@ public class WatchlistEditFragment extends DashboardFragment
             // add new watchlist
             WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
 
-            WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().get(securityCompactDTO.getSecurityId());
+            WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().getValue(securityCompactDTO.getSecurityId());
             detachMiddleCallbackUpdate();
             if (existingWatchlistPosition != null)
             {
@@ -197,7 +197,7 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void handleButtonDeleteClicked()
     {
-        WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityKeyId);
+        WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getValue(securityKeyId);
         if (watchlistPositionDTO != null)
         {
             showProgressBar();
@@ -344,7 +344,7 @@ public class WatchlistEditFragment extends DashboardFragment
                 }
             }
 
-            WatchlistPositionDTO watchListItem = watchlistPositionCache.get().get(securityCompactDTO.getSecurityId());
+            WatchlistPositionDTO watchListItem = watchlistPositionCache.get().getValue(securityCompactDTO.getSecurityId());
             if (watchPrice != null)
             {
                 watchPrice.setText(

@@ -1,13 +1,13 @@
 package com.tradehero.th.models.watchlist;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -15,14 +15,14 @@ public class DTOProcessorWatchlistUpdate implements DTOProcessor<WatchlistPositi
         Action1<WatchlistPositionDTO>
 {
     @NonNull protected final UserBaseKey concernedUser;
-    @NonNull protected final WatchlistPositionCache watchlistPositionCache;
+    @NonNull protected final WatchlistPositionCacheRx watchlistPositionCache;
     @NonNull protected final PortfolioCompactCacheRx portfolioCompactCache;
     @NonNull protected final PortfolioCacheRx portfolioCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistUpdate(
             @NonNull UserBaseKey concernedUser,
-            @NonNull WatchlistPositionCache watchlistPositionCache,
+            @NonNull WatchlistPositionCacheRx watchlistPositionCache,
             @NonNull PortfolioCompactCacheRx portfolioCompactCache,
             @NonNull PortfolioCacheRx portfolioCache)
     {
@@ -40,7 +40,7 @@ public class DTOProcessorWatchlistUpdate implements DTOProcessor<WatchlistPositi
         portfolioCache.invalidate(concernedUser, true);
         if (watchlistPositionDTO != null && watchlistPositionDTO.securityDTO != null)
         {
-            watchlistPositionCache.put(watchlistPositionDTO.securityDTO.getSecurityId(), watchlistPositionDTO);
+            watchlistPositionCache.onNext(watchlistPositionDTO.securityDTO.getSecurityId(), watchlistPositionDTO);
         }
         else
         {

@@ -19,7 +19,7 @@ import com.tradehero.th.persistence.alert.AlertCompactCacheRx;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
@@ -40,7 +40,7 @@ public class BuySellFragmentTest
     @Inject AlertCacheRx alertCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject SecurityIdCache securityIdCache;
-    @Inject UserWatchlistPositionCache userWatchlistPositionCache;
+    @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     private BuySellFragment buySellFragment;
     @Inject DashboardNavigator dashboardNavigator;
 
@@ -124,14 +124,14 @@ public class BuySellFragmentTest
         WatchlistPositionDTOList watchlistPositionDTOs = new WatchlistPositionDTOList();
         watchlistPositionDTOs.add(googleWatch);
 
-        userWatchlistPositionCache.put(
+        userWatchlistPositionCache.onNext(
                 currentUserId.toUserBaseKey(),
                 watchlistPositionDTOs);
     }
 
     @Test public void testWhenNoWatchlistShowAddWatchlist()
     {
-        userWatchlistPositionCache.put(
+        userWatchlistPositionCache.onNext(
                 currentUserId.toUserBaseKey(),
                 new WatchlistPositionDTOList());
 
