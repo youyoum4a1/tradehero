@@ -16,8 +16,12 @@ public class CountryLanguagePairDTO
     /** Naked constructor for deserialization */
     public CountryLanguagePairDTO() { }
 
-    @Override public String toString()
-    {
-        return this.name;
+    @Override
+    public String toString() {
+        return "CountryLanguagePairDTO{" +
+                "name='" + name + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", languageCode='" + languageCode + '\'' +
+                '}';
     }
 }

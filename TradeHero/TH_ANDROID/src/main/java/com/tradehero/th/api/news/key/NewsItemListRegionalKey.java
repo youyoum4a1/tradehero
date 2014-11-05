@@ -34,4 +34,12 @@ public class NewsItemListRegionalKey extends NewsItemListKey
                 (countryCode == null ? other.countryCode == null : countryCode.equals(other.countryCode)) ^
                         (languageCode == null ? other.languageCode == null : languageCode.equals(other.languageCode));
     }
+
+    @Override
+    public String toString() {
+        return "NewsItemListRegionalKey{" +
+                "countryCode='" + countryCode + '\'' +
+                ", languageCode='" + languageCode + '\'' +
+                '}';
+    }
 }

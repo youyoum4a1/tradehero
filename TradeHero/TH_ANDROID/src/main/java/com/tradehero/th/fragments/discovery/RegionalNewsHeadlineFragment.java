@@ -6,11 +6,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
+
 import java.util.Locale;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -45,7 +49,13 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(this::activateNewsListView);
+                .doOnNext((t1) -> {
+                    if (!(((NewsItemListRegionalKey)t1).countryCode.equalsIgnoreCase(((NewsItemListRegionalKey)newsItemListKey).countryCode)
+                            && ((NewsItemListRegionalKey)t1).languageCode.equalsIgnoreCase(((NewsItemListRegionalKey)newsItemListKey).languageCode)))
+                    {
+                        activateNewsListView(t1);
+                    }
+                });
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
