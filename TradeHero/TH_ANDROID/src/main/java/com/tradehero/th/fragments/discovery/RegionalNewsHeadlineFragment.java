@@ -49,13 +49,7 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext((t1) -> {
-                    if (!(((NewsItemListRegionalKey)t1).countryCode.equalsIgnoreCase(((NewsItemListRegionalKey)newsItemListKey).countryCode)
-                            && ((NewsItemListRegionalKey)t1).languageCode.equalsIgnoreCase(((NewsItemListRegionalKey)newsItemListKey).languageCode)))
-                    {
-                        activateNewsListView(t1);
-                    }
-                });
+                .doOnNext(this::activateNewsListView);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
