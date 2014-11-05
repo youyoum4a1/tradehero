@@ -42,6 +42,7 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -150,13 +151,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
         }
 
-        this.timeSpanButtonSetListener = new TimeSpanButtonSet.OnTimeSpanButtonSelectedListener()
-        {
-            @Override public void onTimeSpanButtonSelected(ChartTimeSpan selected)
-            {
-                analytics.fireEvent(new ChartTimeEvent(securityId, selected));
-                linkWith(selected, true);
-            }
+        this.timeSpanButtonSetListener = selected -> {
+            analytics.fireEvent(new ChartTimeEvent(securityId, selected));
+            linkWith(selected, true);
         };
 
         TimeSpanButtonSet timeSpanButtonSetTemp = (TimeSpanButtonSet) view.findViewById(R.id.chart_time_span_button_set);
@@ -170,13 +167,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
         if (mCloseButton != null)
         {
-            mCloseButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    getActivity().finish();
-                }
-            });
+            mCloseButton.setOnClickListener(v -> getActivity().finish());
         }
 
         chartImageCallback = new AspectRatioImageViewCallback(chartImage)
@@ -272,8 +263,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (securityId != null)
         {
             detachSubscription(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = securityCompactCache.get(securityId)
-                    .observeOn(AndroidSchedulers.mainThread())
+            securityCompactCacheSubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
                     .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
                     {
                         @Override public void onCompleted()
@@ -388,13 +378,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     protected Runnable getChooseOtherSizeRunnable()
     {
-        return new Runnable()
-        {
-            @Override public void run()
-            {
-                chooseOtherSize();
-            }
-        };
+        return () -> chooseOtherSize();
     }
 
     protected void chooseOtherSize()
@@ -422,18 +406,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     private View.OnClickListener createChartImageClickListener()
     {
-        return new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                //Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
-                //LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-                Intent intent = new Intent(getActivity().getApplicationContext(), StockChartActivity.class);
-                Bundle args = new Bundle();
-                args.putBundle(BUNDLE_KEY_ARGUMENTS, getArguments());
-                intent.putExtras(args);
-                getActivity().startActivity(intent);
-            }
+        return v -> {
+            //Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
+            //LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+            Intent intent = new Intent(getActivity().getApplicationContext(), StockChartActivity.class);
+            Bundle args = new Bundle();
+            args.putBundle(BUNDLE_KEY_ARGUMENTS, getArguments());
+            intent.putExtras(args);
+            getActivity().startActivity(intent);
         };
     }
 

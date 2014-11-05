@@ -137,16 +137,11 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         if (listView != null)
         {
             listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(@NotNull AdapterView<?> adapterView, View view, int position, long l)
+            listView.setOnItemClickListener((adapterView, view1, position, l) -> {
+                Object o = adapterView.getItemAtPosition(position);
+                if (o instanceof NewsItemDTOKey)
                 {
-                    Object o = adapterView.getItemAtPosition(position);
-                    if (o instanceof NewsItemDTOKey)
-                    {
-                        handleNewsClicked(position, (NewsItemDTOKey) o);
-                    }
+                    handleNewsClicked(position, (NewsItemDTOKey) o);
                 }
             });
             listView.setOnScrollListener(dashboardTabListViewScrollListener);
@@ -269,16 +264,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
     protected void handleNewsClicked(int position, @Nullable NewsItemDTOKey news)
     {
-        //if (news != null)
-        //{
-        //    int resId = adapter.getBackgroundRes(position);
-        //    Bundle bundle = new Bundle();
-        //    NewsDiscussionFragment.putBackgroundResId(bundle, resId);
-        //    NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
-        //    NewsDiscussionFragment.putDiscussionKey(bundle, news);
-        //    getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
-        //
-        //}
         tempPosition = position;
         tempDto = news;
         if (news != null)
