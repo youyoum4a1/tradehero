@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.onboarding;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,6 @@ import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
@@ -37,7 +38,7 @@ import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
 import com.tradehero.th.models.market.ExchangeSectorCompactKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeSectorCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
@@ -46,9 +47,8 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -60,7 +60,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject ExchangeSectorCompactListCacheRx exchangeSectorCompactListCache;
-    @Inject LeaderboardUserListCache leaderboardUserListCache;
+    @Inject LeaderboardUserListCacheRx leaderboardUserListCache;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject BroadcastUtils broadcastUtils;
 
@@ -75,7 +75,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
 
     //hero
     @NonNull OnBoardPickHeroViewHolder heroViewHolder;
-    @Nullable DTOCacheNew.Listener<SuggestHeroesListType, LeaderboardUserDTOList> leaderboardUserListCacheListener;
+    @Nullable private Subscription leaderboardUserListCacheSubscription;
 
     //stock
     @Inject SecurityCompactListCacheRx securityCompactListCache;
@@ -95,7 +95,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         exchangeSectorViewHolder = new OnBoardPickExchangeSectorViewHolder(getActivity());
         //hero
         heroViewHolder = new OnBoardPickHeroViewHolder(getActivity());
-        leaderboardUserListCacheListener = new OnBoardPickHeroLeaderboardCacheListener();
         //stock
         stockViewHolder = new OnBoardPickStockViewHolder(getActivity());
     }
@@ -124,7 +123,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     }
 
     protected class OnBoardPickExchangeUserProfileObserver
-        implements Observer<Pair<UserBaseKey, UserProfileDTO>>
+            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
         @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
@@ -176,15 +175,19 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         return exchangeSectorViewHolder.getOnBoardPrefs();
     }
 
-    protected class OnBoardPickHeroLeaderboardCacheListener implements DTOCacheNew.Listener<SuggestHeroesListType, LeaderboardUserDTOList>
+    protected class OnBoardPickHeroLeaderboardCacheObserver implements Observer<Pair<SuggestHeroesListType, LeaderboardUserDTOList>>
     {
-        @Override public void onDTOReceived(@NonNull SuggestHeroesListType key, @NonNull LeaderboardUserDTOList value)
+        @Override public void onNext(Pair<SuggestHeroesListType, LeaderboardUserDTOList> pair)
         {
             mHeroSwitcher.setDisplayedChild(1);
-            heroViewHolder.setUsers(value);
+            heroViewHolder.setUsers(pair.second);
         }
 
-        @Override public void onErrorThrown(@NonNull SuggestHeroesListType key, @NonNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_leaderboard_info);
         }
@@ -198,17 +201,12 @@ public class OnBoardDialogFragment extends BaseDialogFragment
                     exchangeSectorSecurityListType.exchangeId,
                     exchangeSectorSecurityListType.sectorId,
                     1, null);
-            detachLeaderboardUserListCache();
-            leaderboardUserListCache.register(
-                    key,
-                    leaderboardUserListCacheListener);
-            leaderboardUserListCache.getOrFetchAsync(key);
+            unsubscribe(leaderboardUserListCacheSubscription);
+            leaderboardUserListCacheSubscription = AndroidObservable.bindFragment(
+                    this,
+                    leaderboardUserListCache.get(key))
+                    .subscribe(new OnBoardPickHeroLeaderboardCacheObserver());
         }
-    }
-
-    protected void detachLeaderboardUserListCache()
-    {
-        leaderboardUserListCache.unregister(leaderboardUserListCacheListener);
     }
 
     protected void fetchExchangeSectorSecurities(ExchangeSectorSecurityListType exchangeSectorSecurityListType)
@@ -241,7 +239,8 @@ public class OnBoardDialogFragment extends BaseDialogFragment
 
     @Override public void onDestroyView()
     {
-        detachLeaderboardUserListCache();
+        unsubscribe(leaderboardUserListCacheSubscription);
+        leaderboardUserListCacheSubscription = null;
         exchangeSectorViewHolder.detachView();
         heroViewHolder.detachView();
         stockViewHolder.detachView();
@@ -252,7 +251,8 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Override public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        detachLeaderboardUserListCache();
+        unsubscribe(leaderboardUserListCacheSubscription);
+        leaderboardUserListCacheSubscription = null;
     }
 
     @Override public void onDismiss(DialogInterface dialog)
@@ -263,7 +263,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
 
     @Override public void onDestroy()
     {
-        leaderboardUserListCacheListener = null;
+        leaderboardUserListCacheSubscription = null;
         super.onDestroy();
     }
 

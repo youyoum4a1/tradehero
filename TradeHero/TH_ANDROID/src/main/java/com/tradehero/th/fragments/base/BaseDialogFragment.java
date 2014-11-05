@@ -5,10 +5,12 @@ import android.app.DialogFragment;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
+import rx.Subscription;
 
 public abstract class BaseDialogFragment extends DialogFragment
 {
@@ -64,6 +66,14 @@ public abstract class BaseDialogFragment extends DialogFragment
             dismissedListenerCopy.onDismissed(dialog);
         }
         dismissedListener = null;
+    }
+
+    protected void unsubscribe(@Nullable Subscription subscription)
+    {
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
     }
 
     public static interface OnDismissedListener
