@@ -17,8 +17,7 @@ public class NewsItemListKey implements DTOKey
 
     @Override public int hashCode()
     {
-        return (page == null ? 0 : page.hashCode()) ^
-                (perPage == null ? 0 : perPage.hashCode());
+        return ((page == null ? 0 : page) * 31 + (perPage == null ? 0 : perPage)) * 31;
     }
 
     @Override public boolean equals(Object other)
@@ -35,5 +34,10 @@ public class NewsItemListKey implements DTOKey
     {
         return (page == null ? other.page == null : page.equals(other.page)) &&
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
+    }
+
+    @Override public String toString()
+    {
+        return String.format("[page=%d, perPager=%d] - ", page, perPage) + getClass().toString();
     }
 }
