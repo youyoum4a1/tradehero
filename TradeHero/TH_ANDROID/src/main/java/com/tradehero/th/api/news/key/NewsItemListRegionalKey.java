@@ -31,7 +31,7 @@ public class NewsItemListRegionalKey extends NewsItemListKey
     protected boolean equalFields(NewsItemListRegionalKey other)
     {
         return super.equalFields(other) &&
-                (countryCode == null ? other.countryCode == null : countryCode.equals(other.countryCode)) ^
+                (countryCode == null ? other.countryCode == null : countryCode.equals(other.countryCode)) &&
                         (languageCode == null ? other.languageCode == null : languageCode.equals(other.languageCode));
     }
 
