@@ -13,7 +13,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -26,7 +26,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
     private static final String BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE = LeaderboardFilterFragment.class.getName() + ".perPagedFilteredLeaderboardKey";
 
     @Inject Analytics analytics;
-    @Inject LeaderboardCache leaderboardCache;
+    @Inject LeaderboardCacheRx leaderboardCache;
     @InjectView(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
 
     @NonNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
@@ -54,7 +54,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
         {
             this.perPagedFilteredLeaderboardKey = getPerPagedFilteredLeaderboardKey(getArguments());
         }
-        leaderboardDTO = leaderboardCache.get(perPagedFilteredLeaderboardKey);
+        leaderboardDTO = leaderboardCache.getValue(perPagedFilteredLeaderboardKey);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

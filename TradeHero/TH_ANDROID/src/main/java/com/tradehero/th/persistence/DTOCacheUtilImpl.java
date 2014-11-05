@@ -36,7 +36,7 @@ import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
@@ -71,7 +71,7 @@ import rx.observers.EmptyObserver;
     protected final Lazy<AlertCompactListCacheRx> alertCompactListCache;
     protected final Lazy<ExchangeCompactListCacheRx> exchangeCompactListCache;
     protected final Lazy<HomeContentCacheRx> homeContentCache;
-    protected final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    protected final Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
     protected final Lazy<LevelDefListCacheRx> levelDefListCache;
     protected final Lazy<NotificationCacheRx> notificationCache;
     protected final Lazy<PortfolioCacheRx> portfolioCache;
@@ -107,7 +107,7 @@ import rx.observers.EmptyObserver;
             Lazy<AlertCompactListCacheRx> alertCompactListCache,
             Lazy<ExchangeCompactListCacheRx> exchangeCompactListCache,
             Lazy<HomeContentCacheRx> homeContentCache,
-            Lazy<LeaderboardDefListCache> leaderboardDefListCache,
+            Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache,
             Lazy<LevelDefListCacheRx> levelDefListCacheLazy,
             Lazy<NotificationCacheRx> notificationCache,
             Lazy<PortfolioCacheRx> portfolioCache,
@@ -356,7 +356,7 @@ import rx.observers.EmptyObserver;
 
     public void preFetchLeaderboardDefs()
     {
-        leaderboardDefListCache.get().getOrFetchAsync(new LeaderboardDefListKey());
+        leaderboardDefListCache.get().get(new LeaderboardDefListKey());
     }
 
     public void preFetchHomeContent()

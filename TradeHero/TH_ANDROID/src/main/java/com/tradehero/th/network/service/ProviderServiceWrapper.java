@@ -12,6 +12,7 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
@@ -52,12 +53,6 @@ import rx.Observable;
         return new DTOProcessorProviderCompactListReceived(createProcessorProviderReceived());
     }
 
-    @NonNull public ProviderDTOList getProviders()
-    {
-        return createProcessorProviderCompactListReceived().process(
-                this.providerService.getProviders());
-    }
-
     @NonNull public Observable<ProviderDTOList> getProvidersRx()
     {
         return this.providerServiceRx.getProviders()
@@ -78,6 +73,7 @@ import rx.Observable;
 
     //</editor-fold>
 
+    //<editor-fold desc="Get Provider">
     @NonNull public Observable<ProviderDTO> getProviderRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getProvider(providerId.key)
@@ -89,6 +85,17 @@ import rx.Observable;
                     }
                 });
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Provider Portfolio">
+    @NonNull public Observable<PortfolioDTO> getPortfolio(@NonNull ProviderId providerId)
+    {
+        return this.providerServiceRx.getPortfolio(providerId.key)
+                .doOnNext(portfolio -> {
+                    portfolio.userId = currentUserId.get();
+                });
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
     public SecurityCompactDTOList getProviderSecurities(@NonNull ProviderSecurityListType key)

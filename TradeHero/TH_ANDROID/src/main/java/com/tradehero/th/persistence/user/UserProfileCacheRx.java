@@ -1,17 +1,17 @@
 package com.tradehero.th.persistence.user;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -22,13 +22,13 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
 
     @NonNull private final Lazy<UserServiceWrapper> userServiceWrapper;
     @NonNull private final Lazy<UserProfileCompactCacheRx> userProfileCompactCache;
-    @NonNull private final Lazy<LeaderboardCache> leaderboardCache;
+    @NonNull private final Lazy<LeaderboardCacheRx> leaderboardCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileCacheRx(
             @NonNull Lazy<UserServiceWrapper> userServiceWrapper,
             @NonNull Lazy<UserProfileCompactCacheRx> userProfileCompactCache,
-            @NonNull Lazy<LeaderboardCache> leaderboardCache,
+            @NonNull Lazy<LeaderboardCacheRx> leaderboardCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
@@ -48,7 +48,7 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
     {
         if (userProfileDTO.mostSkilledLbmu != null)
         {
-            leaderboardCache.get().put(userProfileDTO.getMostSkilledUserOnLbmuKey(), userProfileDTO.mostSkilledLbmu);
+            leaderboardCache.get().onNext(userProfileDTO.getMostSkilledUserOnLbmuKey(), userProfileDTO.mostSkilledLbmu);
         }
         userProfileCompactCache.get().onNext(key, userProfileDTO);
         super.onNext(key, userProfileDTO);

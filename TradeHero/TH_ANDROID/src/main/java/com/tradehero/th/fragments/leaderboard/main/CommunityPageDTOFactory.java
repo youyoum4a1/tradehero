@@ -1,25 +1,21 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import javax.inject.Inject;
-
 import timber.log.Timber;
 
 class CommunityPageDTOFactory
 {
-    @NonNull private final LeaderboardDefListCache leaderboardDefListCache;
+    @NonNull private final LeaderboardDefListCacheRx leaderboardDefListCache;
     @NonNull private final MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
 
     //<editor-fold desc="Constructors">
     @Inject CommunityPageDTOFactory(
-            @NonNull LeaderboardDefListCache leaderboardDefListCache,
+            @NonNull LeaderboardDefListCacheRx leaderboardDefListCache,
             @NonNull MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory)
     {
         this.leaderboardDefListCache = leaderboardDefListCache;
@@ -27,7 +23,7 @@ class CommunityPageDTOFactory
     }
     //</editor-fold>
 
-    @NonNull public LeaderboardDefDTOList collectFromCaches(@Nullable String countryCode)
+    @NonNull public LeaderboardDefDTOList collectFromCaches(@android.support.annotation.Nullable String countryCode)
     {
         LeaderboardDefDTOList collected = new LeaderboardDefDTOList();
         LeaderboardDefListKey key;
@@ -38,7 +34,7 @@ class CommunityPageDTOFactory
             Timber.d("Type %s, key %s", type, key);
             if (key != null)
             {
-                cached = leaderboardDefListCache.get(key);
+                cached = leaderboardDefListCache.getValue(key);
                 if (cached != null)
                 {
                     collected.addAll(cached);
@@ -54,7 +50,7 @@ class CommunityPageDTOFactory
 
     @NonNull public LeaderboardDefDTOList collectForCountryCodeFromCaches(@NonNull String countryCode)
     {
-        LeaderboardDefDTOList allKeys = leaderboardDefListCache.get(new LeaderboardDefListKey());
+        LeaderboardDefDTOList allKeys = leaderboardDefListCache.getValue(new LeaderboardDefListKey());
         if (allKeys != null)
         {
             return allKeys.keepForCountryCode(countryCode);

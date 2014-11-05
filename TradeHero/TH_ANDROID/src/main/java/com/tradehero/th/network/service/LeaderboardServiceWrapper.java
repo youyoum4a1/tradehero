@@ -1,9 +1,12 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
@@ -19,7 +22,6 @@ import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class LeaderboardServiceWrapper
@@ -62,6 +64,14 @@ import rx.Observable;
     {
         return leaderboardServiceRx.getLeaderboardDefinitions()
                 .map(createProcessorLeaderboardDefDTOList());
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Leaderboard Definition">
+    @NonNull public Observable<LeaderboardDefDTO> getLeaderboardDef(
+            @NonNull LeaderboardDefKey leaderboardDefKey)
+    {
+        return leaderboardServiceRx.getLeaderboardDef(leaderboardDefKey.key);
     }
     //</editor-fold>
 

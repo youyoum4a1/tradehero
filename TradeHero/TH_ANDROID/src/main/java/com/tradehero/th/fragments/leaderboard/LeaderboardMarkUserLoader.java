@@ -7,7 +7,7 @@ import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.loaders.PaginationListLoader;
-import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -17,7 +17,7 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
 {
     protected PagedLeaderboardKey pagedLeaderboardKey;
 
-    @Inject LeaderboardCache leaderboardCache;
+    @Inject LeaderboardCacheRx leaderboardCache;
     private Date markUtc;
 
     public LeaderboardMarkUserLoader(Context context, PagedLeaderboardKey pagedLeaderboardKey)
@@ -50,7 +50,7 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
 
         try
         {
-            LeaderboardDTO fetched = leaderboardCache.getOrFetchSync(pagedLeaderboardKey);
+            LeaderboardDTO fetched = leaderboardCache.get(pagedLeaderboardKey).toBlocking().first().second;
 
             if (fetched == null)
             {

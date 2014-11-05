@@ -2,9 +2,12 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,7 +19,6 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -44,8 +46,7 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -56,9 +57,9 @@ import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscription;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserItemView extends RelativeLayout
@@ -68,8 +69,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     public static final int MAX_OWN_RANKING = 1000;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject Lazy<LeaderboardCache> leaderboardCache;
+    @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
@@ -113,7 +113,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
 
-    private @Nullable DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardOwnUserRankingListener;
+    @Nullable private Subscription leaderboardOwnUserRankingSubscription;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -138,7 +138,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         HierarchyInjector.inject(this);
         initViews();
-        leaderboardOwnUserRankingListener = createLeaderboardUserRankingListener();
     }
 
     private void initViews()
@@ -162,10 +161,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
         }
-        if (leaderboardOwnUserRankingListener == null)
-        {
-            leaderboardOwnUserRankingListener = createLeaderboardUserRankingListener();
-        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -181,7 +176,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuProfilePicture.setImageDrawable(null);
         }
         detachOwnRankingLeaderboardCache();
-        leaderboardOwnUserRankingListener = null;
+        leaderboardOwnUserRankingSubscription = null;
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -223,7 +218,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void detachOwnRankingLeaderboardCache()
     {
-        leaderboardCache.get().unregister(leaderboardOwnUserRankingListener);
+        Subscription copy = leaderboardOwnUserRankingSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        leaderboardOwnUserRankingSubscription = null;
     }
 
     private void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
@@ -543,7 +543,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (leaderboardId != null)
         {
             leaderboardDef = leaderboardDefCache.get()
-                    .get(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
+                    .getValue(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
         }
 
         if (leaderboardItem.lbmuId != -1)
@@ -687,18 +687,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         void onFollowRequested(@NonNull UserBaseDTO userBaseKey);
     }
 
-    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createLeaderboardUserRankingListener()
+    protected Observer<Pair<LeaderboardKey, LeaderboardDTO>> createLeaderboardUserRankingObserver()
     {
-        return new LeaderboardUserRankingCacheListener();
+        return new LeaderboardUserRankingCacheObserver();
     }
 
-    protected class LeaderboardUserRankingCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
+    protected class LeaderboardUserRankingCacheObserver implements Observer<Pair<LeaderboardKey, LeaderboardDTO>>
     {
-        @Override public void onDTOReceived(@NonNull LeaderboardKey key, @NonNull LeaderboardDTO leaderboardDTO)
+        @Override public void onNext(Pair<LeaderboardKey, LeaderboardDTO> pair)
         {
-            if (leaderboardDTO.users != null && !leaderboardDTO.users.isEmpty())
+            if (pair.second.users != null && !pair.second.users.isEmpty())
             {
-                LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardDTO.users.get(0);
+                LeaderboardUserDTO ownLeaderboardUserDTO = pair.second.users.get(0);
                 display(ownLeaderboardUserDTO);
             }
             else
@@ -707,9 +707,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(@NonNull LeaderboardKey key, @NonNull Throwable error)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(error));
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
@@ -43,15 +44,15 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -61,7 +62,7 @@ import timber.log.Timber;
 public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         implements WithTutorial, View.OnClickListener
 {
-    @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
@@ -73,27 +74,31 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     private BaseWebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
-    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListFetchListener;
+    @Nullable protected Subscription leaderboardDefListFetchSubscription;
     protected UserProfileDTO currentUserProfileDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardDefListFetchListener = createDefKeyListListener();
+        leaderboardDefListAdapter = createAdapter();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.leaderboard_community_screen, container, false);
+        return inflater.inflate(R.layout.leaderboard_community_screen, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         initViews(view);
-        return view;
     }
 
     @Override protected void initViews(View view)
     {
         leaderboardDefListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
     }
 
     @Override public void onStart()
@@ -119,7 +124,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     @Override public void onStop()
     {
-        detachLeaderboardDefListCacheFetchTask();
+        unsubscribe(leaderboardDefListFetchSubscription);
+        leaderboardDefListFetchSubscription = null;
         currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
         leaderboardDefListView.setOnItemClickListener(null);
         super.onStop();
@@ -127,7 +133,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
-        leaderboardDefListFetchListener = null;
+        leaderboardDefListAdapter = null;
         detachWebFragment();
         super.onDestroy();
     }
@@ -152,6 +158,13 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
+
+    protected LeaderboardCommunityAdapter createAdapter()
+    {
+        return new LeaderboardCommunityAdapter(
+                getActivity(),
+                R.layout.leaderboard_definition_item_view);
+    }
 
     private void detachWebFragment()
     {
@@ -199,11 +212,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         this.currentUserProfileDTO = currentUserProfileDTO;
     }
 
-    private void detachLeaderboardDefListCacheFetchTask()
-    {
-        leaderboardDefListCache.get().unregister(leaderboardDefListFetchListener);
-    }
-
     private void loadLeaderboardData()
     {
         fetchLeaderboardDefList();
@@ -211,27 +219,33 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private void fetchLeaderboardDefList()
     {
-        detachLeaderboardDefListCacheFetchTask();
-        leaderboardDefListCache.get().register(new LeaderboardDefListKey(), leaderboardDefListFetchListener);
-        leaderboardDefListCache.get().getOrFetchAsync(new LeaderboardDefListKey());
+        unsubscribe(leaderboardDefListFetchSubscription);
+        leaderboardDefListFetchSubscription = AndroidObservable.bindFragment(
+                this,
+                leaderboardDefListCache.get().get(new LeaderboardDefListKey()))
+                .subscribe(createDefKeyListObserver());
     }
 
-    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> createDefKeyListListener()
+    @NonNull protected Observer<Pair<LeaderboardDefListKey, LeaderboardDefDTOList>> createDefKeyListObserver()
     {
-        return new LeaderboardCommunityLeaderboardDefKeyListListener();
+        return new LeaderboardCommunityLeaderboardDefKeyListObserver();
     }
 
-    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList>
+    protected class LeaderboardCommunityLeaderboardDefKeyListObserver implements Observer<Pair<LeaderboardDefListKey, LeaderboardDefDTOList>>
     {
-        @Override public void onDTOReceived(@NonNull LeaderboardDefListKey key, @NonNull LeaderboardDefDTOList value)
+        @Override public void onNext(Pair<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListKeyLeaderboardDefDTOListPair)
         {
-            recreateAdapter();
+            rePopulateAdapter();
         }
 
-        @Override public void onErrorThrown(@NonNull LeaderboardDefListKey key, @NonNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
-            Timber.e(error, "Error fetching the leaderboard def key list %s", key);
+            Timber.e(e, "Error fetching the leaderboard def key list");
         }
     }
     //</editor-fold>
@@ -285,23 +299,15 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void recreateAdapter()
+    protected void rePopulateAdapter()
     {
         communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
-        if(leaderboardDefListAdapter != null)
+        if (leaderboardDefListAdapter != null)
         {
             leaderboardDefListAdapter.clear();
         }
-        leaderboardDefListAdapter = createAdapter();
         leaderboardDefListAdapter.addAll(communityPageDTOFactory.collectFromCaches(currentUserProfileDTO.countryCode));
-        leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
-    }
-
-    protected LeaderboardCommunityAdapter createAdapter()
-    {
-        return new LeaderboardCommunityAdapter(
-                getActivity(),
-                R.layout.leaderboard_definition_item_view);
+        leaderboardDefListAdapter.notifyDataSetChanged();
     }
 
     /**

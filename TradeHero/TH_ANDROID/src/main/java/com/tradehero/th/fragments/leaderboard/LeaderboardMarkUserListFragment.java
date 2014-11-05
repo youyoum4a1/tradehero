@@ -3,6 +3,9 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -52,9 +54,10 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
@@ -73,7 +76,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     private TextView leaderboardMarkUserMarkingTime;
     private View mRankHeaderView;
 
-    @Nullable protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> userOnLeaderboardCacheListener;
+    @Nullable protected Subscription userOnLeaderboardCacheSubscription;
     protected LeaderboardUserDTO currentLeaderboardUserDTO;
 
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
@@ -91,7 +94,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         super.onCreate(savedInstanceState);
         currentLeaderboardKey = getInitialLeaderboardKey();
-        this.userOnLeaderboardCacheListener = createUserOnLeaderboardListener();
     }
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
@@ -280,7 +282,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @Override public void onStop()
     {
-        detachUserOnLeaderboardCacheListener();
+        unsubscribe(userOnLeaderboardCacheSubscription);
+        userOnLeaderboardCacheSubscription = null;
         detachFollowDialogCombo();
         detachChoiceFollowAssistant();
         super.onStop();
@@ -305,7 +308,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroy()
     {
-        this.userOnLeaderboardCacheListener = null;
+        this.userOnLeaderboardCacheSubscription = null;
         this.leaderboardFilterFragment = null;
         saveCurrentFilterKey();
         getActivity().getSupportLoaderManager().destroyLoader(leaderboardDefKey.key);
@@ -315,11 +318,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected void saveCurrentFilterKey()
     {
         savedPreference.set(currentLeaderboardKey);
-    }
-
-    protected void detachUserOnLeaderboardCacheListener()
-    {
-        leaderboardCache.unregister(userOnLeaderboardCacheListener);
     }
 
     protected void detachFollowDialogCombo()
@@ -373,11 +371,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected void fetchUserOnLeaderboard()
     {
-        detachUserOnLeaderboardCacheListener();
         UserOnLeaderboardKey userOnLeaderboardKey =
                 new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
-        leaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
-        leaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
+        unsubscribe(userOnLeaderboardCacheSubscription);
+        userOnLeaderboardCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                leaderboardCache.get(userOnLeaderboardKey))
+                .subscribe(createUserOnLeaderboardObserver());
         //Show loading
         updateLoadingCurrentRankHeaderView();
     }
@@ -436,26 +436,30 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
-    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createUserOnLeaderboardListener()
+    protected Observer<Pair<LeaderboardKey, LeaderboardDTO>> createUserOnLeaderboardObserver()
     {
-        return new BaseLeaderboardFragmentUserOnLeaderboardCacheListener();
+        return new BaseLeaderboardFragmentUserOnLeaderboardCacheObserver();
     }
 
-    protected class BaseLeaderboardFragmentUserOnLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
+    protected class BaseLeaderboardFragmentUserOnLeaderboardCacheObserver implements Observer<Pair<LeaderboardKey, LeaderboardDTO>>
     {
-        @Override public void onDTOReceived(@NonNull LeaderboardKey key, @NonNull LeaderboardDTO value)
+        @Override public void onNext(Pair<LeaderboardKey, LeaderboardDTO> pair)
         {
             LeaderboardUserDTO received = null;
-            if (value.users != null && value.users.size() == 1)
+            if (pair.second.users != null && pair.second.users.size() == 1)
             {
-                received = value.users.get(0);
+                received = pair.second.users.get(0);
             }
             linkWith(received, true);
         }
 
-        @Override public void onErrorThrown(@NonNull LeaderboardKey key, @NonNull Throwable error)
+        @Override public void onCompleted()
         {
-            Timber.e("Failed to download current User position on leaderboard", error);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.e("Failed to download current User position on leaderboard", e);
             THToast.show(R.string.error_fetch_user_on_leaderboard);
             linkWith((LeaderboardUserDTO) null, true);
         }

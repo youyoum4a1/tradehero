@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,6 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
@@ -18,19 +19,19 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 {
-    @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
-    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @Inject protected Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
     @Inject protected LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
-    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListCacheFetchListener;
+    @Nullable protected Subscription leaderboardDefListCacheFetchSubscription;
 
     private ArrayAdapter<LeaderboardDefDTO> leaderboardDefListAdapter;
     @InjectView(android.R.id.list) protected ListView contentListView;
@@ -38,22 +39,25 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardDefListCacheFetchListener = createLeaderboardDefKeyListListener();
+        leaderboardDefListAdapter = new ArrayDTOAdapterNew<LeaderboardDefDTO, LeaderboardDefView>(
+                getActivity(),
+                R.layout.leaderboard_definition_item_view);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.leaderboard_def_listview, container, false);
+        return inflater.inflate(R.layout.leaderboard_def_listview, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         initViews(view);
-        return view;
     }
 
     @Override protected void initViews(View view)
     {
-        leaderboardDefListAdapter = new ArrayDTOAdapterNew<LeaderboardDefDTO, LeaderboardDefView>(
-                getActivity(),
-                R.layout.leaderboard_definition_item_view);
         contentListView.setAdapter(leaderboardDefListAdapter);
         contentListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
@@ -67,15 +71,17 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroyView()
     {
-        detachLeaderboardDefListCacheFetchTask();
+        unsubscribe(leaderboardDefListCacheFetchSubscription);
+        leaderboardDefListCacheFetchSubscription = null;
         contentListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    protected void detachLeaderboardDefListCacheFetchTask()
+    @Override public void onDestroy()
     {
-        leaderboardDefListCache.get().unregister(leaderboardDefListCacheFetchListener);
+        leaderboardDefListAdapter = null;
+        super.onDestroy();
     }
 
     @OnItemClick(android.R.id.list)
@@ -94,28 +100,34 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 
     private void updateLeaderboardDefListKey(Bundle bundle)
     {
-        detachLeaderboardDefListCacheFetchTask();
+        unsubscribe(leaderboardDefListCacheFetchSubscription);
         LeaderboardDefListKey key = leaderboardDefListKeyFactory.create(bundle);
-        leaderboardDefListCache.get().register(key, leaderboardDefListCacheFetchListener);
-        leaderboardDefListCache.get().getOrFetchAsync(key);
+        leaderboardDefListCacheFetchSubscription = AndroidObservable.bindFragment(
+                this,
+                leaderboardDefListCache.get().get(key))
+                .subscribe(createLeaderboardDefKeyListObserver());
     }
 
-    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> createLeaderboardDefKeyListListener()
+    protected Observer<Pair<LeaderboardDefListKey, LeaderboardDefDTOList>> createLeaderboardDefKeyListObserver()
     {
-        return new LeaderboardDefListViewFragmentDefKeyListListener();
+        return new LeaderboardDefListViewFragmentDefKeyListObserver();
     }
 
-    protected class LeaderboardDefListViewFragmentDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList>
+    protected class LeaderboardDefListViewFragmentDefKeyListObserver implements Observer<Pair<LeaderboardDefListKey, LeaderboardDefDTOList>>
     {
-        @Override public void onDTOReceived(@NonNull LeaderboardDefListKey key, @NonNull LeaderboardDefDTOList value)
+        @Override public void onNext(Pair<LeaderboardDefListKey, LeaderboardDefDTOList> pair)
         {
-            handleDTOReceived(key, value);
+            handleDTOReceived(pair.first, pair.second);
         }
 
-        @Override public void onErrorThrown(@NonNull LeaderboardDefListKey key, @NonNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
-            Timber.e("Error fetching the leaderboard def key list %s", key, error);
+            Timber.e("Error fetching the leaderboard def key list", e);
         }
     }
 

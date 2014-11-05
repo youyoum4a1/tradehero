@@ -32,7 +32,7 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -64,7 +64,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Inject HeroListCacheRx heroListCache;
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
     /** when no heroes */
-    @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
@@ -392,7 +392,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
         LeaderboardDefKey key =
                 new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
-        LeaderboardDefDTO dto = leaderboardDefCache.get().get(key);
+        LeaderboardDefDTO dto = leaderboardDefCache.get().getValue(key);
         Bundle bundle = new Bundle(getArguments());
         if (dto != null)
         {
