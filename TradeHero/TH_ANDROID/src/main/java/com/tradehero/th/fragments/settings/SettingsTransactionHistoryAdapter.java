@@ -17,7 +17,6 @@ import timber.log.Timber;
 
 public class SettingsTransactionHistoryAdapter extends BaseAdapter
 {
-    protected final LayoutInflater inflater;
     protected final Context context;
     private final int layoutResourceId;
 
@@ -25,12 +24,11 @@ public class SettingsTransactionHistoryAdapter extends BaseAdapter
     private final DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
     private final DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-    public SettingsTransactionHistoryAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public SettingsTransactionHistoryAdapter(Context context, int layoutResourceId)
     {
         super();
         this.items = new ArrayList<>();
         this.context = context;
-        this.inflater = inflater;
         this.layoutResourceId = layoutResourceId;
     }
 
@@ -71,7 +69,7 @@ public class SettingsTransactionHistoryAdapter extends BaseAdapter
         Timber.d("getView %d", position);
         if (convertView == null)
         {
-            convertView = inflater.inflate(layoutResourceId, viewGroup, false);
+            convertView = LayoutInflater.from(context).inflate(layoutResourceId, viewGroup, false);
         }
 
         UserTransactionHistoryDTO item = (UserTransactionHistoryDTO) getItem(position);

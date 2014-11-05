@@ -2,28 +2,32 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.user.UserTransactionHistoryListCache;
+import com.tradehero.th.persistence.user.UserTransactionHistoryListCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
@@ -31,17 +35,19 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
     private ProgressDialog progressDialog;
 
-    @Inject UserTransactionHistoryListCache userTransactionHistoryListCache;
+    @Inject UserTransactionHistoryListCacheRx userTransactionHistoryListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
-    protected DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryDTOList> transactionListCacheListener;
+    @Nullable protected Subscription transactionListCacheSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        transactionListCacheListener = createTransactionHistoryListener();
+        transactionListViewAdapter = new SettingsTransactionHistoryAdapter(
+                getActivity(),
+                R.layout.fragment_settings_transaction_history_adapter);
     }
 
     //<editor-fold desc="ActionBar">
@@ -54,10 +60,13 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_settings_transaction_history, container, false);
+        return inflater.inflate(R.layout.fragment_settings_transaction_history, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        transactionListViewAdapter = new SettingsTransactionHistoryAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.fragment_settings_transaction_history_adapter);
         transactionListView.setAdapter(transactionListViewAdapter);
         transactionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
 
@@ -65,7 +74,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
                 getActivity(),
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);
-        return view;
     }
 
     @Override public void onResume()
@@ -79,58 +87,50 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        detachTransactionListFetchTask();
-        if (transactionListViewAdapter != null)
-        {
-            transactionListViewAdapter.setItems(null);
-            transactionListViewAdapter = null;
-        }
-
-        if (transactionListView != null)
-        {
-            transactionListView.setAdapter(null);
-            transactionListView.setOnItemClickListener(null);
-            transactionListView.setOnScrollListener(null);
-            transactionListView = null;
-        }
-
+        unsubscribe(transactionListCacheSubscription);
+        transactionListCacheSubscription = null;
+        transactionListView.setOnScrollListener(null);
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        transactionListCacheListener = null;
+        transactionListViewAdapter.setItems(null);
+        transactionListViewAdapter = null;
         super.onDestroy();
-    }
-
-    protected void detachTransactionListFetchTask()
-    {
-        userTransactionHistoryListCache.unregister(transactionListCacheListener);
     }
 
     protected void fetchTransactionList()
     {
-        detachTransactionListFetchTask();
         UserTransactionHistoryListType key = new UserTransactionHistoryListType(currentUserId.toUserBaseKey());
-        userTransactionHistoryListCache.register(key, transactionListCacheListener);
-        userTransactionHistoryListCache.getOrFetchAsync(key);
+        unsubscribe(transactionListCacheSubscription);
+        transactionListCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                userTransactionHistoryListCache.get(key))
+                .subscribe(createTransactionHistoryObserver());
     }
 
-    protected DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryDTOList> createTransactionHistoryListener()
+    @NonNull protected Observer<Pair<UserTransactionHistoryListType, UserTransactionHistoryDTOList>> createTransactionHistoryObserver()
     {
-        return new SettingsTransactionHistoryListListener();
+        return new SettingsTransactionHistoryListObserver();
     }
 
-    protected class SettingsTransactionHistoryListListener implements DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryDTOList>
+    protected class SettingsTransactionHistoryListObserver implements Observer<Pair<UserTransactionHistoryListType, UserTransactionHistoryDTOList>>
     {
-        @Override public void onDTOReceived(@NonNull UserTransactionHistoryListType key, @NonNull UserTransactionHistoryDTOList value)
+        @Override public void onNext(
+                Pair<UserTransactionHistoryListType, UserTransactionHistoryDTOList> pair)
         {
-            transactionListViewAdapter.setItems(value);
+            transactionListViewAdapter.setItems(pair.second);
             transactionListViewAdapter.notifyDataSetChanged();
             progressDialog.hide();
         }
 
-        @Override public void onErrorThrown(@NonNull UserTransactionHistoryListType key, @NonNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show("Unable to fetch transaction history. Please try again later.");
             progressDialog.hide();

@@ -1,22 +1,25 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.util.Pair;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.DisplayNameDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.user.UserAvailabilityCache;
+import com.tradehero.th.persistence.user.UserAvailabilityCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ServerValidatedUsernameText extends ServerValidatedText
 {
-    @Inject UserAvailabilityCache userAvailabilityCache;
-    @Nullable private DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> userAvailabilityListener;
+    @Inject UserAvailabilityCacheRx userAvailabilityCache;
+    @Nullable private Subscription userAvailabilitySubscription;
     private boolean isValidInServer = true;
     private String originalUsernameValue;
 
@@ -28,31 +31,20 @@ public class ServerValidatedUsernameText extends ServerValidatedText
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-        userAvailabilityListener = createValidatedUserNameListener();
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        if (userAvailabilityListener == null)
-        {
-            userAvailabilityListener = createValidatedUserNameListener();
-        }
-    }
-
     @Override protected void onDetachedFromWindow()
     {
         detachUserAvailabilityCache();
-        userAvailabilityListener = null;
         super.onDetachedFromWindow();
     }
 
     private void detachUserAvailabilityCache()
     {
-        userAvailabilityCache.unregister(userAvailabilityListener);
+        Subscription copy = userAvailabilitySubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        userAvailabilitySubscription = null;
     }
 
     public void setOriginalUsernameValue(String originalUsernameValue)
@@ -84,7 +76,7 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         if (displayName != null)
         {
             UserAvailabilityDTO cachedAvailability =
-                    userAvailabilityCache.get(new DisplayNameDTO(displayName));
+                    userAvailabilityCache.getValue(new DisplayNameDTO(displayName));
             if (cachedAvailability != null)
             {
                 isValidInServer = cachedAvailability.available;
@@ -114,8 +106,9 @@ public class ServerValidatedUsernameText extends ServerValidatedText
             handleServerRequest(true);
             DisplayNameDTO key = new DisplayNameDTO(displayName);
             detachUserAvailabilityCache();
-            userAvailabilityCache.register(key, userAvailabilityListener);
-            userAvailabilityCache.getOrFetchAsync(key, true);
+            userAvailabilitySubscription = userAvailabilityCache.get(key)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createValidatedUserNameObserver());
         }
     }
 
@@ -135,45 +128,29 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         hintDefaultStatus();
     }
 
-    @NonNull protected DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> createValidatedUserNameListener()
+    @NonNull protected Observer<Pair<DisplayNameDTO, UserAvailabilityDTO>> createValidatedUserNameObserver()
     {
-        return new ValidatedUserNameAvailabilityListener();
+        return new ValidatedUserNameAvailabilityObserver();
     }
 
-    protected class ValidatedUserNameAvailabilityListener implements DTOCacheNew.HurriedListener<DisplayNameDTO, UserAvailabilityDTO>
+    protected class ValidatedUserNameAvailabilityObserver implements Observer<Pair<DisplayNameDTO, UserAvailabilityDTO>>
     {
-        @Override public void onPreCachedDTOReceived(
-                @NonNull DisplayNameDTO key,
-                @NonNull UserAvailabilityDTO value)
+        @Override public void onNext(Pair<DisplayNameDTO, UserAvailabilityDTO> pair)
         {
-            if (key.isSameName(getText().toString()))
-            {
-                handleReturnFromServer(value.available);
-            }
+            handleServerRequest(false);
+            handleReturnFromServer(pair.second.available);
         }
 
-        @Override public void onDTOReceived(
-                @NonNull DisplayNameDTO key,
-                @NonNull UserAvailabilityDTO value)
+        @Override public void onCompleted()
         {
-            if (key.isSameName(getText().toString()))
-            {
-                handleServerRequest(false);
-                handleReturnFromServer(value.available);
-            }
         }
 
-        @Override public void onErrorThrown(
-                @NonNull DisplayNameDTO key,
-                @NonNull Throwable error)
+        @Override public void onError(Throwable e)
         {
-            if (key.isSameName(getText().toString()))
+            handleServerRequest(false);
+            if (e instanceof RetrofitError && ((RetrofitError) e).isNetworkError())
             {
-                handleServerRequest(false);
-                if (error instanceof RetrofitError && ((RetrofitError) error).isNetworkError())
-                {
-                    handleNetworkError((RetrofitError) error);
-                }
+                handleNetworkError((RetrofitError) e);
             }
         }
     }
