@@ -469,14 +469,14 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
     private void showGuideViewDelayed(){
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        handler.post(new Runnable() {
             @Override
             public void run() {
                 if(guideView.getVisibility() ==View.GONE){
                     guideView.setVisibility(View.VISIBLE);
                 }
             }
-        }, 100);
+        });
     }
 
     private void displayGuideOfMainTab(){
