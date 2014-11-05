@@ -77,6 +77,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -398,7 +399,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
         }
         showLoadingProgress();
-        fetchSecurityList(position,false);
+        fetchSecurityList(position,true);
     }
 
     @Override

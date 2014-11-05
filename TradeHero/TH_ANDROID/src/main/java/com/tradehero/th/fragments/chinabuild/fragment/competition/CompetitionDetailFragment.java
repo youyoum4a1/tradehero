@@ -144,6 +144,8 @@ public class CompetitionDetailFragment extends DashboardFragment
     @InjectView(R.id.rlRankAll) RelativeLayout rlRankAll;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
+    private boolean isShowHeadLine = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -189,6 +191,9 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.competition_detail_layout, container, false);
         ButterKnife.inject(this, view);
+
+        includeMyPosition.setVisibility(isShowHeadLine ? View.VISIBLE : View.GONE);
+
         if (userCompetitionDTO != null)
         {
             initCompetitionTitle();
@@ -223,6 +228,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     private void initView()
     {
         includeMyPosition.setVisibility(userCompetitionDTO.isEnrolled ? View.VISIBLE : View.GONE);
+        isShowHeadLine = userCompetitionDTO.isEnrolled;
         initCompetition();
         initRankList();
         getMySelfRank();
@@ -234,7 +240,8 @@ public class CompetitionDetailFragment extends DashboardFragment
         if (userCompetitionDTO != null && userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing)
         {//比赛我参加了，并且还没结束。
             setHeadViewRight0("邀请好友");
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_INVITE));
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_INVITE));
         }
     }
 
@@ -293,7 +300,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void initCompetitionTitle()
     {
-        if(userCompetitionDTO != null)
+        if (userCompetitionDTO != null)
         {
             tvCompetitionIntro.setText(userCompetitionDTO.description);
             tvCompetitionCreator.setText(userCompetitionDTO.hostUserName);
@@ -359,7 +366,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Override public void onPause()
     {
         super.onPause();
-        if(listRanks!=null)
+        if (listRanks != null)
         {
             listRanks.onRefreshComplete();
         }
@@ -381,29 +388,32 @@ public class CompetitionDetailFragment extends DashboardFragment
         super.onResume();
         //refreshStatus();
 
-        if(THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_JOIN)){
+        if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_JOIN))
+        {
             showGuideView();
         }
         setLeaderboardHeadLine();
     }
 
-
-    private void showGuideView(){
-       Handler handler = new Handler();
-       handler.postDelayed(new Runnable() {
+    private void showGuideView()
+    {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 //Show Guide View
                 int width = tvGotoCompetition.getWidth();
                 int height = tvGotoCompetition.getHeight();
-                int position_x = ((DashboardActivity)getActivity()).SCREEN_W -
-                        (int)getActivity().getResources().getDimension(R.dimen.guide_competition_right_margin)-width/2;
-                int position_y = (int)getActivity().getResources().getDimension(R.dimen.guide_competition_height) + height/2;
-                int radius = (int)Math.sqrt(width * width/4 + height * height/4) + 10;
-                ((DashboardActivity)getActivity()).showGuideView(position_x,
+                int position_x = ((DashboardActivity) getActivity()).SCREEN_W -
+                        (int) getActivity().getResources().getDimension(R.dimen.guide_competition_right_margin) - width / 2;
+                int position_y = (int) getActivity().getResources().getDimension(R.dimen.guide_competition_height) + height / 2;
+                int radius = (int) Math.sqrt(width * width / 4 + height * height / 4) + 10;
+                ((DashboardActivity) getActivity()).showGuideView(position_x,
                         position_y, radius, GuideView.TYPE_GUIDE_COMPETITION_JOIN);
             }
-        },500);
+        }, 500);
     }
 
     public void refreshStatus()
@@ -420,7 +430,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         }
 
         fetchUserProfile();
-
     }
 
     private void detachUserProfileCache()
@@ -749,7 +758,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     public void setLeaderboardHeadLine()
     {
-        if (!userCompetitionDTO.isOngoing)
+        if (userCompetitionDTO != null && !userCompetitionDTO.isOngoing)
         {
             imgRightArrow.setVisibility(View.GONE);
         }
@@ -914,11 +923,12 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     @Override public void onClickHeadRight0()
     {
-        if(userCompetitionDTO == null){
+        if (userCompetitionDTO == null)
+        {
             return;
         }
         mShareSheetTitleCache.set(getString(R.string.share_detial_contest,
-               currentUserId.get().toString(), userCompetitionDTO.id, userCompetitionDTO.name));
+                currentUserId.get().toString(), userCompetitionDTO.id, userCompetitionDTO.name));
         ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                 .inflate(R.layout.share_sheet_local_dialog_layout, null);
         contentView.setLocalSocialClickedListener(

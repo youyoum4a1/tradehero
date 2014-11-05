@@ -255,6 +255,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     public static final int ERROR_NO_ASK_BID = 0;
     public static final int ERROR_NO_ASK = 1;
     public static final int ERROR_NO_BID = 2;
+    public static final int ERROR_NO_COMPETITION_PROTFOLIO = 3;
+
+    boolean isFromCompetition = false;
 
     @Inject Analytics analytics;
 
@@ -529,6 +532,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
             if (competitionID == 0)//不是比赛
             {
+                isFromCompetition = false;
                 SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
                 if (detailDTO != null)
                 {
@@ -541,6 +545,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             }
             else//是比赛
             {
+                isFromCompetition = true;
                 requestCompetitionPosition();
             }
         }
@@ -585,6 +590,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
     {
+        Timber.d("WINDY QuoteDTO get secsess");
         this.quoteDTO = quoteDTO;
 
         setInitialBuySaleQuantityIfCan();
@@ -703,6 +709,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     protected void requestCompetitionPosition()
     {
+        Timber.d("WINDY: requestCompetitionPosition start");
         detachCompetitionPositionCache();
         if (competitionID != 0 && this.securityId != null)
         {
@@ -765,6 +772,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         this.portfolioCompactDTO = portfolioCompactDTO;
         clampBuyQuantity(andDisplay);
         clampSellQuantity(andDisplay);
+
+        setInitialBuySaleQuantityIfCan();
     }
 
     protected void clampSellQuantity(boolean andDisplay)
@@ -786,7 +795,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
         @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
-            THToast.show(R.string.error_fetch_security_info);
+            //THToast.show(R.string.error_fetch_security_info);
             Timber.e(error, "Failed to fetch SecurityCompact %s", securityId);
         }
     }
@@ -1068,9 +1077,18 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             showBuyOrSaleError(ERROR_NO_BID);
             return false;
         }
+
         if (portfolioCompactDTO == null)
         {
             Timber.d("未获取到 portfolioCompactDTO ，不能进行交易");
+            if(isFromCompetition)
+            {
+                showBuyOrSaleError(ERROR_NO_COMPETITION_PROTFOLIO);
+            }
+            else
+            {
+
+            }
             return false;
         }
 
@@ -1090,6 +1108,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         else if (type == ERROR_NO_BID)
         {
             THToast.show("你所购买的股票已涨停");
+        }
+        else if(type == ERROR_NO_COMPETITION_PROTFOLIO)
+        {
+            THToast.show("请先报名参加比赛");
         }
     }
 
@@ -1135,7 +1157,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     protected void linkWith(PositionDTOCompact value)
     {
-
+        Timber.d("WINDY: requestCompetitionPosition success");
         if (value != null)
         {
             PositionDTOCompactList positionDTOCompacts = new PositionDTOCompactList();
@@ -1158,7 +1180,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
         @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
-            THToast.show(R.string.error_fetch_detailed_security_info);
+            //THToast.show(R.string.error_fetch_detailed_security_info);
             Timber.e("Error fetching the security position detail %s", key, error);
         }
     }
@@ -1182,7 +1204,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            THToast.show(R.string.error_fetch_your_user_profile);
+            //THToast.show(R.string.error_fetch_your_user_profile);
             Timber.e("Error fetching the user profile %s", key, error);
         }
     }
@@ -1258,7 +1280,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to fetch list of watch list items", error);
-            THToast.show(R.string.error_fetch_portfolio_list_info);
+            //THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
 
@@ -1343,7 +1365,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
         else
         {
-            THToast.show(R.string.error_fetch_portfolio_watchlist);
+            //THToast.show(R.string.error_fetch_portfolio_watchlist);
         }
     }
 
