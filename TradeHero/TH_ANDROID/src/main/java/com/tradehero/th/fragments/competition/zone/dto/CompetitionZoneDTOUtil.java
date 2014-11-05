@@ -31,7 +31,7 @@ public class CompetitionZoneDTOUtil
 
     public void populateLists(
             @NotNull Context context,
-            UserProfileCompactDTO portfolioUserProfileCompact,
+            @Nullable UserProfileCompactDTO portfolioUserProfileCompact,
             @Nullable ProviderDTO providerDTO,
             @Nullable List<CompetitionDTO> competitionDTOs,
             @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
@@ -51,7 +51,7 @@ public class CompetitionZoneDTOUtil
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
             preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
 
-            if (providerDTO.associatedPortfolio != null)
+            if (providerDTO.associatedPortfolio != null && portfolioUserProfileCompact != null)
             {
                 String subtitle = portfolioCompactDTOUtil.getPortfolioSubtitle(context, providerDTO.associatedPortfolio, null);
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PORTFOLIO);
@@ -77,6 +77,11 @@ public class CompetitionZoneDTOUtil
                         preparedOrderedItems.add(new CompetitionZoneDisplayCellDTO(providerDisplayCellDTO));
                     }
                 }
+            }
+            else
+            {
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
+                preparedOrderedItems.add(new DummyLoadingCompetitionDTO());
             }
 
             if (providerDTO.hasWizard())
@@ -106,6 +111,11 @@ public class CompetitionZoneDTOUtil
                                 competitionDTO));
                     }
                 }
+            }
+            else
+            {
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
+                preparedOrderedItems.add(new DummyLoadingCompetitionDTO());
             }
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);

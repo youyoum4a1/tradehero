@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -27,6 +28,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     public static final int ITEM_TYPE_ZONE_ITEM = 3;
     public static final int ITEM_TYPE_LEADERBOARD = 4;
     public static final int ITEM_TYPE_LEGAL_MENTIONS = 5;
+    public static final int ITEM_TYPE_LOADING = 6;
 
     @NotNull private final Integer[] viewTypeToResId;
     private List<Integer> orderedTypes;
@@ -59,6 +61,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         this.viewTypeToResId[ITEM_TYPE_ZONE_ITEM] = layoutResourceId;
         this.viewTypeToResId[ITEM_TYPE_LEADERBOARD] = leaderboardResId;
         this.viewTypeToResId[ITEM_TYPE_LEGAL_MENTIONS] = legalResId;
+        this.viewTypeToResId[ITEM_TYPE_LOADING] = R.layout.loading_item;
 
         orderedTypes = new ArrayList<>();
         orderedItems = new ArrayList<>();

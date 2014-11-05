@@ -166,13 +166,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             this.webViewFragment.setThIntentPassedListener(null);
         }
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                btnTradeNow.setTranslationY(y);
-            }
-        });
+        dashboardTabHost.get().setOnTranslate((x, y) -> btnTradeNow.setTranslationY(y));
         this.webViewFragment = null;
     }
 
