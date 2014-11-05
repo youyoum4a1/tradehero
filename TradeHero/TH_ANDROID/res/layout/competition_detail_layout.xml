@@ -60,6 +60,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:textColor="#1789d5"
+        android:visibility="gone"
         android:text="比赛详情>>"/>
 
 
@@ -156,6 +157,13 @@
         android:layout_below="@id/viewLine"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
+
+      <ImageView android:id="@+id/imgEmpty"
+          android:background="@drawable/empty"
+          android:layout_gravity="center"
+          android:layout_width="150dp"
+          android:layout_height="150dp"/>
+
       <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
           android:id="@+id/listRanks"
           xmlns:ptr="http://schemas.android.com/apk/res-auto"
@@ -176,12 +184,6 @@
           android:textColor="@color/white"
           android:background="@drawable/bg_college_xml"
           android:text="选择所在高校"/>
-
-      <ImageView android:id="@+id/imgEmpty"
-          android:background="@drawable/empty"
-          android:layout_gravity="center"
-          android:layout_width="150dp"
-          android:layout_height="150dp"/>
 
     </RelativeLayout>
   </com.tradehero.common.widget.BetterViewAnimator>

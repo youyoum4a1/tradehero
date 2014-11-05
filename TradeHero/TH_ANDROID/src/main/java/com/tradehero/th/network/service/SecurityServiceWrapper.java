@@ -88,7 +88,7 @@ import retrofit.Callback;
     }
     //</editor-fold>
 
-    public SecurityCompactDTOList processFromExtraData(SecurityCompactExtraDTOList received)
+    public synchronized SecurityCompactDTOList processFromExtraData(SecurityCompactExtraDTOList received)
     {
         SecurityCompactDTOList retList = new SecurityCompactDTOList();
         if (received != null)
@@ -107,7 +107,7 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="Get Securities">
-    public SecurityCompactDTOList getSecurities(@NotNull SecurityListType key)
+    public synchronized SecurityCompactDTOList getSecurities(@NotNull SecurityListType key)
     {
         SecurityCompactDTOList received;
         if (key instanceof TrendingSecurityListType)

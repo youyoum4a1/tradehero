@@ -47,10 +47,25 @@ interface UserTimelineServiceAsync
             Callback<TimelineDTO> callback);
     //</editor-fold>
 
+
+    //最新动态
     //<editor-fold desc="Get User Timeline"> /users/552948/timeline?maxCount=10&type=original&includeComment=true
     //@GET("/users/{userId}/timeline?type=original&includeComment=true&includeTrade=true")
     @GET("/users/{userId}/timeline?type=original")
     void getTimelineSquare(
+            @Path("userId") int userId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
+            Callback<TimelineDTO> callback);
+    //</editor-fold>
+
+
+    //热门话题
+    //@GET("/users/{userId}/timeline?type=original&includeComment=true&includeTrade=true")
+    //https://www.tradehero.mobi/api/users/552948/timeline?maxCount=10&type=recommended&includeComment=true&includeTrade=true
+    @GET("/users/{userId}/timeline?type=hot")
+    void getTimelineHotTopic(
             @Path("userId") int userId,
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,

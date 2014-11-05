@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 @Singleton public class SecurityCompactListCache extends StraightCutDTOCacheNew<
         SecurityListType,
@@ -41,6 +42,10 @@ import org.jetbrains.annotations.Nullable;
     @NotNull @Override protected SecurityIdList cutValue(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
     {
         securityCompactCache.get().put(value);
+        for(int i=0;i<value.size();i++)
+        {
+            Timber.d("WINDY: put:" + value.get(i).name + " " + value.get(i).holdCount);
+        }
         return new SecurityIdList(value, (SecurityCompactDTO) null);
     }
 
@@ -51,6 +56,10 @@ import org.jetbrains.annotations.Nullable;
             return null;
         }
         SecurityCompactDTOList value = securityCompactCache.get().get(cutValue);
+        for(int i=0;i<value.size();i++)
+        {
+            Timber.d("WINDY: get:" + value.get(i).name + " " + value.get(i).holdCount);
+        }
         if (value.hasNullItem())
         {
             return null;

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
 import com.tradehero.th.api.competition.CompetitionDTOUtil;
 import com.tradehero.th.api.competition.ProviderId;
@@ -47,6 +49,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
@@ -66,6 +69,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.widget.GuideView;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -73,10 +77,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-import com.tradehero.th.activities.DashboardActivity;
-import android.os.Handler;
-import com.tradehero.th.widget.GuideView;
-import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 
 /**
  * Created by huhaiping on 14-9-9. 比赛详情页
@@ -191,6 +191,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         if (userCompetitionDTO != null)
         {
+            initCompetitionTitle();
             //initView();
             fetchCompetitionDetail(false);
         }
@@ -208,6 +209,8 @@ public class CompetitionDetailFragment extends DashboardFragment
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlRankAll);
         }
 
+        listRanks.setEmptyView(imgEmpty);
+        listRanks.setAdapter(adapter);
         return view;
     }
 
@@ -237,8 +240,6 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void initRankList()
     {
-        listRanks.setEmptyView(imgEmpty);
-        listRanks.setAdapter(adapter);
         listRanks.setMode(PullToRefreshBase.Mode.BOTH);
         listRanks.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
@@ -290,15 +291,22 @@ public class CompetitionDetailFragment extends DashboardFragment
         }
     }
 
-    private void initCompetition()
+    private void initCompetitionTitle()
     {
-        if (userCompetitionDTO != null)
+        if(userCompetitionDTO != null)
         {
-            //tvCompetitionDetailMore.setText(userCompetitionDTO.description);
             tvCompetitionIntro.setText(userCompetitionDTO.description);
             tvCompetitionCreator.setText(userCompetitionDTO.hostUserName);
             tvCompetitionPeriod.setText(userCompetitionDTO.getDisplayDatePeriod());
             tvCompetitionExchange.setText(userCompetitionDTO.getDisplayExchangeShort());
+        }
+    }
+
+    private void initCompetition()
+    {
+        if (userCompetitionDTO != null)
+        {
+            initCompetitionTitle();
             tvGotoCompetition.setText(userCompetitionDTO.isEnrolled ? "去比赛" : "我要报名");
             if (!userCompetitionDTO.isOngoing)
             {
@@ -555,10 +563,7 @@ public class CompetitionDetailFragment extends DashboardFragment
             {
                 Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
             }
-
-            noFoundCompetition();
-            //THException thException = new THException(retrofitError);
-            //THToast.show(thException);
+            //noFoundCompetition();
         }
 
         private void onFinish()

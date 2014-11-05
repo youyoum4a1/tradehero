@@ -4,8 +4,17 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.*;
-import android.widget.*;
+import android.view.ActionMode;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -42,12 +51,11 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-2.
@@ -677,6 +685,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
             TransactionFormDTO transactionFormDTO = getBuySellOrder();
             if (transactionFormDTO != null)
             {
+                isSending = true;
                 mTransactionDialog = progressDialogUtil.show(BuySaleSecurityFragment.this.getActivity(),
                         R.string.processing, R.string.alert_dialog_please_wait);
 

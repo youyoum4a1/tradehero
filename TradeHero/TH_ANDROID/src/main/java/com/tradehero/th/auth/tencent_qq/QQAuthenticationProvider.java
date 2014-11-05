@@ -152,7 +152,7 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
 
     public void authorizeCallBack(int requestCode, int resultCode, Intent data)
     {
-        Timber.d("windy requestCode = " + requestCode + "resultCode = " + resultCode + "data = " + data.toString());
+        //Timber.d("windy requestCode = " + requestCode + "resultCode = " + resultCode + "data = " + data.toString());
     }
 
     private class BaseUiListener implements IUiListener
@@ -180,8 +180,8 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
         public void onError(UiError e)
         {
 
-            Timber.e("windy onError:" + "code:" + e.errorCode + ", msg:"
-                    + e.errorMessage + ", detail:" + e.errorDetail);
+            //Timber.e("windy onError:" + "code:" + e.errorCode + ", msg:"
+            //        + e.errorMessage + ", detail:" + e.errorDetail);
             onAuthorizeCancel();
         }
 

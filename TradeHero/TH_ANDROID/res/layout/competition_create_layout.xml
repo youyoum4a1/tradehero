@@ -34,6 +34,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:maxLength="12"
+            android:singleLine="true"
             android:hint="4-12位字符"/>
 
       </LinearLayout>
@@ -52,6 +53,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:maxLength="30"
+            android:singleLine="true"
             android:hint="4-30位字符"/>
 
       </LinearLayout>

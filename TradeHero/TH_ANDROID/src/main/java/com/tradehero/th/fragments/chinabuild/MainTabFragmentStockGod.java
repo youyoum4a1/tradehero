@@ -137,7 +137,7 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
 
     @Override public void onPageSelected(int i)
     {
-        Timber.d("WINDY: 股神 ：onPageSelected" + i);
+        //Timber.d("WINDY: 股神 ：onPageSelected" + i);
         if (i == 0)
         {
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_ROI));

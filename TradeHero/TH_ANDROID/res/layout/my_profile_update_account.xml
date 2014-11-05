@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_large"
         android:hint="@string/login_account_hint"
+        android:singleLine="true"
         android:textColorHint="#bfbfbf"
         android:background="@color/white"/>
   </LinearLayout>
@@ -56,6 +57,7 @@
         android:hint="@string/login_password_hint"
         android:inputType="textPassword"
         android:textColorHint="#bfbfbf"
+        android:singleLine="true"
         android:background="@color/white"/>
   </LinearLayout>
 

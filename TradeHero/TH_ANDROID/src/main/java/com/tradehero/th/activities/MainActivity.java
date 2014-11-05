@@ -366,6 +366,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         //System.exit(0);
         ////sendAppToBackground();
+        //THUser.clearCurrentUser();
         finish();
     }
 

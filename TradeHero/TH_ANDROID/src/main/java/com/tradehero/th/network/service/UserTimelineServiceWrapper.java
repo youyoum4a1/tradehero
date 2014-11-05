@@ -88,7 +88,7 @@ import retrofit.client.Response;
         return middleCallback;
     }
 
-    //股聊广场
+    //最新动态
     public @NotNull MiddleCallback<TimelineDTO> getTimelineSquare(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
             @Nullable Callback<TimelineDTO> callback)
     {
@@ -96,6 +96,17 @@ import retrofit.client.Response;
         userTimelineServiceAsync.getTimelineSquare(userId.key, maxCount, maxId, minId, middleCallback);
         return middleCallback;
     }
+    //热门话题
+    public @NotNull MiddleCallback<TimelineDTO> getTimelineHotTopic(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
+            @Nullable Callback<TimelineDTO> callback)
+    {
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userTimelineServiceAsync.getTimelineHotTopic(userId.key, maxCount, maxId, minId, middleCallback);
+        return middleCallback;
+    }
+    //股神动态
+
+
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">

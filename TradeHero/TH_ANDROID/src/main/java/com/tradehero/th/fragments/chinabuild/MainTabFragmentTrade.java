@@ -23,8 +23,6 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-import timber.log.Timber;
-
 import javax.inject.Inject;
 
 public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.OnPageChangeListener
@@ -102,7 +100,7 @@ public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.O
 
     @Override public void onPageSelected(int i)
     {
-        Timber.d("WINDY: 交易 ：onPageSelected" + i);
+        //Timber.d("WINDY: 交易 ：onPageSelected" + i);
         if (i == 0)
         {
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_MINE_TRADE));

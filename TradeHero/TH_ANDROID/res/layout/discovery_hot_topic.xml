@@ -7,12 +7,31 @@
     android:layout_height="match_parent"
     >
 
-  <TextView
+  <com.tradehero.common.widget.BetterViewAnimator
+      android:id="@+id/bvaViewAll"
       android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:gravity="center"
-      android:text="热门话题">
-  </TextView>
+      android:layout_height="fill_parent">
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+    <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        ptr:ptrHeaderTextColor="@color/black"
+        android:id="@+id/listTimeLine"
+        android:scrollingCache="false"
+        android:fadingEdge="none"
+        android:dividerHeight="1px"
+        android:divider="@color/separate_line_color"
+        android:background="@color/bg_fragment"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+
+  </com.tradehero.common.widget.BetterViewAnimator>
 
 </LinearLayout>
 

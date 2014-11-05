@@ -305,6 +305,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         private void onFinish()
         {
             dismissLoadingProgress();
+            listSearch.onRefreshComplete();
         }
     }
 

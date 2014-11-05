@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
     @Override @NotNull public PortfolioCompactDTOList fetch(@NotNull UserBaseKey key) throws Throwable
     {
-        return portfolioServiceWrapper.get().getPortfolios(key, key.equals(currentUserId.toUserBaseKey()));
+        return portfolioServiceWrapper.get().getPortfolios(key, false/*key.equals(currentUserId.toUserBaseKey())*/);
     }
 
     @NotNull @Override protected OwnedPortfolioIdList cutValue(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
