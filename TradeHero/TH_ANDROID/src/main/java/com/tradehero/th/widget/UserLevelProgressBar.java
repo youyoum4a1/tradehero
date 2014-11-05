@@ -187,11 +187,8 @@ public class UserLevelProgressBar extends RelativeLayout
         float msPerXP = ((float) duration / (float) xpGained);
         setMsPerXp(msPerXP);
 
-        if (mIncrementAnimatorSet != null)
-        {
-            mIncrementAnimatorSet.removeAllListeners();
-            mIncrementAnimatorSet.cancel();
-        }
+        stopIncrement();
+
         List<Animator> animators = getAnimatorQueue(xpGained);
         mIncrementAnimatorSet = new AnimatorSet();
         mIncrementAnimatorSet.setInterpolator(new LinearInterpolator());
@@ -221,6 +218,15 @@ public class UserLevelProgressBar extends RelativeLayout
             }
         });
         mIncrementAnimatorSet.start();
+    }
+
+    public void stopIncrement()
+    {
+        if (mIncrementAnimatorSet != null)
+        {
+            mIncrementAnimatorSet.removeAllListeners();
+            mIncrementAnimatorSet.cancel();
+        }
     }
 
     private int getMaxProgress(LevelDefDTO levelDTO)

@@ -81,10 +81,10 @@ public class XpToast extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        userLevelProgressBar.setUserLevelProgressBarLevelUpListener(this);
-        userLevelProgressBar.setUserLevelProgressBarListener(this);
         if (!isInEditMode())
         {
+            userLevelProgressBar.setUserLevelProgressBarLevelUpListener(this);
+            userLevelProgressBar.setUserLevelProgressBarListener(this);
             mLevelDefListCacheSubscription = levelDefListCache.get(levelDefListId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new XPToastLevelDefCacheObserver());
@@ -280,6 +280,13 @@ public class XpToast extends RelativeLayout
         {
             startXPAnimation();
         }
+    }
+
+    public void destroy()
+    {
+        userLevelProgressBar.stopIncrement();
+        cleanUp();
+        ButterKnife.reset(this);
     }
 
     private class XPToastLevelDefCacheObserver implements Observer<Pair<LevelDefListId, LevelDefDTOList>>

@@ -526,6 +526,8 @@ public class DashboardActivity extends BaseActivity
         purchaseRestorerFinishedListener = null;
         notificationFetchSubscription = null;
 
+        xpToast.destroy();
+
         mAchievementBroadcastReceiver = null;
         mXPBroadcastReceiver = null;
         onBoardBroadcastReceiver = null;
