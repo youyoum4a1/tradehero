@@ -22,7 +22,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
-import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
+import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public class MainCompetitionFragmentTest
     private static final String TEST_WIZARD_WEB_URL = "http://www.apple.com";
     @Inject DashboardNavigator dashboardNavigator;
     @Inject ProviderCacheRx providerCache;
-    @Inject ProviderDisplayCellListCache providerDisplayCellListCache;
+    @Inject ProviderDisplayCellListCacheRx providerDisplayCellListCache;
     @Inject CompetitionListCacheRx competitionListCache;
     @Inject ProviderUtil providerUtil;
     @Inject CurrentUserId currentUserId;
@@ -74,7 +74,7 @@ public class MainCompetitionFragmentTest
         competitionListCache.onNext(providerId, competitionDTOList);
 
         ProviderDisplayCellDTOList providerDisplayCellDTOList = new ProviderDisplayCellDTOList();
-        providerDisplayCellListCache.put(new ProviderDisplayCellListKey(providerId), providerDisplayCellDTOList);
+        providerDisplayCellListCache.onNext(new ProviderDisplayCellListKey(providerId), providerDisplayCellDTOList);
 
     }
 

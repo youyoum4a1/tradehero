@@ -17,8 +17,7 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.SimpleCounterUtils;
+import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -39,7 +38,6 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
@@ -58,16 +56,16 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
-import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
+import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 @Routable({
@@ -75,8 +73,6 @@ import timber.log.Timber;
 })
 public class MainCompetitionFragment extends CompetitionFragment
 {
-    private static final int EXPECTED_COUNT = 2;
-
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.competition_zone_list) AbsListView listView;
     @InjectView(R.id.btn_trade_now) Button btnTradeNow;
@@ -89,7 +85,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CompetitionListCacheRx competitionListCache;
-    @Inject ProviderDisplayCellListCache providerDisplayListCellCache;
+    @Inject ProviderDisplayCellListCacheRx providerDisplayListCellCache;
     @Inject ProviderUtil providerUtil;
     @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
@@ -97,12 +93,12 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @RouteProperty("providerId") Integer routedProviderId;
 
-    protected UserProfileCompactDTO portfolioUserCompactDTO;
+    @Nullable private Subscription userProfileCacheSubscription;
+    protected UserProfileCompactDTO userProfileCompactDTO;
+    @Nullable private Subscription competitionListCacheSubscription;
     protected CompetitionDTOList competitionDTOs;
-    private Subscription competitionListCacheSubscription;
+    @Nullable private Subscription displayCellListCacheFetchSubscription;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
-    private DTOCacheNew.Listener<ProviderDisplayCellListKey, ProviderDisplayCellDTOList> displayCellListCacheFetchListener;
-    private SimpleCounterUtils simpleCounterUtils;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -113,8 +109,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         super.onCreate(savedInstanceState);
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
-        this.displayCellListCacheFetchListener = createDisplayCellListCacheListener();
-        simpleCounterUtils = createSimpleCounterUtils();
+        createAdapter();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -127,16 +122,9 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Override protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
-        if (this.progressBar != null)
-        {
-            this.progressBar.setVisibility(View.VISIBLE);
-        }
-        if (this.listView != null)
-        {
-            this.listView.setOnItemClickListener(createAdapterViewItemClickListener());
-            this.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        }
-        createAdapter();
+        this.progressBar.setVisibility(View.VISIBLE);
+        this.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        this.listView.setAdapter(this.competitionZoneListItemAdapter);
     }
 
     //<editor-fold desc="ActionBar">
@@ -150,22 +138,24 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Override public void onStart()
     {
         super.onStart();
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
+
+        unsubscribe(userProfileCacheSubscription);
+        userProfileCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(createProfileCacheObserver());
 
-        simpleCounterUtils.reset();
-
-        detachCompetitionListCacheTask();
+        unsubscribe(competitionListCacheSubscription);
         competitionListCacheSubscription = AndroidObservable.bindFragment(
                 this,
                 competitionListCache.get(providerId))
                 .subscribe(createCompetitionListCacheObserver());
 
-        detachDisplayCellListCacheTask();
-        ProviderDisplayCellListKey providerDisplayCellListKey = new ProviderDisplayCellListKey(providerId);
-        providerDisplayListCellCache.register(providerDisplayCellListKey, displayCellListCacheFetchListener);
-        providerDisplayListCellCache.getOrFetchAsync(providerDisplayCellListKey);
+        unsubscribe(displayCellListCacheFetchSubscription);
+        displayCellListCacheFetchSubscription = AndroidObservable.bindFragment(
+                this,
+                providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId)))
+                .subscribe(createDisplayCellListCacheObserver());
     }
 
     @Override public void onResume()
@@ -194,86 +184,29 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onStop()
     {
-        detachCompetitionListCacheTask();
-        detachDisplayCellListCacheTask();
+        unsubscribe(userProfileCacheSubscription);
+        userProfileCacheSubscription = null;
+        unsubscribe(competitionListCacheSubscription);
+        competitionListCacheSubscription = null;
+        unsubscribe(displayCellListCacheFetchSubscription);
+        displayCellListCacheFetchSubscription = null;
         super.onStop();
     }
 
     @Override public void onDestroyView()
     {
-        if (this.listView != null)
-        {
-            this.listView.setOnItemClickListener(null);
-            this.listView.setOnScrollListener(null);
-        }
-        if (this.competitionZoneListItemAdapter != null)
-        {
-            this.competitionZoneListItemAdapter.clear();
-            this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(null);
-        }
-        this.competitionZoneListItemAdapter = null;
-        this.progressBar = null;
-        this.listView = null;
-
+        this.listView.setOnScrollListener(null);
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        this.competitionListCacheSubscription = null;
         this.webViewTHIntentPassedListener = null;
-        simpleCounterUtils.setListener(null);
-        simpleCounterUtils = null;
+        this.competitionZoneListItemAdapter.clear();
+        this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(null);
+        this.competitionZoneListItemAdapter = null;
         super.onDestroy();
-    }
-
-    private void detachCompetitionListCacheTask()
-    {
-        unsubscribe(competitionListCacheSubscription);
-        competitionListCacheSubscription = null;
-    }
-
-    private void detachDisplayCellListCacheTask()
-    {
-        providerDisplayListCellCache.unregister(displayCellListCacheFetchListener);
-    }
-
-    protected void linkWith(UserProfileCompactDTO userProfileCompactDTO, boolean andDisplay)
-    {
-        this.portfolioUserCompactDTO = userProfileCompactDTO;
-        competitionZoneListItemAdapter.setPortfolioUserProfileCompactDTO(portfolioUserCompactDTO);
-        if (andDisplay)
-        {
-        }
-    }
-
-    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
-    {
-        super.linkWith(providerDTO, andDisplay);
-        competitionZoneListItemAdapter.setProvider(providerDTO);
-        if (andDisplay)
-        {
-            displayActionBarTitle();
-            displayTradeNowButton();
-        }
-    }
-
-    protected void linkWith(CompetitionDTOList competitionIds, boolean andDisplay)
-    {
-        this.competitionDTOs = competitionIds;
-        competitionZoneListItemAdapter.setCompetitionDTOs(competitionIds);
-        if (andDisplay)
-        {
-        }
-    }
-
-    protected void linkWith(ProviderDisplayCellDTOList providerDisplayCellDTOList, boolean andDisplay)
-    {
-        this.providerDisplayCellDTOList = providerDisplayCellDTOList;
-        competitionZoneListItemAdapter.setDisplayCellDTOS(providerDisplayCellDTOList);
-        if (andDisplay)
-        {
-        }
     }
 
     protected void createAdapter()
@@ -286,17 +219,136 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_portfolio,
                 R.layout.competition_zone_leaderboard_item,
                 R.layout.competition_zone_legal_mentions);
-        competitionZoneListItemAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
+        competitionZoneListItemAdapter.setParentOnLegalElementClicked(this::handleItemClicked);
+    }
 
-        if (this.listView != null)
+    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
+    {
+        super.linkWith(providerDTO, andDisplay);
+        competitionZoneListItemAdapter.setProvider(providerDTO);
+        if (andDisplay)
         {
-            this.listView.setAdapter(this.competitionZoneListItemAdapter);
+            displayActionBarTitle();
+            displayTradeNowButton();
+            displayListView();
+        }
+    }
+
+    private Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
+    {
+        return new MainCompetitionUserProfileCacheObserver();
+    }
+
+    protected class MainCompetitionUserProfileCacheObserver
+            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
+    {
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
+        {
+            linkWith(pair.second, true);
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (userProfileCompactDTO == null)
+            {
+                THToast.show(getString(R.string.error_fetch_your_user_profile));
+            }
+            Timber.e("Error fetching the profile info", e);
+        }
+    }
+
+    protected void linkWith(UserProfileCompactDTO userProfileCompactDTO, boolean andDisplay)
+    {
+        this.userProfileCompactDTO = userProfileCompactDTO;
+        competitionZoneListItemAdapter.setPortfolioUserProfileCompactDTO(userProfileCompactDTO);
+        if (andDisplay)
+        {
+            displayListView();
+        }
+    }
+
+    private Observer<Pair<ProviderId, CompetitionDTOList>> createCompetitionListCacheObserver()
+    {
+        return new MainCompetitionCompetitionListCacheObserver();
+    }
+
+    protected class MainCompetitionCompetitionListCacheObserver
+            implements Observer<Pair<ProviderId, CompetitionDTOList>>
+    {
+        @Override public void onNext(Pair<ProviderId, CompetitionDTOList> pair)
+        {
+            linkWith(pair.second, true);
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (competitionDTOs == null)
+            {
+                THToast.show(getString(R.string.error_fetch_provider_competition_list));
+            }
+            Timber.e("Error fetching the list of competition info", e);
+        }
+    }
+
+    protected void linkWith(CompetitionDTOList competitionDTOs1, boolean andDisplay)
+    {
+        this.competitionDTOs = competitionDTOs1;
+        competitionZoneListItemAdapter.setCompetitionDTOs(competitionDTOs1);
+        if (andDisplay)
+        {
+            displayListView();
+        }
+    }
+
+    private Observer<Pair<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>> createDisplayCellListCacheObserver()
+    {
+        return new MainCompetitionDisplayCellListCacheObserver();
+    }
+
+    protected class MainCompetitionDisplayCellListCacheObserver
+            implements Observer<Pair<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>>
+    {
+        @Override public void onNext(
+                Pair<ProviderDisplayCellListKey, ProviderDisplayCellDTOList> pair)
+        {
+            linkWith(pair.second, true);
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (providerDisplayCellDTOList == null)
+            {
+                THToast.show(getString(R.string.error_fetch_provider_competition_display_cell_list));
+            }
+            Timber.e("Error fetching the list of competition info cell", e);
+        }
+    }
+
+    protected void linkWith(ProviderDisplayCellDTOList providerDisplayCellDTOList, boolean andDisplay)
+    {
+        this.providerDisplayCellDTOList = providerDisplayCellDTOList;
+        competitionZoneListItemAdapter.setDisplayCellDTOS(providerDisplayCellDTOList);
+        if (andDisplay)
+        {
+            displayListView();
         }
     }
 
     protected void displayListView()
     {
-        Timber.d("displayListView %s %s %s %s", portfolioUserCompactDTO, providerDTO, competitionDTOs, providerDisplayCellDTOList);
+        Timber.d("displayListView %s %s %s %s", userProfileCompactDTO, providerDTO, competitionDTOs, providerDisplayCellDTOList);
         if (providerDTO != null)
         {
             if (progressBar != null)
@@ -325,6 +377,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_trade_now)
     public void handleTradeNowClicked()
     {
@@ -348,7 +401,28 @@ public class MainCompetitionFragment extends CompetitionFragment
     }
 
     //<editor-fold desc="Click Handling">
-    private void handleItemClicked(@NotNull CompetitionZoneDTO competitionZoneDTO)
+    @OnItemClick(R.id.competition_zone_list)
+    protected void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        if (adapterView == null)
+        {
+            Timber.e(new NullPointerException("adapterView was null"), "onItemClient");
+        }
+        else
+        {
+            Object itemClicked = adapterView.getItemAtPosition(i);
+            if (itemClicked == null)
+            {
+                Timber.e(new NullPointerException("itemClicked was null"), "onItemClient");
+            }
+            else
+            {
+                handleItemClicked((CompetitionZoneDTO) itemClicked);
+            }
+        }
+    }
+
+    protected void handleItemClicked(@NotNull CompetitionZoneDTO competitionZoneDTO)
     {
         if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
         {
@@ -525,56 +599,11 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    public SimpleCounterUtils createSimpleCounterUtils()
-    {
-        return new SimpleCounterUtils(EXPECTED_COUNT, new SimpleCounterUtils.SimpleCounter()
-        {
-            @Override public void onCountFinished(int count)
-            {
-                displayListView();
-            }
-        });
-    }
-
     public Intent getPassedIntent(String url)
     {
         return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
     }
     //</editor-fold>
-
-    private AdapterView.OnItemClickListener createAdapterViewItemClickListener()
-    {
-        return new MainCompetitionFragmentItemClickListener();
-    }
-
-    private Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
-    {
-        return new MainCompetitionUserProfileCacheObserver();
-    }
-
-    private class MainCompetitionFragmentItemClickListener
-            implements AdapterView.OnItemClickListener
-    {
-        @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-        {
-            if (adapterView == null)
-            {
-                Timber.e(new NullPointerException("adapterView was null"), "onItemClient");
-            }
-            else
-            {
-                Object itemClicked = adapterView.getItemAtPosition(i);
-                if (itemClicked == null)
-                {
-                    Timber.e(new NullPointerException("itemClicked was null"), "onItemClient");
-                }
-                else
-                {
-                    handleItemClicked((CompetitionZoneDTO) itemClicked);
-                }
-            }
-        }
-    }
 
     private class MainCompetitionWebViewTHIntentPassedListener
             extends CompetitionWebFragmentTHIntentPassedListener
@@ -607,82 +636,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override protected Class<?> getClassToPop()
         {
             return MainCompetitionFragment.class;
-        }
-    }
-
-    private class MainCompetitionLegalClickedListener
-            implements CompetitionZoneLegalMentionsView.OnElementClickedListener
-    {
-        @Override public void onElementClicked(CompetitionZoneDTO competitionZoneLegalDTO)
-        {
-            handleItemClicked(competitionZoneLegalDTO);
-        }
-    }
-
-    private class MainCompetitionUserProfileCacheObserver
-            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(getString(R.string.error_fetch_your_user_profile));
-            Timber.e("Error fetching the profile info", e);
-        }
-    }
-
-    private Observer<Pair<ProviderId, CompetitionDTOList>> createCompetitionListCacheObserver()
-    {
-        return new MainCompetitionCompetitionListCacheObserver();
-    }
-
-    private class MainCompetitionCompetitionListCacheObserver
-            implements Observer<Pair<ProviderId, CompetitionDTOList>>
-    {
-        @Override public void onNext(Pair<ProviderId, CompetitionDTOList> pair)
-        {
-            linkWith(pair.second, true);
-            simpleCounterUtils.increment();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(getString(R.string.error_fetch_provider_competition_list));
-            Timber.e("Error fetching the list of competition info", e);
-            simpleCounterUtils.increment();
-        }
-    }
-
-    private DTOCacheNew.Listener<ProviderDisplayCellListKey, ProviderDisplayCellDTOList> createDisplayCellListCacheListener()
-    {
-        return new MainCompetitionDisplayCellListCacheListener();
-    }
-
-    private class MainCompetitionDisplayCellListCacheListener
-            implements DTOCacheNew.Listener<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>
-    {
-        @Override public void onDTOReceived(@NotNull ProviderDisplayCellListKey providerId, @NotNull ProviderDisplayCellDTOList value)
-        {
-            linkWith(value, true);
-            simpleCounterUtils.increment();
-        }
-
-        @Override public void onErrorThrown(@NotNull ProviderDisplayCellListKey key, @NotNull Throwable error)
-        {
-            THToast.show(getString(R.string.error_fetch_provider_competition_display_cell_list));
-            Timber.e("Error fetching the list of competition info cell %s", key, error);
-            simpleCounterUtils.increment();
         }
     }
 }
