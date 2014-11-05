@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -26,10 +27,9 @@ import com.tradehero.th.widget.MultiScrollListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 abstract public class BasePagedListRxFragment<
@@ -87,13 +87,17 @@ abstract public class BasePagedListRxFragment<
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(getFragmentLayoutResId(), container, false);
+        return inflater.inflate(getFragmentLayoutResId(), container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         nearEndScrollListener = createFlagNearEdgeScrollListener();
         listView.setOnScrollListener(new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsListViewScrollListener.get()));
         listView.setEmptyView(emptyContainer);
         listView.setAdapter(itemViewAdapter);
-        return view;
     }
 
     abstract protected int getFragmentLayoutResId();
@@ -198,7 +202,7 @@ abstract public class BasePagedListRxFragment<
             return false;
         }
         List<DTOType> firstPage = pagedDtos.get(FIRST_PAGE);
-        return  firstPage == null || firstPage.size() == 0;
+        return firstPage == null || firstPage.size() == 0;
     }
 
     protected boolean isBeingHandled(int page)
@@ -282,12 +286,12 @@ abstract public class BasePagedListRxFragment<
     {
         PagedDTOKeyType pagedKey = makePagedDtoKey(pageToLoad);
         unsubscribeListCache(pageToLoad);
-        Observer<Pair<PagedDTOKeyType, ContainerDTOType>> listener = createListCacheObserver(pagedKey);
         pagedSubscriptions.put(
                 pageToLoad,
-                getCache().get(pagedKey)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(listener));
+                AndroidObservable.bindFragment(
+                        this,
+                        getCache().get(pagedKey))
+                        .subscribe(createListCacheObserver(pagedKey)));
     }
 
     abstract public boolean canMakePagedDtoKey();

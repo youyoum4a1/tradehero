@@ -2,24 +2,24 @@ package com.tradehero.th.fragments.education;
 
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.R;
 import com.tradehero.th.api.education.PagedVideoCategories;
 import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTOList;
-import com.tradehero.th.fragments.BasePagedListFragment;
-import com.tradehero.th.persistence.education.PaginatedVideoCategoryCache;
+import com.tradehero.th.fragments.BasePagedListRxFragment;
+import com.tradehero.th.persistence.education.PaginatedVideoCategoryCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
-public class VideoCategoriesFragment extends BasePagedListFragment<
+public class VideoCategoriesFragment extends BasePagedListRxFragment<
         PagedVideoCategories, // But it also needs to be a PagedDTOKey
         VideoCategoryDTO,
         VideoCategoryDTOList,
@@ -27,7 +27,7 @@ public class VideoCategoriesFragment extends BasePagedListFragment<
         VideoCategoryView
         >
 {
-    @Inject PaginatedVideoCategoryCache paginatedVideoCategoryCache;
+    @Inject PaginatedVideoCategoryCacheRx paginatedVideoCategoryCache;
     @Inject Analytics analytics;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -62,19 +62,9 @@ public class VideoCategoriesFragment extends BasePagedListFragment<
         return new VideoCategoriesAdapter(getActivity(), R.layout.video_category_item_view);
     }
 
-    @Override protected void unregisterCache(DTOCacheNew.Listener<PagedVideoCategories, PaginatedVideoCategoryDTO> listener)
+    @Override protected DTOCacheRx<PagedVideoCategories, PaginatedVideoCategoryDTO> getCache()
     {
-        paginatedVideoCategoryCache.unregister(listener);
-    }
-
-    @Override protected void registerCache(PagedVideoCategories key, DTOCacheNew.Listener<PagedVideoCategories, PaginatedVideoCategoryDTO> listener)
-    {
-        paginatedVideoCategoryCache.register(key, listener);
-    }
-
-    @Override protected void requestCache(PagedVideoCategories key)
-    {
-        paginatedVideoCategoryCache.getOrFetchAsync(key);
+        return paginatedVideoCategoryCache;
     }
 
     @Override public boolean canMakePagedDtoKey()
