@@ -34,8 +34,9 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
-import java.util.Map;
+
 import javax.inject.Inject;
+import java.util.Map;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
@@ -56,9 +57,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_LOGIN_OFFICAL));
-        //        analytics.tagScreen(AnalyticsConstants.Login_Form);
-        //        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_OFFICAL));
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -169,11 +168,11 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                     if (isValidPhoneNumber(email.getText()))
                     {
                         analytics.addEventAuto(
-                                new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_LOGIN_TELNUMBER));
+                                new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_TELNUMBER));
                     }
                     else
                     {
-                        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_LOGIN_EMAIL));
+                        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_EMAIL));
                     }
                 }
                 break;

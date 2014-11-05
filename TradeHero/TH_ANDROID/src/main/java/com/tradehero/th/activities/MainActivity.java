@@ -262,7 +262,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         super.onResume();
         analytics.openSession();
-        analytics.tagScreen(AnalyticsConstants.MainActivityScreen);
     }
 
     @Override protected void onPause()

@@ -20,38 +20,28 @@ import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.authentication.AuthenticationFragment;
-import com.tradehero.th.fragments.authentication.EmailSignInFragment;
-import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
-import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
-import com.tradehero.th.fragments.authentication.SignInFragment;
-import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
+import com.tradehero.th.fragments.authentication.*;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.QQUtils;
-import com.tradehero.th.utils.WeChatUtils;
-import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.*;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import dagger.Lazy;
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
-import javax.inject.Inject;
 import org.json.JSONException;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthenticationActivity extends DashboardActivity
         implements View.OnClickListener
@@ -279,7 +269,7 @@ public class AuthenticationActivity extends DashboardActivity
     private LogInCallback createCallbackForEmailSign(final AuthenticationMode authenticationMode)
     {
         final boolean isSigningUp = authenticationMode == AuthenticationMode.SignUp;
-        return new SocialAuthenticationCallback(AnalyticsConstants.Email)
+        return new SocialAuthenticationCallback(AnalyticsConstants.LOGIN_USER_ACCOUNT)
         {
             private final boolean signingUp = isSigningUp;
 
@@ -302,23 +292,20 @@ public class AuthenticationActivity extends DashboardActivity
      */
     public void authenticateWithWeibo()
     {
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_LOGIN_WEIBO));
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.WeiBo));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_WEIBO));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_weibo);
-        weiboUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.WeiBo));
+        weiboUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_WEIBO));
     }
 
     public void authenticateWithQQ()
     {
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_LOGIN_QQ));
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.QQ));
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_QQ));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_qq);
-        qqUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.QQ));
+        qqUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_QQ));
     }
 
     public void startWeChatSign()
     {
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_LOGIN_WECHAT));
         Intent intent = new Intent(this, WXEntryActivity.class);
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.type = WeChatMessageType.Auth;
@@ -328,35 +315,35 @@ public class AuthenticationActivity extends DashboardActivity
 
     public void authenticateWithWechat(String code)
     {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.WECHAT));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_WECHAT));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_wechat);
-        wechatUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.WECHAT), code);
+        wechatUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_WECHAT), code);
     }
 
     public void authenticateWithLinkedIn()
     {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Linkedin));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_LINKEDIN));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
-        linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Linkedin));
+        linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_LINKEDIN));
     }
 
     //public void authenticateWithFacebook()
     //{
-    //    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Facebook));
+    //    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.BUTTON_LOGIN_FACEBOOK));
     //    progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
     //    facebookUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Facebook));
     //}
     //
     //public void authenticateWithTwitter()
     //{
-    //    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Twitter));
+    //    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.BUTTON_LOGIN_TWITTER));
     //    progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
     //    twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
     //}
 
     private SocialAuthenticationCallback createTwitterAuthenticationCallback()
     {
-        return new SocialAuthenticationCallback(AnalyticsConstants.Twitter)
+        return new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_TWITTER)
         {
             @Override public boolean isSigningUp()
             {
@@ -463,7 +450,7 @@ public class AuthenticationActivity extends DashboardActivity
             Response response;
             if (user != null)
             {
-                //analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, providerName));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN_SUCCESSFULLY, providerName));
                 launchDashboard(user);
             }
             else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
@@ -484,7 +471,7 @@ public class AuthenticationActivity extends DashboardActivity
             if (!isSigningUp())
             {
                 // HACK
-                if (!AnalyticsConstants.Email.equals(providerName))
+                if (!AnalyticsConstants.LOGIN_USER_ACCOUNT.equals(providerName))
                 {
                     progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), providerName));
                 }

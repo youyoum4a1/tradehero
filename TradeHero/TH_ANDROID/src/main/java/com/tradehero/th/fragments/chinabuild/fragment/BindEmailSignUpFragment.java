@@ -142,7 +142,7 @@ public class BindEmailSignUpFragment extends EmailSignUpFragment
     private LogInCallback createCallbackForEmailSign(final AuthenticationMode authenticationMode)
     {
         final boolean isSigningUp = authenticationMode == AuthenticationMode.SignUp;
-        return new SocialAuthenticationCallback(AnalyticsConstants.Email)
+        return new SocialAuthenticationCallback(AnalyticsConstants.LOGIN_USER_ACCOUNT)
         {
             private final boolean signingUp = isSigningUp;
 
@@ -193,7 +193,7 @@ public class BindEmailSignUpFragment extends EmailSignUpFragment
             if (!isSigningUp())
             {
                 // HACK
-                if (!AnalyticsConstants.Email.equals(providerName))
+                if (!AnalyticsConstants.LOGIN_USER_ACCOUNT.equals(providerName))
                 {
                     progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), providerName));
                 }

@@ -42,15 +42,15 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
 
 public class GuideActivity extends Activity implements ViewPager.OnPageChangeListener,
         View.OnClickListener
@@ -102,7 +102,6 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
         }
 
         analytics.openSession();
-        analytics.tagScreen(AnalyticsConstants.Splash);
 
         final Handler handler = new Handler();
         Runnable runnable = new Runnable(){
@@ -237,7 +236,6 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
     @OnClick({R.id.guide_screen_fast_login, R.id.guide_screen_login})
     @Override public void onClick(View v)
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SplashScreenCancel));
         switch (v.getId())
         {
             case R.id.guide_screen_fast_login:
@@ -416,7 +414,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
     private LogInCallback createCallbackForEmailSign(final AuthenticationMode authenticationMode)
     {
         final boolean isSigningUp = authenticationMode == AuthenticationMode.SignUp;
-        return new SocialAuthenticationCallback(AnalyticsConstants.Email)
+        return new SocialAuthenticationCallback(AnalyticsConstants.LOGIN_USER_ACCOUNT)
         {
             private final boolean signingUp = isSigningUp;
 
