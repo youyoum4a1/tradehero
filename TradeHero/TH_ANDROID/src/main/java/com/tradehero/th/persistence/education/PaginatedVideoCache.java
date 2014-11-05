@@ -6,24 +6,22 @@ import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.network.service.VideoServiceWrapper;
-
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class PaginatedVideoCache extends StraightCutDTOCacheNew<VideoCategoryId, PaginatedVideoDTO, PaginatedVideoId>
 {
     private static final int DEFAULT_MAX_SIZE = 50;
 
-    @NotNull private final VideoCache videoCache;
+    @NotNull private final VideoCacheRx videoCache;
     @NotNull private final VideoServiceWrapper videoServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public PaginatedVideoCache(
-            @NotNull VideoCache videoCache,
+            @NotNull VideoCacheRx videoCache,
             @NotNull VideoServiceWrapper videoServiceWrapper,
             @NotNull DTOCacheUtilNew dtoCacheUtil)
     {

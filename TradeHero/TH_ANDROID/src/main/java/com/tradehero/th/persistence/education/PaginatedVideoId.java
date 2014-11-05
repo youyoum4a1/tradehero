@@ -4,15 +4,14 @@ import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.api.education.VideoId;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 class PaginatedVideoId extends PaginatedDTO<VideoId>
 {
-    PaginatedVideoId(@NotNull VideoCache videoCache, @NotNull PaginatedVideoDTO paginatedVideoDTO)
+    PaginatedVideoId(@NotNull VideoCacheRx videoCache, @NotNull PaginatedVideoDTO paginatedVideoDTO)
     {
         List<VideoId> ids = null;
         List<VideoDTO> data = paginatedVideoDTO.getData();
@@ -21,7 +20,7 @@ class PaginatedVideoId extends PaginatedDTO<VideoId>
             ids = new ArrayList<>();
             for (VideoDTO video: data)
             {
-                videoCache.put(video.getVideoId(), video);
+                videoCache.onNext(video.getVideoId(), video);
                 ids.add(video.getVideoId());
             }
         }
@@ -29,7 +28,7 @@ class PaginatedVideoId extends PaginatedDTO<VideoId>
         setPagination(paginatedVideoDTO.getPagination());
     }
 
-    @NotNull PaginatedVideoDTO create(@NotNull VideoCache videoCache)
+    @NotNull PaginatedVideoDTO create(@NotNull VideoCacheRx videoCache)
     {
         PaginatedVideoDTO created = new PaginatedVideoDTO();
         created.setPagination(getPagination());
@@ -40,7 +39,7 @@ class PaginatedVideoId extends PaginatedDTO<VideoId>
             data = new ArrayList<>();
             for (@NotNull VideoId id : ids)
             {
-                data.add(videoCache.get(id));
+                data.add(videoCache.getValue(id));
             }
 
         }

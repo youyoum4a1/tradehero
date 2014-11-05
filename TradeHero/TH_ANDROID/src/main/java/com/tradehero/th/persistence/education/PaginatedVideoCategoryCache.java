@@ -13,17 +13,17 @@ import org.jetbrains.annotations.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class PaginatedVideoCategoryCache extends StraightCutDTOCacheNew<PagedVideoCategories, PaginatedVideoCategoryDTO, PaginatedVideoCategoryId>
 {
     private static final int DEFAULT_MAX_SIZE = 20;
 
-    @NotNull private final VideoCategoryCache videoCategoryCache;
+    @NotNull private final VideoCategoryCacheRx videoCategoryCache;
     @NotNull private final VideoServiceWrapper videoServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public PaginatedVideoCategoryCache(
-            @NotNull VideoCategoryCache videoCategoryCache,
+            @NotNull VideoCategoryCacheRx videoCategoryCache,
             @NotNull VideoServiceWrapper videoServiceWrapper,
             @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
