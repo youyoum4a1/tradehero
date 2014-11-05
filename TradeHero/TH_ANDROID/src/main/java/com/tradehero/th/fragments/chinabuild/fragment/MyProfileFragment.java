@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +20,6 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -38,22 +37,23 @@ import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.ABCLogger;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 
-import java.util.Date;
-import java.util.Random;
 import javax.inject.Inject;
-
-import timber.log.Timber;
+import java.io.File;
 
 public class MyProfileFragment extends DashboardFragment implements View.OnClickListener {
-    private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
-    private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
-    private String newImagePath;
+
+    //Photo Request Code
+    private static final int REQUEST_GALLERY = 299;
+    private static final int REQUEST_CAMERA = 399;
+    private static final int REQUEST_PHOTO_ZOOM = 199;
+
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     @InjectView(R.id.photo_layout) RelativeLayout mPhotoLayout;
     @InjectView(R.id.photo) ImageView mPhoto;
@@ -74,6 +74,9 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     private Bitmap photo;
 
     @Inject Analytics analytics;
+
+    //Photo
+    private File file;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,53 +120,21 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_GALLERY && data != null) {
-                try {
-                    handleDataFromLibrary(data);
-                    updatePhoto();
-                } catch (OutOfMemoryError e) {
-                    THToast.show(R.string.error_decode_image_memory);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    THToast.show(R.string.error_fetch_image_library);
-                    Timber.e(e, "Failed to extract image from library");
-                }
-                return;
-            }
-            if(requestCode==REQUEST_CAMERA && data!=null){
-                if(data.getData()!=null){
-                    try {
-                        handleDataFromLibrary(data);
-                        updatePhoto();
-                    } catch (OutOfMemoryError e) {
-                        THToast.show(R.string.error_decode_image_memory);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        THToast.show(R.string.error_fetch_image_library);
-                        Timber.e(e, "Failed to extract image from library");
-                    }
-                } else {
-                    newImagePath = "";
-                    Bundle bundle = data.getExtras();
-                    if(bundle != null){
-                        photo = (Bitmap) bundle.get("data");
-                        if(photo!=null){
-                            mPhoto.setImageBitmap(photo);
-                            updatePhoto();
-                        }
-                    }
-                }
-            }
-            if (requestCode == REQUEST_GALLERY) {
-                Timber.e(new Exception("Got null data from library"), "");
-                return;
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_GALLERY && data != null) {
+            if(data.getData()!=null){
+                startPhotoZoom(data.getData(), 150);
             }
             return;
         }
-        if (resultCode != Activity.RESULT_CANCELED) {
-            Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
+        if(requestCode==REQUEST_CAMERA){
+            startPhotoZoom(Uri.fromFile(file), 150);
             return;
+         }
+        if(requestCode == REQUEST_PHOTO_ZOOM && data != null){
+            storeAndDisplayPhoto(data);
         }
     }
 
@@ -245,32 +216,16 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     }
 
     protected void askImageFromCamera() {
+        if (!Environment.MEDIA_MOUNTED.equals(Environment
+                .getExternalStorageState())) {
+            THToast.show(R.string.photo_no_sdcard);
+            return;
+        }
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        file = new File(Environment.getExternalStorageDirectory(),
+                "th_temp.jpg");
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
-    }
-
-    public void handleDataFromLibrary(Intent data) {
-        Uri selectedImageUri = data.getData();
-        if (selectedImageUri != null) {
-            String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
-            setNewImagePath(selectedPath);
-        } else {
-            alertDialogUtil.popWithNegativeButton(getActivity(),
-                    R.string.error_fetch_image_library,
-                    R.string.error_fetch_image_library,
-                    R.string.cancel);
-        }
-    }
-
-    public void setNewImagePath(String newImagePath) {
-        this.newImagePath = newImagePath;
-        if (newImagePath != null) {
-            Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
-            if (decoded != null) {
-                mPhoto.setImageBitmap(decoded);
-                return;
-            }
-        }
     }
 
     private void updatePhoto() {
@@ -297,19 +252,10 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
 
     protected BitmapTypedOutput safeCreateProfilePhoto() {
         BitmapTypedOutput created = null;
-        if (!TextUtils.isEmpty(newImagePath)) {
-            try {
-                created = bitmapTypedOutputFactory.createForProfilePhoto(
-                        getResources(), bitmapForProfileFactory, newImagePath);
-            } catch (OutOfMemoryError e) {
-                THToast.show(R.string.error_decode_image_memory);
-            }
-        }else{
-            if(photo==null){
-                return null;
-            }
-            created = new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, photo, String.valueOf(System.currentTimeMillis()), 75);
+        if(photo==null){
+            return null;
         }
+        created = new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, photo, String.valueOf(System.currentTimeMillis()), 75);
         return created;
     }
 
@@ -327,4 +273,30 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
             }
         };
     }
+
+    private void startPhotoZoom(Uri data, int size){
+        ABCLogger.d(data.toString());
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(data, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", size);
+        intent.putExtra("outputY", size);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
+    }
+
+    private void storeAndDisplayPhoto(Intent data){
+        Bundle bundle = data.getExtras();
+        if(bundle != null){
+            photo = (Bitmap) bundle.get("data");
+            if(photo!=null){
+                mPhoto.setImageBitmap(photo);
+                updatePhoto();
+            }
+        }
+    }
+
+
 }

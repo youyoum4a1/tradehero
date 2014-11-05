@@ -432,6 +432,9 @@
   <string name="recommend_uploading">Uploading...</string>
   <!-- Recommend -->
 
+  <!-- Photo-->
+  <string name="photo_no_sdcard">No Secure Digital Memory Card</string>
+  <!-- Photo-->
 
   <string name="please_to_reply">评论一下吧...</string>
 </resources>

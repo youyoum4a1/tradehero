@@ -4,14 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.*;
@@ -19,7 +18,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
@@ -34,6 +32,7 @@ import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.utils.ABCLogger;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
@@ -46,19 +45,20 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 import javax.inject.Inject;
-import java.util.Date;
+import java.io.File;
 import java.util.Map;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Register using email.
+ * Register using email or phone number.
  */
 public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener {
-    //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
-    private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
-    private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
+
+    //Photo Request Code
+    private static final int REQUEST_GALLERY = 299;
+    private static final int REQUEST_CAMERA = 399;
+    private static final int REQUEST_PHOTO_ZOOM = 199;
 
     protected ViewSwitcher mSwitcher;
     protected EditText emailEditText;
@@ -73,7 +73,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     protected TextView mServiceText;
     protected ImageView mAgreeButton;
     protected LinearLayout mAgreeLayout;
-    private String newImagePath;
     private MiddleCallback<Response> sendCodeMiddleCallback;
     protected boolean mIsPhoneNumRegister;
 
@@ -85,6 +84,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     //Camera
     private Bitmap photo;
+    private File file;
 
     private static long last_time_request_verify_code = -1;
     private final long duration_verify_code = 60;
@@ -248,85 +248,21 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_GALLERY && data != null) {
-                try {
-                    handleDataFromLibrary(data);
-                } catch (OutOfMemoryError e) {
-                    THToast.show(R.string.error_decode_image_memory);
-                } catch (Exception e) {
-                    THToast.show(R.string.error_fetch_image_library);
-                    Timber.e(e, "Failed to extract image from library");
-                }
-                return;
-            }
-            if(requestCode == REQUEST_CAMERA && data != null){
-                if(data.getData()!=null){
-                    try {
-                        handleDataFromLibrary(data);
-                    } catch (OutOfMemoryError e) {
-                        THToast.show(R.string.error_decode_image_memory);
-                    } catch (Exception e) {
-                        THToast.show(R.string.error_fetch_image_library);
-                        Timber.e(e, "Failed to extract image from library");
-                    }
-                }else{
-                    newImagePath = "";
-                    Bundle bundle = data.getExtras();
-                    if(bundle != null){
-                        photo = (Bitmap) bundle.get("data");
-                        if(photo!=null){
-                            mPhoto.setImageBitmap(photo);
-                        }
-                    }
-                }
-                return;
-            }
-            if (requestCode == REQUEST_GALLERY) {
-                Timber.e(new Exception("Got null data from library"), "");
-                return;
-            }
-        }
-        if (resultCode != Activity.RESULT_CANCELED) {
-            Timber.e(new Exception("Failed to get image from libray, resultCode: " + resultCode), "");
+        if (resultCode != Activity.RESULT_OK) {
             return;
         }
-    }
-
-    public void handleDataFromLibrary(Intent data) {
-        Uri selectedImageUri = data.getData();
-        if (selectedImageUri != null) {
-            String selectedPath = FileUtils.getPath(getActivity(), selectedImageUri);
-            setNewImagePath(selectedPath);
-        } else {
-            alertDialogUtil.popWithNegativeButton(getActivity(),
-                    R.string.error_fetch_image_library,
-                    R.string.error_fetch_image_library,
-                    R.string.cancel);
-        }
-    }
-
-    public void setNewImagePath(String newImagePath) {
-        this.newImagePath = newImagePath;
-        displayProfileImage();
-    }
-
-    public void displayProfileImage() {
-        if (newImagePath != null) {
-            Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
-            if (decoded != null) {
-                mPhoto.setImageBitmap(decoded);
-                return;
+        if (requestCode == REQUEST_GALLERY && data != null) {
+            if(data.getData()!=null){
+                startPhotoZoom(data.getData(), 150);
             }
+            return;
         }
-        displayDefaultProfileImage();
-    }
-
-    public void displayDefaultProfileImage() {
-        if (this.mPhoto != null && picasso != null) {
-            picasso.load(R.drawable.superman_facebook)
-                    //.transform(userPhotoTransformation)
-                    .into(mPhoto);
+        if(requestCode==REQUEST_CAMERA){
+            startPhotoZoom(Uri.fromFile(file), 150);
+            return;
+        }
+        if(requestCode == REQUEST_PHOTO_ZOOM && data != null){
+            storeAndDisplayPhoto(data);
         }
     }
 
@@ -447,26 +383,15 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_INVITE_CODE, "");
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, "");
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, "");
-        if (newImagePath != null) {
-            map.put(UserFormFactory.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
-        }
+        map.put(UserFormFactory.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
     }
 
     protected BitmapTypedOutput safeCreateProfilePhoto() {
         BitmapTypedOutput created = null;
-        if (!TextUtils.isEmpty(newImagePath)) {
-            try {
-                created = bitmapTypedOutputFactory.createForProfilePhoto(
-                        getResources(), bitmapForProfileFactory, newImagePath);
-            } catch (OutOfMemoryError e) {
-                THToast.show(R.string.error_decode_image_memory);
-            }
-        }else {
-            if(photo==null){
-                return null;
-            }
-            created = new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, photo, String.valueOf(System.currentTimeMillis()), 75);
+        if(photo==null){
+           return null;
         }
+        created = new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, photo, String.valueOf(System.currentTimeMillis()), 75);
         return created;
     }
 
@@ -498,17 +423,16 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     }
 
     protected void askImageFromCamera() {
+        if (!Environment.MEDIA_MOUNTED.equals(Environment
+                .getExternalStorageState())) {
+            THToast.show(R.string.photo_no_sdcard);
+            return;
+        }
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        file = new File(Environment.getExternalStorageDirectory(),
+                "th_temp.jpg");
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
-    }
-
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
     }
 
     @Override
@@ -571,6 +495,28 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return isValid;
     }
 
+    private void startPhotoZoom(Uri data, int size){
+        ABCLogger.d(data.toString());
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(data, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", size);
+        intent.putExtra("outputY", size);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
+    }
+
+    private void storeAndDisplayPhoto(Intent data){
+        Bundle bundle = data.getExtras();
+        if(bundle != null){
+            photo = (Bitmap) bundle.get("data");
+            if(photo!=null){
+                mPhoto.setImageBitmap(photo);
+            }
+        }
+    }
 
 }
 
