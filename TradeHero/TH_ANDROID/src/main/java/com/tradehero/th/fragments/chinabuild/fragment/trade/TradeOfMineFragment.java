@@ -5,14 +5,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -60,12 +53,13 @@ import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     交易－我的交易
@@ -502,7 +496,9 @@ public class TradeOfMineFragment extends DashboardFragment
                     .signTypeArrow()
                     .build();
             tvItemROI.setText(roi.toString());
-            tvItemROI.setTextColor(getResources().getColor(roi.getColorResId()));
+            if(getActivity()!=null){
+                tvItemROI.setTextColor(getActivity().getResources().getColor(roi.getColorResId()));
+            }
         }
 
         String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);

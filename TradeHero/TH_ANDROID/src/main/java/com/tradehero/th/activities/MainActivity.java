@@ -12,11 +12,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TabHost;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -32,11 +28,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentCompetition;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentDiscovery;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
+import com.tradehero.th.fragments.chinabuild.*;
 import com.tradehero.th.fragments.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.models.push.DeviceTokenHelper;
@@ -46,21 +38,18 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.ConstantsChinaBuild;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.*;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-import java.util.Date;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import java.util.Date;
 
 public class MainActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity
 {
@@ -99,6 +88,10 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @InjectView(R.id.tvTabMenu2) TextView tvTabMenu2;
     @InjectView(R.id.tvTabMenu3) TextView tvTabMenu3;
     @InjectView(R.id.tvTabMenu4) TextView tvTabMenu4;
+
+    @InjectView(R.id.imageview_main_tab0_record) ImageView guideTab0IV;
+    @InjectView(R.id.imageview_main_tab2_record) ImageView guideTab2IV;
+    @InjectView(R.id.imageview_main_tab3_record) ImageView guideTab3IV;
 
     private FragmentTabHost frg_tabHost;
 
@@ -172,6 +165,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             case R.id.llTabTrade:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_TRADE));
                 setTabCurrent(TAB_TRADE);
+                recordShowedGuideOfMainTab(0);
                 break;
             case R.id.llTabStockGod:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
@@ -180,10 +174,12 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             case R.id.llTabDiscovery:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_DISCOVERY));
                 setTabCurrent(TAB_DISCOVERY);
+                recordShowedGuideOfMainTab(2);
                 break;
             case R.id.llTabCompetition:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_COMPETITION));
                 setTabCurrent(TAB_COMPETITION);
+                recordShowedGuideOfMainTab(3);
                 break;
             case R.id.llTabMe:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_MINE));
@@ -419,6 +415,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                 dismissGuideView();
             }
         });
+        displayGuideOfMainTab();
     }
 
     private void dismissGuideView(){
@@ -482,4 +479,43 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             }
         }, 100);
     }
+
+    private void displayGuideOfMainTab(){
+        if(THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_ZERO)){
+            guideTab0IV.setVisibility(View.VISIBLE);
+        }else{
+            guideTab0IV.setVisibility(View.GONE);
+        }
+
+        if(THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_TWO)){
+            guideTab2IV.setVisibility(View.VISIBLE);
+        }else{
+            guideTab2IV.setVisibility(View.GONE);
+        }
+
+        if(THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_THREE)){
+            guideTab3IV.setVisibility(View.VISIBLE);
+        }else{
+            guideTab3IV.setVisibility(View.GONE);
+        }
+    }
+
+    private void recordShowedGuideOfMainTab(int index){
+        if(index == 0){
+            THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_MAIN_TAB_ZERO);
+            guideTab0IV.setVisibility(View.GONE);
+            return;
+        }
+        if(index == 2){
+            THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_MAIN_TAB_TWO);
+            guideTab2IV.setVisibility(View.GONE);
+            return;
+        }
+        if(index == 3){
+            THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_MAIN_TAB_THREE);
+            guideTab3IV.setVisibility(View.GONE);
+            return;
+        }
+    }
+
 }

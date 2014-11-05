@@ -233,6 +233,9 @@ public class THSharePreferenceManager {
     public final static String GUIDE_COMPETITION = "guide_competition";
     public final static String GUIDE_COMPETITION_JOIN = "guide_competition_join";
     public final static String GUIDE_STOCK_BUY = "guide_stock_buy";
+    public final static String GUIDE_MAIN_TAB_ZERO= "guide_main_tab_zero";
+    public final static String GUIDE_MAIN_TAB_TWO = "guide_main_tab_two";
+    public final static String GUIDE_MAIN_TAB_THREE = "guide_main_tab_three";
 
     public static boolean isGuideAvailable(Context context, String key){
         SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);
